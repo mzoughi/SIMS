@@ -1,0 +1,254 @@
+<html>
+<body>
+<div id="tbbRoot3932">
+<!-- ── Accessibility toolbar ── -->
+<div class="tbb_a11y3932" role="toolbar" aria-label="Display options">
+<button type="button" class="tbb_a11ybtn3932" id="tbbBtnLM3932"
+onclick="tbbA11y3932.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="tbb_a11ybtn3932 tbb_a11yon3932" id="tbbBtnNR3932"
+onclick="tbbA11y3932.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+<button type="button" class="tbb_a11ybtn3932" id="tbbBtnHC3932"
+onclick="tbbA11y3932.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="tbb_a11ybtn3932" id="tbbBtnFS3932"
+onclick="tbbA11y3932.cycleFont()" aria-pressed="false">FONT SIZE: NORMAL</button>
+<!-- ── Language selector ── -->
+<span class="tbb_langwrap3932">
+<label class="tbb_langlbl3932" id="tbbLangLbl3932" for="tbbLangSel3932">Language:</label>
+<select class="tbb_langsel3932" id="tbbLangSel3932" aria-label="Select language"></select>
+</span>
+</div>
+<!-- ── Narration bar ── -->
+<div id="tbbNarBar3932" class="tbb_narbar3932"
+ role="status" aria-live="polite" aria-atomic="true"></div>
+<!-- ── Balance SVG ── -->
+<div id="tbbStage3932" class="tbb_stage3932" aria-label="Triple beam balance simulation">
+<svg id="tbbSvg3932" viewBox="0 0 652 280" width="652" height="280"
+ role="img" aria-label="Triple beam balance">
+<title id="tbbSvgTitle3932">Triple Beam Balance</title>
+<!-- BASE FOOT -->
+<rect x="10" y="248" width="632" height="26" rx="5"
+fill="#D3D1C7" stroke="#888780" stroke-width="1"/>
+<!-- LEFT SUPPORT COLUMN -->
+<rect x="52" y="163" width="46" height="86" rx="4"
+fill="#F1EFE8" stroke="#888780" stroke-width="1"/>
+<!-- PIVOT POST -->
+<rect x="162" y="128" width="20" height="120" rx="3"
+fill="#B4B2A9" stroke="#888780" stroke-width="0.8"/>
+<!-- RIGHT INDICATOR COLUMN -->
+<rect x="570" y="100" width="56" height="150" rx="5"
+fill="#F1EFE8" stroke="#888780" stroke-width="1"/>
+<rect x="576" y="126" width="40" height="90" rx="2"
+fill="#fff" stroke="#888780" stroke-width="0.5"/>
+<!-- zero line -->
+<line x1="580" y1="171" x2="612" y2="171" stroke="#888780" stroke-width="2.5"/>
+<text x="614" y="175" font-size="11" fill="#444441"
+font-family="Calibri,Arial,sans-serif">0</text>
+<!-- tick marks above/below zero -->
+<line x1="580" y1="141" x2="602" y2="141" stroke="#B4B2A9" stroke-width="0.8"/>
+<line x1="580" y1="151" x2="606" y2="151" stroke="#B4B2A9" stroke-width="0.8"/>
+<line x1="580" y1="161" x2="606" y2="161" stroke="#B4B2A9" stroke-width="0.8"/>
+<line x1="580" y1="181" x2="606" y2="181" stroke="#B4B2A9" stroke-width="0.8"/>
+<line x1="580" y1="191" x2="606" y2="191" stroke="#B4B2A9" stroke-width="0.8"/>
+<line x1="580" y1="201" x2="602" y2="201" stroke="#B4B2A9" stroke-width="0.8"/>
+<!-- POINTER: tip points left into window -->
+<polygon id="tbbPtr3932" points="574,171 558,166 558,176" fill="#E24B4A"/>
+<!-- BEAM FRAME uprights (fixed) -->
+<rect x="210" y="92" width="12" height="144" rx="3"
+fill="#B4B2A9" stroke="#888780" stroke-width="0.8"/>
+<rect x="510" y="92" width="12" height="144" rx="3"
+fill="#B4B2A9" stroke="#888780" stroke-width="0.8"/>
+<!-- BEAM ASSEMBLY: pivot at (172, 171) -->
+<g id="tbbBeamG3932">
+<!-- Left arm: pivot to pan at x=75 -->
+<rect x="68" y="168" width="105" height="7" rx="3" fill="#888780"/>
+<!-- Right arm: pivot to beams -->
+<rect x="172" y="168" width="68" height="7" rx="3" fill="#888780"/>
+<!-- Pivot cap -->
+<circle cx="172" cy="171" r="8" fill="#5F5E5A" stroke="#444441" stroke-width="0.8"/>
+<!-- TARE beam (grey) -->
+<rect x="220" y="100" width="292" height="9" rx="3"
+fill="#D3D1C7" stroke="#888780" stroke-width="0.5"/>
+<!-- REAR beam 100g (green) -->
+<rect x="220" y="122" width="292" height="9" rx="3"
+fill="#9FE1CB" stroke="#0F6E56" stroke-width="0.5"/>
+<!-- FRONT beam 10g (blue) -->
+<rect x="220" y="144" width="292" height="9" rx="3"
+fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+<!-- CENTER beam 500g (orange) -- always 0-500g, independent of attachments -->
+<rect x="220" y="166" width="292" height="9" rx="3"
+fill="#F5C4B3" stroke="#993C1D" stroke-width="0.5"/>
+<!-- Tick groups (populated by JS) -->
+<g id="tbbTkT3932"></g>
+<g id="tbbTkR3932"></g>
+<g id="tbbTkF3932"></g>
+<g id="tbbTkC3932"></g>
+<!-- Riders -->
+<rect id="tbbRtR3932" x="220" y="93"  width="12" height="20" rx="2"
+fill="#888780" stroke="#444441" stroke-width="0.5"/>
+<rect id="tbbRrR3932" x="220" y="114" width="13" height="22" rx="2"
+fill="#0F6E56" stroke="#085041" stroke-width="0.5"/>
+<rect id="tbbRfR3932" x="220" y="136" width="13" height="22" rx="2"
+fill="#185FA5" stroke="#0C447C" stroke-width="0.5"/>
+<rect id="tbbRcR3932" x="220" y="158" width="14" height="24" rx="2"
+fill="#993C1D" stroke="#712B13" stroke-width="0.5"/>
+<!-- Beam labels (translatable) -->
+<text id="tbbBeamLblT3932" x="506" y="108"  font-size="8" fill="#888780"
+font-family="Calibri,Arial,sans-serif">tare 225g</text>
+<text id="tbbBeamLblR3932" x="506" y="130"  font-size="8" fill="#0F6E56"
+font-family="Calibri,Arial,sans-serif">rear 100g</text>
+<text id="tbbBeamLblF3932" x="506" y="152"  font-size="8" fill="#185FA5"
+font-family="Calibri,Arial,sans-serif">front 10g</text>
+<text id="tbbBeamLblC3932" x="506" y="174"  font-size="8" fill="#993C1D"
+font-family="Calibri,Arial,sans-serif">ctr 500g</text>
+</g><!-- end beam assembly -->
+<!-- PAN ARM: vertical rod, endpoints updated by JS -->
+<line id="tbbPanArm3932" x1="75" y1="171" x2="75" y2="152"
+stroke="#888780" stroke-width="2.2"/>
+<!-- PAN GROUP: translateY only -->
+<g id="tbbPanG3932">
+<!-- Container block (hidden by default) -->
+<g id="tbbContG3932" style="display:none">
+<polygon id="tbbContR3932" points="42,142 106,142 106,80 100,80 100,136 48,136 48,80 42,80" fill="red" stroke="black" stroke-width="2" />
+</g>
+<!-- Sample block (hidden by default) -->
+<g id="tbbSampG3932" style="display:none">
+<rect id="tbbSampR3932" x="51" y="100" width="48" height="20" rx="3"
+fill="#EF9F27" stroke="#854F0B" stroke-width="1"/>
+<text id="tbbSampT3932" x="75" y="113"
+text-anchor="middle" font-size="8" fill="#412402"
+font-family="Calibri,Arial,sans-serif">?</text>
+</g>
+<!-- Pan surface -->
+<ellipse cx="75" cy="148" rx="50" ry="6"
+ fill="#F1EFE8" stroke="#888780" stroke-width="1"/>
+<path d="M 25,148 Q 25,157 75,159 Q 125,157 125,148"
+fill="#F1EFE8" stroke="#888780" stroke-width="1"/>
+</g><!-- end pan group -->
+<!-- ZERO KNOB (label 1) -->
+<rect x="16" y="198" width="34" height="26" rx="4"
+fill="#D3D1C7" stroke="#888780" stroke-width="0.8"/>
+<rect x="20" y="202" width="26" height="18" rx="3"
+fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
+<rect id="tbbZKnob3932" x="27" y="206" width="9" height="7" rx="2" fill="#5F5E5A"/>
+<text id="tbbZeroLbl3932" x="33" y="235" text-anchor="middle" font-size="7" fill="#888780"
+font-family="Calibri,Arial,sans-serif">zero</text>
+<!-- ATTACHMENT SLOT (label 6) -->
+<rect x="512" y="214" width="40" height="32" rx="3"
+fill="#E6F1FB" stroke="#185FA5" stroke-width="0.8"/>
+<text id="tbbAttSlotLbl3932" x="532" y="227" text-anchor="middle" font-size="7" fill="#185FA5"
+font-family="Calibri,Arial,sans-serif">att.</text>
+<text id="tbbAttLbl3932" x="532" y="240" text-anchor="middle" font-size="7"
+fill="#185FA5" font-family="Calibri,Arial,sans-serif">--</text>
+</svg>
+</div><!-- tbbStage -->
+<!-- ── Pan / attachment controls (green row) ── -->
+<div class="tbb_ctrl3932 tbb_ctrl_green3932">
+<span class="tbb_ctrlabel3932" id="tbbLblPan3932">Pan:</span>
+<button type="button" class="tbb_btn3932" id="tbbNsBtn3932"
+onclick="tbbSim3932.newSample()" aria-label="Place the mass on the pan">Add Mass</button>
+<button type="button" class="tbb_btn3932" id="tbbCBtn3932"
+onclick="tbbSim3932.addContainer()" aria-label="Place a random container on the pan">Add container</button>
+<button type="button" class="tbb_btn3932" id="tbbNsBtn13932"
+onclick="tbbSim3932.massAtt(1)" aria-label="Place an attachment on the pan">Mass 1 kg Attachment</button>
+<button type="button" class="tbb_btn3932" id="tbbNsBtn23932"
+onclick="tbbSim3932.massAtt(0.5)" aria-label="Place an attachment on the pan">Mass 500g Attachment</button>
+<button type="button" class="tbb_btn3932 tbb_btn_danger3932" id="tbbRmBtn3932"
+onclick="tbbSim3932.removeMass()" aria-label="Remove the sample mass from the pan">Remove mass</button>
+<button type="button" class="tbb_btn3932 tbb_btn_danger3932" id="tbbRstBtn3932"
+onclick="tbbSim3932.resetAll()" aria-label="Reset the balance to initial state">Reset all</button>
+</div>
+<!-- ── Attachment weights (blue row) ── -->
+<div class="tbb_ctrl3932 tbb_ctrl_blue3932">
+<span class="tbb_ctrlabel3932" id="tbbLblAtt3932">Attachments:</span>
+<button type="button" class="tbb_btn3932" id="tbbA1Btn3932"
+onclick="tbbSim3932.toggleAtt1()" aria-pressed="false" aria-label="Toggle 1 kilogram attachment weight">1 kg att. (rider: 295 g)</button>
+<button type="button" class="tbb_btn3932" id="tbbA5Btn3932"
+onclick="tbbSim3932.toggleAtt5()" aria-pressed="false" aria-label="Toggle 500 gram attachment weight">500 g att. (rider: 147.5 g)</button>
+</div>
+<!-- ── Beam sliders (blue row) ── -->
+<div class="tbb_ctrl3932 tbb_ctrl_blue3932">
+<span class="tbb_ctrlabel3932" id="tbbLblCtrBeam3932">&#9658; Center 500g:</span>
+<input type="range" id="tbbCS3932" class="tbb_slider3932"
+min="0" max="5" step="1" value="0"
+oninput="tbbSim3932.update()" onchange="tbbSim3932.update()"
+ aria-label="Center beam rider, 0 to 500 grams in 100 gram steps"
+ aria-valuemin="0" aria-valuemax="500" aria-valuenow="0">
+<span class="tbb_rdout3932" id="tbbCD3932">0 g</span>
+</div>
+<div class="tbb_ctrl3932 tbb_ctrl_blue3932">
+<span class="tbb_ctrlabel3932" id="tbbLblRearBeam3932">&#9658; Rear 100g:</span>
+<input type="range" id="tbbRS3932" class="tbb_slider3932"
+min="0" max="10" step="1" value="0"
+oninput="tbbSim3932.update()" onchange="tbbSim3932.update()"
+ aria-label="Rear beam rider, 0 to 100 grams in 10 gram steps"
+ aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+<span class="tbb_rdout3932" id="tbbRD3932">0 g</span>
+</div>
+<div class="tbb_ctrl3932 tbb_ctrl_blue3932">
+<span class="tbb_ctrlabel3932" id="tbbLblFrontBeam3932">&#9658; Front 10g:</span>
+<input type="range" id="tbbFS3932" class="tbb_slider3932"
+min="0" max="100" step="1" value="0"
+oninput="tbbSim3932.update()" onchange="tbbSim3932.update()"
+ aria-label="Front beam rider, 0 to 10 grams in 0.1 gram steps"
+ aria-valuemin="0" aria-valuemax="10" aria-valuenow="0">
+<span class="tbb_rdout3932" id="tbbFD3932">0.0 g</span>
+</div>
+<div class="tbb_ctrl3932 tbb_ctrl_blue3932">
+<span class="tbb_ctrlabel3932" id="tbbLblTareBeam3932">&#9658; Tare 225g:</span>
+<input type="range" id="tbbTS3932" class="tbb_slider3932"
+min="0" max="225" step="0.1" value="0"
+oninput="tbbSim3932.update()" onchange="tbbSim3932.update()"
+ aria-label="Tare beam, 0 to 225 grams. Cancels container weight. Not included in sample reading."
+ aria-valuemin="0" aria-valuemax="225" aria-valuenow="0">
+<span class="tbb_rdout3932" id="tbbTD3932">0.0 g</span>
+</div>
+<div class="tbb_ctrl3932 tbb_ctrl_blue3932">
+<span class="tbb_ctrlabel3932" id="tbbLblZeroAdj3932">&#9658; Zero adj.:</span>
+<input type="range" id="tbbZS3932" class="tbb_slider3932"
+min="-2" max="2" step="0.1" value="0"
+oninput="tbbSim3932.update()" onchange="tbbSim3932.update()"
+ aria-label="Zero adjustment knob, fine balance correction"
+ aria-valuemin="-2" aria-valuemax="2" aria-valuenow="0">
+<button type="button" class="tbb_btn3932" id="tbbZBtn3932"
+onclick="tbbSim3932.reZero()" aria-label="Re-zero the balance at current beam settings">Re-zero</button>
+</div>
+<!-- ── Readout row ── -->
+<div class="tbb_ctrl3932 tbb_ctrl_rdout3932" role="status" aria-live="polite">
+<span class="tbb_ctrlabel3932" id="tbbLblBeamSetting3932">Beam setting:</span>
+<span class="tbb_rdout3932" id="tbbBeamD3932" aria-label="Current beam setting">0.0 g</span>
+<span class="tbb_ctrlabel3932" id="tbbLblSampleMass3932" style="margin-left:18px">Sample mass:</span>
+<span class="tbb_rdout3932" id="tbbSampD3932" aria-label="Calculated sample mass">0.0 g</span>
+<span class="tbb_status3932" id="tbbStatL3932" aria-live="polite">at zero</span>
+<span id="tbbOTag3932" class="tbb_overload3932" style="display:none" role="alert">OVERLOAD</span>
+</div>
+<!-- ── Submit row ── -->
+<div class="tbb_ctrl3932 tbb_ctrl_green3932" id="tbbSubmitRow3932" style="display:none">
+<span class="tbb_ctrlabel3932" id="tbbLblReady3932">Ready?</span>
+<button type="button" class="tbb_btn3932 tbb_btn_submit3932" id="tbbSubmitBtn3932"
+onclick="tbbSim3932.submitAnswer()" aria-label="Submit your measurement and reveal the correct answer">Submit answer</button>
+<span id="tbbReveal3932" class="tbb_reveal3932" style="display:none"></span>
+</div>
+<!-- ── Info panel ── -->
+<div class="tbb_info3932">
+<div class="tbb_infotitle3932" id="tbbInfoTitle3932">Triple Beam Balance</div>
+<div class="tbb_infotext3932" id="tbbInfoText3932">
+Capacity: 610 g (base) &bull; Sensitivity/Readability: 0.1 g &bull;
+Beams: Center 500g&times;100g &bull; Rear 100g&times;10g &bull; Front 10g&times;0.1g &bull;
+Tare up to 225 g.<br>
+<strong>To weigh:</strong> place a sample, then slide riders from largest beam to smallest
+until the pointer centres on 0.
+Use the <strong>Tare</strong> slider to cancel a container&rsquo;s weight before adding a sample.
+Use <strong>Zero adj.</strong> to correct a slight off-zero before weighing.
+</div>
+<div class="tbb_copyright3932" id="tbbCopy3932">&copy;&nbsp;Taha Mzoughi (2026)</div>
+</div>
+<!-- ════════════════════════════════════════════════════════════
+STYLES + SCRIPTS
+════════════════════════════════════════════════════════════ -->
+<link rel="stylesheet" href="css/triplebeambalance3932.css">
+<!-- Language pack MUST load before the other scripts -->
+<script src="js/triplebeambalance3932_lang.js"></script>
+<script src="js/triplebeambalance3932acc.js"></script>
+<script src="js/triplebeambalance3932.js"></script>
+</body>
+</html>
