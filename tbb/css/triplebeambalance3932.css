@@ -1,0 +1,154 @@
+#tbbRoot3932 { display:block; width:652px; font-family:Calibri,Arial,sans-serif; font-size:10pt; }
+#tbbRoot3932 * { box-sizing:border-box; margin:0; }
+/* ── Accessibility toolbar ── */
+#tbbRoot3932 .tbb_a11y3932 {
+display:flex; gap:6px; padding:6px 8px;
+background:#222; flex-wrap:wrap; width:652px;
+align-items:center; }
+#tbbRoot3932 .tbb_a11ybtn3932 {
+padding:4px 10px; font-size:.72rem; font-family:monospace;
+letter-spacing:.06em; border-radius:3px; cursor:pointer;
+background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#tbbRoot3932 .tbb_a11ybtn3932:hover { border-color:#00e8d0; color:#00e8d0; }
+#tbbRoot3932 .tbb_a11yon3932 {
+background:rgba(0,232,208,.12); border-color:#00e8d0; color:#00e8d0; }
+/* ── Language selector ── */
+#tbbRoot3932 .tbb_langwrap3932 {
+display:flex; align-items:center; gap:4px;
+margin-left:auto;
+color:#7a8aaa; font-family:monospace; font-size:.72rem;
+letter-spacing:.06em; }
+#tbbRoot3932 .tbb_langlbl3932 { white-space:nowrap; }
+#tbbRoot3932 .tbb_langsel3932 {
+background:#2a2e3a; border:1px solid #404a60; color:#cdd; 
+font-family:Calibri,Arial,sans-serif; font-size:.78rem;
+padding:3px 6px; border-radius:3px; cursor:pointer; }
+#tbbRoot3932 .tbb_langsel3932:hover { border-color:#00e8d0; color:#00e8d0; }
+#tbbRoot3932 .tbb_langsel3932:focus { outline:2px solid #00e8d0; outline-offset:2px; }
+/* ── Narration bar ── */
+#tbbRoot3932 .tbb_narbar3932 {
+width:652px; min-height:26px; padding:4px 10px;
+background:#ffefc0; border-left:4px solid #e0b040;
+font-size:.88rem; color:#333; font-style:italic; }
+/* ── Balance stage ── */
+#tbbRoot3932 .tbb_stage3932 {
+width:652px; background:#f0eeea;
+border:1px solid #bbb; border-top:none; }
+/* ── Control rows ── */
+#tbbRoot3932 .tbb_ctrl3932 {
+display:flex; align-items:center; gap:8px;
+width:652px; padding:5px 10px; flex-wrap:wrap; }
+#tbbRoot3932 .tbb_ctrl_green3932 { background:#99ff33; }
+#tbbRoot3932 .tbb_ctrl_blue3932  { background:#cce8ff; border-top:1px solid #90c0e0; }
+#tbbRoot3932 .tbb_ctrl_rdout3932 {
+background:#1a1a2e; border-top:1px solid #333; }
+#tbbRoot3932 .tbb_ctrlabel3932 {
+font-weight:bold; font-size:13px; white-space:nowrap; }
+#tbbRoot3932 .tbb_ctrl_rdout3932 .tbb_ctrlabel3932 { color:#aac; }
+/* ── Sliders ── */
+#tbbRoot3932 .tbb_slider3932 {
+flex:1; min-width:180px; height:16px; cursor:pointer; }
+/* ── Readout displays ── */
+#tbbRoot3932 .tbb_rdout3932 {
+background:#00c; color:#ff0; font-family:monospace;
+font-size:13px; padding:2px 8px; border-radius:3px;
+white-space:nowrap; min-width:72px; text-align:right; }
+/* ── Status label ── */
+#tbbRoot3932 .tbb_status3932 {
+font-size:12px; font-weight:bold;
+color:#aaffaa; margin-left:10px; }
+#tbbRoot3932 .tbb_status_ok3932  { color:#00ff88; }
+#tbbRoot3932 .tbb_status_no3932  { color:#ff6666; }
+/* ── Overload tag ── */
+#tbbRoot3932 .tbb_overload3932 {
+background:#c00; color:#fff; font-size:11px;
+font-weight:bold; padding:2px 8px; border-radius:3px; }
+/* ── Buttons ── */
+#tbbRoot3932 .tbb_btn3932 {
+padding:3px 10px; font-size:12px; font-family:Calibri,Arial,sans-serif;
+border-radius:3px; cursor:pointer;
+background:#fff; border:1px solid #666; color:#222; }
+#tbbRoot3932 .tbb_btn3932:hover { background:#e0e0e0; }
+#tbbRoot3932 .tbb_btn3932:focus {
+outline:2px solid #0055cc; outline-offset:2px; }
+#tbbRoot3932 .tbb_btn_danger3932 {
+border-color:#c00; color:#c00; }
+#tbbRoot3932 .tbb_btn_danger3932:hover { background:#ffeeee; }
+#tbbRoot3932 .tbb_btn_submit3932 {
+background:#004a99; color:#fff; border-color:#003377; font-weight:bold; }
+#tbbRoot3932 .tbb_btn_submit3932:hover { background:#0066cc; }
+#tbbRoot3932 .tbb_btn_on3932 {
+background:#004a99; color:#fff; border-color:#003377; }
+/* ── Reveal span ── */
+#tbbRoot3932 .tbb_reveal3932 {
+font-size:13px; font-weight:bold; padding:2px 10px;
+border-radius:3px; background:#004a99; color:#fff; }
+/* ── Info panel ── */
+#tbbRoot3932 .tbb_info3932 {
+width:652px; background:#ffff00; border:1px solid #000;
+border-top:none; padding:6px 10px 4px; }
+#tbbRoot3932 .tbb_infotitle3932 {
+font-weight:bold; font-size:large; margin-bottom:2px; }
+#tbbRoot3932 .tbb_infotext3932 { font-size:10pt; margin-bottom:3px; }
+#tbbRoot3932 .tbb_copyright3932 { font-size:9pt; }
+/* ── High-contrast overrides (applied by JS) ── */
+#tbbRoot3932.tbb_hc3932 .tbb_ctrl_green3932 { background:#000; }
+#tbbRoot3932.tbb_hc3932 .tbb_ctrl_blue3932  { background:#000; border-top:1px solid #fff; }
+#tbbRoot3932.tbb_hc3932 .tbb_ctrlabel3932   { color:#fff; }
+#tbbRoot3932.tbb_hc3932 .tbb_btn3932         { background:#000; color:#fff; border-color:#fff; }
+#tbbRoot3932.tbb_hc3932 .tbb_stage3932       { background:#000; border-color:#fff; }
+#tbbRoot3932.tbb_hc3932 .tbb_info3932        { background:#000; color:#fff; border-color:#fff; }
+#tbbRoot3932.tbb_hc3932 .tbb_infotitle3932   { color:#fff; }
+#tbbRoot3932.tbb_hc3932 .tbb_infotext3932    { color:#fff; }
+/* ── Font-size scaling ── */
+#tbbRoot3932.tbb_fs_lg3932 { font-size:12pt; }
+#tbbRoot3932.tbb_fs_xl3932 { font-size:14pt; }
+/* ── Focus ring for sliders ── */
+#tbbRoot3932 .tbb_slider3932:focus { outline:2px solid #0055cc; outline-offset:2px; }
+
+/* ════════════════════════════════════════════════════════════
+   RTL (Right-to-Left) support for Arabic, Hebrew, etc.
+   The simulation has a fixed 652-pixel wide SVG that should
+   keep its left-to-right physical layout (a balance is a
+   physical object, after all -- flipping it would mirror the
+   beam labels too). Only the surrounding control rows, info
+   panel, narration bar, and dropdown reflow to RTL.
+   ════════════════════════════════════════════════════════════ */
+#tbbRoot3932.tbb_rtl3932 {
+direction: rtl;
+text-align: right;
+font-family: "Segoe UI", "Tahoma", "Arial", "Calibri", sans-serif;
+}
+/* SVG stage stays LTR -- the physical balance shouldn't mirror */
+#tbbRoot3932.tbb_rtl3932 .tbb_stage3932 {
+direction: ltr;
+}
+/* Narration bar: flip the accent bar from left to right */
+#tbbRoot3932.tbb_rtl3932 .tbb_narbar3932 {
+border-left: none;
+border-right: 4px solid #e0b040;
+text-align: right;
+}
+/* Status label: margin should be on the other side in RTL */
+#tbbRoot3932.tbb_rtl3932 .tbb_status3932 {
+margin-left: 0;
+margin-right: 10px;
+}
+/* Readout displays: numbers stay readable LTR even inside RTL row */
+#tbbRoot3932.tbb_rtl3932 .tbb_rdout3932 {
+direction: ltr;
+text-align: left;
+unicode-bidi: embed;
+}
+/* Language dropdown: in RTL keep it on the far end (visual right
+   of LTR = visual left of RTL). margin-left:auto becomes
+   margin-right:auto so the selector sticks to the start side. */
+#tbbRoot3932.tbb_rtl3932 .tbb_langwrap3932 {
+margin-left: 0;
+margin-right: auto;
+}
+/* Beam-setting/Sample-mass label margins flip too */
+#tbbRoot3932.tbb_rtl3932 .tbb_ctrl_rdout3932 .tbb_ctrlabel3932[style*="margin-left"] {
+margin-left: 0 !important;
+margin-right: 18px;
+}
