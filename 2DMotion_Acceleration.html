@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+  // Configure MathJax to load the AsciiMath input component
+  window.MathJax = {
+    loader: { load: ['input/asciimath', 'output/chtml'] }
+  };
+</script>
 <meta charset="UTF-8">
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Physics Simulations - Projectile Motion - Acceleration Vector</title>
 </head>
@@ -30,13 +37,13 @@
 <!-- Repeated 80px sections -->
 <div class="footerTM090786">
 <div class="leftTM090786">`vecv_i`<br>`(v_x,v_y)`</div>
-<div class="centerTM090786"><input style="width: 170px;" type="range" id="vix" min="0" max="30" value="$vx" step="1" onChange="document.getElementById('vxValue').innerHTML=this.value;twoDmotionVTM090786.setvx(this.value);"> <span id="vxValue">$vx</span></div>
-<div class="rightTM090786"><input style="width: 310px;" type="range" id="viy" min="-20" max="45" value="$vy" step="1" onChange="document.getElementById('vyValue').innerHTML=this.value;twoDmotionVTM090786.setvy(this.value);"> <span id="vyValue">$vy</span></div>
+<div class="centerTM090786"><input style="width: 170px;" type="range" id="vix" min="0" max="30" value="20" step="1" onChange="document.getElementById('vxValue').innerHTML=this.value;twoDmotionVTM090786.setvx(this.value);"> <span id="vxValue">20</span></div>
+<div class="rightTM090786"><input style="width: 310px;" type="range" id="viy" min="-20" max="45" value="44" step="1" onChange="document.getElementById('vyValue').innerHTML=this.value;twoDmotionVTM090786.setvy(this.value);"> <span id="vyValue">44</span></div>
 </div>
 <div class="footerTM090786">
 <div class="leftTM090786">`vecv_i`<br>`(|vecv|,theta)`</div>
-<div class="centerTM090786"><input style="width: 170px;" type="range" id="viM" min="0" max="54" value="$vD" step="1" onChange="document.getElementById('vMValue').innerHTML=this.value;twoDmotionVTM090786.setvM(this.value);"> <span id="vMValue">$vD</span></div>
-<div class="rightTM090786"><input style="width: 310px;" type="range" id="viaD" min="-90" max="90" value="$aDD" step="1" onChange="document.getElementById('vaDValue').innerHTML=this.value;twoDmotionVTM090786.setvd(this.value);"> <span id="vaDValue">$aDD</span></div>
+<div class="centerTM090786"><input style="width: 170px;" type="range" id="viM" min="0" max="54" value="48" step="1" onChange="document.getElementById('vMValue').innerHTML=this.value;twoDmotionVTM090786.setvM(this.value);"> <span id="vMValue">48</span></div>
+<div class="rightTM090786"><input style="width: 310px;" type="range" id="viaD" min="-90" max="90" value="66" step="1" onChange="document.getElementById('vaDValue').innerHTML=this.value;twoDmotionVTM090786.setvd(this.value);"> <span id="vaDValue">66</span></div>
 </div>
 <div class="footerTM090786">
 <div class="leftTM090786">`vecP_i`<br>`(P_{ix},P_{iy})`</div>
@@ -68,7 +75,7 @@ Next to the "Play" button, two other buttons can be used for slow motion. A four
 ghost images (pale red markers) stack vertically under the release point with increasing sepation, indicating straight down speeding motion relative to the truck (no horizontal component). A downward purple vy vector
 is shown. The blue ball remains at rest on the truck. Numerical readouts appear as
 before, The vertical position readout y1, varies from 0 to `-490.00\ "m"`. 
-The vertical velocity v1y, varies from `0` to `-98.00\ "m/s"`, and the vertical acceleration a1y, stays constant at `-9.8\ "m/s"^2`. All other quantities for both balls remain at zero.
+The vertical velocity v1y, varies from `0` to `-9.80\ "m/s"`, and the vertical acceleration a1y, stays constant at `-9.8\ "m/s"^2`. All other quantities for both balls remain at zero.
 The stick figure and the bridge arches appear to be moving left.
 </p>
 </div>
@@ -78,19 +85,19 @@ The stick figure and the bridge arches appear to be moving left.
 <li>Which of these kinematic quantities do not change as the ball moves in its parabolic path?
 [AB0]</li>
 <li>What is the initial acceleration of the ball (when it was just launched)?
-<br>`veca_{i} =\ `[AB1]`\ \ hat"i"\ +\ `[AB2]`\ \ hat"j"`</li>
+</li>
 <li>What is the acceleration of the ball when it is at the top most position?
-<br>`veca_{"top"} =\ `[AB3]`\ \ hat"i"\ +\ `[AB4]`\ \ hat"j"`</li>
+</li>
 </ol>
 <p>Change the velocity so that the initial vertical component is negative.</p>
 <ol type="a" start=4>
 <li>What is the new acceleration of the ball as it moves?
-<br>`veca_{"after downward toss"} =\ `[AB5]`\ \ hat"i"\ +\ `[AB6]`\ \ hat"j"`</li>
+</li>
 </ol>
 <p>Change the initial velocity to zero (a drop).</p>
 <ol type="a" start=5>
 <li>What is the new acceleration of the ball as it moves?
-<br>`veca_{"after downward toss"} =\ `[AB7]`\ \ hat"i"\ +\ `[AB8]`\ \ hat"j"`</li>
+</li>
 </ol>
 <style>
 * {

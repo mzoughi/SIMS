@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+  // Configure MathJax to load the AsciiMath input component
+  window.MathJax = {
+    loader: { load: ['input/asciimath', 'output/chtml'] }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Physics Simulations - Projectile Motion - Position Vector</title>
@@ -30,13 +37,13 @@
 <!-- Repeated 80px sections -->
 <div class="footerTM090786">
 <div class="leftTM090786">`vecv_i`<br>`(v_x,v_y)`</div>
-<div class="centerTM090786"><input style="width: 170px;" type="range" id="vix" min="0" max="30" value="$vx" step="1" onChange="document.getElementById('vxValue').innerHTML=this.value;twoDmotionVTM090786.setvx(this.value);"> <span id="vxValue">$vx</span></div>
-<div class="rightTM090786"><input style="width: 310px;" type="range" id="viy" min="-20" max="45" value="$vy" step="1" onChange="document.getElementById('vyValue').innerHTML=this.value;twoDmotionVTM090786.setvy(this.value);"> <span id="vyValue">$vy</span></div>
+<div class="centerTM090786"><input style="width: 170px;" type="range" id="vix" min="0" max="30" value="20" step="1" onChange="document.getElementById('vxValue').innerHTML=this.value;twoDmotionVTM090786.setvx(this.value);"> <span id="vxValue">20</span></div>
+<div class="rightTM090786"><input style="width: 310px;" type="range" id="viy" min="-20" max="45" value="44" step="1" onChange="document.getElementById('vyValue').innerHTML=this.value;twoDmotionVTM090786.setvy(this.value);"> <span id="vyValue">44</span></div>
 </div>
 <div class="footerTM090786">
 <div class="leftTM090786">`vecv_i`<br>`(|vecv|,theta)`</div>
-<div class="centerTM090786"><input style="width: 170px;" type="range" id="viM" min="0" max="54" value="$vD" step="1" onChange="document.getElementById('vMValue').innerHTML=this.value;twoDmotionVTM090786.setvM(this.value);"> <span id="vMValue">$vD</span></div>
-<div class="rightTM090786"><input style="width: 310px;" type="range" id="viaD" min="-90" max="90" value="$aDD" step="1" onChange="document.getElementById('vaDValue').innerHTML=this.value;twoDmotionVTM090786.setvd(this.value);"> <span id="vaDValue">$aDD</span></div>
+<div class="centerTM090786"><input style="width: 170px;" type="range" id="viM" min="0" max="54" value="48" step="1" onChange="document.getElementById('vMValue').innerHTML=this.value;twoDmotionVTM090786.setvM(this.value);"> <span id="vMValue">48</span></div>
+<div class="rightTM090786"><input style="width: 310px;" type="range" id="viaD" min="-90" max="90" value="66" step="1" onChange="document.getElementById('vaDValue').innerHTML=this.value;twoDmotionVTM090786.setvd(this.value);"> <span id="vaDValue">66</span></div>
 </div>
 <div class="footerTM090786">
 <div class="leftTM090786">`vecP_i`<br>`(P_{ix},P_{iy})`</div>
