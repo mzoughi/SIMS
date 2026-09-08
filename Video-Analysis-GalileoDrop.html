@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+  // Configure MathJax to load the AsciiMath input component
+  window.MathJax = {
+    loader: { load: ['input/asciimath', 'output/chtml'] }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations - Video Analysis - Galileo Drop</title>
+<title>Physics Simulations - Projectile Motion - Position Vector</title>
 </head>
-<body>
+<body style=margin:25px>
 <div class="vidtrack-wrap">
 <style>
 .vidtrack-wrap {
@@ -73,8 +80,8 @@ padding: 3px 5px; border: 1px solid #bbb; border-radius: 3px;
 <button type="button" class="vt-btn vt-hctoggle" aria-pressed="false">High contrast: Off</button>
 <button type="button" class="vt-btn vt-fonttoggle">Font size: Normal</button>
 </div>
-<h3>Video Analysis Of a Galileo Drop</h3>
-<div class="vt-note">Workflow: (1) set the scale, (2) set the origin and axis direction, (3) click on the object frame-by-frame to mark its position. Your tracked points are yours alone; only the video itself is shared.</div>
+<h3>Video Motion Tracker</h3>
+<div class="vt-note">This question uses a shared video provided with the assignment — everyone analyzes the same clip, so there's nothing to upload. Workflow: (1) set the scale, (2) set the origin and axis direction, (3) click on the object frame-by-frame to mark its position. Your tracked points are yours alone; only the video itself is shared.</div>
 <div class="vt-row">
 <span class="vt-filename">No video loaded yet.</span>
 </div>
@@ -151,19 +158,17 @@ padding: 3px 5px; border: 1px solid #bbb; border-radius: 3px;
  given question, just delete its whole <div class="vt-row">.
  ============================================================ -->
 <!-- Sends the currently graphed (x,y) points as "x1,y1,x2,y2,..." -->
-<div class="vt-row vt-send-data-row" style=visibility:hidden;height:1px>
+<div class="vt-row vt-send-data-row">
 <button type="button" class="vt-btn vt-senddata">Send graphed data to answer box</button>
 </div>
 <!-- Sends the current linear fit as "slope,slope_uncertainty" -->
-<div class="vt-row vt-send-slope-row" style=visibility:hidden;height:1px>
+<div class="vt-row vt-send-slope-row">
 <button type="button" class="vt-btn vt-sendslope">Send slope &amp; uncertainty to answer boxes</button>
 </div>
 <!-- Sends the average and standard deviation of the plotted Y-values -->
-<div class="vt-row vt-send-avg-row" style=visibility:hidden;height:1px>
+<div class="vt-row vt-send-avg-row">
 <button type="button" class="vt-btn vt-sendavg">Send average &amp; std dev to answer boxes</button>
 </div>
- <div>For scale, note that the ball diameter is 35.5 cm and that the diatance separating the center of the front wheel from the center of the back wheel is 3.2 m.</div>
- <div>The Video used is a portion of this YouTube Video (https://youtu.be/j1URC2G2qnc) posted by Jon White from the Science8 Team at Fallon Middle School, Dublin, CA. (Sep 8, 2018)</div>
 <script>
 (function() {
 var root = document.querySelector(".vidtrack-wrap:not([data-vt-init])");
@@ -255,12 +260,13 @@ fontBtn.textContent = 'Font size: ' + labels[a11y.fontSize];
 function enableControls() {
 playBtn.disabled = prevBtn.disabled = nextBtn.disabled = rewindBtn.disabled = false;
 setScaleBtn.disabled = setAxesBtn.disabled = false;
+undoBtn.disabled = resetBtn.disabled = false;
 }
 // ---------- Shared video: loaded automatically from a fixed URL ----------
 // EDIT THIS per question to point at the video everyone should analyze.
 // Must be served over https:// (MOM pages are https, and browsers block
 // https pages from loading plain http media - "mixed content").
-var VIDEO_URL = 'https://mzoughi.github.io/SIMS/GalelioDrop-YT-j1URC2G2qnc-Fallon%20Middle%20School-Dublin-CA.mp4';
+var VIDEO_URL = 'https://example.com/path/to/your-video.mp4';
 function loadSharedVideo() {
 try {
 filenameSpan.textContent = VIDEO_URL;
@@ -795,7 +801,6 @@ if (window.console && console.error) console.error('Video Tracker setup error:',
 })();
 </script>
 </div>
-
 
 </body>
 </html>

@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+  // Configure MathJax to load the AsciiMath input component
+  window.MathJax = {
+    loader: { load: ['input/asciimath', 'output/chtml'] }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations - Video Analysis</title>
+<title>Physics Simulations - Projectile Motion - Position Vector</title>
 </head>
-<body>
+<body style=margin:25px>
 <div class="vidtrack-wrap">
 <style>
 .vidtrack-wrap {
@@ -156,15 +163,15 @@ padding: 3px 5px; border: 1px solid #bbb; border-radius: 3px;
  given question, just delete its whole <div class="vt-row">.
  ============================================================ -->
 <!-- Sends the currently graphed (x,y) points as "x1,y1,x2,y2,..." -->
-<div class="vt-row vt-send-data-row" style=visibility:hidden;height:1px>
+<div class="vt-row vt-send-data-row">
 <button type="button" class="vt-btn vt-senddata">Send graphed data to answer box</button>
 </div>
 <!-- Sends the current linear fit as "slope,slope_uncertainty" -->
-<div class="vt-row vt-send-slope-row" style=visibility:hidden;height:1px>
+<div class="vt-row vt-send-slope-row">
 <button type="button" class="vt-btn vt-sendslope">Send slope &amp; uncertainty to answer boxes</button>
 </div>
 <!-- Sends the average and standard deviation of the plotted Y-values -->
-<div class="vt-row vt-send-avg-row" style=visibility:hidden;height:1px>
+<div class="vt-row vt-send-avg-row">
 <button type="button" class="vt-btn vt-sendavg">Send average &amp; std dev to answer boxes</button>
 </div>
 <script>
@@ -259,6 +266,7 @@ fontBtn.textContent = 'Font size: ' + labels[a11y.fontSize];
 function enableControls() {
 playBtn.disabled = prevBtn.disabled = nextBtn.disabled = rewindBtn.disabled = false;
 setScaleBtn.disabled = setAxesBtn.disabled = false;
+undoBtn.disabled = resetBtn.disabled = false;
 }
 // ---------- File loading ----------
 function loadFile(file) {
