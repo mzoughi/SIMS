@@ -1,204 +1,388 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
  <meta content="SIM Website for Taha Mzoughi." name=description>
 <meta name="author" content="Taha Mzoughi">
 <meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,electricity, mechanics, optics, magnetism, nuclear, lesson, scientific">
 <link rel="shortcut icon" href=mzy.ico>   <title>Physics Simulations -  Taha Mzoughi</title>
-</head>
-<body style=margin:25px>
+<style>
+:root{
+--accent:#005a9c;
+--bg:#f5f7fa;
+--card:#ffffff;
+--border:#d7dce2;
+}
+*{box-sizing:border-box;}
+body{
+font-family:Segoe UI, Arial, sans-serif;
+background:var(--bg);
+margin:0;
+padding:30px;
+}
+header{margin-bottom:25px;}
+h1{
+margin:0;
+color:var(--accent);
+}
+.stats{
+margin-top:8px;
+color:#555;
+font-size:1rem;
+}
+#searchBox{
+width:100%;
+max-width:500px;
+margin-top:20px;
+padding:12px;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:1rem;
+}
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
+gap:20px;
+}
+.category{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:12px;
+padding:18px;
+box-shadow:0 2px 5px rgba(0,0,0,0.08);
+}
+.category-title{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:12px;
+border-bottom:2px solid #edf2f7;
+padding-bottom:8px;
+}
+.category-title h2{
+margin:0;
+color:var(--accent);
+font-size:1.2rem;
+}
+.category-count{
+background:#edf5ff;
+color:var(--accent);
+padding:3px 8px;
+border-radius:999px;
+font-size:0.9rem;
+font-weight:600;
+}
+.ncategory{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:12px;
+padding:18px;
+box-shadow:0 2px 5px rgba(0,0,0,0.08);
+}
+.sim-list{
+list-style:none;
+padding:0;
+margin:0;
+}
+.sim-list li{
+margin:8px 0;
+}
+.sim-list a{
+display:block;
+padding:4px 6px;
+border-radius:6px;
+color:#222;
+text-decoration:none;
+transition:all 0.2s ease;
+}
+.sim-list a:hover{
+background:#edf5ff;
+color:var(--accent);
+}
+.hidden{
+display:none;
+}
+.no-results{
+display:none;
+margin-top:20px;
+color:#666;
+font-style:italic;
+}
+</style></head>
+<body>
+<header>
+<h1>Physics Simulations</h1>
+<div class="stats">
+Active SIMs:
+<strong id="totalSimCount">0</strong></div>
+<input
+type="text"
+id="searchBox"
+placeholder="Search simulations...">
+</header>
 <hr>These SIMS are inspired by the amazing work of many giants. <a href=giants.html target=_giants>Click here</a> to visit their great Work. To know a little more about me, click <a href=chatGPT-TahaMzoughi600x900.png>here</a> to see what ChatGPT "thought" in September 2026.
-	<hr>
-    <h1>Physics Simulations</h1>
-    <p>Select a simulation from the list below.</p>
-    <ul>
-    <li><a href=https://mzoughi.github.io/STSIMS/ target=stsims>Student SIMS</a></li>
-    <li><a href=https://alo.academy/html5/ target=stsims>Older SIMS</a></li>
-	</ul>
-    <h2>Measurements</h2>
-    <ul>
-		<!--li><a href=Mzoughi-Yenerall-PHSC-08-2026.pptx>Mzoughi-Yenerall-PHSC-08-2026.pptx</a></li-->
-     <li><a href=tbb/ target=sim1>Triple Beam Balance</a></li>
-    <li><a href=resistor-color-code-calculator.html target=_R1>Resistor Color Code Calculator</a></li>
-    <li><a href=Video-Analysis.html target=sim2>Video Analysis</a></li>
-	</ul>
-    <h2>Kinematics</h2>
-     <ul>
-    <li><a href=k-movingcart.htm target=sim3>Graphing Manual Motion</a></li>
-    <li><a href=2DMotion_Position.html target=pmsim1>Projectile Motion - Position Vector</a></li>
-    <li><a href=2DMotion_Velocity.html target=pmsim2>Projectile Motion - Velocity Vector</a></li>
-    <li><a href=2DMotion_Acceleration.html target=pmsim3>Projectile Motion - Acceleration Vector</a></li>
-    <li><a href=relative-motion-boat_river.html target=pmsim3>Relative Motion - Boat on a River</a></li>
-    <li><a href=relative-motion-drone_wind.html target=pmsim3>Relative Motion - The Wind and the Drone</a></li>
-    <li><a href=BallDroppedFromTruck.html target=pmsim3>Projectile Motion & Relative Motion - Ball Dropped From Moving Truck</a></li>
-	 <li><a href=Video-Analysis-GalileoDrop.html target=sim3>Video Analysis - Galileo Drop</a></li>
-	 </ul>
-    <h2>Circuits</h2>
-     <ul>
-    <li><a href=equrestut01.htm target=equrestut01>Equivalent Resitance Tutorial</a></li>
-    <li><a href=Kirchhofftut01.htm target=equrestut01>Kirchhoff's Rule Tutorial 1</a></li>
-    <li><a href=Kirchhofftut02.htm target=equrestut02>Kirchhoff's Rule Tutorial 2</a></li>
-    <li><a href=Kirchhofftut03.htm target=equrestut03>Kirchhoff's Rule Tutorial 3</a></li>
-    <li><a href=rccircuit.htm target=rccircuit>RC Circuit with phasor diagram and oscilloscope</a></li>
-    <li><a href=rlcircuit.htm target=rlcircuit>RL Circuit with phasor diagram and oscilloscope</a></li>
-	 </ul>
-    <h2>Geometrical Optics</h2>
-    <ul>
-       <li><a href=clens.htm target=sim1>Lenses</a></li>
-       <li><a href=lensblock.htm target=sim2>Blocked Lenses</a></li>
-       <li><a href=dclenses.htm target=sim3>Two Lens System</a></li>
-	</ul>
-    <h2>Waves</h2>
-     <ul>
-    <li><a href=waves-ripple_tank.html target=wd1>Waves: Ripple Tank</a></li>
-    <li><a href=waves-doppler_effect.html target=wd1>Waves: The Doppler Effect</a></li>
-    <li><a href=waves-doppler_effect2.html target=wd2>Waves: The Doppler Effect 2</a></li>
-     <li><a href=waves-waves-shock_waves.html target=wd1>Waves: Shock Waves</a></li>
-   <li><a href=swaircolumn.htm target=sim3>Standing Waves Air Colunm</a></li>
-    <li><a href=swflute.htm target=sim3>Standing Waves Flute</a></li>
-    <li><a href=swclarinet.htm target=sim3>Standing Waves Clarinet</a></li>
-	 </ul>
-	   <hr>For Now, The Following Lines are just place holders.<hr>
-	   <hr>
-    <ol>
-<li><a href=gopt.htm target=sim1>PLab - Atwood Machine With Two Pulleys - Energy-Friction-Kinematics</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Ballistic Pendulum with no catch mode for projectile motion</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Ballistic Pendulum</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Concave Mirror equation</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Conservation of Energy Rolling Race - Ring/Hoop</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Conservation of Energy Rolling Race - Sliding</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Conservation of Energy Rolling Race - Solid Disk</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Conservation of Energy Rolling Race - Spherical Shell</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Conservation of Energy Rolling Race -Solid Sphere</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Convergent 1 3D Object animation canvas JavaScript </a></li>
-<li><a href=gopt.htm target=sim1>PLab - Convergent 1 multi-light sources animation canvas JavaScript </a></li>
-<li><a href=gopt.htm target=sim1>PLab - Convergent 1/1 animation canvas JavaScript </a></li>
-<li><a href=gopt.htm target=sim1>PLab - Convergent 1/2 animation canvas JavaScript </a></li>
-<li><a href=gopt.htm target=sim1>PLab - Convergent 1/3 animation canvas JavaScript </a></li>
-<li><a href=gopt.htm target=sim1>PLab - Convergent 1/4 animation canvas JavaScript </a></li>
-<li><a href=gopt.htm target=sim1>PLab - Convex Mirror equation</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Digital Scale Readings Without Controls</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Divergent 1 animation JavaScript Canvas </a></li>
-<li><a href=gopt.htm target=sim1>PLab - Double Convergent Lenses 1 Animation JavaScript Canvas</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Elastic Collision 1</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Electrical Generator</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Electrical Motor</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Equilibrium-Torques lever 01</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Equipotential and Field Lines</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Equivalent Resistance tutorial 2</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Equivalent Resistance tutorial</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Equivalent Resistance tutorial 3</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Friction 01</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Geometrical Optics 1 - Snell's Law: Half Disk Refractions</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Geometrical Optics 1 - Snell's Law: Inverted Half Disk Refractions</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Geometrical Optics 1 - Snell's Law: Refractions and Reflections - infinite slab with polarization</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Geometrical Optics 2 - Prism</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Geometrical Optics 2 - Rectangular Slab</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Geometrical Optics 2 - Snell's Law - Reflection/Refraction - 3 Media</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Geometrical Optics 2 - Trapezoid Slab</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Geometrical Optics 4</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Gratings Lab - Multiple Slits - Dispersion</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Gratings Lab - Multiple Slits 1</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Gratings Lab - Multiple Slits 2</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Gratings Lab - Multiple Slits</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Impulse 3</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Induction -1- Flipping the Magnet/Coil</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Induction -2- Height/Magnet Speed</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Induction -3- Changing Number of Turns</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Induction -4- Changing Magnet Strength</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Inelastic Collision 2</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Interference slider with a ruler</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Investigating Ohms Law for carbon resistor and lamp</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Investigating Ohms Law for various devices</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Investigating lamp in a Calorimeter
-<li><a href=gopt.htm target=sim1>PLab - Lenses Lab - Convergent 1 3D Object animation canvas JavaScript</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Lenses Lab - Convergent 1 animation canvas javascript</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Lenses Lab - Convergent 1 multi-light sources animation canvas JavaScript</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Lenses Lab - Convergent 1 with Block animation canvas javascript</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Lenses Lab - Convergent 1/1 animation canvas JavaScript</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Lenses Lab - Convergent 1/2 animation canvas JavaScript</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Lenses Lab - Convergent 1/3 animation canvas JavaScript</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Lenses Lab - Convergent 1/4 animation canvas JavaScript</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Lenses Lab - Divergent 1 animation JavaScript Canvas</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Lenses Lab - Double Convergent Lenses 1 Animation JavaScript Canvas</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Lenses Lab - Double Lenses 2 Divergent-Convergent animation JavaScript Canvas</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Light Interference Lab - Goals - 5		1354427		essay	6.8</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Light Interference Lab - Single Slit - 1 -</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Light Interference Lab - double Slits or Sources - 3 -</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Light Interference Lab - double Slits or single slit - 2 -</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Light Interference Lab - multiple Slits - 4 -</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Measure resistance dependence of metals</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Prelimenaries - Geometrical Optics 1 - Snell's Law: Refractions and Reflections - infinite slab</a></li>
-<li><a href=gopt.htm target=sim1>PLab - RC Circuit 1</a></li>
-<li><a href=gopt.htm target=sim1>PLab - RC Circuit 3</a></li>
-<li><a href=gopt.htm target=sim1>PLab - RC Circuit Charge Discharge 2</a></li>
-<li><a href=gopt.htm target=sim1>PLab - RC Circuit with just a voltmeter & parallel resistor</a></li>
-<li><a href=gopt.htm target=sim1>PLab - RC Circuit with just a voltmeter</a></li>
-<li><a href=gopt.htm target=sim1>PLab - RC Circuit with voltage divider</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Reading Graduated Cylinder - meniscus</a></li>
-<li><a href=gopt.htm target=sim1>PLab - SHM - Damped Pendulum 4 JavaScript Animation Canvas</a></li>
-<li><a href=gopt.htm target=sim1>PLab - SHM - Horizontal Spring 1</a></li>
-<li><a href=gopt.htm target=sim1>PLab - SHM - Pendulum 3 JavaScript Animation Canvas</a></li>
-<li><a href=gopt.htm target=sim1>PLab - SHM - Vertical Spring</a></li>
-<li><a href=gopt.htm target=sim1>PLab - SHM - fitting data on Damped Pendulum 4 JavaScript Animation Canvas</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Standing Waves - 1 - wave superposition</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Standing Waves - 3 - Wave Reflections - 2 wavelengths</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Standing Waves - 4 - Wave Reflections - 1/2 wavelength</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Standing Waves - 5 - rod</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Standing Waves - 6 - string/rope</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Standing Waves - 7 - air column</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Standing Waves - 8 - flute</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Standing Waves - 9 - clarinet</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Standing Waves - Wave Reflections - 2</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Static Friction with Incline</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Static Friction with horizontal track and hanging mass</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Triple Beam Balance - adding a container</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Triple Beam Balance All Features</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Triple Beam Balance Large Masses</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Triple Beam Balance</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Uncertainty in Calculating the Permittivity in Capacitor Experiment</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Use ruler to measure area of circle</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Use ruler to measure area of rectangle</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Using Meters in a Two loops and two supplies circuit - Kirchhoff's rules</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Using Meters in a Two series resistors circuit</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Using Meters in a three resistors circuit with two of them in parallel</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Using a multimeter Capacitance</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Using a multimeter to measure capacitance dependance</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Using a multimeter to measure components in an RC circuit</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Using a multimeter</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Using an ohmmeter to measure resistance dependence</a></li>
-<li><a href=gopt.htm target=sim1>PLab - VVC Math 132 - volume of cylinder</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Video Tracking of 2d motion</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Video Tracking of of rolling down an incline</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Video Tracking of of rolling up and down an incline Lab</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Video Tracking of of rolling up and down an incline</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Work-Energy Hooke's Law 2</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Work-Energy of a spring and cart on a horizontal track 3</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Work-Energy of a spring and cart on an incline 4</a></li>
-<li><a href=gopt.htm target=sim1>PLab - Work-Energy of a tossed ball 1</a></li>
-<li><a href=gopt.htm target=sim1>PLab - kinematics - Moving Block by hand to replicate graph</a></li>
-<li><a href=gopt.htm target=sim1>PLab - kinematics - Moving Block by hand</a></li>
-<li><a href=gopt.htm target=sim1>PLab - kinematics - collecting data to determine Position and acceleration graphs</a></li>
-<li><a href=gopt.htm target=sim1>PLab - kinematics - collecting data to determine Position and velocity graphs</a></li>
-<li><a href=gopt.htm target=sim1>PLab - kinematics - collecting data to determine velocity and acceleration graphs</a></li>
-<li><a href=gopt.htm target=sim1>PLab - lensmaker equation </a></li>
-<li><a href=gopt.htm target=sim1>PLab - lensmaker equation Concave Lens</a></li>
-<li><a href=gopt.htm target=sim1>PLab - lensmaker equation Convex Lens</a></li>
-<li><a href=gopt.htm target=sim1>PLab - lensmaker equation</a></li>
-<li><a href=gopt.htm target=sim1>PLab - uncertainty - Ruler reading - one end</a></li>
-<li><a href=gopt.htm target=sim1>PLab - uncertainty - Ruler reading - two ends</a></li>
-<li><a href=gopt.htm target=sim1>PLab - uncertainty - Vernier Micrometer</a></li>
-<li><a href=gopt.htm target=sim1>PLab - uncertainty - area of a rectangle</a></li>
-<li><a href=gopt.htm target=sim1>PLab - uncertainty - area of a small rectangle</a></li>
-<li><a href=gopt.htm target=sim1>PLab - uncertainty - density of a cylinder</a></li>
-<li><a href=gopt.htm target=sim1>PLab - uncertainty - digital scale reading</a></li>
-<li><a href=gopt.htm target=sim1>PLab - uncertainty - graduated cylinder reading</a></li>
-<li><a href=gopt.htm target=sim1>PLab - uncertainty - micrometer</a></li>
-<li><a href=gopt.htm target=sim1>PLab - uncertainty - vernier caliper</a></li>
-<li><a href=gopt.htm target=sim1>PLab - uncertainty - vernier caliper V2</a></li>
-<li><a href=gopt.htm target=sim1>PLab - van de graff generator VDG</a></li>
-</ol>
-</body>
-</html>
+<hr>
+<div class="grid">
+<!-- Measurements -->
+<section class="category">
+<div class="category-title">
+<h2>Measurements</h2>
+<span class="category-count">0</span></div>
+<ul class="sim-list">
+<li><a href=tbb/ target=sim1>Triple Beam Balance</a></li>
+<li><a href=resistor-color-code-calculator.html target=_R1>Resistor Color Code Calculator</a></li>
+<li><a href=Video-Analysis.html target=sim2>Video Analysis</a></li></ul></section>
+<!-- Kinematics -->
+<section class="category">
+<div class="category-title">
+<h2>Kinematics</h2>
+<span class="category-count">0</span></div>
+<ul class="sim-list">
+<li><a href=k-movingcart.htm target=sim3>Graphing Manual Motion</a></li>
+<li><a href=2DMotion_Position.html target=pmsim1>Projectile Motion - Position Vector</a></li>
+<li><a href=2DMotion_Velocity.html target=pmsim2>Projectile Motion - Velocity Vector</a></li>
+<li><a href=2DMotion_Acceleration.html target=pmsim3>Projectile Motion - Acceleration Vector</a></li>
+<li><a href=relative-motion-boat_river.html target=pmsim3>Relative Motion - Boat on a River</a></li>
+<li><a href=relative-motion-drone_wind.html target=pmsim3>Relative Motion - The Wind and the Drone</a></li>
+<li><a href=BallDroppedFromTruck.html target=pmsim3>Projectile Motion & Relative Motion - Ball Dropped From Moving Truck</a></li>
+ <li><a href=Video-Analysis-GalileoDrop.html target=sim3>Video Analysis - Galileo Drop</a></li></ul></section>
+<!-- Circuits -->
+<section class="category">
+<div class="category-title">
+<h2>Circuits</h2>
+<span class="category-count">0</span></div>
+<ul class="sim-list">
+<li><a href=equrestut01.htm target=equrestut01>Equivalent Resitance Tutorial</a></li>
+<li><a href=Kirchhofftut01.htm target=equrestut01>Kirchhoff's Rule Tutorial 1</a></li>
+<li><a href=Kirchhofftut02.htm target=equrestut02>Kirchhoff's Rule Tutorial 2</a></li>
+<li><a href=Kirchhofftut03.htm target=equrestut03>Kirchhoff's Rule Tutorial 3</a></li>
+<li><a href=rccircuit.htm target=rccircuit>RC Circuit with phasor diagram and oscilloscope</a></li>
+<li><a href=rlcircuit.htm target=rlcircuit>RL Circuit with phasor diagram and oscilloscope</a></li></ul>
+</section>
+<!-- >Geometrical Optics -->
+<section class="category">
+<div class="category-title">
+<h2>Geometrical Optics</h2>
+<span class="category-count">0</span></div>
+<ul class="sim-list">
+<li><a href=clens.htm target=sim1>Lenses</a></li>
+<li><a href=lensblock.htm target=sim2>Blocked Lenses</a></li>
+<li><a href=dclenses.htm target=sim3>Two Lens System</a></li></ul></section>
+<!-- >Waves -->
+<section class="category">
+<div class="category-title">
+<h2>Waves</h2>
+<span class="category-count">0</span></div>
+<ul class="sim-list">
+<li><a href=waves-ripple_tank.html target=wd1>Waves: Ripple Tank</a></li>
+<li><a href=waves-doppler_effect.html target=wd1>Waves: The Doppler Effect</a></li>
+<li><a href=waves-doppler_effect2.html target=wd2>Waves: The Doppler Effect 2</a></li>
+ <li><a href=waves-waves-shock_waves.html target=wd1>Waves: Shock Waves</a></li>
+<li><a href=swaircolumn.htm target=sim3>Standing Waves Air Colunm</a></li>
+<li><a href=swflute.htm target=sim3>Standing Waves Flute</a></li>
+<li><a href=swclarinet.htm target=sim3>Standing Waves Clarinet</a></li></ul></section>
+<!-- Others -->
+<section class="category">
+<div class="category-title">
+<h2>Other Simulations</h2>
+<span class="category-count">0</span></div>
+<ul class="sim-list">
+<li><a href=https://mzoughi.github.io/STSIMS/ target=stsims>Student SIMS</a></li>
+<li><a href=https://alo.academy/html5/ target=stsims>Older SIMS</a></li></ul></section>
+<!-- Others -->
+<section class="ncategory">
+<div class="category-title">
+<h2>Upcoming Simulations</h2>
+<span class="category-count">0</span></div>
+<ul class="sim-list">
+<p>These are placeholders for SIMs in MOM that need to be moved here.</a>
+ <li>PLab - Atwood Machine With Two Pulleys - Energy-Friction-Kinematics</li>
+<li>PLab - Ballistic Pendulum with no catch mode for projectile motion</li>
+<li>PLab - Ballistic Pendulum</li>
+<li>PLab - Concave Mirror equation</li>
+<li>PLab - Conservation of Energy Rolling Race - Ring/Hoop</li>
+<li>PLab - Conservation of Energy Rolling Race - Sliding</li>
+<li>PLab - Conservation of Energy Rolling Race - Solid Disk</li>
+<li>PLab - Conservation of Energy Rolling Race - Spherical Shell</li>
+<li>PLab - Conservation of Energy Rolling Race -Solid Sphere</li>
+<li>PLab - Convergent 1 3D Object animation canvas JavaScript </li>
+<li>PLab - Convergent 1 multi-light sources animation canvas JavaScript </li>
+<li>PLab - Convergent 1/1 animation canvas JavaScript </li>
+<li>PLab - Convergent 1/2 animation canvas JavaScript </li>
+<li>PLab - Convergent 1/3 animation canvas JavaScript </li>
+<li>PLab - Convergent 1/4 animation canvas JavaScript </li>
+<li>PLab - Convex Mirror equation</li>
+<li>PLab - Digital Scale Readings Without Controls</li>
+<li>PLab - Divergent 1 animation JavaScript Canvas </li>
+<li>PLab - Double Convergent Lenses 1 Animation JavaScript Canvas</li>
+<li>PLab - Elastic Collision 1</li>
+<li>PLab - Electrical Generator</li>
+<li>PLab - Electrical Motor</li>
+<li>PLab - Equilibrium-Torques lever 01</li>
+<li>PLab - Equipotential and Field Lines</li>
+<li>PLab - Equivalent Resistance tutorial 2</li>
+<li>PLab - Equivalent Resistance tutorial</li>
+<li>PLab - Equivalent Resistance tutorial 3</li>
+<li>PLab - Friction 01</li>
+<li>PLab - Geometrical Optics 1 - Snell's Law: Half Disk Refractions</li>
+<li>PLab - Geometrical Optics 1 - Snell's Law: Inverted Half Disk Refractions</li>
+<li>PLab - Geometrical Optics 1 - Snell's Law: Refractions and Reflections - infinite slab with polarization</li>
+<li>PLab - Geometrical Optics 2 - Prism</li>
+<li>PLab - Geometrical Optics 2 - Rectangular Slab</li>
+<li>PLab - Geometrical Optics 2 - Snell's Law - Reflection/Refraction - 3 Media</li>
+<li>PLab - Geometrical Optics 2 - Trapezoid Slab</li>
+<li>PLab - Geometrical Optics 4</li>
+<li>PLab - Gratings Lab - Multiple Slits - Dispersion</li>
+<li>PLab - Gratings Lab - Multiple Slits 1</li>
+<li>PLab - Gratings Lab - Multiple Slits 2</li>
+<li>PLab - Gratings Lab - Multiple Slits</li>
+<li>PLab - Impulse 3</li>
+<li>PLab - Induction -1- Flipping the Magnet/Coil</li>
+<li>PLab - Induction -2- Height/Magnet Speed</li>
+<li>PLab - Induction -3- Changing Number of Turns</li>
+<li>PLab - Induction -4- Changing Magnet Strength</li>
+<li>PLab - Inelastic Collision 2</li>
+<li>PLab - Interference slider with a ruler</li>
+<li>PLab - Investigating Ohms Law for carbon resistor and lamp</li>
+<li>PLab - Investigating Ohms Law for various devices</li>
+<li>PLab - Investigating lamp in a Calorimeter
+<li>PLab - Lenses Lab - Convergent 1 3D Object animation canvas JavaScript</li>
+<li>PLab - Lenses Lab - Convergent 1 animation canvas javascript</li>
+<li>PLab - Lenses Lab - Convergent 1 multi-light sources animation canvas JavaScript</li>
+<li>PLab - Lenses Lab - Convergent 1 with Block animation canvas javascript</li>
+<li>PLab - Lenses Lab - Convergent 1/1 animation canvas JavaScript</li>
+<li>PLab - Lenses Lab - Convergent 1/2 animation canvas JavaScript</li>
+<li>PLab - Lenses Lab - Convergent 1/3 animation canvas JavaScript</li>
+<li>PLab - Lenses Lab - Convergent 1/4 animation canvas JavaScript</li>
+<li>PLab - Lenses Lab - Divergent 1 animation JavaScript Canvas</li>
+<li>PLab - Lenses Lab - Double Convergent Lenses 1 Animation JavaScript Canvas</li>
+<li>PLab - Lenses Lab - Double Lenses 2 Divergent-Convergent animation JavaScript Canvas</li>
+<li>PLab - Light Interference Lab - Goals - 5		1354427		essay	6.8</li>
+<li>PLab - Light Interference Lab - Single Slit - 1 -</li>
+<li>PLab - Light Interference Lab - double Slits or Sources - 3 -</li>
+<li>PLab - Light Interference Lab - double Slits or single slit - 2 -</li>
+<li>PLab - Light Interference Lab - multiple Slits - 4 -</li>
+<li>PLab - Measure resistance dependence of metals</li>
+<li>PLab - Prelimenaries - Geometrical Optics 1 - Snell's Law: Refractions and Reflections - infinite slab</li>
+<li>PLab - RC Circuit 1</li>
+<li>PLab - RC Circuit 3</li>
+<li>PLab - RC Circuit Charge Discharge 2</li>
+<li>PLab - RC Circuit with just a voltmeter & parallel resistor</li>
+<li>PLab - RC Circuit with just a voltmeter</li>
+<li>PLab - RC Circuit with voltage divider</li>
+<li>PLab - Reading Graduated Cylinder - meniscus</li>
+<li>PLab - SHM - Damped Pendulum 4 JavaScript Animation Canvas</li>
+<li>PLab - SHM - Horizontal Spring 1</li>
+<li>PLab - SHM - Pendulum 3 JavaScript Animation Canvas</li>
+<li>PLab - SHM - Vertical Spring</li>
+<li>PLab - SHM - fitting data on Damped Pendulum 4 JavaScript Animation Canvas</li>
+<li>PLab - Standing Waves - 1 - wave superposition</li>
+<li>PLab - Standing Waves - 3 - Wave Reflections - 2 wavelengths</li>
+<li>PLab - Standing Waves - 4 - Wave Reflections - 1/2 wavelength</li>
+<li>PLab - Standing Waves - 5 - rod</li>
+<li>PLab - Standing Waves - 6 - string/rope</li>
+<li>PLab - Standing Waves - 7 - air column</li>
+<li>PLab - Standing Waves - 8 - flute</li>
+<li>PLab - Standing Waves - 9 - clarinet</li>
+<li>PLab - Standing Waves - Wave Reflections - 2</li>
+<li>PLab - Static Friction with Incline</li>
+<li>PLab - Static Friction with horizontal track and hanging mass</li>
+<li>PLab - Triple Beam Balance - adding a container</li>
+<li>PLab - Triple Beam Balance All Features</li>
+<li>PLab - Triple Beam Balance Large Masses</li>
+<li>PLab - Triple Beam Balance</li>
+<li>PLab - Uncertainty in Calculating the Permittivity in Capacitor Experiment</li>
+<li>PLab - Use ruler to measure area of circle</li>
+<li>PLab - Use ruler to measure area of rectangle</li>
+<li>PLab - Using Meters in a Two loops and two supplies circuit - Kirchhoff's rules</li>
+<li>PLab - Using Meters in a Two series resistors circuit</li>
+<li>PLab - Using Meters in a three resistors circuit with two of them in parallel</li>
+<li>PLab - Using a multimeter Capacitance</li>
+<li>PLab - Using a multimeter to measure capacitance dependance</li>
+<li>PLab - Using a multimeter to measure components in an RC circuit</li>
+<li>PLab - Using a multimeter</li>
+<li>PLab - Using an ohmmeter to measure resistance dependence</li>
+<li>PLab - VVC Math 132 - volume of cylinder</li>
+<li>PLab - Video Tracking of 2d motion</li>
+<li>PLab - Video Tracking of of rolling down an incline</li>
+<li>PLab - Video Tracking of of rolling up and down an incline Lab</li>
+<li>PLab - Video Tracking of of rolling up and down an incline</li>
+<li>PLab - Work-Energy Hooke's Law 2</li>
+<li>PLab - Work-Energy of a spring and cart on a horizontal track 3</li>
+<li>PLab - Work-Energy of a spring and cart on an incline 4</li>
+<li>PLab - Work-Energy of a tossed ball 1</li>
+<li>PLab - kinematics - Moving Block by hand to replicate graph</li>
+<li>PLab - kinematics - Moving Block by hand</li>
+<li>PLab - kinematics - collecting data to determine Position and acceleration graphs</li>
+<li>PLab - kinematics - collecting data to determine Position and velocity graphs</li>
+<li>PLab - kinematics - collecting data to determine velocity and acceleration graphs</li>
+<li>PLab - lensmaker equation </li>
+<li>PLab - lensmaker equation Concave Lens</li>
+<li>PLab - lensmaker equation Convex Lens</li>
+<li>PLab - lensmaker equation</li>
+<li>PLab - uncertainty - Ruler reading - one end</li>
+<li>PLab - uncertainty - Ruler reading - two ends</li>
+<li>PLab - uncertainty - Vernier Micrometer</li>
+<li>PLab - uncertainty - area of a rectangle</li>
+<li>PLab - uncertainty - area of a small rectangle</li>
+<li>PLab - uncertainty - density of a cylinder</li>
+<li>PLab - uncertainty - digital scale reading</li>
+<li>PLab - uncertainty - graduated cylinder reading</li>
+<li>PLab - uncertainty - micrometer</li>
+<li>PLab - uncertainty - vernier caliper</li>
+<li>PLab - uncertainty - vernier caliper V2</li>
+<li>PLab - van de graff generator VDG</li></ul></section></div>
+<div id="noResults" class="no-results">
+No simulations match your search.</div>
+<script>
+function updateNCounts(){
+let total = 0;
+document.querySelectorAll('.ncategory').forEach(category=>{
+let visibleLinks2 =
+category.querySelectorAll('li:not(.hidden)').length;
+category.querySelector('.category-count').textContent =
+visibleLinks2;
+//total += visibleLinks;
+category.style.display =
+visibleLinks ? '' : 'none';
+});
+//document.getElementById('totalSimCount').textContent =
+total;
+}
+function updateCounts(){
+let total = 0;
+document.querySelectorAll('.category').forEach(category=>{
+let visibleLinks =
+category.querySelectorAll('li:not(.hidden)').length;
+category.querySelector('.category-count').textContent =
+visibleLinks;
+total += visibleLinks;
+category.style.display =
+visibleLinks ? '' : 'none';
+});
+document.getElementById('totalSimCount').textContent =
+total;
+}
+updateCounts();
+document.getElementById('searchBox')
+.addEventListener('input', function(){
+let search =
+this.value.trim().toLowerCase();
+document.querySelectorAll('.sim-list li')
+.forEach(item=>{
+let text =
+item.textContent.toLowerCase();
+item.classList.toggle(
+'hidden',
+!text.includes(search)
+);
+});
+updateCounts();
+document.getElementById('noResults').style.display =
+document.getElementById('totalSimCount').textContent == 0
+? 'block'
+: 'none';
+});
+</script>
+</body></html>
