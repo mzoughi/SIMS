@@ -336,53 +336,52 @@ placeholder="Search simulations...">
 <div id="noResults" class="no-results">
 No simulations match your search.</div>
 <script>
-function updateNCounts(){
-let total = 0;
-document.querySelectorAll('.ncategory').forEach(category=>{
-let visibleLinks2 =
-category.querySelectorAll('li:not(.hidden)').length;
-category.querySelector('.category-count').textContent =
-visibleLinks2;
-//total += visibleLinks;
-category.style.display =
-visibleLinks ? '' : 'none';
-});
-//document.getElementById('totalSimCount').textContent =
-total;
-}
 function updateCounts(){
-let total = 0;
-document.querySelectorAll('.category').forEach(category=>{
-let visibleLinks =
-category.querySelectorAll('li:not(.hidden)').length;
-category.querySelector('.category-count').textContent =
-visibleLinks;
-total += visibleLinks;
-category.style.display =
-visibleLinks ? '' : 'none';
-});
-document.getElementById('totalSimCount').textContent =
-total;
+  let total = 0;
+  document.querySelectorAll('.category').forEach(category=>{
+    let visibleLinks =
+      category.querySelectorAll('li:not(.hidden)').length;
+    category.querySelector('.category-count').textContent =
+      visibleLinks;
+    total += visibleLinks;
+    category.style.display =
+      visibleLinks ? '' : 'none';
+  });
+  document.getElementById('totalSimCount').textContent =
+    total;
+}
+function updateNCounts(){
+  document.querySelectorAll('.ncategory').forEach(category=>{
+    let visibleLinks2 =
+      category.querySelectorAll('li:not(.hidden)').length;
+    category.querySelector('.category-count').textContent =
+      visibleLinks2;
+    category.style.display =
+      visibleLinks2 ? '' : 'none';
+  });
+  // intentionally not added to totalSimCount
 }
 updateCounts();
+updateNCounts();
 document.getElementById('searchBox')
-.addEventListener('input', function(){
-let search =
-this.value.trim().toLowerCase();
-document.querySelectorAll('.sim-list li')
-.forEach(item=>{
-let text =
-item.textContent.toLowerCase();
-item.classList.toggle(
-'hidden',
-!text.includes(search)
-);
-});
-updateCounts();
-document.getElementById('noResults').style.display =
-document.getElementById('totalSimCount').textContent == 0
-? 'block'
-: 'none';
-});
+  .addEventListener('input', function(){
+    let search =
+      this.value.trim().toLowerCase();
+    document.querySelectorAll('.sim-list li')
+      .forEach(item=>{
+        let text =
+          item.textContent.toLowerCase();
+        item.classList.toggle(
+          'hidden',
+          !text.includes(search)
+        );
+      });
+    updateCounts();
+    updateNCounts();
+    document.getElementById('noResults').style.display =
+      document.getElementById('totalSimCount').textContent == 0
+        ? 'block'
+        : 'none';
+  });
 </script>
 </body></html>
