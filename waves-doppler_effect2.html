@@ -10,51 +10,53 @@
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations - Projectile Motion - Position Vector</title>
-</head>
+<title>Physics Simulations - Doppler Effect</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,waves, Doppler,Effect, lesson, scientific">
+<link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
-<div id="dop2Root$thisq">
+<div id="dop2Root0914">
 <!-- ── Accessibility toolbar ── -->
-<div class="dop2_a11y$thisq" id="dop2A11yBar$thisq" role="toolbar" aria-label="Display options">
-<button type="button" class="dop2_a11ybtn$thisq" id="dop2BtnHC$thisq" onclick="dop2A11y$thisq.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="dop2_a11ybtn$thisq" id="dop2BtnLM$thisq" onclick="dop2A11y$thisq.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
-<button type="button" class="dop2_a11ybtn$thisq" id="dop2BtnCB$thisq" onclick="dop2A11y$thisq.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
-<button type="button" class="dop2_a11ybtn$thisq dop2_a11yon$thisq" id="dop2BtnNR$thisq" onclick="dop2A11y$thisq.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+<div class="dop2_a11y0914" id="dop2A11yBar0914" role="toolbar" aria-label="Display options">
+<button type="button" class="dop2_a11ybtn0914" id="dop2BtnHC0914" onclick="dop2A11y0914.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="dop2_a11ybtn0914" id="dop2BtnLM0914" onclick="dop2A11y0914.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="dop2_a11ybtn0914" id="dop2BtnCB0914" onclick="dop2A11y0914.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="dop2_a11ybtn0914 dop2_a11yon0914" id="dop2BtnNR0914" onclick="dop2A11y0914.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
 </div>
-<div class="tbar$thisq"><h3>The Doppler Effect &mdash; Pass-By</h3></div>
-<div class="mcontent$thisq">
-<canvas id="dop2Canvas$thisq" style="margin:auto;display:block;border:1px solid #ccc" width="640" height="320"></canvas>
+<div class="tbar0914"><h3>The Doppler Effect &mdash; Pass-By</h3></div>
+<div class="mcontent0914">
+<canvas id="dop2Canvas0914" style="margin:auto;display:block;border:1px solid #ccc" width="640" height="320"></canvas>
 </div>
-<div id="dop2NarBar$thisq" class="dop2_narbar$thisq" role="status" aria-live="polite" aria-atomic="true"></div>
-<div class="bbar$thisq">
-<input type="button" id="dop2Play$thisq" value="Play"
-onclick="if(this.value=='Play'){dop2Sim$thisq.pl();this.value='Pause';}else{this.value='Play';dop2Sim$thisq.ps();}">
-<input type="button" value="Step Back" onclick="document.getElementById('dop2Play$thisq').value='Play';dop2Sim$thisq.stepBack();">
-<input type="button" value="Step" onclick="document.getElementById('dop2Play$thisq').value='Play';dop2Sim$thisq.step();">
-<input type="button" value="Restart" onclick="document.getElementById('dop2Play$thisq').value='Play';dop2Sim$thisq.rst();">
+<div id="dop2NarBar0914" class="dop2_narbar0914" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="bbar0914">
+<input type="button" id="dop2Play0914" value="Play"
+onclick="if(this.value=='Play'){dop2Sim0914.pl();this.value='Pause';}else{this.value='Play';dop2Sim0914.ps();}">
+<input type="button" value="Step Back" onclick="document.getElementById('dop2Play0914').value='Play';dop2Sim0914.stepBack();">
+<input type="button" value="Step" onclick="document.getElementById('dop2Play0914').value='Play';dop2Sim0914.step();">
+<input type="button" value="Restart" onclick="document.getElementById('dop2Play0914').value='Play';dop2Sim0914.rst();">
 </div>
-<div class="footer$thisq">
-<div class="dop2_ctrlrow$thisq">
-<div class="dop2_ctrlcol$thisq">
-<div class="dop2_ctrltitle$thisq">Speed</div>
-V = <input type="range" id="dop2Vs$thisq" min="0" max="0.9" value="0.5" step="0.05"
-oninput="document.getElementById('dop2VsVal$thisq').textContent=this.value" onchange="dop2Sim$thisq.rst()">
-<span id="dop2VsVal$thisq">0.5</span> v<sub>w</sub>
+<div class="footer0914">
+<div class="dop2_ctrlrow0914">
+<div class="dop2_ctrlcol0914">
+<div class="dop2_ctrltitle0914">Speed</div>
+V = <input type="range" id="dop2Vs0914" min="0" max="0.9" value="0.5" step="0.05"
+oninput="document.getElementById('dop2VsVal0914').textContent=this.value" onchange="dop2Sim0914.rst()">
+<span id="dop2VsVal0914">0.5</span> v<sub>w</sub>
 </div>
-<div class="dop2_ctrlcol$thisq">
-<label><input type="checkbox" id="dop2Mover$thisq" onclick="dop2Sim$thisq.toggleMover()"> Let the cyclist move instead of the ambulance</label>
+<div class="dop2_ctrlcol0914">
+<label><input type="checkbox" id="dop2Mover0914" onclick="dop2Sim0914.toggleMover()"> Let the cyclist move instead of the ambulance</label>
 </div>
 </div>
-<div class="dop2_sndrow$thisq">
-<label><input type="checkbox" id="dop2SoundS$thisq" onclick="dop2Sim$thisq.toggleSourceSound()"> Hear the source sound</label>
-<label><input type="checkbox" id="dop2Sound$thisq" onclick="dop2Sim$thisq.toggleObserverSound()"> Hear what the observer hears</label>
+<div class="dop2_sndrow0914">
+<label><input type="checkbox" id="dop2SoundS0914" onclick="dop2Sim0914.toggleSourceSound()"> Hear the source sound</label>
+<label><input type="checkbox" id="dop2Sound0914" onclick="dop2Sim0914.toggleObserverSound()"> Hear what the observer hears</label>
 </div>
 </div>
 </div>
 <style>
 * { margin: 0; box-sizing: border-box; }
 div { width: 646px; margin: 0; }
-#dop2Root$thisq {
+#dop2Root0914 {
 --dop2-sky:      #00ffff;
 --dop2-ground:   #c0c0c0;
 --dop2-sun:      #ffd000;
@@ -67,37 +69,37 @@ div { width: 646px; margin: 0; }
 --dop2-databox-border: #ff0000;
 --dop2-toolbar-bg: #222;
 }
-#dop2Root$thisq .dop2_a11y$thisq {
+#dop2Root0914 .dop2_a11y0914 {
 display:flex; gap:6px; padding:6px 8px;
 background:var(--dop2-toolbar-bg); flex-wrap:wrap; width:646px;
 }
-#dop2Root$thisq .dop2_a11ybtn$thisq {
+#dop2Root0914 .dop2_a11ybtn0914 {
 padding:4px 10px; font-size:.72rem; font-family:monospace;
 letter-spacing:.06em; border-radius:3px; cursor:pointer;
 background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa;
 transition:border-color .15s,color .15s;
 }
-#dop2Root$thisq .dop2_a11ybtn$thisq:hover { border-color:#00e8d0; color:#00e8d0; }
-#dop2Root$thisq .dop2_a11yon$thisq { background:rgba(0,232,208,.12); border-color:#00e8d0; color:#00e8d0; }
-#dop2Root$thisq .dop2_narbar$thisq {
+#dop2Root0914 .dop2_a11ybtn0914:hover { border-color:#00e8d0; color:#00e8d0; }
+#dop2Root0914 .dop2_a11yon0914 { background:rgba(0,232,208,.12); border-color:#00e8d0; color:#00e8d0; }
+#dop2Root0914 .dop2_narbar0914 {
 width:646px; min-height:28px; padding:5px 10px;
 background:#ffefc0; border-left:4px solid #e0b040;
 font-size:.88rem; color:#333; font-style:italic;
 }
-.tbar$thisq    { padding:4px; height:35px; background-color:#f90; text-align:center; line-height:42px; width:646px; }
-.tbar$thisq h3 { font-size:1.1rem; font-weight:bold; }
-.mcontent$thisq { height:324px; width:646px; }
-.bbar$thisq    { height:50px; background-color:#df9; padding:10px; text-align:center; width:646px; }
-.bbar$thisq input[type=button] { margin:0 4px; padding:4px 12px; cursor:pointer; }
-.footer$thisq  { width:646px; background-color:#fce4ec; font-size:.85rem; padding:8px 0; }
-.footer$thisq .dop2_ctrlrow$thisq  { width:646px; display:flex; align-items:center; }
-.footer$thisq .dop2_ctrlcol$thisq  { width:323px; padding:4px 10px; }
-.footer$thisq .dop2_ctrltitle$thisq{ width:100%; font-weight:bold; margin-bottom:2px; }
-.footer$thisq .dop2_sndrow$thisq   { width:626px; padding:8px 10px 2px 10px; display:flex; gap:24px; flex-wrap:wrap; }
+.tbar0914    { padding:4px; height:35px; background-color:#f90; text-align:center; line-height:42px; width:646px; }
+.tbar0914 h3 { font-size:1.1rem; font-weight:bold; }
+.mcontent0914 { height:324px; width:646px; }
+.bbar0914    { height:50px; background-color:#df9; padding:10px; text-align:center; width:646px; }
+.bbar0914 input[type=button] { margin:0 4px; padding:4px 12px; cursor:pointer; }
+.footer0914  { width:646px; background-color:#fce4ec; font-size:.85rem; padding:8px 0; }
+.footer0914 .dop2_ctrlrow0914  { width:646px; display:flex; align-items:center; }
+.footer0914 .dop2_ctrlcol0914  { width:323px; padding:4px 10px; }
+.footer0914 .dop2_ctrltitle0914{ width:100%; font-weight:bold; margin-bottom:2px; }
+.footer0914 .dop2_sndrow0914   { width:626px; padding:8px 10px 2px 10px; display:flex; gap:24px; flex-wrap:wrap; }
 </style>
 <!-- ════════ A11Y CONTROLLER ════════ -->
 <script>
-var dop2A11y$thisq = (function(){
+var dop2A11y0914 = (function(){
 var ROOT = null;
 var states = { hc:false, lm:false, cb:false, nr:true };
 var THEMES = {
@@ -115,21 +117,21 @@ b.style.color=on?'#00e8d0':'#7a8aaa';
 b.setAttribute('aria-pressed',on?'true':'false');
 }
 function applyNarBar(){
-var nb=document.getElementById('dop2NarBar$thisq');
+var nb=document.getElementById('dop2NarBar0914');
 if(nb) nb.style.display=states.nr?'block':'none';
-var btn=document.getElementById('dop2BtnNR$thisq');
-if(btn){ btn.textContent='NARRATION: '+(states.nr?'ON':'OFF'); styleBtn('dop2BtnNR$thisq',states.nr); }
+var btn=document.getElementById('dop2BtnNR0914');
+if(btn){ btn.textContent='NARRATION: '+(states.nr?'ON':'OFF'); styleBtn('dop2BtnNR0914',states.nr); }
 }
 function apply(){
 if(!ROOT)return;
 applyVars('hc',states.hc); applyVars('lm',states.lm); applyVars('cb',states.cb);
 applyNarBar();
-styleBtn('dop2BtnHC$thisq',states.hc);
-styleBtn('dop2BtnLM$thisq',states.lm);
-styleBtn('dop2BtnCB$thisq',states.cb);
+styleBtn('dop2BtnHC0914',states.hc);
+styleBtn('dop2BtnLM0914',states.lm);
+styleBtn('dop2BtnCB0914',states.cb);
 }
 return {
-init:function(){ ROOT=document.getElementById('dop2Root$thisq'); apply(); },
+init:function(){ ROOT=document.getElementById('dop2Root0914'); apply(); },
 toggle:function(k){
 states[k]=!states[k];
 if(k==='hc'&&states.hc) states.lm=false;
@@ -138,7 +140,7 @@ apply();
 },
 narrate:function(msg){
 if(!states.nr)return;
-var nb=document.getElementById('dop2NarBar$thisq');
+var nb=document.getElementById('dop2NarBar0914');
 if(nb) nb.textContent=msg;
 },
 col:function(prop,def){
@@ -152,7 +154,7 @@ return (v&&v.trim())?v.trim():def;
 <!-- ════════ SIMULATION ════════
 Pattern: mirrors the VGG (Van de Graaff) and Doppler-1 examples.
 - var simObj = function() { ... rst(); return {pl,ps,step,stepBack,rst,toggleMover,toggleSourceSound,toggleObserverSound}; }
-- var simObj$thisq = new simObj();
+- var simObj0914 = new simObj();
 - Animation: recursive window.setTimeout(runMotion, trate) guarded by runFlag
 - Physics adapted from the original doppler02_-b6x.js / props_-b6x.js (Walter Fendt / Taha Mzoughi "Pass" variant):
 ONE object moves at a time (ambulance OR cyclist, chosen by the "Let the cyclist move" checkbox) while the
@@ -161,12 +163,12 @@ switches from the "approaching" formula to the "receding" formula -- the live au
 -->
 <script>
 var dop2Gen = function() {
-var canvas = document.getElementById('dop2Canvas$thisq');
+var canvas = document.getElementById('dop2Canvas0914');
 var ctx    = canvas.getContext('2d');
 var W = canvas.width, H = canvas.height;   /* 640 x 320 */
 var timer, runFlag = 0, finished = false;
 /* ── color helper ── */
-function c(prop, def) { return dop2A11y$thisq.col(prop, def); }
+function c(prop, def) { return dop2A11y0914.col(prop, def); }
 /* ── physics constants / state ── */
 var T = 2, C = 34;                 /* wavefront period, wave speed (arbitrary units) */
 var V, Vp;                          /* ambulance / cyclist velocities -- exactly one is non-zero */
@@ -342,7 +344,7 @@ var wasArrival = arrival;
 calcWavefronts();
 if (arrival && !wasArrival && !arrivalNarrated){
 arrivalNarrated = true;
-dop2A11y$thisq.narrate('The first wavefront has just reached the observer.');
+dop2A11y0914.narrate('The first wavefront has just reached the observer.');
 }
 /* which frequency currently applies -- approaching vs receding -- depends on which
  object is moving and whether it is still short of, or already past, the parked one */
@@ -354,7 +356,7 @@ ofrequency = (newRelDir<0) ? ofrequency2 : ofrequency1;
 }
 if (relDir!==0 && newRelDir!==relDir && !passNarrated){
 passNarrated = true;
-dop2A11y$thisq.narrate((cyclistMove?'The cyclist has':'The ambulance has')+' just passed the stationary one -- the pitch drops from here on.');
+dop2A11y0914.narrate((cyclistMove?'The cyclist has':'The ambulance has')+' just passed the stationary one -- the pitch drops from here on.');
 }
 relDir = newRelDir;
 updateLiveObserverSound();
@@ -417,7 +419,7 @@ msg += relDir>0 ? 'The '+mover+' is approaching -- pitch is rising. ' : 'The '+m
 msg += arrival ? 'A wavefront has just reached the observer -- shown highlighted. ' : '';
 if (t>0){ msg += 'Perceived frequency: '+ofrequency.toFixed(0)+' Hz (source: '+sfrequency.toFixed(0)+' Hz). '; }
 if (runFlag===0 && finished){ msg += 'The animation has ended. Press Restart to play again.'; }
-dop2A11y$thisq.narrate(msg);
+dop2A11y0914.narrate(msg);
 }
 /* ── sound ── */
 function initSound(){
@@ -447,23 +449,23 @@ else if (oscillator){ oscillator.frequency.value = ofrequency; gain.gain.value =
 }
 }
 function toggleSourceSound(){
-var cb = document.getElementById('dop2SoundS$thisq');
-var cbO = document.getElementById('dop2Sound$thisq');
+var cb = document.getElementById('dop2SoundS0914');
+var cbO = document.getElementById('dop2Sound0914');
 if (cb.checked){
 cbO.checked=false; oSound=false; sSound=true;
 if (runFlag===1){ if(audioStart===1){ playSound(sfrequency); } else if(oscillator){ oscillator.frequency.value=sfrequency; gain.gain.value=1; } }
 } else { sSound=false; if(gain) gain.gain.value=0; }
 }
 function toggleObserverSound(){
-var cb = document.getElementById('dop2Sound$thisq');
-var cbS = document.getElementById('dop2SoundS$thisq');
+var cb = document.getElementById('dop2Sound0914');
+var cbS = document.getElementById('dop2SoundS0914');
 if (cb.checked){
 cbS.checked=false; sSound=false; oSound=true;
 if (runFlag===1){ if(audioStart===1){ playSound(ofrequency); } else if(oscillator){ oscillator.frequency.value=ofrequency; gain.gain.value=1; } }
 } else { oSound=false; if(gain) gain.gain.value=0; }
 }
 function toggleMover(){
-var cb = document.getElementById('dop2Mover$thisq');
+var cb = document.getElementById('dop2Mover0914');
 cyclistMove = !!(cb && cb.checked);
 rst();
 }
@@ -474,7 +476,7 @@ drawFrame();
 frameCount++;
 if (!finished && frameCount % narrationEvery === 0){ sceneNarration(); }
 if (finished){
-var playBtn = document.getElementById('dop2Play$thisq'); if(playBtn) playBtn.value='Play';
+var playBtn = document.getElementById('dop2Play0914'); if(playBtn) playBtn.value='Play';
 sceneNarration();
 }
 if (runFlag===1 && !finished){ timer = window.setTimeout(runMotion, trate); }
@@ -499,9 +501,9 @@ physicsStep(); drawFrame(); sceneNarration();
 /* ── public: restart ── */
 function rst(){
 window.clearTimeout(timer); runFlag = 0; finished = false; arrivalNarrated = false; passNarrated = false;
-var cbMover = document.getElementById('dop2Mover$thisq');
+var cbMover = document.getElementById('dop2Mover0914');
 cyclistMove = !!(cbMover && cbMover.checked);
-var VsEl = document.getElementById('dop2Vs$thisq');
+var VsEl = document.getElementById('dop2Vs0914');
 var VsMult = VsEl ? parseFloat(VsEl.value) : 0.5;
 var speedC = VsMult*C;
 if (cyclistMove){ V=0; Vp=speedC; } else { V=speedC; Vp=0; }
@@ -515,21 +517,21 @@ left = (V>=0); adirection = left?1:-1; pdirection = (Vp<0)?-1:1;
 if (audioStart>1 && oscillator){ try{ oscillator.stop(0); }catch(e){} }
 audioStart = 1; if (gain) gain.gain.value = 0;
 oSound = false; sSound = false;
-var cbS=document.getElementById('dop2SoundS$thisq'); if(cbS) cbS.checked=false;
-var cbO=document.getElementById('dop2Sound$thisq');  if(cbO) cbO.checked=false;
-var playBtn=document.getElementById('dop2Play$thisq'); if(playBtn) playBtn.value='Play';
+var cbS=document.getElementById('dop2SoundS0914'); if(cbS) cbS.checked=false;
+var cbO=document.getElementById('dop2Sound0914');  if(cbO) cbO.checked=false;
+var playBtn=document.getElementById('dop2Play0914'); if(playBtn) playBtn.value='Play';
 drawFrame();
 var mover = cyclistMove ? 'cyclist' : 'ambulance';
-dop2A11y$thisq.narrate('Ready. The '+mover+' will move at '+VsMult+' times the wave speed and pass the stationary one. Press Play.');
+dop2A11y0914.narrate('Ready. The '+mover+' will move at '+VsMult+' times the wave speed and pass the stationary one. Press Play.');
 }
 /* boot */
 rst();
 return { pl:pl, ps:ps, step:step, stepBack:stepBack, rst:rst, toggleMover:toggleMover, toggleSourceSound:toggleSourceSound, toggleObserverSound:toggleObserverSound };
 };
-var dop2Sim$thisq = new dop2Gen();
+var dop2Sim0914 = new dop2Gen();
 </script>
 <script>
-dop2A11y$thisq.init();
+dop2A11y0914.init();
 </script>
 
 </body>
