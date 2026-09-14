@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Standing Waves clarinet </title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,waves, flute, music, standing, lesson, scientific">
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body>
+<div id="olRoot$thisq">
+<!-- ── Accessibility toolbar ── -->
+<div class="ol_a11y$thisq" id="olA11yBar$thisq" role="toolbar" aria-label="Display options">
+<button type="button" class="ol_a11ybtn$thisq" id="olBtnHC$thisq" onclick="olA11y$thisq.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="ol_a11ybtn$thisq" id="olBtnLM$thisq" onclick="olA11y$thisq.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="ol_a11ybtn$thisq" id="olBtnCB$thisq" onclick="olA11y$thisq.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="ol_a11ybtn$thisq ol_a11yon$thisq" id="olBtnNR$thisq" onclick="olA11y$thisq.toggle('nr')" aria-pressed="true">NARRATION: ON</button></div>
+<div class="tbar$thisq"><h3>Ohm's Law: Carbon Resistor &amp; Incandescent Lamp</h3></div>
+<div class="mcontent$thisq">
+<canvas id="olCircuit$thisq" width="370" height="330" style="border:1px solid #999;background:#fff;"></canvas>
+<canvas id="olGraph$thisq" width="380" height="330" style="border:1px solid #999;background:#fff;"></canvas></div>
+<div class="tbar$thisq">
+<p class="REM$thisq">Pick the carbon resistor or the incandescent light bulb below. For the carbon resistor, set
+its resistance value and its starting (ambient) temperature. For the light bulb, set its rated wattage --
+which determines its cold resistance -- and its starting (ambient) temperature. Drive the circuit with either
+the LVPS (voltage) or Current slider (moving one updates the other to match). Click "Collect Data Point" to log
+the ammeter/voltmeter reading -- with realistic random measurement error -- onto the graph. For the carbon
+resistor, "Show Linear Fit" draws a best-fit line through your collected points; its slope <em>is</em> the
+resistance (read it from the graph, not from any other readout). For either device -- especially the light
+bulb, or the resistor pushed hot enough to show slight curvature -- drag the "Explore Slope At" slider to read
+the local (dynamic) slope anywhere along the theoretical curve.</p></div>
+<!-- Narration bar -->
+<div id="olNarBar$thisq" class="ol_narbar$thisq" role="status" aria-live="polite" aria-atomic="true"></div>
+<!-- Readouts (deliberately no resistance value here -- see graph) -->
+<div class="stats$thisq" id="olStats$thisq"></div>
+<!-- Controls -->
+<div class="footer$thisq">
+<div class="left$thisq">Device:</div>
+<div class="center$thisq"><select id="olDevice$thisq" onchange="olSim$thisq.chDevice(this.value)" style="width:260px;">
+<option value="carbon" selected>Carbon Resistor</option>
+<option value="lamp">Incandescent Light Bulb</option></select></div></div>
+<div class="footer$thisq" id="olRowRes$thisq">
+<div class="left$thisq">Resistance:</div>
+<div class="center$thisq"><input type="range" style="width:220px;" id="olRes$thisq" min="1" max="1000" step="1" value="220" oninput="olSim$thisq.chResistance()" onchange="olSim$thisq.chResistance()"><span id="olResV$thisq">220</span> &Omega;</div></div>
+<div class="footer$thisq" id="olRowWatt$thisq">
+<div class="left$thisq">Rated wattage:</div>
+<div class="center$thisq"><input type="range" style="width:220px;" id="olWatt$thisq" min="1" max="100" step="1" value="6" oninput="olSim$thisq.chWattage()" onchange="olSim$thisq.chWattage()"><span id="olWattV$thisq">6</span> W</div></div>
+<div class="footer$thisq">
+<div class="left$thisq">Starting (ambient) temperature:</div>
+<div class="center$thisq"><input type="range" style="width:220px;" id="olT0$thisq" min="-20" max="100" step="1" value="20" oninput="olSim$thisq.chAmbient()" onchange="olSim$thisq.chAmbient()"><span id="olT0V$thisq">20</span> &deg;C</div></div>
+<div class="footer$thisq">
+<div class="left$thisq">LVPS voltage:</div>
+<div class="center$thisq"><input type="range" style="width:220px;" id="olV$thisq" min="0" max="20" step="0.05" value="1" oninput="olSim$thisq.chVoltage(this.value)" onchange="olSim$thisq.chVoltage(this.value)"><span id="olVV$thisq">1.00</span> V</div></div>
+<div class="footer$thisq">
+<div class="left$thisq">Current:</div>
+<div class="center$thisq"><input type="range" style="width:220px;" id="olI$thisq" min="0" max="3" step="0.001" value="0.02" oninput="olSim$thisq.chCurrent(this.value)" onchange="olSim$thisq.chCurrent(this.value)"><span id="olIV$thisq">0.020</span> A</div></div>
+<div class="footer$thisq">
+<div class="left$thisq">Measurement error (noise):</div>
+<div class="center$thisq"><input type="range" style="width:220px;" id="olNoise$thisq" min="0" max="10" step="0.5" value="3" oninput="olSim$thisq.chNoise(this.value)"><span id="olNoiseV$thisq">3.0</span> %</div></div>
+<div class="footer$thisq">
+<div class="left$thisq">Data:</div>
+<div class="center$thisq">
+<input type="button" value="Collect Data Point" onclick="olSim$thisq.collect()">
+<input type="button" value="Clear Data" onclick="olSim$thisq.clearData()"></div></div>
+<div class="footer$thisq">
+<div class="left$thisq"></div>
+<div class="center$thisq">
+<label style="margin-left:10px;"><input type="checkbox" id="olFit$thisq" onchange="olSim$thisq.toggleFit(this.checked)"> Show Linear Fit</label>
+<label style="margin-left:10px;"><input type="checkbox" id="olCurve$thisq" onchange="olSim$thisq.toggleCurve(this.checked)"> Show Theoretical Curve</label></div></div>
+<div class="footer$thisq">
+<div class="left$thisq">Explore slope at:</div>
+<div class="center$thisq"><input type="range" style="width:220px;" id="olSlope$thisq" min="0" max="1" step="0.002" value="0.3" disabled oninput="olSim$thisq.chSlopePos(this.value)"></div></div></div><!-- #olRoot$thisq -->
+<style>
+* { margin: 0; box-sizing: border-box; }
+div { width: 763px; margin: 0; }
+#olRoot$thisq { --ol-toolbar-bg: #222; }
+#olRoot$thisq .ol_a11y$thisq {
+display: flex; gap: 6px; padding: 6px 8px;
+background: var(--ol-toolbar-bg); flex-wrap: wrap; width: 763px;
+}
+#olRoot$thisq .ol_a11ybtn$thisq {
+padding: 4px 10px; font-size: .72rem; font-family: monospace;
+letter-spacing: .06em; border-radius: 3px; cursor: pointer;
+background: #2a2e3a; border: 1px solid #404a60; color: #7a8aaa;
+transition: border-color .15s, color .15s;
+}
+#olRoot$thisq .ol_a11ybtn$thisq:hover { border-color: #00e8d0; color: #00e8d0; }
+#olRoot$thisq .ol_a11yon$thisq { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
+#olRoot$thisq .ol_narbar$thisq {
+width: 763px; min-height: 28px; padding: 5px 10px;
+background: #ffefc0; border-left: 4px solid #e0b040;
+font-size: .88rem; color: #333; font-style: italic;
+}
+.REM$thisq { font-weight: normal; text-align: left; padding: 0 20px; font-size: small; color: blue; }
+.tbar$thisq { padding: 4px; height: auto; min-height:30px; background-color: #f90; text-align: center; }
+.mcontent$thisq { height: 336px; display:flex; gap:8px; justify-content:center; padding:3px 0; }
+.stats$thisq {
+width: 763px; padding: 8px 12px; background: #eef3fb; border-left: 4px solid #6699cc;
+font-family: monospace; font-size: .82rem; color: #14293d; line-height: 1.5;
+display: flex; flex-wrap: wrap; gap: 4px 22px;
+}
+.stats$thisq b { color: #0a3d62; }
+.footer$thisq { height: 40px; text-align: center; font-size: normal; display: flex; align-items:center; }
+.footer$thisq .left$thisq   { width: 300px; padding: 2px; text-align:right; padding-right:8px; }
+.footer$thisq .center$thisq { width: 463px; padding: 4px; text-align:left; }
+.footer$thisq:nth-child(4)  { background-color: #fce4ec; }
+.footer$thisq:nth-child(5)  { background-color: #e8f5e9; }
+.footer$thisq:nth-child(6)  { background-color: #e3f2fd; }
+.footer$thisq:nth-child(7)  { background-color: #fff3cd; }
+.footer$thisq:nth-child(8)  { background-color: #f3e5f5; }
+.footer$thisq:nth-child(9)  { background-color: #aff; }
+.footer$thisq:nth-child(10) { background-color: #ff9; }
+.footer$thisq:nth-child(11) { background-color: #dfd; }
+.footer$thisq:nth-child(12)  { background-color: #9cd; }
+.footer$thisq:nth-child(13)  { background-color: #af5; }
+.footer$thisq:nth-child(14)  { background-color: #5ac; }
+.footer$thisq:nth-child(15) { background-color: #5ac; }
+.footer$thisq:nth-child(16) { background-color: #399; }
+.footer$thisq:nth-child(17) { background-color: #aea; }</style>
+<!-- ════════════════ ACCESSIBILITY CONTROLLER ════════════════ -->
+<script>
+var olA11y$thisq = (function(){
+var ROOT = null;
+var states = { hc:false, lm:false, cb:false, nr:true };
+function styleBtn(id, active) {
+var b = document.getElementById(id); if (!b) return;
+if (active) { b.style.background='rgba(0,232,208,.12)'; b.style.borderColor='#00e8d0'; b.style.color='#00e8d0'; }
+else        { b.style.background='#2a2e3a';             b.style.borderColor='#404a60'; b.style.color='#7a8aaa'; }
+b.setAttribute('aria-pressed', active ? 'true' : 'false');
+}
+function applyCanvas() {
+var root = document.getElementById('olRoot$thisq');
+var cvs = root.querySelectorAll('canvas');
+cvs.forEach(function(cv){ cv.style.filter = states.lm ? 'invert(1) hue-rotate(180deg) brightness(0.9)' : ''; });
+}
+function applyNarBar() {
+var nb = document.getElementById('olNarBar$thisq');
+if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var btn = document.getElementById('olBtnNR$thisq');
+if (btn) { btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF'); styleBtn('olBtnNR$thisq', states.nr); }
+}
+function applyToolbar() {
+if (ROOT) ROOT.style.setProperty('--ol-toolbar-bg', (states.hc || states.lm) ? '#111' : '#222');
+}
+function apply() {
+if (!ROOT) return;
+applyCanvas(); applyNarBar(); applyToolbar();
+styleBtn('olBtnHC$thisq', states.hc);
+styleBtn('olBtnLM$thisq', states.lm);
+styleBtn('olBtnCB$thisq', states.cb);
+}
+return {
+init: function(){ ROOT = document.getElementById('olRoot$thisq'); apply(); },
+toggle: function(k){
+states[k] = !states[k];
+if (k==='hc' && states.hc) states.lm = false;
+if (k==='lm' && states.lm) states.hc = false;
+apply();
+if (typeof olSim$thisq !== 'undefined') olSim$thisq.redraw();
+},
+narrate: function(msg){
+if (!states.nr) return;
+var nb = document.getElementById('olNarBar$thisq');
+if (nb) nb.textContent = msg;
+},
+isCB: function(){ return states.cb; }
+};
+})();</script>
+<!-- ════════════════ PHYSICS CORE ════════════════ -->
+<script>
+var olPhysics$thisq = (function(){
+var T_REF_C = 20;
+// Carbon composition resistor: small negative temperature coefficient,
+// and a fixed thermal-heating constant standing in for a typical small
+// resistor package (°C rise per watt dissipated).
+var CARBON = { alpha: -0.0005, thermalK: 12 };
+// Incandescent lamp reference point: a WATTS_REF-watt bulb has a cold
+// resistance of RCOLD_REF ohms; other wattages scale inversely (a
+// higher-wattage bulb draws more current, i.e. has lower resistance).
+var LAMP_REF = { wattsRef: 6, RcoldRef: 1.0, alpha: 0.0045, kRad: 1.2e-13 };
+function lampRcoldForWatts(W){
+return LAMP_REF.RcoldRef * (LAMP_REF.wattsRef / Math.max(W, 0.1));
+}
+function lampResistanceAt(Rcold, T_C){
+return Rcold * (1 + LAMP_REF.alpha * (T_C - T_REF_C));
+}
+/* Solve for the device's own terminal voltage/temperature at a given
+current, then report the LVPS voltage (EMF) that would be required to
+push that current through device + internal resistance in series.
+Rint (the LVPS's internal resistance) is passed in by the caller; it
+is never displayed or narrated anywhere in the UI. */
+function solveGivenCurrent(deviceKind, params, I, T0, Rint){
+Rint = Rint || 0;
+var T = T0, V, P;
+for (var iter=0; iter<400; iter++){
+if (deviceKind==='carbonR'){
+var factor = 1 + params.alpha*(T-T_REF_C);
+if (factor < 0.05) return {runaway:true, I:I, V:null, T:T, supplyV:null};
+V = I*params.R0*factor;
+} else { // 'lamp'
+V = I*lampResistanceAt(params.Rcold, T);
+}
+P = I*V;
+var Tnew;
+if (deviceKind==='lamp'){
+var T0_K = T0+273.15;
+var T_K4 = Math.pow(T0_K,4) + P/LAMP_REF.kRad;
+Tnew = Math.pow(T_K4, 0.25) - 273.15;
+} else {
+Tnew = T0 + P*params.k;
+}
+if (!isFinite(Tnew) || Tnew > 6000) return {runaway:true, I:I, V:V, T:T, supplyV:(V!==null?V+I*Rint:null)};
+var diff = Tnew-T;
+var step = Math.max(-200, Math.min(200, diff));
+T = T + 0.35*step;
+if (Math.abs(diff) < 1e-4) break;
+}
+return {runaway:false, I:I, V:V, T:T, supplyV:V+I*Rint};
+}
+function buildCurve(deviceKind, params, T0, Imax, N, Rint){
+N = N||240;
+var pts=[];
+for (var i=0;i<=N;i++){
+var I = Imax*(i/N);
+if (i===0) I = Imax*1e-4;
+var r = solveGivenCurrent(deviceKind, params, I, T0, Rint);
+pts.push(r);
+if (r.runaway) break;
+}
+return pts;
+}
+function nearestByField(curvePts, field, target){
+var best=null, bestDiff=Infinity;
+for (var i=0;i<curvePts.length;i++){
+var val = curvePts[i][field];
+if (val===null || val===undefined) continue;
+var d = Math.abs(val-target);
+if (d<bestDiff){ bestDiff=d; best=curvePts[i]; }
+}
+return best;
+}
+function linearFit(points){
+var n=points.length;
+if (n<2) return null;
+var sx=0,sy=0,sxx=0,sxy=0,syy=0;
+points.forEach(function(p){ sx+=p.I; sy+=p.V; sxx+=p.I*p.I; sxy+=p.I*p.V; syy+=p.V*p.V; });
+var denom = n*sxx-sx*sx;
+if (Math.abs(denom)<1e-15) return null;
+var m = (n*sxy-sx*sy)/denom;
+var b = (sy-m*sx)/n;
+var ssTot=0, ssRes=0, meanY=sy/n;
+points.forEach(function(p){
+var pred=m*p.I+b;
+ssRes += (p.V-pred)*(p.V-pred);
+ssTot += (p.V-meanY)*(p.V-meanY);
+});
+var r2 = ssTot>1e-15 ? 1-ssRes/ssTot : 1;
+return { m:m, b:b, r2:r2 };
+}
+function localSlope(curvePts, idx){
+var i0 = Math.max(0, idx-2), i1 = Math.min(curvePts.length-1, idx+2);
+if (i1===i0) return null;
+return (curvePts[i1].V-curvePts[i0].V)/(curvePts[i1].I-curvePts[i0].I);
+}
+return {
+T_REF_C:T_REF_C, CARBON:CARBON, LAMP_REF:LAMP_REF,
+lampRcoldForWatts:lampRcoldForWatts, lampResistanceAt:lampResistanceAt,
+solveGivenCurrent:solveGivenCurrent, buildCurve:buildCurve,
+nearestByField:nearestByField, linearFit:linearFit, localSlope:localSlope
+};
+})();</script>
+<!-- ════════════════ SIMULATION / UI ════════════════ -->
+<script>
+var ohmSim = function() {
+var PH = olPhysics$thisq;
+var cCanvas = document.getElementById('olCircuit$thisq');
+var cCtx = cCanvas.getContext('2d');
+var gCanvas = document.getElementById('olGraph$thisq');
+var gCtx = gCanvas.getContext('2d');
+var deviceKind = 'carbonR';     // 'carbonR' | 'lamp'
+var deviceLabel = 'Carbon Resistor';
+var deviceColor = '#7a4a2a';
+var carbonR0 = 220;   // Ω, set directly via the Resistance slider
+var lampWatts = 6;    // W, set directly via the Rated Wattage slider
+var T0 = 20;
+var Vsupply = 1.0, Iset = 0.02;
+var noisePct = 3.0;
+// Hidden internal resistance of the LVPS (low-voltage power supply).
+// Not exposed via any UI control and not shown in stats or narration --
+// change this value directly in code to model a non-ideal supply.
+var Rint = 0;
+var collected = [];       // {I,V}
+var showFit = false;
+var showCurve = false;
+var slopeFrac = 0.3;
+var curve = [];           // theoretical curve for current settings
+var lastOp = null;        // last solved operating point
+function gaussianRandom(){
+var u=0,v=0;
+while(u===0) u=Math.random();
+while(v===0) v=Math.random();
+return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+}
+function isCarbon(){ return deviceKind==='carbonR'; }
+function currentParams(){
+if (deviceKind==='carbonR'){
+return { R0:carbonR0, alpha:PH.CARBON.alpha, k:PH.CARBON.thermalK };
+} else {
+return { Rcold: PH.lampRcoldForWatts(lampWatts) };
+}
+}
+function estimateImax(){
+if (deviceKind==='carbonR'){
+var factor = 1+PH.CARBON.alpha*(T0-PH.T_REF_C);
+var R = Math.max(carbonR0*factor, 0.01);
+var im = 20/(R+Rint);
+if (!isFinite(im) || im<=0) im = 1e-6;
+return Math.min(3, im);
+} else {
+return 0.65;
+}
+}
+function rebuildCurve(){
+var Imax = estimateImax();
+curve = PH.buildCurve(deviceKind, currentParams(), T0, Imax, 240, Rint);
+var vSlider = document.getElementById('olV$thisq');
+var iSlider = document.getElementById('olI$thisq');
+if (deviceKind==='carbonR'){
+var factor = 1+PH.CARBON.alpha*(T0-PH.T_REF_C);
+var Rnow = Math.max(carbonR0*factor, 0.01);
+var vMax = Math.min(20, Imax*(Rnow+Rint)*1.05);
+if (!isFinite(vMax) || vMax<=0) vMax = 20;
+vSlider.min=0; vSlider.max=vMax; vSlider.step=vMax/400;
+iSlider.min=0; iSlider.max=Imax; iSlider.step=Imax/1000;
+} else {
+vSlider.min=0; vSlider.max=8; vSlider.step=0.02;
+iSlider.min=0; iSlider.max=0.65; iSlider.step=0.001;
+}
+}
+function solveAtCurrent(I){
+return PH.solveGivenCurrent(deviceKind, currentParams(), I, T0, Rint);
+}
+function applyOperatingPointFromCurrent(I){
+var r = solveAtCurrent(I);
+lastOp = r;
+Iset = I;
+Vsupply = (r.supplyV!==null && r.supplyV!==undefined) ? r.supplyV : (r.V||0);
+}
+function applyOperatingPointFromVoltage(Vtarget){
+var best = PH.nearestByField(curve, 'supplyV', Vtarget);
+if (!best) return;
+lastOp = best;
+Iset = best.I;
+Vsupply = Vtarget;
+}
+/* ── device symbol + circuit drawing ── */
+function drawWire(x1,y1,x2,y2){
+cCtx.beginPath(); cCtx.moveTo(x1,y1); cCtx.lineTo(x2,y2); cCtx.stroke();
+}
+function drawMeterCircle(x,y,r,label){
+cCtx.beginPath(); cCtx.arc(x,y,r,0,2*Math.PI); cCtx.stroke();
+cCtx.font='bold 13px sans-serif'; cCtx.textAlign='center'; cCtx.textBaseline='middle';
+cCtx.fillStyle='#000';
+cCtx.fillText(label, x, y);
+}
+function drawReadoutBox(x,y,w,h,text){
+cCtx.strokeStyle='#333'; cCtx.fillStyle='#fffdE6';
+cCtx.fillRect(x,y,w,h); cCtx.strokeRect(x,y,w,h);
+cCtx.fillStyle='#000'; cCtx.font='11px monospace'; cCtx.textAlign='center'; cCtx.textBaseline='middle';
+cCtx.fillText(text, x+w/2, y+h/2);
+}
+function drawBattery(x,y){
+cCtx.save();
+cCtx.strokeStyle='#000'; cCtx.lineWidth=1.8;
+cCtx.fillStyle='#fff';
+var w=46, h=26;
+cCtx.fillRect(x-w/2, y-h/2, w, h);
+cCtx.strokeRect(x-w/2, y-h/2, w, h);
+cCtx.restore();
+cCtx.font='bold 13px sans-serif'; cCtx.textAlign='center'; cCtx.textBaseline='middle';
+cCtx.fillStyle='#000';
+cCtx.fillText('+', x-w/2+11, y);
+cCtx.fillText('\u2212', x+w/2-11, y);
+}
+function drawResistorBox(orientation, a1, level, a2, color){
+cCtx.save();
+cCtx.fillStyle='#fff';
+cCtx.strokeStyle = color||'#000';
+cCtx.lineWidth=1.8;
+if (orientation==='h'){
+var w=a2-a1, h=22;
+cCtx.fillRect(a1, level-h/2, w, h);
+cCtx.strokeRect(a1, level-h/2, w, h);
+} else {
+var hgt=a2-a1, ww=22;
+cCtx.fillRect(level-ww/2, a1, ww, hgt);
+cCtx.strokeRect(level-ww/2, a1, ww, hgt);
+}
+cCtx.restore();
+}
+function drawLampSymbol(cx,cy,r,glow){
+cCtx.beginPath(); cCtx.arc(cx,cy,r,0,2*Math.PI);
+if (glow>0){
+cCtx.fillStyle = 'rgba(255,215,0,'+Math.min(0.85,glow).toFixed(2)+')';
+cCtx.fill();
+}
+cCtx.strokeStyle='#000'; cCtx.lineWidth=1.5; cCtx.stroke();
+cCtx.beginPath();
+cCtx.moveTo(cx-r*0.55,cy-r*0.55); cCtx.lineTo(cx+r*0.55,cy+r*0.55);
+cCtx.moveTo(cx-r*0.55,cy+r*0.55); cCtx.lineTo(cx+r*0.55,cy-r*0.55);
+cCtx.stroke();
+}
+function drawCircuit(){
+cCtx.clearRect(0,0,cCanvas.width,cCanvas.height);
+cCtx.strokeStyle='#000'; cCtx.lineWidth=1.5;
+var left=50, right=320, top=60, bottom=250;
+var midX=(left+right)/2;
+var glow = 0;
+if (lastOp && !lastOp.runaway && deviceKind==='lamp'){
+glow = Math.min(1, (lastOp.T-20)/1800);
+}
+var amY = (top+bottom)/2;
+drawWire(right,top, right, amY-18);
+drawWire(right, amY+18, right, bottom);
+drawWire(right,bottom, midX+23, bottom);
+drawWire(midX-23,bottom, left,bottom);
+drawWire(left,top, left,bottom);
+if (deviceKind==='carbonR'){
+drawWire(left,top, left+80,top);
+drawWire(right-80,top, right,top);
+drawResistorBox('h', left+80, top, right-80, deviceColor);
+} else {
+drawWire(left,top, midX-22,top);
+drawWire(midX+22,top, right,top);
+drawLampSymbol(midX, top, 22, glow);
+}
+drawBattery(midX, bottom);
+cCtx.font='bold 11px sans-serif'; cCtx.textAlign='center'; cCtx.fillStyle='#000';
+cCtx.fillText('LVPS', midX, bottom+30);
+drawMeterCircle(right, amY, 18, 'A');
+var vX1 = left+70, vX2 = right-70, vY = top+55;
+var vMidX = (vX1+vX2)/2;
+drawWire(vX1, top, vX1, vY);
+drawWire(vX2, top, vX2, vY);
+drawWire(vX1, vY, vMidX-16, vY);
+drawWire(vMidX+16, vY, vX2, vY);
+drawMeterCircle(vMidX, vY, 16, 'V');
+var Itxt = (lastOp? formatCurrent(lastOp.I) : '0 A');
+var Vtxt = (lastOp? formatVoltage(lastOp.V!==null&&lastOp.V!==undefined?lastOp.V:0) : '0 V');
+drawReadoutBox(right-38, amY+26, 76, 20, 'I = '+Itxt);
+drawReadoutBox(vMidX-42, vY+22, 84, 20, 'V = '+Vtxt);
+if (lastOp && lastOp.T!==undefined){
+cCtx.font='11px sans-serif'; cCtx.textAlign='center'; cCtx.fillStyle='#a33';
+cCtx.fillText('device T \u2248 '+lastOp.T.toFixed(0)+' \u00B0C', midX, top+40);
+}
+if (lastOp && lastOp.runaway){
+cCtx.font='bold 12px sans-serif'; cCtx.fillStyle='#c00'; cCtx.textAlign='center';
+cCtx.fillText('THERMAL RUNAWAY', midX, bottom-40);
+}
+cCtx.font='bold 12px sans-serif'; cCtx.fillStyle='#000'; cCtx.textAlign='left';
+cCtx.fillText(deviceLabel, left+2, top-24);
+}
+function formatCurrent(I){
+if (I===null||I===undefined) return 'n/a';
+if (Math.abs(I) < 1) return (I*1000).toFixed(1)+' mA';
+return I.toFixed(3)+' A';
+}
+function formatVoltage(V){
+if (V===null||V===undefined) return 'n/a';
+return V.toFixed(3)+' V';
+}
+/* ── graph ── */
+function graphBounds(){
+var maxI = 0.001, maxV = 0.001;
+curve.forEach(function(p){ if(!p.runaway){ maxI=Math.max(maxI,p.I); maxV=Math.max(maxV,p.V||0); } });
+collected.forEach(function(p){ maxI=Math.max(maxI,p.I); maxV=Math.max(maxV,p.V); });
+return { maxI:maxI*1.12, maxV:maxV*1.15 };
+}
+function drawGraph(){
+gCtx.clearRect(0,0,gCanvas.width,gCanvas.height);
+var padL=52, padB=36, padT=14, padR=14;
+var w = gCanvas.width-padL-padR, h = gCanvas.height-padT-padB;
+var b = graphBounds();
+function px(I){ return padL + (I/b.maxI)*w; }
+function py(V){ return padT + h - (V/b.maxV)*h; }
+gCtx.strokeStyle='#333'; gCtx.lineWidth=1;
+gCtx.beginPath(); gCtx.moveTo(padL,padT); gCtx.lineTo(padL,padT+h); gCtx.lineTo(padL+w,padT+h); gCtx.stroke();
+gCtx.font='10px sans-serif'; gCtx.fillStyle='#333';
+gCtx.textAlign='center'; gCtx.fillText('Current, I', padL+w/2, padT+h+28);
+gCtx.save(); gCtx.translate(12, padT+h/2); gCtx.rotate(-Math.PI/2); gCtx.fillText('Voltage, V', 0,0); gCtx.restore();
+var nT=5;
+for (var t=0;t<=nT;t++){
+var iv=b.maxI*t/nT, vv=b.maxV*t/nT;
+var xx=px(iv), yy=py(vv);
+gCtx.strokeStyle='#ddd'; gCtx.beginPath(); gCtx.moveTo(xx,padT); gCtx.lineTo(xx,padT+h); gCtx.stroke();
+gCtx.strokeStyle='#ddd'; gCtx.beginPath(); gCtx.moveTo(padL,yy); gCtx.lineTo(padL+w,yy); gCtx.stroke();
+gCtx.fillStyle='#333'; gCtx.font='9px monospace';
+gCtx.textAlign='center'; gCtx.fillText(fmtAxis(iv), xx, padT+h+12);
+gCtx.textAlign='right'; gCtx.fillText(fmtAxis(vv), padL-4, yy+3);
+}
+if (showCurve){
+gCtx.beginPath();
+var started=false;
+curve.forEach(function(p){
+if (p.runaway || p.V===null || p.V===undefined) return;
+var xx=px(p.I), yy=py(p.V);
+if (!started){ gCtx.moveTo(xx,yy); started=true; } else gCtx.lineTo(xx,yy);
+});
+gCtx.strokeStyle='rgba(60,60,180,0.55)'; gCtx.lineWidth=1.5; gCtx.stroke();
+}
+collected.forEach(function(p){
+var xx=px(p.I), yy=py(p.V);
+gCtx.beginPath(); gCtx.arc(xx,yy,3.2,0,2*Math.PI);
+gCtx.fillStyle= deviceColor; gCtx.fill();
+gCtx.strokeStyle='#222'; gCtx.lineWidth=0.7; gCtx.stroke();
+});
+if (showFit && isCarbon() && collected.length>=2){
+var fit = PH.linearFit(collected);
+if (fit){
+var x0=0, x1=b.maxI;
+gCtx.beginPath();
+gCtx.moveTo(px(x0), py(fit.m*x0+fit.b));
+gCtx.lineTo(px(x1), py(fit.m*x1+fit.b));
+gCtx.setLineDash([6,4]);
+gCtx.strokeStyle='#c0392b'; gCtx.lineWidth=1.8; gCtx.stroke();
+gCtx.setLineDash([]);
+gCtx.fillStyle='#c0392b'; gCtx.font='bold 11px monospace'; gCtx.textAlign='left';
+gCtx.fillText('Fit slope (R) = '+fmtR(fit.m)+'  R\u00B2='+fit.r2.toFixed(4), padL+6, padT+14);
+}
+}
+if (showCurve && curve.length>3){
+var idx = Math.round(slopeFrac*(curve.length-1));
+idx = Math.max(2, Math.min(curve.length-3, idx));
+var cp = curve[idx];
+if (cp && !cp.runaway){
+var slope = PH.localSlope(curve, idx);
+if (slope!==null){
+var xx=px(cp.I), yy=py(cp.V);
+var dI = b.maxI*0.09;
+gCtx.beginPath();
+gCtx.moveTo(px(cp.I-dI), py(cp.V-slope*dI));
+gCtx.lineTo(px(cp.I+dI), py(cp.V+slope*dI));
+gCtx.strokeStyle='#0a8a3d'; gCtx.lineWidth=2; gCtx.stroke();
+gCtx.beginPath(); gCtx.arc(xx,yy,4,0,2*Math.PI);
+gCtx.fillStyle='#0a8a3d'; gCtx.fill();
+gCtx.fillStyle='#0a8a3d'; gCtx.font='bold 11px monospace'; gCtx.textAlign='left';
+gCtx.fillText('Local slope = '+fmtR(slope)+'  at I='+formatCurrent(cp.I), padL+6, padT+h-8);
+}
+}
+}
+}
+function fmtAxis(v){
+if (v===0) return '0';
+if (Math.abs(v) < 0.01) return v.toExponential(1);
+return v.toFixed(v<1?3:2);
+}
+function fmtR(r){
+if (!isFinite(r)) return 'n/a';
+if (Math.abs(r) >= 1000) return (r/1000).toFixed(2)+' k\u03A9';
+if (Math.abs(r) < 1) return r.toFixed(4)+' \u03A9';
+return r.toFixed(3)+' \u03A9';
+}
+function updateStats(){
+var box = document.getElementById('olStats$thisq');
+var html = '';
+html += '<span><b>Device</b>: '+deviceLabel+'</span>';
+if (deviceKind==='carbonR'){
+html += '<span><b>Set resistance</b>: '+carbonR0+' \u03A9 (at 20\u00B0C)</span>';
+} else {
+html += '<span><b>Rated wattage</b>: '+lampWatts+' W</span>';
+}
+html += '<span><b>Ambient T\u2080</b> = '+T0+' \u00B0C</span>';
+if (lastOp){
+html += '<span><b>Operating T</b> \u2248 '+ (lastOp.T!==undefined? lastOp.T.toFixed(1):'?') +' \u00B0C</span>';
+if (lastOp.runaway) html += '<span style="color:#c00;"><b>Thermal runaway</b> -- no stable operating point at this setting</span>';
+}
+html += '<span><b>Collected points</b>: '+collected.length+'</span>';
+box.innerHTML = html;
+}
+function narrateDevice(){
+var msg = 'Selected '+deviceLabel+'. ';
+if (deviceKind==='carbonR') msg += 'Resistance set to '+carbonR0+' \u03A9, ambient '+T0+'\u00B0C. ';
+else msg += 'Rated wattage set to '+lampWatts+' W, ambient '+T0+'\u00B0C. ';
+msg += 'Use the graph\'s linear fit or slope explorer to read the resistance -- it isn\'t shown anywhere else.';
+olA11y$thisq.narrate(msg);
+}
+function redraw(){
+drawCircuit();
+drawGraph();
+updateStats();
+}
+function refreshUIVisibility(){
+document.getElementById('olRowRes$thisq').style.display = (deviceKind==='carbonR') ? 'flex' : 'none';
+document.getElementById('olRowWatt$thisq').style.display = (deviceKind==='lamp') ? 'flex' : 'none';
+var fitCb = document.getElementById('olFit$thisq');
+fitCb.disabled = (deviceKind!=='carbonR');
+if (deviceKind!=='carbonR'){ fitCb.checked=false; showFit=false; }
+}
+function syncSlidersFromState(){
+document.getElementById('olV$thisq').value = Vsupply;
+document.getElementById('olVV$thisq').textContent = Vsupply.toFixed(2);
+document.getElementById('olI$thisq').value = Iset;
+document.getElementById('olIV$thisq').textContent = (Iset<1? (Iset*1000).toFixed(1)+' m':Iset.toFixed(3));
+}
+function chDevice(v){
+collected = [];
+if (v==='carbon'){
+deviceKind='carbonR';
+deviceLabel='Carbon Resistor';
+deviceColor='#7a4a2a';
+} else {
+deviceKind='lamp';
+deviceLabel='Small Incandescent Lamp';
+deviceColor='#c9982a';
+}
+refreshUIVisibility();
+rebuildCurve();
+applyOperatingPointFromCurrent(Math.min(Iset, parseFloat(document.getElementById('olI$thisq').max)));
+syncSlidersFromState();
+redraw();
+narrateDevice();
+}
+function chResistance(){
+carbonR0 = Number(document.getElementById('olRes$thisq').value);
+document.getElementById('olResV$thisq').textContent = carbonR0;
+collected = [];
+rebuildCurve();
+applyOperatingPointFromCurrent(Math.min(Iset, parseFloat(document.getElementById('olI$thisq').max)));
+syncSlidersFromState();
+redraw();
+narrateDevice();
+}
+function chWattage(){
+lampWatts = Number(document.getElementById('olWatt$thisq').value);
+document.getElementById('olWattV$thisq').textContent = lampWatts;
+collected = [];
+rebuildCurve();
+applyOperatingPointFromCurrent(Math.min(Iset, parseFloat(document.getElementById('olI$thisq').max)));
+syncSlidersFromState();
+redraw();
+narrateDevice();
+}
+function chAmbient(){
+T0 = Number(document.getElementById('olT0$thisq').value);
+document.getElementById('olT0V$thisq').textContent = T0;
+collected = [];
+rebuildCurve();
+applyOperatingPointFromCurrent(Math.min(Iset, parseFloat(document.getElementById('olI$thisq').max)));
+syncSlidersFromState();
+redraw();
+narrateDevice();
+}
+function chVoltage(v){
+Vsupply = Number(v);
+document.getElementById('olVV$thisq').textContent = Vsupply.toFixed(2);
+applyOperatingPointFromVoltage(Vsupply);
+document.getElementById('olI$thisq').value = Iset;
+document.getElementById('olIV$thisq').textContent = (Iset<1? (Iset*1000).toFixed(1)+' m':Iset.toFixed(3));
+redraw();
+}
+function chCurrent(v){
+Iset = Number(v);
+document.getElementById('olIV$thisq').textContent = (Iset<1? (Iset*1000).toFixed(1)+' m':Iset.toFixed(3));
+applyOperatingPointFromCurrent(Iset);
+document.getElementById('olV$thisq').value = Vsupply;
+document.getElementById('olVV$thisq').textContent = Vsupply.toFixed(2);
+redraw();
+}
+function chNoise(v){
+noisePct = Number(v);
+document.getElementById('olNoiseV$thisq').textContent = noisePct.toFixed(1);
+}
+function collect(){
+if (!lastOp || lastOp.runaway || lastOp.V===null || lastOp.V===undefined) return;
+var noisyI = lastOp.I*(1+gaussianRandom()*noisePct/100);
+var noisyV = lastOp.V*(1+gaussianRandom()*noisePct/100);
+collected.push({I:Math.max(noisyI,0), V:Math.max(noisyV,0)});
+redraw();
+olA11y$thisq.narrate('Data point collected: I='+formatCurrent(noisyI)+', V='+formatVoltage(noisyV)+'. Total points: '+collected.length+'.');
+}
+function clearData(){
+collected = [];
+redraw();
+olA11y$thisq.narrate('Collected data cleared.');
+}
+function toggleFit(checked){
+showFit = checked;
+redraw();
+}
+function toggleCurve(checked){
+showCurve = checked;
+var slopeSlider = document.getElementById('olSlope$thisq');
+slopeSlider.disabled = !checked;
+redraw();
+}
+function chSlopePos(v){
+slopeFrac = Number(v);
+redraw();
+}
+function boot(){
+refreshUIVisibility();
+rebuildCurve();
+applyOperatingPointFromCurrent(Iset);
+syncSlidersFromState();
+redraw();
+olA11y$thisq.narrate('Ready. Carbon Resistor selected. Set the LVPS voltage or current, then collect data points to build the V-I graph.');
+}
+boot();
+return {
+chDevice:chDevice, chResistance:chResistance, chWattage:chWattage, chAmbient:chAmbient,
+chVoltage:chVoltage, chCurrent:chCurrent, chNoise:chNoise,
+collect:collect, clearData:clearData, toggleFit:toggleFit, toggleCurve:toggleCurve, chSlopePos:chSlopePos,
+redraw:redraw
+};
+};</script>
+<script>
+var olSim$thisq = new ohmSim();
+olA11y$thisq.init();</script>
+</body></html>
