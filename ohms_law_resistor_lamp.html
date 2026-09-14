@@ -3,24 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations-Ohm's Law: Resistor and Lamp</title>
+<title>Physics Simulations-Standing Waves clarinet </title>
 <meta name="author" content="Taha Mzoughi">
 <meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,Ohm's, Law, Resistor, Lamp, lesson, scientific">
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:20px>
-<div id="olRoot$thisq">
+<div id="olRoot0914">
 <!-- ── Accessibility toolbar ── -->
-<div class="ol_a11y$thisq" id="olA11yBar$thisq" role="toolbar" aria-label="Display options">
-<button type="button" class="ol_a11ybtn$thisq" id="olBtnHC$thisq" onclick="olA11y$thisq.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="ol_a11ybtn$thisq" id="olBtnLM$thisq" onclick="olA11y$thisq.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
-<button type="button" class="ol_a11ybtn$thisq" id="olBtnCB$thisq" onclick="olA11y$thisq.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
-<button type="button" class="ol_a11ybtn$thisq ol_a11yon$thisq" id="olBtnNR$thisq" onclick="olA11y$thisq.toggle('nr')" aria-pressed="true">NARRATION: ON</button></div>
-<div class="tbar$thisq"><h3>Ohm's Law: Carbon Resistor &amp; Incandescent Lamp</h3></div>
-<div class="mcontent$thisq">
-<canvas id="olCircuit$thisq" width="370" height="330" style="border:1px solid #999;background:#fff;"></canvas>
-<canvas id="olGraph$thisq" width="380" height="330" style="border:1px solid #999;background:#fff;"></canvas></div>
-<div class="tbar$thisq">
-<p class="REM$thisq">Pick the carbon resistor or the incandescent light bulb below. For the carbon resistor, set
+<div class="ol_a11y0914" id="olA11yBar0914" role="toolbar" aria-label="Display options">
+<button type="button" class="ol_a11ybtn0914" id="olBtnHC0914" onclick="olA11y0914.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="ol_a11ybtn0914" id="olBtnLM0914" onclick="olA11y0914.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="ol_a11ybtn0914" id="olBtnCB0914" onclick="olA11y0914.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="ol_a11ybtn0914 ol_a11yon0914" id="olBtnNR0914" onclick="olA11y0914.toggle('nr')" aria-pressed="true">NARRATION: ON</button></div>
+<div class="tbar0914"><h3>Ohm's Law: Carbon Resistor &amp; Incandescent Lamp</h3></div>
+<div class="mcontent0914">
+<canvas id="olCircuit0914" width="370" height="330" style="border:1px solid #999;background:#fff;"></canvas>
+<canvas id="olGraph0914" width="380" height="330" style="border:1px solid #999;background:#fff;"></canvas></div>
+<div class="tbar0914">
+<p class="REM0914">Pick the carbon resistor or the incandescent light bulb below. For the carbon resistor, set
 its resistance value and its starting (ambient) temperature. For the light bulb, set its rated wattage --
 which determines its cold resistance -- and its starting (ambient) temperature. Drive the circuit with either
 the LVPS (voltage) or Current slider (moving one updates the other to match). Click "Collect Data Point" to log
@@ -30,96 +30,96 @@ resistance (read it from the graph, not from any other readout). For either devi
 bulb, or the resistor pushed hot enough to show slight curvature -- drag the "Explore Slope At" slider to read
 the local (dynamic) slope anywhere along the theoretical curve.</p></div>
 <!-- Narration bar -->
-<div id="olNarBar$thisq" class="ol_narbar$thisq" role="status" aria-live="polite" aria-atomic="true"></div>
+<div id="olNarBar0914" class="ol_narbar0914" role="status" aria-live="polite" aria-atomic="true"></div>
 <!-- Readouts (deliberately no resistance value here -- see graph) -->
-<div class="stats$thisq" id="olStats$thisq"></div>
+<div class="stats0914" id="olStats0914"></div>
 <!-- Controls -->
-<div class="footer$thisq">
-<div class="left$thisq">Device:</div>
-<div class="center$thisq"><select id="olDevice$thisq" onchange="olSim$thisq.chDevice(this.value)" style="width:260px;">
+<div class="footer0914">
+<div class="left0914">Device:</div>
+<div class="center0914"><select id="olDevice0914" onchange="olSim0914.chDevice(this.value)" style="width:260px;">
 <option value="carbon" selected>Carbon Resistor</option>
 <option value="lamp">Incandescent Light Bulb</option></select></div></div>
-<div class="footer$thisq" id="olRowRes$thisq">
-<div class="left$thisq">Resistance:</div>
-<div class="center$thisq"><input type="range" style="width:220px;" id="olRes$thisq" min="1" max="1000" step="1" value="220" oninput="olSim$thisq.chResistance()" onchange="olSim$thisq.chResistance()"><span id="olResV$thisq">220</span> &Omega;</div></div>
-<div class="footer$thisq" id="olRowWatt$thisq">
-<div class="left$thisq">Rated wattage:</div>
-<div class="center$thisq"><input type="range" style="width:220px;" id="olWatt$thisq" min="1" max="100" step="1" value="6" oninput="olSim$thisq.chWattage()" onchange="olSim$thisq.chWattage()"><span id="olWattV$thisq">6</span> W</div></div>
-<div class="footer$thisq">
-<div class="left$thisq">Starting (ambient) temperature:</div>
-<div class="center$thisq"><input type="range" style="width:220px;" id="olT0$thisq" min="-20" max="100" step="1" value="20" oninput="olSim$thisq.chAmbient()" onchange="olSim$thisq.chAmbient()"><span id="olT0V$thisq">20</span> &deg;C</div></div>
-<div class="footer$thisq">
-<div class="left$thisq">LVPS voltage:</div>
-<div class="center$thisq"><input type="range" style="width:220px;" id="olV$thisq" min="0" max="20" step="0.05" value="1" oninput="olSim$thisq.chVoltage(this.value)" onchange="olSim$thisq.chVoltage(this.value)"><span id="olVV$thisq">1.00</span> V</div></div>
-<div class="footer$thisq">
-<div class="left$thisq">Current:</div>
-<div class="center$thisq"><input type="range" style="width:220px;" id="olI$thisq" min="0" max="3" step="0.001" value="0.02" oninput="olSim$thisq.chCurrent(this.value)" onchange="olSim$thisq.chCurrent(this.value)"><span id="olIV$thisq">0.020</span> A</div></div>
-<div class="footer$thisq">
-<div class="left$thisq">Measurement error (noise):</div>
-<div class="center$thisq"><input type="range" style="width:220px;" id="olNoise$thisq" min="0" max="10" step="0.5" value="3" oninput="olSim$thisq.chNoise(this.value)"><span id="olNoiseV$thisq">3.0</span> %</div></div>
-<div class="footer$thisq">
-<div class="left$thisq">Data:</div>
-<div class="center$thisq">
-<input type="button" value="Collect Data Point" onclick="olSim$thisq.collect()">
-<input type="button" value="Clear Data" onclick="olSim$thisq.clearData()"></div></div>
-<div class="footer$thisq">
-<div class="left$thisq"></div>
-<div class="center$thisq">
-<label style="margin-left:10px;"><input type="checkbox" id="olFit$thisq" onchange="olSim$thisq.toggleFit(this.checked)"> Show Linear Fit</label>
-<label style="margin-left:10px;"><input type="checkbox" id="olCurve$thisq" onchange="olSim$thisq.toggleCurve(this.checked)"> Show Theoretical Curve</label></div></div>
-<div class="footer$thisq">
-<div class="left$thisq">Explore slope at:</div>
-<div class="center$thisq"><input type="range" style="width:220px;" id="olSlope$thisq" min="0" max="1" step="0.002" value="0.3" disabled oninput="olSim$thisq.chSlopePos(this.value)"></div></div></div><!-- #olRoot$thisq -->
+<div class="footer0914" id="olRowRes0914">
+<div class="left0914">Resistance:</div>
+<div class="center0914"><input type="range" style="width:220px;" id="olRes0914" min="1" max="1000" step="1" value="220" oninput="olSim0914.chResistance()" onchange="olSim0914.chResistance()"><span id="olResV0914">220</span> &Omega;</div></div>
+<div class="footer0914" id="olRowWatt0914">
+<div class="left0914">Rated wattage:</div>
+<div class="center0914"><input type="range" style="width:220px;" id="olWatt0914" min="1" max="100" step="1" value="6" oninput="olSim0914.chWattage()" onchange="olSim0914.chWattage()"><span id="olWattV0914">6</span> W</div></div>
+<div class="footer0914">
+<div class="left0914">Starting (ambient) temperature:</div>
+<div class="center0914"><input type="range" style="width:220px;" id="olT00914" min="-20" max="100" step="1" value="20" oninput="olSim0914.chAmbient()" onchange="olSim0914.chAmbient()"><span id="olT0V0914">20</span> &deg;C</div></div>
+<div class="footer0914">
+<div class="left0914">LVPS voltage:</div>
+<div class="center0914"><input type="range" style="width:220px;" id="olV0914" min="0" max="20" step="0.05" value="1" oninput="olSim0914.chVoltage(this.value)" onchange="olSim0914.chVoltage(this.value)"><span id="olVV0914">1.00</span> V</div></div>
+<div class="footer0914">
+<div class="left0914">Current:</div>
+<div class="center0914"><input type="range" style="width:220px;" id="olI0914" min="0" max="3" step="0.001" value="0.02" oninput="olSim0914.chCurrent(this.value)" onchange="olSim0914.chCurrent(this.value)"><span id="olIV0914">0.020</span> A</div></div>
+<div class="footer0914">
+<div class="left0914">Measurement error (noise):</div>
+<div class="center0914"><input type="range" style="width:220px;" id="olNoise0914" min="0" max="10" step="0.5" value="3" oninput="olSim0914.chNoise(this.value)"><span id="olNoiseV0914">3.0</span> %</div></div>
+<div class="footer0914">
+<div class="left0914">Data:</div>
+<div class="center0914">
+<input type="button" value="Collect Data Point" onclick="olSim0914.collect()">
+<input type="button" value="Clear Data" onclick="olSim0914.clearData()"></div></div>
+<div class="footer0914">
+<div class="left0914"></div>
+<div class="center0914">
+<label style="margin-left:10px;"><input type="checkbox" id="olFit0914" onchange="olSim0914.toggleFit(this.checked)"> Show Linear Fit</label>
+<label style="margin-left:10px;"><input type="checkbox" id="olCurve0914" onchange="olSim0914.toggleCurve(this.checked)"> Show Theoretical Curve</label></div></div>
+<div class="footer0914">
+<div class="left0914">Explore slope at:</div>
+<div class="center0914"><input type="range" style="width:220px;" id="olSlope0914" min="0" max="1" step="0.002" value="0.3" disabled oninput="olSim0914.chSlopePos(this.value)"></div></div></div><!-- #olRoot0914 -->
 <style>
 * { margin: 0; box-sizing: border-box; }
 div { width: 763px; margin: 0; }
-#olRoot$thisq { --ol-toolbar-bg: #222; }
-#olRoot$thisq .ol_a11y$thisq {
+#olRoot0914 { --ol-toolbar-bg: #222; }
+#olRoot0914 .ol_a11y0914 {
 display: flex; gap: 6px; padding: 6px 8px;
 background: var(--ol-toolbar-bg); flex-wrap: wrap; width: 763px;
 }
-#olRoot$thisq .ol_a11ybtn$thisq {
+#olRoot0914 .ol_a11ybtn0914 {
 padding: 4px 10px; font-size: .72rem; font-family: monospace;
 letter-spacing: .06em; border-radius: 3px; cursor: pointer;
 background: #2a2e3a; border: 1px solid #404a60; color: #7a8aaa;
 transition: border-color .15s, color .15s;
 }
-#olRoot$thisq .ol_a11ybtn$thisq:hover { border-color: #00e8d0; color: #00e8d0; }
-#olRoot$thisq .ol_a11yon$thisq { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
-#olRoot$thisq .ol_narbar$thisq {
+#olRoot0914 .ol_a11ybtn0914:hover { border-color: #00e8d0; color: #00e8d0; }
+#olRoot0914 .ol_a11yon0914 { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
+#olRoot0914 .ol_narbar0914 {
 width: 763px; min-height: 28px; padding: 5px 10px;
 background: #ffefc0; border-left: 4px solid #e0b040;
 font-size: .88rem; color: #333; font-style: italic;
 }
-.REM$thisq { font-weight: normal; text-align: left; padding: 0 20px; font-size: small; color: blue; }
-.tbar$thisq { padding: 4px; height: auto; min-height:30px; background-color: #f90; text-align: center; }
-.mcontent$thisq { height: 336px; display:flex; gap:8px; justify-content:center; padding:3px 0; }
-.stats$thisq {
+.REM0914 { font-weight: normal; text-align: left; padding: 0 20px; font-size: small; color: blue; }
+.tbar0914 { padding: 4px; height: auto; min-height:30px; background-color: #f90; text-align: center; }
+.mcontent0914 { height: 336px; display:flex; gap:8px; justify-content:center; padding:3px 0; }
+.stats0914 {
 width: 763px; padding: 8px 12px; background: #eef3fb; border-left: 4px solid #6699cc;
 font-family: monospace; font-size: .82rem; color: #14293d; line-height: 1.5;
 display: flex; flex-wrap: wrap; gap: 4px 22px;
 }
-.stats$thisq b { color: #0a3d62; }
-.footer$thisq { height: 40px; text-align: center; font-size: normal; display: flex; align-items:center; }
-.footer$thisq .left$thisq   { width: 300px; padding: 2px; text-align:right; padding-right:8px; }
-.footer$thisq .center$thisq { width: 463px; padding: 4px; text-align:left; }
-.footer$thisq:nth-child(4)  { background-color: #fce4ec; }
-.footer$thisq:nth-child(5)  { background-color: #e8f5e9; }
-.footer$thisq:nth-child(6)  { background-color: #e3f2fd; }
-.footer$thisq:nth-child(7)  { background-color: #fff3cd; }
-.footer$thisq:nth-child(8)  { background-color: #f3e5f5; }
-.footer$thisq:nth-child(9)  { background-color: #aff; }
-.footer$thisq:nth-child(10) { background-color: #ff9; }
-.footer$thisq:nth-child(11) { background-color: #dfd; }
-.footer$thisq:nth-child(12)  { background-color: #9cd; }
-.footer$thisq:nth-child(13)  { background-color: #af5; }
-.footer$thisq:nth-child(14)  { background-color: #5ac; }
-.footer$thisq:nth-child(15) { background-color: #5ac; }
-.footer$thisq:nth-child(16) { background-color: #399; }
-.footer$thisq:nth-child(17) { background-color: #aea; }</style>
+.stats0914 b { color: #0a3d62; }
+.footer0914 { height: 40px; text-align: center; font-size: normal; display: flex; align-items:center; }
+.footer0914 .left0914   { width: 300px; padding: 2px; text-align:right; padding-right:8px; }
+.footer0914 .center0914 { width: 463px; padding: 4px; text-align:left; }
+.footer0914:nth-child(4)  { background-color: #fce4ec; }
+.footer0914:nth-child(5)  { background-color: #e8f5e9; }
+.footer0914:nth-child(6)  { background-color: #e3f2fd; }
+.footer0914:nth-child(7)  { background-color: #fff3cd; }
+.footer0914:nth-child(8)  { background-color: #f3e5f5; }
+.footer0914:nth-child(9)  { background-color: #aff; }
+.footer0914:nth-child(10) { background-color: #ff9; }
+.footer0914:nth-child(11) { background-color: #dfd; }
+.footer0914:nth-child(12)  { background-color: #9cd; }
+.footer0914:nth-child(13)  { background-color: #af5; }
+.footer0914:nth-child(14)  { background-color: #5ac; }
+.footer0914:nth-child(15) { background-color: #5ac; }
+.footer0914:nth-child(16) { background-color: #399; }
+.footer0914:nth-child(17) { background-color: #aea; }</style>
 <!-- ════════════════ ACCESSIBILITY CONTROLLER ════════════════ -->
 <script>
-var olA11y$thisq = (function(){
+var olA11y0914 = (function(){
 var ROOT = null;
 var states = { hc:false, lm:false, cb:false, nr:true };
 function styleBtn(id, active) {
@@ -129,15 +129,15 @@ else        { b.style.background='#2a2e3a';             b.style.borderColor='#40
 b.setAttribute('aria-pressed', active ? 'true' : 'false');
 }
 function applyCanvas() {
-var root = document.getElementById('olRoot$thisq');
+var root = document.getElementById('olRoot0914');
 var cvs = root.querySelectorAll('canvas');
 cvs.forEach(function(cv){ cv.style.filter = states.lm ? 'invert(1) hue-rotate(180deg) brightness(0.9)' : ''; });
 }
 function applyNarBar() {
-var nb = document.getElementById('olNarBar$thisq');
+var nb = document.getElementById('olNarBar0914');
 if (nb) nb.style.display = states.nr ? 'block' : 'none';
-var btn = document.getElementById('olBtnNR$thisq');
-if (btn) { btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF'); styleBtn('olBtnNR$thisq', states.nr); }
+var btn = document.getElementById('olBtnNR0914');
+if (btn) { btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF'); styleBtn('olBtnNR0914', states.nr); }
 }
 function applyToolbar() {
 if (ROOT) ROOT.style.setProperty('--ol-toolbar-bg', (states.hc || states.lm) ? '#111' : '#222');
@@ -145,22 +145,22 @@ if (ROOT) ROOT.style.setProperty('--ol-toolbar-bg', (states.hc || states.lm) ? '
 function apply() {
 if (!ROOT) return;
 applyCanvas(); applyNarBar(); applyToolbar();
-styleBtn('olBtnHC$thisq', states.hc);
-styleBtn('olBtnLM$thisq', states.lm);
-styleBtn('olBtnCB$thisq', states.cb);
+styleBtn('olBtnHC0914', states.hc);
+styleBtn('olBtnLM0914', states.lm);
+styleBtn('olBtnCB0914', states.cb);
 }
 return {
-init: function(){ ROOT = document.getElementById('olRoot$thisq'); apply(); },
+init: function(){ ROOT = document.getElementById('olRoot0914'); apply(); },
 toggle: function(k){
 states[k] = !states[k];
 if (k==='hc' && states.hc) states.lm = false;
 if (k==='lm' && states.lm) states.hc = false;
 apply();
-if (typeof olSim$thisq !== 'undefined') olSim$thisq.redraw();
+if (typeof olSim0914 !== 'undefined') olSim0914.redraw();
 },
 narrate: function(msg){
 if (!states.nr) return;
-var nb = document.getElementById('olNarBar$thisq');
+var nb = document.getElementById('olNarBar0914');
 if (nb) nb.textContent = msg;
 },
 isCB: function(){ return states.cb; }
@@ -168,7 +168,7 @@ isCB: function(){ return states.cb; }
 })();</script>
 <!-- ════════════════ PHYSICS CORE ════════════════ -->
 <script>
-var olPhysics$thisq = (function(){
+var olPhysics0914 = (function(){
 var T_REF_C = 20;
 // Carbon composition resistor: small negative temperature coefficient,
 // and a fixed thermal-heating constant standing in for a typical small
@@ -272,10 +272,10 @@ nearestByField:nearestByField, linearFit:linearFit, localSlope:localSlope
 <!-- ════════════════ SIMULATION / UI ════════════════ -->
 <script>
 var ohmSim = function() {
-var PH = olPhysics$thisq;
-var cCanvas = document.getElementById('olCircuit$thisq');
+var PH = olPhysics0914;
+var cCanvas = document.getElementById('olCircuit0914');
 var cCtx = cCanvas.getContext('2d');
-var gCanvas = document.getElementById('olGraph$thisq');
+var gCanvas = document.getElementById('olGraph0914');
 var gCtx = gCanvas.getContext('2d');
 var deviceKind = 'carbonR';     // 'carbonR' | 'lamp'
 var deviceLabel = 'Carbon Resistor';
@@ -323,8 +323,8 @@ return 0.65;
 function rebuildCurve(){
 var Imax = estimateImax();
 curve = PH.buildCurve(deviceKind, currentParams(), T0, Imax, 240, Rint);
-var vSlider = document.getElementById('olV$thisq');
-var iSlider = document.getElementById('olI$thisq');
+var vSlider = document.getElementById('olV0914');
+var iSlider = document.getElementById('olI0914');
 if (deviceKind==='carbonR'){
 var factor = 1+PH.CARBON.alpha*(T0-PH.T_REF_C);
 var Rnow = Math.max(carbonR0*factor, 0.01);
@@ -561,7 +561,7 @@ if (Math.abs(r) < 1) return r.toFixed(4)+' \u03A9';
 return r.toFixed(3)+' \u03A9';
 }
 function updateStats(){
-var box = document.getElementById('olStats$thisq');
+var box = document.getElementById('olStats0914');
 var html = '';
 html += '<span><b>Device</b>: '+deviceLabel+'</span>';
 if (deviceKind==='carbonR'){
@@ -582,7 +582,7 @@ var msg = 'Selected '+deviceLabel+'. ';
 if (deviceKind==='carbonR') msg += 'Resistance set to '+carbonR0+' \u03A9, ambient '+T0+'\u00B0C. ';
 else msg += 'Rated wattage set to '+lampWatts+' W, ambient '+T0+'\u00B0C. ';
 msg += 'Use the graph\'s linear fit or slope explorer to read the resistance -- it isn\'t shown anywhere else.';
-olA11y$thisq.narrate(msg);
+olA11y0914.narrate(msg);
 }
 function redraw(){
 drawCircuit();
@@ -590,17 +590,17 @@ drawGraph();
 updateStats();
 }
 function refreshUIVisibility(){
-document.getElementById('olRowRes$thisq').style.display = (deviceKind==='carbonR') ? 'flex' : 'none';
-document.getElementById('olRowWatt$thisq').style.display = (deviceKind==='lamp') ? 'flex' : 'none';
-var fitCb = document.getElementById('olFit$thisq');
+document.getElementById('olRowRes0914').style.display = (deviceKind==='carbonR') ? 'flex' : 'none';
+document.getElementById('olRowWatt0914').style.display = (deviceKind==='lamp') ? 'flex' : 'none';
+var fitCb = document.getElementById('olFit0914');
 fitCb.disabled = (deviceKind!=='carbonR');
 if (deviceKind!=='carbonR'){ fitCb.checked=false; showFit=false; }
 }
 function syncSlidersFromState(){
-document.getElementById('olV$thisq').value = Vsupply;
-document.getElementById('olVV$thisq').textContent = Vsupply.toFixed(2);
-document.getElementById('olI$thisq').value = Iset;
-document.getElementById('olIV$thisq').textContent = (Iset<1? (Iset*1000).toFixed(1)+' m':Iset.toFixed(3));
+document.getElementById('olV0914').value = Vsupply;
+document.getElementById('olVV0914').textContent = Vsupply.toFixed(2);
+document.getElementById('olI0914').value = Iset;
+document.getElementById('olIV0914').textContent = (Iset<1? (Iset*1000).toFixed(1)+' m':Iset.toFixed(3));
 }
 function chDevice(v){
 collected = [];
@@ -615,60 +615,60 @@ deviceColor='#c9982a';
 }
 refreshUIVisibility();
 rebuildCurve();
-applyOperatingPointFromCurrent(Math.min(Iset, parseFloat(document.getElementById('olI$thisq').max)));
+applyOperatingPointFromCurrent(Math.min(Iset, parseFloat(document.getElementById('olI0914').max)));
 syncSlidersFromState();
 redraw();
 narrateDevice();
 }
 function chResistance(){
-carbonR0 = Number(document.getElementById('olRes$thisq').value);
-document.getElementById('olResV$thisq').textContent = carbonR0;
+carbonR0 = Number(document.getElementById('olRes0914').value);
+document.getElementById('olResV0914').textContent = carbonR0;
 collected = [];
 rebuildCurve();
-applyOperatingPointFromCurrent(Math.min(Iset, parseFloat(document.getElementById('olI$thisq').max)));
+applyOperatingPointFromCurrent(Math.min(Iset, parseFloat(document.getElementById('olI0914').max)));
 syncSlidersFromState();
 redraw();
 narrateDevice();
 }
 function chWattage(){
-lampWatts = Number(document.getElementById('olWatt$thisq').value);
-document.getElementById('olWattV$thisq').textContent = lampWatts;
+lampWatts = Number(document.getElementById('olWatt0914').value);
+document.getElementById('olWattV0914').textContent = lampWatts;
 collected = [];
 rebuildCurve();
-applyOperatingPointFromCurrent(Math.min(Iset, parseFloat(document.getElementById('olI$thisq').max)));
+applyOperatingPointFromCurrent(Math.min(Iset, parseFloat(document.getElementById('olI0914').max)));
 syncSlidersFromState();
 redraw();
 narrateDevice();
 }
 function chAmbient(){
-T0 = Number(document.getElementById('olT0$thisq').value);
-document.getElementById('olT0V$thisq').textContent = T0;
+T0 = Number(document.getElementById('olT00914').value);
+document.getElementById('olT0V0914').textContent = T0;
 collected = [];
 rebuildCurve();
-applyOperatingPointFromCurrent(Math.min(Iset, parseFloat(document.getElementById('olI$thisq').max)));
+applyOperatingPointFromCurrent(Math.min(Iset, parseFloat(document.getElementById('olI0914').max)));
 syncSlidersFromState();
 redraw();
 narrateDevice();
 }
 function chVoltage(v){
 Vsupply = Number(v);
-document.getElementById('olVV$thisq').textContent = Vsupply.toFixed(2);
+document.getElementById('olVV0914').textContent = Vsupply.toFixed(2);
 applyOperatingPointFromVoltage(Vsupply);
-document.getElementById('olI$thisq').value = Iset;
-document.getElementById('olIV$thisq').textContent = (Iset<1? (Iset*1000).toFixed(1)+' m':Iset.toFixed(3));
+document.getElementById('olI0914').value = Iset;
+document.getElementById('olIV0914').textContent = (Iset<1? (Iset*1000).toFixed(1)+' m':Iset.toFixed(3));
 redraw();
 }
 function chCurrent(v){
 Iset = Number(v);
-document.getElementById('olIV$thisq').textContent = (Iset<1? (Iset*1000).toFixed(1)+' m':Iset.toFixed(3));
+document.getElementById('olIV0914').textContent = (Iset<1? (Iset*1000).toFixed(1)+' m':Iset.toFixed(3));
 applyOperatingPointFromCurrent(Iset);
-document.getElementById('olV$thisq').value = Vsupply;
-document.getElementById('olVV$thisq').textContent = Vsupply.toFixed(2);
+document.getElementById('olV0914').value = Vsupply;
+document.getElementById('olVV0914').textContent = Vsupply.toFixed(2);
 redraw();
 }
 function chNoise(v){
 noisePct = Number(v);
-document.getElementById('olNoiseV$thisq').textContent = noisePct.toFixed(1);
+document.getElementById('olNoiseV0914').textContent = noisePct.toFixed(1);
 }
 function collect(){
 if (!lastOp || lastOp.runaway || lastOp.V===null || lastOp.V===undefined) return;
@@ -676,12 +676,12 @@ var noisyI = lastOp.I*(1+gaussianRandom()*noisePct/100);
 var noisyV = lastOp.V*(1+gaussianRandom()*noisePct/100);
 collected.push({I:Math.max(noisyI,0), V:Math.max(noisyV,0)});
 redraw();
-olA11y$thisq.narrate('Data point collected: I='+formatCurrent(noisyI)+', V='+formatVoltage(noisyV)+'. Total points: '+collected.length+'.');
+olA11y0914.narrate('Data point collected: I='+formatCurrent(noisyI)+', V='+formatVoltage(noisyV)+'. Total points: '+collected.length+'.');
 }
 function clearData(){
 collected = [];
 redraw();
-olA11y$thisq.narrate('Collected data cleared.');
+olA11y0914.narrate('Collected data cleared.');
 }
 function toggleFit(checked){
 showFit = checked;
@@ -689,7 +689,7 @@ redraw();
 }
 function toggleCurve(checked){
 showCurve = checked;
-var slopeSlider = document.getElementById('olSlope$thisq');
+var slopeSlider = document.getElementById('olSlope0914');
 slopeSlider.disabled = !checked;
 redraw();
 }
@@ -703,7 +703,7 @@ rebuildCurve();
 applyOperatingPointFromCurrent(Iset);
 syncSlidersFromState();
 redraw();
-olA11y$thisq.narrate('Ready. Carbon Resistor selected. Set the LVPS voltage or current, then collect data points to build the V-I graph.');
+olA11y0914.narrate('Ready. Carbon Resistor selected. Set the LVPS voltage or current, then collect data points to build the V-I graph.');
 }
 boot();
 return {
@@ -714,6 +714,6 @@ redraw:redraw
 };
 };</script>
 <script>
-var olSim$thisq = new ohmSim();
-olA11y$thisq.init();</script>
+var olSim0914 = new ohmSim();
+olA11y0914.init();</script>
 </body></html>
