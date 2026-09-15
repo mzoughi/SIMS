@@ -43,26 +43,24 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 </div>
 <div class="footer0915">
 <div class="left0915">Frequency:</div>
-<div class="center0915">`f:\ ` <input class=islide0915 type="range" id="freqSlider0915" min="100" max="500" value="$freq" step="10" oninput="boundaryPol0915.setFreq(this.value)" onchange="boundaryPol0915.setFreq(this.value)"> <span id="freqValue0915">$freqD</span> Hz</div>
+<div class="center0915">`f:\ ` <input class=islide0915 type="range" id="freqSlider0915" min="100" max="500" value="400" step="10" oninput="boundaryPol0915.setFreq(this.value)" onchange="boundaryPol0915.setFreq(this.value)"> <span id="freqValue0915">400</span> Hz</div>
 </div>
 <div class="footer0915">
 <div class="left0915">Amplitude:</div>
-<div class="center0915">`A:\ ` <input class=islide0915 type="range" id="ampSlider0915" min="5" max="25" value="$amp" step="5" oninput="boundaryPol0915.setAmp(this.value)" onchange="boundaryPol0915.setAmp(this.value)"> <span id="ampValue0915">$ampD</span> cm</div>
+<div class="center0915">`A:\ ` <input class=islide0915 type="range" id="ampSlider0915" min="5" max="25" value="20" step="5" oninput="boundaryPol0915.setAmp(this.value)" onchange="boundaryPol0915.setAmp(this.value)"> <span id="ampValue0915">20</span> cm</div>
 </div>
 <div class="footer0915">
 <div class="left0915">Tension:</div>
-<div class="center0915">`T:\ ` <input class=islide0915 type="range" id="tensionSlider0915" min="50" max="250" value="$tension" step="25" oninput="boundaryPol0915.setTension(this.value)" onchange="boundaryPol0915.setTension(this.value)"> <span id="tensionValue0915">$tensionD</span> N</div>
+<div class="center0915">`T:\ ` <input class=islide0915 type="range" id="tensionSlider0915" min="50" max="250" value="100" step="25" oninput="boundaryPol0915.setTension(this.value)" onchange="boundaryPol0915.setTension(this.value)"> <span id="tensionValue0915">100</span> N</div>
 </div>
 <div class="footer0915">
 <div class="left0915">Mass/length, rope 1:</div>
-<div class="center0915">`mu_1:\ ` <input class=islide0915 type="range" id="mu1Slider0915" min="10" max="40" value="$mu1" step="5" oninput="boundaryPol0915.setMu1(this.value)" onchange="boundaryPol0915.setMu1(this.value)"> <span id="mu1Value0915">$mu1D</span> g/m</div>
+<div class="center0915">`mu_1:\ ` <input class=islide0915 type="range" id="mu1Slider0915" min="10" max="40" value="10" step="5" oninput="boundaryPol0915.setMu1(this.value)" onchange="boundaryPol0915.setMu1(this.value)"> <span id="mu1Value0915">10</span> g/m</div>
 </div>
 <div class="footer0915">
 <div class="left0915">Mass/length, rope 2:</div>
-<div class="center0915">`mu_2:\ ` <input class=islide0915 type="range" id="mu2Slider0915" min="10" max="40" value="$mu2" step="5" oninput="boundaryPol0915.setMu2(this.value)" onchange="boundaryPol0915.setMu2(this.value)"> <span id="mu2Value0915">$mu2D</span> g/m</div>
+<div class="center0915">`mu_2:\ ` <input class=islide0915 type="range" id="mu2Slider0915" min="10" max="40" value="30" step="5" oninput="boundaryPol0915.setMu2(this.value)" onchange="boundaryPol0915.setMu2(this.value)"> <span id="mu2Value0915">30</span> g/m</div>
 </div>
-<hr>
-$hintlink[10]
 <hr>
 <ol type="a">
 <li>As the wave crosses from rope 1 into rope 2, does the wavelength get longer or shorter when `mu_2 &gt; mu_1`? Why?<br /></li>
@@ -107,7 +105,7 @@ width: 663px; min-height: 28px; padding: 5px 10px;
 background: #ffefc0; border-left: 4px solid #e0b040;
 font-size: .88rem; color: #333; font-style: italic;
 }
-.tbar0915    { padding: 4px; height: 50px; background-color: #f90; text-align: center; }
+.tbar0915    { padding: 3px; height: 30px; background-color: #f90; text-align: center; }
 .mcontent0915 { height: 322px; }
 .islide0915 { width: 220px; }
 .playbar0915 {
@@ -124,7 +122,7 @@ background-color: #df9; padding: 8px; text-align: left;
 display: flex; flex-wrap: wrap; gap: 4px 16px;
 }
 .bbar0915 .chk0915 { width: auto; font-size: .84rem; white-space: nowrap; }
-.footer0915  { height: 60px; text-align: center; font-size: normal; display: flex; }
+.footer0915  { height: 40px; text-align: center; font-size: normal; display: flex; }
 .footer0915 .left0915   { width: 150px; padding: 2px; }
 .footer0915 .center0915 { width: 513px; padding: 4px; }
 .footer0915:nth-of-type(odd)  { background-color: #fce4ec; }

@@ -45,11 +45,11 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 </div>
 <div class="footer0915">
 <div class="left0915">Frequency:</div>
-<div class="center0915">`f:\ ` <input class=islide0915 type="range" id="freqSlider0915" min="100" max="5000" value="$freq" step="50" oninput="soundPol0915.setFreq(this.value)" onchange="soundPol0915.setFreq(this.value)"> <span id="freqValue0915">$freqD</span> Hz</div>
+<div class="center0915">`f:\ ` <input class=islide0915 type="range" id="freqSlider0915" min="100" max="5000" value="200" step="50" oninput="soundPol0915.setFreq(this.value)" onchange="soundPol0915.setFreq(this.value)"> <span id="freqValue0915">200</span> Hz</div>
 </div>
 <div class="footer0915">
 <div class="left0915">Amplitude:</div>
-<div class="center0915">`A:\ ` <input class=islide0915 type="range" id="ampSlider0915" min="5" max="50" value="$amp" step="5" oninput="soundPol0915.setAmp(this.value)" onchange="soundPol0915.setAmp(this.value)"> <span id="ampValue0915">$ampD</span> cm</div>
+<div class="center0915">`A:\ ` <input class=islide0915 type="range" id="ampSlider0915" min="5" max="50" value="20" step="5" oninput="soundPol0915.setAmp(this.value)" onchange="soundPol0915.setAmp(this.value)"> <span id="ampValue0915">20</span> cm</div>
 </div>
 <div class="footer0915">
 <div class="left0915">Medium:</div>
@@ -86,10 +86,8 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 </div>
 <div class="footer0915" id="tempRow0915">
 <div class="left0915">Temperature:</div>
-<div class="center0915">`T:\ ` <input class=islide0915 type="range" id="tempSlider0915" min="50" max="500" value="$temp" step="25" oninput="soundPol0915.setTemp(this.value)" onchange="soundPol0915.setTemp(this.value)"> <span id="tempValue0915">$tempD</span> K</div>
+<div class="center0915">`T:\ ` <input class=islide0915 type="range" id="tempSlider0915" min="50" max="500" value="300" step="25" oninput="soundPol0915.setTemp(this.value)" onchange="soundPol0915.setTemp(this.value)"> <span id="tempValue0915">300</span> K</div>
 </div>
-<hr>
-$hintlink[10]
 <hr>
 <ol type="a">
 <li>Turn on the horizontal caliper. Measure the distance between two consecutive compressions (the wavelength). With the medium and temperature fixed, how does increasing frequency `f` affect this wavelength?<br /></li>
@@ -235,7 +233,8 @@ var CW = canvas.width, CH = canvas.height;
 var xBase = 80, yBase = 75;
 var varFont = '12pt Calibri';
 var xScale = 50;                                /* pixels per metre, for both cone motion and phase */
-var freq = $freq, A = $amp / 100;                /* A stored internally in metres */
+//TM var freq = $freq, A = $amp / 100;                /* A stored internally in metres */
+var freq = 200, A = 20 / 100;                /* A stored internally in metres */
 var t = 0.0, t0 = 0.0, tactual = 1000.0, runRate = 30;
 var GC = 8.314;
 var medium = {
@@ -266,7 +265,8 @@ Lead:          { ty: 'solid',  AC: 0, MW: 0, sp: 1322 },
 Rubber:        { ty: 'solid',  AC: 0, MW: 0, sp: 1600 },
 Steel:         { ty: 'solid',  AC: 0, MW: 0, sp: 5130 }
 };
-var med = 'DryAir', Temp = $temp;
+//var med = 'DryAir', Temp = $temp;
+var med = 'DryAir', Temp = 300;
 var v = Math.sqrt(medium[med].AC * GC * Temp / medium[med].MW);
 var lambda = (v > 0) ? v / freq : 0;             /* true wavelength, metres */
 var index = -1;
