@@ -23,7 +23,7 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <button type="button" class="sn_a11ybtn0915" id="snBtnCB0915" onclick="slinkyBoundaryA11y0915.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
 <button type="button" class="sn_a11ybtn0915 sn_a11yon0915" id="snBtnNR0915" onclick="slinkyBoundaryA11y0915.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
 </div>
-<div class="tbar0915"><h3>Wave on a Slinky: Combining Identical Slinkies (K &amp; M Linked), Longitudinal vs. Transverse</h3></div>
+<div class="tbar0915"><h3>Wave on a Slinky: Combining Identical Slinkies (K &amp; M Linked)</h3></div>
 <div class="modebar0915" role="radiogroup" aria-label="Wave type">
 <label class="moderadio0915"><input type="radio" name="mode0915" value="long" id="modeLong0915" checked onchange="slinkyBoundaryPol0915.setMode('long')"> Longitudinal (push/pull)</label>
 <label class="moderadio0915"><input type="radio" name="mode0915" value="trans" id="modeTrans0915" onchange="slinkyBoundaryPol0915.setMode('trans')"> Transverse (side to side)</label>
@@ -50,7 +50,7 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 </div>
 <div class="footer0915">
 <div class="left0915">Frequency:</div>
-<div class="center0915">`f:\ ` <input class=islide0915 type="range" id="freqSlider0915" min="0.5" max="3.0" value="400" step="0.5" oninput="slinkyBoundaryPol0915.setFreq(this.value)" onchange="slinkyBoundaryPol0915.setFreq(this.value)"> <span id="freqValue0915">400</span> Hz</div>
+<div class="center0915">`f:\ ` <input class=islide0915 type="range" id="freqSlider0915" min="0.5" max="5.0" value="3" step="0.5" oninput="slinkyBoundaryPol0915.setFreq(this.value)" onchange="slinkyBoundaryPol0915.setFreq(this.value)"> <span id="freqValue0915">3</span> Hz</div>
 </div>
 <div class="footer0915">
 <div class="left0915">Amplitude:</div>
@@ -142,7 +142,7 @@ background-color: #df9; padding: 8px; text-align: left;
 display: flex; flex-wrap: wrap; gap: 4px 16px;
 }
 .bbar0915 .chk0915 { width: auto; font-size: .84rem; white-space: nowrap; }
-.footer0915  { height: 60px; text-align: center; font-size: normal; display: flex; }
+.footer0915  { height: 40px; text-align: center; font-size: normal; display: flex; }
 .footer0915 .left0915   { width: 160px; padding: 2px; }
 .footer0915 .center0915 { width: 503px; padding: 4px; }
 .footer0915:nth-of-type(odd)  { background-color: #fce4ec; }
@@ -228,7 +228,7 @@ var varFont = '12pt Calibri';
 var yScale = 4;                                 /* px per cm, transverse displacement only */
 //TM var freq = $freq, A = $amp;
 //TM var K1 = $k1, M1 = $m1, n2 = $n2;
-var freq = 400, A = 20;
+var freq = 3, A = 20;
 var K1 = 0.25, M1 = 0.6, n2 = 1.5;
 var K2, M2;                                     /* derived: K2 = n2*K1, M2 = n2*M1 */
 function deriveK2M2() {

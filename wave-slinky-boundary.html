@@ -53,7 +53,7 @@ var Tension = 100;                          /* used only in transverse mode */
 
 <div class="footer0915">
 <div class="left0915">Frequency:</div>
-<div class="center0915">`f:\ ` <input class=islide0915 type="range" id="freqSlider0915" min="0.5" max="3.0" value="400" step="0.5" oninput="slinkyBoundaryPol0915.setFreq(this.value)" onchange="slinkyBoundaryPol0915.setFreq(this.value)"> <span id="freqValue0915">400</span> Hz</div>
+<div class="center0915">`f:\ ` <input class=islide0915 type="range" id="freqSlider0915" min="0.5" max="4.0" value="3" step="0.5" oninput="slinkyBoundaryPol0915.setFreq(this.value)" onchange="slinkyBoundaryPol0915.setFreq(this.value)"> <span id="freqValue0915">3</span> Hz</div>
 </div>
 <div class="footer0915">
 <div class="left0915">Amplitude:</div>
@@ -228,8 +228,8 @@ var yScale = 4;                                 /* px per cm, transverse displac
 //TM var K1 = $k1, M1 = $m1, K2 = $k2, M2 = $m2;
 //TM var Tension = $tension;                          /* used only in transverse mode */
 //TM var freq = $freq, A = $amp, Tension = $tension, mu1 = $mu1, mu2 = $mu2;
-//TM var freq = 400, A = 20, Tension = 100, mu1 = 10, mu2 = 30;
-var freq = 400, A = 20;
+//TM var freq = 3, A = 20, Tension = 100, mu1 = 10, mu2 = 30;
+var freq = 3, A = 20;
 var K1 = 0.25, M1 = 0.6, K2 = 0.125, M2 = 1.2;
 var Tension = 100;                          /* used only in transverse mode */
 var L = 6;                                       /* natural length per slinky segment, m (fixed) */
