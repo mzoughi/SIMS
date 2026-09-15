@@ -50,30 +50,28 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 </div>
 <div class="footer0915">
 <div class="left0915">Frequency:</div>
-<div class="center0915">`f:\ ` <input class=islide0915 type="range" id="freqSlider0915" min="0.5" max="3.0" value="$freq" step="0.5" oninput="slinkyBoundaryPol0915.setFreq(this.value)" onchange="slinkyBoundaryPol0915.setFreq(this.value)"> <span id="freqValue0915">$freqD</span> Hz</div>
+<div class="center0915">`f:\ ` <input class=islide0915 type="range" id="freqSlider0915" min="0.5" max="3.0" value="400" step="0.5" oninput="slinkyBoundaryPol0915.setFreq(this.value)" onchange="slinkyBoundaryPol0915.setFreq(this.value)"> <span id="freqValue0915">400</span> Hz</div>
 </div>
 <div class="footer0915">
 <div class="left0915">Amplitude:</div>
-<div class="center0915">`A:\ ` <input class=islide0915 type="range" id="ampSlider0915" min="4" max="20" value="$amp" step="2" oninput="slinkyBoundaryPol0915.setAmp(this.value)" onchange="slinkyBoundaryPol0915.setAmp(this.value)"> <span id="ampValue0915">$ampD</span> cm</div>
-</div>
-<div class="footer0915" id="tensionRow0915" style="display:none;">
-<div class="left0915">Tension (transverse):</div>
-<div class="center0915">`T:\ ` <input class=islide0915 type="range" id="tensionSlider0915" min="1" max="20" value="$tension" step="1" oninput="slinkyBoundaryPol0915.setTension(this.value)" onchange="slinkyBoundaryPol0915.setTension(this.value)"> <span id="tensionValue0915">$tensionD</span> N</div>
+<div class="center0915">`A:\ ` <input class=islide0915 type="range" id="ampSlider0915" min="4" max="30" value="20" step="2" oninput="slinkyBoundaryPol0915.setAmp(this.value)" onchange="slinkyBoundaryPol0915.setAmp(this.value)"> <span id="ampValue0915">20</span> cm</div>
 </div>
 <div class="footer0915">
 <div class="left0915">Spring const., slinky 1:</div>
-<div class="center0915">`K_1:\ ` <input class=islide0915 type="range" id="k1Slider0915" min="0.1" max="0.7" value="$k1" step="0.05" oninput="slinkyBoundaryPol0915.setK1(this.value)" onchange="slinkyBoundaryPol0915.setK1(this.value)"> <span id="k1Value0915">$k1D</span> N/m</div>
+<div class="center0915">`K_1:\ ` <input class=islide0915 type="range" id="k1Slider0915" min="0.1" max="0.7" value="0.25" step="0.05" oninput="slinkyBoundaryPol0915.setK1(this.value)" onchange="slinkyBoundaryPol0915.setK1(this.value)"> <span id="k1Value0915">0.25</span> N/m</div>
 </div>
 <div class="footer0915">
 <div class="left0915">Mass, slinky 1:</div>
-<div class="center0915">`M_1:\ ` <input class=islide0915 type="range" id="m1Slider0915" min="0.3" max="1.6" value="$m1" step="0.1" oninput="slinkyBoundaryPol0915.setM1(this.value)" onchange="slinkyBoundaryPol0915.setM1(this.value)"> <span id="m1Value0915">$m1D</span> kg</div>
+<div class="center0915">`M_1:\ ` <input class=islide0915 type="range" id="m1Slider0915" min="0.3" max="1.6" value="0.6" step="0.1" oninput="slinkyBoundaryPol0915.setM1(this.value)" onchange="slinkyBoundaryPol0915.setM1(this.value)"> <span id="m1Value0915">0.6</span> kg</div>
 </div>
 <div class="footer0915">
 <div class="left0915">Slinky 2 (linked):</div>
-<div class="center0915">`n_2:\ ` <input class=islide0915 type="range" id="n2Slider0915" min="1" max="3" value="$n2" step="0.5" oninput="slinkyBoundaryPol0915.setN2(this.value)" onchange="slinkyBoundaryPol0915.setN2(this.value)"> <span id="n2Value0915">$n2D</span>&times; slinky 1 &nbsp; (`K_2=` <span id="k2Derived0915">$k2D</span> N/m, `M_2=` <span id="m2Derived0915">$m2D</span> kg)</div>
+<div class="center0915">`n_2:\ ` <input class=islide0915 type="range" id="n2Slider0915" min="1" max="3" value="1.5" step="0.5" oninput="slinkyBoundaryPol0915.setN2(this.value)" onchange="slinkyBoundaryPol0915.setN2(this.value)"> <span id="n2Value0915">1.5</span>&times; slinky 1 &nbsp; (`K_2=` <span id="k2Derived0915">?</span> N/m, `M_2=` <span id="m2Derived0915">?</span> kg)</div>
 </div>
-<hr>
-$hintlink[10]
+<div class="footer0915" id="tensionRow0915" style="display:none;">
+<div class="left0915">Tension (transverse):</div>
+<div class="center0915">`T:\ ` <input class=islide0915 type="range" id="tensionSlider0915" min="1" max="20" value="100" step="1" oninput="slinkyBoundaryPol0915.setTension(this.value)" onchange="slinkyBoundaryPol0915.setTension(this.value)"> <span id="tensionValue0915">100</span> N</div>
+</div>
 <hr>
 <ol type="a">
 <li>Without changing `K_1, M_1,` or `n_2`, switch between Longitudinal and Transverse mode. Does the speed ratio `v_2\/v_1` stay the same? Explain, using the two different speed formulas.<br /></li>
@@ -228,15 +226,18 @@ var CW = canvas.width, CH = canvas.height;
 var xBase = 80, yBase = 75, centerY = yBase + 90;
 var varFont = '12pt Calibri';
 var yScale = 4;                                 /* px per cm, transverse displacement only */
-var freq = $freq, A = $amp;
-var K1 = $k1, M1 = $m1, n2 = $n2;
+//TM var freq = $freq, A = $amp;
+//TM var K1 = $k1, M1 = $m1, n2 = $n2;
+var freq = 400, A = 20;
+var K1 = 0.25, M1 = 0.6, n2 = 1.5;
 var K2, M2;                                     /* derived: K2 = n2*K1, M2 = n2*M1 */
 function deriveK2M2() {
 K2 = n2 * K1; M2 = n2 * M1;
 var k2El = document.getElementById('k2Derived0915'); if (k2El) k2El.textContent = K2.toFixed(2);
 var m2El = document.getElementById('m2Derived0915'); if (m2El) m2El.textContent = M2.toFixed(1);
 }
-var Tension = $tension;                          /* used only in transverse mode */
+//TM var Tension = $tension;                          /* used only in transverse mode */
+var Tension = 100;                          /* used only in transverse mode */
 var L = 6;                                       /* natural length per slinky segment, m (fixed) */
 var SW = 2.0;                                    /* coil phase multiplier */
 var t = 0.0, t0 = 0.0, tactual = 100.0, runRate = 10;

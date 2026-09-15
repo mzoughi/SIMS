@@ -50,13 +50,13 @@ onclick="if(this.value=='Play'){rtSim0915.pl();this.value='Pause';}else{this.val
 <div class="rt_ctrlrow0915">
 <div class="rt_ctrlcol0915">
 <div class="rt_ctrltitle0915">Sources</div>
-# = <input type="range" id="rtCount0915" min="1" max="5" value="3" step="1"
+# = <input style=width:110px type="range" id="rtCount0915" min="1" max="5" value="3" step="1"
 oninput="rtSim0915.setSourceCount(this.value)">
 <span id="rtCountVal0915">3</span>
 </div>
 <div class="rt_ctrlcol0915">
 <div class="rt_ctrltitle0915">Wave speed</div>
-v = <input type="range" id="rtSpeed0915" min="60" max="300" value="150" step="10"
+v = <input style=width:110px type="range" id="rtSpeed0915" min="60" max="300" value="150" step="10"
 oninput="rtSim0915.setWaveSpeed(this.value)">
 <span id="rtSpeedVal0915">150</span> mm/s
 </div>
@@ -67,6 +67,8 @@ oninput="rtSim0915.setWaveSpeed(this.value)">
 <label><input type="checkbox" id="rtPhase0915" checked onclick="rtSim0915.togglePhase()"> Sources in phase</label>
 </div>
 </div>
+</div>
+<div class="footer0915">
 <div class="rt_sectitle0915">Quick actions</div>
 <div class="rt_ctrlrow0915">
 <div class="rt_ctrlcol0915 rt_btncol0915">
@@ -84,6 +86,8 @@ oninput="rtSim0915.setSeparation(this.value)">
 <span id="rtSepVal0915">100</span> mm
 </div>
 </div>
+</div>
+<div class="footer0915">
 <div class="rt_sectitle0915">Selected source</div>
 <div class="rt_ctrlrow0915">
 <div class="rt_ctrlcol0915">
@@ -95,40 +99,42 @@ oninput="rtSim0915.setSeparation(this.value)">
 </div>
 <div class="rt_ctrlcol0915">
 <div class="rt_ctrltitle0915">Frequency</div>
-&fnof; = <input type="range" id="rtSrcFreq0915" min="0.4" max="3.0" value="1.2" step="0.1"
+&fnof; = <input style=width:110px type="range" id="rtSrcFreq0915" min="0.4" max="3.0" value="1.2" step="0.1"
 oninput="rtSim0915.setSelectedFrequency(this.value)">
 <span id="rtSrcFreqVal0915">1.2</span> Hz
 </div>
 <div class="rt_ctrlcol0915">
 <div class="rt_ctrltitle0915">Amplitude</div>
-A = <input type="range" id="rtSrcAmp0915" min="4" max="20" value="10" step="1"
+A = <input style=width:110px type="range" id="rtSrcAmp0915" min="4" max="20" value="10" step="1"
 oninput="rtSim0915.setSelectedAmplitude(this.value)">
 <span id="rtSrcAmpVal0915">10</span> mm
 </div>
 <div class="rt_ctrlcol0915">
 <div class="rt_ctrltitle0915">Position X</div>
-<input type="range" id="rtSrcX0915" min="0" max="800" value="96" step="5"
+<input style=width:110px type="range" id="rtSrcX0915" min="0" max="800" value="96" step="5"
 oninput="rtSim0915.setSelectedX(this.value)">
 <span id="rtSrcXVal0915">96</span> mm
 </div>
 <div class="rt_ctrlcol0915">
 <div class="rt_ctrltitle0915">Position Y</div>
-<input type="range" id="rtSrcY0915" min="0" max="800" value="176" step="5"
+<input style=width:110px type="range" id="rtSrcY0915" min="0" max="800" value="176" step="5"
 oninput="rtSim0915.setSelectedY(this.value)">
 <span id="rtSrcYVal0915">176</span> mm
 </div>
 </div>
+</div>
+<div class="footer0915">
 <div class="rt_sectitle0915">Buoy (sensor)</div>
 <div class="rt_ctrlrow0915">
 <div class="rt_ctrlcol0915">
 <div class="rt_ctrltitle0915">Buoy X</div>
-<input type="range" id="rtBuoyX0915" min="0" max="800" value="400" step="5"
+<input style=width:110px type="range" id="rtBuoyX0915" min="0" max="800" value="400" step="5"
 oninput="rtSim0915.setBuoyX(this.value)">
 <span id="rtBuoyXVal0915">400</span> mm
 </div>
 <div class="rt_ctrlcol0915">
 <div class="rt_ctrltitle0915">Buoy Y</div>
-<input type="range" id="rtBuoyY0915" min="0" max="800" value="520" step="5"
+<input style=width:110px type="range" id="rtBuoyY0915" min="0" max="800" value="520" step="5"
 oninput="rtSim0915.setBuoyY(this.value)">
 <span id="rtBuoyYVal0915">520</span> mm
 </div>
@@ -169,25 +175,27 @@ width:806px; min-height:28px; padding:5px 10px;
 background:#ffefc0; border-left:4px solid #e0b040;
 font-size:.88rem; color:#333; font-style:italic;
 }
-.tbar0915    { padding:4px; height:35px; background-color:#f90; text-align:center; line-height:42px; width:806px; }
+.tbar0915    { padding:2px; height:35px; background-color:#f90; text-align:center; line-height:28px; width:806px; }
 .tbar0915 h3 { font-size:1.1rem; font-weight:bold; }
 .mcontent0915 { height:804px; width:806px; }
 .rt_chartwrap0915 { width:806px; background:#0b1830; padding:6px 0 4px; }
 .rt_paneltitle0915{ width:786px; margin:0 auto 4px; color:#a9c6e8; font-size:.78rem; text-align:center; }
 .rt_readout0915 { width:786px; margin:4px auto 0; color:#cfe3ff; font-size:.8rem; font-family:monospace; text-align:center; }
 .rt_deltalist0915 { width:786px; margin:3px auto 6px; color:#ffe08a; font-size:.78rem; font-family:monospace; text-align:center; }
-.bbar0915    { height:50px; background-color:#df9; padding:10px; text-align:center; width:806px; }
+.bbar0915    { height:40px; background-color:#df9; padding:5px; text-align:center; width:806px; }
 .bbar0915 input[type=button] { margin:0 4px; padding:4px 12px; cursor:pointer; }
-.footer0915  { width:806px; background-color:#fce4ec; font-size:.85rem; padding:8px 0; }
+.footer0915  { width:806px; font-size:.85rem; padding:8px 0; }
 .footer0915 .rt_sectitle0915 { width:786px; margin:6px auto 2px; padding-left:12px; font-weight:bold; font-size:.8rem; color:#883355; }
 .footer0915 .rt_ctrlrow0915  { width:806px; display:flex; flex-wrap:wrap; }
-.footer0915 .rt_ctrlcol0915  { width:186px; padding:4px 6px; }
+.footer0915 .rt_ctrlcol0915  { width:196px; padding:4px 6px; }
 .footer0915 .rt_ckcol0915    { width:190px; display:flex; align-items:center; }
 .footer0915 .rt_hintcol0915  { width:220px; display:flex; align-items:center; }
 .footer0915 .rt_btncol0915   { display:flex; flex-direction:column; justify-content:center; gap:3px; }
 .footer0915 .rt_ctrltitle0915{ width:100%; font-weight:bold; margin-bottom:2px; }
 .footer0915 .rt_hint0915     { font-size:.72rem; color:#555; font-style:italic; }
 .footer0915 .rt_toolbtn0915  { padding:5px 8px; cursor:pointer; }
+.footer0915:nth-of-type(odd)  { background-color: #fce4ec; }
+.footer0915:nth-of-type(even) { background-color: #e8f5e9; }
 </style>
 <!-- ════════ A11Y CONTROLLER ════════ -->
 <script>

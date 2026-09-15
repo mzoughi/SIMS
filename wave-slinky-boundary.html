@@ -47,37 +47,38 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <label class="chk0915" id="dyRow0915" style="display:none;"><input type="checkbox" id="showDY0915" onchange="slinkyBoundaryPol0915.toggleDeltaY(this)"> <span id="dyLbl0915">Show vertical caliper (&#916;y)</span></label>
 <label class="chk0915"><input type="checkbox" id="showWaveData0915" checked onchange="slinkyBoundaryPol0915.toggleWaveData(this)"> <span id="waveDataLbl0915">Hide wave-data panel</span></label>
 <label class="chk0915"><input type="checkbox" id="showAnimData0915" checked onchange="slinkyBoundaryPol0915.toggleAnimData(this)"> <span id="animDataLbl0915">Hide animation-time panel</span></label>
-</div>
+</div>var freq = , A = ;
+var K1 = , M1 = 0.6, K2 = 0.125, M2 = 1.2;
+var Tension = 100;                          /* used only in transverse mode */
+
 <div class="footer0915">
 <div class="left0915">Frequency:</div>
-<div class="center0915">`f:\ ` <input class=islide0915 type="range" id="freqSlider0915" min="0.5" max="3.0" value="$freq" step="0.5" oninput="slinkyBoundaryPol0915.setFreq(this.value)" onchange="slinkyBoundaryPol0915.setFreq(this.value)"> <span id="freqValue0915">$freqD</span> Hz</div>
+<div class="center0915">`f:\ ` <input class=islide0915 type="range" id="freqSlider0915" min="0.5" max="3.0" value="400" step="0.5" oninput="slinkyBoundaryPol0915.setFreq(this.value)" onchange="slinkyBoundaryPol0915.setFreq(this.value)"> <span id="freqValue0915">400</span> Hz</div>
 </div>
 <div class="footer0915">
 <div class="left0915">Amplitude:</div>
-<div class="center0915">`A:\ ` <input class=islide0915 type="range" id="ampSlider0915" min="4" max="20" value="$amp" step="2" oninput="slinkyBoundaryPol0915.setAmp(this.value)" onchange="slinkyBoundaryPol0915.setAmp(this.value)"> <span id="ampValue0915">$ampD</span> cm</div>
+<div class="center0915">`A:\ ` <input class=islide0915 type="range" id="ampSlider0915" min="4" max="20" value="20" step="2" oninput="slinkyBoundaryPol0915.setAmp(this.value)" onchange="slinkyBoundaryPol0915.setAmp(this.value)"> <span id="ampValue0915">20</span> cm</div>
 </div>
 <div class="footer0915" id="tensionRow0915" style="display:none;">
 <div class="left0915">Tension (transverse):</div>
-<div class="center0915">`T:\ ` <input class=islide0915 type="range" id="tensionSlider0915" min="1" max="20" value="$tension" step="1" oninput="slinkyBoundaryPol0915.setTension(this.value)" onchange="slinkyBoundaryPol0915.setTension(this.value)"> <span id="tensionValue0915">$tensionD</span> N</div>
+<div class="center0915">`T:\ ` <input class=islide0915 type="range" id="tensionSlider0915" min="1" max="20" value="100" step="1" oninput="slinkyBoundaryPol0915.setTension(this.value)" onchange="slinkyBoundaryPol0915.setTension(this.value)"> <span id="tensionValue0915">100</span> N</div>
 </div>
 <div class="footer0915">
 <div class="left0915">Spring const., slinky 1:</div>
-<div class="center0915">`K_1:\ ` <input class=islide0915 type="range" id="k1Slider0915" min="0.1" max="0.7" value="$k1" step="0.05" oninput="slinkyBoundaryPol0915.setK1(this.value)" onchange="slinkyBoundaryPol0915.setK1(this.value)"> <span id="k1Value0915">$k1D</span> N/m</div>
+<div class="center0915">`K_1:\ ` <input class=islide0915 type="range" id="k1Slider0915" min="0.1" max="0.7" value="0.25" step="0.005" oninput="slinkyBoundaryPol0915.setK1(this.value)" onchange="slinkyBoundaryPol0915.setK1(this.value)"> <span id="k1Value0915">0.25</span> N/m</div>
 </div>
 <div class="footer0915">
 <div class="left0915">Mass, slinky 1:</div>
-<div class="center0915">`M_1:\ ` <input class=islide0915 type="range" id="m1Slider0915" min="0.3" max="1.6" value="$m1" step="0.1" oninput="slinkyBoundaryPol0915.setM1(this.value)" onchange="slinkyBoundaryPol0915.setM1(this.value)"> <span id="m1Value0915">$m1D</span> kg</div>
+<div class="center0915">`M_1:\ ` <input class=islide0915 type="range" id="m1Slider0915" min="0.3" max="1.6" value="0.6" step="0.1" oninput="slinkyBoundaryPol0915.setM1(this.value)" onchange="slinkyBoundaryPol0915.setM1(this.value)"> <span id="m1Value0915">0.6</span> kg</div>
 </div>
 <div class="footer0915">
 <div class="left0915">Spring const., slinky 2:</div>
-<div class="center0915">`K_2:\ ` <input class=islide0915 type="range" id="k2Slider0915" min="0.1" max="0.7" value="$k2" step="0.05" oninput="slinkyBoundaryPol0915.setK2(this.value)" onchange="slinkyBoundaryPol0915.setK2(this.value)"> <span id="k2Value0915">$k2D</span> N/m</div>
+<div class="center0915">`K_2:\ ` <input class=islide0915 type="range" id="k2Slider0915" min="0.1" max="0.7" value="0.125" step="0.005" oninput="slinkyBoundaryPol0915.setK2(this.value)" onchange="slinkyBoundaryPol0915.setK2(this.value)"> <span id="k2Value0915">0.125</span> N/m</div>
 </div>
 <div class="footer0915">
 <div class="left0915">Mass, slinky 2:</div>
-<div class="center0915">`M_2:\ ` <input class=islide0915 type="range" id="m2Slider0915" min="0.3" max="1.6" value="$m2" step="0.1" oninput="slinkyBoundaryPol0915.setM2(this.value)" onchange="slinkyBoundaryPol0915.setM2(this.value)"> <span id="m2Value0915">$m2D</span> kg</div>
+<div class="center0915">`M_2:\ ` <input class=islide0915 type="range" id="m2Slider0915" min="0.3" max="1.6" value="1.2" step="0.1" oninput="slinkyBoundaryPol0915.setM2(this.value)" onchange="slinkyBoundaryPol0915.setM2(this.value)"> <span id="m2Value0915">1.2</span> kg</div>
 </div>
-<hr>
-$hintlink[10]
 <hr>
 <ol type="a">
 <li>Without changing `K_1, M_1, K_2, M_2`, switch between Longitudinal and Transverse mode. Does the speed ratio `v_2\/v_1` stay the same? Explain, using the two different speed formulas.<br /></li>
