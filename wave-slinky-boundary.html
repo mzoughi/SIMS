@@ -47,10 +47,7 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <label class="chk0915" id="dyRow0915" style="display:none;"><input type="checkbox" id="showDY0915" onchange="slinkyBoundaryPol0915.toggleDeltaY(this)"> <span id="dyLbl0915">Show vertical caliper (&#916;y)</span></label>
 <label class="chk0915"><input type="checkbox" id="showWaveData0915" checked onchange="slinkyBoundaryPol0915.toggleWaveData(this)"> <span id="waveDataLbl0915">Hide wave-data panel</span></label>
 <label class="chk0915"><input type="checkbox" id="showAnimData0915" checked onchange="slinkyBoundaryPol0915.toggleAnimData(this)"> <span id="animDataLbl0915">Hide animation-time panel</span></label>
-</div>var freq = , A = ;
-var K1 = , M1 = 0.6, K2 = 0.125, M2 = 1.2;
-var Tension = 100;                          /* used only in transverse mode */
-
+</div>
 <div class="footer0915">
 <div class="left0915">Frequency:</div>
 <div class="center0915">`f:\ ` <input class=islide0915 type="range" id="freqSlider0915" min="0.5" max="4.0" value="3" step="0.5" oninput="slinkyBoundaryPol0915.setFreq(this.value)" onchange="slinkyBoundaryPol0915.setFreq(this.value)"> <span id="freqValue0915">3</span> Hz</div>
