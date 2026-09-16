@@ -262,7 +262,9 @@ else if (v >= 1e6) { unit = 'MΩ'; div = 1e6; }
 else if (v >= 1e3) { unit = 'kΩ'; div = 1e3; }
 let n = v / div;
 let str = n >= 100 ? n.toFixed(0) : n >= 10 ? n.toFixed(1) : n.toFixed(2);
-str = str.replace(/\.?0+$/, '');
+if (str.indexOf('.') !== -1) {
+str = str.replace(/0+$/, '').replace(/\.$/, '');
+}
 return str + ' ' + unit;
 }
 function computeValue(){
@@ -350,7 +352,9 @@ ${bands}
 <linearGradient id="bodyShade" x1="0" y1="0" x2="0" y2="1">
 <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
 <stop offset="0.5" stop-color="#ffffff" stop-opacity="0"/>
-<stop offset="1" stop-color="#000000" stop-opacity="0.15"/></linearGradient></defs>
+<stop offset="1" stop-color="#000000" stop-opacity="0.15"/>
+</linearGradient>
+</defs>
 `;
 }
 function renderReadout(){
@@ -394,5 +398,7 @@ document.querySelectorAll('#modeToggle button').forEach(b => b.classList.toggle(
 renderAll();
 });
 renderReference();
-renderAll();</script>
-</body></html>
+renderAll();
+</script>
+</body>
+</html>
