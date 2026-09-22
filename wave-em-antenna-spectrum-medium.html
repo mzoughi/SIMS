@@ -23,7 +23,7 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <button type="button" class="emant_a11ybtn0922" id="emAntBtnCB0922" onclick="emAntA11y0922.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
 <button type="button" class="emant_a11ybtn0922 emant_a11yon0922" id="emAntBtnNR0922" onclick="emAntA11y0922.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
 </div>
-<div class="tbar0922"><h3>An Antenna Radiating an Electromagnetic Wave</h3></div>
+<div class="tbar0922"><h3>An Antenna Radiating Through a Medium: Index of Refraction</h3></div>
 <div class="mcontent0922">
 <canvas id="emAntCanvas0922" style="margin:auto;display:block;border:1px solid #ccc;cursor:grab;touch-action:none" width="660" height="480"></canvas>
 <div class="draghint0922">Drag to rotate the view &bull; Scroll / pinch to zoom</div>
@@ -80,7 +80,17 @@ onclick="if(this.value=='Play'){emAntSim0922.pl();this.value='Pause';}else{this.
 <span id="emAntAmpVal0922">6</span> (rel. units, independent of band)
 </div>
 </div>
-<div class="fnote0922">Propagation is along k&#770; (fixed, world z), the antenna's broadside direction &mdash; real dipole antennas radiate in a donut-shaped pattern, but this sim shows only that one representative direction. B is drawn at the same visual height as E for clarity; in real SI units B = E/c is far too small to see next to E. Changing the band changes &lambda;, its units, and the derived frequency f = c/&lambda; &mdash; it does not change E&#8320; or the on-screen rendering scale, which always shows about 3 wavelengths for legibility (real wavelengths span 12+ orders of magnitude across the spectrum, so true-to-scale rendering isn't possible on one canvas).</div>
+<div class="footer0922">
+<div class="left0922">Medium index n:</div>
+<div class="center0922">
+<input class=islide0922 type="range" id="emAntN0922" min="1.0" max="2.5" value="1.5" step="0.01"
+ oninput="emAntSim0922.setN(this.value)" onchange="emAntSim0922.setN(this.value)">
+<span id="emAntNVal0922">1.50</span> &nbsp; <span id="emAntNNote0922" style="font-style:italic;color:#556;"></span>
+</div>
+</div>
+<div class="fnote0922">Propagation is along k&#770; (fixed, world z), the antenna's broadside direction &mdash; real dipole antennas radiate in a donut-shaped pattern, but this sim shows only that one representative direction. B is drawn at the same visual height as E for clarity; in real SI units B = E/c is far too small to see next to E. Changing the band changes &lambda;, its units, and the derived frequency f = c/&lambda; &mdash; it does not change E&#8320; or the on-screen rendering scale, which always shows about 3 (vacuum) wavelengths for legibility (real wavelengths span 12+ orders of magnitude across the spectrum, so true-to-scale rendering isn't possible on one canvas). The whole scene beyond the antenna is filled with a medium of index n (default n=1 would be vacuum); entering it never changes the frequency f, set by the antenna itself, but it does change the wavelength (&lambda; = &lambda;&#8320;/n) and the speed (v = c/n) &mdash; watch the wave visibly compress and slow as n increases. The slider's range is different for each band, since realistic index values differ enormously by wavelength; for X-ray and gamma bands the index is usually just <em>below</em> 1, a genuinely different (and important) regime. Color, tied to frequency, is computed from the source wavelength &lambda;&#8320; and does not change with n.</div>
+<hr>
+$hintlink[10]
 <hr>
 <ol type="a">
 <li>Rotate the antenna to `theta=90^@`. How does the E field's oscillation direction on screen change? Does the B field's direction change the same way?<br /></li>
@@ -90,7 +100,9 @@ onclick="if(this.value=='Play'){emAntSim0922.pl();this.value='Pause';}else{this.
 <li>Which spectrum band has the longest wavelength? The shortest? The highest frequency?<br /></li>
 <li>Switch to Visible and try a few different &lambda; values. Does the E field's color change to match? Why is this a special feature of only this one band?<br /></li>
 <li>Drag the view until you're looking straight down the propagation axis (along k&#770;). What do you see about E, B, and the antenna's own orientation from that viewpoint?<br /></li>
-<li>Does switching bands (say, Radio to X-ray) change the wave's speed? Why or why not?<br /></li>
+<li>Set n=1 (vacuum) and note the wave's spacing and speed. Now raise n. What visibly changes about the wave? What stays exactly the same, and why must it?<br /></li>
+<li>Switch to the X-ray or Gamma band. The n slider now sits within a hair of 1. Find a setting where n is slightly <em>less</em> than 1. What does v=c/n become there &mdash; and is that a problem?<br /></li>
+<li>Switch to Visible and set n to represent ordinary glass (about 1.5). Does the E field's color on screen change? Given what determines color, should it?<br /></li>
 </ol>
 </div><!-- #emAntRoot0922 -->
 <style>
@@ -243,13 +255,27 @@ representative wavelength range and its natural units. Only the
 displayed lambda/frequency and units change with band -- the render
 scale (always ~3 wavelengths across the scene) and E0 never do. ── */
 var BANDS = {
-radio:     { label:'Radio',       lamMin:1,   lamMax:10,    unit:'m'  },
-microwave: { label:'Microwave',   lamMin:1,   lamMax:20,    unit:'cm' },
-infrared:  { label:'Infrared',    lamMin:1,   lamMax:50,    unit:'\u03bcm' },
-visible:   { label:'Visible',     lamMin:380, lamMax:750,   unit:'nm' },
-uv:        { label:'Ultraviolet', lamMin:10,  lamMax:380,   unit:'nm' },
-xray:      { label:'X-ray',       lamMin:10,  lamMax:10000, unit:'pm' },
-gamma:     { label:'Gamma ray',   lamMin:0.1, lamMax:10,    unit:'pm' }
+radio:     { label:'Radio',       lamMin:1,   lamMax:10,    unit:'m',
+nMin:1.0,     nMax:6.0,     nStep:0.05,     nDefault:2.0,      nDecimals:2,
+nNote:'e.g. common RF dielectrics: PTFE \u22481.45, FR4 board \u22482.1, ceramics up to \u22486\u201310' },
+microwave: { label:'Microwave',   lamMin:1,   lamMax:20,    unit:'cm',
+nMin:1.0,     nMax:4.0,     nStep:0.05,     nDefault:2.0,      nDecimals:2,
+nNote:'e.g. alumina ceramic \u22483.1, silicon \u22483.4 at microwave frequencies' },
+infrared:  { label:'Infrared',    lamMin:1,   lamMax:50,    unit:'\u03bcm',
+nMin:1.0,     nMax:4.5,     nStep:0.05,     nDefault:3.4,      nDecimals:2,
+nNote:'e.g. silicon \u22483.4, germanium \u22484.0 \u2014 both opaque in visible, transparent here' },
+visible:   { label:'Visible',     lamMin:380, lamMax:750,   unit:'nm',
+nMin:1.0,     nMax:2.5,     nStep:0.01,     nDefault:1.5,      nDecimals:2,
+nNote:'e.g. water 1.33, crown glass 1.52, diamond 2.42' },
+uv:        { label:'Ultraviolet', lamMin:10,  lamMax:380,   unit:'nm',
+nMin:1.0,     nMax:1.8,     nStep:0.01,     nDefault:1.4,      nDecimals:2,
+nNote:'e.g. fused silica \u22481.5 \u2014 many common glasses instead absorb strongly here' },
+xray:      { label:'X-ray',       lamMin:10,  lamMax:10000, unit:'pm',
+nMin:0.99990, nMax:1.00000, nStep:0.000005, nDefault:0.99995,  nDecimals:6,
+nNote:'real materials: n = 1\u2212\u03b4 with \u03b4\u224810\u207b\u2075\u201310\u207b\u2076 \u2014 enables grazing-incidence X-ray mirrors' },
+gamma:     { label:'Gamma ray',   lamMin:0.1, lamMax:10,    unit:'pm',
+nMin:0.999990,nMax:1.000000,nStep:0.0000005,nDefault:0.999998, nDecimals:7,
+nNote:'\u03b4 is smaller still here \u2014 gamma rays barely refract at all; other effects (Compton, pair production) dominate their interaction with matter' }
 };
 var UNIT_SCALE = { m:1, cm:1e-2, '\u03bcm':1e-6, nm:1e-9, pm:1e-12 };
 var BAND_ORDER = ['radio','microwave','infrared','visible','uv','xray','gamma'];
@@ -258,6 +284,7 @@ var bandKey = 'visible';
 var sliderVal = 3;          /* the band-independent 1..6 slider position */
 var lambdaPhys, lambdaUnit, lambdaM;  /* displayed wavelength + its meaning in metres */
 var E0, thetaDeg, k, f, omega;
+var nIndex, kMedium;             /* medium's index of refraction, and the resulting (internal-units) wavenumber */
 var animPhase, frameCount, Zmax, zOffsetM, spaceScale;
 var showBField = true, showSpectrum = true;
 var narrationEvery = 70;
@@ -423,7 +450,7 @@ function drawFieldRibbon(angleOffsetDeg, color, label, withArrows){
 var dz = Zmax/200, s;
 var pts = [];
 for (s=0; s<=Zmax; s+=dz){
-var phase = k*s - animPhase;
+var phase = kMedium*s - animPhase;
 var fv = fieldAt(s, phase, angleOffsetDeg);
 pts.push(projAtField(s, vadd(vscale(nHat, fv.x), vscale(bHat, fv.y))));
 }
@@ -432,9 +459,9 @@ ctx.beginPath(); ctx.moveTo(pts[0].x,pts[0].y);
 for (var i=1;i<pts.length;i++) ctx.lineTo(pts[i].x,pts[i].y);
 ctx.stroke();
 if (withArrows){
-var dzArrow = lambdaInternalM()/10, za;
+var dzArrow = (lambdaInternalM()/nIndex)/10, za;    /* 10 arrows per MEDIUM wavelength, so spacing stays even as n changes */
 for (za=0; za<=Zmax+1e-9; za+=dzArrow){
-var ph = k*za - animPhase;
+var ph = kMedium*za - animPhase;
 var fva = fieldAt(za, ph, angleOffsetDeg);
 var base = projAtField(za, {x:0,y:0,z:0});
 var tip = projAtField(za, vadd(vscale(nHat, fva.x), vscale(bHat, fva.y)));
@@ -487,11 +514,16 @@ function updateEquationPanel(){
 var eq = document.getElementById('emAntEqBar0922');
 if (!eq) return;
 var b = BANDS[bandKey];
-var l1 = 'Band: ' + b.label + ' &nbsp; \u03bb = ' + lambdaPhys.toFixed(lambdaPhys<1?2:1) + ' ' + lambdaUnit +
-' &nbsp; f = ' + fmtSci(f,2) + ' Hz &nbsp; c = 3.00\u00d710\u2078 m/s (fixed) &nbsp; E\u2080 = ' + E0.toFixed(1) + ' (rel. units)';
-var l2 = 'Antenna angle \u03b8 = ' + thetaDeg.toFixed(0) + '\u00b0 &nbsp; E is linearly polarized along \u03b8; B is along \u03b8+90\u00b0, in phase with E';
-var l3 = 'n\u0302 = world y &nbsp; \u00ea\u2082 = world x (negated) &nbsp; k\u0302 = propagation = world z (fixed antenna broadside direction)';
-eq.innerHTML = l1 + '<br>' + l2 + '<br>' + l3;
+var lambdaMedium = lambdaPhys / nIndex;
+var vMedium = c_light / nIndex;
+var deltaN = nIndex - 1;
+var l1 = 'Band: ' + b.label + ' &nbsp; \u03bb\u2080 (vacuum) = ' + lambdaPhys.toFixed(lambdaPhys<1?2:1) + ' ' + lambdaUnit +
+' &nbsp; f = ' + fmtSci(f,2) + ' Hz (fixed by the antenna, independent of n) &nbsp; c = 3.00\u00d710\u2078 m/s';
+var l2 = 'Medium: n = ' + nIndex.toFixed(b.nDecimals) + ' (\u0394n = n\u22121 = ' + (deltaN>=0?'+':'') + deltaN.toExponential(2) + ') &nbsp; ' +
+'\u03bb = \u03bb\u2080/n = ' + lambdaMedium.toFixed(lambdaMedium<1?2:1) + ' ' + lambdaUnit + ' &nbsp; v = c/n = ' + fmtSci(vMedium,3) + ' m/s';
+var l3 = 'Antenna angle \u03b8 = ' + thetaDeg.toFixed(0) + '\u00b0 &nbsp; E is linearly polarized along \u03b8; B is along \u03b8+90\u00b0, in phase with E &nbsp; E\u2080 = ' + E0.toFixed(1) + ' (rel. units)';
+var l4 = 'n\u0302 = world y &nbsp; \u00ea\u2082 = world x (negated) &nbsp; k\u0302 = propagation = world z (fixed antenna broadside direction)';
+eq.innerHTML = l1 + '<br>' + l2 + '<br>' + l3 + '<br>' + l4;
 }
 function drawFrame(){
 ctx.clearRect(0,0,W,H);
@@ -504,11 +536,12 @@ drawAxisLegend();
 drawSpectrumStrip();
 ctx.fillStyle = c('--emant-text','#111');
 ctx.font='12px monospace';
-ctx.fillText('\u03bb = '+lambdaPhys.toFixed(lambdaPhys<1?2:1)+' '+lambdaUnit+', band = '+BANDS[bandKey].label, 14, H-46);
+ctx.fillText('\u03bb\u2080 = '+lambdaPhys.toFixed(lambdaPhys<1?2:1)+' '+lambdaUnit+', band = '+BANDS[bandKey].label+', n = '+nIndex.toFixed(BANDS[bandKey].nDecimals), 14, H-46);
 }
 function sceneNarration(){
-var msg = 'Band: ' + BANDS[bandKey].label + '. \u03bb = ' + lambdaPhys.toFixed(lambdaPhys<1?2:1) + ' ' + lambdaUnit +
-', f = ' + fmtSci(f,2) + ' Hz. Antenna at ' + thetaDeg.toFixed(0) + ' degrees sets the E field\u2019s polarization direction.';
+var msg = 'Band: ' + BANDS[bandKey].label + '. \u03bb\u2080 = ' + lambdaPhys.toFixed(lambdaPhys<1?2:1) + ' ' + lambdaUnit +
+', f = ' + fmtSci(f,2) + ' Hz, fixed regardless of the medium. Index of refraction n = ' + nIndex.toFixed(BANDS[bandKey].nDecimals) +
+' slows the wave to v=c/n and compresses its wavelength. Antenna at ' + thetaDeg.toFixed(0) + ' degrees sets the E field\u2019s polarization direction.';
 emAntA11y0922.narrate(msg);
 }
 function physicsStep(){
@@ -533,8 +566,9 @@ lambdaUnit = b.unit;
 lambdaPhys = b.lamMin + (sliderVal-1)/(6-1) * (b.lamMax-b.lamMin);
 lambdaM = lambdaPhys * UNIT_SCALE[b.unit];
 k = 2*Math.PI/sliderVal;      /* internal render wavenumber, uses the SAME 1..6 units as the scene */
-f = c_light/lambdaM;
+f = c_light/lambdaM;          /* set by the antenna alone -- independent of n, since lambdaM is the vacuum wavelength */
 omega = 2*Math.PI*f;          /* real angular frequency (Hz-based); not used for on-screen timing, which stays illustrative */
+kMedium = k * nIndex;         /* the medium compresses (or, for n<1, stretches) the wavelength actually on screen */
 Zmax = 3*sliderVal;
 zOffsetM = Zmax/2;
 spaceScale = 46;
@@ -552,6 +586,7 @@ var angEl = document.getElementById('emAntAngle0922');
 sliderVal = lamEl ? parseFloat(lamEl.value) : 3;
 E0        = ampEl ? parseFloat(ampEl.value) : 6;
 thetaDeg  = angEl ? parseFloat(angEl.value) : 0;
+applyNRangeForBand(bandKey);
 recomputeLambda();
 animPhase = 0;
 frameCount = 0;
@@ -559,17 +594,38 @@ updateEquationPanel();
 drawFrame();
 emAntA11y0922.narrate('Ready. Band: '+BANDS[bandKey].label+'. \u03bb = '+lambdaPhys.toFixed(lambdaPhys<1?2:1)+' '+lambdaUnit+', E\u2080 = '+E0.toFixed(1)+'. Press Play, or drag the canvas to look around.');
 }
+/* Resets the n slider's min/max/step and value to this band's realistic
+range, and updates nIndex + its descriptive note to match. */
+function applyNRangeForBand(bk){
+var b = BANDS[bk];
+nIndex = b.nDefault;
+var nEl = document.getElementById('emAntN0922');
+if (nEl){ nEl.min = b.nMin; nEl.max = b.nMax; nEl.step = b.nStep; nEl.value = b.nDefault; }
+var nValEl = document.getElementById('emAntNVal0922');
+if (nValEl) nValEl.textContent = nIndex.toFixed(b.nDecimals);
+var nNoteEl = document.getElementById('emAntNNote0922');
+if (nNoteEl) nNoteEl.textContent = b.nNote;
+}
 function setBand(bk){
 bandKey = bk;
 var lamEl = document.getElementById('emAntLambda0922');
 sliderVal = lamEl ? parseFloat(lamEl.value) : sliderVal;
+applyNRangeForBand(bandKey);
 recomputeLambda();
 updateEquationPanel();
 drawFrame();
-emAntA11y0922.narrate('Switched to the '+BANDS[bandKey].label+' band. \u03bb = '+lambdaPhys.toFixed(lambdaPhys<1?2:1)+' '+lambdaUnit+', f = '+fmtSci(f,2)+' Hz. E\u2080 is unchanged.');
+emAntA11y0922.narrate('Switched to the '+BANDS[bandKey].label+' band. \u03bb = '+lambdaPhys.toFixed(lambdaPhys<1?2:1)+' '+lambdaUnit+', f = '+fmtSci(f,2)+' Hz. E\u2080 is unchanged. The index-of-refraction range has been reset to a realistic range for this band.');
 }
 function setLambdaSlider(val){
 sliderVal = parseFloat(val);
+recomputeLambda();
+updateEquationPanel();
+drawFrame();
+}
+function setN(val){
+nIndex = parseFloat(val);
+var b = BANDS[bandKey];
+document.getElementById('emAntNVal0922').textContent = nIndex.toFixed(b.nDecimals);
 recomputeLambda();
 updateEquationPanel();
 drawFrame();
@@ -612,7 +668,7 @@ if (camZoom<0.4) camZoom=0.4; if (camZoom>2.5) camZoom=2.5;
 drawFrame();
 }, {passive:false});
 rst();
-return { pl:pl, ps:ps, step:step, rst:rst, resetView:resetView, setBand:setBand, setLambdaSlider:setLambdaSlider,
+return { pl:pl, ps:ps, step:step, rst:rst, resetView:resetView, setBand:setBand, setLambdaSlider:setLambdaSlider, setN:setN,
  setAngle:setAngle, setAmp:setAmp, toggleB:toggleB, toggleSpectrum:toggleSpectrum };
 })();
 </script>
