@@ -6,175 +6,175 @@
 <title>Physics Simulations-Standing Waves Air Column </title>
 </head>
 <body>
-<div id="sw6Root$thisq">
+<div id="sw6Root0922">
   <!-- ── Accessibility toolbar ── -->
-  <div class="sw6_a11y$thisq" id="sw6A11yBar$thisq" role="toolbar" aria-label="Display options">
-    <button type="button" class="sw6_a11ybtn$thisq" id="sw6BtnHC$thisq" onclick="sw6A11y$thisq.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-    <button type="button" class="sw6_a11ybtn$thisq" id="sw6BtnLM$thisq" onclick="sw6A11y$thisq.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
-    <button type="button" class="sw6_a11ybtn$thisq sw6_a11yon$thisq" id="sw6BtnNR$thisq" onclick="sw6A11y$thisq.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+  <div class="sw6_a11y0922" id="sw6A11yBar0922" role="toolbar" aria-label="Display options">
+    <button type="button" class="sw6_a11ybtn0922" id="sw6BtnHC0922" onclick="sw6A11y0922.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+    <button type="button" class="sw6_a11ybtn0922" id="sw6BtnLM0922" onclick="sw6A11y0922.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
+    <button type="button" class="sw6_a11ybtn0922 sw6_a11yon0922" id="sw6BtnNR0922" onclick="sw6A11y0922.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
   </div>
   <!-- Narration bar -->
-  <div id="sw6NarBar$thisq" class="sw6_narbar$thisq" role="status" aria-live="polite" aria-atomic="true"></div>
+  <div id="sw6NarBar0922" class="sw6_narbar0922" role="status" aria-live="polite" aria-atomic="true"></div>
   <!-- Title bar -->
-  <div class="sw6_tbar$thisq"><H3>Standing Waves in an Air Tube</H3></div>
+  <div class="sw6_tbar0922"><H3>Standing Waves in an Air Tube</H3></div>
   <!-- Canvas -->
-  <div class="sw6_mcontent$thisq">
-    <canvas id="sw6Cv$thisq" width="620" height="260" style="display:block;">
+  <div class="sw6_mcontent0922">
+    <canvas id="sw6Cv0922" width="620" height="260" style="display:block;">
       <span style="color:red;">This browser doesn&rsquo;t support HTML5 canvas.</span>
     </canvas>
   </div>
   <!-- Control bar: row 1 -- tube type + display mode -->
-  <div class="sw6_bbar$thisq sw6_bbar_top$thisq">
-    <div class="sw6_bbar_sect$thisq sw6_sect_tube$thisq">
-      <span class="sw6_sectlbl$thisq">Tube:</span>
-      <button type="button" class="sw6_typebtn$thisq sw6_active$thisq" id="sw6BtnOO$thisq"
-              onclick="sw6Sim$thisq.setTube('oo')">Both open</button>
-      <button type="button" class="sw6_typebtn$thisq" id="sw6BtnCC$thisq"
-              onclick="sw6Sim$thisq.setTube('cc')">Both closed</button>
-      <button type="button" class="sw6_typebtn$thisq" id="sw6BtnOC$thisq"
-              onclick="sw6Sim$thisq.setTube('oc')">Open &amp; closed</button>
+  <div class="sw6_bbar0922 sw6_bbar_top0922">
+    <div class="sw6_bbar_sect0922 sw6_sect_tube0922">
+      <span class="sw6_sectlbl0922">Tube:</span>
+      <button type="button" class="sw6_typebtn0922 sw6_active0922" id="sw6BtnOO0922"
+              onclick="sw6Sim0922.setTube('oo')">Both open</button>
+      <button type="button" class="sw6_typebtn0922" id="sw6BtnCC0922"
+              onclick="sw6Sim0922.setTube('cc')">Both closed</button>
+      <button type="button" class="sw6_typebtn0922" id="sw6BtnOC0922"
+              onclick="sw6Sim0922.setTube('oc')">Open &amp; closed</button>
     </div>
-    <div class="sw6_bbar_sect$thisq sw6_sect_mode$thisq">
-      <span class="sw6_sectlbl$thisq">Show:</span>
-      <button type="button" class="sw6_modebtn$thisq sw6_active$thisq" id="sw6BtnDisp$thisq"
-              onclick="sw6Sim$thisq.setMode('disp')">Displacement</button>
-      <button type="button" class="sw6_modebtn$thisq" id="sw6BtnPres$thisq"
-              onclick="sw6Sim$thisq.setMode('pres')">Pressure</button>
+    <div class="sw6_bbar_sect0922 sw6_sect_mode0922">
+      <span class="sw6_sectlbl0922">Show:</span>
+      <button type="button" class="sw6_modebtn0922 sw6_active0922" id="sw6BtnDisp0922"
+              onclick="sw6Sim0922.setMode('disp')">Displacement</button>
+      <button type="button" class="sw6_modebtn0922" id="sw6BtnPres0922"
+              onclick="sw6Sim0922.setMode('pres')">Pressure</button>
     </div>
   </div>
   <!-- Control bar: row 2 -- harmonics + playback -->
-  <div class="sw6_bbar$thisq sw6_bbar_top2$thisq">
-    <div class="sw6_bbar_left$thisq">
-      <span class="sw6_sectlbl$thisq" id="sw6HarmLbl$thisq">Harmonic:</span>
-      <button type="button" class="sw6_harmbtn$thisq sw6_active$thisq" id="sw6BtnH1$thisq" onclick="sw6Sim$thisq.setF(1)">n = 1</button>
-      <button type="button" class="sw6_harmbtn$thisq" id="sw6BtnH2$thisq" onclick="sw6Sim$thisq.setF(2)">n = 2</button>
-      <button type="button" class="sw6_harmbtn$thisq" id="sw6BtnH3$thisq" onclick="sw6Sim$thisq.setF(3)">n = 3</button>
-      <button type="button" class="sw6_harmbtn$thisq" id="sw6BtnH4$thisq" onclick="sw6Sim$thisq.setF(4)">n = 4</button>
-      <button type="button" class="sw6_harmbtn$thisq" id="sw6BtnH5$thisq" onclick="sw6Sim$thisq.setF(5)">n = 5</button>
-      <button type="button" class="sw6_harmbtn$thisq" id="sw6BtnH6$thisq" onclick="sw6Sim$thisq.setF(6)">n = 6</button>
+  <div class="sw6_bbar0922 sw6_bbar_top20922">
+    <div class="sw6_bbar_left0922">
+      <span class="sw6_sectlbl0922" id="sw6HarmLbl0922">Harmonic:</span>
+      <button type="button" class="sw6_harmbtn0922 sw6_active0922" id="sw6BtnH10922" onclick="sw6Sim0922.setF(1)">n = 1</button>
+      <button type="button" class="sw6_harmbtn0922" id="sw6BtnH20922" onclick="sw6Sim0922.setF(2)">n = 2</button>
+      <button type="button" class="sw6_harmbtn0922" id="sw6BtnH30922" onclick="sw6Sim0922.setF(3)">n = 3</button>
+      <button type="button" class="sw6_harmbtn0922" id="sw6BtnH40922" onclick="sw6Sim0922.setF(4)">n = 4</button>
+      <button type="button" class="sw6_harmbtn0922" id="sw6BtnH50922" onclick="sw6Sim0922.setF(5)">n = 5</button>
+      <button type="button" class="sw6_harmbtn0922" id="sw6BtnH60922" onclick="sw6Sim0922.setF(6)">n = 6</button>
     </div>
   </div>
-  <div class="sw6_bbar$thisq sw6_bbar_bot$thisq">
-    <div class="sw6_bbar_left$thisq">
-      <input type="button" class="butt$thisq" id="sw6Play$thisq" value="&#9654;" onclick="if(this.value=='&#9654;'){sw6Sim$thisq.play();this.value='&#9208;';}else{this.value='&#9654;';sw6Sim$thisq.pause();}">
-      <input type="button" class="butt$thisq" value="&#10073;&#9664;" onclick="sw6Sim$thisq.stepBack();document.getElementById('sw6Play$thisq').value='&#9654;';">
-      <input type="button" class="butt$thisq" value="&#9654;&#10073;" onclick="sw6Sim$thisq.stepForward();document.getElementById('sw6Play$thisq').value='&#9654;';">
-      <input type="button" class="butt$thisq" value="&#128472;" onclick="sw6Sim$thisq.reset();document.getElementById('sw6Play$thisq').value='&#9654;';">
+  <div class="sw6_bbar0922 sw6_bbar_bot0922">
+    <div class="sw6_bbar_left0922">
+      <input type="button" class="butt0922" id="sw6Play0922" value="&#9654;" onclick="if(this.value=='&#9654;'){sw6Sim0922.play();this.value='&#9208;';}else{this.value='&#9654;';sw6Sim0922.pause();}">
+      <input type="button" class="butt0922" value="&#10073;&#9664;" onclick="sw6Sim0922.stepBack();document.getElementById('sw6Play0922').value='&#9654;';">
+      <input type="button" class="butt0922" value="&#9654;&#10073;" onclick="sw6Sim0922.stepForward();document.getElementById('sw6Play0922').value='&#9654;';">
+      <input type="button" class="butt0922" value="&#128472;" onclick="sw6Sim0922.reset();document.getElementById('sw6Play0922').value='&#9654;';">
     </div>
   </div>
   <!-- Control bar: row 3 -- molecule options -->
-  <div class="sw6_bbar$thisq sw6_bbar_mol$thisq">
-    <span class="sw6_sectlbl$thisq">Molecules:</span>
-    <button type="button" class="sw6_optbtn$thisq" id="sw6BtnMols$thisq"
-            onclick="sw6Sim$thisq.toggleMols()">Molecules: OFF</button>
-    <button type="button" class="sw6_optbtn$thisq" id="sw6BtnRainbow$thisq"
-            onclick="sw6Sim$thisq.toggleRainbow()" disabled>Rainbow: OFF</button>
-    <button type="button" class="sw6_optbtn$thisq" id="sw6BtnTrace$thisq"
-            onclick="sw6Sim$thisq.toggleTrace()" disabled>Trace: OFF</button>
-    <span class="sw6_moltip$thisq">Molecules vibrate horizontally along the tube axis &mdash; antinodes move most, nodes are still.</span>
+  <div class="sw6_bbar0922 sw6_bbar_mol0922">
+    <span class="sw6_sectlbl0922">Molecules:</span>
+    <button type="button" class="sw6_optbtn0922" id="sw6BtnMols0922"
+            onclick="sw6Sim0922.toggleMols()">Molecules: OFF</button>
+    <button type="button" class="sw6_optbtn0922" id="sw6BtnRainbow0922"
+            onclick="sw6Sim0922.toggleRainbow()" disabled>Rainbow: OFF</button>
+    <button type="button" class="sw6_optbtn0922" id="sw6BtnTrace0922"
+            onclick="sw6Sim0922.toggleTrace()" disabled>Trace: OFF</button>
+    <span class="sw6_moltip0922">Molecules vibrate horizontally along the tube axis &mdash; antinodes move most, nodes are still.</span>
   </div>
-</div><!-- #sw6Root$thisq -->
+</div><!-- #sw6Root0922 -->
 <style>
-  #sw6Root$thisq * { box-sizing: border-box; margin: 0; }
-  #sw6Root$thisq { display: block; width: 620px; }
-  #sw6Root$thisq canvas { display: block; }
+  #sw6Root0922 * { box-sizing: border-box; margin: 0; }
+  #sw6Root0922 { display: block; width: 620px; }
+  #sw6Root0922 canvas { display: block; }
   /* A11y toolbar */
-  #sw6Root$thisq .sw6_a11y$thisq {
+  #sw6Root0922 .sw6_a11y0922 {
     display: flex; gap: 6px; padding: 6px 8px;
     background: #222; flex-wrap: wrap; width: 620px;
   }
-  #sw6Root$thisq .sw6_a11ybtn$thisq {
+  #sw6Root0922 .sw6_a11ybtn0922 {
     padding: 4px 10px; font-size: .72rem; font-family: monospace;
     letter-spacing: .06em; border-radius: 3px; cursor: pointer;
     background: #2a2e3a; border: 1px solid #404a60; color: #7a8aaa;
     transition: border-color .15s, color .15s;
   }
-  #sw6Root$thisq .sw6_a11ybtn$thisq:hover { border-color: #00e8d0; color: #00e8d0; }
-  #sw6Root$thisq .sw6_a11yon$thisq { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
+  #sw6Root0922 .sw6_a11ybtn0922:hover { border-color: #00e8d0; color: #00e8d0; }
+  #sw6Root0922 .sw6_a11yon0922 { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
   /* Narration bar */
-  #sw6Root$thisq .sw6_narbar$thisq {
+  #sw6Root0922 .sw6_narbar0922 {
     width: 620px; min-height: 28px; padding: 5px 10px;
     background: #ffefc0; border-left: 4px solid #e0b040;
     font-size: .88rem; color: #333; font-style: italic;
   }
   /* Title bar */
-  #sw6Root$thisq .sw6_tbar$thisq {
+  #sw6Root0922 .sw6_tbar0922 {
     padding: 4px; height: 30px; background-color: #f90;
     text-align: center; width: 620px;
   }
   /* Canvas wrapper */
-  #sw6Root$thisq .sw6_mcontent$thisq { height: 262px; width: 620px; }
+  #sw6Root0922 .sw6_mcontent0922 { height: 262px; width: 620px; }
   /* Control bars */
-  #sw6Root$thisq .sw6_bbar$thisq {
+  #sw6Root0922 .sw6_bbar0922 {
     display: flex; align-items: center; width: 620px;
     padding: 7px 12px; border-top: 1px solid #ccc;
     flex-wrap: wrap; gap: 8px;
   }
-  #sw6Root$thisq .sw6_bbar_top$thisq { background: #e8f5e9; }
-  #sw6Root$thisq .sw6_bbar_top2$thisq { background: #d6ffe6; }
-  #sw6Root$thisq .sw6_bbar_bot$thisq { background: #dd9; justify-content: space-between; }
-  #sw6Root$thisq .sw6_bbar_sect$thisq {
+  #sw6Root0922 .sw6_bbar_top0922 { background: #e8f5e9; }
+  #sw6Root0922 .sw6_bbar_top20922 { background: #d6ffe6; }
+  #sw6Root0922 .sw6_bbar_bot0922 { background: #dd9; justify-content: space-between; }
+  #sw6Root0922 .sw6_bbar_sect0922 {
     display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
   }
-  #sw6Root$thisq .sw6_sect_tube$thisq { flex: 1; }
-  #sw6Root$thisq .sw6_sect_mode$thisq { flex: 0 0 auto; }
-  #sw6Root$thisq .sw6_bbar_left$thisq { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-  #sw6Root$thisq .sw6_bbar_right$thisq { display: flex; gap: 6px; }
-  #sw6Root$thisq .sw6_sectlbl$thisq {
+  #sw6Root0922 .sw6_sect_tube0922 { flex: 1; }
+  #sw6Root0922 .sw6_sect_mode0922 { flex: 0 0 auto; }
+  #sw6Root0922 .sw6_bbar_left0922 { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  #sw6Root0922 .sw6_bbar_right0922 { display: flex; gap: 6px; }
+  #sw6Root0922 .sw6_sectlbl0922 {
     font-size: 13px; font-weight: bold; color: #444; white-space: nowrap;
   }
   /* Tube type buttons */
-  #sw6Root$thisq .sw6_typebtn$thisq {
+  #sw6Root0922 .sw6_typebtn0922 {
     padding: 5px 11px; font-size: 12px; border-radius: 4px; cursor: pointer;
     background: #fff; border: 2px solid #888; color: #333;
     transition: background .12s, border-color .12s;
   }
-  #sw6Root$thisq .sw6_typebtn$thisq:hover { border-color: #333; }
+  #sw6Root0922 .sw6_typebtn0922:hover { border-color: #333; }
   /* Mode buttons */
-  #sw6Root$thisq .sw6_modebtn$thisq {
+  #sw6Root0922 .sw6_modebtn0922 {
     padding: 5px 11px; font-size: 12px; border-radius: 4px; cursor: pointer;
     background: #fff; border: 2px solid #888; color: #333;
   }
-  #sw6Root$thisq .sw6_modebtn$thisq:hover { border-color: #333; }
+  #sw6Root0922 .sw6_modebtn0922:hover { border-color: #333; }
   /* Active state for both */
-  #sw6Root$thisq .sw6_active$thisq { background: #333; color: #fff; border-color: #333; }
+  #sw6Root0922 .sw6_active0922 { background: #333; color: #fff; border-color: #333; }
   /* Harmonic buttons */
-  #sw6Root$thisq .sw6_harmbtn$thisq {
+  #sw6Root0922 .sw6_harmbtn0922 {
     padding: 5px 10px; font-size: 13px; border-radius: 4px; cursor: pointer;
     background: #fff; border: 2px solid #888; color: #333; font-weight: bold;
   }
-  #sw6Root$thisq .sw6_harmbtn$thisq:hover { border-color: #333; }
-  #sw6Root$thisq .sw6_harmbtn$thisq:disabled {
+  #sw6Root0922 .sw6_harmbtn0922:hover { border-color: #333; }
+  #sw6Root0922 .sw6_harmbtn0922:disabled {
     opacity: 0.35; cursor: not-allowed; border-color: #ccc;
   }
   /* Playback buttons */
-  #sw6Root$thisq .sw6_playbtn$thisq {
+  #sw6Root0922 .sw6_playbtn0922 {
     padding: 4px 10px; font-size: 14px; border-radius: 4px; cursor: pointer;
     background: #eee; border: 1px solid #999; color: #333; min-width: 36px;
   }
-  #sw6Root$thisq .sw6_playbtn$thisq:hover { background: #ddd; }
+  #sw6Root0922 .sw6_playbtn0922:hover { background: #ddd; }
   /* Molecule control bar */
-  #sw6Root$thisq .sw6_bbar_mol$thisq {
+  #sw6Root0922 .sw6_bbar_mol0922 {
     background: #fce4ec; display: flex; align-items: center;
     gap: 8px; padding: 7px 12px; width: 620px;
     border-top: 1px solid #ccc; flex-wrap: wrap;
   }
-  #sw6Root$thisq .sw6_optbtn$thisq {
+  #sw6Root0922 .sw6_optbtn0922 {
     padding: 5px 11px; font-size: 12px; border-radius: 4px; cursor: pointer;
     background: #fff; border: 2px solid #888; color: #333;
     transition: background .12s;
   }
-  #sw6Root$thisq .sw6_optbtn$thisq:hover:not(:disabled) { border-color: #333; }
-  #sw6Root$thisq .sw6_optbtn$thisq:disabled {
+  #sw6Root0922 .sw6_optbtn0922:hover:not(:disabled) { border-color: #333; }
+  #sw6Root0922 .sw6_optbtn0922:disabled {
     opacity: 0.35; cursor: not-allowed; border-color: #ccc;
   }
-  #sw6Root$thisq .sw6_moltip$thisq {
+  #sw6Root0922 .sw6_moltip0922 {
     font-size: 11px; color: #666; font-style: italic; flex: 1;
   }
 </style>
 <!-- ════════ Accessibility controller ════════ -->
 <script>
-  var sw6A11y$thisq = (function(){
+  var sw6A11y0922 = (function(){
     var ROOT = null, states = { hc: false, lm: false, nr: true };
     function styleBtn(id, on) {
       var b = document.getElementById(id); if (!b) return;
@@ -183,34 +183,34 @@
       b.setAttribute('aria-pressed', on ? 'true' : 'false');
     }
     function applyCanvas() {
-      var cv = document.getElementById('sw6Cv$thisq');
+      var cv = document.getElementById('sw6Cv0922');
       if (cv) cv.style.filter = states.lm ? 'invert(1) hue-rotate(180deg) brightness(0.9)' : '';
     }
     function applyNarBar() {
-      var nb = document.getElementById('sw6NarBar$thisq');
+      var nb = document.getElementById('sw6NarBar0922');
       if (nb) nb.style.display = states.nr ? 'block' : 'none';
-      var btn = document.getElementById('sw6BtnNR$thisq');
-      if (btn) { btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF'); styleBtn('sw6BtnNR$thisq', states.nr); }
+      var btn = document.getElementById('sw6BtnNR0922');
+      if (btn) { btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF'); styleBtn('sw6BtnNR0922', states.nr); }
     }
     function apply() {
       if (!ROOT) return;
       applyCanvas(); applyNarBar();
-      styleBtn('sw6BtnHC$thisq', states.hc);
-      styleBtn('sw6BtnLM$thisq', states.lm);
+      styleBtn('sw6BtnHC0922', states.hc);
+      styleBtn('sw6BtnLM0922', states.lm);
     }
     return {
-      init:    function() { ROOT = document.getElementById('sw6Root$thisq'); apply(); },
+      init:    function() { ROOT = document.getElementById('sw6Root0922'); apply(); },
       toggle:  function(k) {
         states[k] = !states[k];
         if (k === 'hc' && states.hc) states.lm = false;
         if (k === 'lm' && states.lm) states.hc = false;
         apply();
-        if (typeof sw6Sim$thisq !== 'undefined') sw6Sim$thisq.redraw();
+        if (typeof sw6Sim0922 !== 'undefined') sw6Sim0922.redraw();
       },
       isHC:    function() { return states.hc; },
       narrate: function(msg) {
         if (!states.nr) return;
-        var nb = document.getElementById('sw6NarBar$thisq'); if (!nb) return;
+        var nb = document.getElementById('sw6NarBar0922'); if (!nb) return;
         nb.innerHTML = msg;
         if (window.MathJax) {
           if (MathJax.typesetPromise) MathJax.typesetPromise([nb]);
@@ -222,8 +222,8 @@
 </script>
 <!-- ════════ Simulation ════════ -->
 <script>
-  var sw6Sim$thisq = (function(){
-    var canvas = document.getElementById('sw6Cv$thisq');
+  var sw6Sim0922 = (function(){
+    var canvas = document.getElementById('sw6Cv0922');
     var ctx    = canvas.getContext('2d');
     /* Layout */
     var xBase  = 30, yBase2 = 60;       /* top-left of graph panel */
@@ -330,20 +330,20 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
       return AMPL * spatial * cosT;
     }
     /* ── HC colour helpers ── */
-    function cBg()    { return sw6A11y$thisq.isHC() ? '#111'    : '#ffd'; }
-    function cGph()   { return sw6A11y$thisq.isHC() ? '#1a2233' : '#eff'; }
-    function cAx()    { return sw6A11y$thisq.isHC() ? '#cccccc' : '#000'; }
-    function cGrid()  { return sw6A11y$thisq.isHC() ? '#334455' : '#999'; }
-    function cTxt()   { return sw6A11y$thisq.isHC() ? '#eeeeee' : 'black'; }
-    function cTitle() { return sw6A11y$thisq.isHC() ? '#cc99ff' : 'purple'; }
+    function cBg()    { return sw6A11y0922.isHC() ? '#111'    : '#ffd'; }
+    function cGph()   { return sw6A11y0922.isHC() ? '#1a2233' : '#eff'; }
+    function cAx()    { return sw6A11y0922.isHC() ? '#cccccc' : '#000'; }
+    function cGrid()  { return sw6A11y0922.isHC() ? '#334455' : '#999'; }
+    function cTxt()   { return sw6A11y0922.isHC() ? '#eeeeee' : 'black'; }
+    function cTitle() { return sw6A11y0922.isHC() ? '#cc99ff' : 'purple'; }
     function cWave()  {
-      if (dispMode === 'pres') return sw6A11y$thisq.isHC() ? '#ffaa44' : '#c80';
-      return sw6A11y$thisq.isHC() ? '#cc77cc' : '#808';
+      if (dispMode === 'pres') return sw6A11y0922.isHC() ? '#ffaa44' : '#c80';
+      return sw6A11y0922.isHC() ? '#cc77cc' : '#808';
     }
-    function cTube()  { return sw6A11y$thisq.isHC() ? '#88aacc' : '#336699'; }
-    function cTubeFill() { return sw6A11y$thisq.isHC() ? 'rgba(100,140,200,0.10)' : 'rgba(180,220,255,0.25)'; }
-    function cCap()   { return sw6A11y$thisq.isHC() ? '#aaccee' : '#336699'; }
-    function cOpen()  { return sw6A11y$thisq.isHC() ? '#555' : '#aaa'; }
+    function cTube()  { return sw6A11y0922.isHC() ? '#88aacc' : '#336699'; }
+    function cTubeFill() { return sw6A11y0922.isHC() ? 'rgba(100,140,200,0.10)' : 'rgba(180,220,255,0.25)'; }
+    function cCap()   { return sw6A11y0922.isHC() ? '#aaccee' : '#336699'; }
+    function cOpen()  { return sw6A11y0922.isHC() ? '#555' : '#aaa'; }
     /* ── Draw the tube ── */
     function drawTube() {
       var leftOpen  = (tubeType === 'oo' || tubeType === 'oc');
@@ -423,7 +423,7 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
     }
     function drawTraces() {
       if (!showTrace || !showMols) return;
-      var singleTC = sw6A11y$thisq.isHC() ? 'rgba(150,210,255,0.55)' : 'rgba(80,80,180,0.30)';
+      var singleTC = sw6A11y0922.isHC() ? 'rgba(150,210,255,0.55)' : 'rgba(80,80,180,0.30)';
       ctx.save();
       ctx.lineWidth = 1;
       for (var k = 0; k < molecules.length; k++) {
@@ -440,7 +440,7 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
     }
     function drawMolecules() {
       if (!showMols) return;
-      var singleC = sw6A11y$thisq.isHC() ? '#cccccc' : '#8b1a1a'; /* dark red matching reference */
+      var singleC = sw6A11y0922.isHC() ? '#cccccc' : '#8b1a1a'; /* dark red matching reference */
       for (var k = 0; k < molecules.length; k++) {
         var mol  = molecules[k];
         var disp = _molDisp(mol.x_eq);
@@ -459,7 +459,7 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
     }
     /* ── Main draw ── */
     function drawMotion() {
-      if (index >= 8000) { runFlag = 0; document.getElementById('sw6Play$thisq').textContent = '\u25B6'; }
+      if (index >= 8000) { runFlag = 0; document.getElementById('sw6Play0922').textContent = '\u25B6'; }
       if (runFlag !== 1) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       index++;
@@ -554,8 +554,8 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
         }
         var isNode = isDisp ? isNodeDisp : !isNodeDisp;
         label = isNode ? 'N' : 'A';
-        ctx.fillStyle = isNode ? (sw6A11y$thisq.isHC() ? '#88ddff' : '#0055cc')
-        : (sw6A11y$thisq.isHC() ? '#ffaa66' : '#cc4400');
+        ctx.fillStyle = isNode ? (sw6A11y0922.isHC() ? '#88ddff' : '#0055cc')
+        : (sw6A11y0922.isHC() ? '#ffaa66' : '#cc4400');
         ctx.fillText(label, px+6, axisY -56);
         ctx.strokeStyle = axC; ctx.lineWidth = 1;
         ctx.beginPath(); ctx.moveTo(px, axisY - 4); ctx.lineTo(px, axisY + 4); ctx.stroke();
@@ -563,7 +563,7 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
     }
     function runMotion() {
       drawMotion();
-      document.getElementById("sw6Play$thisq").value=String.fromCodePoint(0x23F8);
+      document.getElementById("sw6Play0922").value=String.fromCodePoint(0x23F8);
       if (runFlag === 1) { timer = window.setTimeout(runMotion, 1000/60); }
     }
     function play()        { window.clearTimeout(timer); runFlag = 1; runMotion(); }
@@ -584,12 +584,12 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
     /* ── Update harmonic buttons ── */
     function _updateHarmBtns() {
       for (var k = 1; k <= 6; k++) {
-        var btn = document.getElementById('sw6BtnH' + k + '$thisq');
+        var btn = document.getElementById('sw6BtnH' + k + '0922');
         if (!btn) continue;
         btn.disabled = false;
         /* For oc, button k selects the k-th odd harmonic: n = 2k-1 */
         btn.textContent = (tubeType === 'oc') ? 'n = ' + (2*k-1) : 'n = ' + k;
-        btn.className = 'sw6_harmbtn$thisq' + (k === harmonic ? ' sw6_active$thisq' : '');
+        btn.className = 'sw6_harmbtn0922' + (k === harmonic ? ' sw6_active0922' : '');
       }
     }
     /* ── Narration helpers ── */
@@ -614,7 +614,7 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
       var nAntDisp   = tubeType === 'oo' ? no + 1 : tubeType === 'cc' ? no - 1 : Math.floor(no/2) + 1;
       var nNodes = dispMode === 'disp' ? nNodesDisp : nAntDisp;
       var nAnts  = dispMode === 'disp' ? nAntDisp   : nNodesDisp;
-      sw6A11y$thisq.narrate(
+      sw6A11y0922.narrate(
         'Harmonic n = ' + no + ',  f = ' + f + ' Hz. '
         + nNodes + ' node' + (nNodes!==1?'s':'') + ', '
         + nAnts  + ' antinode' + (nAnts!==1?'s':'') + ' '
@@ -627,23 +627,23 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
       tubeType = type;
       /* Update active button */
       ['oo','cc','oc'].forEach(function(t) {
-        var ids = {oo:'sw6BtnOO$thisq', cc:'sw6BtnCC$thisq', oc:'sw6BtnOC$thisq'};
+        var ids = {oo:'sw6BtnOO0922', cc:'sw6BtnCC0922', oc:'sw6BtnOC0922'};
         var b = document.getElementById(ids[t]);
-        if (b) b.className = 'sw6_typebtn$thisq' + (t===type?' sw6_active$thisq':'');
+        if (b) b.className = 'sw6_typebtn0922' + (t===type?' sw6_active0922':'');
       });
       _updateHarmBtns();
       _initMols();
       reset();
-      sw6A11y$thisq.narrate(_tubeDesc() + ' ' + _modeDesc() + ' Press &#9654; to animate.');
+      sw6A11y0922.narrate(_tubeDesc() + ' ' + _modeDesc() + ' Press &#9654; to animate.');
     }
     function setMode(mode) {
       dispMode = mode;
-      var bd = document.getElementById('sw6BtnDisp$thisq');
-      var bp = document.getElementById('sw6BtnPres$thisq');
-      if (bd) bd.className = 'sw6_modebtn$thisq' + (mode==='disp'?' sw6_active$thisq':'');
-      if (bp) bp.className = 'sw6_modebtn$thisq' + (mode==='pres'?' sw6_active$thisq':'');
+      var bd = document.getElementById('sw6BtnDisp0922');
+      var bp = document.getElementById('sw6BtnPres0922');
+      if (bd) bd.className = 'sw6_modebtn0922' + (mode==='disp'?' sw6_active0922':'');
+      if (bp) bp.className = 'sw6_modebtn0922' + (mode==='pres'?' sw6_active0922':'');
       reset();
-      sw6A11y$thisq.narrate(_modeDesc());
+      sw6A11y0922.narrate(_modeDesc());
     }
     function setF(n) {
       harmonic = n;
@@ -654,38 +654,38 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
     function redraw() { drawMotion(); }
     function toggleMols() {
       showMols = !showMols;
-      var btn = document.getElementById('sw6BtnMols$thisq');
+      var btn = document.getElementById('sw6BtnMols0922');
       if (btn) {
         btn.textContent = 'Molecules: ' + (showMols ? 'ON' : 'OFF');
-        btn.className = 'sw6_optbtn$thisq' + (showMols ? ' sw6_active$thisq' : '');
+        btn.className = 'sw6_optbtn0922' + (showMols ? ' sw6_active0922' : '');
       }
       /* Disable trace toggle if no molecules */
-      var bt = document.getElementById('sw6BtnTrace$thisq');
+      var bt = document.getElementById('sw6BtnTrace0922');
       if (bt) bt.disabled = !showMols;
-      var br = document.getElementById('sw6BtnRainbow$thisq');
+      var br = document.getElementById('sw6BtnRainbow0922');
       if (br) br.disabled = !showMols;
       if (!showMols) { showTrace = false; _syncTraceBtn(); }
       if (!runFlag) drawMotion();
-      sw6A11y$thisq.narrate(showMols
+      sw6A11y0922.narrate(showMols
                             ? 'Air molecules shown. Each dot represents a molecule vibrating horizontally about its equilibrium position (faint tick marks). Enable Rainbow or Trace for more detail.'
                             : 'Molecules hidden.');
     }
     function toggleRainbow() {
       if (!showMols) return;
       rainbowMols = !rainbowMols;
-      var btn = document.getElementById('sw6BtnRainbow$thisq');
+      var btn = document.getElementById('sw6BtnRainbow0922');
       if (btn) {
         btn.textContent = 'Rainbow: ' + (rainbowMols ? 'ON' : 'OFF');
-        btn.className = 'sw6_optbtn$thisq' + (rainbowMols ? ' sw6_active$thisq' : '');
+        btn.className = 'sw6_optbtn0922' + (rainbowMols ? ' sw6_active0922' : '');
       }
       if (!runFlag) drawMotion();
-      sw6A11y$thisq.narrate(rainbowMols ? 'Rainbow colours on -- each molecule has a distinct colour for easy tracking.' : 'Single colour mode.');
+      sw6A11y0922.narrate(rainbowMols ? 'Rainbow colours on -- each molecule has a distinct colour for easy tracking.' : 'Single colour mode.');
     }
     function _syncTraceBtn() {
-      var btn = document.getElementById('sw6BtnTrace$thisq');
+      var btn = document.getElementById('sw6BtnTrace0922');
       if (!btn) return;
       btn.textContent = 'Trace: ' + (showTrace ? 'ON' : 'OFF');
-      btn.className = 'sw6_optbtn$thisq' + (showTrace ? ' sw6_active$thisq' : '');
+      btn.className = 'sw6_optbtn0922' + (showTrace ? ' sw6_active0922' : '');
     }
     function toggleTrace() {
       if (!showMols) return;
@@ -693,7 +693,7 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
       if (!showTrace) { for (var k=0;k<molecules.length;k++) molecules[k].trace=[]; }
       _syncTraceBtn();
       if (!runFlag) drawMotion();
-      sw6A11y$thisq.narrate(showTrace
+      sw6A11y0922.narrate(showTrace
                             ? 'Traces on -- the path each molecule has followed is drawn, showing it oscillates about its equilibrium. Nodes stay still; antinodes swing most.'
                             : 'Traces cleared.');
     }
@@ -702,7 +702,7 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
       _updateHarmBtns();
       _initMols();
       reset();
-      sw6A11y$thisq.narrate(
+      sw6A11y0922.narrate(
         'Standing Waves in an Air Tube. '
         + 'Choose a tube type: <strong>Both open</strong>, <strong>Both closed</strong>, or <strong>Open &amp; closed</strong>. '
         + 'Toggle between <strong>displacement</strong> and <strong>pressure</strong> views &mdash; '
@@ -716,7 +716,7 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
   })();
 </script>
 <script>
-  sw6A11y$thisq.init();
+  sw6A11y0922.init();
 </script>
 
 <ol type="a">
