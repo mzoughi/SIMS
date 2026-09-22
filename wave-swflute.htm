@@ -8,109 +8,109 @@
 <meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,waves, flute, music, standing, lesson, scientific">
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body>
-<div id="flRoot$thisq">
+<div id="flRoot0922">
 <!-- ── Accessibility toolbar ── -->
-<div class="fl_a11y$thisq" id="flA11yBar$thisq" role="toolbar" aria-label="Display options">
-<button type="button" class="fl_a11ybtn$thisq" id="flBtnHC$thisq" onclick="flA11y$thisq.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="fl_a11ybtn$thisq" id="flBtnLM$thisq" onclick="flA11y$thisq.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
-<button type="button" class="fl_a11ybtn$thisq fl_a11yon$thisq" id="flBtnNR$thisq" onclick="flA11y$thisq.toggle('nr')" aria-pressed="true">NARRATION: ON</button></div>
+<div class="fl_a11y0922" id="flA11yBar0922" role="toolbar" aria-label="Display options">
+<button type="button" class="fl_a11ybtn0922" id="flBtnHC0922" onclick="flA11y0922.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="fl_a11ybtn0922" id="flBtnLM0922" onclick="flA11y0922.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="fl_a11ybtn0922 fl_a11yon0922" id="flBtnNR0922" onclick="flA11y0922.toggle('nr')" aria-pressed="true">NARRATION: ON</button></div>
 <!-- Narration bar -->
-<div id="flNarBar$thisq" class="fl_narbar$thisq" role="status" aria-live="polite" aria-atomic="true"></div>
+<div id="flNarBar0922" class="fl_narbar0922" role="status" aria-live="polite" aria-atomic="true"></div>
 <!-- Title bar -->
-<div class="fl_tbar$thisq"><H3>Standing Waves in a Flute</H3></div>
+<div class="fl_tbar0922"><H3>Standing Waves in a Flute</H3></div>
 <!-- Canvas -->
-<div class="fl_mcontent$thisq">
-<canvas id="flCv$thisq" width="820" height="500" style="display:block;"></canvas></div>
+<div class="fl_mcontent0922">
+<canvas id="flCv0922" width="820" height="500" style="display:block;"></canvas></div>
 <!-- Row 1: note selector -->
-<div class="fl_bbar$thisq fl_row_notes$thisq">
-<span class="fl_sectlbl$thisq">Note:</span>
-<button type="button" class="fl_notebtn$thisq fl_active$thisq" id="flBtnC4$thisq"  onclick="flSim$thisq.setNote('C4')">C4</button>
-<button type="button" class="fl_notebtn$thisq" id="flBtnD4$thisq"  onclick="flSim$thisq.setNote('D4')">D4</button>
-<button type="button" class="fl_notebtn$thisq" id="flBtnE4$thisq"  onclick="flSim$thisq.setNote('E4')">E4</button>
-<button type="button" class="fl_notebtn$thisq" id="flBtnF4$thisq"  onclick="flSim$thisq.setNote('F4')">F4</button>
-<button type="button" class="fl_notebtn$thisq" id="flBtnG4$thisq"  onclick="flSim$thisq.setNote('G4')">G4</button>
-<button type="button" class="fl_notebtn$thisq" id="flBtnA4$thisq"  onclick="flSim$thisq.setNote('A4')">A4</button>
-<button type="button" class="fl_notebtn$thisq" id="flBtnB4$thisq"  onclick="flSim$thisq.setNote('B4')">B4</button>
-<button type="button" class="fl_notebtn$thisq" id="flBtnC5$thisq"  onclick="flSim$thisq.setNote('C5')">C5</button>
-<button type="button" class="fl_notebtn$thisq" id="flBtnD5$thisq"  onclick="flSim$thisq.setNote('D5')">D5</button>
-<span class="fl_noteinfo$thisq" id="flNoteInfo$thisq"></span></div>
+<div class="fl_bbar0922 fl_row_notes0922">
+<span class="fl_sectlbl0922">Note:</span>
+<button type="button" class="fl_notebtn0922 fl_active0922" id="flBtnC40922"  onclick="flSim0922.setNote('C4')">C4</button>
+<button type="button" class="fl_notebtn0922" id="flBtnD40922"  onclick="flSim0922.setNote('D4')">D4</button>
+<button type="button" class="fl_notebtn0922" id="flBtnE40922"  onclick="flSim0922.setNote('E4')">E4</button>
+<button type="button" class="fl_notebtn0922" id="flBtnF40922"  onclick="flSim0922.setNote('F4')">F4</button>
+<button type="button" class="fl_notebtn0922" id="flBtnG40922"  onclick="flSim0922.setNote('G4')">G4</button>
+<button type="button" class="fl_notebtn0922" id="flBtnA40922"  onclick="flSim0922.setNote('A4')">A4</button>
+<button type="button" class="fl_notebtn0922" id="flBtnB40922"  onclick="flSim0922.setNote('B4')">B4</button>
+<button type="button" class="fl_notebtn0922" id="flBtnC50922"  onclick="flSim0922.setNote('C5')">C5</button>
+<button type="button" class="fl_notebtn0922" id="flBtnD50922"  onclick="flSim0922.setNote('D5')">D5</button>
+<span class="fl_noteinfo0922" id="flNoteInfo0922"></span></div>
 <!-- Row 2: display mode + harmonic -->
-<div class="fl_bbar$thisq fl_row_mode$thisq">
-<span class="fl_sectlbl$thisq">Show:</span>
-<button type="button" class="fl_modebtn$thisq fl_active$thisq" id="flBtnDisp$thisq"
-onclick="flSim$thisq.setMode('disp')">Displacement</button>
-<button type="button" class="fl_modebtn$thisq" id="flBtnPres$thisq"
-onclick="flSim$thisq.setMode('pres')">Pressure</button>
-<button type="button" class="fl_modebtn$thisq" id="flBtnMols$thisq"
-onclick="flSim$thisq.toggleMols()">Molecules: OFF</button>
-<span class="fl_sectlbl$thisq" style="margin-left:14px;">Harmonic:</span>
-<button type="button" class="fl_harmbtn$thisq fl_active$thisq" id="flBtnH1$thisq" onclick="flSim$thisq.setHarmonic(1)">n = 1</button>
-<button type="button" class="fl_harmbtn$thisq" id="flBtnH2$thisq" onclick="flSim$thisq.setHarmonic(2)">n = 2</button>
-<button type="button" class="fl_harmbtn$thisq" id="flBtnH3$thisq" onclick="flSim$thisq.setHarmonic(3)">n = 3</button>
-<button type="button" class="fl_harmbtn$thisq" id="flBtnH4$thisq" onclick="flSim$thisq.setHarmonic(4)">n = 4</button></div>
+<div class="fl_bbar0922 fl_row_mode0922">
+<span class="fl_sectlbl0922">Show:</span>
+<button type="button" class="fl_modebtn0922 fl_active0922" id="flBtnDisp0922"
+onclick="flSim0922.setMode('disp')">Displacement</button>
+<button type="button" class="fl_modebtn0922" id="flBtnPres0922"
+onclick="flSim0922.setMode('pres')">Pressure</button>
+<button type="button" class="fl_modebtn0922" id="flBtnMols0922"
+onclick="flSim0922.toggleMols()">Molecules: OFF</button>
+<span class="fl_sectlbl0922" style="margin-left:14px;">Harmonic:</span>
+<button type="button" class="fl_harmbtn0922 fl_active0922" id="flBtnH10922" onclick="flSim0922.setHarmonic(1)">n = 1</button>
+<button type="button" class="fl_harmbtn0922" id="flBtnH20922" onclick="flSim0922.setHarmonic(2)">n = 2</button>
+<button type="button" class="fl_harmbtn0922" id="flBtnH30922" onclick="flSim0922.setHarmonic(3)">n = 3</button>
+<button type="button" class="fl_harmbtn0922" id="flBtnH40922" onclick="flSim0922.setHarmonic(4)">n = 4</button></div>
 <!-- Row 3: playback -->
-<div class="fl_bbar$thisq fl_row_play$thisq">
-<input type="button" class="butt$thisq" id="flPlay$thisq" value="&#9654;" onclick="if(this.value=='&#9654;'){flSim$thisq.play();this.value='&#9208;';}else{this.value='&#9654;';flSim$thisq.pause();}">
-<input type="button" class="butt$thisq" value="&#10073;&#9664;" onclick="flSim$thisq.stepBack();document.getElementById('flPlay$thisq').value='&#9654;';">
-<input type="button" class="butt$thisq" value="&#9654;&#10073;" onclick="flSim$thisq.stepForward();document.getElementById('flPlay$thisq').value='&#9654;';">
-<input type="button" class="butt$thisq" value="&#128472;" onclick="flSim$thisq.reset();document.getElementById('flPlay$thisq').value='&#9654;';">
-<label class="fl_cblbl$thisq">
-<input type="checkbox" id="flCbSlow$thisq" onchange="flSim$thisq.setSlow(this.checked)"> Slow</label></div></div><!-- #flRoot$thisq -->
+<div class="fl_bbar0922 fl_row_play0922">
+<input type="button" class="butt0922" id="flPlay0922" value="&#9654;" onclick="if(this.value=='&#9654;'){flSim0922.play();this.value='&#9208;';}else{this.value='&#9654;';flSim0922.pause();}">
+<input type="button" class="butt0922" value="&#10073;&#9664;" onclick="flSim0922.stepBack();document.getElementById('flPlay0922').value='&#9654;';">
+<input type="button" class="butt0922" value="&#9654;&#10073;" onclick="flSim0922.stepForward();document.getElementById('flPlay0922').value='&#9654;';">
+<input type="button" class="butt0922" value="&#128472;" onclick="flSim0922.reset();document.getElementById('flPlay0922').value='&#9654;';">
+<label class="fl_cblbl0922">
+<input type="checkbox" id="flCbSlow0922" onchange="flSim0922.setSlow(this.checked)"> Slow</label></div></div><!-- #flRoot0922 -->
 <style>
-#flRoot$thisq * { box-sizing: border-box; margin: 0; }
-#flRoot$thisq { display: block; width: 820px; }
-#flRoot$thisq canvas { display: block; }
-#flRoot$thisq .fl_a11y$thisq {
+#flRoot0922 * { box-sizing: border-box; margin: 0; }
+#flRoot0922 { display: block; width: 820px; }
+#flRoot0922 canvas { display: block; }
+#flRoot0922 .fl_a11y0922 {
 display: flex; gap: 6px; padding: 6px 8px;
 background: #222; flex-wrap: wrap; width: 820px;
 }
-#flRoot$thisq .fl_a11ybtn$thisq {
+#flRoot0922 .fl_a11ybtn0922 {
 padding: 4px 10px; font-size: .72rem; font-family: monospace;
 letter-spacing: .06em; border-radius: 3px; cursor: pointer;
 background: #2a2e3a; border: 1px solid #404a60; color: #7a8aaa;
 }
-#flRoot$thisq .fl_a11ybtn$thisq:hover { border-color: #00e8d0; color: #00e8d0; }
-#flRoot$thisq .fl_a11yon$thisq { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
-#flRoot$thisq .fl_narbar$thisq {
+#flRoot0922 .fl_a11ybtn0922:hover { border-color: #00e8d0; color: #00e8d0; }
+#flRoot0922 .fl_a11yon0922 { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
+#flRoot0922 .fl_narbar0922 {
 width: 820px; min-height: 28px; padding: 5px 10px;
 background: #ffefc0; border-left: 4px solid #e0b040;
 font-size: .88rem; color: #333; font-style: italic;
 }
-#flRoot$thisq .fl_tbar$thisq {
+#flRoot0922 .fl_tbar0922 {
 padding: 4px; height: 30px; background-color: #f90;
 text-align: center; width: 820px;
 }
-#flRoot$thisq .fl_mcontent$thisq { height: 502px; width: 820px; }
+#flRoot0922 .fl_mcontent0922 { height: 502px; width: 820px; }
 /* Control bars */
-#flRoot$thisq .fl_bbar$thisq {
+#flRoot0922 .fl_bbar0922 {
 display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
 width: 820px; padding: 7px 10px; border-top: 1px solid #ccc;
 }
-#flRoot$thisq .fl_row_notes$thisq { background: #e8f5e9; }
-#flRoot$thisq .fl_row_mode$thisq  { background: #e3f2fd; }
-#flRoot$thisq .fl_row_play$thisq  { background: #fff9c4; }
-#flRoot$thisq .fl_sectlbl$thisq { font-size: 13px; font-weight: bold; color: #444; white-space: nowrap; }
-#flRoot$thisq .fl_noteinfo$thisq { font-size: 12px; color: #555; margin-left: 10px; font-style: italic; }
-#flRoot$thisq .fl_notebtn$thisq {
+#flRoot0922 .fl_row_notes0922 { background: #e8f5e9; }
+#flRoot0922 .fl_row_mode0922  { background: #e3f2fd; }
+#flRoot0922 .fl_row_play0922  { background: #fff9c4; }
+#flRoot0922 .fl_sectlbl0922 { font-size: 13px; font-weight: bold; color: #444; white-space: nowrap; }
+#flRoot0922 .fl_noteinfo0922 { font-size: 12px; color: #555; margin-left: 10px; font-style: italic; }
+#flRoot0922 .fl_notebtn0922 {
 padding: 5px 10px; font-size: 14px; font-weight: bold; border-radius: 4px;
 cursor: pointer; background: #fff; border: 2px solid #888; color: #333;
 }
-#flRoot$thisq .fl_notebtn$thisq:hover { border-color: #333; }
-#flRoot$thisq .fl_modebtn$thisq, #flRoot$thisq .fl_harmbtn$thisq {
+#flRoot0922 .fl_notebtn0922:hover { border-color: #333; }
+#flRoot0922 .fl_modebtn0922, #flRoot0922 .fl_harmbtn0922 {
 padding: 5px 10px; font-size: 12px; border-radius: 4px; cursor: pointer;
 background: #fff; border: 2px solid #888; color: #333;
 }
-#flRoot$thisq .fl_modebtn$thisq:hover, #flRoot$thisq .fl_harmbtn$thisq:hover { border-color: #333; }
-#flRoot$thisq .fl_active$thisq { background: #333; color: #fff; border-color: #333; }
-#flRoot$thisq .fl_playbtn$thisq {
+#flRoot0922 .fl_modebtn0922:hover, #flRoot0922 .fl_harmbtn0922:hover { border-color: #333; }
+#flRoot0922 .fl_active0922 { background: #333; color: #fff; border-color: #333; }
+#flRoot0922 .fl_playbtn0922 {
 padding: 4px 10px; font-size: 14px; border-radius: 4px; cursor: pointer;
 background: #eee; border: 1px solid #999; color: #333; min-width: 36px;
 }
-#flRoot$thisq .fl_playbtn$thisq:hover { background: #ddd; }
-#flRoot$thisq .fl_cblbl$thisq { font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 4px; }</style>
+#flRoot0922 .fl_playbtn0922:hover { background: #ddd; }
+#flRoot0922 .fl_cblbl0922 { font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 4px; }</style>
 <!-- ════════ Accessibility controller ════════ -->
 <script>
-var flA11y$thisq = (function(){
+var flA11y0922 = (function(){
 var ROOT = null, states = { hc: false, lm: false, nr: true };
 function styleBtn(id, on) {
 var b = document.getElementById(id); if (!b) return;
@@ -120,28 +120,28 @@ b.setAttribute('aria-pressed', on ? 'true' : 'false');
 }
 function apply() {
 if (!ROOT) return;
-var cv = document.getElementById('flCv$thisq');
+var cv = document.getElementById('flCv0922');
 if (cv) cv.style.filter = states.lm ? 'invert(1) hue-rotate(180deg) brightness(0.9)' : '';
-var nb = document.getElementById('flNarBar$thisq');
+var nb = document.getElementById('flNarBar0922');
 if (nb) nb.style.display = states.nr ? 'block' : 'none';
-var btn = document.getElementById('flBtnNR$thisq');
-if (btn) { btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF'); styleBtn('flBtnNR$thisq', states.nr); }
-styleBtn('flBtnHC$thisq', states.hc);
-styleBtn('flBtnLM$thisq', states.lm);
+var btn = document.getElementById('flBtnNR0922');
+if (btn) { btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF'); styleBtn('flBtnNR0922', states.nr); }
+styleBtn('flBtnHC0922', states.hc);
+styleBtn('flBtnLM0922', states.lm);
 }
 return {
-init: function() { ROOT = document.getElementById('flRoot$thisq'); apply(); },
+init: function() { ROOT = document.getElementById('flRoot0922'); apply(); },
 toggle: function(k) {
 states[k] = !states[k];
 if (k === 'hc' && states.hc) states.lm = false;
 if (k === 'lm' && states.lm) states.hc = false;
 apply();
-if (typeof flSim$thisq !== 'undefined') flSim$thisq.redraw();
+if (typeof flSim0922 !== 'undefined') flSim0922.redraw();
 },
 isHC: function() { return states.hc; },
 narrate: function(msg) {
 if (!states.nr) return;
-var nb = document.getElementById('flNarBar$thisq'); if (!nb) return;
+var nb = document.getElementById('flNarBar0922'); if (!nb) return;
 nb.innerHTML = msg;
 if (window.MathJax) {
 if (MathJax.typesetPromise) MathJax.typesetPromise([nb]);
@@ -152,8 +152,8 @@ else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, nb]);
 })();</script>
 <!-- ════════ Simulation ════════ -->
 <script>
-var flSim$thisq = (function(){
-var canvas = document.getElementById('flCv$thisq');
+var flSim0922 = (function(){
+var canvas = document.getElementById('flCv0922');
 var ctx    = canvas.getContext('2d');
 /* ── Physics constants ── */
 var V_SOUND = 345;  /* m/s speed of sound in warm air */
@@ -250,20 +250,20 @@ return (FW / N_COLS_PX) * Math.cos(harmonic * Math.PI * n_norm) * cosT;
 }
 var N_COLS_PX = 1; /* pixel scale for mol displacement -- set in draw */
 /* ── HC colour helpers ── */
-function cBg()   { return flA11y$thisq.isHC() ? '#0d0d0d' : '#f8f4e8'; }
-function cAx()   { return flA11y$thisq.isHC() ? '#cccccc' : '#333333'; }
-function cGrid() { return flA11y$thisq.isHC() ? '#2a3344' : '#c8c8b8'; }
-function cTxt()  { return flA11y$thisq.isHC() ? '#eeeeee' : '#222222'; }
-function cTit()  { return flA11y$thisq.isHC() ? '#bbaaff' : '#4400aa'; }
+function cBg()   { return flA11y0922.isHC() ? '#0d0d0d' : '#f8f4e8'; }
+function cAx()   { return flA11y0922.isHC() ? '#cccccc' : '#333333'; }
+function cGrid() { return flA11y0922.isHC() ? '#2a3344' : '#c8c8b8'; }
+function cTxt()  { return flA11y0922.isHC() ? '#eeeeee' : '#222222'; }
+function cTit()  { return flA11y0922.isHC() ? '#bbaaff' : '#4400aa'; }
 function cWave() { return dispMode==='pres'
-? (flA11y$thisq.isHC() ? '#ffaa44' : '#b86000')
-: (flA11y$thisq.isHC() ? '#cc77cc' : '#660066'); }
-function cTube() { return flA11y$thisq.isHC() ? '#6688bb' : '#4466aa'; }
-function cTubeFill(){ return flA11y$thisq.isHC() ? 'rgba(80,120,180,0.12)' : 'rgba(200,230,255,0.45)'; }
-function cEffFill() { return flA11y$thisq.isHC() ? 'rgba(80,160,80,0.15)'  : 'rgba(180,255,180,0.30)'; }
-function cHoleOpen(){ return flA11y$thisq.isHC() ? '#222' : '#f0f0f0'; }
-function cHoleClosed(){ return flA11y$thisq.isHC() ? '#667799' : '#336699'; }
-function cEmb()  { return flA11y$thisq.isHC() ? '#ffdd88' : '#cc8800'; }
+? (flA11y0922.isHC() ? '#ffaa44' : '#b86000')
+: (flA11y0922.isHC() ? '#cc77cc' : '#660066'); }
+function cTube() { return flA11y0922.isHC() ? '#6688bb' : '#4466aa'; }
+function cTubeFill(){ return flA11y0922.isHC() ? 'rgba(80,120,180,0.12)' : 'rgba(200,230,255,0.45)'; }
+function cEffFill() { return flA11y0922.isHC() ? 'rgba(80,160,80,0.15)'  : 'rgba(180,255,180,0.30)'; }
+function cHoleOpen(){ return flA11y0922.isHC() ? '#222' : '#f0f0f0'; }
+function cHoleClosed(){ return flA11y0922.isHC() ? '#667799' : '#336699'; }
+function cEmb()  { return flA11y0922.isHC() ? '#ffdd88' : '#cc8800'; }
 /* ── Arrow (Fendt) ── */
 function arrow(x1,y1,x2,y2,w,col,txt,spc) {
 if (!w) w=1; if (!txt) txt=""; if (!spc) spc=5;
@@ -314,7 +314,7 @@ ctx.font = '10pt Calibri'; ctx.fillStyle = cTxt();
 ctx.textAlign = 'center'; ctx.textBaseline = 'top';
 ctx.fillText('cork', FX0, by+4);
 /* Right end: open */
-ctx.strokeStyle = flA11y$thisq.isHC() ? '#666' : '#aaa'; ctx.lineWidth = 1.5;
+ctx.strokeStyle = flA11y0922.isHC() ? '#666' : '#aaa'; ctx.lineWidth = 1.5;
 ctx.setLineDash([4,3]);
 ctx.beginPath(); ctx.moveTo(FX1, ty-6); ctx.lineTo(FX1, by+6); ctx.stroke();
 ctx.setLineDash([]);
@@ -351,12 +351,12 @@ ctx.fillText('H'+(h+1), hx, by+23);
 }
 /* Effective length bracket + label */
 var bry = by + 42;
-ctx.strokeStyle = flA11y$thisq.isHC() ? '#88cc88' : '#226622';
+ctx.strokeStyle = flA11y0922.isHC() ? '#88cc88' : '#226622';
 ctx.lineWidth = 1.5;
 ctx.beginPath(); ctx.moveTo(embPx, bry); ctx.lineTo(effEnd, bry); ctx.stroke();
 ctx.beginPath(); ctx.moveTo(embPx, bry-4); ctx.lineTo(embPx, bry+4); ctx.stroke();
 ctx.beginPath(); ctx.moveTo(effEnd, bry-4); ctx.lineTo(effEnd, bry+4); ctx.stroke();
-ctx.font = '10pt Calibri'; ctx.fillStyle = flA11y$thisq.isHC() ? '#88cc88' : '#226622';
+ctx.font = '10pt Calibri'; ctx.fillStyle = flA11y0922.isHC() ? '#88cc88' : '#226622';
 ctx.textAlign = 'center'; ctx.textBaseline = 'top';
 ctx.fillText('L\u2091 = ' + Leff.toFixed(3) + ' m', (embPx+effEnd)/2, bry+3);
 /* Standing wave drawn INSIDE the tube in the effective region */
@@ -423,7 +423,7 @@ var gxEnd = Math.min(GX0 + 580, GX0 + Math.round(Leff / L0 * 620));
 var gW    = gxEnd - GX0;
 var axC   = cAx(), grdC = cGrid(), txtC = cTxt(), titC = cTit(), wvC = cWave();
 /* Panel background */
-ctx.fillStyle = flA11y$thisq.isHC() ? '#1a2233' : '#e8f0ff';
+ctx.fillStyle = flA11y0922.isHC() ? '#1a2233' : '#e8f0ff';
 ctx.fillRect(GX0, GY - GH, gW, GH*2);
 /* Grid lines */
 ctx.strokeStyle = grdC; ctx.lineWidth = 0.8;
@@ -460,8 +460,8 @@ var isDispNode = false; /* open-open: k=0,harmonic are antinodes for disp */
 /* pressure antinodes at k+0.5, nodes at k */
 var isNode = (dispMode==='disp') ? false : true; /* at k positions: disp=antinode, pres=node */
 var lbl = isNode ? 'N' : 'A';
-ctx.fillStyle  = isNode ? (flA11y$thisq.isHC() ? '#88ddff' : '#0044aa')
-: (flA11y$thisq.isHC() ? '#ffaa66' : '#aa2200');
+ctx.fillStyle  = isNode ? (flA11y0922.isHC() ? '#88ddff' : '#0044aa')
+: (flA11y0922.isHC() ? '#ffaa66' : '#aa2200');
 ctx.textAlign = 'center';
 ctx.fillText(lbl, gxk, GY+5);
 ctx.strokeStyle = axC; ctx.lineWidth = 1;
@@ -473,8 +473,8 @@ var n = (k + 0.5) / harmonic;
 var gxk = GX0 + n * gW;
 var isNode = (dispMode==='disp') ? true : false;
 var lbl = isNode ? 'N' : 'A';
-ctx.fillStyle = isNode ? (flA11y$thisq.isHC() ? '#88ddff' : '#0044aa')
-: (flA11y$thisq.isHC() ? '#ffaa66' : '#aa2200');
+ctx.fillStyle = isNode ? (flA11y0922.isHC() ? '#88ddff' : '#0044aa')
+: (flA11y0922.isHC() ? '#ffaa66' : '#aa2200');
 ctx.textAlign = 'center'; ctx.textBaseline = 'top';
 ctx.fillText(lbl, gxk, GY+5);
 ctx.strokeStyle = axC; ctx.lineWidth = 1;
@@ -512,12 +512,12 @@ ctx.fillText('L\u2091 = ' + Leff.toFixed(3) + ' m', ix, iy+68);
 ctx.fillText('n = ' + harmonic + '  (harmonic)',     ix, iy+90);
 ctx.fillText('t = ' + time.toFixed(2) + ' s',        ix, iy+112);
 /* Update HTML info strip */
-var el = document.getElementById('flNoteInfo$thisq');
+var el = document.getElementById('flNoteInfo0922');
 if (el) el.textContent = note.label + '  |  f = ' + f.toFixed(1) + ' Hz  |  \u03bb = ' + lam.toFixed(3) + ' m';
 }
 /* ── Main draw ── */
 function drawMotion() {
-if (index >= 8000) { runFlag = 0; document.getElementById('flPlay$thisq').textContent = '\u25B6'; }
+if (index >= 8000) { runFlag = 0; document.getElementById('flPlay0922').textContent = '\u25B6'; }
 if (runFlag !== 1) return;
 ctx.clearRect(0, 0, canvas.width, canvas.height);
 index++;
@@ -531,7 +531,7 @@ drawInfo();
 }
 function runMotion() {
 drawMotion();
-document.getElementById("flPlay$thisq").value=String.fromCodePoint(0x23F8);
+document.getElementById("flPlay0922").value=String.fromCodePoint(0x23F8);
 if (runFlag === 1) timer = window.setTimeout(runMotion, 1000/60);
 }
 function play()        { window.clearTimeout(timer); runFlag=1; runMotion(); }
@@ -544,10 +544,10 @@ function redraw()      { drawMotion(); }
 /* ── Button helpers ── */
 function _setActive(group, id) {
 group.forEach(function(k){
-var b = document.getElementById(k + '$thisq');
+var b = document.getElementById(k + '0922');
 if (!b) return;
-b.classList.remove('fl_active$thisq');
-if (k === id) b.classList.add('fl_active$thisq');
+b.classList.remove('fl_active0922');
+if (k === id) b.classList.add('fl_active0922');
 });
 }
 function setNote(key) {
@@ -557,7 +557,7 @@ _setActive(NOTE_ORDER.map(function(n){return 'flBtn'+n;}), 'flBtn'+key);
 if (NOTES[key].octave === 5 && harmonic < 2) setHarmonic(2);
 _initMols(); reset();
 var note=getNote(), Leff=getLeff(), lam=getLambda();
-flA11y$thisq.narrate(
+flA11y0922.narrate(
 '<strong>' + note.label + '</strong>  &mdash;  f = ' + note.freq.toFixed(1) + ' Hz. '
 + 'Effective tube length L = ' + Leff.toFixed(3) + ' m '
 + '(= &lambda;/2 for the fundamental, since &lambda; = v/(2L) for an open-open pipe). '
@@ -571,7 +571,7 @@ function setMode(mode) {
 dispMode = mode;
 _setActive(['flBtnDisp','flBtnPres'], 'flBtn'+(mode==='disp'?'Disp':'Pres'));
 reset();
-flA11y$thisq.narrate(mode==='disp'
+flA11y0922.narrate(mode==='disp'
 ? '<strong>Displacement</strong> view: shows how far each air molecule moves from its rest position. Open ends are <em>antinodes</em> -- molecules move most freely there. Closed cork end: pressure antinode but displacement node.'
 : '<strong>Pressure</strong> view: shows the local pressure variation (above/below atmospheric). Open ends are <em>nodes</em> -- pressure is always atmospheric there. Pressure antinodes (maximum variation) are at &lambda;/4 from each end.');
 }
@@ -580,7 +580,7 @@ harmonic = n;
 _setActive(['flBtnH1','flBtnH2','flBtnH3','flBtnH4'], 'flBtnH'+n);
 _initMols(); reset();
 var ov = n > 1;
-flA11y$thisq.narrate(
+flA11y0922.narrate(
 'Harmonic n = ' + n + '.  Frequency = ' + getFreq().toFixed(1) + ' Hz  (&times;' + n + ' the fundamental). '
 + '&lambda; = ' + getLambda().toFixed(3) + ' m. '
 + (ov ? 'The flutist <em>overblows</em> to reach this harmonic -- by blowing faster and narrowing the lips, the jet excites a higher resonance of the air column. '
@@ -592,14 +592,14 @@ flA11y$thisq.narrate(
 }
 function toggleMols() {
 showMols = !showMols;
-var btn = document.getElementById('flBtnMols$thisq');
+var btn = document.getElementById('flBtnMols0922');
 if (btn) {
 btn.textContent = 'Molecules: ' + (showMols?'ON':'OFF');
-btn.className = btn.className.replace(/ fl_active\$thisq/g,'') + (showMols?' fl_active$thisq':'');
+btn.className = btn.className.replace(/ fl_active\0922/g,'') + (showMols?' fl_active0922':'');
 }
 if (showMols) _initMols();
 if (!runFlag) drawMotion();
-flA11y$thisq.narrate(showMols
+flA11y0922.narrate(showMols
 ? 'Air molecules shown. Density is proportional to local pressure -- molecules cluster at pressure antinodes (high compression) and spread at pressure nodes.'
 : 'Molecules hidden.');
 }
@@ -607,7 +607,7 @@ flA11y$thisq.narrate(showMols
 window.setTimeout(function(){
 _initMols();
 reset();
-flA11y$thisq.narrate(
+flA11y0922.narrate(
 'Standing Waves in a Flute. '
 + 'The flute is an <strong>open-open pipe</strong>: open at the far (foot) end and at the embouchure hole near the cork. '
 + 'Both ends are <strong>pressure nodes</strong> (atmospheric pressure) and <strong>displacement antinodes</strong> (air moves freely). '
@@ -620,5 +620,5 @@ flA11y$thisq.narrate(
 return { play, pause, stepForward, stepBack, reset, setSlow, setNote, setMode, setHarmonic, toggleMols, redraw };
 })();</script>
 <script>
-flA11y$thisq.init();</script>
+flA11y0922.init();</script>
 </body></html>
