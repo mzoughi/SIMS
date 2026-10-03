@@ -90,8 +90,6 @@ onclick="if(this.value=='Play'){emAntSim0922.pl();this.value='Pause';}else{this.
 </div>
 <div class="fnote0922">Propagation is along k&#770; (fixed, world z), the antenna's broadside direction &mdash; real dipole antennas radiate in a donut-shaped pattern, but this sim shows only that one representative direction. B is drawn at the same visual height as E for clarity; in real SI units B = E/c is far too small to see next to E. Changing the band changes &lambda;, its units, and the derived frequency f = c/&lambda; &mdash; it does not change E&#8320; or the on-screen rendering scale, which always shows about 3 (vacuum) wavelengths for legibility (real wavelengths span 12+ orders of magnitude across the spectrum, so true-to-scale rendering isn't possible on one canvas). The whole scene beyond the antenna is filled with a medium of index n (default n=1 would be vacuum); entering it never changes the frequency f, set by the antenna itself, but it does change the wavelength (&lambda; = &lambda;&#8320;/n) and the speed (v = c/n) &mdash; watch the wave visibly compress and slow as n increases. The slider's range is different for each band, since realistic index values differ enormously by wavelength; for X-ray and gamma bands the index is usually just <em>below</em> 1, a genuinely different (and important) regime. Color, tied to frequency, is computed from the source wavelength &lambda;&#8320; and does not change with n.</div>
 <hr>
-$hintlink[10]
-<hr>
 <ol type="a">
 <li>Rotate the antenna to `theta=90^@`. How does the E field's oscillation direction on screen change? Does the B field's direction change the same way?<br /></li>
 <li>Switch from Radio to Visible. What happens to &lambda; and f? Does E&#8320; change?<br /></li>
@@ -141,7 +139,7 @@ width:663px; min-height:20px; padding:5px 10px;
 background:#e8f0ff; border-left:4px solid #3366aa;
 font-size:.78rem; color:#112244; font-family:monospace; line-height:1.55;
 }
-.tbar0922    { padding:4px; height:50px; background-color:#f90; text-align:center; line-height:42px; }
+.tbar0922    { padding:2px; height:30px; background-color:#f90; text-align:center; line-height:28px; }
 .mcontent0922 { height:502px; }
 .draghint0922 { text-align:center; font-size:.72rem; color:#777; padding-top:2px; font-style:italic; }
 .playbar0922 {
