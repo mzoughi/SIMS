@@ -10,7 +10,7 @@
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations - Video Analysis - Momentum - Inelastic Colision</title>
+<title>Physics Simulations - Video Analysis - of 4 Point Objects</title>
 <meta name="author" content="Taha Mzoughi">
 <meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,video, analysis,motion,momentum,center,mass, collision, inelastic,elastic,lesson, scientific">
 <link rel="shortcut icon" href=mzy.ico>   </head>
@@ -84,17 +84,18 @@ padding: 3px 5px; border: 1px solid #bbb; border-radius: 3px;
 <button type="button" class="vt-btn vt-fonttoggle">Font size: Normal</button>
 </div>
 <h3>Video Motion Tracker</h3>
-<div class="vt-note">This question uses a shared video provided with the assignment -- everyone analyzes the same clip, so there's nothing to upload. Workflow: (1) set the scale, (2) set the origin and axis direction, (3) click on the object frame-by-frame to mark its position. Your tracked points are yours alone; only the video itself is shared.</div>
+<div class="vt-note">Your video file is loaded and processed entirely in your browser — nothing is uploaded to any server. Workflow: (1) load your video, (2) set the scale, (3) set the origin and axis direction, (4) click on the object frame-by-frame to mark its position.</div>
 <div class="vt-row">
-<span class="vt-filename">No video loaded yet.</span>
+<label class="vt-file-btn" style="background:rgb(102,0,102);color:white;padding:7px 12px;border-radius:4px;cursor:pointer;display:inline-block">Choose Video<input type="file" accept="video/*" class="vt-file-input" style="display:none"></label>
+<span class="vt-filename">No file selected</span>
 </div>
 <div class="vt-row">
 <label>Frame step (s): <input type="number" class="vt-framestep" value="0.0333" step="any" min="0.001" style="width:70px"></label>
 <button type="button" class="vt-btn vt-rewind" disabled>&#9198; Rewind</button>
 <button type="button" class="vt-btn vt-play" disabled>Play</button>
 <button type="button" class="vt-btn vt-prev10" disabled>&#9198;&#9664; -10</button>
-<button type="button" class="vt-btn vt-prev" disabled>&#9664; Prev</button>
-<button type="button" class="vt-btn vt-next" disabled>Next &#9654;</button>
+<button type="button" class="vt-btn vt-prev" disabled>&#9664; Prev Frame</button>
+<button type="button" class="vt-btn vt-next" disabled>Next Frame &#9654;</button>
 <button type="button" class="vt-btn vt-next10" disabled>+10 &#9654;&#9197;</button>
 <span class="vt-time">t = 0.000 s</span>
 </div>
@@ -189,11 +190,11 @@ padding: 3px 5px; border: 1px solid #bbb; border-radius: 3px;
 <div class="vt-fitstats"></div>
 <div class="vt-avgstats"></div>
 <!-- ============================================================
-Send-to-answer-box buttons (MOM grading hookup).
-Each block below is self-contained: to disable one for a
-given question, just delete its whole <div class="vt-row">.
-All three respect the "Point" selector above.
-============================================================ -->
+ Send-to-answer-box buttons (MOM grading hookup).
+ Each block below is self-contained: to disable one for a
+ given question, just delete its whole <div class="vt-row">.
+ All three respect the "Point" selector above.
+ ============================================================ -->
 <!-- Sends the currently graphed (x,y) points as "x1,y1" per line -->
 <div class="vt-row vt-send-data-row">
 <button type="button" class="vt-btn vt-senddata">Send graphed data to answer box</button>
@@ -268,6 +269,7 @@ var fontBtn      = byClass('vt-fonttoggle');
 var sendDataBtn  = byClass('vt-senddata');
 var sendSlopeBtn = byClass('vt-sendslope');
 var sendAvgBtn   = byClass('vt-sendavg');
+var fileInput    = byClass('vt-file-input');
 var state = {
 scale: null, origin: null, axisAngle: 0,
 scaleP1: null, scaleP2: null,
@@ -385,17 +387,14 @@ massInputs.forEach(function(inp) {
 inp.addEventListener('change', function() { recompute(); render(); drawFrame(); });
 });
 showComChk.addEventListener('change', function() { rebuildTableHeader(); render(); });
-var VIDEO_ERROR_MESSAGE_PREFIX = 'The shared video failed to load';
-var VIDEO_ERROR_MESSAGE_SUFFIX = ' Check that VIDEO_URL is correct, served over https, and that the host allows this video to be embedded elsewhere.';
-// ---------- Shared video: loaded automatically from a fixed URL ----------
-// EDIT THIS per question to point at the video everyone should analyze.
-// Must be served over https:// (MOM pages are https, and browsers block
-// https pages from loading plain http media - "mixed content").
-var VIDEO_URL = 'https://mzoughi.github.io/SIMS/vids/G3ICollision.MP4';
-function loadSharedVideo() {
+var VIDEO_ERROR_MESSAGE_PREFIX = 'The video element reported an error';
+var VIDEO_ERROR_MESSAGE_SUFFIX = ' This usually means an unsupported format/codec, or that this page is blocking local video playback.';
+// ---------- File loading ----------
+function loadFile(file) {
+if (!file) return;
 try {
-filenameSpan.textContent = VIDEO_URL;
-video.src = VIDEO_URL;
+filenameSpan.textContent = file.name;
+video.src = URL.createObjectURL(file);
 state.frames = [];
 state.pending = [];
 state.pendingRawT = null;
@@ -407,12 +406,18 @@ scaleStatus.textContent = 'not set';
 axesStatus.textContent = 'not set';
 markBtn.disabled = true;
 exportBtn.disabled = true;
-setStatus('Loading shared video...');
+setStatus('Video loading (' + file.name + ', ' + (file.size/1e6).toFixed(1) + ' MB)...');
 } catch (loadErr) {
-setStatus('Error while loading the shared video: ' + (loadErr && loadErr.message ? loadErr.message : loadErr));
-if (window.console && console.error) console.error('Video Tracker loadSharedVideo error:', loadErr);
+setStatus('Error while loading the video file: ' + (loadErr && loadErr.message ? loadErr.message : loadErr));
+if (window.console && console.error) console.error('Video Tracker loadFile error:', loadErr);
 }
 }
+fileInput.addEventListener('change', function(e) { loadFile(e.target.files[0]); });
+canvasWrap.addEventListener('dragover', function(e) { e.preventDefault(); });
+canvasWrap.addEventListener('drop', function(e) {
+e.preventDefault();
+if (e.dataTransfer.files && e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
+});
 video.addEventListener('error', function() {
 var err = video.error;
 var codeMap = {1:'MEDIA_ERR_ABORTED',2:'MEDIA_ERR_NETWORK',3:'MEDIA_ERR_DECODE',4:'MEDIA_ERR_SRC_NOT_SUPPORTED'};
@@ -552,7 +557,6 @@ var sx = canvas.width / rect.width;
 var sy = canvas.height / rect.height;
 return { x: (e.clientX - rect.left) * sx, y: (e.clientY - rect.top) * sy };
 }
-loadSharedVideo();
 // ---------- Calibration ----------
 setScaleBtn.addEventListener('click', function() {
 state.mode = 'scale1';
@@ -1056,30 +1060,7 @@ if (window.console && console.error) console.error('Video Tracker setup error:',
 })();
 </script>
 </div>
-<hr>$hintlink[0]<hr>
-$css
-<ol class="paren-lower">
-<li>Move to frame 43.</li>
-<li>Use as a scale:<ol class="paren-roman">
-<li>the length of the red cart as 0.24 m</li>
-<li>its mass with the attachment as 1.0 kg</li>
-<li>the mass of the green cart at 0.5 kg.</li>
-</ol>
-</li>
-<li>Choose two points per frame and add their masses.</li>
-<li>You can track both carts at the same time (maintain the order).</li>
-<li>You can then view their position and velocity data as well as the data for the center of mass.</li>
-</ol>
-<hr>
-This Box is not used right now:<br>
-<hr>
-This Box is where graphed data can be entered and submitted:<br>
-<hr>
-This Box is where the slope of the graphed data can be entered and submitted. It needs to abide by the precision and significan figure requirements provided at the pull down menu at the top of the page:<br>
-`"slope"\=`
-<hr>
-This Box is where the average of the graphed data can be entered and submitted. It needs to abide by the precision and significan figure requirements provided at the pull down menu at the top of the page:<br>
-`"y average"\=`
+
 <hr>
 
 </body>
