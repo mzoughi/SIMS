@@ -624,9 +624,14 @@ var l1 = 'Band: '+b.label+' &nbsp; \u03bb\u2080 = '+lambdaPhys.toFixed(lambdaPhy
 var l2 = 'n\u2081 = '+n1.toFixed(b.nDecimals)+' &nbsp; n\u2082 = '+n2.toFixed(b.nDecimals)+
 (isTIR ? ' &nbsp; TOTAL INTERNAL REFLECTION at interface 1 (critical angle = '+(Math.asin(Math.min(1,n2/n1))*180/Math.PI).toFixed(1)+'\u00b0)'
 : ' &nbsp; \u03b8\u2082 (in slab) = '+theta2Deg.toFixed(1)+'\u00b0 &nbsp; Brewster angle (interface 1) = '+thetaB1Deg.toFixed(1)+'\u00b0');
-var l3 = isTIR ? 'r_s = r_p = 1 (full reflection, simplified: no TIR phase shift modeled)'
- : 'Interface 1: r_s='+rs.toFixed(3)+' r_p='+rp.toFixed(3)+' t_s='+ts.toFixed(3)+' t_p='+tp.toFixed(3)+
-' &nbsp; Interface 2: t_s='+ts2.toFixed(3)+' t_p='+tp2.toFixed(3);
+//var l3 = isTIR ? 'r_s = r_p = 1 (full reflection, simplified: no TIR phase shift modeled)'
+// : 'Interface 1: r_s='+rs.toFixed(3)+' r_p='+rp.toFixed(3)+' t_s='+ts.toFixed(3)+' t_p='+tp.toFixed(3)+
+//' &nbsp; Interface 2: t_s='+ts2.toFixed(3)+' t_p='+tp2.toFixed(3);
+//var l4 = 'Multiple internal reflections inside the slab are not modeled, only the primary transmitted path (see note below).';
+//eq.innerHTML = l1 + '<br>' + l2 + '<br>' + l3 + '<br>' + l4;
+var l3 = isTIR ? '`r_s` = `r_p` = 1 (full reflection, simplified: no TIR phase shift modeled)'
+ : 'Interface 1: `r_s`='+rs.toFixed(3)+' `r_p`='+rp.toFixed(3)+' `t_s`='+ts.toFixed(3)+' `t_p`='+tp.toFixed(3)+
+' &nbsp; Interface 2: `t_s`='+ts2.toFixed(3)+' `t_p`='+tp2.toFixed(3);
 var l4 = 'Multiple internal reflections inside the slab are not modeled, only the primary transmitted path (see note below).';
 eq.innerHTML = l1 + '<br>' + l2 + '<br>' + l3 + '<br>' + l4;
 }
