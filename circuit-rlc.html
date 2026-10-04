@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Series RLC Circuit</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching,Oscilloscope, teach, learn,Circuit, DC, RLC,Inductance,inductor,Capacitance, AC,Capacitor,Resonance,Resistor,Reactance,Phasor,Diagram,Impedance,Electric, Electricity, Builder, lesson, scientific">
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="rlcRoot$thisq">
+<!-- ── Accessibility toolbar ── -->
+<div class="rlc_a11y$thisq" id="rlcA11yBar$thisq" role="toolbar" aria-label="Display options">
+<button type="button" class="rlc_a11ybtn$thisq" id="rlcBtnHC$thisq" onclick="rlcA11y$thisq.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="rlc_a11ybtn$thisq" id="rlcBtnLM$thisq" onclick="rlcA11y$thisq.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="rlc_a11ybtn$thisq" id="rlcBtnCB$thisq" onclick="rlcA11y$thisq.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="rlc_a11ybtn$thisq rlc_a11yon$thisq" id="rlcBtnNR$thisq" onclick="rlcA11y$thisq.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div class="tbar$thisq"><h3>RLC Series Circuit &mdash; Function Generator &amp; Dual-Channel Scope</h3></div>
+<!-- ── View tabs ── -->
+<div class="tabs$thisq" id="rlcTabs$thisq">
+<button type="button" class="rlc_tabbtn$thisq rlc_tabon$thisq" id="rlcTabScope$thisq" onclick="rlcSim$thisq.setTab('scope')">CIRCUIT + SCOPE</button>
+<button type="button" class="rlc_tabbtn$thisq" id="rlcTabPhasor$thisq" onclick="rlcSim$thisq.setTab('phasor')">PHASOR DIAGRAM</button>
+<button type="button" class="rlc_tabbtn$thisq" id="rlcTabEq$thisq" onclick="rlcSim$thisq.setTab('equations')">EQUATIONS</button>
+</div>
+<div class="mcontent$thisq">
+<canvas id="rlcCanvas$thisq" style="margin:auto;display:block;border:1px solid #ccc" width="700" height="460"></canvas>
+<div id="rlcEqPanel$thisq" class="rlc_eqpanel$thisq" style="display:none;"></div>
+</div>
+<div id="rlcNarBar$thisq" class="rlc_narbar$thisq" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="bbar$thisq">
+<input type="button" id="rlcPlay$thisq" value="Play"
+onclick="if(this.value=='Play'){rlcSim$thisq.pl();this.value='Pause';}else{this.value='Play';rlcSim$thisq.ps();}">
+<input type="button" value="Step" onclick="document.getElementById('rlcPlay$thisq').value='Play';rlcSim$thisq.step();">
+<input type="button" value="New Components" onclick="document.getElementById('rlcPlay$thisq').value='Play';rlcSim$thisq.rst();">
+<input type="button" value="Clear Cursors" onclick="rlcSim$thisq.clearCursors();">
+</div>
+<div class="footer$thisq">
+<div class="rowgrp$thisq">
+<label>R (&Omega;):
+<input type="range" id="rlcR$thisq" min="500" max="10000" step="50" value="3000"
+oninput="document.getElementById('rlcRVal$thisq').textContent=this.value; rlcSim$thisq.redraw();">
+<span id="rlcRVal$thisq">3000</span>
+</label>
+<label>L (mH):
+<input type="range" id="rlcL$thisq" min="10" max="500" step="5" value="400"
+oninput="document.getElementById('rlcLVal$thisq').textContent=this.value; rlcSim$thisq.redraw();">
+<span id="rlcLVal$thisq">400</span>
+</label>
+<label>C (nF):
+<input type="range" id="rlcC$thisq" min="10" max="300" step="5" value="75"
+oninput="document.getElementById('rlcCVal$thisq').textContent=this.value; rlcSim$thisq.redraw();">
+<span id="rlcCVal$thisq">75</span>
+</label>
+<label>f (Hz):
+<input type="range" id="rlcF$thisq" min="50" max="5000" step="10" value="1200"
+oninput="document.getElementById('rlcFVal$thisq').textContent=this.value; rlcSim$thisq.redraw();">
+<span id="rlcFVal$thisq">1200</span>
+</label>
+<label>V<sub>m</sub> (V):
+<input type="range" id="rlcVm$thisq" min="1" max="10" step="0.5" value="5"
+oninput="document.getElementById('rlcVmVal$thisq').textContent=this.value; rlcSim$thisq.redraw();">
+<span id="rlcVmVal$thisq">5</span>
+</label>
+</div>
+<div class="rowgrp$thisq">
+<label>CH1 shows:
+<select id="rlcCh1Sel$thisq" onchange="rlcSim$thisq.redraw();">
+<option value="src">Source v(t)</option>
+<option value="vr" selected>V_R (resistor)</option>
+<option value="vl">V_L (inductor)</option>
+<option value="vc">V_C (capacitor)</option>
+<option value="vlc">V_L + V_C (reactive)</option>
+</select>
+</label>
+<label>CH2 shows:
+<select id="rlcCh2Sel$thisq" onchange="rlcSim$thisq.redraw();">
+<option value="src">Source v(t)</option>
+<option value="vr">V_R (resistor)</option>
+<option value="vl">V_L (inductor)</option>
+<option value="vc" selected>V_C (capacitor)</option>
+<option value="vlc">V_L + V_C (reactive)</option>
+</select>
+</label>
+<label>CH1 V/div:
+<select id="rlcV1$thisq" onchange="rlcSim$thisq.redraw();">
+<option>0.5</option><option selected>1</option><option>2</option><option>5</option>
+</select>
+</label>
+<label>CH2 V/div:
+<select id="rlcV2$thisq" onchange="rlcSim$thisq.redraw();">
+<option>0.5</option><option selected>1</option><option>2</option><option>5</option>
+</select>
+</label>
+<label>Time/div (ms):
+<select id="rlcT$thisq" onchange="rlcSim$thisq.redraw();">
+<option>0.1</option><option>0.2</option><option selected>0.5</option><option>1</option><option>2</option>
+</select>
+</label>
+</div>
+<div class="rowgrp$thisq">
+<label class="rlc_chk$thisq"><input type="checkbox" id="rlcTol$thisq" onchange="rlcSim$thisq.rst();"> Simulate component tolerance (experimental error)</label>
+</div>
+</div>
+</div>
+<style>
+* { margin: 0; box-sizing: border-box; }
+div { width: 703px; margin: 0; }
+#rlcRoot$thisq {
+--rlc-bg:        #ffffff;
+--rlc-scope-bg:  #0b1a0f;
+--rlc-grid:      #2c4a34;
+--rlc-vr:        #e0a800;
+--rlc-vl:        #7a5cff;
+--rlc-vc:        #00b7c2;
+--rlc-src:       #888888;
+--rlc-ch1:       #e0a800;
+--rlc-ch2:       #00b7c2;
+--rlc-text:      #111111;
+--rlc-struct:    #111111;
+--rlc-good:      #1a8a3a;
+--rlc-toolbar-bg:#222;
+--rlc-cursor:    #d33fd3;
+}
+#rlcRoot$thisq .rlc_a11y$thisq {
+display:flex; gap:6px; padding:6px 8px;
+background:var(--rlc-toolbar-bg); flex-wrap:wrap; width:703px;
+}
+#rlcRoot$thisq .rlc_a11ybtn$thisq {
+padding:4px 10px; font-size:.72rem; font-family:monospace;
+letter-spacing:.06em; border-radius:3px; cursor:pointer;
+background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa;
+transition:border-color .15s,color .15s;
+}
+#rlcRoot$thisq .rlc_a11ybtn$thisq:hover { border-color:#00e8d0; color:#00e8d0; }
+#rlcRoot$thisq .rlc_a11yon$thisq { background:rgba(0,232,208,.12); border-color:#00e8d0; color:#00e8d0; }
+#rlcRoot$thisq .rlc_narbar$thisq {
+width:703px; min-height:28px; padding:5px 10px;
+background:#ffefc0; border-left:4px solid #e0b040;
+font-size:.86rem; color:#333; font-style:italic;
+}
+.tbar$thisq    { padding:4px; height:35px; background-color:#f90; text-align:center; line-height:42px; width:703px;}
+.tbar$thisq h3 { font-size:1.05rem; font-weight:bold; }
+.tabs$thisq    { width:703px; display:flex; background:#333; }
+.rlc_tabbtn$thisq {
+flex:1; padding:8px 4px; font-size:.78rem; font-family:sans-serif; letter-spacing:.03em;
+background:#333; color:#aaa; border:none; border-right:1px solid #222; cursor:pointer;
+}
+.rlc_tabbtn$thisq:hover { background:#444; color:#fff; }
+.rlc_tabon$thisq { background:#f90 !important; color:#111 !important; font-weight:bold; }
+.mcontent$thisq { height:462px; width:703px; position:relative; }
+.rlc_eqpanel$thisq {
+width:680px; height:440px; margin:10px auto; padding:14px 20px; overflow-y:auto;
+background:var(--rlc-bg); color:var(--rlc-text); font-family:'Cambria','Georgia',serif; font-size:1rem; line-height:1.85;
+}
+.rlc_eqpanel$thisq h4 { margin-top:14px; font-family:sans-serif; color:#c05a00; }
+.rlc_eqpanel$thisq .rlc_eqline$thisq { margin:6px 0 6px 10px; font-size:1.02rem; }
+.bbar$thisq    { height:50px; background-color:#df9; padding:10px; text-align:center; width:703px;}
+.bbar$thisq input[type=button] { margin:0 4px; padding:4px 12px; cursor:pointer; }
+.footer$thisq  { width:703px; background-color:#fce4ec; padding:8px; font-size:.85rem; }
+.rowgrp$thisq  { display:flex; flex-wrap:wrap; gap:14px; align-items:center; padding:4px 2px; width:100%; justify-content:center;}
+.rowgrp$thisq label { display:flex; align-items:center; gap:4px; }
+.rlc_chk$thisq { font-weight:bold; }
+</style>
+<!-- ════════ A11Y CONTROLLER ════════ -->
+<script>
+var rlcA11y$thisq = (function(){
+var ROOT = null;
+var states = { hc:false, lm:false, cb:false, nr:true };
+var THEMES = {
+hc:{'--rlc-bg':'#000','--rlc-scope-bg':'#000','--rlc-grid':'#444','--rlc-vr':'#ffff00','--rlc-vl':'#c299ff','--rlc-vc':'#00e8ff','--rlc-src':'#fff','--rlc-ch1':'#ffff00','--rlc-ch2':'#00e8ff','--rlc-text':'#fff','--rlc-struct':'#fff','--rlc-good':'#30ff70','--rlc-toolbar-bg':'#000','--rlc-cursor':'#ff66ff'},
+lm:{'--rlc-bg':'#f0f0f0','--rlc-scope-bg':'#12261a','--rlc-grid':'#33553f','--rlc-vr':'#c98a00','--rlc-vl':'#5c3fd6','--rlc-vc':'#0090a0','--rlc-src':'#555','--rlc-ch1':'#c98a00','--rlc-ch2':'#0090a0','--rlc-text':'#000','--rlc-struct':'#000','--rlc-good':'#157a30','--rlc-toolbar-bg':'#444','--rlc-cursor':'#b030b0'},
+cb:{'--rlc-bg':'#fff','--rlc-scope-bg':'#0b1a0f','--rlc-grid':'#2c4a34','--rlc-vr':'#d55e00','--rlc-vl':'#0072b2','--rlc-vc':'#009e73','--rlc-src':'#666','--rlc-ch1':'#d55e00','--rlc-ch2':'#0072b2','--rlc-text':'#000','--rlc-struct':'#333','--rlc-good':'#009e73','--rlc-toolbar-bg':'#222','--rlc-cursor':'#cc79a7'}
+};
+var DEFS = {'--rlc-bg':'#fff','--rlc-scope-bg':'#0b1a0f','--rlc-grid':'#2c4a34','--rlc-vr':'#e0a800','--rlc-vl':'#7a5cff','--rlc-vc':'#00b7c2','--rlc-src':'#888','--rlc-ch1':'#e0a800','--rlc-ch2':'#00b7c2','--rlc-text':'#111','--rlc-struct':'#111','--rlc-good':'#1a8a3a','--rlc-toolbar-bg':'#222','--rlc-cursor':'#d33fd3'};
+function applyVars(k,on){ if(!ROOT)return; var v=THEMES[k]; for(var p in v) ROOT.style.setProperty(p,on?v[p]:DEFS[p]); }
+function styleBtn(id,on){
+var b=document.getElementById(id); if(!b)return;
+b.style.background=on?'rgba(0,232,208,.12)':'#2a2e3a';
+b.style.borderColor=on?'#00e8d0':'#404a60';
+b.style.color=on?'#00e8d0':'#7a8aaa';
+b.setAttribute('aria-pressed',on?'true':'false');
+}
+function applyNarBar(){
+var nb=document.getElementById('rlcNarBar$thisq');
+if(nb) nb.style.display=states.nr?'block':'none';
+var btn=document.getElementById('rlcBtnNR$thisq');
+if(btn){ btn.textContent='NARRATION: '+(states.nr?'ON':'OFF'); styleBtn('rlcBtnNR$thisq',states.nr); }
+}
+function apply(){
+if(!ROOT)return;
+applyVars('hc',states.hc); applyVars('lm',states.lm); applyVars('cb',states.cb);
+applyNarBar();
+styleBtn('rlcBtnHC$thisq',states.hc);
+styleBtn('rlcBtnLM$thisq',states.lm);
+styleBtn('rlcBtnCB$thisq',states.cb);
+}
+return {
+init:function(){ ROOT=document.getElementById('rlcRoot$thisq'); apply(); },
+toggle:function(k){
+states[k]=!states[k];
+if(k==='hc'&&states.hc) states.lm=false;
+if(k==='lm'&&states.lm) states.hc=false;
+apply();
+if(window.rlcSim$thisq) window.rlcSim$thisq.redraw();
+},
+narrate:function(msg){
+if(!states.nr)return;
+var nb=document.getElementById('rlcNarBar$thisq');
+if(nb) nb.textContent=msg;
+},
+col:function(prop,def){
+if(!ROOT) return def;
+var v=ROOT.style.getPropertyValue(prop);
+return (v&&v.trim())?v.trim():def;
+}
+};
+})();
+</script>
+<!-- ════════ SIMULATION ════════
+Third of the RC / RL / RLC family -- same conventions throughout.
+- var simObj = function() { ... rst(); return {rst,pl,ps,step,...}; }
+- var simObj$thisq = new simObj();
+- Animation: recursive window.setTimeout(runMotion, 40) guarded by runFlag
+- rst() is called immediately inside the constructor (no deferred boot)
+- NEW: CH1/CH2 each read a <select> so the user can probe any node pair
+(source, VR, VL, VC, or VL+VC) instead of a fixed assignment.
+-->
+<script>
+var rlcGen = function() {
+var canvas  = document.getElementById('rlcCanvas$thisq');
+var ctx     = canvas.getContext('2d');
+var eqPanel = document.getElementById('rlcEqPanel$thisq');
+var W = canvas.width, H = canvas.height;
+var timer, runFlag = 0;
+var tab = 'scope';
+var sweepPhase = 0;
+var phasorAngle = 0;
+/* ── experimental-error (component tolerance) state ── */
+var errR = 0, errL = 0, errC = 0, errF = 0, errScope = 0;
+function rollTolerances() {
+errR = (Math.random()*2-1) * 0.05;    /* resistor  +/-5%  */
+errL = (Math.random()*2-1) * 0.10;    /* inductor  +/-10% */
+errC = (Math.random()*2-1) * 0.10;    /* capacitor +/-10% */
+errF = (Math.random()*2-1) * 0.01;    /* function-gen freq accuracy +/-1% */
+errScope = (Math.random()*2-1) * 0.02;/* scope vertical reading noise +/-2% */
+}
+rollTolerances();
+var cur1X = null, cur2X = null, dragCur = null;
+function c(prop, def) { return rlcA11y$thisq.col(prop, def); }
+function tolOn() { var el=document.getElementById('rlcTol$thisq'); return el && el.checked; }
+function controls() {
+return {
+Rset:  parseFloat(document.getElementById('rlcR$thisq').value),
+Lset:  parseFloat(document.getElementById('rlcL$thisq').value),  /* mH */
+Cset:  parseFloat(document.getElementById('rlcC$thisq').value),  /* nF */
+Fset:  parseFloat(document.getElementById('rlcF$thisq').value),
+Vm:    parseFloat(document.getElementById('rlcVm$thisq').value),
+ch1:   document.getElementById('rlcCh1Sel$thisq').value,
+ch2:   document.getElementById('rlcCh2Sel$thisq').value,
+v1div: parseFloat(document.getElementById('rlcV1$thisq').value),
+v2div: parseFloat(document.getElementById('rlcV2$thisq').value),
+tdiv:  parseFloat(document.getElementById('rlcT$thisq').value)
+};
+}
+/* ── physics ──
+v(t) = Vm sin(wt).  Z = R + j(XL-XC).  phi = atan((XL-XC)/R) is the
+angle by which current LAGS the source (positive = inductive circuit).
+I(t)      = Im sin(wt - phi)
+vR(t)     = Im R  sin(wt - phi)                (in phase with I)
+vL(t)     = Im XL sin(wt - phi + 90deg)         (leads I by 90)
+vC(t)     = Im XC sin(wt - phi - 90deg)         (lags  I by 90)
+vLC(t)    = Im (XL-XC) sin(wt - phi + 90deg)    (VL and VC are anti-phase;
+this signed form handles both cases)  */
+function physics() {
+var k = controls();
+var tol = tolOn();
+var R = k.Rset * (1 + (tol ? errR : 0));
+var L = k.Lset * 1e-3 * (1 + (tol ? errL : 0));
+var C = k.Cset * 1e-9 * (1 + (tol ? errC : 0));
+var f = k.Fset * (1 + (tol ? errF : 0));
+var w = 2 * Math.PI * f;
+var XL = w * L;
+var XC = 1 / (w * C);
+var X  = XL - XC;
+var Z  = Math.sqrt(R*R + X*X);
+var phi = Math.atan(X / R);
+var Im  = k.Vm / Z;
+var VRm = Im * R;
+var VLm = Im * XL;
+var VCm = Im * XC;
+var f0  = 1 / (2*Math.PI*Math.sqrt(L*C));
+var Q   = (1/R) * Math.sqrt(L/C);
+return { k:k, R:R, L:L, C:C, f:f, w:w, XL:XL, XC:XC, X:X, Z:Z, phi:phi,
+Im:Im, VRm:VRm, VLm:VLm, VCm:VCm, f0:f0, Q:Q };
+}
+/* ── generic channel-quantity model: amp*sin(w t + phase) ── */
+function chanInfo(sel, p) {
+switch (sel) {
+case 'src': return { amp:p.k.Vm, phase:0,              label:'v(t) [source]',  short:'v' };
+case 'vr':  return { amp:p.VRm,  phase:-p.phi,          label:'V_R [resistor]', short:'V\u1D63' };
+case 'vl':  return { amp:p.VLm,  phase:-p.phi+Math.PI/2,label:'V_L [inductor]', short:'V\u2097' };
+case 'vc':  return { amp:p.VCm,  phase:-p.phi-Math.PI/2,label:'V_C [capacitor]',short:'V\u1D04' };
+case 'vlc': return { amp:Math.abs(p.X)*p.Im, phase:(p.X>=0?-p.phi+Math.PI/2:-p.phi-Math.PI/2), label:'V_L+V_C [reactive]', short:'V\u2097\u1D04' };
+}
+return { amp:0, phase:0, label:'?', short:'?' };
+}
+function chanColorVar(which) { return which===1 ? '--rlc-ch1' : '--rlc-ch2'; }
+/* ── schematic (always drawn, left panel) -- source, R, L, C in series to ground ── */
+var nodeTop, rY0, rY1, coilY0, coilY1, capY0, capY1;
+function drawSchematic(p) {
+var colX = 205;
+ctx.strokeStyle = c('--rlc-struct','#111'); ctx.fillStyle = c('--rlc-struct','#111');
+ctx.lineWidth = 2; ctx.font = '11px monospace'; ctx.textAlign = 'left';
+/* function generator symbol */
+var gy = 42;
+ctx.beginPath(); ctx.arc(colX-95, gy, 22, 0, 2*Math.PI); ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(colX-109, gy);
+for (var i2=0;i2<=14;i2++){ ctx.lineTo(colX-109+i2*1.7, gy - 7*Math.sin(i2*Math.PI/3.5)); }
+ctx.strokeStyle = c('--rlc-src','#888'); ctx.stroke();
+ctx.fillStyle = c('--rlc-struct','#111');
+ctx.font = '11px monospace';
+ctx.fillText('FG', colX-100, gy+36);
+ctx.fillText('v(t)=Vm sin(\u03C9t)', colX-138, gy+50);
+/* top wire */
+ctx.strokeStyle = c('--rlc-struct','#111');
+ctx.beginPath(); ctx.moveTo(colX-73, gy); ctx.lineTo(colX, gy); ctx.stroke();
+nodeTop = gy;
+ctx.beginPath(); ctx.moveTo(colX, gy); ctx.lineTo(colX, 80); ctx.stroke();
+/* resistor zigzag */
+rY0 = 80; rY1 = 135;
+ctx.beginPath(); ctx.moveTo(colX, rY0);
+var seg = (rY1-rY0)/8, dir=1, s;
+for (s=0;s<8;s++){ ctx.lineTo(colX + dir*9, rY0 + seg*(s+1)); dir*=-1; }
+ctx.stroke();
+ctx.beginPath(); ctx.moveTo(colX - dir*9, rY0 + seg*s); ctx.lineTo(colX, rY1); ctx.stroke();
+ctx.fillText('R', colX+14, (rY0+rY1)/2+4);
+/* inductor coil */
+coilY0 = rY1 + 6;
+var loops = 4, loopH = 13, coilR = loopH/2;
+coilY1 = coilY0 + loops*loopH;
+ctx.beginPath(); ctx.moveTo(colX, rY1); ctx.lineTo(colX, coilY0); ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(colX, coilY0);
+for (var li=0; li<loops; li++){
+var cyy = coilY0 + li*loopH + coilR;
+ctx.arc(colX, cyy, coilR, -Math.PI/2, Math.PI/2, false);
+}
+ctx.stroke();
+ctx.fillText('L', colX+20, (coilY0+coilY1)/2+4);
+/* capacitor plates */
+capY0 = coilY1 + 10; capY1 = capY0 + 16;
+ctx.beginPath(); ctx.moveTo(colX, coilY1); ctx.lineTo(colX, capY0); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(colX-16, capY0); ctx.lineTo(colX+16, capY0); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(colX-16, capY1); ctx.lineTo(colX+16, capY1); ctx.stroke();
+ctx.fillText('C', colX+22, (capY0+capY1)/2+4);
+var gndY = capY1 + 40;
+ctx.beginPath(); ctx.moveTo(colX, capY1); ctx.lineTo(colX, gndY); ctx.stroke();
+/* ground bar + return wire */
+ctx.beginPath(); ctx.moveTo(colX-14, gndY); ctx.lineTo(colX+14, gndY); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(colX-9, gndY+5); ctx.lineTo(colX+9, gndY+5); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(colX-4, gndY+10); ctx.lineTo(colX+4, gndY+10); ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(colX, gndY); ctx.lineTo(28, gndY);
+ctx.lineTo(28, gy); ctx.lineTo(colX-117, gy);
+ctx.stroke();
+/* dynamic CH1 / CH2 probe leads, following the current dropdown selections */
+var nodes = { src:[nodeTop,gndY], vr:[rY0,rY1], vl:[coilY0,coilY1], vc:[capY0,capY1], vlc:[coilY0,capY1] };
+function drawProbe(sel, xOff, colorVar, chLabel) {
+var pair = nodes[sel]; if (!pair) return;
+var col = c(colorVar, chLabel==='CH1' ? '#e0a800' : '#00b7c2');
+ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 2;
+ctx.beginPath(); ctx.moveTo(colX+xOff-10, pair[0]); ctx.lineTo(colX+xOff, pair[0]); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(colX+xOff-10, pair[1]); ctx.lineTo(colX+xOff, pair[1]); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(colX+xOff, pair[0]); ctx.lineTo(colX+xOff, pair[1]); ctx.stroke();
+ctx.beginPath(); ctx.arc(colX+xOff-10, pair[0], 3, 0, 2*Math.PI); ctx.fill();
+ctx.beginPath(); ctx.arc(colX+xOff-10, pair[1], 3, 0, 2*Math.PI); ctx.fill();
+ctx.font = 'bold 11px monospace';
+ctx.fillText(chLabel, colX+xOff+4, (pair[0]+pair[1])/2+4);
+}
+drawProbe(p.k.ch1, 48, '--rlc-ch1', 'CH1');
+drawProbe(p.k.ch2, 78, '--rlc-ch2', 'CH2');
+/* component values printed under schematic */
+ctx.fillStyle = c('--rlc-text','#111'); ctx.font = '11px monospace';
+var vy = gndY + 26;
+ctx.fillText('R = '+p.R.toFixed(0)+' \u03A9', 20, vy);
+ctx.fillText('L = '+(p.L*1e3).toFixed(1)+' mH', 20, vy+16);
+ctx.fillText('C = '+(p.C*1e9).toFixed(1)+' nF', 20, vy+32);
+ctx.fillText('f = '+p.f.toFixed(1)+' Hz', 20, vy+48);
+if (tolOn()) {
+ctx.fillStyle = '#a04a00'; ctx.font = 'italic 10px monospace';
+ctx.fillText('(includes component tolerance)', 20, vy+66);
+}
+}
+/* ── oscilloscope panel ── */
+var scopeX = 350, scopeY = 8, scopeW = 340, scopeH = 300;
+function xToTime(x, tdivMs) {
+var halfSpanSec = (tdivMs/1000) * 5;
+return ((x - (scopeX+scopeW/2)) / (scopeW/2)) * halfSpanSec;
+}
+function drawScopePanel(p) {
+ctx.fillStyle = c('--rlc-scope-bg','#0b1a0f');
+ctx.fillRect(scopeX, scopeY, scopeW, scopeH);
+ctx.strokeStyle = c('--rlc-grid','#2c4a34'); ctx.lineWidth = 1;
+var cols = 10, rows = 8;
+for (var i3=0;i3<=cols;i3++){
+var gx = scopeX + i3*scopeW/cols;
+ctx.beginPath(); ctx.moveTo(gx, scopeY); ctx.lineTo(gx, scopeY+scopeH); ctx.stroke();
+}
+for (var j3=0;j3<=rows;j3++){
+var gyy = scopeY + j3*scopeH/rows;
+ctx.beginPath(); ctx.moveTo(scopeX, gyy); ctx.lineTo(scopeX+scopeW, gyy); ctx.stroke();
+}
+var midY = scopeY + scopeH/2;
+ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+ctx.beginPath(); ctx.moveTo(scopeX, midY); ctx.lineTo(scopeX+scopeW, midY); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(scopeX+scopeW/2, scopeY); ctx.lineTo(scopeX+scopeW/2, scopeY+scopeH); ctx.stroke();
+var pxPerDivY = scopeH/rows;
+var noise = tolOn() ? errScope : 0;
+function yFor(v, voltsDiv) { return midY - (v*(1+noise)/voltsDiv) * pxPerDivY; }
+var ch1 = chanInfo(p.k.ch1, p), ch2 = chanInfo(p.k.ch2, p);
+ctx.strokeStyle = c('--rlc-ch1','#e0a800'); ctx.lineWidth = 2; ctx.beginPath();
+for (var xpix=scopeX; xpix<=scopeX+scopeW; xpix++) {
+var tS = xToTime(xpix, p.k.tdiv);
+var v = ch1.amp * Math.sin(p.w*tS + ch1.phase);
+var yy2 = yFor(v, p.k.v1div);
+if (xpix===scopeX) ctx.moveTo(xpix, yy2); else ctx.lineTo(xpix, yy2);
+}
+ctx.stroke();
+ctx.strokeStyle = c('--rlc-ch2','#00b7c2'); ctx.beginPath();
+for (var xpix2=scopeX; xpix2<=scopeX+scopeW; xpix2++) {
+var tS2 = xToTime(xpix2, p.k.tdiv);
+var v2 = ch2.amp * Math.sin(p.w*tS2 + ch2.phase);
+var yy3 = yFor(v2, p.k.v2div);
+if (xpix2===scopeX) ctx.moveTo(xpix2, yy3); else ctx.lineTo(xpix2, yy3);
+}
+ctx.stroke();
+var beamX = scopeX + sweepPhase*scopeW;
+var tB = xToTime(beamX, p.k.tdiv);
+var vB = ch1.amp * Math.sin(p.w*tB + ch1.phase);
+ctx.fillStyle = c('--rlc-ch1','#e0a800');
+ctx.beginPath(); ctx.arc(beamX, yFor(vB,p.k.v1div), 3, 0, 2*Math.PI); ctx.fill();
+ctx.font='11px monospace';
+if (cur1X!==null) drawCursor(cur1X, '1');
+if (cur2X!==null) drawCursor(cur2X, '2');
+ctx.textAlign='left'; ctx.font='11px monospace';
+ctx.fillStyle = c('--rlc-ch1','#e0a800');
+ctx.fillText('CH1: '+ch1.label+'  '+p.k.v1div+' V/div', scopeX+4, scopeY+scopeH+14);
+ctx.fillStyle = c('--rlc-ch2','#00b7c2');
+ctx.fillText('CH2: '+ch2.label+'  '+p.k.v2div+' V/div', scopeX+4, scopeY+scopeH+28);
+ctx.fillStyle = c('--rlc-text','#111');
+ctx.fillText('Time/div: '+p.k.tdiv+' ms', scopeX+4, scopeY+scopeH+42);
+ctx.fillText('Drag on the screen to place phase-measurement cursors.', scopeX+4, scopeY+scopeH+56);
+}
+function drawCursor(x, label) {
+ctx.strokeStyle = c('--rlc-cursor','#d33fd3'); ctx.lineWidth = 1;
+ctx.setLineDash([4,3]);
+ctx.beginPath(); ctx.moveTo(x, scopeY); ctx.lineTo(x, scopeY+scopeH); ctx.stroke();
+ctx.setLineDash([]);
+ctx.fillStyle = c('--rlc-cursor','#d33fd3');
+ctx.fillText(label, x-3, scopeY-2);
+}
+/* ── phasor panel: always shows all 4 phasors; CH1/CH2 picks are outlined ── */
+function drawPhasorPanel(p) {
+var cx = scopeX + scopeW/2, cy = scopeY + scopeH/2 + 10;
+ctx.strokeStyle = c('--rlc-grid','#2c4a34'); ctx.lineWidth=1;
+ctx.beginPath(); ctx.moveTo(scopeX, cy); ctx.lineTo(scopeX+scopeW, cy); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(cx, scopeY); ctx.lineTo(cx, scopeY+scopeH); ctx.stroke();
+var maxV = Math.max(p.k.Vm, p.VRm, p.VLm, p.VCm, 0.01);
+var scale = (scopeW/2 - 20) / maxV;
+var rot = phasorAngle;
+function arrow(angRad, mag, color, label, thick) {
+if (mag < 1e-6) return;
+var ex = cx + mag*scale*Math.cos(angRad - rot);
+var ey = cy - mag*scale*Math.sin(angRad - rot);
+ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = thick?3.5:2.5;
+ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(ex,ey); ctx.stroke();
+var hAng = Math.atan2(cy-ey, ex-cx);
+ctx.beginPath();
+ctx.moveTo(ex,ey);
+ctx.lineTo(ex-9*Math.cos(hAng-0.3), ey+9*Math.sin(hAng-0.3));
+ctx.lineTo(ex-9*Math.cos(hAng+0.3), ey+9*Math.sin(hAng+0.3));
+ctx.closePath(); ctx.fill();
+ctx.font='bold 12px monospace';
+ctx.fillText(label, ex+ (ex>=cx?6:-24), ey-(ey<cy? 4 : -14));
+}
+var picked = { src:p.k.ch1==='src'||p.k.ch2==='src', vr:p.k.ch1==='vr'||p.k.ch2==='vr',
+ vl:p.k.ch1==='vl'||p.k.ch2==='vl', vc:p.k.ch1==='vc'||p.k.ch2==='vc' };
+arrow(0, p.k.Vm, c('--rlc-src','#888'), 'v(t)', picked.src);
+arrow(-p.phi, p.VRm, c('--rlc-vr','#e0a800'), 'V\u1D63', picked.vr);
+arrow(-p.phi+Math.PI/2, p.VLm, c('--rlc-vl','#7a5cff'), 'V\u2097', picked.vl);
+arrow(-p.phi-Math.PI/2, p.VCm, c('--rlc-vc','#00b7c2'), 'V\u1D04', picked.vc);
+ctx.font='12px monospace'; ctx.fillStyle = c('--rlc-text','#111');
+ctx.fillText('\u03C6 = '+(p.phi*180/Math.PI).toFixed(1)+'\u00B0  (current lags source if +, leads if \u2212)', scopeX+4, scopeY+scopeH+18);
+ctx.fillText('\u2220(V\u1D63 \u2192 V\u2097) = +90\u00B0,  \u2220(V\u1D63 \u2192 V\u1D04) = \u221290\u00B0  (always, for series RLC)', scopeX+4, scopeY+scopeH+34);
+var resOn = Math.abs(p.XL-p.XC)/p.R < 0.03;
+ctx.fillStyle = resOn ? c('--rlc-good','#1a8a3a') : c('--rlc-text','#111');
+ctx.font = resOn ? 'bold 12px monospace' : '12px monospace';
+ctx.fillText(resOn ? '\u2713 At resonance: V\u2097 and V\u1D04 cancel, Z = R (minimum)' : 'V\u2097 and V\u1D04 point opposite; their difference sets \u03C6', scopeX+4, scopeY+scopeH+50);
+}
+/* ── shared readout strip ── */
+function drawReadout(p) {
+var y0 = 380;
+ctx.fillStyle = c('--rlc-text','#111'); ctx.font='11px monospace'; ctx.textAlign='left';
+ctx.fillText('XL='+p.XL.toFixed(1)+'\u03A9   XC='+p.XC.toFixed(1)+'\u03A9   Z='+p.Z.toFixed(1)+'\u03A9   \u03C6='+(p.phi*180/Math.PI).toFixed(1)+'\u00B0   f0='+p.f0.toFixed(1)+'Hz   Q='+p.Q.toFixed(2), 350, y0);
+ctx.fillText('V\u1D63(pk)='+p.VRm.toFixed(2)+'V   V\u2097(pk)='+p.VLm.toFixed(2)+'V   V\u1D04(pk)='+p.VCm.toFixed(2)+'V', 350, y0+16);
+var resOn = Math.abs(p.XL-p.XC)/p.R < 0.03;
+if (resOn) {
+ctx.fillStyle = c('--rlc-good','#1a8a3a'); ctx.font='bold 13px monospace';
+ctx.fillText('\u2713 RESONANCE: XL \u2248 XC  \u2192  Z \u2248 R (minimum), current maximum, \u03C6 \u2248 0\u00B0', 350, y0+38);
+} else {
+ctx.fillStyle = c('--rlc-text','#111'); ctx.font='12px monospace';
+var hint = p.XL > p.XC ? 'Inductive: XL > XC. Lower f (toward f0) to approach resonance.' : 'Capacitive: XC > XL. Raise f (toward f0) to approach resonance.';
+ctx.fillText(hint, 350, y0+38);
+}
+if (cur1X!==null && cur2X!==null) {
+var t1 = xToTime(cur1X, p.k.tdiv), t2 = xToTime(cur2X, p.k.tdiv);
+var dt = Math.abs(t2-t1);
+var dphiMeas = (dt * p.f * 360) % 360;
+var ch1 = chanInfo(p.k.ch1,p), ch2 = chanInfo(p.k.ch2,p);
+var dphiTheory = ((ch2.phase-ch1.phase)*180/Math.PI) % 360;
+if (dphiTheory < 0) dphiTheory += 360;
+if (dphiTheory > 180) dphiTheory -= 360;
+ctx.fillStyle = c('--rlc-cursor','#d33fd3'); ctx.font='11px monospace';
+ctx.fillText('Cursors: \u0394t='+(dt*1000).toFixed(3)+'ms \u21D2 \u0394\u03C6='+dphiMeas.toFixed(1)+'\u00B0   (theory: CH2\u2212CH1 = '+dphiTheory.toFixed(1)+'\u00B0)', 350, y0+56);
+}
+}
+/* ── equations panel (DOM) ── */
+function fmtNum(x, d) { return (Math.round(x*Math.pow(10,d))/Math.pow(10,d)).toString(); }
+function renderEquations(p) {
+var wRound = fmtNum(p.w,1);
+var html = '';
+html += '<h4>Circuit relations</h4>';
+html += '<div class="rlc_eqline$thisq">X<sub>L</sub> = 2&pi;f L = '+p.XL.toFixed(1)+' &Omega;  &nbsp; X<sub>C</sub> = 1/(2&pi;f C) = '+p.XC.toFixed(1)+' &Omega;</div>';
+html += '<div class="rlc_eqline$thisq">Z = &radic;(R&sup2; + (X<sub>L</sub>&minus;X<sub>C</sub>)&sup2;) = '+p.Z.toFixed(1)+' &Omega;</div>';
+html += '<div class="rlc_eqline$thisq">&phi; = arctan[(X<sub>L</sub>&minus;X<sub>C</sub>)/R] = '+(p.phi*180/Math.PI).toFixed(2)+'&deg;  (current lags source if &phi;&gt;0, leads if &phi;&lt;0)</div>';
+html += '<div class="rlc_eqline$thisq">I<sub>m</sub> = V<sub>m</sub> / Z = '+(p.Im*1000).toFixed(2)+' mA</div>';
+html += '<div class="rlc_eqline$thisq">Resonance: f<sub>0</sub> = 1 / (2&pi;&radic;(LC)) = '+p.f0.toFixed(2)+' Hz &nbsp; (where X<sub>L</sub> = X<sub>C</sub>)</div>';
+html += '<div class="rlc_eqline$thisq">Q = (1/R)&radic;(L/C) = '+p.Q.toFixed(2)+' &nbsp; (voltage magnification: V<sub>L</sub>, V<sub>C</sub> at resonance &asymp; Q&middot;V<sub>m</sub>)</div>';
+html += '<h4>Time-domain waveforms</h4>';
+html += '<div class="rlc_eqline$thisq">v(t) = '+p.k.Vm.toFixed(2)+' sin('+wRound+' t)  V</div>';
+html += '<div class="rlc_eqline$thisq">v<sub>R</sub>(t) = I<sub>m</sub> R sin(&omega;t &minus; &phi;) = '+p.VRm.toFixed(2)+' sin('+wRound+' t \u2212 '+(p.phi).toFixed(3)+')  V</div>';
+html += '<div class="rlc_eqline$thisq">v<sub>L</sub>(t) = I<sub>m</sub> X<sub>L</sub> sin(&omega;t &minus; &phi; + 90&deg;) = '+p.VLm.toFixed(2)+' sin('+wRound+' t \u2212 '+(p.phi).toFixed(3)+' + '+(Math.PI/2).toFixed(3)+')  V</div>';
+html += '<div class="rlc_eqline$thisq">v<sub>C</sub>(t) = I<sub>m</sub> X<sub>C</sub> sin(&omega;t &minus; &phi; &minus; 90&deg;) = '+p.VCm.toFixed(2)+' sin('+wRound+' t \u2212 '+(p.phi).toFixed(3)+' \u2212 '+(Math.PI/2).toFixed(3)+')  V</div>';
+html += '<h4>Key facts to verify experimentally</h4>';
+html += '<div class="rlc_eqline$thisq">&bull; v<sub>L</sub> and v<sub>C</sub> are always exactly 180&deg; out of phase with each other (they subtract).</div>';
+html += '<div class="rlc_eqline$thisq">&bull; v<sub>L</sub> leads v<sub>R</sub> by 90&deg; and v<sub>C</sub> lags v<sub>R</sub> by 90&deg;, for any R, L, C, f.</div>';
+html += '<div class="rlc_eqline$thisq">&bull; At resonance (f = f<sub>0</sub>), X<sub>L</sub> = X<sub>C</sub>, so v<sub>L</sub> and v<sub>C</sub> cancel; Z = R is minimum, current is maximum, and &phi; = 0&deg; (v and v<sub>R</sub> are in phase).</div>';
+html += '<div class="rlc_eqline$thisq">&bull; Below f<sub>0</sub> the circuit is capacitive (X<sub>C</sub> &gt; X<sub>L</sub>, current leads); above f<sub>0</sub> it is inductive (X<sub>L</sub> &gt; X<sub>C</sub>, current lags).</div>';
+html += '<div class="rlc_eqline$thisq">&bull; If Q &gt; 1, the peak voltages across L and C individually can exceed the source amplitude V<sub>m</sub> at resonance &mdash; try lowering R to see this.</div>';
+html += '<h4>Currently set values</h4>';
+html += '<div class="rlc_eqline$thisq">R = '+p.R.toFixed(0)+' &Omega;,  L = '+(p.L*1e3).toFixed(2)+' mH,  C = '+(p.C*1e9).toFixed(2)+' nF,  f = '+p.f.toFixed(1)+' Hz,  V<sub>m</sub> = '+p.k.Vm.toFixed(2)+' V'+(tolOn()?'  <i>(includes simulated component tolerance)</i>':'')+'</div>';
+eqPanel.innerHTML = html;
+}
+/* ── full redraw ── */
+function drawFrame() {
+var p = physics();
+ctx.clearRect(0,0,W,H);
+ctx.fillStyle = c('--rlc-bg','#fff'); ctx.fillRect(0,0,W,H);
+if (tab === 'equations') {
+canvas.style.display = 'none';
+eqPanel.style.display = 'block';
+renderEquations(p);
+return;
+}
+canvas.style.display = 'block';
+eqPanel.style.display = 'none';
+drawSchematic(p);
+if (tab === 'scope') drawScopePanel(p); else drawPhasorPanel(p);
+drawReadout(p);
+}
+/* ── narration ── */
+var frameCount = 0, narrationEvery = 60, lastNarratedTab = null, lastNarratedRes = null;
+function sceneNarration(force) {
+var p = physics();
+var resOn = Math.abs(p.XL-p.XC)/p.R < 0.03;
+if (!force && tab === lastNarratedTab && resOn === lastNarratedRes) return;
+lastNarratedTab = tab; lastNarratedRes = resOn;
+var msg = '';
+if (tab === 'scope') {
+var ch1 = chanInfo(p.k.ch1,p), ch2 = chanInfo(p.k.ch2,p);
+msg = 'Oscilloscope showing CH1, '+ch1.label+', in the CH1 color, and CH2, '+ch2.label+', in the CH2 color. ';
+msg += 'At '+p.f.toFixed(0)+' Hz, XL is '+p.XL.toFixed(0)+' ohms and XC is '+p.XC.toFixed(0)+' ohms. ';
+msg += resOn ? 'These are nearly equal -- the circuit is at resonance, current is maximum.'
+ : 'These are unequal; adjust frequency toward '+p.f0.toFixed(0)+' Hz to reach resonance.';
+} else if (tab === 'phasor') {
+msg = 'Phasor diagram showing the source, resistor, inductor, and capacitor voltages. The inductor and capacitor phasors point in opposite directions; their difference determines phi, currently '+(p.phi*180/Math.PI).toFixed(0)+' degrees.';
+} else {
+msg = 'Equations panel showing the live time-domain expressions for the source, resistor, inductor, and capacitor voltages, along with the resonance frequency.';
+}
+rlcA11y$thisq.narrate(msg);
+}
+/* ── animation loop ── */
+function runMotion() {
+sweepPhase += 0.02; if (sweepPhase > 1) sweepPhase = 0;
+phasorAngle += 0.03;
+frameCount++;
+drawFrame();
+if (frameCount % narrationEvery === 0) sceneNarration(false);
+if (runFlag === 1) timer = window.setTimeout(runMotion, 40);
+}
+function pl() { window.clearTimeout(timer); runFlag = 1; runMotion(); }
+function ps() { window.clearTimeout(timer); runFlag = 0; }
+function step() {
+window.clearTimeout(timer); runFlag = 0;
+sweepPhase += 0.05; if (sweepPhase > 1) sweepPhase = 0;
+phasorAngle += 0.08;
+drawFrame(); sceneNarration(true);
+}
+function rst() {
+window.clearTimeout(timer); runFlag = 0;
+rollTolerances();
+sweepPhase = 0; phasorAngle = 0; cur1X = null; cur2X = null;
+drawFrame(); sceneNarration(true);
+}
+function redraw() { drawFrame(); }
+function setTab(t) {
+tab = t;
+['scope','phasor','equations'].forEach(function(nm){
+var el = null;
+if (nm==='scope') el = document.getElementById('rlcTabScope$thisq');
+if (nm==='phasor') el = document.getElementById('rlcTabPhasor$thisq');
+if (nm==='equations') el = document.getElementById('rlcTabEq$thisq');
+if (el) el.classList.toggle('rlc_tabon$thisq', nm===t);
+});
+drawFrame(); sceneNarration(true);
+}
+function clearCursors() { cur1X = null; cur2X = null; drawFrame(); }
+function localX(evt) {
+var rect = canvas.getBoundingClientRect();
+var cx = (evt.touches ? evt.touches[0].clientX : evt.clientX) - rect.left;
+return cx * (canvas.width / rect.width);
+}
+canvas.addEventListener('mousedown', function(evt){
+if (tab !== 'scope') return;
+var x = localX(evt);
+if (x < scopeX || x > scopeX+scopeW) return;
+if (cur1X === null) { cur1X = x; }
+else if (cur2X === null) { cur2X = x; }
+else { dragCur = Math.abs(x-cur1X) < Math.abs(x-cur2X) ? 1 : 2; }
+drawFrame();
+});
+canvas.addEventListener('mousemove', function(evt){
+if (tab !== 'scope' || dragCur === null) return;
+var x = Math.max(scopeX, Math.min(scopeX+scopeW, localX(evt)));
+if (dragCur===1) cur1X = x; else cur2X = x;
+drawFrame();
+});
+window.addEventListener('mouseup', function(){ dragCur = null; });
+rst();
+return { pl:pl, ps:ps, step:step, rst:rst, redraw:redraw, setTab:setTab, clearCursors:clearCursors };
+};
+var rlcSim$thisq = new rlcGen();
+</script>
+<script>
+rlcA11y$thisq.init();
+</script>
+</body>
+</html>
