@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations- Waves: Snell's Law: Polarization at an Interface</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,EM,spectrum,transmission, Longitudinal,Frequency, Amplitude, Wave,interference,reflection,refraction, Properties,Snell,incidence,lesson,Brewster,Polarization,pwave,swave,TIR,scientific">
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="snellRoot1005">
+<!-- ── Accessibility toolbar ── -->
+<div class="sn_a11y1005" id="snellA11yBar1005" role="toolbar" aria-label="Display options">
+<button type="button" class="sn_a11ybtn1005" id="snBtnHC1005" onclick="snellA11y1005.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="sn_a11ybtn1005" id="snBtnLM1005" onclick="snellA11y1005.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="sn_a11ybtn1005" id="snBtnCB1005" onclick="snellA11y1005.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="sn_a11ybtn1005 sn_a11yon1005" id="snBtnNR1005" onclick="snellA11y1005.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div class="tbar1005"><h3>Snell's Law: Polarization at an Interface</h3></div>
+<div class="mcontent1005"><canvas id="myCanvas1005" style="margin:auto;border:1px solid" width="500" height="440"></canvas></div>
+<!-- Narration bar -->
+<div id="snNarBar1005" class="sn_narbar1005" role="status" aria-live="polite" aria-atomic="true"></div>
+<!-- Protractor toggles (both off by default) -->
+<div class="bbar1005">
+<div class="right1005"><label><input type="checkbox" id="showP1pol1005" onchange="snellPol1005.toggleP1(this)"> Show Protractor 1</label></div>
+<div class="right1005"><label><input type="checkbox" id="showP2pol1005" onchange="snellPol1005.toggleP2(this)"> Show Protractor 2</label></div>
+</div>
+<!-- Sliders -->
+<div class="footer1005">
+<div class="left1005">Incidence angle:</div>
+<div class="center1005">`theta_i`: <input class=islide1005 type="range" id="incidentAngleSlider1005" min="0" max="89.9" value="30" step="0.1" oninput="snellPol1005.setAngle(this.value)" onchange="snellPol1005.setAngle(this.value)"> <span id="incidentAngleValue1005">30</span>`""^@`</div>
+</div>
+<div class="footer1005">
+<div class="left1005">Index of refraction n&#8321;:</div>
+<div class="center1005">`n_1:\ ` <input class=islide1005 type="range" id="n1Slider1005" min="1.00" max="2.50" value="1" step="0.05" oninput="snellPol1005.setN1(this.value)" onchange="snellPol1005.setN1(this.value)"> <span id="n1Value1005">1</span></div>
+</div>
+<div class="footer1005">
+<div class="left1005">Index of refraction n&#8322;:</div>
+<div class="center1005">`n_2:\ ` <input class=islide1005 type="range" id="n2Slider1005" min="1.00" max="2.50" value="1.5" step="0.05" oninput="snellPol1005.setN2(this.value)" onchange="snellPol1005.setN2(this.value)"> <span id="n2Value1005">1.5</span></div>
+</div>
+<hr>
+<ol type="a">
+<li>The incident beam carries both polarization components of the light equally. As you increase the angle of incidence, what happens to the p-component (arrows) of the reflected beam?<br /></li>
+<li>At what angle does the p-component of the reflected beam completely vanish? <br /></li>
+<li>What is this angle called?<br /></li>
+<li>At that special angle, what can you say about the polarization state of the reflected beam?<br /></li>
+<li>What happens to the p-component of the transmitted (refracted) beam at Brewster's angle compared to the s-component?<br /></li>
+<li>How does increasing `n_2` (while keeping `n_1` fixed) affect the angle at which the p-reflected component vanishes?<br /></li>
+<li>When `n_1 &gt; n_2` and the angle exceeds the critical angle, what happens to both polarization components of the reflected beam?<br /></li>
+</ol>
+</div><!-- #snellRoot1005 -->
+<style>
+* { margin: 0; box-sizing: border-box; }
+div { width: 503px; margin: 0; }
+#snellRoot1005 {
+--sn-toolbar-bg: #222;
+--sn-incident:   red;
+--sn-reflect:    red;
+--sn-refract:    purple;
+--sn-dot:        #ff44cc;
+--sn-arrow:      #44cc44;
+--sn-normal:     #494;
+}
+#snellRoot1005 .sn_a11y1005 {
+display: flex; gap: 6px; padding: 6px 8px;
+background: var(--sn-toolbar-bg); flex-wrap: wrap; width: 503px;
+}
+#snellRoot1005 .sn_a11ybtn1005 {
+padding: 4px 10px; font-size: .72rem; font-family: monospace;
+letter-spacing: .06em; border-radius: 3px; cursor: pointer;
+background: #2a2e3a; border: 1px solid #404a60; color: #7a8aaa;
+transition: border-color .15s, color .15s;
+}
+#snellRoot1005 .sn_a11ybtn1005:hover { border-color: #00e8d0; color: #00e8d0; }
+#snellRoot1005 .sn_a11yon1005 { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
+#snellRoot1005 .sn_narbar1005 {
+width: 503px; min-height: 28px; padding: 5px 10px;
+background: #ffefc0; border-left: 4px solid #e0b040;
+font-size: .88rem; color: #333; font-style: italic;
+}
+.tbar1005    { padding: 2px; height: 30px; background-color: #f90; text-align: center; }
+.mcontent1005 { height: 442px; }
+.islide1005 { width: 220px; }
+.bbar1005 { height: 30px; background-color: #df9; padding: 3px; text-align: center;display: flex; }
+.bbar1005 .right1005   { width: 250px; padding: 2px; }
+.footer1005  { height: 40px; text-align: center; font-size: normal; display: flex; }
+.footer1005 .left1005   { width: 136px; padding: 2px; }
+.footer1005 .right1005   { width: 250px; padding: 2px; }
+.footer1005 .center1005 { width: 367px; padding: 4px; }
+.footer1005:nth-child(4) { background-color: #fce4ec; }
+.footer1005:nth-child(5) { background-color: #e8f5e9; }
+.footer1005:nth-child(6) { background-color: #e3f2fd; }
+.footer1005:nth-child(7) { background-color: #fce4ec; }
+.footer1005:nth-child(8) { background-color: #e8f5e9; }
+</style>
+<!-- ════════════════ ACCESSIBILITY CONTROLLER ════════════════ -->
+<script>
+var snellA11y1005 = (function(){
+var ROOT = null;
+var states = { hc: false, lm: false, cb: false, nr: true };
+var THEMES = {
+hc: { '--sn-incident':'#ffff00','--sn-reflect':'#ffaa00','--sn-refract':'#00ffff',
+'--sn-dot':'#ff88ff','--sn-arrow':'#00ff88','--sn-normal':'#00ff88','--sn-toolbar-bg':'#000' },
+lm: { '--sn-incident':'#cc0000','--sn-reflect':'#cc0000','--sn-refract':'#6600cc',
+'--sn-dot':'#cc0088','--sn-arrow':'#006600','--sn-normal':'#226622','--sn-toolbar-bg':'#333' },
+cb: { '--sn-incident':'#d55e00','--sn-reflect':'#e69f00','--sn-refract':'#0072b2',
+'--sn-dot':'#cc79a7','--sn-arrow':'#009e73','--sn-normal':'#009e73' }
+};
+var DEFAULTS = { '--sn-incident':'red','--sn-reflect':'red','--sn-refract':'purple',
+'--sn-dot':'#ff44cc','--sn-arrow':'#44cc44','--sn-normal':'#494','--sn-toolbar-bg':'#222' };
+function applyVars(theme, on) {
+if (!ROOT) return;
+var vars = THEMES[theme];
+for (var p in vars) ROOT.style.setProperty(p, on ? vars[p] : DEFAULTS[p]);
+}
+function styleBtn(id, active) {
+var b = document.getElementById(id); if (!b) return;
+if (active) { b.style.background='rgba(0,232,208,.12)'; b.style.borderColor='#00e8d0'; b.style.color='#00e8d0'; }
+else        { b.style.background='#2a2e3a'; b.style.borderColor='#404a60'; b.style.color='#7a8aaa'; }
+b.setAttribute('aria-pressed', active ? 'true' : 'false');
+}
+function applyCanvas() {
+var cv = document.getElementById('myCanvas1005');
+if (cv) cv.style.filter = states.lm ? 'invert(1) hue-rotate(180deg) brightness(0.9)' : '';
+}
+function applyNarBar() {
+var nb = document.getElementById('snNarBar1005');
+if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var btn = document.getElementById('snBtnNR1005');
+if (btn) { btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF'); styleBtn('snBtnNR1005', states.nr); }
+}
+function apply() {
+if (!ROOT) return;
+applyVars('hc', states.hc); applyVars('lm', states.lm); applyVars('cb', states.cb);
+applyCanvas(); applyNarBar();
+styleBtn('snBtnHC1005', states.hc);
+styleBtn('snBtnLM1005', states.lm);
+styleBtn('snBtnCB1005', states.cb);
+}
+function getCol(prop) {
+if (!ROOT) return DEFAULTS[prop];
+return getComputedStyle(ROOT).getPropertyValue(prop).trim() || DEFAULTS[prop];
+}
+return {
+init: function() { ROOT = document.getElementById('snellRoot1005'); apply(); },
+toggle: function(k) {
+states[k] = !states[k];
+if (k === 'hc' && states.hc) states.lm = false;
+if (k === 'lm' && states.lm) states.hc = false;
+apply();
+},
+narrate: function(msg) {
+if (!states.nr) return;
+var nb = document.getElementById('snNarBar1005');
+if (nb) nb.textContent = msg;
+},
+col: function(role) { return getCol('--sn-' + role); }
+};
+})();
+</script>
+<!-- ════════════════ SIMULATION ════════════════ -->
+<script>
+var snellPol1005 = (function(){
+var canvas  = document.getElementById('myCanvas1005');
+var ctx     = canvas.getContext('2d');
+var CW = canvas.width, CH = canvas.height;
+var xBase = CW / 2, yBase = CH / 2;
+var aMag  = 130;      /* ray arrow half-length in px  */
+var nMark = 6;        /* polarization markers per ray */
+var markSpacing = 28; /* px between markers           */
+var n1 = 1;
+var n2 = 1.5;
+var thetaI_deg = 30;  /* incident angle in degrees    */
+/* Animation phase -- advances each frame */
+var phase = 0;
+var timer = null;
+/* ── Protractors built in code as SVG (no external images) ──
+makeProtractorSVG(dirY): dirY = -1 opens upward (medium 1),
+dirY = +1 opens downward (medium 2). Angles are read from the
+normal: 0 along the normal, 90 along the interface.
+Note: no dollar signs or backticks in this code, since MyOpenMath
+treats those specially in question text.                          */
+var protractorWidth  = 420;
+var protractorHeight = 220;
+var protR  = 200;               /* radius of the scale */
+var protCx = 210;               /* center x inside the SVG */
+function protCy(dirY) { return (dirY < 0) ? 212 : 8; }
+function f1(v) { return (Math.round(v*100)/100).toString(); }
+function makeProtractorSVG(dirY) {
+var W = protractorWidth, H = protractorHeight, R = protR;
+var cx = protCx, cy = protCy(dirY);
+var sweep = (dirY < 0) ? 1 : 0;
+var s = [];
+s.push('<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">');
+/* Body */
+s.push('<path d="M ' + (cx-R) + ' ' + cy + ' A ' + R + ' ' + R + ' 0 0 ' + sweep + ' ' + (cx+R) + ' ' + cy + ' Z" fill="rgba(255,255,255,0.35)" stroke="#222" stroke-width="1.2"/>');
+/* Inner reading arc */
+var Ri = 120;
+s.push('<path d="M ' + (cx-Ri) + ' ' + cy + ' A ' + Ri + ' ' + Ri + ' 0 0 ' + sweep + ' ' + (cx+Ri) + ' ' + cy + '" fill="none" stroke="#444" stroke-width="0.8"/>');
+/* Baseline */
+s.push('<line x1="' + (cx-R) + '" y1="' + cy + '" x2="' + (cx+R) + '" y2="' + cy + '" stroke="#222" stroke-width="1"/>');
+for (var a = 0; a <= 90; a++) {
+for (var side = -1; side <= 1; side += 2) {
+if (a === 0 && side === 1) continue;     /* draw the normal only once */
+var rad = a * Math.PI / 180;
+var ux = side * Math.sin(rad);
+var uy = dirY * Math.cos(rad);
+var len = (a % 10 === 0) ? 18 : ((a % 5 === 0) ? 11 : 6);
+var w   = (a % 10 === 0) ? 1.2 : 0.7;
+/* Outer scale ticks */
+s.push('<line x1="' + f1(cx + R*ux) + '" y1="' + f1(cy + R*uy) + '" x2="' + f1(cx + (R-len)*ux) + '" y2="' + f1(cy + (R-len)*uy) + '" stroke="#222" stroke-width="' + w + '"/>');
+/* Inner arc ticks every 5 degrees */
+if (a % 5 === 0) {
+var il = (a % 10 === 0) ? 8 : 5;
+s.push('<line x1="' + f1(cx + Ri*ux) + '" y1="' + f1(cy + Ri*uy) + '" x2="' + f1(cx + (Ri+il)*ux) + '" y2="' + f1(cy + (Ri+il)*uy) + '" stroke="#444" stroke-width="0.8"/>');
+}
+if (a % 10 === 0) {
+/* Faint guide line from near the center out to the labels */
+s.push('<line x1="' + f1(cx + 14*ux) + '" y1="' + f1(cy + 14*uy) + '" x2="' + f1(cx + (R-44)*ux) + '" y2="' + f1(cy + (R-44)*uy) + '" stroke="rgba(0,0,0,0.22)" stroke-width="0.6" stroke-dasharray="3 3"/>');
+/* Degree label (90 is left off: it sits on the interface line) */
+if (a < 90) {
+var lr = R - 31;
+s.push('<text x="' + f1(cx + lr*ux) + '" y="' + f1(cy + lr*uy) + '" dy="0.35em" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold" fill="#111">' + a + '\u00B0</text>');
+}
+}
+}
+}
+/* Center crosshair */
+s.push('<circle cx="' + cx + '" cy="' + cy + '" r="3.5" fill="none" stroke="#222" stroke-width="1"/>');
+s.push('<line x1="' + (cx-8) + '" y1="' + cy + '" x2="' + (cx+8) + '" y2="' + cy + '" stroke="#222" stroke-width="1"/>');
+s.push('<line x1="' + cx + '" y1="' + (cy-8) + '" x2="' + cx + '" y2="' + (cy+8) + '" stroke="#222" stroke-width="1"/>');
+/* Caption */
+s.push('<text x="' + cx + '" y="' + f1(cy + dirY*62) + '" dy="0.35em" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#333">angle from normal</text>');
+s.push('</svg>');
+return s.join('');
+}
+function svgToImage(svgText) {
+var img = new Image();
+img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgText);
+return img;
+}
+/* Protractor state -- both off by default */
+var showP1 = false;
+var showP2 = false;
+var protractorP1Img = svgToImage(makeProtractorSVG(-1));   /* upright: medium 1   */
+var protractorP2Img = svgToImage(makeProtractorSVG(1));    /* downright: medium 2 */
+/* Position each image so its center sits exactly on (xBase, yBase) */
+var p1X = xBase - protCx;
+var p1Y = yBase - protCy(-1);
+var p2X = xBase - protCx;
+var p2Y = yBase - protCy(1);
+/* ── Fresnel coefficients ──────────────────────────────────────────
+ thetaI: angle of incidence (radians)
+ Returns { rs, rp, ts, tp, thetaT, isTIR }
+ rs,rp: amplitude reflection coefficients
+ ts,tp: amplitude transmission coefficients
+ All real (or set to ±1 for TIR)                                  */
+function fresnel(thetaI, n1v, n2v) {
+var sinT = n1v * Math.sin(thetaI) / n2v;
+if (Math.abs(sinT) > 1.0) {
+/* Total internal reflection */
+return { rs: 1, rp: 1, ts: 0, tp: 0, thetaT: null, isTIR: true };
+}
+var cosI = Math.cos(thetaI);
+var cosT = Math.sqrt(1 - sinT * sinT);
+var rs = (n1v * cosI - n2v * cosT) / (n1v * cosI + n2v * cosT);
+var rp = (n2v * cosI - n1v * cosT) / (n2v * cosI + n1v * cosT);
+var ts = (2 * n1v * cosI) / (n1v * cosI + n2v * cosT);
+var tp = (2 * n1v * cosI) / (n2v * cosI + n1v * cosT);
+return { rs: rs, rp: rp, ts: ts, tp: tp,
+thetaT: Math.asin(sinT), isTIR: false };
+}
+/* ── Background colours (same as original) ── */
+function mediumColor(n) {
+var r = Math.floor(220 - 50 * (n - 1.0));
+var rs = r.toString(16); if (rs.length < 2) rs = '0' + rs;
+return '#' + rs + rs + 'ff';
+}
+/* ── Draw a double-headed arrow along direction (ux,uy), centred at (cx,cy) ──
+ halfLen: half-length in pixels
+ The arrow represents the p-polarization component (in the plane of incidence). */
+function drawDoubleArrow(cx, cy, ux, uy, halfLen, color, alpha) {
+if (halfLen < 1) return;
+ctx.save();
+ctx.globalAlpha = alpha;
+ctx.strokeStyle = color;
+ctx.fillStyle   = color;
+ctx.lineWidth   = 1.5;
+var x1 = cx - ux * halfLen, y1 = cy - uy * halfLen;
+var x2 = cx + ux * halfLen, y2 = cy + uy * halfLen;
+ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+/* Arrowheads */
+var hs = 5;
+var perp = { x: -uy, y: ux };
+/* head at x2,y2 */
+ctx.beginPath();
+ctx.moveTo(x2, y2);
+ctx.lineTo(x2 - ux * hs + perp.x * hs * 0.4, y2 - uy * hs + perp.y * hs * 0.4);
+ctx.lineTo(x2 - ux * hs - perp.x * hs * 0.4, y2 - uy * hs - perp.y * hs * 0.4);
+ctx.closePath(); ctx.fill();
+/* head at x1,y1 */
+ctx.beginPath();
+ctx.moveTo(x1, y1);
+ctx.lineTo(x1 + ux * hs + perp.x * hs * 0.4, y1 + uy * hs + perp.y * hs * 0.4);
+ctx.lineTo(x1 + ux * hs - perp.x * hs * 0.4, y1 + uy * hs - perp.y * hs * 0.4);
+ctx.closePath(); ctx.fill();
+ctx.restore();
+}
+/* ── Draw a dot (s-polarization, oscillating in/out of screen) ──
+ Animates between filled dot and circle-with-cross (using phase).
+ phase in [0, 2π): dot = sin(phase)>0 → filled circle, else cross+ring */
+function drawDot(cx, cy, r, color, alpha) {
+if (r < 0.5) return;
+ctx.save();
+ctx.globalAlpha = alpha;
+var sinPh = Math.sin(phase);
+if (sinPh >= 0) {
+/* coming toward viewer: filled dot */
+ctx.beginPath();
+ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+ctx.fillStyle = color;
+ctx.fill();
+} else {
+/* going away: ring + cross */
+ctx.strokeStyle = color;
+ctx.lineWidth = 1.5;
+ctx.beginPath();
+ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+ctx.stroke();
+/* cross */
+var cr = r * 0.65;
+ctx.beginPath();
+ctx.moveTo(cx - cr, cy - cr); ctx.lineTo(cx + cr, cy + cr);
+ctx.moveTo(cx + cr, cy - cr); ctx.lineTo(cx - cr, cy + cr);
+ctx.stroke();
+}
+ctx.restore();
+}
+/* ── Place N polarization markers evenly spaced along a ray ──
+ startX,startY: ray start (source end)
+ endX,endY:     ray end (interface or far end)
+ rayUx,rayUy:   unit direction of ray (for p-arrow orientation)
+ perpUx,perpUy: unit perpendicular in plane for p-arrow (rotated 90° from ray, pointing into screen plane)
+ ampS: s-amplitude [0..1]
+ ampP: p-amplitude [0..1]                                          */
+function drawPolarizationMarkers(startX, startY, endX, endY,
+   rayUx, rayUy,
+   ampS, ampP,
+   dotColor, arrowColor) {
+var dx = endX - startX, dy = endY - startY;
+var rayLen = Math.sqrt(dx * dx + dy * dy);
+if (rayLen < 1) return;
+var step = rayLen / (nMark + 1);
+/* p-arrow direction: perpendicular to ray, in the plane of incidence.
+For a ray going in direction (rayUx, rayUy), the in-plane perp is (-rayUy, rayUx)
+but we want the one that points "upward" in the plane so arrows look like the image.
+We'll use the component perpendicular to the ray in 2D canvas space. */
+var pUx = -rayUy, pUy = rayUx;
+var maxDotR    = 6;   /* maximum dot radius in px   */
+var maxArrowHL = 10;  /* maximum arrow half-length   */
+/* Animate: p-arrows oscillate, dots oscillate in antiphase */
+var pPhase  = phase;                    /* p component phase  */
+var sPhasePh = phase + Math.PI / 2;     /* s component offset */
+for (var i = 1; i <= nMark; i++) {
+var t = i / (nMark + 1);
+var mx = startX + t * dx;
+var my = startY + t * dy;
+/* s-polarization dot -- amplitude controls radius */
+var dotR = ampS * maxDotR;
+/* Use a per-marker phase offset so markers animate with a wave effect */
+var savedPhase = phase;
+phase = pPhase + i * 0.8;   /* wave along ray */
+drawDot(mx, my, dotR, dotColor, 0.9);
+phase = savedPhase;
+/* p-polarization arrow -- amplitude controls half-length */
+var arrowHL = ampP * maxArrowHL * Math.abs(Math.sin(pPhase + i * 0.8));
+drawDoubleArrow(mx, my, pUx, pUy, arrowHL, arrowColor, 0.9);
+}
+}
+/* ── Draw a ray arrow (the main beam line + arrowhead) ── */
+function drawRayArrow(Fx, Fy, Px, Py, color, lineW) {
+var theta = Math.atan2(Fy, Fx);
+ctx.strokeStyle = color;
+ctx.lineWidth   = lineW || 2;
+ctx.beginPath();
+ctx.moveTo(Px, Py);
+ctx.lineTo(Px + 5 * Fx, Py - 5 * Fy);
+ctx.stroke();
+ctx.lineWidth = 2;
+var Fmag = Math.sqrt(Fx * Fx + Fy * Fy);
+if (Fmag > 5) Fmag = 5;
+ctx.fillStyle = color;
+ctx.beginPath();
+ctx.moveTo(Px + 5*Fx - 3*Fmag*Math.cos(theta + 0.25*(3.1416/2)),
+ Py - 5*Fy + 3*Fmag*Math.sin(theta + 0.25*(3.1416/2)));
+ctx.lineTo(Px + 5*Fx, Py - 5*Fy);
+ctx.lineTo(Px + 5*Fx - 3*Fmag*Math.cos(theta - 0.25*(3.1416/2)),
+ Py - 5*Fy + 3*Fmag*Math.sin(theta - 0.25*(3.1416/2)));
+ctx.stroke();
+ctx.fill();
+}
+/* ── Main draw ── */
+function draw() {
+var thetaI  = thetaI_deg * Math.PI / 180;
+var fr      = fresnel(thetaI, n1, n2);
+var dotCol  = snellA11y1005.col('dot');
+var arrCol  = snellA11y1005.col('arrow');
+/* All three beams share one neutral color, distinct from both field colors */
+var beamCol = '#333333';
+var incCol  = beamCol;
+var refCol  = beamCol;
+var traCol  = beamCol;
+var nrmCol  = snellA11y1005.col('normal');
+ctx.clearRect(0, 0, CW, CH);
+/* Medium backgrounds */
+ctx.fillStyle = mediumColor(n1);
+ctx.fillRect(0, 0, CW, yBase);
+ctx.fillStyle = mediumColor(n2);
+ctx.fillRect(0, yBase, CW, CH - yBase);
+/* Normal line */
+ctx.beginPath(); ctx.strokeStyle = nrmCol; ctx.lineWidth = 1;
+ctx.setLineDash([6, 4]);
+ctx.moveTo(xBase, 0); ctx.lineTo(xBase, CH); ctx.stroke();
+ctx.setLineDash([]);
+/* Interface line */
+ctx.beginPath(); ctx.strokeStyle = 'black'; ctx.lineWidth = 2;
+ctx.moveTo(0, yBase); ctx.lineTo(CW, yBase); ctx.stroke();
+ctx.lineWidth = 1;
+/* ── Ray geometry ── */
+/* Incident: comes from upper-left, hits (xBase, yBase) */
+var sinI = Math.sin(thetaI), cosI = Math.cos(thetaI);
+/* Ray direction unit vector (toward interface): (+sinI, +cosI) in physics → canvas (+sinI, +cosI downward) */
+var incUx =  sinI, incUy =  cosI;   /* toward interface  */
+/* Start of incident ray (back from interface by aMag pixels) */
+var incLen = aMag;
+var incSX  = xBase - incUx * incLen * 2;
+var incSY  = yBase - incUy * incLen * 2;   /* canvas y increases downward so subtract */
+/* Reflected: same angle, y-component flipped */
+var refUx = sinI, refUy = -cosI;   /* going upward-right */
+var refEX = xBase + refUx * incLen * 2;
+var refEY = yBase + refUy * incLen * 2;   /* upward in canvas = subtract but refUy negative */
+/* Transmitted: Snell's law */
+var traEX = xBase, traEY = yBase;
+var traUx = 0, traUy = 1;
+var thetaT = 0;
+if (!fr.isTIR) {
+thetaT = fr.thetaT;
+var sinT = Math.sin(thetaT), cosT = Math.cos(thetaT);
+traUx = sinT; traUy = cosT;   /* into medium 2 downward */
+}
+var traEX2 = xBase + traUx * incLen * 2;
+var traEY2 = yBase + traUy * incLen * 2;
+/* ── Draw ray lines ── */
+/* Incident */
+ctx.strokeStyle = incCol; ctx.lineWidth = 2;
+ctx.beginPath(); ctx.moveTo(incSX, incSY); ctx.lineTo(xBase, yBase); ctx.stroke();
+/* arrowhead pointing toward interface */
+var aFx =  incUx * aMag / 5, aFy = -incUy * aMag / 5;
+drawRayArrow(aFx, aFy, xBase - aFx * 5, yBase - (-aFy) * 5, incCol, 2);
+/* Reflected */
+ctx.strokeStyle = refCol; ctx.lineWidth = 2;
+ctx.beginPath(); ctx.moveTo(xBase, yBase); ctx.lineTo(refEX, refEY); ctx.stroke();
+var rFx = refUx * aMag / 5, rFy = -refUy * aMag / 5;
+drawRayArrow(rFx, rFy, xBase, yBase, refCol, 2);
+/* Transmitted */
+if (!fr.isTIR) {
+ctx.strokeStyle = traCol; ctx.lineWidth = 2;
+ctx.beginPath(); ctx.moveTo(xBase, yBase); ctx.lineTo(traEX2, traEY2); ctx.stroke();
+var tFx = traUx * aMag / 5, tFy = -traUy * aMag / 5;
+drawRayArrow(tFx, tFy, xBase, yBase, traCol, 2);
+}
+/* ── Fresnel amplitude magnitudes ── */
+var Rs = fr.rs * fr.rs, Rp = fr.rp * fr.rp;
+/* Incident: equal s and p */
+var incAmpS = 1.0, incAmpP = 1.0;
+/* Reflected */
+var refAmpS = Math.abs(fr.rs);
+var refAmpP = Math.abs(fr.rp);
+/* Transmitted (energy conservation, approximate) */
+var traAmpS = Math.sqrt(Math.max(0, 1 - Rs));
+var traAmpP = Math.sqrt(Math.max(0, 1 - Rp));
+/* ── Polarization markers ── */
+/* Incident ray markers -- along (incSX→xBase) */
+drawPolarizationMarkers(
+incSX, incSY, xBase, yBase,
+incUx, incUy,
+incAmpS, incAmpP,
+dotCol, arrCol
+);
+/* Reflected ray markers -- along (xBase→refEX) */
+drawPolarizationMarkers(
+xBase, yBase, refEX, refEY,
+refUx, refUy,
+refAmpS, refAmpP,
+dotCol, arrCol
+);
+/* Transmitted ray markers */
+if (!fr.isTIR) {
+drawPolarizationMarkers(
+xBase, yBase, traEX2, traEY2,
+traUx, traUy,
+traAmpS, traAmpP,
+dotCol, arrCol
+);
+}
+/* Brewster indicator */
+var thetaB = Math.atan(n2 / n1) * 180 / Math.PI;
+var isBrewster = Math.abs(thetaI_deg - thetaB) < 0.5;
+if (isBrewster) {
+ctx.font = '11pt Calibri'; ctx.fillStyle = '#993300'; ctx.textAlign = 'left';
+ctx.fillText('Brewster\u2019s angle \u2014 reflected beam is s-polarized only', 6, CH - 8);
+}
+/* TIR indicator */
+if (fr.isTIR) {
+ctx.font = '11pt Calibri'; ctx.fillStyle = '#cc0000'; ctx.textAlign = 'left';
+ctx.fillText('Total internal reflection', 6, CH - 8);
+}
+/* Protractors drawn last so they overlay the rays */
+if (showP1 && protractorP1Img.complete) {
+ctx.drawImage(protractorP1Img, p1X, p1Y, protractorWidth, protractorHeight);
+}
+if (showP2 && protractorP2Img.complete) {
+ctx.drawImage(protractorP2Img, p2X, p2Y, protractorWidth, protractorHeight);
+}
+}
+/* ── Animation loop ── */
+function animate() {
+phase += 0.12;
+if (phase > 2 * Math.PI) phase -= 2 * Math.PI;
+draw();
+timer = window.setTimeout(animate, 40);   /* ~25 fps */
+}
+/* ── Narration helper ── */
+function narrate() {
+var thetaI = thetaI_deg * Math.PI / 180;
+var fr     = fresnel(thetaI, n1, n2);
+var thetaB = Math.atan(n2 / n1) * 180 / Math.PI;
+var msg    = '\u03B8i = ' + thetaI_deg.toFixed(1) + '\u00B0. ';
+msg += '\u03B8r = ' + thetaI_deg.toFixed(1) + '\u00B0 (reflection). ';
+if (fr.isTIR) {
+msg += 'Total internal reflection \u2014 no transmitted beam.';
+} else {
+var thetaT_deg = fr.thetaT * 180 / Math.PI;
+msg += '\u03B8t = ' + thetaT_deg.toFixed(1) + '\u00B0. ';
+msg += 'Brewster\u2019s angle = ' + thetaB.toFixed(1) + '\u00B0. ';
+var rpMag = Math.abs(fr.rp);
+if (rpMag < 0.01) {
+msg += 'At Brewster\u2019s angle: reflected beam is purely s-polarized (p-component = 0).';
+} else {
+msg += '|rp| = ' + rpMag.toFixed(3) + ', |rs| = ' + Math.abs(fr.rs).toFixed(3) + '.';
+}
+}
+snellA11y1005.narrate(msg);
+}
+/* ── Public API ── */
+function setAngle(v) {
+document.getElementById('incidentAngleValue1005').innerHTML = parseFloat(v).toFixed(1);
+thetaI_deg = parseFloat(v);
+narrate();
+}
+function setN1(v) {
+document.getElementById('n1Value1005').innerHTML = v;
+n1 = parseFloat(v);
+narrate();
+}
+function setN2(v) {
+document.getElementById('n2Value1005').innerHTML = v;
+n2 = parseFloat(v);
+narrate();
+}
+/* Protractor toggle handlers */
+function toggleP1(cb) {
+showP1 = cb.checked;
+snellA11y1005.narrate('Protractor for Medium 1 ' + (showP1 ? 'shown.' : 'hidden.'));
+}
+function toggleP2(cb) {
+showP2 = cb.checked;
+snellA11y1005.narrate('Protractor for Medium 2 ' + (showP2 ? 'shown.' : 'hidden.'));
+}
+/* Boot */
+window.setTimeout(function() {
+animate();
+narrate();
+}, 0);
+return { setAngle: setAngle, setN1: setN1, setN2: setN2, toggleP1: toggleP1, toggleP2: toggleP2 };
+})();
+</script>
+<script>
+snellA11y1005.init();
+snellA11y1005.narrate('Polarization sim ready. Dots = s-polarization (perpendicular to plane of incidence). Arrows = p-polarization (in plane of incidence). Adjust angle to observe Brewster\u2019s angle where the p-component of the reflected beam vanishes.');
+</script>
+</body>
+</html>
