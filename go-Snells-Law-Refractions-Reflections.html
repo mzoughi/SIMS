@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations- Waves: Snell's Law: Refractions and Reflections</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,EM,spectrum,transmission, Longitudinal,Frequency, Amplitude, Wave,interference,reflection,refraction, Properties,Snell,incidence,lesson,Brewster,Polarization,pwave,swave,TIR,scientific">
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="snellRoot1006">
+<!-- ── Accessibility toolbar ── -->
+<div class="sn_a11y1006" id="snellA11yBar1006" role="toolbar" aria-label="Display options">
+<button type="button" class="sn_a11ybtn1006" id="snBtnHC1006" onclick="snellA11y1006.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="sn_a11ybtn1006" id="snBtnLM1006" onclick="snellA11y1006.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="sn_a11ybtn1006" id="snBtnCB1006" onclick="snellA11y1006.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="sn_a11ybtn1006 sn_a11yon1006" id="snBtnNR1006" onclick="snellA11y1006.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div id="canvasesdiv" class="tbar1006"><H3>Snell's Law: Refractions and Reflections</H3></div>
+<div class="mcontent1006"><canvas id="myCanvas1006" style="margin:auto;border:1px solid" width="500" height="440"></canvas>
+</div>
+<!-- Narration bar -->
+<div id="snNarBar1006" class="sn_narbar1006" role="status" aria-live="polite" aria-atomic="true"></div>
+<!-- Protractor toggles -->
+<div class="bbar1006">
+<div class="left1006"><label><input type="checkbox" id="showP11006" onchange="snell1006.toggleProtractor1(this)"> Show Protractor 1</label></div>
+<div class="right1006"><label><input type="checkbox" id="showP21006" checked onchange="snell1006.toggleProtractor2(this)"> Show Protractor 2</label></div>
+</div>
+<!-- Angle slider -->
+<div class="footer1006">
+<div class="left1006">Light source incidence angle in medium 1:</div>
+<div class="center1006">`theta_i`: <input style=width:270px type="range" id="incidentAngleSlider" min="0" max="90" value="30" step=".1" oninput="snell1006.setIncidentAngle(this.value)" onchange="snell1006.setIncidentAngle(this.value)"> <span id="incidentAngleValue">30</span>`""^@`</div>
+</div>
+<!-- n1 slider -->
+<div class="footer1006">
+<div class="left1006">Index of refraction of medium 1:</div>
+<div class="center1006">`n_1:\ ` <input style=width:270px type="range" id="n1Value" min="1.00" max="2.50" value="1" step="0.05" oninput="snell1006.shown1(this.value)" onchange="snell1006.shown1(this.value)"> <span id="initialn1Value">1</span></div>
+</div>
+<!-- n2 slider -->
+<div class="footer1006">
+<div class="left1006">Index of refraction of medium 2:</div>
+<div class="center1006">`n_2:\ ` <input style=width:270px type="range" id="n2Value" min="1.00" max="2.50" value="1.5" step="0.05" oninput="snell1006.shown2(this.value)" onchange="snell1006.shown2(this.value)"> <span id="initialn2Value">1.5</span></div>
+</div>
+<hr>
+<ol type="a">
+<p>Start with the `n_2=1.5` for the index of refraction of Medium 2 and `n_1=1` for the index of refraction of Medium 1. Set the angle of incidence of the incident beam to `theta_i=30^@`.</p><li>What do you observe?<br /></li>
+<li>Use the protractor reading to estimate the angle the transmitted beam makes with the perpendicular to the interface. What is the transmitted angle `theta_t` for an incidence angle of `theta_i=30^@`? <br />`theta_t\ =\ `</li>
+<li>Use Protractor 1 to estimate the angle the reflected beam makes with the perpendicular to the interface.<br />`theta_r\ =\ `</li>
+<li>In which medium is the light slower in this case?<br /></li>
+<li>Change the angle of incidence of the beam to `0^@` (that is called normal incidence). Use the protractor reading to estimate the angle the transmitted beam makes with the perpendicular to the interface. (if you experience difficulty setting the slider at a particular value, use the arrow keys)<br />`theta_t\ =\ `</li>
+<li>Find the maximum angle that the transmitted light beam can make with the perpendicular to the interface.<br />`theta_{t_{"MAX"}}\ =\ `</li>
+<li>Change to `n_2=2`. What is the new transmitted angle `theta_t` for an incidence angle of `theta_i=30^@`? <br />`theta_t\ =\ `</li>
+<li>Find the new maximum angle that the transmitted light beam can make with the perpendicular to the interface.<br />`theta_{t_{"MAX"}}\ =\ `</li>
+<hr>
+<!--   Set now the index of refraction of the block to `n_2=1` and the index of refraction the medium above the block to `n_1=1.5`. 
+<hr>
+<li>Use the protractor reading to estimate the angle the transmitted beam makes with the perpendicular to the interface. What is the transmitted angle `theta_t` for an incidence angle of `theta_i=30^@`? <br />`theta_t\ =\ `</li>
+<li>In which medium is the light slower in this case?<br /></li>
+<li>Visually estimate the angle the reflected beam makes with the perpendicular to the interface.<br />`theta_r\ =\ `</li>
+<li>Change the angle of incidence of the beam. What happens when you keep on increasing the angle of incidence?<br /></li>
+<li>What is the critical angle, the angle for which transmission has stopped, in this case?<br />`theta_c\ =\ `</li>-->
+</ol>
+</div><!-- #snellRoot1006 -->
+<!--XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-->
+<style>
+* { margin: 0; box-sizing: border-box; }
+div { width: 503px; margin: 0; }
+#snellRoot1006 {
+--sn-toolbar-bg:   #222;
+--sn-incident:     red;
+--sn-reflect:      red;
+--sn-refract:      purple;
+--sn-dot:          red;
+--sn-normal:       #494;
+}
+#snellRoot1006 .sn_a11y1006 {
+display: flex; gap: 6px; padding: 6px 8px;
+background: var(--sn-toolbar-bg); flex-wrap: wrap; width: 503px;
+}
+#snellRoot1006 .sn_a11ybtn1006 {
+padding: 4px 10px; font-size: .72rem; font-family: monospace;
+letter-spacing: .06em; border-radius: 3px; cursor: pointer;
+}
+#snellRoot1006 .sn_a11ybtn1006:hover { border-color: #00e8d0; color: #00e8d0; }
+#snellRoot1006 .sn_a11yon1006 { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
+#snellRoot1006 .sn_narbar1006 {
+width: 503px; min-height: 28px; padding: 5px 10px;
+background: #ffefc0; border-left: 4px solid #e0b040;
+font-size: .88rem; color: #333; font-style: italic;
+}
+.tbar1006    { padding: 2px; height: 30px; background-color: #f90; text-align: center; }
+.mcontent1006 { height: 442px; }
+.bbar1006    { height: 30px; background-color: #df9; padding: 3px; text-align: center;display: flex;  }
+.bbar1006 .right1006   { width: 250px; padding: 2px; }
+.bbar1006 .left1006   { width: 250px; padding: 2px; }
+.footer1006  { height: 45px; text-align: center; font-size: normal; display: flex; }
+.footer1006 .left1006   { width: 156px; padding: 2px; }
+.footer1006 .right1006   { width: 250px; padding: 2px; }
+.footer1006 .center1006 { width: 367px; padding: 4px; }
+.footer1006:nth-child(4) { background-color: #fce4ec; }
+.footer1006:nth-child(5) { background-color: #e8f5e9; }
+.footer1006:nth-child(6) { background-color: #e3f2fd; }
+.footer1006:nth-child(7) { background-color: #aff; }
+.footer1006:nth-child(8) { background-color: #fce4ec; }
+.flex1006 { min-height: 100px; background-color: #fec; padding: 4px; }
+</style>
+<!-- ════════════════ ACCESSIBILITY CONTROLLER ════════════════ -->
+<script>
+var snellA11y1006 = (function(){
+var ROOT = null;
+var states = { hc: false, lm: false, cb: false, nr: true };
+var THEMES = {
+hc: {
+'--sn-incident': '#ffff00', '--sn-reflect': '#ffaa00', '--sn-refract': '#00ffff',
+'--sn-dot': '#ffff00', '--sn-normal': '#00ff88', '--sn-toolbar-bg': '#000'
+},
+lm: {
+'--sn-incident': '#cc0000', '--sn-reflect': '#cc0000', '--sn-refract': '#6600cc',
+'--sn-dot': '#cc0000', '--sn-normal': '#226622', '--sn-toolbar-bg': '#333'
+},
+cb: {
+'--sn-incident': '#d55e00', '--sn-reflect': '#e69f00', '--sn-refract': '#0072b2',
+'--sn-dot': '#d55e00', '--sn-normal': '#009e73'
+}
+};
+var DEFAULTS = {
+'--sn-incident': 'red', '--sn-reflect': 'red', '--sn-refract': 'purple',
+'--sn-dot': 'red', '--sn-normal': '#494', '--sn-toolbar-bg': '#222'
+};
+function applyVars(theme, on) {
+if (!ROOT) return;
+var vars = THEMES[theme];
+for (var p in vars) ROOT.style.setProperty(p, on ? vars[p] : DEFAULTS[p]);
+}
+function styleBtn(id, active) {
+var b = document.getElementById(id); if (!b) return;
+if (active) { b.style.background='rgba(0,232,208,.12)'; b.style.borderColor='#00e8d0'; b.style.color='#00e8d0'; }
+else        { b.style.background='#2a2e3a'; b.style.borderColor='#404a60'; b.style.color='#7a8aaa'; }
+b.setAttribute('aria-pressed', active ? 'true' : 'false');
+}
+function applyCanvas() {
+var cv = document.getElementById('myCanvas1006');
+if (cv) cv.style.filter = states.lm ? 'invert(1) hue-rotate(180deg) brightness(0.9)' : '';
+}
+function applyNarBar() {
+var nb = document.getElementById('snNarBar1006');
+if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var btn = document.getElementById('snBtnNR1006');
+if (btn) { btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF'); styleBtn('snBtnNR1006', states.nr); }
+}
+function apply() {
+if (!ROOT) return;
+applyVars('hc', states.hc); applyVars('lm', states.lm); applyVars('cb', states.cb);
+applyCanvas(); applyNarBar();
+styleBtn('snBtnHC1006', states.hc);
+styleBtn('snBtnLM1006', states.lm);
+styleBtn('snBtnCB1006', states.cb);
+}
+function getCol(prop) {
+if (!ROOT) return DEFAULTS[prop];
+return getComputedStyle(ROOT).getPropertyValue(prop).trim() || DEFAULTS[prop];
+}
+return {
+init: function() { ROOT = document.getElementById('snellRoot1006'); apply(); },
+toggle: function(k) {
+states[k] = !states[k];
+if (k === 'hc' && states.hc) states.lm = false;
+if (k === 'lm' && states.lm) states.hc = false;
+apply();
+},
+isNarOn: function() { return states.nr; },
+narrate: function(msg) {
+if (!states.nr) return;
+var nb = document.getElementById('snNarBar1006');
+if (nb) nb.textContent = msg;
+},
+col: function(role) { return getCol('--sn-' + role); }
+};
+})();
+</script>
+<!-- ════════════════ SIMULATION ════════════════ -->
+<script>
+var snell = function() {
+/* ── Narration helper ── */
+function tirMsg(n1v, n2v) {
+if (n1v > n2v) {
+var sinC = n2v / n1v;
+return 'Critical angle \u03B8c = ' + ((180/Math.PI)*Math.asin(sinC)).toFixed(1)
++ '\u00B0 (TIR possible above this angle).';
+}
+return 'n\u2081 \u2264 n\u2082 \u2014 no total internal reflection.';
+}
+function shown1(newValue) {
+document.getElementById("initialn1Value").innerHTML = newValue;
+n1 = Number(newValue);
+redraw();
+snellA11y1006.narrate('n\u2081 = ' + n1.toFixed(2) + '. ' + tirMsg(n1, n2));
+}
+function shown2(newValue) {
+document.getElementById("initialn2Value").innerHTML = newValue;
+n2 = Number(newValue);
+redraw();
+snellA11y1006.narrate('n\u2082 = ' + n2.toFixed(2) + '. ' + tirMsg(n1, n2));
+}
+function setSource(newValue) { source = Number(newValue); redraw(); }
+var canvas = document.getElementById('myCanvas1006');
+var ctx    = canvas.getContext('2d');
+var index  = 0;
+var xBase  = 250;
+var xBfy   = 40, xBtw = 250, xW = 500;
+var yBase  = 220;
+var yBfy   = 40, yBtw = 220, yW = 220;
+var rStart = 300, aMag = 65;
+var radius = 6;
+var runFlag = 1;
+var time   = 0.0;
+var timer;
+var n1 = 1;
+var n2 = 1.5;
+var redness, greenness, blueness;
+var redString = "0", greenString = "0", blueString = "0", colorString = "0";
+var x1 = -2.5;
+var y1 = 4.33;
+var x2 = 0.0, y2 = 0.0;
+var source = 1;
+/* Protractor state -- showP2 on by default (matches original checked attribute) */
+var showP1 = false;
+var showP2 = true;
+/* ── Protractors built in code as SVG (no external images) ──
+ makeProtractorSVG(dirY): dirY = -1 opens upward (medium 1),
+ dirY = +1 opens downward (medium 2). Angles are read from the
+ normal: 0 along the normal, 90 along the interface.
+ Note: no dollar signs or backticks in this code, since MyOpenMath
+ treats those specially in question text.                          */
+var protractorWidth  = 420;
+var protractorHeight = 220;
+var protR  = 200;               /* radius of the scale */
+var protCx = 210;               /* center x inside the SVG */
+function protCy(dirY) { return (dirY < 0) ? 212 : 8; }
+function f1(v) { return (Math.round(v*100)/100).toString(); }
+function makeProtractorSVG(dirY) {
+var W = protractorWidth, H = protractorHeight, R = protR;
+var cx = protCx, cy = protCy(dirY);
+var sweep = (dirY < 0) ? 1 : 0;
+var s = [];
+s.push('<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">');
+/* Body */
+s.push('<path d="M ' + (cx-R) + ' ' + cy + ' A ' + R + ' ' + R + ' 0 0 ' + sweep + ' ' + (cx+R) + ' ' + cy + ' Z" fill="rgba(255,255,255,0.35)" stroke="#222" stroke-width="1.2"/>');
+/* Inner reading arc */
+var Ri = 120;
+s.push('<path d="M ' + (cx-Ri) + ' ' + cy + ' A ' + Ri + ' ' + Ri + ' 0 0 ' + sweep + ' ' + (cx+Ri) + ' ' + cy + '" fill="none" stroke="#444" stroke-width="0.8"/>');
+/* Baseline */
+s.push('<line x1="' + (cx-R) + '" y1="' + cy + '" x2="' + (cx+R) + '" y2="' + cy + '" stroke="#222" stroke-width="1"/>');
+for (var a = 0; a <= 90; a++) {
+for (var side = -1; side <= 1; side += 2) {
+if (a === 0 && side === 1) continue;     /* draw the normal only once */
+var rad = a * Math.PI / 180;
+var ux = side * Math.sin(rad);
+var uy = dirY * Math.cos(rad);
+var len = (a % 10 === 0) ? 18 : ((a % 5 === 0) ? 11 : 6);
+var w   = (a % 10 === 0) ? 1.2 : 0.7;
+/* Outer scale ticks */
+s.push('<line x1="' + f1(cx + R*ux) + '" y1="' + f1(cy + R*uy) + '" x2="' + f1(cx + (R-len)*ux) + '" y2="' + f1(cy + (R-len)*uy) + '" stroke="#222" stroke-width="' + w + '"/>');
+/* Inner arc ticks every 5 degrees */
+if (a % 5 === 0) {
+var il = (a % 10 === 0) ? 8 : 5;
+s.push('<line x1="' + f1(cx + Ri*ux) + '" y1="' + f1(cy + Ri*uy) + '" x2="' + f1(cx + (Ri+il)*ux) + '" y2="' + f1(cy + (Ri+il)*uy) + '" stroke="#444" stroke-width="0.8"/>');
+}
+if (a % 10 === 0) {
+/* Faint guide line from near the center out to the labels */
+s.push('<line x1="' + f1(cx + 14*ux) + '" y1="' + f1(cy + 14*uy) + '" x2="' + f1(cx + (R-44)*ux) + '" y2="' + f1(cy + (R-44)*uy) + '" stroke="rgba(0,0,0,0.22)" stroke-width="0.6" stroke-dasharray="3 3"/>');
+/* Degree label (90 is left off: it sits on the interface line) */
+if (a < 90) {
+var lr = R - 31;
+s.push('<text x="' + f1(cx + lr*ux) + '" y="' + f1(cy + lr*uy) + '" dy="0.35em" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold" fill="#111">' + a + '\u00B0</text>');
+}
+}
+}
+}
+/* Center crosshair */
+s.push('<circle cx="' + cx + '" cy="' + cy + '" r="3.5" fill="none" stroke="#222" stroke-width="1"/>');
+s.push('<line x1="' + (cx-8) + '" y1="' + cy + '" x2="' + (cx+8) + '" y2="' + cy + '" stroke="#222" stroke-width="1"/>');
+s.push('<line x1="' + cx + '" y1="' + (cy-8) + '" x2="' + cx + '" y2="' + (cy+8) + '" stroke="#222" stroke-width="1"/>');
+/* Caption */
+s.push('<text x="' + cx + '" y="' + f1(cy + dirY*62) + '" dy="0.35em" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="10" fill="#333">angle from normal</text>');
+s.push('</svg>');
+return s.join('');
+}
+function svgToImage(svgText) {
+var img = new Image();
+img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgText);
+return img;
+}
+/* Protractor images */
+var protractorP1Img = svgToImage(makeProtractorSVG(-1));   /* upright: medium 1   */
+var protractorP2Img = svgToImage(makeProtractorSVG(1));    /* downright: medium 2 */
+/* Protractor positions -- each center sits exactly on (xBase, yBase) */
+var p1X = xBase - protCx;
+var p1Y = yBase - protCy(-1);
+var p2X = xBase - protCx;
+var p2Y = yBase - protCy(1);
+/* Draw both protractors according to toggle state */
+function drawProtractors() {
+if (showP1 && protractorP1Img.complete) {
+ctx.drawImage(protractorP1Img, p1X, p1Y, protractorWidth, protractorHeight);
+}
+if (showP2 && protractorP2Img.complete) {
+ctx.drawImage(protractorP2Img, p2X, p2Y, protractorWidth, protractorHeight);
+}
+}
+/* Kick off image loads -- redraw once both are ready */
+var imgsLoaded = 0;
+function onImgLoad() {
+imgsLoaded += 1;
+if (imgsLoaded >= 2) redraw();
+}
+protractorP1Img.onload = onImgLoad;
+protractorP2Img.onload = onImgLoad;
+/* Initial canvas fill */
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+ctx.fillStyle = "#ffd";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+/* Central redraw -- draws scene then overlays protractors */
+function redraw() {
+drawMotion();
+drawProtractors();
+}
+function drawMotion() {
+runFlag = 1;
+if (runFlag == 1) {
+index += 1;
+ctx.fillStyle = "#ffd";
+ctx.strokeStyle = '#999';
+/* Medium 1 colour */
+redness = Math.floor(220 - 50*(n1 - 1.0));
+redString = redness.toString(16); if (redString.length == 1) redString = "0" + redString;
+greenString = redString;
+blueness = Math.floor(255);
+blueString = blueness.toString(16); if (blueString.length == 1) blueString = "0" + blueString;
+colorString = "#" + redString + greenString + blueString;
+ctx.strokeStyle = colorString; ctx.fillStyle = colorString;
+ctx.fillRect(xBase - xBtw, yBase - yBtw, xW, yW);
+/* Medium 2 colour */
+redness = Math.floor(220 - 50*(n2 - 1.0));
+redString = redness.toString(16); if (redString.length == 1) redString = "0" + redString;
+greenString = redString;
+blueness = Math.floor(255);
+blueString = blueness.toString(16); if (blueString.length == 1) blueString = "0" + blueString;
+colorString = "#" + redString + greenString + blueString;
+ctx.strokeStyle = colorString; ctx.fillStyle = colorString;
+ctx.fillRect(xBase - xBtw, yBase, xW, yW);
+/* Normal line */
+ctx.beginPath();
+ctx.strokeStyle = snellA11y1006.col('normal');
+ctx.lineWidth = 1;
+ctx.moveTo(xBase, yBase - yW); ctx.lineTo(xBase, yBase + yW); ctx.stroke();
+/* Interface line */
+ctx.beginPath(); ctx.strokeStyle = 'black'; ctx.lineWidth = 2;
+ctx.moveTo(xBase - xBtw, yBase); ctx.lineTo(xBase + xBtw, yBase); ctx.stroke();
+ctx.lineWidth = 1;
+ctx.font = '16pt Calibri';
+ctx.fillStyle = "blue";
+if (source == 1) {
+var sinc, cosc;
+if (n2 > n1) { sinc = n1/n2; } else { sinc = n2/n1; }
+cosc = Math.sqrt(1 - sinc*sinc);
+/* Incident ray */
+drawArrow(8*(x2-x1), 8*(y2-y1), xBase + xBfy*x1, yBase - yBfy*y1,
+snellA11y1006.col('incident'), 4);
+var normalize = Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
+/* Reflected ray */
+drawArrow(aMag*(x2-x1)/normalize, aMag*(y1-y2)/normalize, xBase, yBase,
+snellA11y1006.col('reflect'), 2);
+var sin2 = n1*(x2-x1) / (n2*normalize);
+if (n2 > n1) {
+var cos2 = Math.sqrt(1 - sin2*sin2);
+drawArrow(aMag*sin2, -aMag*cos2, xBase, yBase,
+snellA11y1006.col('refract'), 2);
+} else if (Math.abs((x2-x1)/normalize) < sinc) {
+var cos2 = Math.sqrt(1 - sin2*sin2);
+drawArrow(aMag*sin2, -aMag*cos2, xBase, yBase,
+snellA11y1006.col('refract'), 2);
+}
+/* else TIR -- no refracted ray */
+}
+/* Source dot */
+ctx.beginPath();
+ctx.arc(xBase + xBfy*x1, yBase - yBfy*y1, radius, 0, 2*Math.PI, false);
+ctx.fillStyle = snellA11y1006.col('dot');
+ctx.fill();
+ctx.font = '16pt Calibri';
+}
+}
+function drawArrow(Fx, Fy, Px, Py, arrowColor, lineW) {
+var theta = Math.atan2(Fy, Fx);
+ctx.strokeStyle = arrowColor;
+if (!lineW) lineW = 4;
+ctx.lineWidth = lineW;
+ctx.beginPath();
+ctx.moveTo(Px, Py); ctx.lineTo(Px + 5*Fx, Py - 5*Fy); ctx.stroke();
+ctx.lineWidth = 2;
+var Fmag = Math.sqrt(Fx*Fx + Fy*Fy);
+if (Fmag > 5) Fmag = 5;
+ctx.fillStyle = arrowColor;
+ctx.beginPath();
+ctx.moveTo(Px+5*Fx - 3*Fmag*Math.cos(theta+0.25*(3.1416/2)),
+ Py-5*Fy + 3*Fmag*Math.sin(theta+0.25*(3.1416/2)));
+ctx.lineTo(Px+5*Fx, Py-5*Fy);
+ctx.lineTo(Px+5*Fx - 3*Fmag*Math.cos(theta-0.25*(3.1416/2)),
+ Py-5*Fy + 3*Fmag*Math.sin(theta-0.25*(3.1416/2)));
+ctx.stroke(); ctx.fill();
+}
+function setIncidentAngle(degrees) {
+document.getElementById("incidentAngleValue").innerHTML = degrees;
+var radians = degrees * Math.PI / 180;
+var length = 5;
+x1 = -length * Math.sin(radians);
+y1 =  length * Math.cos(radians);
+redraw();
+/* Narration */
+var normalize = Math.sqrt(x1*x1 + y1*y1);
+var sin2 = n1*(x2 - x1) / (n2 * normalize);
+var thetaI = parseFloat(degrees);
+var msg = '\u03B8i = ' + thetaI.toFixed(1) + '\u00B0. ';
+msg += '\u03B8r = ' + thetaI.toFixed(1) + '\u00B0 (reflection). ';
+if (n2 > n1) {
+var theta2 = (180/Math.PI) * Math.asin(Math.abs(sin2));
+msg += '\u03B8t = ' + theta2.toFixed(1) + '\u00B0 (bends toward normal).';
+} else {
+var sinc = n2/n1;
+if (Math.abs(sin2) <= 1) {
+var theta2 = (180/Math.PI) * Math.asin(Math.abs(sin2));
+msg += '\u03B8t = ' + theta2.toFixed(1) + '\u00B0 (bends away from normal).';
+} else {
+msg += 'Total internal reflection \u2014 no transmitted beam.';
+}
+}
+snellA11y1006.narrate(msg);
+}
+function toggleProtractor1(cb) {
+showP1 = cb.checked;
+redraw();
+snellA11y1006.narrate('Protractor for Medium 1 ' + (showP1 ? 'shown.' : 'hidden.'));
+}
+function toggleProtractor2(cb) {
+showP2 = cb.checked;
+redraw();
+snellA11y1006.narrate('Protractor for Medium 2 ' + (showP2 ? 'shown.' : 'hidden.'));
+}
+/* Initial draw */
+redraw();
+return {
+shown1:            shown1,
+shown2:            shown2,
+setIncidentAngle:  setIncidentAngle,
+toggleProtractor1: toggleProtractor1,
+toggleProtractor2: toggleProtractor2
+};
+};
+</script>
+<script>
+var snell1006 = new snell();
+snellA11y1006.init();
+snellA11y1006.narrate('Ready. n\u2081 = 1, n\u2082 = 1.5, \u03B8i = 30\u00B0. Adjust sliders to explore Snell\u2019s law. Use checkboxes to show or hide the protractors.');
+</script>
+
+</body>
+</html>

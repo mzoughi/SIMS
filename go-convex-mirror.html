@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations- Waves: Convex Mirror</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,EM,spectrum,transmission,image,object,real, Wave,virtual,reflection,refraction, Properties,concave,convex,lesson,mirror,convergent,divergent,focal,length,scientific">
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<hr><h2>Convex Mirror Simulation</h2><hr>
+<p>In the simulation below, your aim is to identify how different parameters affect the behaviour of a convex mirror.</p>
+<div id="cxRoot1004">
+<!-- ── Accessibility toolbar ── -->
+<div class="cx_a11y1004" id="cxA11yBar1004" role="toolbar" aria-label="Display options">
+<button type="button" class="cx_a11ybtn1004" id="cxBtnHC1004"  onclick="cxA11y1004.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="cx_a11ybtn1004" id="cxBtnLM1004"  onclick="cxA11y1004.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="cx_a11ybtn1004" id="cxBtnCB1004"  onclick="cxA11y1004.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="cx_a11ybtn1004 cx_a11yon1004" id="cxBtnNR1004" onclick="cxA11y1004.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+</div>
+<!-- Title bar -->
+<div class="cx_tbar1004"><h3>Convex Mirror</h3></div>
+<!-- Canvas -->
+<div class="cx_mcontent1004">
+<canvas id="cxCv1004" style="margin:auto;border:1px solid" width="600" height="300"></canvas>
+</div>
+<!-- Readout bar -->
+<div class="cx_bbar1004">
+`R\ =\ `<span id="cxRValue1004"></span>
+<span style="width:40px">&nbsp;</span>
+`f\ =\ `<span id="cxFValue1004"></span>
+<span style="width:40px">&nbsp;</span>
+`n_{"medium"}\ =\ `<span id="cxNValue1004"></span>
+</div>
+<!-- Narration bar -->
+<div id="cxNarBar1004" class="cx_narbar1004" role="status" aria-live="polite" aria-atomic="true"></div>
+<!-- Sliders row 1: R, Diameter, n -->
+<div class="cx_footer1004">
+<div class="cx_left1004">20 <input oninput="cxSim1004.reaction()" onchange="cxSim1004.reaction()" aria-label="Radius of curvature in millimetres, positive for convex mirror" style="width:120px;" type="range" id="cxChR1004" min="20" max="300" value="150" step="10" > 300
+Radius R = <span id="cxN0011004">150</span> mm</div>
+<div class="cx_center1004">50 <input oninput="cxSim1004.reaction()" onchange="cxSim1004.reaction()"  aria-label="Mirror diameter in millimetres" style="width:120px;" type="range" id="cxChD1004" min="50" max="280" value="180" step="10"> 280
+Diameter = <span id="cxN0021004">180</span> mm</div>
+<div class="cx_right1004">1.0 <input oninput="cxSim1004.reaction()" onchange="cxSim1004.reaction()" aria-label="Refractive index of surrounding medium (informational)" style="width:120px;" type="range" id="cxChN1004" min="1.0" max="2.0" value="1.0" step="0.1"> 2.0
+n<sub>medium</sub> = <span id="cxN0031004">1.0</span></div>
+</div>
+<!-- Sliders row 2: mirror position -->
+<div class="cx_footer1004">
+<div class="cx_left1004">0 <input style="width:120px;" type="range" id="cxChPos1004" min="0" max="480" value="240" step="10" oninput="cxSim1004.reaction()" onchange="cxSim1004.reaction()" aria-label="Mirror horizontal position on canvas, slide left to reveal virtual focal point"> 480 Mirror position = <span id="cxN0041004">240</span> px</div>
+<div class="cx_center1004">&nbsp;</div>
+<div class="cx_right1004">&nbsp;</div>
+</div>
+<!--hr&gt;$hintlink[0]<br>$hintlink[1]&lt;hr-->
+<p>Part of the lab involves investigating a convex mirror. Set the radius of the mirror to `150\ "mm`. What is the resulting focal length `f`?<br>`f\ =\ `</p>
+<p>Where is the focal point of a concave mirror located relative to the mirror surface?<br></p>
+<p>How do parallel incoming rays behave after reflecting off a concave mirror?<br></p>
+<p>How does increasing the magnitude of the radius of curvature `|R|` affect the focal length `f`?<br></p>
+<p>Does changing the refractive index of the surrounding medium affect the focal length of the mirror? Explain.<br></p>
+<p>How does changing the diameter of the mirror affect the focal length?<br></p>
+</div><!-- #cxRoot1004 -->
+<style>
+* { margin: 0; box-sizing: border-box; }
+div { width: 603px; margin: 0; }
+#cxRoot1004 { --cx-toolbar-bg: #222; }
+/* ── Accessibility toolbar ── */
+#cxRoot1004 .cx_a11y1004 {
+display: flex; gap: 6px; padding: 6px 8px;
+background: var(--cx-toolbar-bg); flex-wrap: wrap; width: 603px;
+}
+#cxRoot1004 .cx_a11ybtn1004 {
+padding: 4px 10px; font-size: .72rem; font-family: monospace;
+letter-spacing: .06em; border-radius: 3px; cursor: pointer;
+background: #2a2e3a; border: 1px solid #404a60; color: #7a8aaa;
+transition: border-color .15s, color .15s;
+}
+#cxRoot1004 .cx_a11ybtn1004:hover { border-color: #00e8d0; color: #00e8d0; }
+#cxRoot1004 .cx_a11yon1004 { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
+/* ── Narration bar ── */
+#cxRoot1004 .cx_narbar1004 {
+width: 603px; min-height: 28px; padding: 5px 10px;
+background: #ffefc0; border-left: 4px solid #e0b040;
+font-size: .88rem; color: #333; font-style: italic;
+}
+.cx_tbar1004     { padding: 2px; height: 30px; background-color: #f90; text-align: center; }
+.cx_mcontent1004 { height: 302px; }
+.cx_bbar1004     { height: 30px; background-color: #df9; padding: 5px; text-align: center; }
+.cx_footer1004   { height: 60px; text-align: center; font-size: normal; display: flex; }
+.cx_footer1004 .cx_left1004   { width: 201px; padding: 2px; }
+.cx_footer1004 .cx_center1004 { width: 201px; padding: 4px; }
+.cx_footer1004 .cx_right1004  { width: 201px; padding: 4px; }
+.cx_footer1004:nth-child(6) { background-color: #fce4ec; }
+.cx_footer1004:nth-child(7) { background-color: #e8f5e9; }
+</style>
+<!-- ════════════════ ACCESSIBILITY CONTROLLER ════════════════ -->
+<script>
+var cxA11y1004 = (function(){
+var ROOT = null;
+var states = { hc: false, lm: false, cb: false, nr: true };
+var COLOURS = {
+def: { beam: '#ff4444', virtual: '#ff9900', mirror: '#aaaacc', axis: '#0000cc', vfocus: '#ff9900' },
+hc:  { beam: '#ff6600', virtual: '#ffcc00', mirror: '#cccccc', axis: '#4488ff', vfocus: '#ffcc00' },
+cb:  { beam: '#d55e00', virtual: '#e69f00', mirror: '#999999', axis: '#0072b2', vfocus: '#e69f00' }
+};
+function styleBtn(id, active) {
+var b = document.getElementById(id); if (!b) return;
+if (active) { b.style.background='rgba(0,232,208,.12)'; b.style.borderColor='#00e8d0'; b.style.color='#00e8d0'; }
+else        { b.style.background='#2a2e3a';             b.style.borderColor='#404a60'; b.style.color='#7a8aaa'; }
+b.setAttribute('aria-pressed', active ? 'true' : 'false');
+}
+function applyCanvas() {
+var cv = document.getElementById('cxCv1004');
+if (cv) cv.style.filter = states.lm ? 'invert(1) hue-rotate(180deg) brightness(0.9)' : '';
+}
+function applyNarBar() {
+var nb = document.getElementById('cxNarBar1004');
+if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var btn = document.getElementById('cxBtnNR1004');
+if (btn) {
+btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('cxBtnNR1004', states.nr);
+}
+}
+function applyToolbar() {
+if (ROOT) ROOT.style.setProperty('--cx-toolbar-bg', (states.hc || states.lm) ? '#111' : '#222');
+}
+function apply() {
+if (!ROOT) return;
+applyCanvas(); applyNarBar(); applyToolbar();
+styleBtn('cxBtnHC1004', states.hc);
+styleBtn('cxBtnLM1004', states.lm);
+styleBtn('cxBtnCB1004', states.cb);
+}
+return {
+init: function() { ROOT = document.getElementById('cxRoot1004'); apply(); },
+toggle: function(k) {
+states[k] = !states[k];
+if (k === 'hc' && states.hc) states.lm = false;
+if (k === 'lm' && states.lm) states.hc = false;
+apply();
+if (typeof cxSim1004 !== 'undefined') cxSim1004.redraw();
+},
+isHC:    function() { return states.hc; },
+narrate: function(msg) {
+if (!states.nr) return;
+var nb = document.getElementById('cxNarBar1004');
+if (!nb) return;
+nb.innerHTML = msg;
+if (window.MathJax) {
+if (MathJax.typesetPromise) MathJax.typesetPromise([nb]);
+else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, nb]);
+}
+},
+getColors: function() {
+if (states.cb) return COLOURS.cb;
+if (states.hc) return COLOURS.hc;
+return COLOURS.def;
+}
+};
+})();
+</script>
+<!-- ════════════════ SIMULATION ════════════════ -->
+<script>
+var cxSim1004 = (function(){
+/* ── Canvas constants ── */
+var CW = 600, CH = 300;
+var my = CH / 2;          /* optical axis y (fixed) */
+/* Scale: 1 mm physics = SC pixels */
+var SC = 0.8;
+/* ── Physics state (read from sliders) ── */
+var R      = 150;   /* radius of curvature, mm -- POSITIVE for convex   */
+var D      = 160;   /* mirror diameter, mm                              */
+var nm     = 1.0;   /* medium refractive index (informational only)     */
+var xV     = 360;   /* mirror vertex x in pixels (moveable)             */
+/* ── Derived ── */
+var f;              /* focal length in mm -- always NEGATIVE for convex  */
+var varFont = '11pt Calibri';
+var canvas, ctx;
+/* ── Read sliders ── */
+function readSliders() {
+var eR   = document.getElementById('cxChR1004');
+var eD   = document.getElementById('cxChD1004');
+var eN   = document.getElementById('cxChN1004');
+var ePos = document.getElementById('cxChPos1004');
+if (eR)   R  = parseFloat(eR.value);
+if (eD)   D  = parseFloat(eD.value);
+if (eN)   nm = parseFloat(eN.value);
+if (ePos) xV = parseFloat(ePos.value);
+}
+/* ── Physics: convex mirror focal length ── */
+/* Convention: R > 0 (convex), f = -R/2 < 0
+ Virtual focal point is BEHIND the mirror (to the right of vertex).
+ xF_px = xV + |f| * SC  (to the right, behind the reflective surface) */
+function calcOptics() {
+f = -R / 2;   /* always negative */
+}
+/* ── Arrow helper (identical to concave mirror) ── */
+function arrow(x1, y1, x2, y2, w, col) {
+if (!w) w = 1;
+if (!col) col = ctx.strokeStyle;
+ctx.strokeStyle = col; ctx.fillStyle = col;
+var dx = x2-x1, dy = y2-y1;
+var len = Math.sqrt(dx*dx + dy*dy);
+if (len < 1) return;
+dx /= len; dy /= len;
+var s = 2.5*w + 7.5;
+var xSp = x2 - s*dx, ySp = y2 - s*dy;
+var h = 0.5*w + 3.5;
+var xSp1 = xSp - h*dy, ySp1 = ySp + h*dx;
+var xSp2 = xSp + h*dy, ySp2 = ySp - h*dx;
+xSp = x2 - 0.6*s*dx; ySp = y2 - 0.6*s*dy;
+ctx.beginPath(); ctx.lineWidth = w;
+ctx.moveTo(x1, y1);
+if (len < 5) ctx.lineTo(x2, y2);
+else ctx.lineTo(xSp, ySp);
+ctx.stroke();
+if (len < 5) return;
+ctx.beginPath();
+ctx.moveTo(xSp, ySp); ctx.lineTo(xSp1, ySp1);
+ctx.lineTo(x2, y2);   ctx.lineTo(xSp2, ySp2);
+ctx.closePath(); ctx.fill();
+}
+/* ── Mark a named point on the optical axis ── */
+function markPoint(px, label, col, above) {
+ctx.beginPath();
+ctx.arc(px, my, 4, 0, 2 * Math.PI);
+ctx.fillStyle = col;
+ctx.fill();
+ctx.fillStyle = col;
+ctx.font = varFont;
+ctx.textAlign = 'center';
+ctx.fillText(label, px, above ? my - 10 : my + 16);
+}
+/* ── Draw the convex mirror arc ──
+ Convex mirror faces LEFT (reflecting surface faces incoming rays from left).
+ The arc bulges to the LEFT (toward the incoming light).
+ Vertex at xV. For convex: sagitta goes left (negative x direction).      */
+function drawMirror(col) {
+var halfD   = (D / 2) * SC;
+/* sagitta = h^2 / (2*R) where h = halfD in pixels, R in pixels */
+var Rpx     = R * SC;
+var sagitta = (halfD * halfD) / (2 * Rpx);   /* positive, arc bulges left */
+var cpX     = xV - sagitta;                   /* control point left of vertex */
+var topY    = my - halfD;
+var botY    = my + halfD;
+/* Reflective surface arc */
+ctx.beginPath();
+ctx.moveTo(xV, topY);
+ctx.quadraticCurveTo(cpX, my, xV, botY);
+ctx.strokeStyle = col;
+ctx.lineWidth = 4;
+ctx.stroke();
+/* Mirror backing: hatch lines on the right (non-reflective) side */
+ctx.lineWidth = 1;
+ctx.strokeStyle = cxA11y1004.isHC() ? '#555' : '#888';
+var steps = 8;
+for (var i = 0; i <= steps; i++) {
+var t  = i / steps;
+var bx = (1-t)*(1-t)*xV + 2*t*(1-t)*cpX + t*t*xV;
+var by = (1-t)*(1-t)*topY + 2*t*(1-t)*my + t*t*botY;
+ctx.beginPath();
+ctx.moveTo(bx, by);
+ctx.lineTo(bx + 12, by + 8);
+ctx.stroke();
+}
+/* Store sagitta/cpX for ray drawing */
+drawMirror._sagitta = sagitta;
+drawMirror._cpX     = cpX;
+drawMirror._topY    = topY;
+drawMirror._botY    = botY;
+}
+/* ── Draw optical axis ── */
+function drawAxis(col) {
+ctx.strokeStyle = col;
+ctx.lineWidth = 1;
+ctx.setLineDash([6, 4]);
+ctx.beginPath();
+ctx.moveTo(0, my);
+ctx.lineTo(CW, my);
+ctx.stroke();
+ctx.setLineDash([]);
+}
+/* ── Draw incoming parallel rays + diverging reflections + dashed extensions ──
+ For a convex mirror (f < 0):
+- Incoming ray: horizontal from left to mirror surface
+- Reflected ray: diverges (points away from virtual focus)
+- Dashed extension: traced back behind mirror to converge at virtual F   */
+function drawRays(beamCol, virtCol) {
+var halfD   = (D / 2) * SC;
+var sagitta = drawMirror._sagitta || 0;
+var cpX     = drawMirror._cpX     || xV;
+var topY    = drawMirror._topY    || (my - halfD);
+var botY    = drawMirror._botY    || (my + halfD);
+/* Virtual focal point in pixels: BEHIND mirror (to the right) */
+var xFpx = xV + Math.abs(f) * SC;
+var numRays = 5;
+for (var i = 1; i <= numRays; i++) {
+var frac = i / (numRays + 1);
+var yRay = my - halfD + frac * 2 * halfD;
+/* x on mirror surface at yRay via quadratic Bezier parameter */
+var t2   = (yRay - topY) / (botY - topY);
+var xMir = (1-t2)*(1-t2)*xV + 2*t2*(1-t2)*cpX + t2*t2*xV;
+/* ── Incoming ray: horizontal from left ── */
+ctx.strokeStyle = beamCol;
+ctx.lineWidth = 1;
+ctx.setLineDash([]);
+ctx.beginPath();
+ctx.moveTo(0, yRay);
+ctx.lineTo(xMir, yRay);
+ctx.stroke();
+/* Arrow on incoming ray at midpoint */
+arrow(0, yRay, xMir / 2, yRay, 1, beamCol);
+/* ── Reflected ray (diverging) ──
+ Paraxial approximation: reflected ray appears to come from virtual F.
+ Direction vector: from xFpx,my  through  xMir,yRay, extended left.  */
+var dxR = xMir  - xFpx;
+var dyR = yRay  - my;
+/* Extend the reflected ray to left edge of canvas (x = 0) */
+var tExt, xEnd, yEnd;
+if (Math.abs(dxR) > 0.001) {
+tExt = (0 - xMir) / dxR;
+xEnd = 0;
+yEnd = yRay + tExt * dyR;
+} else {
+xEnd = xMir; yEnd = 0;
+}
+/* Clamp to canvas height */
+if (yEnd < 0 || yEnd > CH) {
+var tClamp = (yEnd < 0) ? ((0 - yRay) / dyR) : ((CH - yRay) / dyR);
+xEnd = xMir + tClamp * dxR;
+yEnd = yRay + tClamp * dyR;
+}
+ctx.strokeStyle = beamCol;
+ctx.lineWidth = 1;
+ctx.setLineDash([]);
+ctx.beginPath();
+ctx.moveTo(xMir, yRay);
+ctx.lineTo(xEnd, yEnd);
+ctx.stroke();
+/* Arrow on reflected ray partway along */
+var xArMid = xMir + 0.4 * (xEnd - xMir);
+var yArMid = yRay + 0.4 * (yEnd - yRay);
+arrow(xMir, yRay, xArMid, yArMid, 1, beamCol);
+/* ── Dashed extension behind mirror toward virtual F ──
+ Draw from mirror surface rightward to xFpx (only if xFpx is on canvas) */
+if (xFpx <= CW) {
+ctx.strokeStyle = virtCol;
+ctx.lineWidth = 1;
+ctx.setLineDash([5, 4]);
+ctx.beginPath();
+ctx.moveTo(xMir, yRay);
+ctx.lineTo(xFpx, my);
+ctx.stroke();
+ctx.setLineDash([]);
+}
+}
+ctx.setLineDash([]);
+}
+/* ── Display data box ── */
+function displayData() {
+var bgCol  = cxA11y1004.isHC() ? '#222' : 'yellow';
+var txtCol = cxA11y1004.isHC() ? '#fff' : 'black';
+ctx.fillStyle = bgCol;
+ctx.strokeStyle = cxA11y1004.isHC() ? '#888' : 'blue';
+ctx.lineWidth = 0;
+ctx.beginPath();
+ctx.rect(0, 0, 160, 72);
+ctx.fill(); ctx.stroke();
+ctx.font = varFont;
+ctx.fillStyle = txtCol;
+ctx.textAlign = 'left';
+var x0 = 8, y0 = 15;
+ctx.fillText('R = '  + R.toFixed(0)  + ' mm (convex)', x0, y0);
+ctx.fillText('f = '  + f.toFixed(1)  + ' mm (virtual)', x0, y0 + 18);
+ctx.fillText('n = '  + nm.toFixed(1) + ' (no effect on f)', x0, y0 + 36);
+ctx.fillText('D = '  + D.toFixed(0)  + ' mm', x0, y0 + 54);
+}
+/* ── Main draw ── */
+function draw() {
+readSliders();
+calcOptics();
+canvas = document.getElementById('cxCv1004');
+ctx    = canvas.getContext('2d');
+/* Background */
+var bgFill = cxA11y1004.isHC() ? '#111' : '#f8f8ff';
+ctx.fillStyle = bgFill;
+ctx.fillRect(0, 0, CW, CH);
+var cols = cxA11y1004.getColors();
+drawAxis(cols.axis);
+/* Virtual focal point x in pixels (behind mirror, to the right) */
+var xFpx = xV + Math.abs(f) * SC;
+/* Centre of curvature: behind mirror at distance R */
+var xCpx = xV + R * SC;
+/* Draw mirror first so rays overlay it */
+drawMirror(cols.mirror);
+/* Draw rays */
+drawRays(cols.beam, cols.virtual);
+/* Mark virtual focal point F (behind mirror) */
+if (xFpx >= 0 && xFpx <= CW) {
+markPoint(xFpx, 'F (virtual)', cols.vfocus, true);
+} else {
+/* Off-canvas indicator at right edge */
+ctx.font = varFont;
+ctx.fillStyle = cols.vfocus;
+ctx.textAlign = 'right';
+ctx.fillText('F (virtual) off-screen \u2192  slide mirror left to reveal', CW - 5, my - 12);
+}
+/* Mark centre of curvature C (behind mirror) if on canvas */
+if (xCpx >= 0 && xCpx <= CW) {
+markPoint(xCpx, 'C', cxA11y1004.isHC() ? '#aaa' : '#888', false);
+}
+/* Mark vertex V */
+markPoint(xV, 'V', cxA11y1004.isHC() ? '#eee' : '#444', false);
+displayData();
+/* Update readout bar */
+var eRV = document.getElementById('cxRValue1004');
+var eFV = document.getElementById('cxFValue1004');
+var eNV = document.getElementById('cxNValue1004');
+if (eRV) eRV.innerHTML = R.toFixed(0) + ' mm';
+if (eFV) eFV.innerHTML = f.toFixed(1) + ' mm (virtual, behind mirror)';
+if (eNV) eNV.innerHTML = nm.toFixed(1);
+/* Update slider readout spans */
+var n001 = document.getElementById('cxN0011004');
+var n002 = document.getElementById('cxN0021004');
+var n003 = document.getElementById('cxN0031004');
+var n004 = document.getElementById('cxN0041004');
+if (n001) n001.innerHTML = R.toFixed(0);
+if (n002) n002.innerHTML = D.toFixed(0);
+if (n003) n003.innerHTML = nm.toFixed(1);
+if (n004) n004.innerHTML = xV.toFixed(0);
+}
+/* ── Narration ── */
+function buildNarration() {
+var xFpx = xV + Math.abs(f) * SC;
+var fVis = (xFpx >= 0 && xFpx <= CW) ? 'visible on canvas' : 'off canvas to the right (slide mirror left to reveal it)';
+return 'Convex mirror. '
++ 'Radius R = ' + R.toFixed(0) + ' mm (positive, convex). '
++ 'Focal length f = ' + f.toFixed(1) + ' mm -- negative, meaning the focal point is virtual and located behind the mirror. '
++ 'The virtual focal point F is ' + fVis + '. '
++ 'Reflected rays diverge; dashed lines trace back to the virtual focus. '
++ 'Diameter = ' + D.toFixed(0) + ' mm (does not affect focal length). '
++ 'Refractive index n = ' + nm.toFixed(1) + ' -- does not affect the focal length of a mirror.';
+}
+/* ── Public ── */
+function reaction() {
+draw();
+cxA11y1004.narrate(buildNarration());
+}
+function redraw() { draw(); }
+/* ── Boot ── */
+window.setTimeout(function() {
+draw();
+cxA11y1004.narrate(buildNarration());
+}, 0);
+return {
+reaction: reaction,
+redraw:   redraw
+};
+})();
+</script>
+<script>
+cxA11y1004.init();
+</script>
+
+</body>
+</html>
