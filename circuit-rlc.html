@@ -15,64 +15,64 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching,Oscilloscope, teach, learn,Circuit, DC, RLC,Inductance,inductor,Capacitance, AC,Capacitor,Resonance,Resistor,Reactance,Phasor,Diagram,Impedance,Electric, Electricity, Builder, lesson, scientific">
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
-<div id="rlcRoot$thisq">
+<div id="rlcRoot1003">
 <!-- ── Accessibility toolbar ── -->
-<div class="rlc_a11y$thisq" id="rlcA11yBar$thisq" role="toolbar" aria-label="Display options">
-<button type="button" class="rlc_a11ybtn$thisq" id="rlcBtnHC$thisq" onclick="rlcA11y$thisq.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="rlc_a11ybtn$thisq" id="rlcBtnLM$thisq" onclick="rlcA11y$thisq.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
-<button type="button" class="rlc_a11ybtn$thisq" id="rlcBtnCB$thisq" onclick="rlcA11y$thisq.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
-<button type="button" class="rlc_a11ybtn$thisq rlc_a11yon$thisq" id="rlcBtnNR$thisq" onclick="rlcA11y$thisq.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+<div class="rlc_a11y1003" id="rlcA11yBar1003" role="toolbar" aria-label="Display options">
+<button type="button" class="rlc_a11ybtn1003" id="rlcBtnHC1003" onclick="rlcA11y1003.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="rlc_a11ybtn1003" id="rlcBtnLM1003" onclick="rlcA11y1003.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="rlc_a11ybtn1003" id="rlcBtnCB1003" onclick="rlcA11y1003.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="rlc_a11ybtn1003 rlc_a11yon1003" id="rlcBtnNR1003" onclick="rlcA11y1003.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
 </div>
-<div class="tbar$thisq"><h3>RLC Series Circuit &mdash; Function Generator &amp; Dual-Channel Scope</h3></div>
+<div class="tbar1003"><h3>RLC Series Circuit &mdash; Function Generator &amp; Dual-Channel Scope</h3></div>
 <!-- ── View tabs ── -->
-<div class="tabs$thisq" id="rlcTabs$thisq">
-<button type="button" class="rlc_tabbtn$thisq rlc_tabon$thisq" id="rlcTabScope$thisq" onclick="rlcSim$thisq.setTab('scope')">CIRCUIT + SCOPE</button>
-<button type="button" class="rlc_tabbtn$thisq" id="rlcTabPhasor$thisq" onclick="rlcSim$thisq.setTab('phasor')">PHASOR DIAGRAM</button>
-<button type="button" class="rlc_tabbtn$thisq" id="rlcTabEq$thisq" onclick="rlcSim$thisq.setTab('equations')">EQUATIONS</button>
+<div class="tabs1003" id="rlcTabs1003">
+<button type="button" class="rlc_tabbtn1003 rlc_tabon1003" id="rlcTabScope1003" onclick="rlcSim1003.setTab('scope')">CIRCUIT + SCOPE</button>
+<button type="button" class="rlc_tabbtn1003" id="rlcTabPhasor1003" onclick="rlcSim1003.setTab('phasor')">PHASOR DIAGRAM</button>
+<button type="button" class="rlc_tabbtn1003" id="rlcTabEq1003" onclick="rlcSim1003.setTab('equations')">EQUATIONS</button>
 </div>
-<div class="mcontent$thisq">
-<canvas id="rlcCanvas$thisq" style="margin:auto;display:block;border:1px solid #ccc" width="700" height="460"></canvas>
-<div id="rlcEqPanel$thisq" class="rlc_eqpanel$thisq" style="display:none;"></div>
+<div class="mcontent1003">
+<canvas id="rlcCanvas1003" style="margin:auto;display:block;border:1px solid #ccc" width="700" height="460"></canvas>
+<div id="rlcEqPanel1003" class="rlc_eqpanel1003" style="display:none;"></div>
 </div>
-<div id="rlcNarBar$thisq" class="rlc_narbar$thisq" role="status" aria-live="polite" aria-atomic="true"></div>
-<div class="bbar$thisq">
-<input type="button" id="rlcPlay$thisq" value="Play"
-onclick="if(this.value=='Play'){rlcSim$thisq.pl();this.value='Pause';}else{this.value='Play';rlcSim$thisq.ps();}">
-<input type="button" value="Step" onclick="document.getElementById('rlcPlay$thisq').value='Play';rlcSim$thisq.step();">
-<input type="button" value="New Components" onclick="document.getElementById('rlcPlay$thisq').value='Play';rlcSim$thisq.rst();">
-<input type="button" value="Clear Cursors" onclick="rlcSim$thisq.clearCursors();">
+<div id="rlcNarBar1003" class="rlc_narbar1003" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="bbar1003">
+<input type="button" id="rlcPlay1003" value="Play"
+onclick="if(this.value=='Play'){rlcSim1003.pl();this.value='Pause';}else{this.value='Play';rlcSim1003.ps();}">
+<input type="button" value="Step" onclick="document.getElementById('rlcPlay1003').value='Play';rlcSim1003.step();">
+<input type="button" value="New Components" onclick="document.getElementById('rlcPlay1003').value='Play';rlcSim1003.rst();">
+<input type="button" value="Clear Cursors" onclick="rlcSim1003.clearCursors();">
 </div>
-<div class="footer$thisq">
-<div class="rowgrp$thisq">
+<div class="footer1003">
+<div class="rowgrp1003">
 <label>R (&Omega;):
-<input type="range" id="rlcR$thisq" min="500" max="10000" step="50" value="3000"
-oninput="document.getElementById('rlcRVal$thisq').textContent=this.value; rlcSim$thisq.redraw();">
-<span id="rlcRVal$thisq">3000</span>
+<input type="range" id="rlcR1003" min="500" max="10000" step="50" value="3000"
+oninput="document.getElementById('rlcRVal1003').textContent=this.value; rlcSim1003.redraw();">
+<span id="rlcRVal1003">3000</span>
 </label>
 <label>L (mH):
-<input type="range" id="rlcL$thisq" min="10" max="500" step="5" value="400"
-oninput="document.getElementById('rlcLVal$thisq').textContent=this.value; rlcSim$thisq.redraw();">
-<span id="rlcLVal$thisq">400</span>
+<input type="range" id="rlcL1003" min="10" max="500" step="5" value="400"
+oninput="document.getElementById('rlcLVal1003').textContent=this.value; rlcSim1003.redraw();">
+<span id="rlcLVal1003">400</span>
 </label>
 <label>C (nF):
-<input type="range" id="rlcC$thisq" min="10" max="300" step="5" value="75"
-oninput="document.getElementById('rlcCVal$thisq').textContent=this.value; rlcSim$thisq.redraw();">
-<span id="rlcCVal$thisq">75</span>
+<input type="range" id="rlcC1003" min="10" max="300" step="5" value="75"
+oninput="document.getElementById('rlcCVal1003').textContent=this.value; rlcSim1003.redraw();">
+<span id="rlcCVal1003">75</span>
 </label>
 <label>f (Hz):
-<input type="range" id="rlcF$thisq" min="50" max="5000" step="10" value="1200"
-oninput="document.getElementById('rlcFVal$thisq').textContent=this.value; rlcSim$thisq.redraw();">
-<span id="rlcFVal$thisq">1200</span>
+<input type="range" id="rlcF1003" min="50" max="5000" step="10" value="1200"
+oninput="document.getElementById('rlcFVal1003').textContent=this.value; rlcSim1003.redraw();">
+<span id="rlcFVal1003">1200</span>
 </label>
 <label>V<sub>m</sub> (V):
-<input type="range" id="rlcVm$thisq" min="1" max="10" step="0.5" value="5"
-oninput="document.getElementById('rlcVmVal$thisq').textContent=this.value; rlcSim$thisq.redraw();">
-<span id="rlcVmVal$thisq">5</span>
+<input type="range" id="rlcVm1003" min="1" max="10" step="0.5" value="5"
+oninput="document.getElementById('rlcVmVal1003').textContent=this.value; rlcSim1003.redraw();">
+<span id="rlcVmVal1003">5</span>
 </label>
 </div>
-<div class="rowgrp$thisq">
+<div class="rowgrp1003">
 <label>CH1 shows:
-<select id="rlcCh1Sel$thisq" onchange="rlcSim$thisq.redraw();">
+<select id="rlcCh1Sel1003" onchange="rlcSim1003.redraw();">
 <option value="src">Source v(t)</option>
 <option value="vr" selected>V_R (resistor)</option>
 <option value="vl">V_L (inductor)</option>
@@ -81,7 +81,7 @@ oninput="document.getElementById('rlcVmVal$thisq').textContent=this.value; rlcSi
 </select>
 </label>
 <label>CH2 shows:
-<select id="rlcCh2Sel$thisq" onchange="rlcSim$thisq.redraw();">
+<select id="rlcCh2Sel1003" onchange="rlcSim1003.redraw();">
 <option value="src">Source v(t)</option>
 <option value="vr">V_R (resistor)</option>
 <option value="vl">V_L (inductor)</option>
@@ -90,30 +90,30 @@ oninput="document.getElementById('rlcVmVal$thisq').textContent=this.value; rlcSi
 </select>
 </label>
 <label>CH1 V/div:
-<select id="rlcV1$thisq" onchange="rlcSim$thisq.redraw();">
+<select id="rlcV11003" onchange="rlcSim1003.redraw();">
 <option>0.5</option><option selected>1</option><option>2</option><option>5</option>
 </select>
 </label>
 <label>CH2 V/div:
-<select id="rlcV2$thisq" onchange="rlcSim$thisq.redraw();">
+<select id="rlcV21003" onchange="rlcSim1003.redraw();">
 <option>0.5</option><option selected>1</option><option>2</option><option>5</option>
 </select>
 </label>
 <label>Time/div (ms):
-<select id="rlcT$thisq" onchange="rlcSim$thisq.redraw();">
+<select id="rlcT1003" onchange="rlcSim1003.redraw();">
 <option>0.1</option><option>0.2</option><option selected>0.5</option><option>1</option><option>2</option>
 </select>
 </label>
 </div>
-<div class="rowgrp$thisq">
-<label class="rlc_chk$thisq"><input type="checkbox" id="rlcTol$thisq" onchange="rlcSim$thisq.rst();"> Simulate component tolerance (experimental error)</label>
+<div class="rowgrp1003">
+<label class="rlc_chk1003"><input type="checkbox" id="rlcTol1003" onchange="rlcSim1003.rst();"> Simulate component tolerance (experimental error)</label>
 </div>
 </div>
 </div>
 <style>
 * { margin: 0; box-sizing: border-box; }
 div { width: 703px; margin: 0; }
-#rlcRoot$thisq {
+#rlcRoot1003 {
 --rlc-bg:        #ffffff;
 --rlc-scope-bg:  #0b1a0f;
 --rlc-grid:      #2c4a34;
@@ -129,49 +129,49 @@ div { width: 703px; margin: 0; }
 --rlc-toolbar-bg:#222;
 --rlc-cursor:    #d33fd3;
 }
-#rlcRoot$thisq .rlc_a11y$thisq {
+#rlcRoot1003 .rlc_a11y1003 {
 display:flex; gap:6px; padding:6px 8px;
 background:var(--rlc-toolbar-bg); flex-wrap:wrap; width:703px;
 }
-#rlcRoot$thisq .rlc_a11ybtn$thisq {
+#rlcRoot1003 .rlc_a11ybtn1003 {
 padding:4px 10px; font-size:.72rem; font-family:monospace;
 letter-spacing:.06em; border-radius:3px; cursor:pointer;
 background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa;
 transition:border-color .15s,color .15s;
 }
-#rlcRoot$thisq .rlc_a11ybtn$thisq:hover { border-color:#00e8d0; color:#00e8d0; }
-#rlcRoot$thisq .rlc_a11yon$thisq { background:rgba(0,232,208,.12); border-color:#00e8d0; color:#00e8d0; }
-#rlcRoot$thisq .rlc_narbar$thisq {
+#rlcRoot1003 .rlc_a11ybtn1003:hover { border-color:#00e8d0; color:#00e8d0; }
+#rlcRoot1003 .rlc_a11yon1003 { background:rgba(0,232,208,.12); border-color:#00e8d0; color:#00e8d0; }
+#rlcRoot1003 .rlc_narbar1003 {
 width:703px; min-height:28px; padding:5px 10px;
 background:#ffefc0; border-left:4px solid #e0b040;
 font-size:.86rem; color:#333; font-style:italic;
 }
-.tbar$thisq    { padding:4px; height:35px; background-color:#f90; text-align:center; line-height:42px; width:703px;}
-.tbar$thisq h3 { font-size:1.05rem; font-weight:bold; }
-.tabs$thisq    { width:703px; display:flex; background:#333; }
-.rlc_tabbtn$thisq {
+.tbar1003    { padding:4px; height:35px; background-color:#f90; text-align:center; line-height:42px; width:703px;}
+.tbar1003 h3 { font-size:1.05rem; font-weight:bold; }
+.tabs1003    { width:703px; display:flex; background:#333; }
+.rlc_tabbtn1003 {
 flex:1; padding:8px 4px; font-size:.78rem; font-family:sans-serif; letter-spacing:.03em;
 background:#333; color:#aaa; border:none; border-right:1px solid #222; cursor:pointer;
 }
-.rlc_tabbtn$thisq:hover { background:#444; color:#fff; }
-.rlc_tabon$thisq { background:#f90 !important; color:#111 !important; font-weight:bold; }
-.mcontent$thisq { height:462px; width:703px; position:relative; }
-.rlc_eqpanel$thisq {
+.rlc_tabbtn1003:hover { background:#444; color:#fff; }
+.rlc_tabon1003 { background:#f90 !important; color:#111 !important; font-weight:bold; }
+.mcontent1003 { height:462px; width:703px; position:relative; }
+.rlc_eqpanel1003 {
 width:680px; height:440px; margin:10px auto; padding:14px 20px; overflow-y:auto;
 background:var(--rlc-bg); color:var(--rlc-text); font-family:'Cambria','Georgia',serif; font-size:1rem; line-height:1.85;
 }
-.rlc_eqpanel$thisq h4 { margin-top:14px; font-family:sans-serif; color:#c05a00; }
-.rlc_eqpanel$thisq .rlc_eqline$thisq { margin:6px 0 6px 10px; font-size:1.02rem; }
-.bbar$thisq    { height:50px; background-color:#df9; padding:10px; text-align:center; width:703px;}
-.bbar$thisq input[type=button] { margin:0 4px; padding:4px 12px; cursor:pointer; }
-.footer$thisq  { width:703px; background-color:#fce4ec; padding:8px; font-size:.85rem; }
-.rowgrp$thisq  { display:flex; flex-wrap:wrap; gap:14px; align-items:center; padding:4px 2px; width:100%; justify-content:center;}
-.rowgrp$thisq label { display:flex; align-items:center; gap:4px; }
-.rlc_chk$thisq { font-weight:bold; }
+.rlc_eqpanel1003 h4 { margin-top:14px; font-family:sans-serif; color:#c05a00; }
+.rlc_eqpanel1003 .rlc_eqline1003 { margin:6px 0 6px 10px; font-size:1.02rem; }
+.bbar1003    { height:50px; background-color:#df9; padding:10px; text-align:center; width:703px;}
+.bbar1003 input[type=button] { margin:0 4px; padding:4px 12px; cursor:pointer; }
+.footer1003  { width:703px; background-color:#fce4ec; padding:8px; font-size:.85rem; }
+.rowgrp1003  { display:flex; flex-wrap:wrap; gap:14px; align-items:center; padding:4px 2px; width:100%; justify-content:center;}
+.rowgrp1003 label { display:flex; align-items:center; gap:4px; }
+.rlc_chk1003 { font-weight:bold; }
 </style>
 <!-- ════════ A11Y CONTROLLER ════════ -->
 <script>
-var rlcA11y$thisq = (function(){
+var rlcA11y1003 = (function(){
 var ROOT = null;
 var states = { hc:false, lm:false, cb:false, nr:true };
 var THEMES = {
@@ -189,31 +189,31 @@ b.style.color=on?'#00e8d0':'#7a8aaa';
 b.setAttribute('aria-pressed',on?'true':'false');
 }
 function applyNarBar(){
-var nb=document.getElementById('rlcNarBar$thisq');
+var nb=document.getElementById('rlcNarBar1003');
 if(nb) nb.style.display=states.nr?'block':'none';
-var btn=document.getElementById('rlcBtnNR$thisq');
-if(btn){ btn.textContent='NARRATION: '+(states.nr?'ON':'OFF'); styleBtn('rlcBtnNR$thisq',states.nr); }
+var btn=document.getElementById('rlcBtnNR1003');
+if(btn){ btn.textContent='NARRATION: '+(states.nr?'ON':'OFF'); styleBtn('rlcBtnNR1003',states.nr); }
 }
 function apply(){
 if(!ROOT)return;
 applyVars('hc',states.hc); applyVars('lm',states.lm); applyVars('cb',states.cb);
 applyNarBar();
-styleBtn('rlcBtnHC$thisq',states.hc);
-styleBtn('rlcBtnLM$thisq',states.lm);
-styleBtn('rlcBtnCB$thisq',states.cb);
+styleBtn('rlcBtnHC1003',states.hc);
+styleBtn('rlcBtnLM1003',states.lm);
+styleBtn('rlcBtnCB1003',states.cb);
 }
 return {
-init:function(){ ROOT=document.getElementById('rlcRoot$thisq'); apply(); },
+init:function(){ ROOT=document.getElementById('rlcRoot1003'); apply(); },
 toggle:function(k){
 states[k]=!states[k];
 if(k==='hc'&&states.hc) states.lm=false;
 if(k==='lm'&&states.lm) states.hc=false;
 apply();
-if(window.rlcSim$thisq) window.rlcSim$thisq.redraw();
+if(window.rlcSim1003) window.rlcSim1003.redraw();
 },
 narrate:function(msg){
 if(!states.nr)return;
-var nb=document.getElementById('rlcNarBar$thisq');
+var nb=document.getElementById('rlcNarBar1003');
 if(nb) nb.textContent=msg;
 },
 col:function(prop,def){
@@ -227,7 +227,7 @@ return (v&&v.trim())?v.trim():def;
 <!-- ════════ SIMULATION ════════
 Third of the RC / RL / RLC family -- same conventions throughout.
 - var simObj = function() { ... rst(); return {rst,pl,ps,step,...}; }
-- var simObj$thisq = new simObj();
+- var simObj1003 = new simObj();
 - Animation: recursive window.setTimeout(runMotion, 40) guarded by runFlag
 - rst() is called immediately inside the constructor (no deferred boot)
 - NEW: CH1/CH2 each read a <select> so the user can probe any node pair
@@ -235,9 +235,9 @@ Third of the RC / RL / RLC family -- same conventions throughout.
 -->
 <script>
 var rlcGen = function() {
-var canvas  = document.getElementById('rlcCanvas$thisq');
+var canvas  = document.getElementById('rlcCanvas1003');
 var ctx     = canvas.getContext('2d');
-var eqPanel = document.getElementById('rlcEqPanel$thisq');
+var eqPanel = document.getElementById('rlcEqPanel1003');
 var W = canvas.width, H = canvas.height;
 var timer, runFlag = 0;
 var tab = 'scope';
@@ -254,20 +254,20 @@ errScope = (Math.random()*2-1) * 0.02;/* scope vertical reading noise +/-2% */
 }
 rollTolerances();
 var cur1X = null, cur2X = null, dragCur = null;
-function c(prop, def) { return rlcA11y$thisq.col(prop, def); }
-function tolOn() { var el=document.getElementById('rlcTol$thisq'); return el && el.checked; }
+function c(prop, def) { return rlcA11y1003.col(prop, def); }
+function tolOn() { var el=document.getElementById('rlcTol1003'); return el && el.checked; }
 function controls() {
 return {
-Rset:  parseFloat(document.getElementById('rlcR$thisq').value),
-Lset:  parseFloat(document.getElementById('rlcL$thisq').value),  /* mH */
-Cset:  parseFloat(document.getElementById('rlcC$thisq').value),  /* nF */
-Fset:  parseFloat(document.getElementById('rlcF$thisq').value),
-Vm:    parseFloat(document.getElementById('rlcVm$thisq').value),
-ch1:   document.getElementById('rlcCh1Sel$thisq').value,
-ch2:   document.getElementById('rlcCh2Sel$thisq').value,
-v1div: parseFloat(document.getElementById('rlcV1$thisq').value),
-v2div: parseFloat(document.getElementById('rlcV2$thisq').value),
-tdiv:  parseFloat(document.getElementById('rlcT$thisq').value)
+Rset:  parseFloat(document.getElementById('rlcR1003').value),
+Lset:  parseFloat(document.getElementById('rlcL1003').value),  /* mH */
+Cset:  parseFloat(document.getElementById('rlcC1003').value),  /* nF */
+Fset:  parseFloat(document.getElementById('rlcF1003').value),
+Vm:    parseFloat(document.getElementById('rlcVm1003').value),
+ch1:   document.getElementById('rlcCh1Sel1003').value,
+ch2:   document.getElementById('rlcCh2Sel1003').value,
+v1div: parseFloat(document.getElementById('rlcV11003').value),
+v2div: parseFloat(document.getElementById('rlcV21003').value),
+tdiv:  parseFloat(document.getElementById('rlcT1003').value)
 };
 }
 /* ── physics ──
@@ -539,25 +539,25 @@ function renderEquations(p) {
 var wRound = fmtNum(p.w,1);
 var html = '';
 html += '<h4>Circuit relations</h4>';
-html += '<div class="rlc_eqline$thisq">X<sub>L</sub> = 2&pi;f L = '+p.XL.toFixed(1)+' &Omega;  &nbsp; X<sub>C</sub> = 1/(2&pi;f C) = '+p.XC.toFixed(1)+' &Omega;</div>';
-html += '<div class="rlc_eqline$thisq">Z = &radic;(R&sup2; + (X<sub>L</sub>&minus;X<sub>C</sub>)&sup2;) = '+p.Z.toFixed(1)+' &Omega;</div>';
-html += '<div class="rlc_eqline$thisq">&phi; = arctan[(X<sub>L</sub>&minus;X<sub>C</sub>)/R] = '+(p.phi*180/Math.PI).toFixed(2)+'&deg;  (current lags source if &phi;&gt;0, leads if &phi;&lt;0)</div>';
-html += '<div class="rlc_eqline$thisq">I<sub>m</sub> = V<sub>m</sub> / Z = '+(p.Im*1000).toFixed(2)+' mA</div>';
-html += '<div class="rlc_eqline$thisq">Resonance: f<sub>0</sub> = 1 / (2&pi;&radic;(LC)) = '+p.f0.toFixed(2)+' Hz &nbsp; (where X<sub>L</sub> = X<sub>C</sub>)</div>';
-html += '<div class="rlc_eqline$thisq">Q = (1/R)&radic;(L/C) = '+p.Q.toFixed(2)+' &nbsp; (voltage magnification: V<sub>L</sub>, V<sub>C</sub> at resonance &asymp; Q&middot;V<sub>m</sub>)</div>';
+html += '<div class="rlc_eqline1003">X<sub>L</sub> = 2&pi;f L = '+p.XL.toFixed(1)+' &Omega;  &nbsp; X<sub>C</sub> = 1/(2&pi;f C) = '+p.XC.toFixed(1)+' &Omega;</div>';
+html += '<div class="rlc_eqline1003">Z = &radic;(R&sup2; + (X<sub>L</sub>&minus;X<sub>C</sub>)&sup2;) = '+p.Z.toFixed(1)+' &Omega;</div>';
+html += '<div class="rlc_eqline1003">&phi; = arctan[(X<sub>L</sub>&minus;X<sub>C</sub>)/R] = '+(p.phi*180/Math.PI).toFixed(2)+'&deg;  (current lags source if &phi;&gt;0, leads if &phi;&lt;0)</div>';
+html += '<div class="rlc_eqline1003">I<sub>m</sub> = V<sub>m</sub> / Z = '+(p.Im*1000).toFixed(2)+' mA</div>';
+html += '<div class="rlc_eqline1003">Resonance: f<sub>0</sub> = 1 / (2&pi;&radic;(LC)) = '+p.f0.toFixed(2)+' Hz &nbsp; (where X<sub>L</sub> = X<sub>C</sub>)</div>';
+html += '<div class="rlc_eqline1003">Q = (1/R)&radic;(L/C) = '+p.Q.toFixed(2)+' &nbsp; (voltage magnification: V<sub>L</sub>, V<sub>C</sub> at resonance &asymp; Q&middot;V<sub>m</sub>)</div>';
 html += '<h4>Time-domain waveforms</h4>';
-html += '<div class="rlc_eqline$thisq">v(t) = '+p.k.Vm.toFixed(2)+' sin('+wRound+' t)  V</div>';
-html += '<div class="rlc_eqline$thisq">v<sub>R</sub>(t) = I<sub>m</sub> R sin(&omega;t &minus; &phi;) = '+p.VRm.toFixed(2)+' sin('+wRound+' t \u2212 '+(p.phi).toFixed(3)+')  V</div>';
-html += '<div class="rlc_eqline$thisq">v<sub>L</sub>(t) = I<sub>m</sub> X<sub>L</sub> sin(&omega;t &minus; &phi; + 90&deg;) = '+p.VLm.toFixed(2)+' sin('+wRound+' t \u2212 '+(p.phi).toFixed(3)+' + '+(Math.PI/2).toFixed(3)+')  V</div>';
-html += '<div class="rlc_eqline$thisq">v<sub>C</sub>(t) = I<sub>m</sub> X<sub>C</sub> sin(&omega;t &minus; &phi; &minus; 90&deg;) = '+p.VCm.toFixed(2)+' sin('+wRound+' t \u2212 '+(p.phi).toFixed(3)+' \u2212 '+(Math.PI/2).toFixed(3)+')  V</div>';
+html += '<div class="rlc_eqline1003">v(t) = '+p.k.Vm.toFixed(2)+' sin('+wRound+' t)  V</div>';
+html += '<div class="rlc_eqline1003">v<sub>R</sub>(t) = I<sub>m</sub> R sin(&omega;t &minus; &phi;) = '+p.VRm.toFixed(2)+' sin('+wRound+' t \u2212 '+(p.phi).toFixed(3)+')  V</div>';
+html += '<div class="rlc_eqline1003">v<sub>L</sub>(t) = I<sub>m</sub> X<sub>L</sub> sin(&omega;t &minus; &phi; + 90&deg;) = '+p.VLm.toFixed(2)+' sin('+wRound+' t \u2212 '+(p.phi).toFixed(3)+' + '+(Math.PI/2).toFixed(3)+')  V</div>';
+html += '<div class="rlc_eqline1003">v<sub>C</sub>(t) = I<sub>m</sub> X<sub>C</sub> sin(&omega;t &minus; &phi; &minus; 90&deg;) = '+p.VCm.toFixed(2)+' sin('+wRound+' t \u2212 '+(p.phi).toFixed(3)+' \u2212 '+(Math.PI/2).toFixed(3)+')  V</div>';
 html += '<h4>Key facts to verify experimentally</h4>';
-html += '<div class="rlc_eqline$thisq">&bull; v<sub>L</sub> and v<sub>C</sub> are always exactly 180&deg; out of phase with each other (they subtract).</div>';
-html += '<div class="rlc_eqline$thisq">&bull; v<sub>L</sub> leads v<sub>R</sub> by 90&deg; and v<sub>C</sub> lags v<sub>R</sub> by 90&deg;, for any R, L, C, f.</div>';
-html += '<div class="rlc_eqline$thisq">&bull; At resonance (f = f<sub>0</sub>), X<sub>L</sub> = X<sub>C</sub>, so v<sub>L</sub> and v<sub>C</sub> cancel; Z = R is minimum, current is maximum, and &phi; = 0&deg; (v and v<sub>R</sub> are in phase).</div>';
-html += '<div class="rlc_eqline$thisq">&bull; Below f<sub>0</sub> the circuit is capacitive (X<sub>C</sub> &gt; X<sub>L</sub>, current leads); above f<sub>0</sub> it is inductive (X<sub>L</sub> &gt; X<sub>C</sub>, current lags).</div>';
-html += '<div class="rlc_eqline$thisq">&bull; If Q &gt; 1, the peak voltages across L and C individually can exceed the source amplitude V<sub>m</sub> at resonance &mdash; try lowering R to see this.</div>';
+html += '<div class="rlc_eqline1003">&bull; v<sub>L</sub> and v<sub>C</sub> are always exactly 180&deg; out of phase with each other (they subtract).</div>';
+html += '<div class="rlc_eqline1003">&bull; v<sub>L</sub> leads v<sub>R</sub> by 90&deg; and v<sub>C</sub> lags v<sub>R</sub> by 90&deg;, for any R, L, C, f.</div>';
+html += '<div class="rlc_eqline1003">&bull; At resonance (f = f<sub>0</sub>), X<sub>L</sub> = X<sub>C</sub>, so v<sub>L</sub> and v<sub>C</sub> cancel; Z = R is minimum, current is maximum, and &phi; = 0&deg; (v and v<sub>R</sub> are in phase).</div>';
+html += '<div class="rlc_eqline1003">&bull; Below f<sub>0</sub> the circuit is capacitive (X<sub>C</sub> &gt; X<sub>L</sub>, current leads); above f<sub>0</sub> it is inductive (X<sub>L</sub> &gt; X<sub>C</sub>, current lags).</div>';
+html += '<div class="rlc_eqline1003">&bull; If Q &gt; 1, the peak voltages across L and C individually can exceed the source amplitude V<sub>m</sub> at resonance &mdash; try lowering R to see this.</div>';
 html += '<h4>Currently set values</h4>';
-html += '<div class="rlc_eqline$thisq">R = '+p.R.toFixed(0)+' &Omega;,  L = '+(p.L*1e3).toFixed(2)+' mH,  C = '+(p.C*1e9).toFixed(2)+' nF,  f = '+p.f.toFixed(1)+' Hz,  V<sub>m</sub> = '+p.k.Vm.toFixed(2)+' V'+(tolOn()?'  <i>(includes simulated component tolerance)</i>':'')+'</div>';
+html += '<div class="rlc_eqline1003">R = '+p.R.toFixed(0)+' &Omega;,  L = '+(p.L*1e3).toFixed(2)+' mH,  C = '+(p.C*1e9).toFixed(2)+' nF,  f = '+p.f.toFixed(1)+' Hz,  V<sub>m</sub> = '+p.k.Vm.toFixed(2)+' V'+(tolOn()?'  <i>(includes simulated component tolerance)</i>':'')+'</div>';
 eqPanel.innerHTML = html;
 }
 /* ── full redraw ── */
@@ -596,7 +596,7 @@ msg = 'Phasor diagram showing the source, resistor, inductor, and capacitor volt
 } else {
 msg = 'Equations panel showing the live time-domain expressions for the source, resistor, inductor, and capacitor voltages, along with the resonance frequency.';
 }
-rlcA11y$thisq.narrate(msg);
+rlcA11y1003.narrate(msg);
 }
 /* ── animation loop ── */
 function runMotion() {
@@ -626,10 +626,10 @@ function setTab(t) {
 tab = t;
 ['scope','phasor','equations'].forEach(function(nm){
 var el = null;
-if (nm==='scope') el = document.getElementById('rlcTabScope$thisq');
-if (nm==='phasor') el = document.getElementById('rlcTabPhasor$thisq');
-if (nm==='equations') el = document.getElementById('rlcTabEq$thisq');
-if (el) el.classList.toggle('rlc_tabon$thisq', nm===t);
+if (nm==='scope') el = document.getElementById('rlcTabScope1003');
+if (nm==='phasor') el = document.getElementById('rlcTabPhasor1003');
+if (nm==='equations') el = document.getElementById('rlcTabEq1003');
+if (el) el.classList.toggle('rlc_tabon1003', nm===t);
 });
 drawFrame(); sceneNarration(true);
 }
@@ -658,10 +658,10 @@ window.addEventListener('mouseup', function(){ dragCur = null; });
 rst();
 return { pl:pl, ps:ps, step:step, rst:rst, redraw:redraw, setTab:setTab, clearCursors:clearCursors };
 };
-var rlcSim$thisq = new rlcGen();
+var rlcSim1003 = new rlcGen();
 </script>
 <script>
-rlcA11y$thisq.init();
+rlcA11y1003.init();
 </script>
 </body>
 </html>
