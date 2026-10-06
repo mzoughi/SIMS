@@ -523,6 +523,7 @@ document.getElementById('searchBox')
 .addEventListener('input', function(){
 let search =
 this.value.trim().toLowerCase();
+/*
 document.querySelectorAll('.sim-list li')
 .forEach(item=>{
 let text =
@@ -531,6 +532,21 @@ item.classList.toggle(
 'hidden',
 !text.includes(search)
 );
+});
+*/
+ document.querySelectorAll('.category').forEach(category => {
+    let categoryText = category
+        .querySelector('.category-title')
+        .textContent
+        .toLowerCase();
+    let categoryMatch = categoryText.includes(search);
+    category.querySelectorAll('.sim-list li').forEach(item => {
+        let itemText = item.textContent.toLowerCase();
+        item.classList.toggle(
+            'hidden',
+            !(categoryMatch || itemText.includes(search))
+        );
+    });
 });
 updateCounts();
 updateNCounts();
