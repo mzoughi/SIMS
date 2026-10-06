@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations- Electricity and Magnetism: Magnetic Field of Current-Carrying Wires</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,magnetism,magnetic field,long straight wire,superposition,Ampere,compass,right-hand rule,lesson,scientific">
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="wfroot1012" role="main" aria-label="Magnetic field from current-carrying wires">
+<!-- Accessibility toolbar -->
+<div class="wf_a11y1012" role="toolbar" aria-label="Display options">
+<button type="button" class="wf_a11ybtn1012" id="btnHC1012" onclick="wireFields1012.toggleHC()" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="wf_a11ybtn1012" id="btnLight1012" onclick="wireFields1012.toggleLight()" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="wf_a11ybtn1012" id="btnCB1012" onclick="wireFields1012.toggleCB()" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="wf_a11ybtn1012 wf_a11yon1012" id="btnNarr1012" onclick="wireFields1012.toggleNarr()" aria-pressed="true">NARRATION: ON</button>
+</div>
+<!-- Header -->
+<div class="wf_header1012">
+<p class="wf_h11012">Magnetic Field -- Current-Carrying Wires</p>
+<p class="wf_sub1012">Superposition of B-fields from long straight conductors -- currents perpendicular to the page</p>
+</div>
+<div id="motionNotice1012" class="wf_motionnotice1012" role="status">
+Reduced motion is enabled. Field redraws are instant with no animation.
+</div>
+<!-- Instrument grid -->
+<div class="wf_instrument1012">
+<!-- Diagram panel -->
+<div class="wf_diagpanel1012">
+<div class="wf_diaglabel1012">
+<span>FIELD MAP -- arrows show the direction of B, color and length its strength</span>
+</div>
+<canvas id="fieldCanvas1012" width="540" height="440" role="img" aria-label="Magnetic field vector map" aria-describedby="canvasDesc1012"></canvas>
+<p id="canvasDesc1012" class="wf_sronly1012">A grid of arrows showing the magnetic field from current-carrying wires.</p>
+<div class="wf_hoverbar1012" id="hoverReadout1012" role="status" aria-live="polite" aria-atomic="true">Move the cursor over the field to read B at that point</div>
+</div>
+<!-- Right column -->
+<div class="wf_rightcol1012" id="wf_controls1012">
+<!-- Wire controls -->
+<div class="wf_panel1012" role="group" aria-labelledby="wiresHd1012">
+<div class="wf_paneltitle1012" id="wiresHd1012">Wire Controls</div>
+<div class="wf_panelbody1012">
+<!-- Wire 1 -->
+<div class="wf_wiresec1012" role="group" aria-labelledby="w1hd1012">
+<div class="wf_wirehead1012"><span class="wf_wiredot1012" id="dot11012"></span><span class="wf_wirelbl1012" id="w1hd1012">Wire 1</span></div>
+<div class="wf_srow1012"><label for="I11012" class="wf_slbl1012">I₁</label>
+<input type="range" id="I11012" min="-5" max="5" step="0.1" value="2" aria-label="Wire 1 current in amperes" oninput="wireFields1012.setI(0,this.value)" onchange="wireFields1012.setI(0,this.value)">
+<span class="wf_sval1012" id="I1val1012">+2.0 A</span></div>
+<div class="wf_srow1012"><label for="W1x1012" class="wf_slbl1012">x₁</label>
+<input type="range" id="W1x1012" min="-2" max="2" step="0.05" value="-0.8" aria-label="Wire 1 x position in metres" oninput="wireFields1012.setWx(0,this.value)" onchange="wireFields1012.setWx(0,this.value)">
+<span class="wf_sval1012" id="W1xval1012">−0.80 m</span></div>
+<div class="wf_srow1012"><label for="W1y1012" class="wf_slbl1012">y₁</label>
+<input type="range" id="W1y1012" min="-2" max="2" step="0.05" value="0.5" aria-label="Wire 1 y position in metres" oninput="wireFields1012.setWy(0,this.value)" onchange="wireFields1012.setWy(0,this.value)">
+<span class="wf_sval1012" id="W1yval1012">+0.50 m</span></div>
+</div>
+<!-- Wire 2 -->
+<div class="wf_wiresec1012" role="group" aria-labelledby="w2hd1012">
+<div class="wf_wirehead1012"><span class="wf_wiredot1012" id="dot21012"></span><span class="wf_wirelbl1012" id="w2hd1012">Wire 2</span></div>
+<div class="wf_srow1012"><label for="I21012" class="wf_slbl1012">I₂</label>
+<input type="range" id="I21012" min="-5" max="5" step="0.1" value="0" aria-label="Wire 2 current in amperes" oninput="wireFields1012.setI(1,this.value)" onchange="wireFields1012.setI(1,this.value)">
+<span class="wf_sval1012" id="I2val1012">0.0 A</span></div>
+<div class="wf_srow1012"><label for="W2x1012" class="wf_slbl1012">x₂</label>
+<input type="range" id="W2x1012" min="-2" max="2" step="0.05" value="0.8" aria-label="Wire 2 x position in metres" oninput="wireFields1012.setWx(1,this.value)" onchange="wireFields1012.setWx(1,this.value)">
+<span class="wf_sval1012" id="W2xval1012">+0.80 m</span></div>
+<div class="wf_srow1012"><label for="W2y1012" class="wf_slbl1012">y₂</label>
+<input type="range" id="W2y1012" min="-2" max="2" step="0.05" value="0.5" aria-label="Wire 2 y position in metres" oninput="wireFields1012.setWy(1,this.value)" onchange="wireFields1012.setWy(1,this.value)">
+<span class="wf_sval1012" id="W2yval1012">+0.50 m</span></div>
+</div>
+<!-- Wire 3 -->
+<div class="wf_wiresec1012" role="group" aria-labelledby="w3hd1012">
+<div class="wf_wirehead1012"><span class="wf_wiredot1012" id="dot31012"></span><span class="wf_wirelbl1012" id="w3hd1012">Wire 3</span></div>
+<div class="wf_srow1012"><label for="I31012" class="wf_slbl1012">I₃</label>
+<input type="range" id="I31012" min="-5" max="5" step="0.1" value="0" aria-label="Wire 3 current in amperes" oninput="wireFields1012.setI(2,this.value)" onchange="wireFields1012.setI(2,this.value)">
+<span class="wf_sval1012" id="I3val1012">0.0 A</span></div>
+<div class="wf_srow1012"><label for="W3x1012" class="wf_slbl1012">x₃</label>
+<input type="range" id="W3x1012" min="-2" max="2" step="0.05" value="0" aria-label="Wire 3 x position in metres" oninput="wireFields1012.setWx(2,this.value)" onchange="wireFields1012.setWx(2,this.value)">
+<span class="wf_sval1012" id="W3xval1012">+0.00 m</span></div>
+<div class="wf_srow1012"><label for="W3y1012" class="wf_slbl1012">y₃</label>
+<input type="range" id="W3y1012" min="-2" max="2" step="0.05" value="-0.8" aria-label="Wire 3 y position in metres" oninput="wireFields1012.setWy(2,this.value)" onchange="wireFields1012.setWy(2,this.value)">
+<span class="wf_sval1012" id="W3yval1012">−0.80 m</span></div>
+</div>
+</div>
+</div>
+<!-- Compass controls -->
+<div class="wf_panel1012" role="group" aria-labelledby="compassHd1012">
+<div class="wf_paneltitle1012" id="compassHd1012">Compass</div>
+<div class="wf_panelbody1012">
+<div class="wf_srow1012"><label for="Cx1012" class="wf_slbl1012">x</label>
+<input type="range" id="Cx1012" min="-2" max="2" step="0.05" value="0" aria-label="Compass x position in metres" oninput="wireFields1012.setCx(this.value)" onchange="wireFields1012.setCx(this.value)">
+<span class="wf_sval1012" id="Cxval1012">+0.00 m</span></div>
+<div class="wf_srow1012"><label for="Cy1012" class="wf_slbl1012">y</label>
+<input type="range" id="Cy1012" min="-2" max="2" step="0.05" value="0" aria-label="Compass y position in metres" oninput="wireFields1012.setCy(this.value)" onchange="wireFields1012.setCy(this.value)">
+<span class="wf_sval1012" id="Cyval1012">+0.00 m</span></div>
+<p class="wf_hint1012">Drag the wires or the compass on the map, or use the sliders (arrow keys work too). The colored end of the needle points along B.</p>
+</div>
+</div>
+<!-- Readout -->
+<div class="wf_panel1012" role="region" aria-labelledby="readHd1012">
+<div class="wf_paneltitle1012" id="readHd1012">Readout at the compass</div>
+<div class="wf_rinner1012">
+<div class="wf_rrow1012"><span class="wf_rkey1012">|B|</span><span class="wf_rval1012 wf_hi1012" id="r_Bc1012">--</span></div>
+<div class="wf_rrow1012"><span class="wf_rkey1012">(Bx, By)</span><span class="wf_rval1012" id="r_Bxy1012">--</span></div>
+<div class="wf_rrow1012"><span class="wf_rkey1012">Direction</span><span class="wf_rval1012" id="r_dir1012">--</span></div>
+<div class="wf_rrow1012"><span class="wf_rkey1012">Compass (x, y)</span><span class="wf_rval1012" id="r_cpos1012">--</span></div>
+<div class="wf_rrow1012"><span class="wf_rkey1012">Max |B| on grid</span><span class="wf_rval1012" id="r_Bmax1012">--</span></div>
+<div class="wf_rrow1012"><span class="wf_rkey1012">I₁, I₂, I₃</span><span class="wf_rval1012" id="r_I1012">--</span></div>
+</div>
+</div>
+</div><!-- right column -->
+<!-- Formula strip -->
+<div class="wf_formulastrip1012">
+<span class="wf_formulatxt1012">B = μ₀I / (2πr) per wire &nbsp;|&nbsp; μ₀ = 4π×10⁻⁷ T·m/A &nbsp;|&nbsp; net B = vector sum &nbsp;|&nbsp; ⊙ current out of page (I &gt; 0) &nbsp;·&nbsp; ⊗ into page (I &lt; 0)</span>
+</div>
+</div><!-- instrument -->
+<div id="narrationBox1012" class="wf_narbar1012" role="status" aria-live="polite" aria-atomic="true"><span id="narration1012">Three current-carrying wires create superimposed magnetic fields.</span></div>
+<div id="srAnnounce1012" class="wf_sronly1012" aria-live="assertive" aria-atomic="true"></div>
+<p class="wf_credit1012">Simulation by Taha Mzoughi © 2025 -- Accessibility layer added</p>
+</div><!-- #wfroot1012 -->
+<div class="flex1012">
+<ol class="wf_qlist1012">
+<li>For a single long straight wire carrying current out of the page, what is the shape of the magnetic field pattern around the wire?<br></li>
+<li>For one powered wire with current coming out of the page, what direction does the magnetic field point at a point directly to the right of the wire?<br></li>
+<li>If the direction of current in a single wire is reversed, how does the magnetic field change?<br></li>
+<li>For a single powered wire, where is the magnetic field strongest?<br></li>
+<li>With one powered wire placed at a corner of the equilateral triangle, what happens to the field lines as you move far away from the wire?<br></li>
+<li>When a second wire is added (same current direction as the first), what happens to the magnetic field at the midpoint between the two wires?<br></li>
+<li>If the second wire carries current in the opposite direction of the first, what happens to the magnetic field at a point halfway between them?<br></li>
+<li>When two wires carry currents in the same direction, the field between them tends to:<br></li>
+<li>With two wires active, what determines the direction of the magnetic field at the third corner of the triangle (where the third wire will go)?<br></li>
+<li>When powering all three wires with currents out of the page, what is true about the symmetry of the field at the center of the triangle?<br></li>
+<li>When all three currents point out of the page, what is the net magnetic field direction at the exact center of the triangle?<br></li>
+<li>If one of the three wires has its current reversed, what happens to the net field at the center?<br></li>
+<li>If all three wires have equal currents but different distances from the point of interest, what determines the contribution of each wire to the total field?<br></li>
+<li>Which wire contributes the most to the magnetic field at any specific point inside the triangle?<br></li>
+<li>When the currents in all three wires are increased simultaneously, what happens to the magnetic field pattern inside the triangle?<br></li>
+</ol>
+<hr>
+<p>Discuss your results about the last two parts of the experiment:
+<br></p>
+</div>
+<hr>
+<style>
+/* ════════ All simulator rules scoped to #wfroot1012 ════════ */
+#wfroot1012 {
+--wf-chassis:#1a1c1f; --wf-panel:#22262b; --wf-panel-hi:#2c3138; --wf-panel-lo:#14161a;
+--wf-border:#3a4048; --wf-border-hi:#525c66; --wf-text:#c8d0d8; --wf-dim:#8a94a3; --wf-bright:#e8eef5;
+--wf-accent:#e8a020; --wf-green:#3ad08f; --wf-val:#ffdd66;
+--wf-focus:#e8a020; --wf-nar-bg:#2a2410; --wf-nar-border:#e0b040; --wf-nar-text:#f0e2b8;
+background:var(--wf-chassis);
+background-image:
+repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px),
+repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
+font-family:Arial, sans-serif; color:var(--wf-text);
+display:flex; flex-direction:column; align-items:center;
+padding:16px 10px 20px; gap:12px; box-sizing:border-box;
+width:100%; max-width:860px; margin:0 auto 10px; border-radius:6px; position:relative;
+}
+#wfroot1012.wf_lm1012 {
+--wf-chassis:#e9edf1; --wf-panel:#ffffff; --wf-panel-hi:#f1f4f7; --wf-panel-lo:#f4f6f9;
+--wf-border:#c3cad3; --wf-border-hi:#9aa3ae; --wf-text:#1d232a; --wf-dim:#556070; --wf-bright:#000000;
+--wf-accent:#a8620a; --wf-green:#12805a; --wf-val:#8a4a00;
+--wf-focus:#a8620a; --wf-nar-bg:#ffefc0; --wf-nar-border:#e0b040; --wf-nar-text:#333333;
+background-image:none;
+}
+#wfroot1012.wf_hc1012 {
+--wf-chassis:#000000; --wf-panel:#000000; --wf-panel-hi:#111111; --wf-panel-lo:#000000;
+--wf-border:#ffffff; --wf-border-hi:#ffffff; --wf-text:#ffffff; --wf-dim:#e0e0e0; --wf-bright:#ffffff;
+--wf-accent:#ffd700; --wf-green:#00ff88; --wf-val:#ffff00;
+--wf-focus:#ffff00; --wf-nar-bg:#000000; --wf-nar-border:#ffd700; --wf-nar-text:#ffffff;
+background-image:none;
+}
+#wfroot1012.wf_hc1012 .wf_panel1012, #wfroot1012.wf_hc1012 .wf_diagpanel1012 { border-width:2px; }
+#wfroot1012 *, #wfroot1012 *::before, #wfroot1012 *::after { box-sizing:border-box; margin:0; padding:0; }
+#wfroot1012 input:focus-visible, #wfroot1012 button:focus-visible { outline:2px solid var(--wf-focus); outline-offset:2px; }
+/* toolbar */
+#wfroot1012 .wf_a11y1012 { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; width:100%; }
+#wfroot1012 .wf_a11ybtn1012 { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--wf-panel-hi); border:1px solid var(--wf-border-hi); color:var(--wf-dim); }
+#wfroot1012 .wf_a11ybtn1012:hover { border-color:var(--wf-accent); color:var(--wf-accent); }
+#wfroot1012 .wf_a11yon1012 { background:rgba(58,208,143,.14); border-color:var(--wf-green); color:var(--wf-green); font-weight:bold; }
+/* header */
+#wfroot1012 .wf_header1012 { display:flex; flex-direction:column; align-items:center; gap:3px; }
+#wfroot1012 .wf_h11012 { font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--wf-accent); text-align:center; }
+#wfroot1012 .wf_sub1012 { font-size:.7rem; color:var(--wf-dim); letter-spacing:.08em; text-transform:uppercase; text-align:center; }
+#wfroot1012 .wf_motionnotice1012 { display:none; width:100%; padding:5px 12px; font-size:.74rem; text-align:center; background:var(--wf-panel); border:1px solid var(--wf-border); border-radius:4px; color:var(--wf-dim); }
+/* grid */
+#wfroot1012 .wf_instrument1012 { display:grid; grid-template-columns:1fr auto; gap:12px; width:100%; }
+#wfroot1012 .wf_diagpanel1012 { background:var(--wf-panel); border:1px solid var(--wf-border); border-radius:6px; overflow:hidden; display:flex; flex-direction:column; align-self:start; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+#wfroot1012 .wf_diaglabel1012 { background:var(--wf-panel-lo); border-bottom:1px solid var(--wf-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--wf-dim); }
+#wfroot1012 #fieldCanvas1012 { display:block; max-width:100%; cursor:crosshair; }
+#wfroot1012 .wf_hoverbar1012 { background:var(--wf-panel-lo); border-top:1px solid var(--wf-border); padding:6px 12px; font-family:monospace; font-size:.74rem; color:var(--wf-val); min-height:28px; }
+/* right column */
+#wfroot1012 .wf_rightcol1012 { display:flex; flex-direction:column; gap:12px; width:250px; }
+#wfroot1012 .wf_panel1012 { background:var(--wf-panel); border:1px solid var(--wf-border); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.3); }
+#wfroot1012 .wf_paneltitle1012 { background:var(--wf-panel-lo); border-bottom:1px solid var(--wf-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--wf-dim); }
+#wfroot1012 .wf_panelbody1012 { padding:9px 12px; display:flex; flex-direction:column; gap:4px; }
+#wfroot1012 .wf_wiresec1012 { padding-bottom:6px; margin-bottom:4px; border-bottom:1px solid var(--wf-border); }
+#wfroot1012 .wf_wiresec1012:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+#wfroot1012 .wf_wirehead1012 { display:flex; align-items:center; gap:6px; margin-bottom:4px; }
+#wfroot1012 .wf_wiredot1012 { width:12px; height:12px; border-radius:50%; display:inline-block; border:2px solid var(--wf-border-hi); }
+#wfroot1012 .wf_wirelbl1012 { font-family:monospace; font-size:.74rem; font-weight:bold; letter-spacing:.06em; color:var(--wf-text); }
+#wfroot1012 .wf_srow1012 { display:flex; align-items:center; gap:6px; margin-bottom:3px; }
+#wfroot1012 .wf_slbl1012 { font-size:.72rem; color:var(--wf-dim); min-width:18px; font-weight:600; }
+#wfroot1012 input[type=range] { flex:1; -webkit-appearance:none; height:4px; border-radius:2px; outline:none; cursor:pointer; background:var(--wf-panel-lo); border:1px solid var(--wf-border); }
+#wfroot1012 input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--wf-accent); border:2px solid var(--wf-panel); cursor:pointer; }
+#wfroot1012 .wf_sval1012 { font-family:monospace; font-size:.72rem; color:var(--wf-val); min-width:56px; text-align:right; }
+#wfroot1012 .wf_hint1012 { font-size:.66rem; color:var(--wf-dim); line-height:1.4; margin-top:3px; }
+#wfroot1012 .wf_rinner1012 { padding:8px 10px; display:flex; flex-direction:column; gap:4px; }
+#wfroot1012 .wf_rrow1012 { display:flex; justify-content:space-between; align-items:center; gap:6px; padding:4px 7px; background:var(--wf-panel-lo); border:1px solid var(--wf-border); border-radius:3px; }
+#wfroot1012 .wf_rkey1012 { font-family:monospace; font-size:.6rem; color:var(--wf-dim); letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }
+#wfroot1012 .wf_rval1012 { font-family:monospace; font-size:.72rem; text-align:right; color:var(--wf-text); }
+#wfroot1012 .wf_hi1012 { color:var(--wf-val); font-weight:bold; }
+/* formula strip, narration, credit */
+#wfroot1012 .wf_formulastrip1012 { grid-column:1 / 3; background:var(--wf-panel-lo); border:1px solid var(--wf-border); border-radius:4px; padding:7px 14px; }
+#wfroot1012 .wf_formulatxt1012 { font-family:monospace; font-size:.66rem; color:var(--wf-dim); letter-spacing:.04em; }
+#wfroot1012 .wf_narbar1012 { width:100%; min-height:28px; padding:6px 12px; background:var(--wf-nar-bg); border-left:4px solid var(--wf-nar-border); font-size:.82rem; color:var(--wf-nar-text); font-style:italic; line-height:1.45; border-radius:3px; }
+#wfroot1012 .wf_credit1012 { font-size:.62rem; color:var(--wf-dim); text-align:center; }
+#wfroot1012 .wf_sronly1012 { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+/* question section below the simulator */
+.flex1012 { width:100%; max-width:860px; margin:0 auto; padding:8px 4px; box-sizing:border-box; }
+.wf_qlist1012 { padding-left:24px; }
+.wf_qlist1012 li { margin:0 0 12px 0; line-height:1.45; }
+</style>
+<script>
+var wireFields = function() {
+/* ── Refs ── */
+var ROOT   = document.getElementById('wfroot1012');
+var canvas = document.getElementById('fieldCanvas1012');
+var ctx    = canvas.getContext('2d');
+var CW = canvas.width, CH = canvas.height;
+/* ── Physical extent ── */
+var XMIN=-2.2, XMAX=2.2, YMIN=-1.8, YMAX=1.8;
+function toCanvas(px,py){ return [(px-XMIN)/(XMAX-XMIN)*CW, CH-(py-YMIN)/(YMAX-YMIN)*CH]; }
+function fromCanvas(cx,cy){ return [XMIN+cx/CW*(XMAX-XMIN), YMIN+(CH-cy)/CH*(YMAX-YMIN)]; }
+/* ── State ── */
+var wires=[ {I: 2.0, x:-0.8, y: 0.5}, {I: 0.0, x: 0.8, y: 0.5}, {I: 0.0, x: 0.0, y:-0.8} ];
+var compass={x:0,y:0};
+var hcMode=false, lightMode=false, cbMode=false, showNarr=true;
+var globalBmax=1e-6;
+var dragging=null;
+var hoverThrottle=null;
+/* ── Canvas palette: everything drawn on the canvas follows the display options ── */
+function pal(){
+var p;
+if(hcMode) p={ bg:'#000000', grid:'#262626', axis:'#888888', text:'#ffffff', face:'rgba(0,0,0,0.85)', rim:'#ffffff',
+  needleN:'#ff5555', needleS:'#bbbbbb', out:'#66aaff', into:'#ff5555', off:'#aaaaaa', sym:'#ffffff', label:'#ffffff', lw:1.6 };
+else if(lightMode) p={ bg:'#ffffff', grid:'#eef1f4', axis:'#9aa3ae', text:'#1d232a', face:'rgba(255,255,255,0.92)', rim:'#1d232a',
+  needleN:'#c0262a', needleS:'#556070', out:'#1f5fc0', into:'#c0262a', off:'#9aa3ae', sym:'#ffffff', label:'#1d232a', lw:1.1 };
+else p={ bg:'#0d0f12', grid:'#1b2027', axis:'#3a4048', text:'#c8d0d8', face:'rgba(34,38,43,0.9)', rim:'#c8d0d8',
+  needleN:'#ff4a4a', needleS:'#8a94a3', out:'#4a8bff', into:'#ff4a4a', off:'#6a7480', sym:'#ffffff', label:'#e8eef5', lw:1.1 };
+if(cbMode && !hcMode){ p.out=lightMode?'#0072B2':'#56B4E9'; p.into='#D55E00'; p.needleN='#D55E00'; p.sym=lightMode?'#ffffff':'#111111'; }
+return p;
+}
+/* arrow colors by relative strength t in [0,1] */
+function colorFn(t){
+t=Math.min(Math.max(t,0),1);
+if(hcMode){ var v=Math.round(110+145*t); return 'rgb('+v+','+v+','+v+')'; }
+if(cbMode){                              /* viridis-like; the pale yellow end is trimmed on a white background */
+var s=lightMode?t*0.82:t, rr,gg,bb;
+if(s<0.5){var u=s*2;rr=Math.round(68+u*(33-68));gg=Math.round(1+u*(145-1));bb=Math.round(84+u*(140-84));}
+else{var u2=(s-0.5)*2;rr=Math.round(33+u2*(253-33));gg=Math.round(145+u2*(231-145));bb=Math.round(140+u2*(37-140));}
+if(!lightMode && s<0.25){ rr=Math.round(rr+60); gg=Math.round(gg+60); bb=Math.round(bb+60); }   /* lift the darkest purples off the dark background */
+return 'rgb('+rr+','+gg+','+bb+')';
+}
+return 'hsl('+((1-t)*240|0)+',100%,'+(lightMode?'40%':'58%')+')';   /* blue (weak) to red (strong) */
+}
+/* ── Physics (unchanged) ── */
+var MU0=4e-7*Math.PI;
+function fieldAt(px,py){
+var Bx=0,By=0;
+for(var i=0;i<wires.length;i++){
+var w=wires[i], dx=px-w.x, dy=py-w.y, r2=dx*dx+dy*dy;
+if(r2<1e-6)continue;
+var f=MU0*w.I/(2*Math.PI*r2);
+Bx+=f*(-dy); By+=f*dx;
+}
+return{Bx:Bx,By:By,B:Math.sqrt(Bx*Bx+By*By)};
+}
+function arrowScale(B){ if(B<1e-9)return 0; return Math.max(0,Math.min(1,(Math.log10(B)+7)/2.0)); }
+/* ── Drawing ── */
+var ARROW_COLS=28, ARROW_ROWS=22;
+function drawBackground(p){
+ctx.fillStyle=p.bg; ctx.fillRect(0,0,CW,CH);
+ctx.strokeStyle=p.grid; ctx.lineWidth=1;
+for(var gx=Math.ceil(XMIN*2)/2; gx<=XMAX; gx+=0.5){ var a=toCanvas(gx,YMIN), b=toCanvas(gx,YMAX); ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.stroke(); }
+for(var gy=Math.ceil(YMIN*2)/2; gy<=YMAX; gy+=0.5){ var c=toCanvas(XMIN,gy), d=toCanvas(XMAX,gy); ctx.beginPath(); ctx.moveTo(c[0],c[1]); ctx.lineTo(d[0],d[1]); ctx.stroke(); }
+ctx.strokeStyle=p.axis; ctx.lineWidth=1.2;
+var a0=toCanvas(0,YMIN),a1=toCanvas(0,YMAX); ctx.beginPath(); ctx.moveTo(a0[0],a0[1]); ctx.lineTo(a1[0],a1[1]); ctx.stroke();
+var b0=toCanvas(XMIN,0),b1=toCanvas(XMAX,0); ctx.beginPath(); ctx.moveTo(b0[0],b0[1]); ctx.lineTo(b1[0],b1[1]); ctx.stroke();
+ctx.fillStyle=p.axis; ctx.font='10px monospace'; ctx.textAlign='left';
+ctx.fillText('x (m)', CW-38, b0[1]-5); ctx.fillText('y (m)', a1[0]+5, 12);
+ctx.textAlign='center';
+for(var k=-2;k<=2;k++){ if(k===0)continue; var tx=toCanvas(k,0); ctx.fillText(String(k), tx[0], tx[1]+13); var ty=toCanvas(0,k); ctx.textAlign='left'; ctx.fillText(String(k), ty[0]+4, ty[1]+4); ctx.textAlign='center'; }
+}
+function drawArrowGrid(p){
+var stepX=(XMAX-XMIN)/ARROW_COLS, stepY=(YMAX-YMIN)/ARROW_ROWS;
+var maxLen=Math.min(CW/ARROW_COLS,CH/ARROW_ROWS)*0.42, Bmax=0;
+for(var row=0;row<=ARROW_ROWS;row++){
+var py=YMIN+row*stepY;
+for(var col=0;col<=ARROW_COLS;col++){
+var px=XMIN+col*stepX, tooClose=false;
+for(var i=0;i<wires.length;i++){var w=wires[i];if((px-w.x)*(px-w.x)+(py-w.y)*(py-w.y)<0.02){tooClose=true;break;}}
+if(tooClose)continue;
+var f=fieldAt(px,py); if(f.B>Bmax)Bmax=f.B;
+}
+}
+globalBmax=Math.max(Bmax,1e-9);
+for(var row2=0;row2<=ARROW_ROWS;row2++){
+var py2=YMIN+row2*stepY;
+for(var col2=0;col2<=ARROW_COLS;col2++){
+var px2=XMIN+col2*stepX, tooClose2=false;
+for(var j=0;j<wires.length;j++){var w2=wires[j];if((px2-w2.x)*(px2-w2.x)+(py2-w2.y)*(py2-w2.y)<0.025){tooClose2=true;break;}}
+if(tooClose2)continue;
+var fv=fieldAt(px2,py2); if(fv.B<1e-10)continue;
+var cv=toCanvas(px2,py2), t=Math.min(fv.B/globalBmax,1), color=colorFn(t), len=arrowScale(fv.B)*maxLen;
+if(len<1)continue;
+var ux=fv.Bx/fv.B, uy=fv.By/fv.B, ex=cv[0]+ux*len, ey=cv[1]-uy*len;
+ctx.strokeStyle=color; ctx.fillStyle=color; ctx.lineWidth=p.lw; ctx.globalAlpha=lightMode?1:0.9;
+ctx.beginPath(); ctx.moveTo(cv[0],cv[1]); ctx.lineTo(ex,ey); ctx.stroke();
+var hl=Math.min(len*0.4,6), ang=Math.atan2(-(ey-cv[1]),ex-cv[0]);
+ctx.beginPath(); ctx.moveTo(ex,ey);
+ctx.lineTo(ex-hl*Math.cos(ang-0.4),ey+hl*Math.sin(ang-0.4));
+ctx.lineTo(ex-hl*Math.cos(ang+0.4),ey+hl*Math.sin(ang+0.4));
+ctx.closePath(); ctx.fill();
+}
+}
+ctx.globalAlpha=1;
+}
+function wireColor(p,I){ return I>0.05?p.out:(I<-0.05?p.into:p.off); }
+function drawWires(p){
+for(var i=0;i<wires.length;i++){
+var w=wires[i], cv=toCanvas(w.x,w.y), cx2=cv[0], cy2=cv[1], col=wireColor(p,w.I);
+if(!hcMode){
+var grd=ctx.createRadialGradient(cx2,cy2,2,cx2,cy2,18);
+grd.addColorStop(0,col+'aa'); grd.addColorStop(1,col+'00');
+ctx.fillStyle=grd; ctx.beginPath(); ctx.arc(cx2,cy2,18,0,Math.PI*2); ctx.fill();
+}
+ctx.beginPath(); ctx.arc(cx2,cy2,hcMode?10:9,0,Math.PI*2); ctx.fillStyle=col; ctx.fill();
+ctx.strokeStyle=hcMode?'#ffffff':p.rim; ctx.lineWidth=hcMode?2.5:1.5; ctx.stroke();
+ctx.strokeStyle=p.sym; ctx.fillStyle=p.sym; ctx.lineWidth=2;
+if(w.I>0.05){ ctx.beginPath(); ctx.arc(cx2,cy2,3,0,Math.PI*2); ctx.fill(); }
+else if(w.I<-0.05){ var d=4; ctx.beginPath(); ctx.moveTo(cx2-d,cy2-d); ctx.lineTo(cx2+d,cy2+d); ctx.moveTo(cx2+d,cy2-d); ctx.lineTo(cx2-d,cy2+d); ctx.stroke(); }
+ctx.fillStyle=p.label; ctx.font='bold '+(hcMode?12:11)+'px monospace'; ctx.textAlign='center';
+ctx.fillText('W'+(i+1), cx2, cy2+(hcMode?25:23));
+var dotEl=document.getElementById('dot'+(i+1)+'1012'); if(dotEl) dotEl.style.background=col;
+}
+}
+function drawCompass(p){
+var cv=toCanvas(compass.x,compass.y), cx2=cv[0], cy2=cv[1];
+var fv=fieldAt(compass.x,compass.y), R=18;
+ctx.beginPath(); ctx.arc(cx2,cy2,R,0,Math.PI*2); ctx.fillStyle=p.face; ctx.fill();
+ctx.strokeStyle=p.rim; ctx.lineWidth=hcMode?3:2; ctx.stroke();
+if(fv.B>1e-10){
+var ux=fv.Bx/fv.B, uy=fv.By/fv.B, nx=ux*(R-3), ny=-uy*(R-3);
+ctx.beginPath(); ctx.moveTo(cx2,cy2); ctx.lineTo(cx2+nx,cy2+ny); ctx.strokeStyle=p.needleN; ctx.lineWidth=hcMode?3.5:2.8; ctx.stroke();
+ctx.beginPath(); ctx.arc(cx2+nx,cy2+ny,hcMode?4:3.2,0,Math.PI*2); ctx.fillStyle=p.needleN; ctx.fill();
+ctx.beginPath(); ctx.moveTo(cx2,cy2); ctx.lineTo(cx2-nx,cy2-ny); ctx.strokeStyle=p.needleS; ctx.lineWidth=hcMode?3.5:2.8; ctx.stroke();
+}
+ctx.beginPath(); ctx.arc(cx2,cy2,2.5,0,Math.PI*2); ctx.fillStyle=p.rim; ctx.fill();
+}
+function drawLegend(p){   /* color scale: weak to strong */
+var x0=CW-150, y0=CH-22, w=110, h=8;
+ctx.fillStyle=p.face; ctx.fillRect(x0-8, y0-16, w+46, 30);
+for(var i=0;i<w;i++){ ctx.fillStyle=colorFn(i/(w-1)); ctx.fillRect(x0+i, y0, 1, h); }
+ctx.strokeStyle=p.axis; ctx.lineWidth=1; ctx.strokeRect(x0, y0, w, h);
+ctx.fillStyle=p.text; ctx.font='9px monospace'; ctx.textAlign='left';
+ctx.fillText('weak', x0, y0-4); ctx.textAlign='right'; ctx.fillText('strong |B|', x0+w+34, y0-4);
+}
+function redraw(){
+var p=pal();
+ctx.clearRect(0,0,CW,CH);
+drawBackground(p); drawArrowGrid(p); drawCompass(p); drawWires(p); drawLegend(p);
+updateCanvasDesc();
+}
+/* ── Readouts ── */
+function set(id,txt){var el=document.getElementById(id);if(el)el.textContent=txt;}
+function formatB(B){
+if(B<1e-9) return '< 1 nT';
+if(B<1e-6) return (B*1e9).toFixed(2)+' nT';
+if(B<1e-3) return (B*1e6).toFixed(3)+' \u00b5T';
+return (B*1e3).toFixed(3)+' mT';
+}
+function fmtMicro(v){ return (v>=0?'+':'')+(v*1e6).toFixed(3); }
+function compassDir(Bx,By){
+if(Math.sqrt(Bx*Bx+By*By)<1e-10)return '\u2014';
+var deg=Math.atan2(By,Bx)*180/Math.PI;
+var n=((Math.round(deg/22.5)%16)+16)%16;
+var dirs=['E','ENE','NE','NNE','N','NNW','NW','WNW','W','WSW','SW','SSW','S','SSE','SE','ESE'];
+return dirs[n]+' ('+deg.toFixed(1)+'\u00b0)';
+}
+function fmtSigned(v,u){return (v>=0?'+':'')+v.toFixed(2)+' '+u;}
+function fmtA(v){return (v>=0?'+':'')+v.toFixed(1)+' A';}
+function updateReadouts(){
+var fv=fieldAt(compass.x,compass.y);
+set('r_Bc1012',   formatB(fv.B));
+set('r_Bxy1012',  '('+fmtMicro(fv.Bx)+', '+fmtMicro(fv.By)+') \u00b5T');
+set('r_dir1012',  compassDir(fv.Bx,fv.By));
+set('r_cpos1012', '('+compass.x.toFixed(2)+', '+compass.y.toFixed(2)+')');
+set('r_Bmax1012', formatB(globalBmax));
+set('r_I1012',    wires.map(function(w){return (w.I>=0?'+':'')+w.I.toFixed(1);}).join(', ')+' A');
+}
+function updateNarration(){
+if(!showNarr)return;
+var fv=fieldAt(compass.x,compass.y);
+var lines=[];
+for(var i=0;i<wires.length;i++){
+var w=wires[i];
+lines.push('Wire '+(i+1)+': I='+(w.I>=0?'+':'')+w.I.toFixed(1)+' A at ('+w.x.toFixed(2)+', '+w.y.toFixed(2)+') \u2014 '
++(Math.abs(w.I)<0.05?'no current':w.I>0?'current out of page':'current into page'));
+}
+var txt=lines.join('. ')+'. Compass at ('+compass.x.toFixed(2)+', '+compass.y.toFixed(2)+'): '
++'field '+formatB(fv.B)+', pointing '+compassDir(fv.Bx,fv.By)+'. Peak: '+formatB(globalBmax)+'.';
+set('narration1012',txt);
+}
+function updateCanvasDesc(){
+var fv=fieldAt(compass.x,compass.y);
+var active=wires.filter(function(w){return Math.abs(w.I)>0.05;}).length;
+var wstrs=wires.map(function(w,i){return 'Wire '+(i+1)+': '+w.I.toFixed(1)+' A';}).join(', ');
+var d='Magnetic field map from '+active+' active wire'+(active!==1?'s':'')+'. '+wstrs+'. '
++'Compass at ('+compass.x.toFixed(2)+', '+compass.y.toFixed(2)+'), field = '+formatB(fv.B)+'. Peak: '+formatB(globalBmax)+'.';
+set('canvasDesc1012',d); canvas.setAttribute('aria-label',d);
+}
+function doUpdate(){ redraw(); updateReadouts(); updateNarration(); }
+/* ── Slider sync helpers ── */
+function syncWireSliders(i){
+var n=i+1, w=wires[i];
+var xEl=document.getElementById('W'+n+'x1012'); if(xEl)xEl.value=w.x.toFixed(2);
+var yEl=document.getElementById('W'+n+'y1012'); if(yEl)yEl.value=w.y.toFixed(2);
+set('W'+n+'xval1012',fmtSigned(w.x,'m'));
+set('W'+n+'yval1012',fmtSigned(w.y,'m'));
+}
+function syncCompassSliders(){
+var cx=document.getElementById('Cx1012'); if(cx)cx.value=compass.x.toFixed(2);
+var cy=document.getElementById('Cy1012'); if(cy)cy.value=compass.y.toFixed(2);
+set('Cxval1012',fmtSigned(compass.x,'m'));
+set('Cyval1012',fmtSigned(compass.y,'m'));
+}
+/* ── Public slider setters ── */
+function setI(idx,v){ wires[idx].I=parseFloat(v); set('I'+(idx+1)+'val1012',fmtA(wires[idx].I)); doUpdate(); }
+function setWx(idx,v){ wires[idx].x=parseFloat(v); set('W'+(idx+1)+'xval1012',fmtSigned(wires[idx].x,'m')); doUpdate(); }
+function setWy(idx,v){ wires[idx].y=parseFloat(v); set('W'+(idx+1)+'yval1012',fmtSigned(wires[idx].y,'m')); doUpdate(); }
+function setCx(v){ compass.x=parseFloat(v); set('Cxval1012',fmtSigned(compass.x,'m')); doUpdate(); }
+function setCy(v){ compass.y=parseFloat(v); set('Cyval1012',fmtSigned(compass.y,'m')); doUpdate(); }
+/* ── Display options ── */
+function setBtnOn(id,on){ var b=document.getElementById(id); if(!b)return; b.classList.toggle('wf_a11yon1012',on); b.setAttribute('aria-pressed',on?'true':'false'); }
+function applyDisplay(){
+ROOT.classList.toggle('wf_hc1012',hcMode); ROOT.classList.toggle('wf_lm1012',lightMode); ROOT.classList.toggle('wf_cb1012',cbMode);
+setBtnOn('btnHC1012',hcMode); setBtnOn('btnLight1012',lightMode); setBtnOn('btnCB1012',cbMode); setBtnOn('btnNarr1012',showNarr);
+var nb=document.getElementById('btnNarr1012'); if(nb) nb.textContent='NARRATION: '+(showNarr?'ON':'OFF');
+var box=document.getElementById('narrationBox1012'); if(box) box.style.display=showNarr?'':'none';
+}
+function toggleHC(){ hcMode=!hcMode; if(hcMode) lightMode=false; applyDisplay(); doUpdate(); srAnnounce('High contrast '+(hcMode?'on.':'off.')); }
+function toggleLight(){ lightMode=!lightMode; if(lightMode) hcMode=false; applyDisplay(); doUpdate(); srAnnounce('Light mode '+(lightMode?'on.':'off.')); }
+function toggleCB(){ cbMode=!cbMode; applyDisplay(); doUpdate(); srAnnounce('Color-blind safe colors '+(cbMode?'on.':'off.')); }
+function toggleNarr(){ showNarr=!showNarr; applyDisplay(); if(showNarr) updateNarration(); srAnnounce('Narration '+(showNarr?'on.':'off.')); }
+/* ── SR announcer ── */
+var srTimer=null;
+function srAnnounce(msg){ var el=document.getElementById('srAnnounce1012'); if(!el)return; el.textContent=''; clearTimeout(srTimer); srTimer=setTimeout(function(){el.textContent=msg;},60); }
+/* ── Hit test for drag ── */
+function hitTest(cx2,cy2){
+var cc=toCanvas(compass.x,compass.y);
+if((cx2-cc[0])*(cx2-cc[0])+(cy2-cc[1])*(cy2-cc[1])<22*22)return{type:'compass'};
+for(var i=0;i<wires.length;i++){
+var wc=toCanvas(wires[i].x,wires[i].y);
+if((cx2-wc[0])*(cx2-wc[0])+(cy2-wc[1])*(cy2-wc[1])<14*14)return{type:'wire',idx:i};
+}
+return null;
+}
+function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v));}
+/* slider ranges are -2..2, so dragging is kept inside them too (the sliders stay in sync) */
+function moveTo(p){
+if(dragging.type==='compass'){ compass.x=clamp(p[0],-2,2); compass.y=clamp(p[1],-2,2); syncCompassSliders(); }
+else { wires[dragging.idx].x=clamp(p[0],-2,2); wires[dragging.idx].y=clamp(p[1],-2,2); syncWireSliders(dragging.idx); }
+doUpdate();
+}
+/* ── Canvas events ── */
+canvas.addEventListener('mousemove',function(e){
+clearTimeout(hoverThrottle);
+hoverThrottle=setTimeout(function(){
+var r=canvas.getBoundingClientRect();
+var cx2=(e.clientX-r.left)*(CW/r.width), cy2=(e.clientY-r.top)*(CH/r.height);
+if(dragging) moveTo(fromCanvas(cx2,cy2));
+var p2=fromCanvas(cx2,cy2), fv=fieldAt(p2[0],p2[1]);
+set('hoverReadout1012','x = '+p2[0].toFixed(3)+' m  |  y = '+p2[1].toFixed(3)+' m  |  |B| = '+formatB(fv.B)+'  |  '+compassDir(fv.Bx,fv.By));
+},16);
+});
+canvas.addEventListener('mousedown',function(e){
+var r=canvas.getBoundingClientRect();
+var cx2=(e.clientX-r.left)*(CW/r.width), cy2=(e.clientY-r.top)*(CH/r.height);
+dragging=hitTest(cx2,cy2);
+if(dragging){canvas.style.cursor='grabbing';e.preventDefault();}
+});
+window.addEventListener('mouseup',function(){dragging=null;canvas.style.cursor='crosshair';});
+canvas.addEventListener('mouseleave',function(){set('hoverReadout1012','Move the cursor over the field to read B at that point');});
+canvas.addEventListener('touchstart',function(e){
+var t=e.touches[0],r=canvas.getBoundingClientRect();
+var cx2=(t.clientX-r.left)*(CW/r.width), cy2=(t.clientY-r.top)*(CH/r.height);
+dragging=hitTest(cx2,cy2); if(dragging)e.preventDefault();
+},{passive:false});
+canvas.addEventListener('touchmove',function(e){
+if(!dragging)return; e.preventDefault();
+var t=e.touches[0],r=canvas.getBoundingClientRect();
+moveTo(fromCanvas((t.clientX-r.left)*(CW/r.width),(t.clientY-r.top)*(CH/r.height)));
+},{passive:false});
+window.addEventListener('touchend',function(){dragging=null;});
+/* ── Reduced motion ── */
+if(window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches){
+var mn=document.getElementById('motionNotice1012'); if(mn)mn.style.display='block';
+}
+/* ── Boot ── */
+applyDisplay();
+doUpdate();
+/* ── Public API ── */
+return {
+toggleHC:toggleHC, toggleLight:toggleLight, toggleCB:toggleCB, toggleNarr:toggleNarr,
+setI:setI, setWx:setWx, setWy:setWy, setCx:setCx, setCy:setCy
+};
+};
+</script>
+<script>
+var wireFields1012 = new wireFields();
+</script>
+
+</body>
+</html>
