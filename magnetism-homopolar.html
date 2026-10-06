@@ -621,7 +621,7 @@ ctx.textBaseline='alphabetic';
 }
 function drawCurrentPath(cx,screwBottom,magTop,magDepth,magRx,battFlip) {
 if(I<0.05 || !diskCond) return;
-var col='rgba(70,155,255,0.85)';
+var col='rgba(70,255,255,0.85)';
 var contactY=magTop+magDepth/2;
 if(battFlip>0) {
 arrow(cx,screwBottom-50,cx,screwBottom-10,7,col);
@@ -710,7 +710,7 @@ updateStatus();
 function updateStatus() {
 var torque=computeTorque();
 var Tstr=Math.abs(torque)<1e-6?'0 (stopped)':torque.toFixed(3)+' N·m (relative)';
-var dirStr=Math.abs(torque)<1e-6?'—':torque>0?'CCW (from above)':'CW (from above)';
+var dirStr=Math.abs(torque)<1e-6?'—':torque>0?'CW (from above)':'CCW (from above)';
 var speedStr=Math.abs(torque)<1e-6?'0':Math.abs(torque)<1?'slow':Math.abs(torque)<3?'medium':'fast';
 set('hpSTorque1005',Tstr);
 var tEl=el('hpSTorque1005');
