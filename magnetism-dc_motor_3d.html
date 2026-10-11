@@ -1,16 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Direct Current Electric Motor (3D)</title>
-<meta name="description" content="Interactive 3D simulation of a DC electric motor: coil, magnets, split-ring commutator, brushes and battery.">
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Magnetism: Electric DC Motor (3D)</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching,motor, teach, learn,Electric, magnetism, Field,mapping, DC motor, AC motor, DC motor,magnet,Impedance,Electric, Electricity, battery,current,torque, lesson, scientific">
+<meta name="description" content="Interactive 3D simulations of a DC motor, an AC motor, a generator and a brushless DC motor.">
 <style>
 body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
 .page { width:646px; max-width:100%; margin:0 auto; overflow-x:auto; }
 </style>
-</head>
-<body>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
 <main class="page">
 <div id="dcmRoot">
 <!-- ── Accessibility toolbar ── -->
