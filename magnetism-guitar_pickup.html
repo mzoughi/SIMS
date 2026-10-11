@@ -67,12 +67,12 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <div class="gtr_paneltitle" id="strHd">String &amp; Pluck</div>
 <div class="gtr_panelbody">
 <div class="gtr_srcbtns6" role="group" aria-label="String">
-<button type="button" class="gtr_srcbtn" id="btnS6" onclick="gtrSim.setString(6)" aria-pressed="false">E</button>
-<button type="button" class="gtr_srcbtn gtr_srcon" id="btnS5" onclick="gtrSim.setString(5)" aria-pressed="true">A</button>
-<button type="button" class="gtr_srcbtn" id="btnS4" onclick="gtrSim.setString(4)" aria-pressed="false">D</button>
-<button type="button" class="gtr_srcbtn" id="btnS3" onclick="gtrSim.setString(3)" aria-pressed="false">G</button>
-<button type="button" class="gtr_srcbtn" id="btnS2" onclick="gtrSim.setString(2)" aria-pressed="false">B</button>
-<button type="button" class="gtr_srcbtn" id="btnS1" onclick="gtrSim.setString(1)" aria-pressed="false">e</button>
+<button type="button" class="gtr_srcbtn" id="btnS6" onclick="gtrSim.setString(6);gtrSim.pluck()" aria-pressed="false">E</button>
+<button type="button" class="gtr_srcbtn gtr_srcon" id="btnS5" onclick="gtrSim.setString(5);gtrSim.pluck()" aria-pressed="true">A</button>
+<button type="button" class="gtr_srcbtn" id="btnS4" onclick="gtrSim.setString(4);gtrSim.pluck()" aria-pressed="false">D</button>
+<button type="button" class="gtr_srcbtn" id="btnS3" onclick="gtrSim.setString(3);gtrSim.pluck()" aria-pressed="false">G</button>
+<button type="button" class="gtr_srcbtn" id="btnS2" onclick="gtrSim.setString(2);gtrSim.pluck()" aria-pressed="false">B</button>
+<button type="button" class="gtr_srcbtn" id="btnS1" onclick="gtrSim.setString(1);gtrSim.pluck()" aria-pressed="false">e</button>
 </div>
 <div class="gtr_ctrlhdr"><label for="slFret" class="gtr_ctrlname">Fret</label><span class="gtr_sval" id="vFret">open</span></div>
 <input type="range" id="slFret" min="0" max="12" step="1" value="0" aria-label="Fret number, 0 is the open string" oninput="gtrSim.onSlider('Fret', this.value)">
