@@ -13,8 +13,15 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <title>Physics Simulations-Kinematics-Position & Velocity Graphs From Acceleration</title>
 <meta name="author" content="Taha Mzoughi">
 <meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,kinematics, position graph, x-t graph, motion diagram, velocity, acceleration, slope, tutorial, lesson, scientific">
+<meta name="description" content="Interactive kinematics lab: read positions from a recorded motion, then calculate the velocity and acceleration and compare with the true graphs.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
+<main class="page">
 <!-- ═══════════════════════════════════════════════════════
 Dunwoody PL02
 SIM -- Kinematics: Collect Data, Calculate v & a, Verify Motion
@@ -64,7 +71,7 @@ style="background:#ffe0a0;border-color:#cc9900;">
 <input type="button" id="btnReplay" value="&#8630; Reset" onclick="dcSim.resetMotion()">
 </div>
 <!-- A11y -->
-<div class="dc_bbar">
+<div class="dc_bbar dc_a11ybar" role="toolbar" aria-label="Display options">
 <input type="button" id="btnHC"   value="High Contrast: OFF" onclick="dcSim.toggleHC()">
 <input type="button" id="btnCB"   value="Color-Blind: OFF"   onclick="dcSim.toggleCB()">
 <input type="button" id="btnNarr" value="Narration: ON"      onclick="dcSim.toggleNarr()">
@@ -189,15 +196,117 @@ body.dc-hc-mode #dcCanvas, body.dc-hc-mode #dcPosCanvas,
 body.dc-hc-mode #dcVelCanvas, body.dc-hc-mode #dcAccCanvas { background:#111; border-color:#555; }
 body.dc-hc-mode .dc_stats_box { background:#111; border-color:#555; color:#eee; }
 body.dc-hc-mode .dc_stats_title { color:#fff; border-bottom-color:#555; }
+/* ════════ Hall effect template layer: mobile friendly, scoped to #dc_root ════════ */
+#dc_root {
+--tp-chassis:#1a1c1f; --tp-panel:#22262b; --tp-panel-hi:#2c3138; --tp-panel-lo:#14161a;
+--tp-border:#3a4048; --tp-border-hi:#525c66; --tp-text:#c8d0d8; --tp-dim:#8a94a3; --tp-bright:#e8eef5;
+--tp-accent:#e8a020; --tp-green:#3ad08f; --tp-val:#ffdd66; --tp-warn:#e0605a;
+--tp-focus:#e8a020; --tp-nar-bg:#2a2410; --tp-nar-border:#e0b040; --tp-nar-text:#f0e2b8;
+width:100%; max-width:760px; margin:0 auto 10px; box-sizing:border-box; position:relative;
+display:flex; flex-direction:column; gap:10px; padding:14px 10px 18px; border-radius:6px;
+font-family:Arial, sans-serif; color:var(--tp-text); background:var(--tp-chassis);
+background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px),
+repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
+}
+body.dc-hc-mode #dc_root { --tp-chassis:#000000; --tp-panel:#000000; --tp-panel-hi:#111111; --tp-panel-lo:#000000; --tp-border:#ffffff; --tp-border-hi:#ffffff;
+--tp-text:#ffffff; --tp-dim:#e0e0e0; --tp-bright:#ffffff; --tp-accent:#ffd700; --tp-green:#00ff88; --tp-val:#ffff00; --tp-warn:#ff5555;
+--tp-focus:#ffff00; --tp-nar-bg:#000000; --tp-nar-border:#ffd700; --tp-nar-text:#ffffff; background-image:none; }
+#dc_root *, #dc_root *::before, #dc_root *::after { box-sizing:border-box; }
+#dc_root input:focus-visible, #dc_root select:focus-visible, #dc_root canvas:focus-visible { outline:2px solid var(--tp-focus); outline-offset:2px; }
+#dc_root .dc_tbar { width:auto; height:auto; min-height:0; background:none !important; padding:2px 4px; display:flex; justify-content:center; }
+#dc_root .dc_tbar h3 { font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--tp-accent) !important; text-align:center; line-height:1.35; }
+#dc_root .dc_mcontent { width:auto; background:var(--tp-panel); border:1px solid var(--tp-border); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+#dc_root canvas#dcCanvas { display:block; width:100%; max-width:680px; height:auto; margin:0 auto; }
+#dc_root canvas#dcPosCanvas { display:block; width:100%; max-width:660px; height:auto; margin:0 auto; }
+#dc_root canvas#dcVelCanvas { display:block; width:100%; max-width:660px; height:auto; margin:0 auto; }
+#dc_root canvas#dcAccCanvas { display:block; width:100%; max-width:660px; height:auto; margin:0 auto; }
+#dc_root .dc_bbar { width:auto; min-height:0; background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border); border-radius:6px; padding:8px 10px; gap:6px; justify-content:center; color:var(--tp-text); }
+#dc_root .dc_a11ybar { background:none !important; border:none; padding:0; }
+#dc_root input[type=button] { font-family:monospace; font-size:.7rem; letter-spacing:.04em; text-transform:uppercase; font-weight:bold; padding:7px 10px; cursor:pointer;
+  background:var(--tp-panel-hi) !important; border:1px solid var(--tp-border-hi) !important; color:var(--tp-text) !important; border-radius:3px; line-height:1.25; white-space:normal; }
+#dc_root input[type=button]:hover { border-color:var(--tp-accent) !important; }
+#dc_root .dc_a11ybar input[type=button] { font-size:.68rem; font-weight:normal; letter-spacing:.06em; padding:4px 10px; color:var(--tp-dim) !important; }
+#dc_root #btnPlay { color:var(--tp-accent) !important; border-color:var(--tp-accent) !important; }
+#dc_root #btnStart { color:var(--tp-accent) !important; border-color:var(--tp-accent) !important; }
+#dc_root #btnCheck { color:var(--tp-accent) !important; border-color:var(--tp-accent) !important; }
+#dc_root #btnRecord { color:var(--tp-accent) !important; border-color:var(--tp-accent) !important; }
+#dc_root input[type=button][value*="Clear"], #dc_root input[type=button][value*="Delete"], #dc_root input[type=button][value*="Retry"], #dc_root #btnReset, #dc_root #btnReplay { color:var(--tp-warn) !important; border-color:#a04040 !important; }
+#dc_root input[type=button].dc_active { background:rgba(58,208,143,.14) !important; border-color:var(--tp-green) !important; color:var(--tp-green) !important; }
+#dc_root #btnViewStatic { border-bottom:3px solid #5599cc !important; }
+#dc_root #btnViewKinetic { border-bottom:3px solid #779933 !important; }
+#dc_root .dc_taglbl, #dc_root .dc_plbl { color:var(--tp-dim) !important; font-size:.72rem; font-weight:600; letter-spacing:.03em; }
+#dc_root .dc_pval { color:var(--tp-val) !important; font-family:monospace; }
+#dc_root select { background:var(--tp-panel-hi); color:var(--tp-text); border:1px solid var(--tp-border-hi); border-radius:3px; padding:4px 6px; font-size:.78rem; max-width:100%; }
+#dc_root input[type=number], #dc_root input[type=text], #dc_root .dc_input { background:var(--tp-panel-hi); color:var(--tp-text); border:1px solid var(--tp-border-hi); border-radius:3px; }
+#dc_root .dc_good { color:#111 !important; }
+#dc_root .dc_ok { color:#111 !important; }
+#dc_root .dc_off { color:#111 !important; }
+#dc_root input[type=range] { accent-color:var(--tp-accent); min-width:0; }
+#dc_root select { min-width:0; }
+#dc_root .hl_axislbl { display:inline-flex; flex-wrap:wrap; align-items:center; gap:4px; max-width:100%; }
+#dc_root input[type=checkbox] { accent-color:var(--tp-accent); }
+#dc_root .dc_fbar { width:auto; min-height:0; background:none !important; padding:0; gap:10px; }
+#dc_root .dc_fbar[style*="column"] { background:var(--tp-panel) !important; border:1px solid var(--tp-border); border-radius:6px; padding:10px; box-shadow:0 4px 20px rgba(0,0,0,.3); }
+#dc_root .dc_prompt, #dc_root .dc_readout, #dc_root .dc_narr, #dc_root .dc_info, #dc_root .dc_params, #dc_root .dc_tablebox { background:var(--tp-panel) !important; border:1px solid var(--tp-border) !important; border-radius:6px; padding:9px 12px; color:var(--tp-text) !important; box-shadow:0 4px 20px rgba(0,0,0,.3); }
+#dc_root .hl_tblbox { background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border) !important; border-radius:6px; color:var(--tp-text); }
+#dc_root .hl_axisbar { background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border) !important; border-radius:4px; }
+#dc_root .dc_boxhd { font-family:monospace; font-size:.66rem; font-weight:bold; letter-spacing:.12em; text-transform:uppercase; color:var(--tp-dim) !important; border-bottom-color:var(--tp-border) !important; }
+#dc_root .dc_prompt > .dc_boxhd:first-child, #dc_root .dc_readout > .dc_boxhd:first-child, #dc_root .dc_narr > .dc_boxhd:first-child, #dc_root .dc_info > .dc_boxhd:first-child, #dc_root .dc_params > .dc_boxhd:first-child, #dc_root .dc_tablebox > .dc_boxhd:first-child { background:var(--tp-panel-lo); margin:-9px -12px 9px; padding:6px 12px; border-bottom:1px solid var(--tp-border); }
+#dc_root .dc_prompttext, #dc_root .dc_info, #dc_root .dc_rrow { color:var(--tp-text) !important; }
+#dc_root .dc_info { font-size:.74rem; }
+#dc_root .dc_rv { color:var(--tp-val) !important; font-family:monospace; }
+#dc_root .dc_badge { background:rgba(58,208,143,.14) !important; color:var(--tp-green) !important; }
+#dc_root .dc_narr { background:var(--tp-nar-bg) !important; border:none !important; border-left:4px solid var(--tp-nar-border) !important; border-radius:3px; }
+#dc_root .dc_narr > .dc_boxhd:first-child { background:none; color:var(--tp-nar-border) !important; border-bottom-color:rgba(224,176,64,.35) !important; }
+#dc_root .dc_narrtext { color:var(--tp-nar-text) !important; font-style:italic; font-size:.82rem; }
+#dc_root .dc_stats_box { background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border) !important; color:var(--tp-text) !important; border-radius:4px; }
+#dc_root .stats_box { background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border) !important; color:var(--tp-text) !important; border-radius:4px; }
+#dc_root .dc_stats_title { color:var(--tp-accent) !important; border-bottom-color:var(--tp-border) !important; }
+#dc_root .stats_title { color:var(--tp-accent) !important; border-bottom-color:var(--tp-border) !important; }
+#dc_root .dc_table { color:var(--tp-text); }
+#dc_root .dc_table th { background:var(--tp-panel-hi) !important; color:var(--tp-text) !important; }
+#dc_root .dc_table th, #dc_root .dc_table td { border-color:var(--tp-border) !important; }
+#dc_root .dt_table { color:var(--tp-text); }
+#dc_root .dt_table th { background:var(--tp-panel-hi) !important; color:var(--tp-text) !important; }
+#dc_root .dt_table th, #dc_root .dt_table td { border-color:var(--tp-border) !important; }
+#dc_root .hl_table { color:var(--tp-text); }
+#dc_root .hl_table th { background:var(--tp-panel-hi) !important; color:var(--tp-text) !important; }
+#dc_root .hl_table th, #dc_root .hl_table td { border-color:var(--tp-border) !important; }
+#dc_root .dt_wrap { background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border) !important; overflow:auto; -webkit-overflow-scrolling:touch; }
+#dc_root .hl_tblwrap { background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border) !important; overflow:auto; -webkit-overflow-scrolling:touch; }
+#dc_root .dt_ctrl, #dc_root .hl_axisbar, #dc_root .hl_graphbar, #dc_root .hl_axislbl, #dc_root .hl_fitlabel, #dc_root .hl_hint, #dc_root .hl_nodatamsg, #dc_root .dt_empty { color:var(--tp-text) !important; }
+#dc_root [style*="color:#333"], #dc_root [style*="color:#555"] { color:var(--tp-dim) !important; }
+#dc_root [style*="color:#0072b2"], #dc_root [style*="color:#d55e00"] { background:#ffffff; border-radius:2px; padding:0 3px; }
+/* phones and tablets: bigger touch targets */
+@media (pointer:coarse) {
+#dc_root input[type=button] { min-height:40px; }
+#dc_root .dc_a11ybar input[type=button] { min-height:36px; }
+#dc_root select { min-height:36px; font-size:16px; }
+#dc_root input[type=number], #dc_root input[type=text], #dc_root .dc_input { font-size:16px; min-height:30px; }
+#dc_root input[type=checkbox] { width:20px; height:20px; }
+#dc_root input[type=range] { height:28px; }
+}
+@media (max-width:560px) {
+#dc_root { padding:10px 6px 14px; }
+#dc_root .dc_fbar > *:not(.dc_sronly) { min-width:100% !important; }
+#dc_root .dc_fbar[style*="column"] { padding:8px 6px; }
+#dc_root .dc_plbl { min-width:0 !important; width:100%; }
+#dc_root .dc_prow { flex-wrap:wrap; row-gap:2px; margin-bottom:10px; }
+}
 </style>
 <!-- ══════════ JAVASCRIPT ══════════ -->
 <script>
 var dcSim = (function(){
 /* ── Canvas refs ── */
+var DPR=window.devicePixelRatio||1;   /* sharp on phones: draw at device resolution, CSS scales each canvas to the page */
 var sc=document.getElementById('dcCanvas'), ctx=sc.getContext('2d'); var CW=sc.width, CH=sc.height;
+sc.width=CW*DPR; sc.height=CH*DPR; ctx.scale(DPR,DPR);
 var pc=document.getElementById('dcPosCanvas'), pctx=pc.getContext('2d'); var PW=pc.width, PH=pc.height;
+pc.width=PW*DPR; pc.height=PH*DPR; pctx.scale(DPR,DPR);
 var vc=document.getElementById('dcVelCanvas'), vctx=vc.getContext('2d'); var VW=vc.width, VH=vc.height;
+vc.width=VW*DPR; vc.height=VH*DPR; vctx.scale(DPR,DPR);
 var ac=document.getElementById('dcAccCanvas'), actx=ac.getContext('2d'); var AW=ac.width, AH=ac.height;
+ac.width=AW*DPR; ac.height=AH*DPR; actx.scale(DPR,DPR);
 var FP={l:55,r:15,t:14,b:34};
 /* ── Palettes ── */
 var PAL={
@@ -585,19 +694,22 @@ pctx.fillRect(xPx-labXw/2-4, FP.t+pH-30, labXw+8, 15);
 pctx.fillStyle=colX; pctx.fillText(labX, xPx, FP.t+pH-19);
 pctx.restore();
 }
+/* fingers are less precise than a mouse: on touch, the drag handles grab from about 14 screen pixels further out */
+var TOUCH_SLOP=0;
 function getPosCoords(evt){
 var rect=pc.getBoundingClientRect(), clientX, clientY;
+TOUCH_SLOP=(evt.touches && evt.touches.length) ? 14*(PW/rect.width) : 0;
 if(evt.touches && evt.touches.length){ clientX=evt.touches[0].clientX; clientY=evt.touches[0].clientY; }
 else { clientX=evt.clientX; clientY=evt.clientY; }
 return { x:(clientX-rect.left)*(PW/rect.width), y:(clientY-rect.top)*(PH/rect.height) };
 }
 function hitReaderY(px_,py_){
 var yPx=posPyOf(readerYval);
-return px_>=FP.l-4 && px_<=FP.l+20 && py_>=yPx-10 && py_<=yPx+10;
+return px_>=FP.l-4-TOUCH_SLOP && px_<=FP.l+20+TOUCH_SLOP && py_>=yPx-10-TOUCH_SLOP && py_<=yPx+10+TOUCH_SLOP;
 }
 function hitReaderX(px_,py_){
 var xPx=posPxOf(readerXval); var pH=PH-FP.t-FP.b;
-return py_>=FP.t+pH-20 && py_<=FP.t+pH+4 && px_>=xPx-10 && px_<=xPx+10;
+return py_>=FP.t+pH-20-TOUCH_SLOP && py_<=FP.t+pH+4+TOUCH_SLOP && px_>=xPx-10-TOUCH_SLOP && px_<=xPx+10+TOUCH_SLOP;
 }
 function onPosDown(evt){
 var p=getPosCoords(evt);
@@ -731,5 +843,6 @@ toggleHC, toggleCB, toggleNarr
 })();
 </script>
 </div><!-- #dc_root -->
+</main>
 </body>
 </html>

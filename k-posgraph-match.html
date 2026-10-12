@@ -13,8 +13,15 @@
 <title>Physics Simulations-Kinematics-Position Graph Match</title>
 <meta name="author" content="Taha Mzoughi">
 <meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,kinematics, position graph, x-t graph, motion diagram, velocity, acceleration, slope, tutorial, lesson, scientific">
+<meta name="description" content="Interactive kinematics game: drag the cart along the track to recreate a target position-time graph.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
+<main class="page">
 <!-- ═══════════════════════════════════════════════════════
 SIM -- Kinematics: Replicate the Position-Time Graph
 Dunwoody PL02
@@ -73,7 +80,7 @@ A11y: High Contrast | Color-Blind | Narration | Keyboard-draggable (MOM-ready)
 <input type="button" id="btnRetry" value="&#8630; Retry (same graph)" onclick="pmSim.retry()">
 </div>
 <!-- A11y -->
-<div class="pm_bbar">
+<div class="pm_bbar pm_a11ybar" role="toolbar" aria-label="Display options">
 <input type="button" id="btnHC"   value="High Contrast: OFF" onclick="pmSim.toggleHC()">
 <input type="button" id="btnCB"   value="Color-Blind: OFF"   onclick="pmSim.toggleCB()">
 <input type="button" id="btnNarr" value="Narration: ON"      onclick="pmSim.toggleNarr()">
@@ -164,13 +171,111 @@ body.pm-hc-mode #pm_root .pm_rrow  { color:#ddd; }
 body.pm-hc-mode #pmCanvas, body.pm-hc-mode #pmGraphCanvas { background:#111; border-color:#555; }
 body.pm-hc-mode .pm_stats_box { background:#111; border-color:#555; color:#eee; }
 body.pm-hc-mode .pm_stats_title { color:#fff; border-bottom-color:#555; }
+/* ════════ Hall effect template layer: mobile friendly, scoped to #pm_root ════════ */
+#pm_root {
+--tp-chassis:#1a1c1f; --tp-panel:#22262b; --tp-panel-hi:#2c3138; --tp-panel-lo:#14161a;
+--tp-border:#3a4048; --tp-border-hi:#525c66; --tp-text:#c8d0d8; --tp-dim:#8a94a3; --tp-bright:#e8eef5;
+--tp-accent:#e8a020; --tp-green:#3ad08f; --tp-val:#ffdd66; --tp-warn:#e0605a;
+--tp-focus:#e8a020; --tp-nar-bg:#2a2410; --tp-nar-border:#e0b040; --tp-nar-text:#f0e2b8;
+width:100%; max-width:760px; margin:0 auto 10px; box-sizing:border-box; position:relative;
+display:flex; flex-direction:column; gap:10px; padding:14px 10px 18px; border-radius:6px;
+font-family:Arial, sans-serif; color:var(--tp-text); background:var(--tp-chassis);
+background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px),
+repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
+}
+body.pm-hc-mode #pm_root { --tp-chassis:#000000; --tp-panel:#000000; --tp-panel-hi:#111111; --tp-panel-lo:#000000; --tp-border:#ffffff; --tp-border-hi:#ffffff;
+--tp-text:#ffffff; --tp-dim:#e0e0e0; --tp-bright:#ffffff; --tp-accent:#ffd700; --tp-green:#00ff88; --tp-val:#ffff00; --tp-warn:#ff5555;
+--tp-focus:#ffff00; --tp-nar-bg:#000000; --tp-nar-border:#ffd700; --tp-nar-text:#ffffff; background-image:none; }
+#pm_root *, #pm_root *::before, #pm_root *::after { box-sizing:border-box; }
+#pm_root input:focus-visible, #pm_root select:focus-visible, #pm_root canvas:focus-visible { outline:2px solid var(--tp-focus); outline-offset:2px; }
+#pm_root .pm_tbar { width:auto; height:auto; min-height:0; background:none !important; padding:2px 4px; display:flex; justify-content:center; }
+#pm_root .pm_tbar h3 { font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--tp-accent) !important; text-align:center; line-height:1.35; }
+#pm_root .pm_mcontent { width:auto; background:var(--tp-panel); border:1px solid var(--tp-border); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+#pm_root canvas#pmCanvas { display:block; width:100%; max-width:680px; height:auto; margin:0 auto; }
+#pm_root canvas#pmGraphCanvas { display:block; width:100%; max-width:660px; height:auto; margin:0 auto; }
+#pm_root .pm_bbar { width:auto; min-height:0; background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border); border-radius:6px; padding:8px 10px; gap:6px; justify-content:center; color:var(--tp-text); }
+#pm_root .pm_a11ybar { background:none !important; border:none; padding:0; }
+#pm_root input[type=button] { font-family:monospace; font-size:.7rem; letter-spacing:.04em; text-transform:uppercase; font-weight:bold; padding:7px 10px; cursor:pointer;
+  background:var(--tp-panel-hi) !important; border:1px solid var(--tp-border-hi) !important; color:var(--tp-text) !important; border-radius:3px; line-height:1.25; white-space:normal; }
+#pm_root input[type=button]:hover { border-color:var(--tp-accent) !important; }
+#pm_root .pm_a11ybar input[type=button] { font-size:.68rem; font-weight:normal; letter-spacing:.06em; padding:4px 10px; color:var(--tp-dim) !important; }
+#pm_root #btnPlay { color:var(--tp-accent) !important; border-color:var(--tp-accent) !important; }
+#pm_root #btnStart { color:var(--tp-accent) !important; border-color:var(--tp-accent) !important; }
+#pm_root #btnCheck { color:var(--tp-accent) !important; border-color:var(--tp-accent) !important; }
+#pm_root #btnRecord { color:var(--tp-accent) !important; border-color:var(--tp-accent) !important; }
+#pm_root input[type=button][value*="Clear"], #pm_root input[type=button][value*="Delete"], #pm_root input[type=button][value*="Retry"], #pm_root #btnReset, #pm_root #btnReplay { color:var(--tp-warn) !important; border-color:#a04040 !important; }
+#pm_root input[type=button].pm_active { background:rgba(58,208,143,.14) !important; border-color:var(--tp-green) !important; color:var(--tp-green) !important; }
+#pm_root #btnViewStatic { border-bottom:3px solid #5599cc !important; }
+#pm_root #btnViewKinetic { border-bottom:3px solid #779933 !important; }
+#pm_root .pm_taglbl, #pm_root .pm_plbl { color:var(--tp-dim) !important; font-size:.72rem; font-weight:600; letter-spacing:.03em; }
+#pm_root .pm_pval { color:var(--tp-val) !important; font-family:monospace; }
+#pm_root select { background:var(--tp-panel-hi); color:var(--tp-text); border:1px solid var(--tp-border-hi); border-radius:3px; padding:4px 6px; font-size:.78rem; max-width:100%; }
+#pm_root input[type=number], #pm_root input[type=text], #pm_root .pm_input { background:var(--tp-panel-hi); color:var(--tp-text); border:1px solid var(--tp-border-hi); border-radius:3px; }
+#pm_root .pm_good { color:#111 !important; }
+#pm_root .pm_ok { color:#111 !important; }
+#pm_root .pm_off { color:#111 !important; }
+#pm_root input[type=range] { accent-color:var(--tp-accent); min-width:0; }
+#pm_root select { min-width:0; }
+#pm_root .hl_axislbl { display:inline-flex; flex-wrap:wrap; align-items:center; gap:4px; max-width:100%; }
+#pm_root input[type=checkbox] { accent-color:var(--tp-accent); }
+#pm_root .pm_fbar { width:auto; min-height:0; background:none !important; padding:0; gap:10px; }
+#pm_root .pm_fbar[style*="column"] { background:var(--tp-panel) !important; border:1px solid var(--tp-border); border-radius:6px; padding:10px; box-shadow:0 4px 20px rgba(0,0,0,.3); }
+#pm_root .pm_prompt, #pm_root .pm_readout, #pm_root .pm_narr, #pm_root .pm_info, #pm_root .pm_params, #pm_root .pm_tablebox { background:var(--tp-panel) !important; border:1px solid var(--tp-border) !important; border-radius:6px; padding:9px 12px; color:var(--tp-text) !important; box-shadow:0 4px 20px rgba(0,0,0,.3); }
+#pm_root .hl_tblbox { background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border) !important; border-radius:6px; color:var(--tp-text); }
+#pm_root .hl_axisbar { background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border) !important; border-radius:4px; }
+#pm_root .pm_boxhd { font-family:monospace; font-size:.66rem; font-weight:bold; letter-spacing:.12em; text-transform:uppercase; color:var(--tp-dim) !important; border-bottom-color:var(--tp-border) !important; }
+#pm_root .pm_prompt > .pm_boxhd:first-child, #pm_root .pm_readout > .pm_boxhd:first-child, #pm_root .pm_narr > .pm_boxhd:first-child, #pm_root .pm_info > .pm_boxhd:first-child, #pm_root .pm_params > .pm_boxhd:first-child, #pm_root .pm_tablebox > .pm_boxhd:first-child { background:var(--tp-panel-lo); margin:-9px -12px 9px; padding:6px 12px; border-bottom:1px solid var(--tp-border); }
+#pm_root .pm_prompttext, #pm_root .pm_info, #pm_root .pm_rrow { color:var(--tp-text) !important; }
+#pm_root .pm_info { font-size:.74rem; }
+#pm_root .pm_rv { color:var(--tp-val) !important; font-family:monospace; }
+#pm_root .pm_badge { background:rgba(58,208,143,.14) !important; color:var(--tp-green) !important; }
+#pm_root .pm_narr { background:var(--tp-nar-bg) !important; border:none !important; border-left:4px solid var(--tp-nar-border) !important; border-radius:3px; }
+#pm_root .pm_narr > .pm_boxhd:first-child { background:none; color:var(--tp-nar-border) !important; border-bottom-color:rgba(224,176,64,.35) !important; }
+#pm_root .pm_narrtext { color:var(--tp-nar-text) !important; font-style:italic; font-size:.82rem; }
+#pm_root .pm_stats_box { background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border) !important; color:var(--tp-text) !important; border-radius:4px; }
+#pm_root .stats_box { background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border) !important; color:var(--tp-text) !important; border-radius:4px; }
+#pm_root .pm_stats_title { color:var(--tp-accent) !important; border-bottom-color:var(--tp-border) !important; }
+#pm_root .stats_title { color:var(--tp-accent) !important; border-bottom-color:var(--tp-border) !important; }
+#pm_root .pm_table { color:var(--tp-text); }
+#pm_root .pm_table th { background:var(--tp-panel-hi) !important; color:var(--tp-text) !important; }
+#pm_root .pm_table th, #pm_root .pm_table td { border-color:var(--tp-border) !important; }
+#pm_root .dt_table { color:var(--tp-text); }
+#pm_root .dt_table th { background:var(--tp-panel-hi) !important; color:var(--tp-text) !important; }
+#pm_root .dt_table th, #pm_root .dt_table td { border-color:var(--tp-border) !important; }
+#pm_root .hl_table { color:var(--tp-text); }
+#pm_root .hl_table th { background:var(--tp-panel-hi) !important; color:var(--tp-text) !important; }
+#pm_root .hl_table th, #pm_root .hl_table td { border-color:var(--tp-border) !important; }
+#pm_root .dt_wrap { background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border) !important; overflow:auto; -webkit-overflow-scrolling:touch; }
+#pm_root .hl_tblwrap { background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border) !important; overflow:auto; -webkit-overflow-scrolling:touch; }
+#pm_root .dt_ctrl, #pm_root .hl_axisbar, #pm_root .hl_graphbar, #pm_root .hl_axislbl, #pm_root .hl_fitlabel, #pm_root .hl_hint, #pm_root .hl_nodatamsg, #pm_root .dt_empty { color:var(--tp-text) !important; }
+#pm_root [style*="color:#333"], #pm_root [style*="color:#555"] { color:var(--tp-dim) !important; }
+#pm_root [style*="color:#0072b2"], #pm_root [style*="color:#d55e00"] { background:#ffffff; border-radius:2px; padding:0 3px; }
+/* phones and tablets: bigger touch targets */
+@media (pointer:coarse) {
+#pm_root input[type=button] { min-height:40px; }
+#pm_root .pm_a11ybar input[type=button] { min-height:36px; }
+#pm_root select { min-height:36px; font-size:16px; }
+#pm_root input[type=number], #pm_root input[type=text], #pm_root .pm_input { font-size:16px; min-height:30px; }
+#pm_root input[type=checkbox] { width:20px; height:20px; }
+#pm_root input[type=range] { height:28px; }
+}
+@media (max-width:560px) {
+#pm_root { padding:10px 6px 14px; }
+#pm_root .pm_fbar > *:not(.pm_sronly) { min-width:100% !important; }
+#pm_root .pm_fbar[style*="column"] { padding:8px 6px; }
+#pm_root .pm_plbl { min-width:0 !important; width:100%; }
+#pm_root .pm_prow { flex-wrap:wrap; row-gap:2px; margin-bottom:10px; }
+}
 </style>
 <!-- ══════════ JAVASCRIPT ══════════ -->
 <script>
 var pmSim = (function(){
 /* ── Canvas refs ── */
+var DPR=window.devicePixelRatio||1;   /* sharp on phones: draw at device resolution, CSS scales each canvas to the page */
 var sc=document.getElementById('pmCanvas'), ctx=sc.getContext('2d'); var CW=sc.width, CH=sc.height;
+sc.width=CW*DPR; sc.height=CH*DPR; ctx.scale(DPR,DPR);
 var gc=document.getElementById('pmGraphCanvas'), gctx=gc.getContext('2d'); var GW=gc.width, GH=gc.height;
+gc.width=GW*DPR; gc.height=GH*DPR; gctx.scale(DPR,DPR);
 var FP={l:55,r:15,t:14,b:34};
 /* ── Palettes ── */
 var PAL={
@@ -516,15 +621,18 @@ content.innerHTML=[
 box.style.display='';
 }
 /* ── Pointer / drag input ── */
+/* fingers are less precise than a mouse: on touch, the drag handles grab from about 14 screen pixels further out */
+var TOUCH_SLOP=0;
 function getCanvasPos(evt){
 var rect=sc.getBoundingClientRect(), clientX, clientY;
+TOUCH_SLOP=(evt.touches && evt.touches.length) ? 14*(CW/rect.width) : 0;
 if(evt.touches && evt.touches.length){ clientX=evt.touches[0].clientX; clientY=evt.touches[0].clientY; }
 else { clientX=evt.clientX; clientY=evt.clientY; }
 return { x:(clientX-rect.left)*(CW/rect.width), y:(clientY-rect.top)*(CH/rect.height) };
 }
 function hitTestGlider(px_,py_){
 var cx=gliderCenterPx();
-var left=cx-BLOCK_W/2-10, right=cx+BLOCK_W/2+10, top=TRACK_Y-BLOCK_H-20, bottom=TRACK_Y+10;
+var left=cx-BLOCK_W/2-10-TOUCH_SLOP, right=cx+BLOCK_W/2+10+TOUCH_SLOP, top=TRACK_Y-BLOCK_H-20-TOUCH_SLOP, bottom=TRACK_Y+10+TOUCH_SLOP;
 return px_>=left && px_<=right && py_>=top && py_<=bottom;
 }
 function onDown(evt){
@@ -567,5 +675,6 @@ toggleHC, toggleCB, toggleNarr
 })();
 </script>
 </div><!-- #pm_root -->
+</main>
 </body>
 </html>
