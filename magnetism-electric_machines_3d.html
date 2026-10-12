@@ -10,74 +10,85 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations-Magnetism: Electric Motors and Generators (3D)</title>
+<title>Physics Simulations-Magnetism: Electric Machines</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching,motor, teach, learn,Electric, magnetism, Field,mapping, DC motor, AC motor, generator, brushless DC motor,magnet,Impedance,Electric, Electricity, battery,current,torque, lesson, scientific">
-<meta name="description" content="Interactive 3D simulations of a DC motor, an AC motor, a generator and a brushless DC motor.">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching,magnetism, magnet, teach, learn,force, current, electric machines, DC motor, AC motor, generator, brushless DC motor, commutator, slip rings, induced emf, torque, 3-D, lesson, scientific">
+<meta name="description" content="Interactive 3-D electric machines simulation: DC motor, AC motor, hand-cranked generator with oscilloscope, and brushless DC motor.">
 <style>
 body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
-.page { width:646px; max-width:100%; margin:0 auto; overflow-x:auto; }
+.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
 </style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
 <main class="page">
-<div id="dcmRoot">
-<!-- ── Accessibility toolbar ── -->
+<div id="dcmRoot" class="dcm_root" role="region" aria-label="Electric machines simulator">
+<!-- Accessibility toolbar -->
 <div class="dcm_a11y" id="dcmA11yBar" role="toolbar" aria-label="Display options">
 <button type="button" class="dcm_a11ybtn" id="dcmBtnHC" onclick="dcmA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
 <button type="button" class="dcm_a11ybtn" id="dcmBtnLM" onclick="dcmA11y.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
 <button type="button" class="dcm_a11ybtn" id="dcmBtnCB" onclick="dcmA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
 <button type="button" class="dcm_a11ybtn dcm_a11yon" id="dcmBtnNR" onclick="dcmA11y.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
 </div>
-<div class="dcm_tbar"><h3 id="dcmTitle">Direct Current Electric Motor</h3></div>
-<div class="dcm_mcontent">
+<!-- Header -->
+<div class="dcm_header">
+<p class="dcm_h1" id="dcmTitle">Direct Current Electric Motor</p>
+<p class="dcm_sub">DC motor &middot; AC motor &middot; generator &middot; brushless DC motor -- coils, commutator and magnets in 3-D</p>
+</div>
+<!-- Instrument grid -->
+<div class="dcm_instrument">
+<!-- Left column -->
+<div class="dcm_leftcol">
+<div class="dcm_diagpanel">
+<div class="dcm_diaglabel"><b>3-D VIEW</b><span class="dcm_diagnote">drag to turn &middot; pinch or scroll to zoom &middot; generator: drag the crank</span></div>
 <canvas id="dcmCanvas" width="640" height="480" tabindex="0" role="img" aria-label="Three-dimensional view of an electric machine. Drag to rotate the view, scroll to zoom. The narration bar describes what is happening."></canvas>
-</div>
-<div id="dcmNarBar" class="dcm_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
-<div class="dcm_bbar">
-<input type="button" id="dcmPlay" value="Play"
+<div class="dcm_runbar">
+<input type="button" class="dcm_btn dcm_play" id="dcmPlay" value="Play"
 onclick="if(this.value=='Play'){dcmSim.pl();this.value='Pause';}else{this.value='Play';dcmSim.ps();}">
-<input type="button" value="Step" onclick="document.getElementById('dcmPlay').value='Play';dcmSim.step();">
-<input type="button" value="Restart" onclick="document.getElementById('dcmPlay').value='Play';dcmSim.rst();">
-<input type="button" id="dcmSpin" value="Spin up" onclick="dcmSim.spinUp()">
-<span class="dcm_sep">View:</span>
-<input type="button" value="3D" onclick="dcmSim.view('3d')">
-<input type="button" value="Along axle" onclick="dcmSim.view('end')">
-<input type="button" value="Side" onclick="dcmSim.view('side')">
-<input type="button" value="Above" onclick="dcmSim.view('top')">
+<input type="button" class="dcm_btn" value="Step" onclick="document.getElementById('dcmPlay').value='Play';dcmSim.step();">
+<input type="button" class="dcm_btn dcm_warn" value="Restart" onclick="document.getElementById('dcmPlay').value='Play';dcmSim.rst();">
+<input type="button" class="dcm_btn" id="dcmSpin" value="Spin up" onclick="dcmSim.spinUp()">
 </div>
-<div class="dcm_footer">
-<div class="dcm_row" id="dcmModeRow">
-<label for="dcmMode"><b>Machine:</b></label>
+<div class="dcm_viewbar" role="group" aria-label="Choose view">
+<span class="dcm_vlbl">View</span>
+<button type="button" class="dcm_btn" onclick="dcmSim.view('3d')">3D</button>
+<button type="button" class="dcm_btn" onclick="dcmSim.view('end')">Along axle</button>
+<button type="button" class="dcm_btn" onclick="dcmSim.view('side')">Side</button>
+<button type="button" class="dcm_btn" onclick="dcmSim.view('top')">Above</button>
+<button type="button" class="dcm_btn" aria-label="Zoom out" onclick="dcmSim.zoom(1.15)">Zoom &minus;</button>
+<button type="button" class="dcm_btn" aria-label="Zoom in" onclick="dcmSim.zoom(1/1.15)">Zoom +</button>
+</div>
+</div>
+</div><!-- left column -->
+<!-- Right column -->
+<div class="dcm_rightcol">
+<!-- Machine -->
+<div class="dcm_panel" role="group" aria-labelledby="dcmMachHd">
+<div class="dcm_paneltitle" id="dcmMachHd">Machine</div>
+<div class="dcm_panelbody dcm_row" id="dcmModeRow">
+<div class="dcm_field"><label for="dcmMode" class="dcm_ctrlname">Machine</label>
 <select id="dcmMode" onchange="dcmSim.mode(this.value)">
 <option value="dcmotor">DC motor (battery)</option>
 <option value="acmotor">AC motor (AC source)</option>
 <option value="gen">Generator (hand crank + scope)</option>
 <option value="bldc">Brushless DC motor</option>
-</select>
-<span id="dcmCommWrap">
-<label for="dcmComm"><b>Commutator:</b></label>
+</select></div>
+<span class="dcm_field" id="dcmCommWrap"><label for="dcmComm" class="dcm_ctrlname">Commutator</label>
 <select id="dcmComm" onchange="dcmSim.opt('split',this.value==='split')">
 <option value="split">Split ring</option>
 <option value="slip">Slip rings</option>
-</select>
-</span>
-<span id="dcmFieldWrap">
-<label for="dcmField"><b>Field:</b></label>
+</select></span>
+<span class="dcm_field" id="dcmFieldWrap"><label for="dcmField" class="dcm_ctrlname">Field</label>
 <select id="dcmField" onchange="dcmSim.opt('field',this.value)">
 <option value="perm">Permanent magnets</option>
 <option value="series">Electromagnets in series (universal motor)</option>
-</select>
-</span>
-<span id="dcmCoilsWrap">
-<label for="dcmCoils"><b>Coils:</b></label>
+</select></span>
+<span class="dcm_field" id="dcmCoilsWrap"><label for="dcmCoils" class="dcm_ctrlname">Coils</label>
 <select id="dcmCoils" onchange="dcmSim.par('nc',this.value,false)">
 <option value="1">1</option>
 <option value="3">3</option>
-</select>
-</span>
-<span id="dcmBldcWrap">
-<label for="dcmCtrl"><b>Controller:</b></label>
+</select></span>
+<span class="dcm_field" id="dcmBldcWrap"><label for="dcmCtrl" class="dcm_ctrlname">Controller</label>
 <select id="dcmCtrl" onchange="dcmSim.opt('ctrl',this.value)">
 <option value="six">Switching (Hall sensors)</option>
 <option value="fixed">Not switching</option>
@@ -85,110 +96,181 @@ onclick="if(this.value=='Play'){dcmSim.pl();this.value='Pause';}else{this.value=
 <select id="dcmDir" aria-label="Direction of rotation" onchange="dcmSim.opt('dir',this.value)">
 <option value="1">Forward</option>
 <option value="-1">Reverse</option>
-</select>
-</span>
+</select></span>
 </div>
-<div class="dcm_checks">
-<label id="dcmElecWrap"><input type="checkbox" id="dcmElec" onclick="dcmSim.opt('electron',this.checked)"> Electron flow</label>
-<label><input type="checkbox" id="dcmLabels" checked onclick="dcmSim.opt('labels',this.checked)"> Labels</label>
-<label class="dcm_ckB"><input type="checkbox" id="dcmShowB" checked onclick="dcmSim.opt('showB',this.checked)"> B field</label>
-<label class="dcm_ckV" id="dcmVWrap"><input type="checkbox" id="dcmShowV" checked onclick="dcmSim.opt('showV',this.checked)"> Velocity</label>
-<label class="dcm_ckF" id="dcmFWrap"><input type="checkbox" id="dcmShowF" checked onclick="dcmSim.opt('showF',this.checked)"> Force</label>
-<label class="dcm_ckS"><input type="checkbox" id="dcmScope" checked onclick="dcmSim.opt('scope',this.checked)"> Scope</label>
 </div>
-<div class="dcm_sliders">
+<!-- Controls -->
+<div class="dcm_panel" role="group" aria-labelledby="dcmCtlHd">
+<div class="dcm_paneltitle" id="dcmCtlHd">Controls</div>
+<div class="dcm_panelbody">
 <div class="dcm_ctrl dcm_cI" id="dcmIRow">
-<label for="dcmI" id="dcmILab">Current I</label>
-<input type="range" id="dcmI" min="-2" max="2" step="0.05" value="1"
-oninput="dcmSim.par('I',this.value,true)" onchange="dcmSim.par('I',this.value,false)">
-<span id="dcmIVal">1.00</span>&nbsp;A
+<div class="dcm_ctrlhdr"><label for="dcmI" class="dcm_ctrlname" id="dcmILab">Current I</label><span class="dcm_sval"><span id="dcmIVal">1.00</span> A</span></div>
+<input type="range" id="dcmI" min="-2" max="2" step="0.05" value="1" oninput="dcmSim.par('I',this.value,true)" onchange="dcmSim.par('I',this.value,false)">
 </div>
 <div class="dcm_ctrl dcm_cI" id="dcmFRow">
-<label for="dcmF">Source frequency f</label>
-<input type="range" id="dcmF" min="0.1" max="1" step="0.05" value="0.5"
-oninput="dcmSim.par('f',this.value,true)" onchange="dcmSim.par('f',this.value,false)">
-<span id="dcmFVal">0.50</span>&nbsp;Hz
+<div class="dcm_ctrlhdr"><label for="dcmF" class="dcm_ctrlname">Source frequency <span class="dcm_sym">f</span></label><span class="dcm_sval"><span id="dcmFVal">0.50</span> Hz</span></div>
+<input type="range" id="dcmF" min="0.1" max="1" step="0.05" value="0.5" oninput="dcmSim.par('f',this.value,true)" onchange="dcmSim.par('f',this.value,false)">
 </div>
 <div class="dcm_ctrl dcm_cI" id="dcmCrankRow">
-<label for="dcmCrank">Crank speed</label>
-<input type="range" id="dcmCrank" min="-1" max="1" step="0.05" value="0.5"
-oninput="dcmSim.par('crank',this.value,true)" onchange="dcmSim.par('crank',this.value,false)">
-<span id="dcmCrankVal">0.50</span>&nbsp;rev/s
+<div class="dcm_ctrlhdr"><label for="dcmCrank" class="dcm_ctrlname">Crank speed</label><span class="dcm_sval"><span id="dcmCrankVal">0.50</span> rev/s</span></div>
+<input type="range" id="dcmCrank" min="-1" max="1" step="0.05" value="0.5" oninput="dcmSim.par('crank',this.value,true)" onchange="dcmSim.par('crank',this.value,false)">
 </div>
 <div class="dcm_ctrl dcm_cB">
-<label for="dcmB" id="dcmBLab">Field B<sub>z</sub></label>
-<input type="range" id="dcmB" min="-2" max="2" step="0.01" value="0.86"
-oninput="dcmSim.par('B',this.value,true)" onchange="dcmSim.par('B',this.value,false)">
-<span id="dcmBVal">0.86</span>&nbsp;T
+<div class="dcm_ctrlhdr"><label for="dcmB" class="dcm_ctrlname" id="dcmBLab">Field B<sub>z</sub></label><span class="dcm_sval"><span id="dcmBVal">0.86</span> T</span></div>
+<input type="range" id="dcmB" min="-2" max="2" step="0.01" value="0.86" oninput="dcmSim.par('B',this.value,true)" onchange="dcmSim.par('B',this.value,false)">
 </div>
 <div class="dcm_ctrl">
-<label for="dcmN" id="dcmNLab">Turns per coil N</label>
-<input type="range" id="dcmN" min="1" max="20" step="1" value="1"
-oninput="dcmSim.par('N',this.value,true)" onchange="dcmSim.par('N',this.value,false)">
-<span id="dcmNVal">1</span>
+<div class="dcm_ctrlhdr"><label for="dcmN" class="dcm_ctrlname" id="dcmNLab">Turns per coil N</label><span class="dcm_sval"><span id="dcmNVal">1</span></span></div>
+<input type="range" id="dcmN" min="1" max="20" step="1" value="1" oninput="dcmSim.par('N',this.value,true)" onchange="dcmSim.par('N',this.value,false)">
 </div>
 <div class="dcm_ctrl" id="dcmJRow">
-<label for="dcmJ">Moment of inertia</label>
-<input type="range" id="dcmJ" min="0.1" max="5" step="0.1" value="1"
-oninput="dcmSim.par('J',this.value,true)" onchange="dcmSim.par('J',this.value,false)">
-<span id="dcmJVal">1.0</span>&nbsp;kg·m²
+<div class="dcm_ctrlhdr"><label for="dcmJ" class="dcm_ctrlname">Moment of inertia</label><span class="dcm_sval"><span id="dcmJVal">1.0</span> kg·m²</span></div>
+<input type="range" id="dcmJ" min="0.1" max="5" step="0.1" value="1" oninput="dcmSim.par('J',this.value,true)" onchange="dcmSim.par('J',this.value,false)">
 </div>
 <div class="dcm_ctrl" id="dcmKRow">
-<label for="dcmK">Friction k</label>
-<input type="range" id="dcmK" min="0" max="3" step="0.05" value="0.2"
-oninput="dcmSim.par('k',this.value,true)" onchange="dcmSim.par('k',this.value,false)">
-<span id="dcmKVal">0.20</span>&nbsp;N·m·s
+<div class="dcm_ctrlhdr"><label for="dcmK" class="dcm_ctrlname">Friction <span class="dcm_sym">k</span></label><span class="dcm_sval"><span id="dcmKVal">0.20</span> N·m·s</span></div>
+<input type="range" id="dcmK" min="0" max="3" step="0.05" value="0.2" oninput="dcmSim.par('k',this.value,true)" onchange="dcmSim.par('k',this.value,false)">
 </div>
 <div class="dcm_ctrl" id="dcmGapRow">
-<label for="dcmGap">Commutator gap</label>
-<input type="range" id="dcmGap" min="0" max="40" step="1" value="20"
-oninput="dcmSim.par('gap',this.value,true)" onchange="dcmSim.par('gap',this.value,false)">
-<span id="dcmGapVal">20</span>°
+<div class="dcm_ctrlhdr"><label for="dcmGap" class="dcm_ctrlname">Commutator gap</label><span class="dcm_sval"><span id="dcmGapVal">20</span>°</span></div>
+<input type="range" id="dcmGap" min="0" max="40" step="1" value="20" oninput="dcmSim.par('gap',this.value,true)" onchange="dcmSim.par('gap',this.value,false)">
 </div>
 </div>
-<div class="dcm_hint" id="dcmHint">Drag the picture to turn the view, scroll to zoom. With the picture focused, the arrow keys turn the view and + / − zoom.</div>
+</div>
+<!-- Display -->
+<div class="dcm_panel" role="group" aria-labelledby="dcmDispHd">
+<div class="dcm_paneltitle" id="dcmDispHd">Display</div>
+<div class="dcm_panelbody">
+<label class="dcm_chk" id="dcmElecWrap"><input type="checkbox" id="dcmElec" onclick="dcmSim.opt('electron',this.checked)"> Electron flow</label>
+<label class="dcm_chk"><input type="checkbox" id="dcmLabels" checked onclick="dcmSim.opt('labels',this.checked)"> Labels</label>
+<label class="dcm_chk dcm_ckB"><input type="checkbox" id="dcmShowB" checked onclick="dcmSim.opt('showB',this.checked)"> B field</label>
+<label class="dcm_chk dcm_ckV" id="dcmVWrap"><input type="checkbox" id="dcmShowV" checked onclick="dcmSim.opt('showV',this.checked)"> Velocity</label>
+<label class="dcm_chk dcm_ckF" id="dcmFWrap"><input type="checkbox" id="dcmShowF" checked onclick="dcmSim.opt('showF',this.checked)"> Force</label>
+<label class="dcm_chk dcm_ckS"><input type="checkbox" id="dcmScope" checked onclick="dcmSim.opt('scope',this.checked)"> Scope</label>
 </div>
 </div>
+<p class="dcm_hint" id="dcmHint">Drag the picture to turn the view; scroll, pinch or use the zoom buttons to zoom. With the picture focused, the arrow keys turn the view and + / − zoom.</p>
+</div><!-- right column -->
+<!-- Formula strip -->
+<div class="dcm_formulastrip">
+<span class="dcm_formulatxt">Motor torque &tau; = &Sigma; s<sub>k</sub> N i A B cos(&theta; + &phi;<sub>k</sub>) &nbsp;|&nbsp; J d&omega;/dt = &tau; &minus; k&omega; &nbsp;|&nbsp; Generator emf e = N A B &omega; cos &theta; &nbsp;|&nbsp; Brushless: &tau; = N I A B sin(&psi; &minus; &theta;)</span>
+</div>
+</div><!-- instrument -->
+<div id="dcmNarBar" class="dcm_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+</div><!-- #dcmRoot -->
 <style>
-#dcmRoot, #dcmRoot * { box-sizing:border-box; margin:0; }
-#dcmRoot { width:646px; font-family:Arial, sans-serif; font-size:10pt;
+/* ════════ All simulator rules scoped to #dcmRoot (Hall effect template) ════════ */
+#dcmRoot {
+--dcmu-chassis:#1a1c1f; --dcmu-panel:#22262b; --dcmu-panel-hi:#2c3138; --dcmu-panel-lo:#14161a;
+--dcmu-border:#3a4048; --dcmu-border-hi:#525c66; --dcmu-text:#c8d0d8; --dcmu-dim:#8a94a3; --dcmu-bright:#e8eef5;
+--dcmu-accent:#e8a020; --dcmu-green:#3ad08f; --dcmu-val:#ffdd66; --dcmu-scope:#7aa7ff;
+--dcmu-focus:#e8a020; --dcmu-nar-bg:#2a2410; --dcmu-nar-border:#e0b040; --dcmu-nar-text:#f0e2b8;
 --dcm-bg:#c8dcd0; --dcm-text:#111111; --dcm-coil:#666666; --dcm-coilOn:#b8732e; --dcm-wire:#222222; --dcm-axle:#ffffff;
 --dcm-ringX:#d62020; --dcm-ringY:#1f4fd6; --dcm-brush:#3a3a3a;
 --dcm-north:#e53935; --dcm-south:#1e5bd8; --dcm-field:#f08c00;
 --dcm-qpos:#f2d600; --dcm-qneg:#19b919; --dcm-vel:#c000c0; --dcm-force:#008a00;
 --dcm-label:#ffffff; --dcm-box:rgba(255,255,255,.82); --dcm-toolbar:#222;
---dcm-tr1:#c9a400; --dcm-tr2:#008a00; --dcm-tr3:#c000c0; }
-#dcmRoot canvas { display:block; margin:auto; border:1px solid #ccc; cursor:grab; touch-action:none; }
-#dcmRoot .dcm_a11y { display:flex; gap:6px; padding:6px 8px; background:var(--dcm-toolbar); flex-wrap:wrap; }
-#dcmRoot .dcm_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px;
-cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; transition:border-color .15s,color .15s; }
-#dcmRoot .dcm_a11ybtn:hover { border-color:#00e8d0; color:#00e8d0; }
-#dcmRoot .dcm_a11yon { background:rgba(0,232,208,.12); border-color:#00e8d0; color:#00e8d0; }
-#dcmRoot .dcm_tbar { padding:4px; height:35px; background:#f90; text-align:center; line-height:27px; color:#111; }
-#dcmRoot .dcm_tbar h3 { font-size:1.1rem; font-weight:bold; }
-#dcmRoot .dcm_mcontent { height:484px; padding-top:1px; }
-#dcmRoot .dcm_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040;
-font-size:.88rem; color:#333; font-style:italic; }
-#dcmRoot .dcm_bbar { background:#df9; padding:10px 6px; text-align:center; color:#111; }
-#dcmRoot .dcm_bbar input[type=button] { margin:2px 2px; padding:4px 8px; cursor:pointer; }
-#dcmRoot .dcm_sep { margin-left:8px; font-weight:bold; }
-#dcmRoot .dcm_footer { background:#fce4ec; padding:6px 8px 8px 8px; color:#111; }
-#dcmRoot .dcm_row { display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; padding:2px 0 6px 0; }
-#dcmRoot .dcm_row span { display:inline-flex; align-items:center; gap:4px; }
-#dcmRoot .dcm_checks { display:flex; flex-wrap:wrap; gap:6px 10px; padding:2px 0 6px 0; }
-#dcmRoot .dcm_checks label { padding:2px 6px; border-radius:3px; }
-#dcmRoot .dcm_ckB { background:#ffd27a; }
-#dcmRoot .dcm_ckV { background:#f3c6f3; }
-#dcmRoot .dcm_ckF { background:#bfe8bf; }
-#dcmRoot .dcm_ckS { background:#d6e4ff; }
-#dcmRoot .dcm_sliders { display:flex; flex-wrap:wrap; }
-#dcmRoot .dcm_ctrl { width:50%; display:flex; align-items:center; gap:6px; padding:3px 4px; }
-#dcmRoot .dcm_ctrl label { width:122px; }
-#dcmRoot .dcm_ctrl input[type=range] { width:120px; }
-#dcmRoot .dcm_cI { background:#fff6a8; }
-#dcmRoot .dcm_cB { background:#ffd27a; }
-#dcmRoot .dcm_hint { padding:6px 4px 0 4px; font-size:8.5pt; color:#555; }
-#dcmRoot input:focus-visible, #dcmRoot button:focus-visible, #dcmRoot select:focus-visible, #dcmRoot canvas:focus-visible { outline:2px solid #00a3ff; outline-offset:1px; }
+--dcm-tr1:#c9a400; --dcm-tr2:#008a00; --dcm-tr3:#c000c0;
+background:var(--dcmu-chassis);
+background-image:
+repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px),
+repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
+font-family:Arial, sans-serif; color:var(--dcmu-text);
+display:flex; flex-direction:column; align-items:center;
+padding:16px 10px 20px; gap:12px; box-sizing:border-box;
+width:100%; max-width:860px; margin:0 auto 10px; border-radius:6px; position:relative;
+}
+#dcmRoot.dcm_lm {
+--dcmu-chassis:#e9edf1; --dcmu-panel:#ffffff; --dcmu-panel-hi:#f1f4f7; --dcmu-panel-lo:#f4f6f9;
+--dcmu-border:#c3cad3; --dcmu-border-hi:#9aa3ae; --dcmu-text:#1d232a; --dcmu-dim:#556070; --dcmu-bright:#000000;
+--dcmu-accent:#a8620a; --dcmu-green:#12805a; --dcmu-val:#8a4a00; --dcmu-scope:#1f4fd6;
+--dcmu-focus:#a8620a; --dcmu-nar-bg:#ffefc0; --dcmu-nar-border:#e0b040; --dcmu-nar-text:#333333;
+background-image:none;
+}
+#dcmRoot.dcm_hc {
+--dcmu-chassis:#000000; --dcmu-panel:#000000; --dcmu-panel-hi:#111111; --dcmu-panel-lo:#000000;
+--dcmu-border:#ffffff; --dcmu-border-hi:#ffffff; --dcmu-text:#ffffff; --dcmu-dim:#e0e0e0; --dcmu-bright:#ffffff;
+--dcmu-accent:#ffd700; --dcmu-green:#00ff88; --dcmu-val:#ffff00; --dcmu-scope:#55aaff;
+--dcmu-focus:#ffff00; --dcmu-nar-bg:#000000; --dcmu-nar-border:#ffd700; --dcmu-nar-text:#ffffff;
+background-image:none;
+}
+#dcmRoot.dcm_hc .dcm_panel, #dcmRoot.dcm_hc .dcm_diagpanel { border-width:2px; }
+#dcmRoot *, #dcmRoot *::before, #dcmRoot *::after { box-sizing:border-box; margin:0; padding:0; }
+#dcmRoot input:focus-visible, #dcmRoot button:focus-visible, #dcmRoot select:focus-visible, #dcmRoot canvas:focus-visible { outline:2px solid var(--dcmu-focus); outline-offset:2px; }
+/* toolbar */
+#dcmRoot .dcm_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; width:100%; }
+#dcmRoot .dcm_a11ybtn { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--dcmu-panel-hi); border:1px solid var(--dcmu-border-hi); color:var(--dcmu-dim); }
+#dcmRoot .dcm_a11ybtn:hover { border-color:var(--dcmu-accent); color:var(--dcmu-accent); }
+#dcmRoot .dcm_a11yon { background:rgba(58,208,143,.14); border-color:var(--dcmu-green); color:var(--dcmu-green); font-weight:bold; }
+/* header */
+#dcmRoot .dcm_header { display:flex; flex-direction:column; align-items:center; gap:3px; }
+#dcmRoot .dcm_h1 { font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--dcmu-accent); text-align:center; }
+#dcmRoot .dcm_sub { font-size:.7rem; color:var(--dcmu-dim); letter-spacing:.08em; text-transform:uppercase; text-align:center; }
+/* grid */
+#dcmRoot .dcm_instrument { display:grid; grid-template-columns:minmax(0,1fr) 250px; gap:12px; width:100%; }
+#dcmRoot .dcm_leftcol { display:flex; flex-direction:column; gap:12px; min-width:0; }
+#dcmRoot .dcm_diagpanel { background:var(--dcmu-panel); border:1px solid var(--dcmu-border); border-radius:6px; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+#dcmRoot .dcm_diaglabel { background:var(--dcmu-panel-lo); border-bottom:1px solid var(--dcmu-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--dcmu-dim); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+#dcmRoot .dcm_diaglabel b { color:var(--dcmu-accent); }
+#dcmRoot .dcm_diagnote { text-transform:none; letter-spacing:.02em; }
+#dcmRoot canvas { display:block; width:100%; max-width:640px; height:auto; margin:0 auto; cursor:grab; touch-action:none; }
+#dcmRoot .dcm_runbar { display:grid; grid-template-columns:repeat(auto-fit, minmax(70px, 1fr)); gap:6px; padding:8px 10px; background:var(--dcmu-panel-lo); border-top:1px solid var(--dcmu-border); }
+#dcmRoot .dcm_viewbar { display:flex; flex-wrap:wrap; align-items:center; gap:5px; padding:6px 10px 8px; background:var(--dcmu-panel-lo); border-top:1px dashed var(--dcmu-border); }
+#dcmRoot .dcm_viewbar .dcm_btn { flex:1 1 auto; }
+#dcmRoot .dcm_vlbl { font-family:monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--dcmu-dim); margin-right:2px; }
+/* right column */
+#dcmRoot .dcm_rightcol { display:flex; flex-direction:column; gap:12px; width:250px; }
+#dcmRoot .dcm_panel { background:var(--dcmu-panel); border:1px solid var(--dcmu-border); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.3); }
+#dcmRoot .dcm_paneltitle { background:var(--dcmu-panel-lo); border-bottom:1px solid var(--dcmu-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--dcmu-dim); }
+#dcmRoot .dcm_panelbody { padding:9px 12px; display:flex; flex-direction:column; gap:7px; }
+#dcmRoot .dcm_ctrl { display:flex; flex-direction:column; gap:4px; padding-left:7px; border-left:3px solid transparent; }
+#dcmRoot .dcm_cI { border-left-color:var(--dcm-qpos); }
+#dcmRoot .dcm_cB { border-left-color:var(--dcm-field); }
+#dcmRoot .dcm_ctrlhdr { display:flex; justify-content:space-between; align-items:baseline; gap:6px; }
+#dcmRoot .dcm_ctrlname { font-size:.7rem; font-weight:600; letter-spacing:.04em; color:var(--dcmu-dim); text-transform:uppercase; }
+#dcmRoot .dcm_ctrlname sub, #dcmRoot .dcm_formulatxt sub, #dcmRoot .dcm_sym { text-transform:none; }
+#dcmRoot .dcm_sval { font-family:monospace; font-size:.74rem; color:var(--dcmu-val); white-space:nowrap; text-align:right; }
+#dcmRoot input[type=range] { width:100%; -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; outline:none; cursor:pointer; background:var(--dcmu-panel-lo); border:1px solid var(--dcmu-border); }
+#dcmRoot input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--dcmu-accent); border:2px solid var(--dcmu-panel); cursor:pointer; }
+#dcmRoot input[type=range]::-moz-range-thumb { width:12px; height:12px; border-radius:50%; background:var(--dcmu-accent); border:2px solid var(--dcmu-panel); cursor:pointer; }
+#dcmRoot select { width:100%; background:var(--dcmu-panel-hi); color:var(--dcmu-text); border:1px solid var(--dcmu-border-hi); border-radius:3px; padding:3px 5px; font-size:.72rem; }
+#dcmRoot .dcm_field { display:flex; flex-direction:column; gap:3px; }
+#dcmRoot .dcm_chk { display:flex; align-items:center; gap:6px; font-size:.74rem; color:var(--dcmu-text); cursor:pointer; padding-left:7px; border-left:3px solid transparent; }
+#dcmRoot .dcm_chk input { accent-color:var(--dcmu-accent); width:14px; height:14px; }
+#dcmRoot .dcm_ckB { border-left-color:var(--dcm-field); }
+#dcmRoot .dcm_ckV { border-left-color:var(--dcm-vel); }
+#dcmRoot .dcm_ckF { border-left-color:var(--dcm-force); }
+#dcmRoot .dcm_ckS { border-left-color:var(--dcmu-scope); }
+#dcmRoot .dcm_btn { padding:6px 6px; font-family:monospace; font-size:.66rem; letter-spacing:.04em; cursor:pointer; background:var(--dcmu-panel-hi); border:1px solid var(--dcmu-border-hi); color:var(--dcmu-text); border-radius:3px; text-transform:uppercase; }
+#dcmRoot .dcm_btn:hover { border-color:var(--dcmu-accent); }
+#dcmRoot .dcm_runbar .dcm_btn { font-size:.72rem; padding:8px 4px; }
+#dcmRoot .dcm_play { font-weight:bold; }
+#dcmRoot .dcm_warn { color:#e0605a; border-color:#a04040; }
+#dcmRoot.dcm_lm .dcm_warn { color:#b02020; border-color:#c06060; }
+#dcmRoot .dcm_hint { font-size:.66rem; color:var(--dcmu-dim); line-height:1.4; padding:0 4px; }
+/* formula strip, narration */
+#dcmRoot .dcm_formulastrip { grid-column:1 / 3; background:var(--dcmu-panel-lo); border:1px solid var(--dcmu-border); border-radius:4px; padding:7px 14px; }
+#dcmRoot .dcm_formulatxt { font-family:monospace; font-size:.66rem; color:var(--dcmu-dim); letter-spacing:.04em; line-height:1.6; }
+#dcmRoot .dcm_narbar { width:100%; min-height:28px; padding:6px 12px; background:var(--dcmu-nar-bg); border-left:4px solid var(--dcmu-nar-border); font-size:.82rem; color:var(--dcmu-nar-text); font-style:italic; line-height:1.45; border-radius:3px; }
+/* narrow screens: stack the columns */
+@media (max-width:820px) {
+#dcmRoot .dcm_instrument { grid-template-columns:minmax(0,1fr); }
+#dcmRoot .dcm_rightcol { width:auto; }
+#dcmRoot .dcm_formulastrip { grid-column:auto; }
+}
+/* phones and tablets: bigger touch targets */
+@media (pointer:coarse) {
+#dcmRoot input[type=range] { height:8px; }
+#dcmRoot input[type=range]::-webkit-slider-thumb { width:26px; height:26px; }
+#dcmRoot input[type=range]::-moz-range-thumb { width:24px; height:24px; }
+#dcmRoot .dcm_btn, #dcmRoot .dcm_a11ybtn { min-height:40px; }
+#dcmRoot select { min-height:36px; font-size:.9rem; }
+#dcmRoot .dcm_chk input { width:22px; height:22px; }
+#dcmRoot .dcm_panelbody { gap:12px; }
+}
+@media (max-width:560px) {
+#dcmRoot { padding:10px 6px 14px; }
+}
 </style>
 <!-- ════════ A11Y CONTROLLER ════════
 Same API as the VDG example (init / toggle / narrate / col). Themes are layered over the
@@ -218,12 +300,11 @@ var p, order = ['lm','cb','hc'];
 cur = {}; for (p in DEFS) cur[p] = DEFS[p];
 for (var i=0; i<order.length; i++){ if (states[order[i]]){ var t = THEMES[order[i]]; for (p in t) cur[p] = t[p]; } }
 for (p in cur) ROOT.style.setProperty(p, cur[p]);
+ROOT.classList.toggle('dcm_hc', states.hc); ROOT.classList.toggle('dcm_lm', states.lm); ROOT.classList.toggle('dcm_cb', states.cb);
 }
 function styleBtn(id,on){
 var b=document.getElementById(id); if(!b)return;
-b.style.background=on?'rgba(0,232,208,.12)':'#2a2e3a';
-b.style.borderColor=on?'#00e8d0':'#404a60';
-b.style.color=on?'#00e8d0':'#7a8aaa';
+b.classList.toggle('dcm_a11yon', on);
 b.setAttribute('aria-pressed',on?'true':'false');
 }
 function apply(){
@@ -284,6 +365,8 @@ var dcmGen = function(){
 var canvas = document.getElementById('dcmCanvas');
 var ctx = canvas.getContext('2d');
 var W = canvas.width, H = canvas.height;
+var DPR = window.devicePixelRatio || 1;   /* sharp on phones: draw at device resolution, CSS scales the canvas to the panel */
+canvas.width = W*DPR; canvas.height = H*DPR; ctx.scale(DPR, DPR);
 var timer, runFlag = 0;
 var CFG = (typeof dcmConfig !== 'undefined') ? dcmConfig : {};
 function c(k){ return dcmA11y.col(k); }
@@ -764,7 +847,7 @@ msg = 'Coil angle ' + deg.toFixed(0) + '°, crank turning at ' + Math.abs(w/(2*M
 msg += 'The changing magnetic flux through the coil induces an emf; the scope reads ' + v.toFixed(2) + ' V. ';
 if (Math.abs(w) < 0.01) msg += 'With the coil at rest the flux is not changing, so there is no emf. ';
 else if (O.split) msg += NC() === 1 ? 'The split ring swaps the connections every half turn, so the output always has the same sign: direct current that rises and falls. '
-: 'With three coils, the split ring always connects the coil that is cutting the field fastest, so the output stays close to its peak: much steadier direct current. ';
+          : 'With three coils, the split ring always connects the coil that is cutting the field fastest, so the output stays close to its peak: much steadier direct current. ';
 else msg += 'The slip rings keep each end of the coil on the same brush, so the output reverses every half turn: alternating current. ';
 if (P.N > 1) msg += 'With ' + P.N + ' turns, the emf is ' + P.N + ' times that of a single loop.';
 } else {
@@ -783,7 +866,7 @@ msg += O.split ? 'The field coils carry the same current, so the field reverses 
 } else if (M === 'acmotor'){
 var inStep = Math.abs(Math.abs(w) - 2*Math.PI*syncRev()) < 0.3;
 if (!O.split) msg += inStep ? 'The coil turns once per cycle of the source, so the current reverses just as the coil passes the position where the torque would reverse, and the motor keeps going.'
-: 'Unless the coil turns in step with the source (' + syncRev().toFixed(2) + ' rev/s), the torque keeps reversing and averages out. Use Spin up to bring it to that speed.';
+    : 'Unless the coil turns in step with the source (' + syncRev().toFixed(2) + ' rev/s), the torque keeps reversing and averages out. Use Spin up to bring it to that speed.';
 else msg += inStep ? 'With the split ring the coil runs at half the source frequency (' + syncRev().toFixed(2) + ' rev/s): the commutator reverses the current every half turn and the source every half cycle, and at this speed the two line up often enough to give a weak average torque.'
 : 'With a split ring, the commutator and the AC source both reverse the current. At the source frequency these reversals cancel and the torque averages out; the only steady speed is half the source frequency (' + syncRev().toFixed(2) + ' rev/s). Use Spin up to try it.';
 }
@@ -840,7 +923,7 @@ var intro = {
 dcmotor: 'Ready. A DC motor: the battery drives current through the coil' + (NC() === 3 ? 's' : '') + ' via the brushes and the ' + (O.split ? 'split-ring commutator' : 'slip rings') + '. The magnetic field points up from the N pole to the S pole. Press Play.',
 acmotor: 'Ready. An AC motor: the source current reverses every ' + (0.5/P.f).toFixed(1) + ' s and reaches the coil through ' + (O.split ? 'a split-ring commutator' : 'slip rings') + '. ' +
  (O.field === 'series' ? 'The field electromagnets carry the same current, so the motor starts by itself. Press Play.'
- : 'With permanent magnets the coil only rocks from rest; press Spin up to bring it to its in-step speed of ' + syncRev().toFixed(2) + ' rev/s. Press Play.'),
+     : 'With permanent magnets the coil only rocks from rest; press Spin up to bring it to its in-step speed of ' + syncRev().toFixed(2) + ' rev/s. Press Play.'),
 gen: 'Ready. A generator: turn the crank (or set the crank speed and press Play) and watch the induced emf on the scope. Choose slip rings for AC or the split ring for DC.',
 bldc: 'Ready. A brushless DC motor: the permanent magnet is the part that spins, and the three stator coils A, B and C stay still. A controller reads the rotor angle and switches the coils on in turn. Press Play.'
 }[M];
@@ -873,11 +956,11 @@ else O[k] = (k === 'split') ? !!v : !!v;
 if (k === 'split'){ if (O.split) P.gap = P.nc === 3 ? 10 : 20; syncUI(); hist = []; }
 if (!runFlag) drawFrame();
 if (k === 'split') dcmA11y.narrate(O.split ? 'Split-ring commutator: every half turn it swaps the connections to the coil.'
- : 'Slip rings: each end of the coil stays on the same brush, so the coil connections never swap. Slip rings work with one coil only.');
+                     : 'Slip rings: each end of the coil stays on the same brush, so the coil connections never swap. Slip rings work with one coil only.');
 else if (k === 'electron') dcmA11y.narrate(v ? 'Showing electron flow: the green electrons move opposite to the conventional current, yet the magnetic forces are unchanged, because both the charge and the velocity change sign.'
-: 'Showing conventional current: positive charges moving away from the + terminal.');
+                       : 'Showing conventional current: positive charges moving away from the + terminal.');
 else if (k === 'field') dcmA11y.narrate(v === 'series' ? 'Universal motor: the magnets are replaced by electromagnets wired in series with the coil. When the AC current reverses, the field reverses too, so the force on each side of the coil keeps its direction; with the split ring this works like a DC motor at any speed, with no need to keep in step with the source.'
- : 'Permanent magnets: the field stays fixed while the AC current reverses.');
+                                   : 'Permanent magnets: the field stays fixed while the AC current reverses.');
 else sceneNarration();
 }
 /* synchronous speed: slip rings lock at the source frequency f; a split ring already reverses the
@@ -899,8 +982,15 @@ dcmA11y.narrate('View changed: ' + (words[name] || words['3d']) + '.');
 }
 /* ── pointer: drag the crank (generator) or orbit the camera ── */
 var drag = null;
+/* two-finger pinch zooms the view on phones and tablets */
+var touchPts = {}, pinch = null;
+function nPts(){ return Object.keys(touchPts).length; }
+function ptsDist(){ var k = Object.keys(touchPts); return Math.hypot(touchPts[k[0]].x - touchPts[k[1]].x, touchPts[k[0]].y - touchPts[k[1]].y); }
+function zoom(f){ cam.dist = Math.max(3.5, Math.min(14, cam.dist*f)); if (!runFlag) drawFrame(); }
 function evPos(e){ var r = canvas.getBoundingClientRect(); return [(e.clientX - r.left)*W/r.width, (e.clientY - r.top)*H/r.height]; }
 canvas.addEventListener('pointerdown', function(e){
+touchPts[e.pointerId] = { x:e.clientX, y:e.clientY };
+if (nPts() === 2 && !crank){ drag = null; pinch = { d:Math.max(10, ptsDist()), dist:cam.dist }; try{ canvas.setPointerCapture(e.pointerId); }catch(err){} return; }
 var p = evPos(e);
 if (M === 'gen'){
 setCamera(); var kn = pj(crankKnob());
@@ -916,6 +1006,8 @@ try{ canvas.setPointerCapture(e.pointerId); }catch(err){}
 canvas.style.cursor = 'grabbing';
 });
 canvas.addEventListener('pointermove', function(e){
+if (touchPts[e.pointerId]) touchPts[e.pointerId] = { x:e.clientX, y:e.clientY };
+if (pinch && nPts() === 2){ cam.dist = Math.max(3.5, Math.min(14, pinch.dist*pinch.d/Math.max(10, ptsDist()))); if (!runFlag) drawFrame(); return; }
 if (crank){
 var p = evPos(e), hub = pj([HX, 0, 0]), ang = Math.atan2(p[1] - hub.y, p[0] - hub.x);
 var d = wrapPi(ang - crank.ang), sgn = CF[0] < 0 ? 1 : -1, now = performance.now(), dtr = Math.max(0.005, (now - crank.time)/1000);
@@ -935,6 +1027,8 @@ if (crank){ crank = null; if (!runFlag){ w = 0; drawFrame(); } sceneNarration();
 drag = null; canvas.style.cursor = 'grab';
 }
 canvas.addEventListener('pointerup', endDrag); canvas.addEventListener('pointercancel', endDrag);
+function forgetPt(e){ if (e && e.pointerId !== undefined) delete touchPts[e.pointerId]; if (nPts() < 2) pinch = null; }
+canvas.addEventListener('pointerup', forgetPt); canvas.addEventListener('pointercancel', forgetPt);
 canvas.addEventListener('wheel', function(e){ e.preventDefault(); cam.dist = Math.max(3.5, Math.min(14, cam.dist * (e.deltaY > 0 ? 1.08 : 1/1.08))); if (!runFlag) drawFrame(); }, { passive:false });
 canvas.addEventListener('keydown', function(e){
 var used = true;
@@ -947,7 +1041,7 @@ if (used){ e.preventDefault(); if (!runFlag) drawFrame(); }
 M = ['dcmotor','acmotor','gen','bldc'].indexOf(CFG.mode) >= 0 ? CFG.mode : 'dcmotor';
 O.split = M !== 'acmotor';
 rst();
-return { pl:pl, ps:ps, step:step, rst:rst, par:par, opt:opt, mode:mode, spinUp:spinUp, view:view, redraw:function(){ drawFrame(); },
+return { pl:pl, ps:ps, step:step, rst:rst, par:par, opt:opt, mode:mode, spinUp:spinUp, view:view, zoom:zoom, redraw:function(){ drawFrame(); },
  crankPos:function(){ setCamera(); var k = pj(crankKnob()); return [k.x, k.y]; } };
 };
 var dcmSim = new dcmGen();

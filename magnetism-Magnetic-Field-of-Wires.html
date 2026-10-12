@@ -1,148 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations- Electricity and Magnetism: Magnetic Field of Current-Carrying Wires</title>
+<title>Physics Simulations-Magnetism: Magnetic Field -- Current-Carrying Wires</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,magnetism,magnetic field,long straight wire,superposition,Ampere,compass,right-hand rule,lesson,scientific">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching,magnetism, magnet, teach, learn,force, current, magnetic field, straight wires, superposition, Ampere, field map, compass, lesson, scientific">
+<meta name="description" content="Interactive simulation of the superposed magnetic field of long straight wires carrying currents into or out of the page.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
-<div id="wfroot1012" role="main" aria-label="Magnetic field from current-carrying wires">
+<main class="page">
+<div id="wfroot" role="region" aria-label="Magnetic field from current-carrying wires">
 <!-- Accessibility toolbar -->
-<div class="wf_a11y1012" role="toolbar" aria-label="Display options">
-<button type="button" class="wf_a11ybtn1012" id="btnHC1012" onclick="wireFields1012.toggleHC()" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="wf_a11ybtn1012" id="btnLight1012" onclick="wireFields1012.toggleLight()" aria-pressed="false">LIGHT MODE</button>
-<button type="button" class="wf_a11ybtn1012" id="btnCB1012" onclick="wireFields1012.toggleCB()" aria-pressed="false">COLOR-BLIND SAFE</button>
-<button type="button" class="wf_a11ybtn1012 wf_a11yon1012" id="btnNarr1012" onclick="wireFields1012.toggleNarr()" aria-pressed="true">NARRATION: ON</button>
+<div class="wf_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="wf_a11ybtn" id="btnHC" onclick="wireFields.toggleHC()" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="wf_a11ybtn" id="btnLight" onclick="wireFields.toggleLight()" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="wf_a11ybtn" id="btnCB" onclick="wireFields.toggleCB()" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="wf_a11ybtn wf_a11yon" id="btnNarr" onclick="wireFields.toggleNarr()" aria-pressed="true">NARRATION: ON</button>
 </div>
 <!-- Header -->
-<div class="wf_header1012">
-<p class="wf_h11012">Magnetic Field -- Current-Carrying Wires</p>
-<p class="wf_sub1012">Superposition of B-fields from long straight conductors -- currents perpendicular to the page</p>
+<div class="wf_header">
+<p class="wf_h1">Magnetic Field -- Current-Carrying Wires</p>
+<p class="wf_sub">Superposition of B-fields from long straight conductors -- currents perpendicular to the page</p>
 </div>
-<div id="motionNotice1012" class="wf_motionnotice1012" role="status">
+<div id="motionNotice" class="wf_motionnotice" role="status">
 Reduced motion is enabled. Field redraws are instant with no animation.
 </div>
 <!-- Instrument grid -->
-<div class="wf_instrument1012">
+<div class="wf_instrument">
 <!-- Diagram panel -->
-<div class="wf_diagpanel1012">
-<div class="wf_diaglabel1012">
+<div class="wf_diagpanel">
+<div class="wf_diaglabel">
 <span>FIELD MAP -- arrows show the direction of B, color and length its strength</span>
 </div>
-<canvas id="fieldCanvas1012" width="540" height="440" role="img" aria-label="Magnetic field vector map" aria-describedby="canvasDesc1012"></canvas>
-<p id="canvasDesc1012" class="wf_sronly1012">A grid of arrows showing the magnetic field from current-carrying wires.</p>
-<div class="wf_hoverbar1012" id="hoverReadout1012" role="status" aria-live="polite" aria-atomic="true">Move the cursor over the field to read B at that point</div>
+<canvas id="fieldCanvas" width="540" height="440" role="img" aria-label="Magnetic field vector map" aria-describedby="canvasDesc"></canvas>
+<p id="canvasDesc" class="wf_sronly">A grid of arrows showing the magnetic field from current-carrying wires.</p>
+<div class="wf_hoverbar" id="hoverReadout" role="status" aria-live="polite" aria-atomic="true">Move the cursor over, or tap, the field to read B at that point</div>
 </div>
 <!-- Right column -->
-<div class="wf_rightcol1012" id="wf_controls1012">
+<div class="wf_rightcol" id="wf_controls">
 <!-- Wire controls -->
-<div class="wf_panel1012" role="group" aria-labelledby="wiresHd1012">
-<div class="wf_paneltitle1012" id="wiresHd1012">Wire Controls</div>
-<div class="wf_panelbody1012">
+<div class="wf_panel" role="group" aria-labelledby="wiresHd">
+<div class="wf_paneltitle" id="wiresHd">Wire Controls</div>
+<div class="wf_panelbody">
 <!-- Wire 1 -->
-<div class="wf_wiresec1012" role="group" aria-labelledby="w1hd1012">
-<div class="wf_wirehead1012"><span class="wf_wiredot1012" id="dot11012"></span><span class="wf_wirelbl1012" id="w1hd1012">Wire 1</span></div>
-<div class="wf_srow1012"><label for="I11012" class="wf_slbl1012">I₁</label>
-<input type="range" id="I11012" min="-5" max="5" step="0.1" value="2" aria-label="Wire 1 current in amperes" oninput="wireFields1012.setI(0,this.value)" onchange="wireFields1012.setI(0,this.value)">
-<span class="wf_sval1012" id="I1val1012">+2.0 A</span></div>
-<div class="wf_srow1012"><label for="W1x1012" class="wf_slbl1012">x₁</label>
-<input type="range" id="W1x1012" min="-2" max="2" step="0.05" value="-0.8" aria-label="Wire 1 x position in metres" oninput="wireFields1012.setWx(0,this.value)" onchange="wireFields1012.setWx(0,this.value)">
-<span class="wf_sval1012" id="W1xval1012">−0.80 m</span></div>
-<div class="wf_srow1012"><label for="W1y1012" class="wf_slbl1012">y₁</label>
-<input type="range" id="W1y1012" min="-2" max="2" step="0.05" value="0.5" aria-label="Wire 1 y position in metres" oninput="wireFields1012.setWy(0,this.value)" onchange="wireFields1012.setWy(0,this.value)">
-<span class="wf_sval1012" id="W1yval1012">+0.50 m</span></div>
+<div class="wf_wiresec" role="group" aria-labelledby="w1hd">
+<div class="wf_wirehead"><span class="wf_wiredot" id="dot1"></span><span class="wf_wirelbl" id="w1hd">Wire 1</span></div>
+<div class="wf_srow"><label for="I1" class="wf_slbl">I₁</label>
+<input type="range" id="I1" min="-5" max="5" step="0.1" value="2" aria-label="Wire 1 current in amperes" oninput="wireFields.setI(0,this.value)" onchange="wireFields.setI(0,this.value)">
+<span class="wf_sval" id="I1val">+2.0 A</span></div>
+<div class="wf_srow"><label for="W1x" class="wf_slbl">x₁</label>
+<input type="range" id="W1x" min="-2" max="2" step="0.05" value="-0.8" aria-label="Wire 1 x position in metres" oninput="wireFields.setWx(0,this.value)" onchange="wireFields.setWx(0,this.value)">
+<span class="wf_sval" id="W1xval">−0.80 m</span></div>
+<div class="wf_srow"><label for="W1y" class="wf_slbl">y₁</label>
+<input type="range" id="W1y" min="-2" max="2" step="0.05" value="0.5" aria-label="Wire 1 y position in metres" oninput="wireFields.setWy(0,this.value)" onchange="wireFields.setWy(0,this.value)">
+<span class="wf_sval" id="W1yval">+0.50 m</span></div>
 </div>
 <!-- Wire 2 -->
-<div class="wf_wiresec1012" role="group" aria-labelledby="w2hd1012">
-<div class="wf_wirehead1012"><span class="wf_wiredot1012" id="dot21012"></span><span class="wf_wirelbl1012" id="w2hd1012">Wire 2</span></div>
-<div class="wf_srow1012"><label for="I21012" class="wf_slbl1012">I₂</label>
-<input type="range" id="I21012" min="-5" max="5" step="0.1" value="0" aria-label="Wire 2 current in amperes" oninput="wireFields1012.setI(1,this.value)" onchange="wireFields1012.setI(1,this.value)">
-<span class="wf_sval1012" id="I2val1012">0.0 A</span></div>
-<div class="wf_srow1012"><label for="W2x1012" class="wf_slbl1012">x₂</label>
-<input type="range" id="W2x1012" min="-2" max="2" step="0.05" value="0.8" aria-label="Wire 2 x position in metres" oninput="wireFields1012.setWx(1,this.value)" onchange="wireFields1012.setWx(1,this.value)">
-<span class="wf_sval1012" id="W2xval1012">+0.80 m</span></div>
-<div class="wf_srow1012"><label for="W2y1012" class="wf_slbl1012">y₂</label>
-<input type="range" id="W2y1012" min="-2" max="2" step="0.05" value="0.5" aria-label="Wire 2 y position in metres" oninput="wireFields1012.setWy(1,this.value)" onchange="wireFields1012.setWy(1,this.value)">
-<span class="wf_sval1012" id="W2yval1012">+0.50 m</span></div>
+<div class="wf_wiresec" role="group" aria-labelledby="w2hd">
+<div class="wf_wirehead"><span class="wf_wiredot" id="dot2"></span><span class="wf_wirelbl" id="w2hd">Wire 2</span></div>
+<div class="wf_srow"><label for="I2" class="wf_slbl">I₂</label>
+<input type="range" id="I2" min="-5" max="5" step="0.1" value="0" aria-label="Wire 2 current in amperes" oninput="wireFields.setI(1,this.value)" onchange="wireFields.setI(1,this.value)">
+<span class="wf_sval" id="I2val">0.0 A</span></div>
+<div class="wf_srow"><label for="W2x" class="wf_slbl">x₂</label>
+<input type="range" id="W2x" min="-2" max="2" step="0.05" value="0.8" aria-label="Wire 2 x position in metres" oninput="wireFields.setWx(1,this.value)" onchange="wireFields.setWx(1,this.value)">
+<span class="wf_sval" id="W2xval">+0.80 m</span></div>
+<div class="wf_srow"><label for="W2y" class="wf_slbl">y₂</label>
+<input type="range" id="W2y" min="-2" max="2" step="0.05" value="0.5" aria-label="Wire 2 y position in metres" oninput="wireFields.setWy(1,this.value)" onchange="wireFields.setWy(1,this.value)">
+<span class="wf_sval" id="W2yval">+0.50 m</span></div>
 </div>
 <!-- Wire 3 -->
-<div class="wf_wiresec1012" role="group" aria-labelledby="w3hd1012">
-<div class="wf_wirehead1012"><span class="wf_wiredot1012" id="dot31012"></span><span class="wf_wirelbl1012" id="w3hd1012">Wire 3</span></div>
-<div class="wf_srow1012"><label for="I31012" class="wf_slbl1012">I₃</label>
-<input type="range" id="I31012" min="-5" max="5" step="0.1" value="0" aria-label="Wire 3 current in amperes" oninput="wireFields1012.setI(2,this.value)" onchange="wireFields1012.setI(2,this.value)">
-<span class="wf_sval1012" id="I3val1012">0.0 A</span></div>
-<div class="wf_srow1012"><label for="W3x1012" class="wf_slbl1012">x₃</label>
-<input type="range" id="W3x1012" min="-2" max="2" step="0.05" value="0" aria-label="Wire 3 x position in metres" oninput="wireFields1012.setWx(2,this.value)" onchange="wireFields1012.setWx(2,this.value)">
-<span class="wf_sval1012" id="W3xval1012">+0.00 m</span></div>
-<div class="wf_srow1012"><label for="W3y1012" class="wf_slbl1012">y₃</label>
-<input type="range" id="W3y1012" min="-2" max="2" step="0.05" value="-0.8" aria-label="Wire 3 y position in metres" oninput="wireFields1012.setWy(2,this.value)" onchange="wireFields1012.setWy(2,this.value)">
-<span class="wf_sval1012" id="W3yval1012">−0.80 m</span></div>
+<div class="wf_wiresec" role="group" aria-labelledby="w3hd">
+<div class="wf_wirehead"><span class="wf_wiredot" id="dot3"></span><span class="wf_wirelbl" id="w3hd">Wire 3</span></div>
+<div class="wf_srow"><label for="I3" class="wf_slbl">I₃</label>
+<input type="range" id="I3" min="-5" max="5" step="0.1" value="0" aria-label="Wire 3 current in amperes" oninput="wireFields.setI(2,this.value)" onchange="wireFields.setI(2,this.value)">
+<span class="wf_sval" id="I3val">0.0 A</span></div>
+<div class="wf_srow"><label for="W3x" class="wf_slbl">x₃</label>
+<input type="range" id="W3x" min="-2" max="2" step="0.05" value="0" aria-label="Wire 3 x position in metres" oninput="wireFields.setWx(2,this.value)" onchange="wireFields.setWx(2,this.value)">
+<span class="wf_sval" id="W3xval">+0.00 m</span></div>
+<div class="wf_srow"><label for="W3y" class="wf_slbl">y₃</label>
+<input type="range" id="W3y" min="-2" max="2" step="0.05" value="-0.8" aria-label="Wire 3 y position in metres" oninput="wireFields.setWy(2,this.value)" onchange="wireFields.setWy(2,this.value)">
+<span class="wf_sval" id="W3yval">−0.80 m</span></div>
 </div>
 </div>
 </div>
 <!-- Compass controls -->
-<div class="wf_panel1012" role="group" aria-labelledby="compassHd1012">
-<div class="wf_paneltitle1012" id="compassHd1012">Compass</div>
-<div class="wf_panelbody1012">
-<div class="wf_srow1012"><label for="Cx1012" class="wf_slbl1012">x</label>
-<input type="range" id="Cx1012" min="-2" max="2" step="0.05" value="0" aria-label="Compass x position in metres" oninput="wireFields1012.setCx(this.value)" onchange="wireFields1012.setCx(this.value)">
-<span class="wf_sval1012" id="Cxval1012">+0.00 m</span></div>
-<div class="wf_srow1012"><label for="Cy1012" class="wf_slbl1012">y</label>
-<input type="range" id="Cy1012" min="-2" max="2" step="0.05" value="0" aria-label="Compass y position in metres" oninput="wireFields1012.setCy(this.value)" onchange="wireFields1012.setCy(this.value)">
-<span class="wf_sval1012" id="Cyval1012">+0.00 m</span></div>
-<p class="wf_hint1012">Drag the wires or the compass on the map, or use the sliders (arrow keys work too). The colored end of the needle points along B.</p>
+<div class="wf_panel" role="group" aria-labelledby="compassHd">
+<div class="wf_paneltitle" id="compassHd">Compass</div>
+<div class="wf_panelbody">
+<div class="wf_srow"><label for="Cx" class="wf_slbl">x</label>
+<input type="range" id="Cx" min="-2" max="2" step="0.05" value="0" aria-label="Compass x position in metres" oninput="wireFields.setCx(this.value)" onchange="wireFields.setCx(this.value)">
+<span class="wf_sval" id="Cxval">+0.00 m</span></div>
+<div class="wf_srow"><label for="Cy" class="wf_slbl">y</label>
+<input type="range" id="Cy" min="-2" max="2" step="0.05" value="0" aria-label="Compass y position in metres" oninput="wireFields.setCy(this.value)" onchange="wireFields.setCy(this.value)">
+<span class="wf_sval" id="Cyval">+0.00 m</span></div>
+<p class="wf_hint">Drag the wires or the compass on the map, or use the sliders (arrow keys work too). The colored end of the needle points along B.</p>
 </div>
 </div>
 <!-- Readout -->
-<div class="wf_panel1012" role="region" aria-labelledby="readHd1012">
-<div class="wf_paneltitle1012" id="readHd1012">Readout at the compass</div>
-<div class="wf_rinner1012">
-<div class="wf_rrow1012"><span class="wf_rkey1012">|B|</span><span class="wf_rval1012 wf_hi1012" id="r_Bc1012">--</span></div>
-<div class="wf_rrow1012"><span class="wf_rkey1012">(Bx, By)</span><span class="wf_rval1012" id="r_Bxy1012">--</span></div>
-<div class="wf_rrow1012"><span class="wf_rkey1012">Direction</span><span class="wf_rval1012" id="r_dir1012">--</span></div>
-<div class="wf_rrow1012"><span class="wf_rkey1012">Compass (x, y)</span><span class="wf_rval1012" id="r_cpos1012">--</span></div>
-<div class="wf_rrow1012"><span class="wf_rkey1012">Max |B| on grid</span><span class="wf_rval1012" id="r_Bmax1012">--</span></div>
-<div class="wf_rrow1012"><span class="wf_rkey1012">I₁, I₂, I₃</span><span class="wf_rval1012" id="r_I1012">--</span></div>
+<div class="wf_panel" role="region" aria-labelledby="readHd">
+<div class="wf_paneltitle" id="readHd">Readout at the compass</div>
+<div class="wf_rinner">
+<div class="wf_rrow"><span class="wf_rkey">|B|</span><span class="wf_rval wf_hi" id="r_Bc">--</span></div>
+<div class="wf_rrow"><span class="wf_rkey">(Bx, By)</span><span class="wf_rval" id="r_Bxy">--</span></div>
+<div class="wf_rrow"><span class="wf_rkey">Direction</span><span class="wf_rval" id="r_dir">--</span></div>
+<div class="wf_rrow"><span class="wf_rkey">Compass (x, y)</span><span class="wf_rval" id="r_cpos">--</span></div>
+<div class="wf_rrow"><span class="wf_rkey">Max |B| on grid</span><span class="wf_rval" id="r_Bmax">--</span></div>
+<div class="wf_rrow"><span class="wf_rkey">I₁, I₂, I₃</span><span class="wf_rval" id="r_I">--</span></div>
 </div>
 </div>
 </div><!-- right column -->
 <!-- Formula strip -->
-<div class="wf_formulastrip1012">
-<span class="wf_formulatxt1012">B = μ₀I / (2πr) per wire &nbsp;|&nbsp; μ₀ = 4π×10⁻⁷ T·m/A &nbsp;|&nbsp; net B = vector sum &nbsp;|&nbsp; ⊙ current out of page (I &gt; 0) &nbsp;·&nbsp; ⊗ into page (I &lt; 0)</span>
+<div class="wf_formulastrip">
+<span class="wf_formulatxt">B = μ₀I / (2πr) per wire &nbsp;|&nbsp; μ₀ = 4π×10⁻⁷ T·m/A &nbsp;|&nbsp; net B = vector sum &nbsp;|&nbsp; ⊙ current out of page (I &gt; 0) &nbsp;·&nbsp; ⊗ into page (I &lt; 0)</span>
 </div>
 </div><!-- instrument -->
-<div id="narrationBox1012" class="wf_narbar1012" role="status" aria-live="polite" aria-atomic="true"><span id="narration1012">Three current-carrying wires create superimposed magnetic fields.</span></div>
-<div id="srAnnounce1012" class="wf_sronly1012" aria-live="assertive" aria-atomic="true"></div>
-<p class="wf_credit1012">Simulation by Taha Mzoughi © 2025 -- Accessibility layer added</p>
-</div><!-- #wfroot1012 -->
-<div class="flex1012">
-<ol class="wf_qlist1012">
-<li>For a single long straight wire carrying current out of the page, what is the shape of the magnetic field pattern around the wire?<br></li>
-<li>For one powered wire with current coming out of the page, what direction does the magnetic field point at a point directly to the right of the wire?<br></li>
-<li>If the direction of current in a single wire is reversed, how does the magnetic field change?<br></li>
-<li>For a single powered wire, where is the magnetic field strongest?<br></li>
-<li>With one powered wire placed at a corner of the equilateral triangle, what happens to the field lines as you move far away from the wire?<br></li>
-<li>When a second wire is added (same current direction as the first), what happens to the magnetic field at the midpoint between the two wires?<br></li>
-<li>If the second wire carries current in the opposite direction of the first, what happens to the magnetic field at a point halfway between them?<br></li>
-<li>When two wires carry currents in the same direction, the field between them tends to:<br></li>
-<li>With two wires active, what determines the direction of the magnetic field at the third corner of the triangle (where the third wire will go)?<br></li>
-<li>When powering all three wires with currents out of the page, what is true about the symmetry of the field at the center of the triangle?<br></li>
-<li>When all three currents point out of the page, what is the net magnetic field direction at the exact center of the triangle?<br></li>
-<li>If one of the three wires has its current reversed, what happens to the net field at the center?<br></li>
-<li>If all three wires have equal currents but different distances from the point of interest, what determines the contribution of each wire to the total field?<br></li>
-<li>Which wire contributes the most to the magnetic field at any specific point inside the triangle?<br></li>
-<li>When the currents in all three wires are increased simultaneously, what happens to the magnetic field pattern inside the triangle?<br></li>
+<div id="narrationBox" class="wf_narbar" role="status" aria-live="polite" aria-atomic="true"><span id="narration">Three current-carrying wires create superimposed magnetic fields.</span></div>
+<div id="srAnnounce" class="wf_sronly" aria-live="assertive" aria-atomic="true"></div>
+<p class="wf_credit">Simulation by Taha Mzoughi © 2025 -- Accessibility layer added</p>
+</div><!-- #wfroot -->
+<div class="flex">
+<ol class="wf_qlist">
+<li>For a single long straight wire carrying current out of the page, what is the shape of the magnetic field pattern around the wire?</li>
+<li>For one powered wire with current coming out of the page, what direction does the magnetic field point at a point directly to the right of the wire?</li>
+<li>If the direction of current in a single wire is reversed, how does the magnetic field change?</li>
+<li>For a single powered wire, where is the magnetic field strongest?</li>
+<li>With one powered wire placed at a corner of the equilateral triangle, what happens to the field lines as you move far away from the wire?</li>
+<li>When a second wire is added (same current direction as the first), what happens to the magnetic field at the midpoint between the two wires?</li>
+<li>If the second wire carries current in the opposite direction of the first, what happens to the magnetic field at a point halfway between them?</li>
+<li>When two wires carry currents in the same direction, the field between them tends to:</li>
+<li>With two wires active, what determines the direction of the magnetic field at the third corner of the triangle (where the third wire will go)?</li>
+<li>When powering all three wires with currents out of the page, what is true about the symmetry of the field at the center of the triangle?</li>
+<li>When all three currents point out of the page, what is the net magnetic field direction at the exact center of the triangle?</li>
+<li>If one of the three wires has its current reversed, what happens to the net field at the center?</li>
+<li>If all three wires have equal currents but different distances from the point of interest, what determines the contribution of each wire to the total field?</li>
+<li>Which wire contributes the most to the magnetic field at any specific point inside the triangle?</li>
+<li>When the currents in all three wires are increased simultaneously, what happens to the magnetic field pattern inside the triangle?</li>
 </ol>
 <hr>
-<p>Discuss your results about the last two parts of the experiment:
-<br></p>
+<p>Discuss your results about the last two parts of the experiment:</p>
 </div>
 <hr>
 <style>
-/* ════════ All simulator rules scoped to #wfroot1012 ════════ */
-#wfroot1012 {
+/* ════════ All simulator rules scoped to #wfroot ════════ */
+#wfroot {
 --wf-chassis:#1a1c1f; --wf-panel:#22262b; --wf-panel-hi:#2c3138; --wf-panel-lo:#14161a;
 --wf-border:#3a4048; --wf-border-hi:#525c66; --wf-text:#c8d0d8; --wf-dim:#8a94a3; --wf-bright:#e8eef5;
 --wf-accent:#e8a020; --wf-green:#3ad08f; --wf-val:#ffdd66;
@@ -156,78 +169,109 @@ display:flex; flex-direction:column; align-items:center;
 padding:16px 10px 20px; gap:12px; box-sizing:border-box;
 width:100%; max-width:860px; margin:0 auto 10px; border-radius:6px; position:relative;
 }
-#wfroot1012.wf_lm1012 {
+#wfroot.wf_lm {
 --wf-chassis:#e9edf1; --wf-panel:#ffffff; --wf-panel-hi:#f1f4f7; --wf-panel-lo:#f4f6f9;
 --wf-border:#c3cad3; --wf-border-hi:#9aa3ae; --wf-text:#1d232a; --wf-dim:#556070; --wf-bright:#000000;
 --wf-accent:#a8620a; --wf-green:#12805a; --wf-val:#8a4a00;
 --wf-focus:#a8620a; --wf-nar-bg:#ffefc0; --wf-nar-border:#e0b040; --wf-nar-text:#333333;
 background-image:none;
 }
-#wfroot1012.wf_hc1012 {
+#wfroot.wf_hc {
 --wf-chassis:#000000; --wf-panel:#000000; --wf-panel-hi:#111111; --wf-panel-lo:#000000;
 --wf-border:#ffffff; --wf-border-hi:#ffffff; --wf-text:#ffffff; --wf-dim:#e0e0e0; --wf-bright:#ffffff;
 --wf-accent:#ffd700; --wf-green:#00ff88; --wf-val:#ffff00;
 --wf-focus:#ffff00; --wf-nar-bg:#000000; --wf-nar-border:#ffd700; --wf-nar-text:#ffffff;
 background-image:none;
 }
-#wfroot1012.wf_hc1012 .wf_panel1012, #wfroot1012.wf_hc1012 .wf_diagpanel1012 { border-width:2px; }
-#wfroot1012 *, #wfroot1012 *::before, #wfroot1012 *::after { box-sizing:border-box; margin:0; padding:0; }
-#wfroot1012 input:focus-visible, #wfroot1012 button:focus-visible { outline:2px solid var(--wf-focus); outline-offset:2px; }
+#wfroot.wf_hc .wf_panel, #wfroot.wf_hc .wf_diagpanel { border-width:2px; }
+#wfroot *, #wfroot *::before, #wfroot *::after { box-sizing:border-box; margin:0; padding:0; }
+#wfroot input:focus-visible, #wfroot button:focus-visible { outline:2px solid var(--wf-focus); outline-offset:2px; }
 /* toolbar */
-#wfroot1012 .wf_a11y1012 { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; width:100%; }
-#wfroot1012 .wf_a11ybtn1012 { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--wf-panel-hi); border:1px solid var(--wf-border-hi); color:var(--wf-dim); }
-#wfroot1012 .wf_a11ybtn1012:hover { border-color:var(--wf-accent); color:var(--wf-accent); }
-#wfroot1012 .wf_a11yon1012 { background:rgba(58,208,143,.14); border-color:var(--wf-green); color:var(--wf-green); font-weight:bold; }
+#wfroot .wf_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; width:100%; }
+#wfroot .wf_a11ybtn { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--wf-panel-hi); border:1px solid var(--wf-border-hi); color:var(--wf-dim); }
+#wfroot .wf_a11ybtn:hover { border-color:var(--wf-accent); color:var(--wf-accent); }
+#wfroot .wf_a11yon { background:rgba(58,208,143,.14); border-color:var(--wf-green); color:var(--wf-green); font-weight:bold; }
 /* header */
-#wfroot1012 .wf_header1012 { display:flex; flex-direction:column; align-items:center; gap:3px; }
-#wfroot1012 .wf_h11012 { font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--wf-accent); text-align:center; }
-#wfroot1012 .wf_sub1012 { font-size:.7rem; color:var(--wf-dim); letter-spacing:.08em; text-transform:uppercase; text-align:center; }
-#wfroot1012 .wf_motionnotice1012 { display:none; width:100%; padding:5px 12px; font-size:.74rem; text-align:center; background:var(--wf-panel); border:1px solid var(--wf-border); border-radius:4px; color:var(--wf-dim); }
+#wfroot .wf_header { display:flex; flex-direction:column; align-items:center; gap:3px; }
+#wfroot .wf_h1 { font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--wf-accent); text-align:center; }
+#wfroot .wf_sub { font-size:.7rem; color:var(--wf-dim); letter-spacing:.08em; text-transform:uppercase; text-align:center; }
+#wfroot .wf_motionnotice { display:none; width:100%; padding:5px 12px; font-size:.74rem; text-align:center; background:var(--wf-panel); border:1px solid var(--wf-border); border-radius:4px; color:var(--wf-dim); }
 /* grid */
-#wfroot1012 .wf_instrument1012 { display:grid; grid-template-columns:1fr auto; gap:12px; width:100%; }
-#wfroot1012 .wf_diagpanel1012 { background:var(--wf-panel); border:1px solid var(--wf-border); border-radius:6px; overflow:hidden; display:flex; flex-direction:column; align-self:start; box-shadow:0 4px 20px rgba(0,0,0,.35); }
-#wfroot1012 .wf_diaglabel1012 { background:var(--wf-panel-lo); border-bottom:1px solid var(--wf-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--wf-dim); }
-#wfroot1012 #fieldCanvas1012 { display:block; max-width:100%; cursor:crosshair; }
-#wfroot1012 .wf_hoverbar1012 { background:var(--wf-panel-lo); border-top:1px solid var(--wf-border); padding:6px 12px; font-family:monospace; font-size:.74rem; color:var(--wf-val); min-height:28px; }
+#wfroot .wf_instrument { display:grid; grid-template-columns:1fr auto; gap:12px; width:100%; }
+#wfroot .wf_diagpanel { background:var(--wf-panel); border:1px solid var(--wf-border); border-radius:6px; overflow:hidden; display:flex; flex-direction:column; align-self:start; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+#wfroot .wf_diaglabel { background:var(--wf-panel-lo); border-bottom:1px solid var(--wf-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--wf-dim); }
+#wfroot #fieldCanvas { display:block; max-width:100%; cursor:crosshair; }
+#wfroot .wf_hoverbar { background:var(--wf-panel-lo); border-top:1px solid var(--wf-border); padding:6px 12px; font-family:monospace; font-size:.74rem; color:var(--wf-val); min-height:28px; }
 /* right column */
-#wfroot1012 .wf_rightcol1012 { display:flex; flex-direction:column; gap:12px; width:250px; }
-#wfroot1012 .wf_panel1012 { background:var(--wf-panel); border:1px solid var(--wf-border); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.3); }
-#wfroot1012 .wf_paneltitle1012 { background:var(--wf-panel-lo); border-bottom:1px solid var(--wf-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--wf-dim); }
-#wfroot1012 .wf_panelbody1012 { padding:9px 12px; display:flex; flex-direction:column; gap:4px; }
-#wfroot1012 .wf_wiresec1012 { padding-bottom:6px; margin-bottom:4px; border-bottom:1px solid var(--wf-border); }
-#wfroot1012 .wf_wiresec1012:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
-#wfroot1012 .wf_wirehead1012 { display:flex; align-items:center; gap:6px; margin-bottom:4px; }
-#wfroot1012 .wf_wiredot1012 { width:12px; height:12px; border-radius:50%; display:inline-block; border:2px solid var(--wf-border-hi); }
-#wfroot1012 .wf_wirelbl1012 { font-family:monospace; font-size:.74rem; font-weight:bold; letter-spacing:.06em; color:var(--wf-text); }
-#wfroot1012 .wf_srow1012 { display:flex; align-items:center; gap:6px; margin-bottom:3px; }
-#wfroot1012 .wf_slbl1012 { font-size:.72rem; color:var(--wf-dim); min-width:18px; font-weight:600; }
-#wfroot1012 input[type=range] { flex:1; -webkit-appearance:none; height:4px; border-radius:2px; outline:none; cursor:pointer; background:var(--wf-panel-lo); border:1px solid var(--wf-border); }
-#wfroot1012 input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--wf-accent); border:2px solid var(--wf-panel); cursor:pointer; }
-#wfroot1012 .wf_sval1012 { font-family:monospace; font-size:.72rem; color:var(--wf-val); min-width:56px; text-align:right; }
-#wfroot1012 .wf_hint1012 { font-size:.66rem; color:var(--wf-dim); line-height:1.4; margin-top:3px; }
-#wfroot1012 .wf_rinner1012 { padding:8px 10px; display:flex; flex-direction:column; gap:4px; }
-#wfroot1012 .wf_rrow1012 { display:flex; justify-content:space-between; align-items:center; gap:6px; padding:4px 7px; background:var(--wf-panel-lo); border:1px solid var(--wf-border); border-radius:3px; }
-#wfroot1012 .wf_rkey1012 { font-family:monospace; font-size:.6rem; color:var(--wf-dim); letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }
-#wfroot1012 .wf_rval1012 { font-family:monospace; font-size:.72rem; text-align:right; color:var(--wf-text); }
-#wfroot1012 .wf_hi1012 { color:var(--wf-val); font-weight:bold; }
+#wfroot .wf_rightcol { display:flex; flex-direction:column; gap:12px; width:250px; }
+#wfroot .wf_panel { background:var(--wf-panel); border:1px solid var(--wf-border); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.3); }
+#wfroot .wf_paneltitle { background:var(--wf-panel-lo); border-bottom:1px solid var(--wf-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--wf-dim); }
+#wfroot .wf_panelbody { padding:9px 12px; display:flex; flex-direction:column; gap:4px; }
+#wfroot .wf_wiresec { padding-bottom:6px; margin-bottom:4px; border-bottom:1px solid var(--wf-border); }
+#wfroot .wf_wiresec:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+#wfroot .wf_wirehead { display:flex; align-items:center; gap:6px; margin-bottom:4px; }
+#wfroot .wf_wiredot { width:12px; height:12px; border-radius:50%; display:inline-block; border:2px solid var(--wf-border-hi); }
+#wfroot .wf_wirelbl { font-family:monospace; font-size:.74rem; font-weight:bold; letter-spacing:.06em; color:var(--wf-text); }
+#wfroot .wf_srow { display:flex; align-items:center; gap:6px; margin-bottom:3px; }
+#wfroot .wf_slbl { font-size:.72rem; color:var(--wf-dim); min-width:18px; font-weight:600; }
+#wfroot input[type=range] { flex:1; -webkit-appearance:none; height:4px; border-radius:2px; outline:none; cursor:pointer; background:var(--wf-panel-lo); border:1px solid var(--wf-border); }
+#wfroot input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--wf-accent); border:2px solid var(--wf-panel); cursor:pointer; }
+#wfroot .wf_sval { font-family:monospace; font-size:.72rem; color:var(--wf-val); min-width:56px; text-align:right; }
+#wfroot .wf_hint { font-size:.66rem; color:var(--wf-dim); line-height:1.4; margin-top:3px; }
+#wfroot .wf_rinner { padding:8px 10px; display:flex; flex-direction:column; gap:4px; }
+#wfroot .wf_rrow { display:flex; justify-content:space-between; align-items:center; gap:6px; padding:4px 7px; background:var(--wf-panel-lo); border:1px solid var(--wf-border); border-radius:3px; }
+#wfroot .wf_rkey { font-family:monospace; font-size:.6rem; color:var(--wf-dim); letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }
+#wfroot .wf_rval { font-family:monospace; font-size:.72rem; text-align:right; color:var(--wf-text); }
+#wfroot .wf_hi { color:var(--wf-val); font-weight:bold; }
 /* formula strip, narration, credit */
-#wfroot1012 .wf_formulastrip1012 { grid-column:1 / 3; background:var(--wf-panel-lo); border:1px solid var(--wf-border); border-radius:4px; padding:7px 14px; }
-#wfroot1012 .wf_formulatxt1012 { font-family:monospace; font-size:.66rem; color:var(--wf-dim); letter-spacing:.04em; }
-#wfroot1012 .wf_narbar1012 { width:100%; min-height:28px; padding:6px 12px; background:var(--wf-nar-bg); border-left:4px solid var(--wf-nar-border); font-size:.82rem; color:var(--wf-nar-text); font-style:italic; line-height:1.45; border-radius:3px; }
-#wfroot1012 .wf_credit1012 { font-size:.62rem; color:var(--wf-dim); text-align:center; }
-#wfroot1012 .wf_sronly1012 { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+#wfroot .wf_formulastrip { grid-column:1 / 3; background:var(--wf-panel-lo); border:1px solid var(--wf-border); border-radius:4px; padding:7px 14px; }
+#wfroot .wf_formulatxt { font-family:monospace; font-size:.66rem; color:var(--wf-dim); letter-spacing:.04em; }
+#wfroot .wf_narbar { width:100%; min-height:28px; padding:6px 12px; background:var(--wf-nar-bg); border-left:4px solid var(--wf-nar-border); font-size:.82rem; color:var(--wf-nar-text); font-style:italic; line-height:1.45; border-radius:3px; }
+#wfroot .wf_credit { font-size:.62rem; color:var(--wf-dim); text-align:center; }
+#wfroot .wf_sronly { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
 /* question section below the simulator */
-.flex1012 { width:100%; max-width:860px; margin:0 auto; padding:8px 4px; box-sizing:border-box; }
-.wf_qlist1012 { padding-left:24px; }
-.wf_qlist1012 li { margin:0 0 12px 0; line-height:1.45; }
+.flex { width:100%; max-width:860px; margin:0 auto; padding:8px 4px; box-sizing:border-box; }
+.wf_qlist { padding-left:24px; }
+.wf_qlist li { margin:0 0 12px 0; line-height:1.45; }
+/* ════════ Mobile-friendly layout (same template as the Hall effect sim) ════════ */
+#wfroot .wf_instrument { grid-template-columns:minmax(0,1fr) 250px; }
+#wfroot .wf_diagpanel { min-width:0; }
+#wfroot canvas#fieldCanvas { display:block; width:100%; max-width:540px; height:auto; margin:0 auto; flex:none; }
+#wfroot .wf_formulatxt { line-height:1.6; }
+#wfroot .wf_hoverbar { line-height:1.4; }
+#wfroot select:focus-visible { outline:2px solid var(--wf-focus); outline-offset:2px; }
+/* narrow screens: stack the columns */
+@media (max-width:820px) {
+#wfroot .wf_instrument { grid-template-columns:minmax(0,1fr); }
+#wfroot .wf_instrument > * { grid-column:auto; grid-row:auto; }
+#wfroot .wf_rightcol { width:auto; }
+}
+/* phones and tablets: bigger touch targets */
+@media (pointer:coarse) {
+#wfroot input[type=range] { height:8px; }
+#wfroot input[type=range]::-webkit-slider-thumb { width:26px; height:26px; }
+#wfroot input[type=range]::-moz-range-thumb { width:24px; height:24px; }
+#wfroot button, #wfroot input[type=button] { min-height:40px; }
+#wfroot select { min-height:36px; font-size:.9rem; }
+#wfroot input[type=checkbox] { width:22px; height:22px; }
+#wfroot .wf_panelbody { gap:10px; }
+}
+@media (max-width:560px) {
+#wfroot { padding:10px 6px 14px; }
+#wfroot .wf_rrow { flex-wrap:wrap; }
+#wfroot .wf_rkey { white-space:normal; }
+#wfroot .wf_hoverbar { font-size:.68rem; }
+}
 </style>
 <script>
 var wireFields = function() {
 /* ── Refs ── */
-var ROOT   = document.getElementById('wfroot1012');
-var canvas = document.getElementById('fieldCanvas1012');
+var ROOT   = document.getElementById('wfroot');
+var canvas = document.getElementById('fieldCanvas');
 var ctx    = canvas.getContext('2d');
 var CW = canvas.width, CH = canvas.height;
+var DPR = window.devicePixelRatio || 1;   /* sharp on phones: draw at device resolution, CSS scales the canvas to the panel */
+canvas.width = CW*DPR; canvas.height = CH*DPR; ctx.scale(DPR, DPR);
 /* ── Physical extent ── */
 var XMIN=-2.2, XMAX=2.2, YMIN=-1.8, YMAX=1.8;
 function toCanvas(px,py){ return [(px-XMIN)/(XMAX-XMIN)*CW, CH-(py-YMIN)/(YMAX-YMIN)*CH]; }
@@ -342,7 +386,7 @@ if(w.I>0.05){ ctx.beginPath(); ctx.arc(cx2,cy2,3,0,Math.PI*2); ctx.fill(); }
 else if(w.I<-0.05){ var d=4; ctx.beginPath(); ctx.moveTo(cx2-d,cy2-d); ctx.lineTo(cx2+d,cy2+d); ctx.moveTo(cx2+d,cy2-d); ctx.lineTo(cx2-d,cy2+d); ctx.stroke(); }
 ctx.fillStyle=p.label; ctx.font='bold '+(hcMode?12:11)+'px monospace'; ctx.textAlign='center';
 ctx.fillText('W'+(i+1), cx2, cy2+(hcMode?25:23));
-var dotEl=document.getElementById('dot'+(i+1)+'1012'); if(dotEl) dotEl.style.background=col;
+var dotEl=document.getElementById('dot'+(i+1)+''); if(dotEl) dotEl.style.background=col;
 }
 }
 function drawCompass(p){
@@ -392,12 +436,12 @@ function fmtSigned(v,u){return (v>=0?'+':'')+v.toFixed(2)+' '+u;}
 function fmtA(v){return (v>=0?'+':'')+v.toFixed(1)+' A';}
 function updateReadouts(){
 var fv=fieldAt(compass.x,compass.y);
-set('r_Bc1012',   formatB(fv.B));
-set('r_Bxy1012',  '('+fmtMicro(fv.Bx)+', '+fmtMicro(fv.By)+') \u00b5T');
-set('r_dir1012',  compassDir(fv.Bx,fv.By));
-set('r_cpos1012', '('+compass.x.toFixed(2)+', '+compass.y.toFixed(2)+')');
-set('r_Bmax1012', formatB(globalBmax));
-set('r_I1012',    wires.map(function(w){return (w.I>=0?'+':'')+w.I.toFixed(1);}).join(', ')+' A');
+set('r_Bc',   formatB(fv.B));
+set('r_Bxy',  '('+fmtMicro(fv.Bx)+', '+fmtMicro(fv.By)+') \u00b5T');
+set('r_dir',  compassDir(fv.Bx,fv.By));
+set('r_cpos', '('+compass.x.toFixed(2)+', '+compass.y.toFixed(2)+')');
+set('r_Bmax', formatB(globalBmax));
+set('r_I',    wires.map(function(w){return (w.I>=0?'+':'')+w.I.toFixed(1);}).join(', ')+' A');
 }
 function updateNarration(){
 if(!showNarr)return;
@@ -410,7 +454,7 @@ lines.push('Wire '+(i+1)+': I='+(w.I>=0?'+':'')+w.I.toFixed(1)+' A at ('+w.x.toF
 }
 var txt=lines.join('. ')+'. Compass at ('+compass.x.toFixed(2)+', '+compass.y.toFixed(2)+'): '
 +'field '+formatB(fv.B)+', pointing '+compassDir(fv.Bx,fv.By)+'. Peak: '+formatB(globalBmax)+'.';
-set('narration1012',txt);
+set('narration',txt);
 }
 function updateCanvasDesc(){
 var fv=fieldAt(compass.x,compass.y);
@@ -418,36 +462,36 @@ var active=wires.filter(function(w){return Math.abs(w.I)>0.05;}).length;
 var wstrs=wires.map(function(w,i){return 'Wire '+(i+1)+': '+w.I.toFixed(1)+' A';}).join(', ');
 var d='Magnetic field map from '+active+' active wire'+(active!==1?'s':'')+'. '+wstrs+'. '
 +'Compass at ('+compass.x.toFixed(2)+', '+compass.y.toFixed(2)+'), field = '+formatB(fv.B)+'. Peak: '+formatB(globalBmax)+'.';
-set('canvasDesc1012',d); canvas.setAttribute('aria-label',d);
+set('canvasDesc',d); canvas.setAttribute('aria-label',d);
 }
 function doUpdate(){ redraw(); updateReadouts(); updateNarration(); }
 /* ── Slider sync helpers ── */
 function syncWireSliders(i){
 var n=i+1, w=wires[i];
-var xEl=document.getElementById('W'+n+'x1012'); if(xEl)xEl.value=w.x.toFixed(2);
-var yEl=document.getElementById('W'+n+'y1012'); if(yEl)yEl.value=w.y.toFixed(2);
-set('W'+n+'xval1012',fmtSigned(w.x,'m'));
-set('W'+n+'yval1012',fmtSigned(w.y,'m'));
+var xEl=document.getElementById('W'+n+'x'); if(xEl)xEl.value=w.x.toFixed(2);
+var yEl=document.getElementById('W'+n+'y'); if(yEl)yEl.value=w.y.toFixed(2);
+set('W'+n+'xval',fmtSigned(w.x,'m'));
+set('W'+n+'yval',fmtSigned(w.y,'m'));
 }
 function syncCompassSliders(){
-var cx=document.getElementById('Cx1012'); if(cx)cx.value=compass.x.toFixed(2);
-var cy=document.getElementById('Cy1012'); if(cy)cy.value=compass.y.toFixed(2);
-set('Cxval1012',fmtSigned(compass.x,'m'));
-set('Cyval1012',fmtSigned(compass.y,'m'));
+var cx=document.getElementById('Cx'); if(cx)cx.value=compass.x.toFixed(2);
+var cy=document.getElementById('Cy'); if(cy)cy.value=compass.y.toFixed(2);
+set('Cxval',fmtSigned(compass.x,'m'));
+set('Cyval',fmtSigned(compass.y,'m'));
 }
 /* ── Public slider setters ── */
-function setI(idx,v){ wires[idx].I=parseFloat(v); set('I'+(idx+1)+'val1012',fmtA(wires[idx].I)); doUpdate(); }
-function setWx(idx,v){ wires[idx].x=parseFloat(v); set('W'+(idx+1)+'xval1012',fmtSigned(wires[idx].x,'m')); doUpdate(); }
-function setWy(idx,v){ wires[idx].y=parseFloat(v); set('W'+(idx+1)+'yval1012',fmtSigned(wires[idx].y,'m')); doUpdate(); }
-function setCx(v){ compass.x=parseFloat(v); set('Cxval1012',fmtSigned(compass.x,'m')); doUpdate(); }
-function setCy(v){ compass.y=parseFloat(v); set('Cyval1012',fmtSigned(compass.y,'m')); doUpdate(); }
+function setI(idx,v){ wires[idx].I=parseFloat(v); set('I'+(idx+1)+'val',fmtA(wires[idx].I)); doUpdate(); }
+function setWx(idx,v){ wires[idx].x=parseFloat(v); set('W'+(idx+1)+'xval',fmtSigned(wires[idx].x,'m')); doUpdate(); }
+function setWy(idx,v){ wires[idx].y=parseFloat(v); set('W'+(idx+1)+'yval',fmtSigned(wires[idx].y,'m')); doUpdate(); }
+function setCx(v){ compass.x=parseFloat(v); set('Cxval',fmtSigned(compass.x,'m')); doUpdate(); }
+function setCy(v){ compass.y=parseFloat(v); set('Cyval',fmtSigned(compass.y,'m')); doUpdate(); }
 /* ── Display options ── */
-function setBtnOn(id,on){ var b=document.getElementById(id); if(!b)return; b.classList.toggle('wf_a11yon1012',on); b.setAttribute('aria-pressed',on?'true':'false'); }
+function setBtnOn(id,on){ var b=document.getElementById(id); if(!b)return; b.classList.toggle('wf_a11yon',on); b.setAttribute('aria-pressed',on?'true':'false'); }
 function applyDisplay(){
-ROOT.classList.toggle('wf_hc1012',hcMode); ROOT.classList.toggle('wf_lm1012',lightMode); ROOT.classList.toggle('wf_cb1012',cbMode);
-setBtnOn('btnHC1012',hcMode); setBtnOn('btnLight1012',lightMode); setBtnOn('btnCB1012',cbMode); setBtnOn('btnNarr1012',showNarr);
-var nb=document.getElementById('btnNarr1012'); if(nb) nb.textContent='NARRATION: '+(showNarr?'ON':'OFF');
-var box=document.getElementById('narrationBox1012'); if(box) box.style.display=showNarr?'':'none';
+ROOT.classList.toggle('wf_hc',hcMode); ROOT.classList.toggle('wf_lm',lightMode); ROOT.classList.toggle('wf_cb',cbMode);
+setBtnOn('btnHC',hcMode); setBtnOn('btnLight',lightMode); setBtnOn('btnCB',cbMode); setBtnOn('btnNarr',showNarr);
+var nb=document.getElementById('btnNarr'); if(nb) nb.textContent='NARRATION: '+(showNarr?'ON':'OFF');
+var box=document.getElementById('narrationBox'); if(box) box.style.display=showNarr?'':'none';
 }
 function toggleHC(){ hcMode=!hcMode; if(hcMode) lightMode=false; applyDisplay(); doUpdate(); srAnnounce('High contrast '+(hcMode?'on.':'off.')); }
 function toggleLight(){ lightMode=!lightMode; if(lightMode) hcMode=false; applyDisplay(); doUpdate(); srAnnounce('Light mode '+(lightMode?'on.':'off.')); }
@@ -455,7 +499,7 @@ function toggleCB(){ cbMode=!cbMode; applyDisplay(); doUpdate(); srAnnounce('Col
 function toggleNarr(){ showNarr=!showNarr; applyDisplay(); if(showNarr) updateNarration(); srAnnounce('Narration '+(showNarr?'on.':'off.')); }
 /* ── SR announcer ── */
 var srTimer=null;
-function srAnnounce(msg){ var el=document.getElementById('srAnnounce1012'); if(!el)return; el.textContent=''; clearTimeout(srTimer); srTimer=setTimeout(function(){el.textContent=msg;},60); }
+function srAnnounce(msg){ var el=document.getElementById('srAnnounce'); if(!el)return; el.textContent=''; clearTimeout(srTimer); srTimer=setTimeout(function(){el.textContent=msg;},60); }
 /* ── Hit test for drag ── */
 function hitTest(cx2,cy2){
 var cc=toCanvas(compass.x,compass.y);
@@ -481,7 +525,7 @@ var r=canvas.getBoundingClientRect();
 var cx2=(e.clientX-r.left)*(CW/r.width), cy2=(e.clientY-r.top)*(CH/r.height);
 if(dragging) moveTo(fromCanvas(cx2,cy2));
 var p2=fromCanvas(cx2,cy2), fv=fieldAt(p2[0],p2[1]);
-set('hoverReadout1012','x = '+p2[0].toFixed(3)+' m  |  y = '+p2[1].toFixed(3)+' m  |  |B| = '+formatB(fv.B)+'  |  '+compassDir(fv.Bx,fv.By));
+set('hoverReadout','x = '+p2[0].toFixed(3)+' m  |  y = '+p2[1].toFixed(3)+' m  |  |B| = '+formatB(fv.B)+'  |  '+compassDir(fv.Bx,fv.By));
 },16);
 });
 canvas.addEventListener('mousedown',function(e){
@@ -491,7 +535,7 @@ dragging=hitTest(cx2,cy2);
 if(dragging){canvas.style.cursor='grabbing';e.preventDefault();}
 });
 window.addEventListener('mouseup',function(){dragging=null;canvas.style.cursor='crosshair';});
-canvas.addEventListener('mouseleave',function(){set('hoverReadout1012','Move the cursor over the field to read B at that point');});
+canvas.addEventListener('mouseleave',function(){set('hoverReadout','Move the cursor over, or tap, the field to read B at that point');});
 canvas.addEventListener('touchstart',function(e){
 var t=e.touches[0],r=canvas.getBoundingClientRect();
 var cx2=(t.clientX-r.left)*(CW/r.width), cy2=(t.clientY-r.top)*(CH/r.height);
@@ -505,7 +549,7 @@ moveTo(fromCanvas((t.clientX-r.left)*(CW/r.width),(t.clientY-r.top)*(CH/r.height
 window.addEventListener('touchend',function(){dragging=null;});
 /* ── Reduced motion ── */
 if(window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches){
-var mn=document.getElementById('motionNotice1012'); if(mn)mn.style.display='block';
+var mn=document.getElementById('motionNotice'); if(mn)mn.style.display='block';
 }
 /* ── Boot ── */
 applyDisplay();
@@ -518,8 +562,23 @@ setI:setI, setWx:setWx, setWy:setWy, setCx:setCx, setCy:setCy
 };
 </script>
 <script>
-var wireFields1012 = new wireFields();
+var wireFields = new wireFields();
 </script>
-
+<script>
+/* phones and tablets have no hover: a tap (or a finger moving over the field) updates the B readout */
+(function(){
+var cv = document.getElementById('fieldCanvas');
+if (!cv || typeof MouseEvent !== 'function') return;
+var lastTouch = 0;
+function relay(e){ if (!e.touches || !e.touches.length) return; var t = e.touches[0]; lastTouch = Date.now();
+cv.dispatchEvent(new MouseEvent('mousemove', { clientX:t.clientX, clientY:t.clientY, bubbles:true })); }
+cv.addEventListener('touchstart', relay, { passive:true });
+cv.addEventListener('touchmove', relay, { passive:true });
+cv.addEventListener('touchend', function(){ lastTouch = Date.now(); }, { passive:true });
+/* after a tap the browser sends a mouseleave; keep the reading on screen instead of resetting it */
+cv.addEventListener('mouseleave', function(e){ if (Date.now() - lastTouch < 1000) e.stopImmediatePropagation(); }, true);
+})();
+</script>
+</main>
 </body>
 </html>

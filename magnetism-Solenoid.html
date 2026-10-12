@@ -1,59 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations- Electricity and Magnetism: Solenoid Magnetic Field</title>
+<title>Physics Simulations-Magnetism: Solenoid Magnetic Field</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,magnetism,magnetic field,solenoid,electromagnet,core,permeability,Biot-Savart,turns per metre,compass,right-hand rule,lesson,scientific">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching,magnetism, magnet, teach, learn,force, current, solenoid, magnetic field, Biot-Savart, current loops, turns, iron core, permeability, compass, lesson, scientific">
+<meta name="description" content="Interactive solenoid simulation: the Biot-Savart field of N current loops, with core materials, field map and compass.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
-<div id="solroot1017" role="main" aria-label="Solenoid magnetic field simulator">
+<main class="page">
+<div id="solroot" role="region" aria-label="Solenoid magnetic field simulator">
 <!-- Accessibility toolbar -->
-<div class="sol_a11y1017" role="toolbar" aria-label="Display options">
-<button type="button" class="sol_a11ybtn1017" id="btnHC1017" onclick="solenoidSim1017.toggleHC()" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="sol_a11ybtn1017" id="btnLight1017" onclick="solenoidSim1017.toggleLight()" aria-pressed="false">LIGHT MODE</button>
-<button type="button" class="sol_a11ybtn1017" id="btnCB1017" onclick="solenoidSim1017.toggleCB()" aria-pressed="false">COLOR-BLIND SAFE</button>
-<button type="button" class="sol_a11ybtn1017 sol_a11yon1017" id="btnNarr1017" onclick="solenoidSim1017.toggleNarr()" aria-pressed="true">NARRATION: ON</button>
+<div class="sol_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="sol_a11ybtn" id="btnHC" onclick="solenoidSim.toggleHC()" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="sol_a11ybtn" id="btnLight" onclick="solenoidSim.toggleLight()" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="sol_a11ybtn" id="btnCB" onclick="solenoidSim.toggleCB()" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="sol_a11ybtn sol_a11yon" id="btnNarr" onclick="solenoidSim.toggleNarr()" aria-pressed="true">NARRATION: ON</button>
 </div>
 <!-- Header -->
-<div class="sol_header1017">
-<p class="sol_h11017">Solenoid Magnetic Field</p>
-<p class="sol_sub1017">Biot–Savart field of N current loops -- cross-section through the axis</p>
+<div class="sol_header">
+<p class="sol_h1">Solenoid Magnetic Field</p>
+<p class="sol_sub">Biot–Savart field of N current loops -- cross-section through the axis</p>
 </div>
-<div id="solMotionNotice1017" class="sol_motionnotice1017" role="status">Reduced motion is enabled. Redraws are instant.</div>
+<div id="solMotionNotice" class="sol_motionnotice" role="status">Reduced motion is enabled. Redraws are instant.</div>
 <!-- Instrument grid -->
-<div class="sol_instrument1017">
+<div class="sol_instrument">
 <!-- Diagram panel -->
-<div class="sol_diagpanel1017">
-<div class="sol_diaglabel1017"><span id="diagLabel1017">FIELD MAP</span><span class="sol_diagnote1017">horizontal: axial · vertical: radial · color and length: strength (log scale)</span></div>
-<canvas id="solCanvas1017" width="560" height="420" role="img" aria-label="Solenoid magnetic field map" aria-describedby="solCanvasDesc1017"></canvas>
-<p id="solCanvasDesc1017" class="sol_sronly1017">Arrow grid showing the solenoid magnetic field cross-section.</p>
-<div class="sol_hoverbar1017" id="solHoverReadout1017" role="status" aria-live="polite" aria-atomic="true">Hover over the field to read B at that point</div>
+<div class="sol_diagpanel">
+<div class="sol_diaglabel"><span id="diagLabel">FIELD MAP</span><span class="sol_diagnote">horizontal: axial · vertical: radial · color and length: strength (log scale)</span></div>
+<canvas id="solCanvas" width="560" height="420" role="img" aria-label="Solenoid magnetic field map" aria-describedby="solCanvasDesc"></canvas>
+<p id="solCanvasDesc" class="sol_sronly">Arrow grid showing the solenoid magnetic field cross-section.</p>
+<div class="sol_hoverbar" id="solHoverReadout" role="status" aria-live="polite" aria-atomic="true">Hover over or tap the field to read B at that point</div>
 </div>
 <!-- Right column -->
-<div class="sol_rightcol1017">
+<div class="sol_rightcol">
 <!-- Solenoid -->
-<div class="sol_panel1017" role="group" aria-labelledby="solHd1017">
-<div class="sol_paneltitle1017" id="solHd1017">Solenoid</div>
-<div class="sol_panelbody1017">
-<div class="sol_ctrlhdr1017"><label for="slI1017" class="sol_ctrlname1017">Current I</label><span class="sol_sval1017" id="vI1017">+5.0 A</span></div>
-<input type="range" id="slI1017" min="-20" max="20" step="0.5" value="5" aria-label="Solenoid current in amperes" oninput="solenoidSim1017.onSlider('I', this.value)">
-<div class="sol_ctrlhdr1017"><label for="slR1017" class="sol_ctrlname1017">Radius R</label><span class="sol_sval1017" id="vR1017">0.25 m</span></div>
-<input type="range" id="slR1017" min="0.05" max="0.8" step="0.01" value="0.25" aria-label="Solenoid radius in metres" oninput="solenoidSim1017.onSlider('R', this.value)">
-<div class="sol_ctrlhdr1017"><label for="slL1017" class="sol_ctrlname1017">Length L</label><span class="sol_sval1017" id="vL1017">0.80 m</span></div>
-<input type="range" id="slL1017" min="0.1" max="2.0" step="0.05" value="0.8" aria-label="Solenoid length in metres" oninput="solenoidSim1017.onSlider('L', this.value)">
-<div class="sol_ctrlhdr1017"><label for="slN1017" class="sol_ctrlname1017">Coils N</label><span class="sol_sval1017" id="vN1017">200</span></div>
-<input type="range" id="slN1017" min="5" max="800" step="5" value="200" aria-label="Number of coils" oninput="solenoidSim1017.onSlider('N', this.value)">
-<p class="sol_derived1017">n = N/L = <b id="vNL1017">250</b> turns/m &nbsp;·&nbsp; μ₀nI (coil only) = <b id="vIdeal1017">--</b></p>
+<div class="sol_panel" role="group" aria-labelledby="solHd">
+<div class="sol_paneltitle" id="solHd">Solenoid</div>
+<div class="sol_panelbody">
+<div class="sol_ctrlhdr"><label for="slI" class="sol_ctrlname">Current I</label><span class="sol_sval" id="vI">+5.0 A</span></div>
+<input type="range" id="slI" min="-20" max="20" step="0.5" value="5" aria-label="Solenoid current in amperes" oninput="solenoidSim.onSlider('I', this.value)">
+<div class="sol_ctrlhdr"><label for="slR" class="sol_ctrlname">Radius R</label><span class="sol_sval" id="vR">0.25 m</span></div>
+<input type="range" id="slR" min="0.05" max="0.8" step="0.01" value="0.25" aria-label="Solenoid radius in metres" oninput="solenoidSim.onSlider('R', this.value)">
+<div class="sol_ctrlhdr"><label for="slL" class="sol_ctrlname">Length L</label><span class="sol_sval" id="vL">0.80 m</span></div>
+<input type="range" id="slL" min="0.1" max="2.0" step="0.05" value="0.8" aria-label="Solenoid length in metres" oninput="solenoidSim.onSlider('L', this.value)">
+<div class="sol_ctrlhdr"><label for="slN" class="sol_ctrlname">Coils N</label><span class="sol_sval" id="vN">200</span></div>
+<input type="range" id="slN" min="5" max="800" step="5" value="200" aria-label="Number of coils" oninput="solenoidSim.onSlider('N', this.value)">
+<p class="sol_derived">n = N/L = <b id="vNL">250</b> turns/m &nbsp;·&nbsp; μ₀nI (coil only) = <b id="vIdeal">--</b></p>
 </div>
 </div>
 <!-- Core -->
-<div class="sol_panel1017" role="group" aria-labelledby="coreHd1017">
-<div class="sol_paneltitle1017" id="coreHd1017">Core</div>
-<div class="sol_panelbody1017">
-<label for="selMat1017" class="sol_ctrlname1017">Material</label>
-<select id="selMat1017" aria-label="Core material" onchange="solenoidSim1017.onMatChange()">
+<div class="sol_panel" role="group" aria-labelledby="coreHd">
+<div class="sol_paneltitle" id="coreHd">Core</div>
+<div class="sol_panelbody">
+<label for="selMat" class="sol_ctrlname">Material</label>
+<select id="selMat" aria-label="Core material" onchange="solenoidSim.onMatChange()">
 <option value="air">Air (μᵣ = 1)</option>
 <option value="aluminium">Aluminium (μᵣ ≈ 1.000022)</option>
 <option value="wood">Wood (μᵣ ≈ 0.99999)</option>
@@ -61,82 +75,67 @@
 <option value="ferrite" selected>Ferrite (μᵣ ≈ 1500)</option>
 <option value="iron">Iron (μᵣ ≈ 5000)</option>
 </select>
-<p class="sol_hint1017" id="matDesc1017">--</p>
-<div class="sol_ctrlhdr1017"><label for="slCR1017" class="sol_ctrlname1017">Core radius</label><span class="sol_sval1017" id="vCR1017">0.15 m</span></div>
-<input type="range" id="slCR1017" min="0.01" max="0.8" step="0.01" value="0.15" aria-label="Core radius in metres" oninput="solenoidSim1017.onSlider('CR', this.value)">
-<div class="sol_ctrlhdr1017"><label for="slCL1017" class="sol_ctrlname1017">Core length</label><span class="sol_sval1017" id="vCL1017">0.60 m</span></div>
-<input type="range" id="slCL1017" min="0.05" max="2.0" step="0.05" value="0.6" aria-label="Core length in metres" oninput="solenoidSim1017.onSlider('CL', this.value)">
-<p class="sol_derived1017" id="coreInfo1017">--</p>
-<p class="sol_hint1017">The coil magnetizes the core, and the core's own field adds to the coil's field everywhere: inside it and beyond its ends. Long, thin cores are magnetized far more strongly than short, fat ones (demagnetizing factor N<sub>d</sub>).</p>
+<p class="sol_hint" id="matDesc">--</p>
+<div class="sol_ctrlhdr"><label for="slCR" class="sol_ctrlname">Core radius</label><span class="sol_sval" id="vCR">0.15 m</span></div>
+<input type="range" id="slCR" min="0.01" max="0.8" step="0.01" value="0.15" aria-label="Core radius in metres" oninput="solenoidSim.onSlider('CR', this.value)">
+<div class="sol_ctrlhdr"><label for="slCL" class="sol_ctrlname">Core length</label><span class="sol_sval" id="vCL">0.60 m</span></div>
+<input type="range" id="slCL" min="0.05" max="2.0" step="0.05" value="0.6" aria-label="Core length in metres" oninput="solenoidSim.onSlider('CL', this.value)">
+<p class="sol_derived" id="coreInfo">--</p>
+<p class="sol_hint">The coil magnetizes the core, and the core's own field adds to the coil's field everywhere: inside it and beyond its ends. Long, thin cores are magnetized far more strongly than short, fat ones (demagnetizing factor N<sub>d</sub>).</p>
 </div>
 </div>
 <!-- Compass -->
-<div class="sol_panel1017" role="group" aria-labelledby="compassHd1017">
-<div class="sol_paneltitle1017" id="compassHd1017">Compass Probe</div>
-<div class="sol_panelbody1017">
-<div class="sol_srow1017"><label for="slCx1017" class="sol_slbl1017">axial</label>
-<input type="range" id="slCx1017" min="-1.2" max="1.2" step="0.05" value="0" aria-label="Compass axial position in metres" oninput="solenoidSim1017.onCompassSlider('x', this.value)">
-<span class="sol_sval1017" id="vCx1017">+0.00 m</span></div>
-<div class="sol_srow1017"><label for="slCy1017" class="sol_slbl1017">radial</label>
-<input type="range" id="slCy1017" min="-0.9" max="0.9" step="0.05" value="0" aria-label="Compass radial position in metres" oninput="solenoidSim1017.onCompassSlider('y', this.value)">
-<span class="sol_sval1017" id="vCy1017">+0.00 m</span></div>
-<p class="sol_hint1017">Drag the compass on the map or use the sliders. The colored end of the needle points along B.</p>
+<div class="sol_panel" role="group" aria-labelledby="compassHd">
+<div class="sol_paneltitle" id="compassHd">Compass Probe</div>
+<div class="sol_panelbody">
+<div class="sol_srow"><label for="slCx" class="sol_slbl">axial</label>
+<input type="range" id="slCx" min="-1.2" max="1.2" step="0.05" value="0" aria-label="Compass axial position in metres" oninput="solenoidSim.onCompassSlider('x', this.value)">
+<span class="sol_sval" id="vCx">+0.00 m</span></div>
+<div class="sol_srow"><label for="slCy" class="sol_slbl">radial</label>
+<input type="range" id="slCy" min="-0.9" max="0.9" step="0.05" value="0" aria-label="Compass radial position in metres" oninput="solenoidSim.onCompassSlider('y', this.value)">
+<span class="sol_sval" id="vCy">+0.00 m</span></div>
+<p class="sol_hint">Drag the compass on the map or use the sliders. The colored end of the needle points along B.</p>
 </div>
 </div>
 <!-- Readout -->
-<div class="sol_panel1017" role="region" aria-labelledby="readHd1017">
-<div class="sol_paneltitle1017" id="readHd1017">Readout at the compass</div>
-<div class="sol_rinner1017">
-<div class="sol_rrow1017"><span class="sol_rkey1017">|B|</span><span class="sol_rval1017 sol_hi1017" id="r_Bc1017">--</span></div>
-<div class="sol_rrow1017"><span class="sol_rkey1017">Direction</span><span class="sol_rval1017" id="r_dir1017">--</span></div>
-<div class="sol_rrow1017"><span class="sol_rkey1017">Compass position</span><span class="sol_rval1017" id="r_cpos1017">--</span></div>
-<div class="sol_rrow1017"><span class="sol_rkey1017">Peak |B| on grid</span><span class="sol_rval1017" id="r_Bmax1017">--</span></div>
-<div class="sol_rrow1017"><span class="sol_rkey1017">Inside the core?</span><span class="sol_rval1017" id="r_incore1017">--</span></div>
+<div class="sol_panel" role="region" aria-labelledby="readHd">
+<div class="sol_paneltitle" id="readHd">Readout at the compass</div>
+<div class="sol_rinner">
+<div class="sol_rrow"><span class="sol_rkey">|B|</span><span class="sol_rval sol_hi" id="r_Bc">--</span></div>
+<div class="sol_rrow"><span class="sol_rkey">Direction</span><span class="sol_rval" id="r_dir">--</span></div>
+<div class="sol_rrow"><span class="sol_rkey">Compass position</span><span class="sol_rval" id="r_cpos">--</span></div>
+<div class="sol_rrow"><span class="sol_rkey">Peak |B| on grid</span><span class="sol_rval" id="r_Bmax">--</span></div>
+<div class="sol_rrow"><span class="sol_rkey">Inside the core?</span><span class="sol_rval" id="r_incore">--</span></div>
 </div>
 </div>
 </div><!-- right column -->
 <!-- Formula strip -->
-<div class="sol_formulastrip1017">
-<span class="sol_formulatxt1017">Coil: B ≈ μ₀nI (long solenoid) &nbsp;|&nbsp; Core: M = χH/(1 + N<sub>d</sub>χ) ≤ M<sub>sat</sub>, χ = μᵣ − 1 &nbsp;|&nbsp; μ₀ = 4π×10⁻⁷ T·m/A &nbsp;|&nbsp; 1 T = 10⁴ G &nbsp;|&nbsp; ⊙ current out of page · ⊗ into page &nbsp;|&nbsp; Keys: <kbd>H</kbd> <kbd>L</kbd> <kbd>C</kbd> <kbd>N</kbd></span>
+<div class="sol_formulastrip">
+<span class="sol_formulatxt">Coil: B ≈ μ₀nI (long solenoid) &nbsp;|&nbsp; Core: M = χH/(1 + N<sub>d</sub>χ) ≤ M<sub>sat</sub>, χ = μᵣ − 1 &nbsp;|&nbsp; μ₀ = 4π×10⁻⁷ T·m/A &nbsp;|&nbsp; 1 T = 10⁴ G &nbsp;|&nbsp; ⊙ current out of page · ⊗ into page &nbsp;|&nbsp; Keys: <kbd>H</kbd> <kbd>L</kbd> <kbd>C</kbd> <kbd>N</kbd></span>
 </div>
 </div><!-- instrument -->
-<div id="solNarrBox1017" class="sol_narbar1017" role="status" aria-live="polite" aria-atomic="true"><span id="solNarration1017">--</span></div>
-<div id="solSrAnnounce1017" class="sol_sronly1017" aria-live="assertive" aria-atomic="true"></div>
-<p class="sol_credit1017">Simulation by Taha Mzoughi © 2025 -- MOM adaptation</p>
-</div><!-- #solroot1017 -->
-<div class="sol_qwrap1017">
+<div id="solNarrBox" class="sol_narbar" role="status" aria-live="polite" aria-atomic="true"><span id="solNarration">--</span></div>
+<div id="solSrAnnounce" class="sol_sronly" aria-live="assertive" aria-atomic="true"></div>
+<p class="sol_credit">Simulation by Taha Mzoughi © 2025 -- MOM adaptation</p>
+</div><!-- #solroot -->
+<div class="sol_qwrap">
 <hr><h2>Part 2: Electromagnet - Simulation:</h2><hr>
 <ol>
-<li>When the length of the solenoid is decreased while keeping the number of coils constant, what happens to the magnetic field inside the solenoid?
-<br></li>
-<li>When the number of coils is increased but the solenoid length stays the same, how does the magnetic field inside change?
-<br></li>
-<li>If the solenoid radius is increased while keeping current and turns constant, what happens to the magnetic field at the center?
-<br></li>
-<li>What happens to the solenoid's magnetic field when the current is doubled?
-<br></li>
-<li>Which core material creates the strongest magnetic field inside the solenoid?
-<br></li>
-<li>When the core is removed entirely (air core), what happens to the magnetic field strength inside the solenoid?
-<br></li>
-<li>Increasing the size (thickness) of the ferromagnetic core primarily affects the solenoid by doing what?
-<br></li>
-<li>What effect does reversing the current direction have on the solenoid's field pattern?
-<br></li>
-<li>When both the number of turns and the current are increased, what happens to the magnetic field strength inside the solenoid?
-<br></li>
-<li>Which change produces the largest increase in magnetic field strength: increasing current, increasing turns, or adding a ferromagnetic core?
-<br></li>
-<li>When the solenoid becomes very long (many times its diameter), what happens to the field inside the solenoid?
-<br></li>
-<li>Increasing the solenoid radius primarily weakens the field because:
-<br></li>
-<li>When the core is replaced with a paramagnetic material instead of a ferromagnetic one, what happens to the field inside the solenoid?
-<br></li>
-<li>What happens outside the solenoid when the number of turns increases while current stays constant?
-<br></li>
-<li>When the solenoid's length is increased with the same number of coils, what happens to the field along the central axis?
-<br></li>
+<li>When the length of the solenoid is decreased while keeping the number of coils constant, what happens to the magnetic field inside the solenoid?</li>
+<li>When the number of coils is increased but the solenoid length stays the same, how does the magnetic field inside change?</li>
+<li>If the solenoid radius is increased while keeping current and turns constant, what happens to the magnetic field at the center?</li>
+<li>What happens to the solenoid's magnetic field when the current is doubled?</li>
+<li>Which core material creates the strongest magnetic field inside the solenoid?</li>
+<li>When the core is removed entirely (air core), what happens to the magnetic field strength inside the solenoid?</li>
+<li>Increasing the size (thickness) of the ferromagnetic core primarily affects the solenoid by doing what?</li>
+<li>What effect does reversing the current direction have on the solenoid's field pattern?</li>
+<li>When both the number of turns and the current are increased, what happens to the magnetic field strength inside the solenoid?</li>
+<li>Which change produces the largest increase in magnetic field strength: increasing current, increasing turns, or adding a ferromagnetic core?</li>
+<li>When the solenoid becomes very long (many times its diameter), what happens to the field inside the solenoid?</li>
+<li>Increasing the solenoid radius primarily weakens the field because:</li>
+<li>When the core is replaced with a paramagnetic material instead of a ferromagnetic one, what happens to the field inside the solenoid?</li>
+<li>What happens outside the solenoid when the number of turns increases while current stays constant?</li>
+<li>When the solenoid's length is increased with the same number of coils, what happens to the field along the central axis?</li>
 </ol>
 <hr><h2>Part 2: Electromagnet - Hands on Activity:</h2><hr>
 <p>Make a solenoid by wrapping a `approx 1.0\ "m"` wire around a `approx 10\ "cm"` section of a drinking straw.</p>
@@ -152,36 +151,24 @@
 </ol>
 <hr>
 <ol>
-<li>What is the purpose of the iron nail in an electromagnet setup?
-<br></li>
-<li>Which of the following materials would make the strongest core for an electromagnet?
-<br></li>
-<li>What happens when you use a pencil as the core of an electromagnet instead of a nail?
-<br></li>
-<li>Why does an electromagnet with no core produce a weaker magnetic field?
-<br></li>
-<li>What does the right-hand rule help you determine in an electromagnet?
-<br></li>
-<li>When using the right-hand rule, what does your thumb represent?
-<br></li>
-<li>How can you find the north pole of an electromagnet using the right-hand rule?
-<br></li>
-<li>How does increasing the number of coils in an electromagnet affect its magnetic field?
-<br></li>
-<li>What happens to the strength of an electromagnet when the electric current is increased?
-<br></li>
-<li>What is a common problem when using large currents in an electromagnet?
-<br></li>
-<li>Why are superconductors ideal for making powerful electromagnets?
-<br></li>
+<li>What is the purpose of the iron nail in an electromagnet setup?</li>
+<li>Which of the following materials would make the strongest core for an electromagnet?</li>
+<li>What happens when you use a pencil as the core of an electromagnet instead of a nail?</li>
+<li>Why does an electromagnet with no core produce a weaker magnetic field?</li>
+<li>What does the right-hand rule help you determine in an electromagnet?</li>
+<li>When using the right-hand rule, what does your thumb represent?</li>
+<li>How can you find the north pole of an electromagnet using the right-hand rule?</li>
+<li>How does increasing the number of coils in an electromagnet affect its magnetic field?</li>
+<li>What happens to the strength of an electromagnet when the electric current is increased?</li>
+<li>What is a common problem when using large currents in an electromagnet?</li>
+<li>Why are superconductors ideal for making powerful electromagnets?</li>
 </ol>
 <hr>
-<p>Discuss your results about this part of the experiment:
-<br></p>
+<p>Discuss your results about this part of the experiment:</p>
 </div>
 <style>
-/* ════════ All simulator rules scoped to #solroot1017 ════════ */
-#solroot1017 {
+/* ════════ All simulator rules scoped to #solroot ════════ */
+#solroot {
 --sol-chassis:#1a1c1f; --sol-panel:#22262b; --sol-panel-hi:#2c3138; --sol-panel-lo:#14161a;
 --sol-border:#3a4048; --sol-border-hi:#525c66; --sol-text:#c8d0d8; --sol-dim:#8a94a3; --sol-bright:#e8eef5;
 --sol-accent:#e8a020; --sol-green:#3ad08f; --sol-val:#ffdd66;
@@ -195,99 +182,130 @@ display:flex; flex-direction:column; align-items:center;
 padding:16px 10px 20px; gap:12px; box-sizing:border-box;
 width:100%; max-width:860px; margin:0 auto 10px; border-radius:6px; position:relative;
 }
-#solroot1017.sol_lm1017 {
+#solroot.sol_lm {
 --sol-chassis:#e9edf1; --sol-panel:#ffffff; --sol-panel-hi:#f1f4f7; --sol-panel-lo:#f4f6f9;
 --sol-border:#c3cad3; --sol-border-hi:#9aa3ae; --sol-text:#1d232a; --sol-dim:#556070; --sol-bright:#000000;
 --sol-accent:#a8620a; --sol-green:#12805a; --sol-val:#8a4a00;
 --sol-focus:#a8620a; --sol-nar-bg:#ffefc0; --sol-nar-border:#e0b040; --sol-nar-text:#333333;
 background-image:none;
 }
-#solroot1017.sol_hc1017 {
+#solroot.sol_hc {
 --sol-chassis:#000000; --sol-panel:#000000; --sol-panel-hi:#111111; --sol-panel-lo:#000000;
 --sol-border:#ffffff; --sol-border-hi:#ffffff; --sol-text:#ffffff; --sol-dim:#e0e0e0; --sol-bright:#ffffff;
 --sol-accent:#ffd700; --sol-green:#00ff88; --sol-val:#ffff00;
 --sol-focus:#ffff00; --sol-nar-bg:#000000; --sol-nar-border:#ffd700; --sol-nar-text:#ffffff;
 background-image:none;
 }
-#solroot1017.sol_hc1017 .sol_panel1017, #solroot1017.sol_hc1017 .sol_diagpanel1017 { border-width:2px; }
-#solroot1017 *, #solroot1017 *::before, #solroot1017 *::after { box-sizing:border-box; margin:0; padding:0; }
-#solroot1017 input:focus-visible, #solroot1017 button:focus-visible { outline:2px solid var(--sol-focus); outline-offset:2px; }
+#solroot.sol_hc .sol_panel, #solroot.sol_hc .sol_diagpanel { border-width:2px; }
+#solroot *, #solroot *::before, #solroot *::after { box-sizing:border-box; margin:0; padding:0; }
+#solroot input:focus-visible, #solroot button:focus-visible { outline:2px solid var(--sol-focus); outline-offset:2px; }
 /* toolbar */
-#solroot1017 .sol_a11y1017 { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; width:100%; }
-#solroot1017 .sol_a11ybtn1017 { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--sol-panel-hi); border:1px solid var(--sol-border-hi); color:var(--sol-dim); }
-#solroot1017 .sol_a11ybtn1017:hover { border-color:var(--sol-accent); color:var(--sol-accent); }
-#solroot1017 .sol_a11yon1017 { background:rgba(58,208,143,.14); border-color:var(--sol-green); color:var(--sol-green); font-weight:bold; }
+#solroot .sol_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; width:100%; }
+#solroot .sol_a11ybtn { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--sol-panel-hi); border:1px solid var(--sol-border-hi); color:var(--sol-dim); }
+#solroot .sol_a11ybtn:hover { border-color:var(--sol-accent); color:var(--sol-accent); }
+#solroot .sol_a11yon { background:rgba(58,208,143,.14); border-color:var(--sol-green); color:var(--sol-green); font-weight:bold; }
 /* header */
-#solroot1017 .sol_header1017 { display:flex; flex-direction:column; align-items:center; gap:3px; }
-#solroot1017 .sol_h11017 { font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--sol-accent); text-align:center; }
-#solroot1017 .sol_sub1017 { font-size:.7rem; color:var(--sol-dim); letter-spacing:.08em; text-transform:uppercase; text-align:center; }
-#solroot1017 .sol_motionnotice1017 { display:none; width:100%; padding:5px 12px; font-size:.74rem; text-align:center; background:var(--sol-panel); border:1px solid var(--sol-border); border-radius:4px; color:var(--sol-dim); }
+#solroot .sol_header { display:flex; flex-direction:column; align-items:center; gap:3px; }
+#solroot .sol_h1 { font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--sol-accent); text-align:center; }
+#solroot .sol_sub { font-size:.7rem; color:var(--sol-dim); letter-spacing:.08em; text-transform:uppercase; text-align:center; }
+#solroot .sol_motionnotice { display:none; width:100%; padding:5px 12px; font-size:.74rem; text-align:center; background:var(--sol-panel); border:1px solid var(--sol-border); border-radius:4px; color:var(--sol-dim); }
 /* grid */
-#solroot1017 .sol_instrument1017 { display:grid; grid-template-columns:1fr auto; gap:12px; width:100%; }
-#solroot1017 .sol_diagpanel1017 { background:var(--sol-panel); border:1px solid var(--sol-border); border-radius:6px; overflow:hidden; display:flex; flex-direction:column; align-self:start; box-shadow:0 4px 20px rgba(0,0,0,.35); }
-#solroot1017 .sol_diaglabel1017 { background:var(--sol-panel-lo); border-bottom:1px solid var(--sol-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--sol-dim); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
-#solroot1017 #diagLabel1017 { color:var(--sol-accent); font-weight:bold; }
-#solroot1017 .sol_diagnote1017 { text-transform:none; letter-spacing:.02em; }
-#solroot1017 #fieldCanvas1017 { display:block; max-width:100%; cursor:crosshair; margin:0 auto; }
-#solroot1017 .sol_hoverbar1017 { background:var(--sol-panel-lo); border-top:1px solid var(--sol-border); padding:6px 12px; font-family:monospace; font-size:.74rem; color:var(--sol-val); min-height:28px; }
+#solroot .sol_instrument { display:grid; grid-template-columns:1fr auto; gap:12px; width:100%; }
+#solroot .sol_diagpanel { background:var(--sol-panel); border:1px solid var(--sol-border); border-radius:6px; overflow:hidden; display:flex; flex-direction:column; align-self:start; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+#solroot .sol_diaglabel { background:var(--sol-panel-lo); border-bottom:1px solid var(--sol-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--sol-dim); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+#solroot #diagLabel { color:var(--sol-accent); font-weight:bold; }
+#solroot .sol_diagnote { text-transform:none; letter-spacing:.02em; }
+#solroot #fieldCanvas { display:block; max-width:100%; cursor:crosshair; margin:0 auto; }
+#solroot .sol_hoverbar { background:var(--sol-panel-lo); border-top:1px solid var(--sol-border); padding:6px 12px; font-family:monospace; font-size:.74rem; color:var(--sol-val); min-height:28px; }
 /* right column */
-#solroot1017 .sol_rightcol1017 { display:flex; flex-direction:column; gap:12px; width:250px; }
-#solroot1017 .sol_panel1017 { background:var(--sol-panel); border:1px solid var(--sol-border); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.3); }
-#solroot1017 .sol_paneltitle1017 { background:var(--sol-panel-lo); border-bottom:1px solid var(--sol-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--sol-dim); }
-#solroot1017 .sol_panelbody1017 { padding:9px 12px; display:flex; flex-direction:column; gap:5px; }
-#solroot1017 .sol_srcbtns1017 { display:grid; grid-template-columns:1fr 1fr; gap:5px; }
-#solroot1017 .sol_srcbtn1017 { padding:6px 4px; font-family:monospace; font-size:.66rem; letter-spacing:.06em; cursor:pointer; background:var(--sol-panel-hi); border:1px solid var(--sol-border-hi); color:var(--sol-dim); border-radius:3px; }
-#solroot1017 .sol_srcbtn1017:hover { border-color:var(--sol-accent); color:var(--sol-text); }
-#solroot1017 .sol_srcon1017 { background:var(--sol-accent); color:#111; border-color:var(--sol-accent); font-weight:bold; }
-#solroot1017 .sol_ctrlhdr1017 { display:flex; justify-content:space-between; align-items:baseline; }
-#solroot1017 .sol_ctrlname1017 { font-size:.7rem; font-weight:600; letter-spacing:.04em; color:var(--sol-dim); text-transform:uppercase; }
-#solroot1017 .sol_srow1017 { display:flex; align-items:center; gap:6px; }
-#solroot1017 .sol_slbl1017 { font-size:.72rem; color:var(--sol-dim); min-width:14px; font-weight:600; }
-#solroot1017 input[type=range] { flex:1; width:100%; -webkit-appearance:none; height:4px; border-radius:2px; outline:none; cursor:pointer; background:var(--sol-panel-lo); border:1px solid var(--sol-border); }
-#solroot1017 input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--sol-accent); border:2px solid var(--sol-panel); cursor:pointer; }
-#solroot1017 .sol_sval1017 { font-family:monospace; font-size:.74rem; color:var(--sol-val); min-width:56px; text-align:right; }
-#solroot1017 .sol_hint1017 { font-size:.66rem; color:var(--sol-dim); line-height:1.4; }
-#solroot1017 .sol_rinner1017 { padding:8px 10px; display:flex; flex-direction:column; gap:4px; }
-#solroot1017 .sol_rrow1017 { display:flex; justify-content:space-between; align-items:center; gap:6px; padding:4px 7px; background:var(--sol-panel-lo); border:1px solid var(--sol-border); border-radius:3px; }
-#solroot1017 .sol_rkey1017 { font-family:monospace; font-size:.6rem; color:var(--sol-dim); letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }
-#solroot1017 .sol_rval1017 { font-family:monospace; font-size:.72rem; text-align:right; color:var(--sol-text); }
-#solroot1017 .sol_hi1017 { color:var(--sol-val); font-weight:bold; }
+#solroot .sol_rightcol { display:flex; flex-direction:column; gap:12px; width:250px; }
+#solroot .sol_panel { background:var(--sol-panel); border:1px solid var(--sol-border); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.3); }
+#solroot .sol_paneltitle { background:var(--sol-panel-lo); border-bottom:1px solid var(--sol-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--sol-dim); }
+#solroot .sol_panelbody { padding:9px 12px; display:flex; flex-direction:column; gap:5px; }
+#solroot .sol_srcbtns { display:grid; grid-template-columns:1fr 1fr; gap:5px; }
+#solroot .sol_srcbtn { padding:6px 4px; font-family:monospace; font-size:.66rem; letter-spacing:.06em; cursor:pointer; background:var(--sol-panel-hi); border:1px solid var(--sol-border-hi); color:var(--sol-dim); border-radius:3px; }
+#solroot .sol_srcbtn:hover { border-color:var(--sol-accent); color:var(--sol-text); }
+#solroot .sol_srcon { background:var(--sol-accent); color:#111; border-color:var(--sol-accent); font-weight:bold; }
+#solroot .sol_ctrlhdr { display:flex; justify-content:space-between; align-items:baseline; }
+#solroot .sol_ctrlname { font-size:.7rem; font-weight:600; letter-spacing:.04em; color:var(--sol-dim); text-transform:uppercase; }
+#solroot .sol_srow { display:flex; align-items:center; gap:6px; }
+#solroot .sol_slbl { font-size:.72rem; color:var(--sol-dim); min-width:14px; font-weight:600; }
+#solroot input[type=range] { flex:1; width:100%; -webkit-appearance:none; height:4px; border-radius:2px; outline:none; cursor:pointer; background:var(--sol-panel-lo); border:1px solid var(--sol-border); }
+#solroot input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--sol-accent); border:2px solid var(--sol-panel); cursor:pointer; }
+#solroot .sol_sval { font-family:monospace; font-size:.74rem; color:var(--sol-val); min-width:56px; text-align:right; }
+#solroot .sol_hint { font-size:.66rem; color:var(--sol-dim); line-height:1.4; }
+#solroot .sol_rinner { padding:8px 10px; display:flex; flex-direction:column; gap:4px; }
+#solroot .sol_rrow { display:flex; justify-content:space-between; align-items:center; gap:6px; padding:4px 7px; background:var(--sol-panel-lo); border:1px solid var(--sol-border); border-radius:3px; }
+#solroot .sol_rkey { font-family:monospace; font-size:.6rem; color:var(--sol-dim); letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }
+#solroot .sol_rval { font-family:monospace; font-size:.72rem; text-align:right; color:var(--sol-text); }
+#solroot .sol_hi { color:var(--sol-val); font-weight:bold; }
 /* formula strip, narration, credit */
-#solroot1017 .sol_formulastrip1017 { grid-column:1 / 3; background:var(--sol-panel-lo); border:1px solid var(--sol-border); border-radius:4px; padding:7px 14px; }
-#solroot1017 .sol_formulatxt1017 { font-family:monospace; font-size:.66rem; color:var(--sol-dim); letter-spacing:.04em; }
-#solroot1017 .sol_formulatxt1017 kbd { border:1px solid var(--sol-border-hi); border-radius:2px; padding:0 4px; color:var(--sol-accent); font-family:monospace; }
-#solroot1017 .sol_narbar1017 { width:100%; min-height:28px; padding:6px 12px; background:var(--sol-nar-bg); border-left:4px solid var(--sol-nar-border); font-size:.82rem; color:var(--sol-nar-text); font-style:italic; line-height:1.45; border-radius:3px; }
-#solroot1017 .sol_credit1017 { font-size:.62rem; color:var(--sol-dim); text-align:center; }
-#solroot1017 .sol_sronly1017 { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+#solroot .sol_formulastrip { grid-column:1 / 3; background:var(--sol-panel-lo); border:1px solid var(--sol-border); border-radius:4px; padding:7px 14px; }
+#solroot .sol_formulatxt { font-family:monospace; font-size:.66rem; color:var(--sol-dim); letter-spacing:.04em; }
+#solroot .sol_formulatxt kbd { border:1px solid var(--sol-border-hi); border-radius:2px; padding:0 4px; color:var(--sol-accent); font-family:monospace; }
+#solroot .sol_narbar { width:100%; min-height:28px; padding:6px 12px; background:var(--sol-nar-bg); border-left:4px solid var(--sol-nar-border); font-size:.82rem; color:var(--sol-nar-text); font-style:italic; line-height:1.45; border-radius:3px; }
+#solroot .sol_credit { font-size:.62rem; color:var(--sol-dim); text-align:center; }
+#solroot .sol_sronly { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
 /* extra controls shared by the magnetism sims */
-#solroot1017 .sol_chk1017 { display:flex; align-items:center; gap:6px; font-size:.74rem; color:var(--sol-text); cursor:pointer; }
-#solroot1017 .sol_chk1017 input { accent-color:var(--sol-accent); width:14px; height:14px; }
-#solroot1017 .sol_dispbar1017 { display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:6px 12px; background:var(--sol-panel-lo); border-top:1px solid var(--sol-border); }
-#solroot1017 select { width:100%; background:var(--sol-panel-hi); color:var(--sol-text); border:1px solid var(--sol-border-hi); border-radius:3px; padding:3px 5px; font-size:.72rem; }
-#solroot1017 .sol_btnrow1017 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:5px; }
-#solroot1017 .sol_btnrow21017 { display:grid; grid-template-columns:1fr 1fr; gap:5px; }
-#solroot1017 .sol_btn1017 { padding:5px 3px; font-family:monospace; font-size:.62rem; letter-spacing:.04em; cursor:pointer; background:var(--sol-panel-hi); border:1px solid var(--sol-border-hi); color:var(--sol-text); border-radius:3px; text-transform:uppercase; }
-#solroot1017 .sol_btn1017:hover { border-color:var(--sol-accent); }
-#solroot1017 .sol_btn1017:disabled { opacity:.4; cursor:default; }
-#solroot1017 .sol_warn1017 { color:#e0605a; border-color:#a04040; }
-#solroot1017.sol_lm1017 .sol_warn1017 { color:#b02020; border-color:#c06060; }
-#solroot1017 .sol_sub21017 { border-top:1px dashed var(--sol-border); padding-top:6px; margin-top:4px; display:flex; flex-direction:column; gap:5px; }
-#solroot1017 .sol_maghead1017 { display:flex; align-items:center; gap:6px; font-family:monospace; font-size:.72rem; font-weight:bold; color:var(--sol-text); }
-#solroot1017 .sol_magdot1017 { width:11px; height:11px; border-radius:2px; display:inline-block; border:1px solid var(--sol-border-hi); }
-#solroot1017 .sol_derived1017 { font-family:monospace; font-size:.68rem; color:var(--sol-dim); }
-#solroot1017 .sol_derived1017 b { color:var(--sol-val); font-weight:bold; }
+#solroot .sol_chk { display:flex; align-items:center; gap:6px; font-size:.74rem; color:var(--sol-text); cursor:pointer; }
+#solroot .sol_chk input { accent-color:var(--sol-accent); width:14px; height:14px; }
+#solroot .sol_dispbar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:6px 12px; background:var(--sol-panel-lo); border-top:1px solid var(--sol-border); }
+#solroot select { width:100%; background:var(--sol-panel-hi); color:var(--sol-text); border:1px solid var(--sol-border-hi); border-radius:3px; padding:3px 5px; font-size:.72rem; }
+#solroot .sol_btnrow { display:grid; grid-template-columns:1fr 1fr 1fr; gap:5px; }
+#solroot .sol_btnrow2 { display:grid; grid-template-columns:1fr 1fr; gap:5px; }
+#solroot .sol_btn { padding:5px 3px; font-family:monospace; font-size:.62rem; letter-spacing:.04em; cursor:pointer; background:var(--sol-panel-hi); border:1px solid var(--sol-border-hi); color:var(--sol-text); border-radius:3px; text-transform:uppercase; }
+#solroot .sol_btn:hover { border-color:var(--sol-accent); }
+#solroot .sol_btn:disabled { opacity:.4; cursor:default; }
+#solroot .sol_warn { color:#e0605a; border-color:#a04040; }
+#solroot.sol_lm .sol_warn { color:#b02020; border-color:#c06060; }
+#solroot .sol_sub2 { border-top:1px dashed var(--sol-border); padding-top:6px; margin-top:4px; display:flex; flex-direction:column; gap:5px; }
+#solroot .sol_maghead { display:flex; align-items:center; gap:6px; font-family:monospace; font-size:.72rem; font-weight:bold; color:var(--sol-text); }
+#solroot .sol_magdot { width:11px; height:11px; border-radius:2px; display:inline-block; border:1px solid var(--sol-border-hi); }
+#solroot .sol_derived { font-family:monospace; font-size:.68rem; color:var(--sol-dim); }
+#solroot .sol_derived b { color:var(--sol-val); font-weight:bold; }
 /* question section below the simulator */
-.sol_qwrap1017 { width:100%; max-width:860px; margin:0 auto; padding:4px; box-sizing:border-box; }
-.sol_qwrap1017 ol { padding-left:24px; }
-.sol_qwrap1017 li { margin:0 0 12px 0; line-height:1.45; }
+.sol_qwrap { width:100%; max-width:860px; margin:0 auto; padding:4px; box-sizing:border-box; }
+.sol_qwrap ol { padding-left:24px; }
+.sol_qwrap li { margin:0 0 12px 0; line-height:1.45; }
+/* ════════ Mobile-friendly layout (same template as the Hall effect sim) ════════ */
+#solroot .sol_instrument { grid-template-columns:minmax(0,1fr) 250px; }
+#solroot .sol_diagpanel { min-width:0; }
+#solroot canvas#solCanvas { display:block; width:100%; max-width:560px; height:auto; margin:0 auto; flex:none; }
+#solroot .sol_formulatxt { line-height:1.6; }
+#solroot .sol_hoverbar { line-height:1.4; }
+#solroot select:focus-visible { outline:2px solid var(--sol-focus); outline-offset:2px; }
+/* narrow screens: stack the columns */
+@media (max-width:820px) {
+#solroot .sol_instrument { grid-template-columns:minmax(0,1fr); }
+#solroot .sol_instrument > * { grid-column:auto; grid-row:auto; }
+#solroot .sol_rightcol { width:auto; }
+}
+/* phones and tablets: bigger touch targets */
+@media (pointer:coarse) {
+#solroot input[type=range] { height:8px; }
+#solroot input[type=range]::-webkit-slider-thumb { width:26px; height:26px; }
+#solroot input[type=range]::-moz-range-thumb { width:24px; height:24px; }
+#solroot button, #solroot input[type=button] { min-height:40px; }
+#solroot select { min-height:36px; font-size:.9rem; }
+#solroot input[type=checkbox] { width:22px; height:22px; }
+#solroot .sol_panelbody { gap:10px; }
+}
+@media (max-width:560px) {
+#solroot { padding:10px 6px 14px; }
+#solroot .sol_rrow { flex-wrap:wrap; }
+#solroot .sol_rkey { white-space:normal; }
+#solroot .sol_hoverbar { font-size:.68rem; }
+}
 </style>
 <script>
 var solenoidSim = function() {
 /* ── DOM refs ── */
-var ROOT   = document.getElementById('solroot1017');
-var canvas = document.getElementById('solCanvas1017');
+var ROOT   = document.getElementById('solroot');
+var canvas = document.getElementById('solCanvas');
 var ctx    = canvas.getContext('2d');
 var CW = canvas.width, CH = canvas.height;
+var DPR = window.devicePixelRatio || 1;   /* sharp on phones: draw at device resolution, CSS scales the canvas to the panel */
+canvas.width = CW*DPR; canvas.height = CH*DPR; ctx.scale(DPR, DPR);
 function set(id, txt) { var el = document.getElementById(id); if (el) el.textContent = txt; }
 function fmt(v, u) { return (v >= 0 ? '+' : '\u2212') + Math.abs(parseFloat(v)).toFixed(2) + ' ' + u; }
 /* ── Materials ── */
@@ -542,11 +560,11 @@ return dirs[idx] + ' (' + deg.toFixed(1) + '\u00b0)';
 function idealB() { return MU0*(nCoils/solL)*Math.abs(I); }   /* coil alone, long-solenoid estimate */
 function updateReadouts() {
 var f = fieldAt(compass.y, compass.x), inC = inCore(compass.y, compass.x) && MATERIALS[matKey].mu_r !== 1;
-set('r_Bc1017', formatB(f.B));
-set('r_dir1017', compassDir(f.Bx, f.By));
-set('r_cpos1017', '(' + compass.x.toFixed(2) + ', ' + compass.y.toFixed(2) + ')');
-set('r_Bmax1017', formatB(globalBmax));
-set('r_incore1017', inC ? 'Yes' : 'No');
+set('r_Bc', formatB(f.B));
+set('r_dir', compassDir(f.Bx, f.By));
+set('r_cpos', '(' + compass.x.toFixed(2) + ', ' + compass.y.toFixed(2) + ')');
+set('r_Bmax', formatB(globalBmax));
+set('r_incore', inC ? 'Yes' : 'No');
 }
 function updateNarration() {
 if (!showNarr) return;
@@ -554,21 +572,21 @@ var mat = MATERIALS[matKey], f = fieldAt(compass.y, compass.x), inC = inCore(com
 var coreDesc = mat.type !== 'ferro'
 ? 'The ' + mat.label + ' core has a negligible effect (\u03bc\u1d63 \u2248 ' + mat.mu_r + ').'
 : 'The coil magnetizes the ' + mat.label + ' core (M \u2248 ' + fmtM(core.M) + ' A/m, demagnetizing factor ' + core.Nd.toFixed(3) + ' for a length-to-diameter ratio of ' + (coreLh/coreR).toFixed(1) + (core.sat ? ', saturated' : '') + '). The core\'s own field adds to the coil\'s field inside the core and beyond its ends.';
-set('solNarration1017', 'Solenoid: ' + nCoils + ' turns, I = ' + I.toFixed(1) + ' A, radius ' + solR.toFixed(2) + ' m, length ' + solL.toFixed(2) + ' m (' + (nCoils/solL).toFixed(1) + ' turns per metre). '
+set('solNarration', 'Solenoid: ' + nCoils + ' turns, I = ' + I.toFixed(1) + ' A, radius ' + solR.toFixed(2) + ' m, length ' + solL.toFixed(2) + ' m (' + (nCoils/solL).toFixed(1) + ' turns per metre). '
 + coreDesc + ' Compass at (' + compass.x.toFixed(2) + ', ' + compass.y.toFixed(2) + '): |B| = ' + formatB(f.B) + ', ' + compassDir(f.Bx, f.By) + (inC ? ', inside the core.' : ', outside the core.'));
 }
 function updateCanvasDesc() {
 var f = fieldAt(compass.y, compass.x);
 var d = 'Solenoid field map. I = ' + I.toFixed(1) + ' A, R = ' + solR.toFixed(2) + ' m, L = ' + solL.toFixed(2) + ' m, N = ' + nCoils + '. Core: ' + MATERIALS[matKey].label + ', magnetization ' + fmtM(core.M) + ' A/m. Compass at (' + compass.x.toFixed(2) + ', ' + compass.y.toFixed(2) + '), B = ' + formatB(f.B) + '.';
-set('solCanvasDesc1017', d); canvas.setAttribute('aria-label', d);
+set('solCanvasDesc', d); canvas.setAttribute('aria-label', d);
 }
 function updateDerivedLabels() {
-set('vNL1017', (nCoils/solL).toFixed(1));
-set('vIdeal1017', formatB(idealB()));
+set('vNL', (nCoils/solL).toFixed(1));
+set('vIdeal', formatB(idealB()));
 var mat = MATERIALS[matKey];
-set('coreInfo1017', mat.type !== 'ferro' ? (matKey === 'air' ? 'No core material.' : 'M \u2248 ' + fmtM(core.M) + ' A/m, ' + mSense() + ' (negligible)')
+set('coreInfo', mat.type !== 'ferro' ? (matKey === 'air' ? 'No core material.' : 'M \u2248 ' + fmtM(core.M) + ' A/m, ' + mSense() + ' (negligible)')
  : 'L/D = ' + (coreLh/coreR).toFixed(1) + ' \u00b7 Nd = ' + core.Nd.toFixed(3) + ' \u00b7 M = ' + fmtM(core.M) + ' A/m \u00b7 \u03bc\u2080M = ' + formatB(MU0*Math.abs(core.M)) + (core.sat ? ' (saturated)' : ''));
-set('diagLabel1017', 'FIELD MAP -- ' + nCoils + ' turns, ' + MATERIALS[matKey].label + ' core');
+set('diagLabel', 'FIELD MAP -- ' + nCoils + ' turns, ' + MATERIALS[matKey].label + ' core');
 }
 /* Redraws are merged to one per animation frame. recompute = the field itself changed. */
 var pending = false, needGrid = false;
@@ -579,36 +597,36 @@ var go = function() { pending = false; if (needGrid) { gridCache = null; needGri
 if (window.requestAnimationFrame) window.requestAnimationFrame(go); else setTimeout(go, 16);
 }
 function clampCore() {
-var maxCR = Math.max(0.01, solR - 0.01), slCRel = document.getElementById('slCR1017');
+var maxCR = Math.max(0.01, solR - 0.01), slCRel = document.getElementById('slCR');
 slCRel.max = maxCR.toFixed(2);
 if (coreR > maxCR) { coreR = maxCR; slCRel.value = coreR.toFixed(2); }
-set('vCR1017', coreR.toFixed(2) + ' m');
-var maxCLh = solL/2, slCLel = document.getElementById('slCL1017');
+set('vCR', coreR.toFixed(2) + ' m');
+var maxCLh = solL/2, slCLel = document.getElementById('slCL');
 slCLel.max = solL.toFixed(2);
 if (coreLh > maxCLh) { coreLh = maxCLh; slCLel.value = (coreLh*2).toFixed(2); }
-set('vCL1017', (coreLh*2).toFixed(2) + ' m');
+set('vCL', (coreLh*2).toFixed(2) + ' m');
 }
 /* ── Controls ── */
 function onSlider(key, raw) {
 var v = parseFloat(raw);
-if      (key === 'I')  { I = v;                        set('vI1017', (v >= 0 ? '+' : '\u2212') + Math.abs(v).toFixed(1) + ' A'); }
-else if (key === 'R')  { solR = v;                     set('vR1017', v.toFixed(2) + ' m'); clampCore(); }
-else if (key === 'L')  { solL = v;                     set('vL1017', v.toFixed(2) + ' m'); clampCore(); }
-else if (key === 'N')  { nCoils = Math.round(v);       set('vN1017', String(Math.round(v))); }
-else if (key === 'CR') { coreR = Math.min(v, solR - 0.01); set('vCR1017', coreR.toFixed(2) + ' m'); }
-else if (key === 'CL') { coreLh = Math.min(v/2, solL/2);  set('vCL1017', (coreLh*2).toFixed(2) + ' m'); }
+if      (key === 'I')  { I = v;                        set('vI', (v >= 0 ? '+' : '\u2212') + Math.abs(v).toFixed(1) + ' A'); }
+else if (key === 'R')  { solR = v;                     set('vR', v.toFixed(2) + ' m'); clampCore(); }
+else if (key === 'L')  { solL = v;                     set('vL', v.toFixed(2) + ' m'); clampCore(); }
+else if (key === 'N')  { nCoils = Math.round(v);       set('vN', String(Math.round(v))); }
+else if (key === 'CR') { coreR = Math.min(v, solR - 0.01); set('vCR', coreR.toFixed(2) + ' m'); }
+else if (key === 'CL') { coreLh = Math.min(v/2, solL/2);  set('vCL', (coreLh*2).toFixed(2) + ' m'); }
 scheduleUpdate(true);
 }
 function onCompassSlider(axis, raw) {
 var v = parseFloat(raw);
-if (axis === 'x') { compass.x = v; set('vCx1017', fmt(v, 'm')); } else { compass.y = v; set('vCy1017', fmt(v, 'm')); }
+if (axis === 'x') { compass.x = v; set('vCx', fmt(v, 'm')); } else { compass.y = v; set('vCy', fmt(v, 'm')); }
 scheduleUpdate(false);
 }
-function onMatChange() { matKey = document.getElementById('selMat1017').value; set('matDesc1017', MATERIALS[matKey].desc); scheduleUpdate(true); }
+function onMatChange() { matKey = document.getElementById('selMat').value; set('matDesc', MATERIALS[matKey].desc); scheduleUpdate(true); }
 function syncCompassSliders() {
-var sx = document.getElementById('slCx1017'), sy = document.getElementById('slCy1017');
+var sx = document.getElementById('slCx'), sy = document.getElementById('slCy');
 if (sx) sx.value = compass.x.toFixed(2); if (sy) sy.value = compass.y.toFixed(2);
-set('vCx1017', fmt(compass.x, 'm')); set('vCy1017', fmt(compass.y, 'm'));
+set('vCx', fmt(compass.x, 'm')); set('vCy', fmt(compass.y, 'm'));
 }
 /* ── Canvas interaction ── */
 function canvasXY(clientX, clientY) { var r = canvas.getBoundingClientRect(); return [(clientX - r.left)*(CW/r.width), (clientY - r.top)*(CH/r.height)]; }
@@ -619,27 +637,27 @@ canvas.addEventListener('mousemove', function(e) {
 var c = canvasXY(e.clientX, e.clientY);
 if (dragging) dragTo(c);
 var q = fromCanvas(c[0], c[1]), f = fieldAt(q[1], q[0]), inC = inCore(q[1], q[0]) && MATERIALS[matKey].type === 'ferro';
-set('solHoverReadout1017', 'axial = ' + q[0].toFixed(3) + ' m  |  radial = ' + q[1].toFixed(3) + ' m  |  |B| = ' + formatB(f.B) + (inC ? '  |  inside the core' : ''));
+set('solHoverReadout', 'axial = ' + q[0].toFixed(3) + ' m  |  radial = ' + q[1].toFixed(3) + ' m  |  |B| = ' + formatB(f.B) + (inC ? '  |  inside the core' : ''));
 });
 document.addEventListener('mouseup', function() { dragging = false; canvas.style.cursor = 'crosshair'; });
-canvas.addEventListener('mouseleave', function() { set('solHoverReadout1017', 'Hover over the field to read B at that point'); });
+canvas.addEventListener('mouseleave', function() { set('solHoverReadout', 'Hover over or tap the field to read B at that point'); });
 canvas.addEventListener('touchstart', function(e) { var t = e.touches[0], c = canvasXY(t.clientX, t.clientY); if (hitCompass(c)) { dragging = true; e.preventDefault(); } }, {passive:false});
 canvas.addEventListener('touchmove', function(e) { if (!dragging) return; e.preventDefault(); var t = e.touches[0]; dragTo(canvasXY(t.clientX, t.clientY)); }, {passive:false});
 document.addEventListener('touchend', function() { dragging = false; });
 /* ── Display options ── */
-function setBtnOn(id, on) { var b = document.getElementById(id); if (!b) return; b.classList.toggle('sol_a11yon1017', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function setBtnOn(id, on) { var b = document.getElementById(id); if (!b) return; b.classList.toggle('sol_a11yon', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
 function applyDisplay() {
-ROOT.classList.toggle('sol_hc1017', hcMode); ROOT.classList.toggle('sol_lm1017', lightMode); ROOT.classList.toggle('sol_cb1017', cbMode);
-setBtnOn('btnHC1017', hcMode); setBtnOn('btnLight1017', lightMode); setBtnOn('btnCB1017', cbMode); setBtnOn('btnNarr1017', showNarr);
-var nb = document.getElementById('btnNarr1017'); if (nb) nb.textContent = 'NARRATION: ' + (showNarr ? 'ON' : 'OFF');
-var box = document.getElementById('solNarrBox1017'); if (box) box.style.display = showNarr ? '' : 'none';
+ROOT.classList.toggle('sol_hc', hcMode); ROOT.classList.toggle('sol_lm', lightMode); ROOT.classList.toggle('sol_cb', cbMode);
+setBtnOn('btnHC', hcMode); setBtnOn('btnLight', lightMode); setBtnOn('btnCB', cbMode); setBtnOn('btnNarr', showNarr);
+var nb = document.getElementById('btnNarr'); if (nb) nb.textContent = 'NARRATION: ' + (showNarr ? 'ON' : 'OFF');
+var box = document.getElementById('solNarrBox'); if (box) box.style.display = showNarr ? '' : 'none';
 }
 function toggleHC() { hcMode = !hcMode; if (hcMode) lightMode = false; applyDisplay(); scheduleUpdate(false); srAnnounce('High contrast ' + (hcMode ? 'on.' : 'off.')); }
 function toggleLight() { lightMode = !lightMode; if (lightMode) hcMode = false; applyDisplay(); scheduleUpdate(false); srAnnounce('Light mode ' + (lightMode ? 'on.' : 'off.')); }
 function toggleCB() { cbMode = !cbMode; applyDisplay(); scheduleUpdate(false); srAnnounce('Color-blind safe colors ' + (cbMode ? 'on.' : 'off.')); }
 function toggleNarr() { showNarr = !showNarr; applyDisplay(); if (showNarr) updateNarration(); srAnnounce('Narration ' + (showNarr ? 'on.' : 'off.')); }
 var srTimer = null;
-function srAnnounce(msg) { var el = document.getElementById('solSrAnnounce1017'); if (!el) return; el.textContent = ''; clearTimeout(srTimer); srTimer = setTimeout(function() { el.textContent = msg; }, 60); }
+function srAnnounce(msg) { var el = document.getElementById('solSrAnnounce'); if (!el) return; el.textContent = ''; clearTimeout(srTimer); srTimer = setTimeout(function() { el.textContent = msg; }, 60); }
 /* ── Keyboard shortcuts ── */
 ROOT.setAttribute('tabindex', '0');
 ROOT.addEventListener('keydown', function(e) {
@@ -652,9 +670,9 @@ case 'c': case 'C': toggleCB(); e.preventDefault(); break;
 case 'n': case 'N': toggleNarr(); e.preventDefault(); break;
 }
 });
-if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { var mn = document.getElementById('solMotionNotice1017'); if (mn) mn.style.display = 'block'; }
+if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { var mn = document.getElementById('solMotionNotice'); if (mn) mn.style.display = 'block'; }
 /* ── Boot ── */
-set('matDesc1017', MATERIALS[matKey].desc);
+set('matDesc', MATERIALS[matKey].desc);
 clampCore();
 applyDisplay();
 scheduleUpdate(true);
@@ -662,7 +680,23 @@ return { onSlider: onSlider, onCompassSlider: onCompassSlider, onMatChange: onMa
 };
 </script>
 <script>
-var solenoidSim1017 = new solenoidSim();
+var solenoidSim = new solenoidSim();
 </script>
+<script>
+/* phones and tablets have no hover: a tap (or a finger moving over the field) updates the B readout */
+(function(){
+var cv = document.getElementById('solCanvas');
+if (!cv || typeof MouseEvent !== 'function') return;
+var lastTouch = 0;
+function relay(e){ if (!e.touches || !e.touches.length) return; var t = e.touches[0]; lastTouch = Date.now();
+cv.dispatchEvent(new MouseEvent('mousemove', { clientX:t.clientX, clientY:t.clientY, bubbles:true })); }
+cv.addEventListener('touchstart', relay, { passive:true });
+cv.addEventListener('touchmove', relay, { passive:true });
+cv.addEventListener('touchend', function(){ lastTouch = Date.now(); }, { passive:true });
+/* after a tap the browser sends a mouseleave; keep the reading on screen instead of resetting it */
+cv.addEventListener('mouseleave', function(e){ if (Date.now() - lastTouch < 1000) e.stopImmediatePropagation(); }, true);
+})();
+</script>
+</main>
 </body>
 </html>
