@@ -13,9 +13,16 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <title>Physics Simulations- Waves: Snell's Law for an EM Wave: Reflection and Refraction at a Slab</title>
 <meta name="author" content="Taha Mzoughi">
 <meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,EM,spectrum,transmission, Longitudinal,Frequency, Amplitude, Wave,interference,reflection,refraction, Properties,Snell,incidence,lesson,Brewster,Polarization,pwave,swave,TIR,scientific">
+<meta name="description" content="Interactive 3-D simulation of an EM wave meeting a slab: reflection, refraction, s and p polarization, Brewster angle and total internal reflection.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
-<div id="emSnellRoot1003">
+<main class="page">
+<div id="emSnellRoot1003" class="emsn_root1003" role="region" aria-label="EM wave at a slab simulator">
 <!-- ── Accessibility toolbar ── -->
 <div class="emsn_a11y1003" id="emSnellA11yBar1003" role="toolbar" aria-label="Display options">
 <button type="button" class="emsn_a11ybtn1003" id="emSnellBtnHC1003" onclick="emSnellA11y1003.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
@@ -24,12 +31,16 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <button type="button" class="emsn_a11ybtn1003 emsn_a11yon1003" id="emSnellBtnNR1003" onclick="emSnellA11y1003.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
 </div>
 <div class="tbar1003"><h3>Snell's Law for an EM Wave: Reflection and Refraction at a Slab</h3></div>
+<!-- Instrument grid -->
+<div class="emsn_instrument1003">
+<!-- Left column -->
+<div class="emsn_leftcol1003">
+<div class="emsn_diagpanel1003">
+<div class="emsn_diaglabel1003"><b>3-D VIEW</b></div>
 <div class="mcontent1003">
 <canvas id="emSnellCanvas1003" style="margin:auto;display:block;border:1px solid #ccc;cursor:grab;touch-action:none" width="660" height="520"></canvas>
 <div class="draghint1003">Drag to rotate the view &bull; Scroll / pinch to zoom</div>
 </div>
-<div id="emSnellNarBar1003" class="emsn_narbar1003" role="status" aria-live="polite" aria-atomic="true"></div>
-<div id="emSnellEqBar1003" class="emsn_eqbar1003" aria-label="Wave equations"></div>
 <div class="playbar1003" role="group" aria-label="Animation playback controls">
 <input type="button" id="emSnellPlayBtn1003" class="wv_btn1003 wv_btnmain1003" value="Play"
 onclick="if(this.value=='Play'){emSnellSim1003.pl();this.value='Pause';}else{this.value='Play';emSnellSim1003.ps();}">
@@ -37,6 +48,12 @@ onclick="if(this.value=='Play'){emSnellSim1003.pl();this.value='Pause';}else{thi
 <input type="button" class="wv_btn1003" value="Restart" onclick="document.getElementById('emSnellPlayBtn1003').value='Play';emSnellSim1003.rst();">
 <input type="button" class="wv_btn1003" value="Reset View" onclick="emSnellSim1003.resetView();">
 </div>
+</div>
+<div id="emSnellNarBar1003" class="emsn_narbar1003" role="status" aria-live="polite" aria-atomic="true"></div>
+<div id="emSnellEqBar1003" class="emsn_eqbar1003" aria-label="Wave equations"></div>
+<div class="emsn_panel1003 emsn_showpanel1003" role="group" aria-label="Display options for the picture">
+<div class="emsn_paneltitle1003">Show</div>
+<div class="emsn_panelbody1003">
 <div class="bbar1003" role="group" aria-label="Show or hide overlays">
 <label class="chk1003"><input type="checkbox" id="showMainE1003" checked onchange="emSnellSim1003.toggleMainE(this)"> Show E (main field)</label>
 <label class="chk1003"><input type="checkbox" id="showEs1003" onchange="emSnellSim1003.toggleComp(this,'s')"> Show E<sub>s</sub> component</label>
@@ -56,6 +73,14 @@ onclick="if(this.value=='Play'){emSnellSim1003.pl();this.value='Pause';}else{thi
 <label class="chk1003"><input type="checkbox" id="showNormal1003" onchange="emSnellSim1003.toggleNormal(this)"> Show normal at interface</label>
 <label class="chk1003"><input type="checkbox" id="showPOI1003" onchange="emSnellSim1003.togglePOI(this)"> Show plane of incidence (at incident ray)</label>
 </div>
+</div>
+</div>
+</div><!-- left column -->
+<!-- Right column -->
+<div class="emsn_rightcol1003">
+<div class="emsn_panel1003" role="group" aria-label="Controls">
+<div class="emsn_paneltitle1003">Controls</div>
+<div class="emsn_panelbody1003">
 <div class="footer1003">
 <div class="left1003">Spectrum band:</div>
 <div class="center1003">
@@ -127,9 +152,16 @@ onclick="if(this.value=='Play'){emSnellSim1003.pl();this.value='Pause';}else{thi
 <span id="emSnellAmpVal1003">6</span> (rel. units)
 </div>
 </div>
+
+</div>
+</div>
+</div><!-- right column -->
 <div class="fnote1003">The slab has two parallel faces (top interface at y=0, bottom at y=&minus;thickness), both bordering the SAME outside medium n&#8321;. For a parallel-faced slab this guarantees the exit ray is always parallel to the incident ray (just laterally shifted) and that total internal reflection, when it happens, can only happen at the FIRST interface &mdash; verified before building this. Reflection/transmission amplitudes (r<sub>s</sub>, r<sub>p</sub>, t<sub>s</sub>, t<sub>p</sub>) use the standard Fresnel equations, applied once at each interface; multiple internal reflections inside the slab are not tracked, only the primary transmitted path, which keeps the scene legible. s-polarization (&phi;=0&deg;) is always perpendicular to the plane of incidence; p-polarization (&phi;=90&deg;) lies within it &mdash; since s and p reflect/transmit differently, a mixed (&phi;&ne;0,90&deg;) incident wave generally comes out a DIFFERENT mix after reflecting or refracting. Color (Visible band only) is tied to the source frequency and never changes crossing an interface. The faint continuous ribbon along each ray (toggle with "Show wave envelope") traces the full oscillation, not just the sampled arrows &mdash; it's the most direct way to see whether a crest in the incident wave arrives at the interface and continues as a crest (r&gt;0, no flip) or a trough (r&lt;0, a &pi; phase flip) in the reflected or refracted wave. One genuinely confusing but standard fact worth knowing: by the usual convention for writing the Fresnel equations, r<sub>s</sub> and r<sub>p</sub> have OPPOSITE signs from each other at near-normal incidence, even though s and p are physically indistinguishable there &mdash; so with a mixed polarization (&phi; away from 0&deg; or 90&deg;) at small &theta;&#8321;, it's normal and correct for the s-part and p-part of the reflected envelope to flip oppositely. This was verified against the actual Maxwell boundary condition (tangential E continuous across the interface at all times) before building this, independent of any textbook sign convention. The dots mark exactly where each ray crosses an interface. "Show static field" freezes incident, reflected, and refracted at phase=0 (their own true sign and magnitude, not animating) so you can read their relative orientation directly, without tracking the animation at all &mdash; the most direct tool here if the moving envelope is still hard to follow. Color-coding gives each of the four rays its own fixed color (overriding the Visible-band wavelength tint, since the point is telling them apart, not showing their true color). "Show normal" draws the standard dashed reference line that &theta;&#8321;, &theta;&#8322;, and the reflection angle are all measured from, at each interface. "Show plane of incidence" shades the flat z=0 plane that every ray in this scene already lies in &mdash; framed around the first interface, since that's where incidence, reflection, and the start of refraction all happen together.</div>
+</div><!-- instrument -->
+</div><!-- #emSnellRoot1003 -->
+<!-- Questions -->
+<div class="emsn_qwrap1003">
 <hr>
-$hintlink[10]
 <hr>
 <ol type="a">
 <li>With n&#8321;=1.0 and n&#8322;=1.5, slide &theta;&#8321; from 0&deg; up. Does the refracted ray inside the slab bend toward or away from the normal compared to the incident ray?<br /></li>
@@ -145,10 +177,8 @@ $hintlink[10]
 <li>Repeat the same setup, but now turn on "Show static field" instead (no need to pause or step). Do the frozen incident and reflected arrows confirm what you found in the previous question?<br /></li>
 <li>Turn on both "Show normal" and "Show plane of incidence." Rotate the view until you're looking straight along the z-axis (edge-on to the plane of incidence, so it collapses to a line). Can you now directly read off &theta;&#8321; and &theta;&#8322; as the angles between each ray and the dashed normal?<br /></li>
 </ol>
-</div><!-- #emSnellRoot1003 -->
+</div>
 <style>
-* { margin: 0; box-sizing: border-box; }
-div { width: 663px; margin: 0; }
 #emSnellRoot1003 {
 --emsn-bg:      #ffffff;
 --emsn-E:       #dd2200;
@@ -168,54 +198,101 @@ div { width: 663px; margin: 0; }
 --emsn-grid:    #999999;
 --emsn-toolbar-bg: #222222;
 }
-#emSnellRoot1003 .emsn_a11y1003 {
-display:flex; gap:6px; padding:6px 8px;
-background:var(--emsn-toolbar-bg); flex-wrap:wrap; width:663px;
+/* ════════ Hall effect template, scoped to #emSnellRoot1003 (mobile friendly) ════════ */
+#emSnellRoot1003 {
+--tp-chassis:#1a1c1f; --tp-panel:#22262b; --tp-panel-hi:#2c3138; --tp-panel-lo:#14161a;
+--tp-border:#3a4048; --tp-border-hi:#525c66; --tp-text:#c8d0d8; --tp-dim:#8a94a3; --tp-bright:#e8eef5;
+--tp-accent:#e8a020; --tp-green:#3ad08f; --tp-val:#ffdd66; --tp-warn:#e0605a;
+--tp-focus:#e8a020; --tp-nar-bg:#2a2410; --tp-nar-border:#e0b040; --tp-nar-text:#f0e2b8;
+background:var(--tp-chassis);
+background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px),
+repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
+font-family:Arial, sans-serif; color:var(--tp-text);
+display:flex; flex-direction:column; gap:12px; padding:16px 10px 20px; box-sizing:border-box;
+width:100%; max-width:860px; margin:0 auto 10px; border-radius:6px; position:relative;
 }
-#emSnellRoot1003 .emsn_a11ybtn1003 {
-padding:4px 10px; font-size:.72rem; font-family:monospace;
-letter-spacing:.06em; border-radius:3px; cursor:pointer;
-background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa;
-transition:border-color .15s,color .15s;
+#emSnellRoot1003.emsn_lm1003 {
+--tp-chassis:#e9edf1; --tp-panel:#ffffff; --tp-panel-hi:#f1f4f7; --tp-panel-lo:#f4f6f9;
+--tp-border:#c3cad3; --tp-border-hi:#9aa3ae; --tp-text:#1d232a; --tp-dim:#556070; --tp-bright:#000000;
+--tp-accent:#a8620a; --tp-green:#12805a; --tp-val:#8a4a00; --tp-warn:#b02020;
+--tp-focus:#a8620a; --tp-nar-bg:#ffefc0; --tp-nar-border:#e0b040; --tp-nar-text:#333333; background-image:none;
 }
-#emSnellRoot1003 .emsn_a11ybtn1003:hover { border-color:#00e8d0; color:#00e8d0; }
-#emSnellRoot1003 .emsn_a11yon1003 { background:rgba(0,232,208,.12); border-color:#00e8d0; color:#00e8d0; }
-#emSnellRoot1003 .emsn_narbar1003 {
-width:663px; min-height:28px; padding:5px 10px;
-background:#ffefc0; border-left:4px solid #e0b040;
-font-size:.85rem; color:#333; font-style:italic;
+#emSnellRoot1003.emsn_hc1003 {
+--tp-chassis:#000000; --tp-panel:#000000; --tp-panel-hi:#111111; --tp-panel-lo:#000000;
+--tp-border:#ffffff; --tp-border-hi:#ffffff; --tp-text:#ffffff; --tp-dim:#e0e0e0; --tp-bright:#ffffff;
+--tp-accent:#ffd700; --tp-green:#00ff88; --tp-val:#ffff00; --tp-warn:#ff5555;
+--tp-focus:#ffff00; --tp-nar-bg:#000000; --tp-nar-border:#ffd700; --tp-nar-text:#ffffff; background-image:none;
 }
-#emSnellRoot1003 .emsn_eqbar1003 {
-width:663px; min-height:20px; padding:5px 10px;
-background:#e8f0ff; border-left:4px solid #3366aa;
-font-size:.76rem; color:#112244; font-family:monospace; line-height:1.5;
+#emSnellRoot1003.emsn_hc1003 .emsn_panel1003, #emSnellRoot1003.emsn_hc1003 .emsn_diagpanel1003 { border-width:2px; }
+#emSnellRoot1003 *, #emSnellRoot1003 *::before, #emSnellRoot1003 *::after { box-sizing:border-box; margin:0; }
+#emSnellRoot1003 input:focus-visible, #emSnellRoot1003 button:focus-visible, #emSnellRoot1003 select:focus-visible, #emSnellRoot1003 canvas:focus-visible { outline:2px solid var(--tp-focus); outline-offset:2px; }
+/* display options */
+#emSnellRoot1003 .emsn_a11y1003 { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; width:100%; padding:0; background:none; }
+#emSnellRoot1003 .emsn_a11ybtn1003 { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--tp-panel-hi); border:1px solid var(--tp-border-hi); color:var(--tp-dim); }
+#emSnellRoot1003 .emsn_a11ybtn1003:hover { border-color:var(--tp-accent); color:var(--tp-accent); }
+#emSnellRoot1003 .emsn_a11yon1003 { background:rgba(58,208,143,.14); border-color:var(--tp-green); color:var(--tp-green); font-weight:bold; }
+/* header */
+#emSnellRoot1003 .tbar1003 { height:auto; padding:0 4px; background:none; text-align:center; line-height:1.35; }
+#emSnellRoot1003 .tbar1003 h3 { font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--tp-accent); text-align:center; }
+/* grid */
+#emSnellRoot1003 .emsn_instrument1003 { display:grid; grid-template-columns:minmax(0,1fr) 260px; gap:12px; width:100%; }
+#emSnellRoot1003 .emsn_leftcol1003 { display:flex; flex-direction:column; gap:12px; min-width:0; }
+#emSnellRoot1003 .emsn_rightcol1003 { display:flex; flex-direction:column; gap:12px; min-width:0; }
+#emSnellRoot1003 .emsn_diagpanel1003 { background:var(--tp-panel); border:1px solid var(--tp-border); border-radius:6px; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+#emSnellRoot1003 .emsn_diaglabel1003, #emSnellRoot1003 .emsn_paneltitle1003 { background:var(--tp-panel-lo); border-bottom:1px solid var(--tp-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; color:var(--tp-dim); }
+#emSnellRoot1003 .emsn_diaglabel1003 b { color:var(--tp-accent); }
+#emSnellRoot1003 .mcontent1003 { height:auto; background:#ffffff; padding:0; }
+#emSnellRoot1003 canvas { display:block; width:100%; max-width:660px; height:auto; margin:0 auto; }
+#emSnellRoot1003 .emsn_panel1003 { background:var(--tp-panel); border:1px solid var(--tp-border); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.3); }
+#emSnellRoot1003 .emsn_panelbody1003 { padding:8px 12px 10px; display:flex; flex-direction:column; gap:4px; }
+/* narration */
+#emSnellRoot1003 .emsn_narbar1003 { width:100%; min-height:28px; padding:6px 12px; background:var(--tp-nar-bg); border:none; border-left:4px solid var(--tp-nar-border); font-size:.82rem; color:var(--tp-nar-text); font-style:italic; line-height:1.45; border-radius:3px; }
+/* checkbox bar */
+#emSnellRoot1003 .bbar1003 { height:auto; width:auto; background:none; padding:0 0 6px; display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; text-align:left; font-size:.78rem; color:var(--tp-text); border-bottom:1px dashed var(--tp-border); }
+#emSnellRoot1003 .bbar1003 > div { width:auto; padding:0; flex:1 1 100%; }
+#emSnellRoot1003 .bbar1003 > p { flex:1 1 100%; }
+#emSnellRoot1003 .bbar1003 label { display:flex; align-items:center; gap:6px; cursor:pointer; white-space:normal; }
+#emSnellRoot1003 input[type=checkbox] { accent-color:var(--tp-accent); width:15px; height:15px; flex-shrink:0; }
+/* slider rows */
+#emSnellRoot1003 .footer1003 { height:auto; min-height:0; width:auto; display:flex; flex-direction:column; align-items:stretch; gap:3px; padding:7px 0; background:none !important; text-align:left; border-bottom:1px dashed var(--tp-border); font-size:.78rem; }
+#emSnellRoot1003 .footer1003:last-child { border-bottom:none; }
+#emSnellRoot1003 .footer1003 .left1003 { width:auto; padding:0; font-size:.72rem; font-weight:600; letter-spacing:.02em; color:var(--tp-dim); }
+#emSnellRoot1003 .footer1003 .center1003 { width:auto; flex:none; padding:0; display:flex; align-items:center; flex-wrap:wrap; gap:4px 8px; color:var(--tp-text); }
+#emSnellRoot1003 .footer1003 input[type=range] { flex:1 1 120px; width:auto !important; min-width:0; accent-color:var(--tp-accent); }
+#emSnellRoot1003 .footer1003 .center1003 > span[id] { font-family:monospace; color:var(--tp-val); font-weight:bold; }
+#emSnellRoot1003 select { max-width:100%; background:var(--tp-panel-hi); color:var(--tp-text); border:1px solid var(--tp-border-hi); border-radius:3px; padding:3px 5px; font-size:.76rem; }
+#emSnellRoot1003 hr { border:none; border-top:1px solid var(--tp-border); }
+#emSnellRoot1003 .playbar1003 { height:auto; min-height:0; display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; padding:8px 10px; background:var(--tp-panel-lo); border-top:1px solid var(--tp-border); }
+#emSnellRoot1003 .wv_btn1003 { padding:8px 4px; font-family:monospace; font-size:.72rem; letter-spacing:.04em; text-transform:uppercase; cursor:pointer; background:var(--tp-panel-hi); border:1px solid var(--tp-border-hi); color:var(--tp-text); border-radius:3px; }
+#emSnellRoot1003 .wv_btn1003:hover { border-color:var(--tp-accent); background:var(--tp-panel-hi); }
+#emSnellRoot1003 .wv_btnmain1003, #emSnellRoot1003 .wv_btnmain1003:hover { font-weight:bold; border-color:var(--tp-accent); color:var(--tp-accent); background:var(--tp-panel-hi); }
+#emSnellRoot1003 .draghint1003 { background:var(--tp-panel-lo); color:var(--tp-dim); font-size:.7rem; font-style:italic; text-align:center; padding:4px 8px; border-top:1px solid var(--tp-border); }
+#emSnellRoot1003 .footer1003 .center1003 > span[id][style] { font-family:inherit; font-weight:normal; color:var(--tp-dim) !important; }
+#emSnellRoot1003 .emsn_showpanel1003 .bbar1003:last-child { border-bottom:none; padding-bottom:0; }
+#emSnellRoot1003 .emsn_eqbar1003 { width:100%; min-height:20px; padding:7px 12px; background:var(--tp-panel-lo); border:1px solid var(--tp-border); border-left:4px solid #3366aa; border-radius:3px; font-size:.74rem; color:var(--tp-text); font-family:monospace; line-height:1.55; overflow-x:auto; }
+#emSnellRoot1003 .fnote1003 { grid-column:1 / 3; width:auto; background:var(--tp-panel-lo); border:1px solid var(--tp-border); border-radius:4px; padding:7px 14px; font-family:monospace; font-size:.66rem; color:var(--tp-dim); letter-spacing:.03em; line-height:1.6; font-style:normal; }
+/* questions (outside the instrument, on the page) */
+.emsn_qwrap1003 { width:100%; max-width:860px; margin:0 auto; padding:4px; box-sizing:border-box; }
+.emsn_qwrap1003 ol { padding-left:24px; }
+.emsn_qwrap1003 li { margin:0 0 12px 0; line-height:1.45; }
+/* narrow screens: stack the columns */
+@media (max-width:820px) {
+#emSnellRoot1003 .emsn_instrument1003 { grid-template-columns:minmax(0,1fr); }
+#emSnellRoot1003 .emsn_instrument1003 > * { grid-column:auto; }
 }
-  .tbar1003    { padding:2px; height:30px; background-color:#f90; text-align:center; line-height:28px; }
-.mcontent1003 { height:542px; }
-.draghint1003 { text-align:center; font-size:.72rem; color:#777; padding-top:2px; font-style:italic; }
-.playbar1003 {
-height:auto; min-height:40px; background-color:#cfe8ff; padding:6px;
-text-align:center; display:flex; flex-wrap:wrap; gap:6px; justify-content:center;
+/* phones and tablets: bigger touch targets */
+@media (pointer:coarse) {
+#emSnellRoot1003 input[type=range] { height:28px; }
+#emSnellRoot1003 .emsn_a11ybtn1003 { min-height:36px; }
+#emSnellRoot1003 input[type=button], #emSnellRoot1003 button { min-height:40px; }
+#emSnellRoot1003 select { min-height:36px; font-size:16px; }
+#emSnellRoot1003 input[type=checkbox] { width:22px; height:22px; }
+#emSnellRoot1003 .bbar1003 { gap:10px; }
 }
-.wv_btn1003 {
-padding:6px 14px; font-size:.82rem; border-radius:4px; cursor:pointer;
-background:#fff; border:1px solid #557; color:#223;
+@media (max-width:560px) {
+#emSnellRoot1003 { padding:10px 6px 14px; }
+#emSnellRoot1003 .playbar1003 { grid-template-columns:repeat(2, 1fr); }
 }
-.wv_btn1003:hover { background:#eef4ff; }
-.wv_btnmain1003 { background:#ffd94a; border-color:#a8850a; font-weight:bold; }
-.wv_btnmain1003:hover { background:#ffe97a; }
-.bbar1003 {
-background-color:#df9; padding:8px; text-align:left;
-display:flex; flex-wrap:wrap; gap:4px 16px;
-}
-.bbar1003 .chk1003 { width:auto; font-size:.84rem; white-space:nowrap; }
-.footer1003  { min-height:50px; text-align:left; font-size:.9rem; display:flex; align-items:center; padding:6px 4px; }
-.footer1003 .left1003   { width:155px; padding:2px; flex-shrink:0; }
-.footer1003 .center1003 { flex:1; padding:4px; }
-.footer1003 .islide1003 { width:200px; vertical-align:middle; }
-.footer1003:nth-of-type(odd)  { background-color:#fce4ec; }
-.footer1003:nth-of-type(even) { background-color:#e8f5e9; }
-.fnote1003 { padding:8px 10px; font-size:.72rem; color:#555; font-style:italic; background:#eef2f7; }
 </style>
 <!-- ════════════════ ACCESSIBILITY CONTROLLER ════════════════ -->
 <script>
@@ -239,9 +316,7 @@ var DEFS = { '--emsn-bg':'#fff','--emsn-E':'#dd2200','--emsn-Es':'#cc6600','--em
 function applyVars(k,on){ if(!ROOT)return; var v=THEMES[k]; for(var p in v) ROOT.style.setProperty(p,on?v[p]:DEFS[p]); }
 function styleBtn(id,on){
 var b=document.getElementById(id); if(!b)return;
-b.style.background=on?'rgba(0,232,208,.12)':'#2a2e3a';
-b.style.borderColor=on?'#00e8d0':'#404a60';
-b.style.color=on?'#00e8d0':'#7a8aaa';
+b.classList.toggle('emsn_a11yon1003', on);
 b.setAttribute('aria-pressed',on?'true':'false');
 }
 function applyNarBar(){
@@ -254,6 +329,7 @@ function apply(){
 if(!ROOT)return;
 applyVars('hc',states.hc); applyVars('lm',states.lm); applyVars('cb',states.cb);
 applyNarBar();
+ROOT.classList.toggle('emsn_hc1003', states.hc); ROOT.classList.toggle('emsn_lm1003', states.lm); ROOT.classList.toggle('emsn_cb1003', states.cb);
 styleBtn('emSnellBtnHC1003',states.hc);
 styleBtn('emSnellBtnLM1003',states.lm);
 styleBtn('emSnellBtnCB1003',states.cb);
@@ -295,6 +371,9 @@ var canvas  = document.getElementById('emSnellCanvas1003');
 var ctx     = canvas.getContext('2d');
 var W       = canvas.width;
 var H       = canvas.height;
+/* sharp on phones: draw at device resolution; CSS scales the canvas to the page. LW/LH keep the logical size the drawing code uses */
+var DPR = window.devicePixelRatio || 1;
+canvas.width = W*DPR; canvas.height = H*DPR; ctx.scale(DPR, DPR);
 var timer;
 var runFlag = 0;
 var c_light = 3e8;
@@ -871,9 +950,16 @@ function pointerUp(){ dragging=false; canvas.style.cursor='grab'; }
 canvas.addEventListener('mousedown', function(e){ pointerDown(e.clientX,e.clientY); });
 window.addEventListener('mousemove', function(e){ pointerMove(e.clientX,e.clientY); });
 window.addEventListener('mouseup', pointerUp);
-canvas.addEventListener('touchstart', function(e){ var t=e.touches[0]; pointerDown(t.clientX,t.clientY); e.preventDefault(); }, {passive:false});
-canvas.addEventListener('touchmove', function(e){ var t=e.touches[0]; pointerMove(t.clientX,t.clientY); e.preventDefault(); }, {passive:false});
-canvas.addEventListener('touchend', function(e){ pointerUp(); }, {passive:false});
+/* one finger turns the view; two fingers pinch to zoom (same limits as the mouse wheel) */
+var pinch=null;
+function touchDist(e){ var a=e.touches[0], b=e.touches[1]; return Math.max(10, Math.hypot(a.clientX-b.clientX, a.clientY-b.clientY)); }
+canvas.addEventListener('touchstart', function(e){
+if (e.touches.length>=2){ dragging=false; pinch={ d:touchDist(e), z:camZoom }; e.preventDefault(); return; }
+var t=e.touches[0]; pointerDown(t.clientX,t.clientY); e.preventDefault(); }, {passive:false});
+canvas.addEventListener('touchmove', function(e){
+if (pinch && e.touches.length>=2){ camZoom=pinch.z*touchDist(e)/pinch.d; if (camZoom<0.3) camZoom=0.3; if (camZoom>2.2) camZoom=2.2; drawFrame(); e.preventDefault(); return; }
+var t=e.touches[0]; pointerMove(t.clientX,t.clientY); e.preventDefault(); }, {passive:false});
+canvas.addEventListener('touchend', function(e){ if (e.touches.length<2) pinch=null; pointerUp(); }, {passive:false});
 canvas.addEventListener('wheel', function(e){
 e.preventDefault();
 camZoom *= (e.deltaY<0) ? 1.08 : 0.93;
@@ -892,5 +978,6 @@ return { pl:pl, ps:ps, step:step, rst:rst, resetView:resetView, setBand:setBand,
 emSnellA11y1003.init();
 </script>
 
+</main>
 </body>
 </html>

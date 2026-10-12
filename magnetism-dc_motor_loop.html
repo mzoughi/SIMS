@@ -10,10 +10,10 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations-Magnetism: DC Electric Motor</title>
+<title>Physics Simulations-Magnetism: DC Electric Motor -- Current-Carrying Loop in a Magnetic Field</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching,magnetism, magnet, teach, learn,force, current, DC motor, electric motor, current loop, torque, commutator, brushes, magnetic field, magnetic force, field direction, lesson, scientific">
-<meta name="description" content="Interactive DC motor simulation: a current-carrying loop in a magnetic field of adjustable strength and direction, with commutator, forces and torque.">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching,magnetism, magnet, teach, learn,force, current, DC motor, electric motor, current loop, commutator, brushes, torque, magnetic force, F = ILB, polarity, lesson, scientific">
+<meta name="description" content="Interactive DC motor simulation: a current-carrying loop in a magnetic field, with commutator, brushes, force arrows and the resulting rotation.">
 <style>
 body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
 .page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
@@ -39,9 +39,9 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <!-- Left column -->
 <div class="mot_leftcol">
 <div class="mot_diagpanel">
-<div class="mot_diaglabel"><b>MOTOR</b><span class="mot_diagnote" id="motDiagNote">B to the right &middot; loop wires carry current into or out of the page</span></div>
+<div class="mot_diaglabel"><b>MOTOR</b><span class="mot_diagnote">B to the right &middot; loop wires carry current into or out of the page</span></div>
 <div class="mot_mcontent">
-<svg id="motScene" class="mot_scene" viewBox="0 0 623 400" role="img" aria-label="Motor scene: an external DC supply on the left is wired through brushes to a rectangular conducting loop placed between the north and south poles of a field magnet. Current driven through the loop produces a force that rotates the loop. The strength and direction of the magnetic field can be changed."></svg>
+<svg id="motScene" class="mot_scene" viewBox="0 0 623 360" role="img" aria-label="Motor scene: an external DC supply on the left is wired through brushes to a rectangular conducting loop in a horizontal magnetic field. Current driven through the loop produces a force that rotates the loop."></svg>
 </div>
 <div class="mot_statusbar" id="motStatus" role="status" aria-live="polite">Motor idle. Press Power on to drive the loop.</div>
 <div class="mot_runbar">
@@ -56,8 +56,6 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <div class="mot_rinner mot_rgrid">
 <div class="mot_rrow"><span class="mot_rkey">Supply voltage U<sub>supply</sub></span><span class="mot_rval mot_hi" id="motROU">6.00 V</span></div>
 <div class="mot_rrow"><span class="mot_rkey">Current I</span><span class="mot_rval" id="motROI">0.00 A</span></div>
-<div class="mot_rrow"><span class="mot_rkey">Field B</span><span class="mot_rval mot_hi" id="motROB">0.50 T at 0°</span></div>
-<div class="mot_rrow"><span class="mot_rkey">Torque τ</span><span class="mot_rval" id="motROTau">0.0 mN·m</span></div>
 <div class="mot_rrow"><span class="mot_rkey">Loop angle θ</span><span class="mot_rval" id="motROTheta">25°</span></div>
 <div class="mot_rrow"><span class="mot_rkey">Angular speed ω</span><span class="mot_rval mot_hi" id="motROOmega">0.00 rad/s</span></div>
 <div class="mot_rrow mot_wide"><span class="mot_rkey">Rotation frequency f<sub>rot</sub></span><span class="mot_rval" id="motROFreq">0.00 Hz</span></div>
@@ -80,24 +78,6 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 </div>
 </div>
 </div>
-<!-- Magnetic field -->
-<div class="mot_panel" role="group" aria-labelledby="motFldHd">
-<div class="mot_paneltitle" id="motFldHd">Magnetic Field</div>
-<div class="mot_panelbody">
-<div class="mot_ctrlhdr"><label for="motBmag" class="mot_ctrlname">Magnitude B</label><span class="mot_sval"><span id="motBmagVal">0.50</span> T</span></div>
-<input class="mot_zslider" type="range" id="motBmag" min="0" max="1" step="0.05" value="0.5"
- oninput="momMotSim.reactionField(this.value)" onchange="momMotSim.reactionField(this.value)" aria-label="Magnetic field magnitude in tesla">
-<div class="mot_ctrlhdr"><label for="motBdir" class="mot_ctrlname">Direction φ</label><span class="mot_sval" id="motBdirVal">0° (→)</span></div>
-<input class="mot_zslider" type="range" id="motBdir" min="0" max="345" step="15" value="0"
- oninput="momMotSim.reactionDirection(this.value)" onchange="momMotSim.reactionDirection(this.value)" aria-label="Magnetic field direction in degrees, measured counterclockwise from the right">
-<div class="mot_dirbtns" role="group" aria-label="Quick field directions">
-<button type="button" class="mot_dirbtn mot_dirbtnon" id="motDir0" onclick="momMotSim.reactionDirection(0)" aria-pressed="true" aria-label="Field to the right, 0 degrees">→</button>
-<button type="button" class="mot_dirbtn" id="motDir90" onclick="momMotSim.reactionDirection(90)" aria-pressed="false" aria-label="Field upward, 90 degrees">↑</button>
-<button type="button" class="mot_dirbtn" id="motDir180" onclick="momMotSim.reactionDirection(180)" aria-pressed="false" aria-label="Field to the left, 180 degrees">←</button>
-<button type="button" class="mot_dirbtn" id="motDir270" onclick="momMotSim.reactionDirection(270)" aria-pressed="false" aria-label="Field downward, 270 degrees">↓</button>
-</div>
-</div>
-</div>
 <!-- Display -->
 <div class="mot_panel" role="group" aria-labelledby="motShowHd">
 <div class="mot_paneltitle" id="motShowHd">Show</div>
@@ -106,11 +86,11 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <label class="mot_check"><input type="checkbox" id="motCbSlow" onchange="momMotSim.reactionSlow(this.checked)"> Slow ×¼</label>
 </div>
 </div>
-<p class="mot_hint">If the loop sits at a dead spot (θ = 0° or 180°), press Nudge to give it a starting kick. Reverse the field (φ = 180°) and the motor spins the other way. Turn it to 90° and see what happens when the commutator switches at the wrong moment.</p>
+<p class="mot_hint">If the loop sits at a dead spot (θ = 0° or 180°), press Nudge to give it a starting kick.</p>
 </div><!-- right column -->
 <!-- Formula strip -->
 <div class="mot_formulastrip">
-<span class="mot_formulatxt">Force on each wire F = I L &times; B (perpendicular to both the wire and B; |F| = I L B) &nbsp;|&nbsp; I = U / R &nbsp;|&nbsp; Torque &tau; = I A B sin(&theta; &minus; &phi;), loop area A = 0.010 m&sup2; &nbsp;|&nbsp; The brushes reverse the loop current whenever sin &theta; changes sign; that keeps the torque in one sense only when B is horizontal (&phi; = 0&deg; or 180&deg;) &nbsp;|&nbsp; Moment of inertia &middot; d&omega;/dt = &tau; &minus; b&omega;</span>
+<span class="mot_formulatxt">Force on each wire F = I L &times; B (vertical, since B is horizontal) &nbsp;|&nbsp; I = U / R &nbsp;|&nbsp; The commutator reverses the loop current whenever sin &theta; changes sign, so the torque keeps one sense &nbsp;|&nbsp; Moment of inertia &middot; d&omega;/dt = &tau; &minus; b&omega;</span>
 </div>
 </div><!-- instrument -->
 <div id="momMotNarBar" class="mot_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
@@ -190,10 +170,6 @@ background-image:none;
 #momMotRoot .mot_radios { display:flex; gap:16px; flex-wrap:wrap; }
 #momMotRoot .mot_radio, #momMotRoot .mot_check { display:flex; align-items:center; gap:6px; font-size:.74rem; color:var(--mot-text); cursor:pointer; }
 #momMotRoot .mot_radio input, #momMotRoot .mot_check input { accent-color:var(--mot-accent); width:14px; height:14px; }
-#momMotRoot .mot_dirbtns { display:grid; grid-template-columns:repeat(4, 1fr); gap:5px; }
-#momMotRoot .mot_dirbtn { padding:4px 0; font-size:.95rem; line-height:1.1; cursor:pointer; background:var(--mot-panel-hi); border:1px solid var(--mot-border-hi); color:var(--mot-text); border-radius:3px; }
-#momMotRoot .mot_dirbtn:hover { border-color:var(--mot-accent); color:var(--mot-accent); }
-#momMotRoot .mot_dirbtnon { background:rgba(232,160,32,.16); border-color:var(--mot-accent); color:var(--mot-accent); font-weight:bold; }
 #momMotRoot .mot_hint { font-size:.66rem; color:var(--mot-dim); line-height:1.4; padding:0 4px; }
 /* readout */
 #momMotRoot .mot_rinner { padding:8px 10px; }
@@ -219,7 +195,7 @@ background-image:none;
 #momMotRoot input[type=range] { height:8px; }
 #momMotRoot input[type=range]::-webkit-slider-thumb { width:26px; height:26px; }
 #momMotRoot input[type=range]::-moz-range-thumb { width:24px; height:24px; }
-#momMotRoot .mot_runbtn, #momMotRoot .mot_a11ybtn, #momMotRoot .mot_dirbtn { min-height:40px; }
+#momMotRoot .mot_runbtn, #momMotRoot .mot_a11ybtn { min-height:40px; }
 #momMotRoot .mot_radio input, #momMotRoot .mot_check input { width:22px; height:22px; }
 #momMotRoot .mot_panelbody { gap:12px; }
 }
@@ -274,39 +250,30 @@ var momMotSim = (function(){
 /* =================================================================
  DC MOTOR SIMULATION (MOM-compatible)
  PHYSICS
- - B field in the page plane: magnitude B (tesla), direction φ measured
-counterclockwise from +x̂ (φ = 0 → field to the right, N pole on the left).
- - Loop wires carry current along ±ẑ, so F = IL × B lies in the page,
-perpendicular to B, with |F| = ILB.
- - Torque on the loop: τ = I A B sin(θ − φ)  (θ: loop angle, A: loop area).
- - The brushes are fixed: the commutator inverts the loop current whenever
-sin θ changes sign. For φ = 0° or 180° that keeps one torque sense;
-for other directions the switching is mistimed and the average torque
-scales with cos φ (zero at φ = 90°/270°).
+ - B field horizontal, +x̂. Loop wires carry current along ±ẑ.
+ - F = IL × B = ILB ŷ -- single vertical component.
+ - Commutator inverts the loop current at sin θ = 0 transitions
+so torque sign stays constant: τ = τ_max · I · |sin θ|.
  - Equation of motion: I_moment · θ̈ = τ - b θ̇
 ================================================================= */
 // ---- Constants ----
-var W = 623, H = 400;
-var CX = 360, CY = 190;     // rotor center
+var W = 623, H = 360;
+var CX = 360, CY = 175;     // rotor center
 var R_LOOP = 130;
 var HUB_R = 26;
-var SUPPLY_X = 14, SUPPLY_Y = 40, SUPPLY_W = 100, SUPPLY_H = 130;
-var DIAL_X = 14, DIAL_Y = 196, DIAL_W = 100, DIAL_H = 124;   // field gauge box
+var SUPPLY_X = 30, SUPPLY_Y = 110, SUPPLY_W = 110, SUPPLY_H = 130;
 var SUPPLY_CX = SUPPLY_X + SUPPLY_W/2;
 var SUPPLY_CY = SUPPLY_Y + SUPPLY_H/2;
-var FIELD_X0 = 140;          // left edge of the field region (right of the supply)
+var FIELD_ROWS = 16;
 // Physics constants
 var I_MOMENT  = 1.0;
 var FRICTION  = 0.35;
 var R_COIL    = 2.0;
 var TAU_FACTOR = 1.6;
-var B_REF = 0.5;        // tesla: field at which TAU_FACTOR applies
-var A_LOOP = 0.010;     // m², loop area (10 cm wires, 10 cm wide)
+var V_MAX_SCALE = 12;   // for force-arrow magnitude scaling
 // ---- State ----
 var voltage = 6;
 var swapPolarity = false;
-var Bmag = 0.5;         // tesla
-var phiDeg = 0;         // field direction, degrees CCW from the right
 var running = false;
 var slow = false;
 var showForce = true;
@@ -320,16 +287,6 @@ function setText(id, val){ var el = g(id); if(el) el.textContent = val; }
 // ---- Math helpers ----
 function normDeg(d){ d = d % 360; if(d < 0) d += 360; return d; }
 function radToDeg(r){ return r * 180/Math.PI; }
-function phiRad(){ return phiDeg * Math.PI/180; }
-var DIR_GLYPHS = ['→','↗','↑','↖','←','↙','↓','↘'];
-function dirGlyph(){ return DIR_GLYPHS[Math.round(phiDeg/45) % 8]; }
-function dirWords(){
-if(phiDeg === 0) return 'to the right';
-if(phiDeg === 90) return 'upward';
-if(phiDeg === 180) return 'to the left';
-if(phiDeg === 270) return 'downward';
-return 'at ' + phiDeg + '° from the right';
-}
 // ---- Physics ----
 function supplyVoltage(){
 return swapPolarity ? -voltage : voltage;
@@ -342,10 +299,7 @@ return Is * sgn;
 }
 function torque(thetaRad){
 var I = wireOutCurrent(thetaRad);
-return TAU_FACTOR * (Bmag / B_REF) * I * Math.sin(thetaRad - phiRad());
-}
-function physTorque(thetaRad){   // N·m, for the readout
-return wireOutCurrent(thetaRad) * A_LOOP * Bmag * Math.sin(thetaRad - phiRad());
+return TAU_FACTOR * I * Math.sin(thetaRad);
 }
 function advance(dt){
 var sub = slow ? 1 : 4;
@@ -382,12 +336,6 @@ supplyText: hc ? '#fff' : '#e6edf3',
 supplyLabel: hc ? '#ffd700' : '#c9a86a',
 supplyV: hc ? '#ffeb3b' : '#ffd166',
 good: hc ? '#00ff00' : '#06d6a0',
-poleN: hc ? '#ff3b3b' : '#c8372d',
-poleNlite: hc ? '#ff8080' : '#e8685c',
-poleS: hc ? '#3b8bff' : '#2f5fb3',
-poleSlite: hc ? '#80b8ff' : '#5c88d6',
-poleText: '#ffffff',
-dialArrow: hc ? '#80a0ff' : '#7aa2ff',
 ledOff: '#444'
 };
 }
@@ -405,104 +353,17 @@ return '<line x1="'+x1+'" y1="'+y1+'" x2="'+hx+'" y2="'+hy+'" stroke="'+color+'"
 function thickLine(a,b,color,width){
 return '<line x1="'+a.x+'" y1="'+a.y+'" x2="'+b.x+'" y2="'+b.y+'" stroke="'+color+'" stroke-width="'+width+'" stroke-linecap="round"/>';
 }
-// ---- Field lines and magnet poles (cached: rebuilt only when B, φ or the palette change) ----
-var fieldCacheKey = null, fieldCacheSvg = '';
-function rayToBox(dx, dy){
-var t = Infinity;
-if(dx >  1e-9) t = Math.min(t, (W - CX) / dx);
-if(dx < -1e-9) t = Math.min(t, (FIELD_X0 - CX) / dx);
-if(dy >  1e-9) t = Math.min(t, (H - CY) / dy);
-if(dy < -1e-9) t = Math.min(t, (0 - CY) / dy);
-return t;
-}
-function renderPole(dx, dy, label, gradId, edge){
-var p = palette();
-var t = rayToBox(dx, dy);
-var inset = 17, thick = 30, len = 160;
-var px, py;
-// slide the pole in along the field axis until the whole slab fits inside the field region (matters for diagonal fields)
-for(; inset < 140; inset += 3){
-px = CX + dx*(t - inset); py = CY + dy*(t - inset);
-var fits = true;
-for(var a = -1; a <= 1; a += 2){ for(var b = -1; b <= 1; b += 2){
-var qx = px + dx*a*thick/2 - dy*b*len/2, qy = py + dy*a*thick/2 + dx*b*len/2;
-if(qx < FIELD_X0 + 1 || qx > W - 1 || qy < 1 || qy > H - 1) fits = false;
-}}
-if(fits) break;
-}
-var ang = Math.atan2(dy, dx) * 180/Math.PI;
-var s = '<g transform="translate('+px.toFixed(1)+' '+py.toFixed(1)+') rotate('+ang.toFixed(1)+')">';
-s += '<rect x="'+(-thick/2)+'" y="'+(-len/2)+'" width="'+thick+'" height="'+len+'" rx="4" fill="url(#'+gradId+')" stroke="'+edge+'" stroke-width="1.5"/>';
-// pole face (towards the rotor) and screw heads
-s += '<rect x="'+(-thick/2)+'" y="'+(-len/2 + 4)+'" width="4" height="'+(len - 8)+'" fill="#ffffff" opacity="0.28"/>';
-s += '<circle cx="'+(thick/2 - 7)+'" cy="'+(-len/2 + 12)+'" r="2.5" fill="#000" opacity="0.35"/>';
-s += '<circle cx="'+(thick/2 - 7)+'" cy="'+(len/2 - 12)+'" r="2.5" fill="#000" opacity="0.35"/>';
-s += '</g>';
-s += '<text x="'+px.toFixed(1)+'" y="'+(py + 6).toFixed(1)+'" text-anchor="middle" fill="'+p.poleText+'" font-family="monospace" font-size="17" font-weight="bold">'+label+'</text>';
-return s;
-}
+// ---- Field lines ----
 function renderFieldLines(){
 var p = palette();
-var key = Bmag.toFixed(2) + '|' + phiDeg + '|' + momMotA11y.isHC();
-if(key === fieldCacheKey) return fieldCacheSvg;
-var s = '<defs>';
-s += '<clipPath id="motFieldClip"><rect x="'+FIELD_X0+'" y="0" width="'+(W - FIELD_X0)+'" height="'+H+'"/></clipPath>';
-s += '<linearGradient id="motGradN" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="'+p.poleNlite+'"/><stop offset="1" stop-color="'+p.poleN+'"/></linearGradient>';
-s += '<linearGradient id="motGradS" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="'+p.poleSlite+'"/><stop offset="1" stop-color="'+p.poleS+'"/></linearGradient>';
-s += '</defs>';
-var dx = Math.cos(phiRad()), dy = -Math.sin(phiRad());   // field direction on screen (y down)
-var nx = -dy, ny = dx;                                      // perpendicular, for line spacing
-s += '<g clip-path="url(#motFieldClip)">';
-if(Bmag > 0.001){
-// line density is proportional to B: spacing 22 px at 0.5 T, 11 px at 1 T
-var sp = Math.max(11, 11 / Bmag);
-var bx = (FIELD_X0 + W)/2, by = H/2;
-var K = Math.ceil(420 / sp);
-s += '<g opacity="0.55">';
-for(var k = -K; k <= K; k++){
-var ox = bx + nx*k*sp, oy = by + ny*k*sp;
-s += '<line x1="'+(ox - dx*460).toFixed(1)+'" y1="'+(oy - dy*460).toFixed(1)+'" x2="'+(ox + dx*460).toFixed(1)+'" y2="'+(oy + dy*460).toFixed(1)+'" stroke="'+p.fieldLine+'" stroke-width="1"/>';
-var stagger = ((k % 2) + 2) % 2 * 60;
-for(var j = 0; j < 8; j++){
-var tt = -420 + stagger + j*120;
-var hx = ox + dx*tt, hy = oy + dy*tt;
-if(hx < FIELD_X0 + 4 || hx > W - 4 || hy < 4 || hy > H - 4) continue;
-var b1x = hx - dx*7 + nx*3.5, b1y = hy - dy*7 + ny*3.5;
-var b2x = hx - dx*7 - nx*3.5, b2y = hy - dy*7 - ny*3.5;
-s += '<polygon points="'+hx.toFixed(1)+','+hy.toFixed(1)+' '+b1x.toFixed(1)+','+b1y.toFixed(1)+' '+b2x.toFixed(1)+','+b2y.toFixed(1)+'" fill="'+p.fieldLine+'"/>';
+var s = '';
+var xStart = SUPPLY_X + SUPPLY_W + 25;
+var xEnd = W - 14;
+for(var i = 1; i <= FIELD_ROWS; i++){
+var y = (H/(FIELD_ROWS+1)) * i;
+s += '<line x1="'+xStart+'" y1="'+y+'" x2="'+xEnd+'" y2="'+y+'" stroke="'+p.fieldLine+'" stroke-width="1" opacity="0.55"/>';
+s += '<polygon points="'+xEnd+','+y+' '+(xEnd-7)+','+(y-3.5)+' '+(xEnd-7)+','+(y+3.5)+'" fill="'+p.fieldLine+'" opacity="0.55"/>';
 }
-}
-s += '</g>';
-}
-// field magnet: the field leaves the N pole and enters the S pole
-s += '<g opacity="'+(Bmag > 0.001 ? 1 : 0.35)+'">';
-s += renderPole(-dx, -dy, 'N', 'motGradN', p.markerStroke);
-s += renderPole( dx,  dy, 'S', 'motGradS', p.markerStroke);
-s += '</g></g>';
-fieldCacheKey = key;
-fieldCacheSvg = s;
-return s;
-}
-// ---- Field gauge (B magnitude and direction) ----
-function renderFieldDial(){
-var p = palette();
-var x = DIAL_X, y = DIAL_Y, w = DIAL_W, h = DIAL_H;
-var cx = x + w/2, cy = y + 60, r = 30;
-var s = '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+p.supplyBg+'" stroke="'+p.supplyBorder+'" stroke-width="2" rx="6"/>';
-s += '<text x="'+cx+'" y="'+(y + 16)+'" text-anchor="middle" fill="'+p.supplyLabel+'" font-family="monospace" font-size="10" font-weight="bold" letter-spacing="2">B FIELD</text>';
-s += '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+p.supplyText+'" stroke-width="1" opacity="0.5"/>';
-for(var a = 0; a < 360; a += 45){
-var ar = a*Math.PI/180, major = (a % 90 === 0);
-var r1 = major ? r - 6 : r - 3;
-s += '<line x1="'+(cx + r1*Math.cos(ar)).toFixed(1)+'" y1="'+(cy - r1*Math.sin(ar)).toFixed(1)+'" x2="'+(cx + r*Math.cos(ar)).toFixed(1)+'" y2="'+(cy - r*Math.sin(ar)).toFixed(1)+'" stroke="'+p.supplyText+'" stroke-width="1" opacity="0.6"/>';
-}
-if(Bmag > 0.001){
-var len = 6 + (r - 8) * Math.min(1, Bmag);
-s += drawArrow(cx, cy, cx + len*Math.cos(phiRad()), cy - len*Math.sin(phiRad()), p.dialArrow, 2.6);
-}
-s += '<circle cx="'+cx+'" cy="'+cy+'" r="2.5" fill="'+p.supplyText+'"/>';
-s += '<text x="'+cx+'" y="'+(y + h - 22)+'" text-anchor="middle" fill="'+p.supplyV+'" font-family="monospace" font-size="12" font-weight="bold">'+Bmag.toFixed(2)+' T</text>';
-s += '<text x="'+cx+'" y="'+(y + h - 8)+'" text-anchor="middle" fill="'+p.supplyText+'" font-family="monospace" font-size="10">φ = '+phiDeg+'°</text>';
 return s;
 }
 // ---- Supply box ----
@@ -577,16 +438,13 @@ s += '<circle cx="'+px+'" cy="'+py+'" r="2.2" fill="'+p.markerStroke+'"/>';
 }
 return s;
 }
-// ---- Force arrow: F = I L × B, perpendicular to B in the page ----
-function renderForceArrow(px, py, currentOut, Iabs){
+// ---- Force arrow (pure vertical) ----
+function renderForceArrow(px, py, currentOut, magnitude){
 var p = palette();
-if(Bmag <= 0.001 || Iabs < 0.05) return '';
 var Lmax = 75;
-var length = Math.max(14, Math.min(Lmax, Lmax * Iabs * Bmag / 3));
-// for current out of the page (+ẑ): F ∝ ẑ × B̂ = (−sin φ, cos φ) in math axes → (−sin φ, −cos φ) on screen
-var fx = -Math.sin(phiRad()), fy = -Math.cos(phiRad());
-if(!currentOut){ fx = -fx; fy = -fy; }
-return drawArrow(px, py, px + fx*length, py + fy*length, p.force, 2.4);
+var length = Math.max(15, Math.min(Lmax, Lmax * Math.abs(magnitude) / V_MAX_SCALE));
+var ySign = currentOut ? -1 : +1;
+return drawArrow(px, py, px, py + ySign*length, p.force, 2.4);
 }
 // ---- Hub ----
 function renderHub(welds, shaftEnd){
@@ -623,7 +481,7 @@ brushLeft:  { x: CX - HUB_R - bw + 1, y: CY }
 function renderExternalWires(termA, termB, brushRight, brushLeft){
 var p = palette();
 var s = '';
-var topY = CY - 115, botY = CY + 115;
+var topY = 60, botY = 290;
 s += '<polyline points="'+termA.x+','+termA.y+' '+(termA.x + 12)+','+termA.y+' '+(termA.x + 12)+','+topY+' '+brushRight.x+','+topY+' '+brushRight.x+','+brushRight.y+'" fill="none" stroke="'+p.markerStroke+'" stroke-width="2"/>';
 s += '<polyline points="'+termB.x+','+termB.y+' '+(termB.x + 12)+','+termB.y+' '+(termB.x + 12)+','+botY+' '+brushLeft.x+','+botY+' '+brushLeft.x+','+brushLeft.y+'" fill="none" stroke="'+p.away+'" stroke-width="2"/>';
 return s;
@@ -646,7 +504,6 @@ var s = '';
 s += renderFieldLines();
 var supply = renderSupply();
 s += supply.svg;
-s += renderFieldDial();
 var loop = drawLoop(theta);
 s += loop.svg;
 var shaftEnd = {
@@ -662,8 +519,8 @@ var wire1_out = Iwire1 > 0;
 s += renderCrossingMarker(loop.geometry.wire1_inner.x, loop.geometry.wire1_inner.y, !wire1_out);
 s += renderCrossingMarker(loop.geometry.wire2_inner.x, loop.geometry.wire2_inner.y,  wire1_out);
 if(showForce){
-s += renderForceArrow(loop.geometry.wire1_inner.x, loop.geometry.wire1_inner.y, wire1_out,  Math.abs(Iwire1));
-s += renderForceArrow(loop.geometry.wire2_inner.x, loop.geometry.wire2_inner.y, !wire1_out, Math.abs(Iwire1));
+s += renderForceArrow(loop.geometry.wire1_inner.x, loop.geometry.wire1_inner.y, wire1_out,  Iwire1);
+s += renderForceArrow(loop.geometry.wire2_inner.x, loop.geometry.wire2_inner.y, !wire1_out, Iwire1);
 }
 }
 var scene = g('motScene');
@@ -674,8 +531,6 @@ var U = supplyVoltage();
 var I = U / R_COIL;
 setText('motROU',     U.toFixed(2) + ' V');
 setText('motROI',     I.toFixed(2) + ' A');
-setText('motROB',     Bmag.toFixed(2) + ' T at ' + phiDeg + '°');
-setText('motROTau',   (physTorque(theta) * 1000).toFixed(1) + ' mN·m');
 setText('motROTheta', Math.round(normDeg(radToDeg(theta))) + '°');
 setText('motROOmega', omega.toFixed(2) + ' rad/s');
 setText('motROFreq',  (Math.abs(omega) / (2*Math.PI)).toFixed(2) + ' Hz');
@@ -699,7 +554,7 @@ function updateStatus(){
 var label = running ? '⟳ Running' : '⏸ Off';
 var fHz = (Math.abs(omega) / (2*Math.PI)).toFixed(2);
 var polStr = swapPolarity ? 'swapped' : 'normal';
-setText('motStatus', label + ' -- U = ' + supplyVoltage().toFixed(1) + ' V (' + polStr + '), B = ' + Bmag.toFixed(2) + ' T ' + dirGlyph() + ' ' + phiDeg + '°, ω = ' + omega.toFixed(2) + ' rad/s (' + fHz + ' Hz)');
+setText('motStatus', label + ' -- U = ' + supplyVoltage().toFixed(1) + ' V (' + polStr + '), ω = ' + omega.toFixed(2) + ' rad/s (' + fHz + ' Hz)');
 }
 function narrate(){
 var U = supplyVoltage();
@@ -707,45 +562,13 @@ var I = U / R_COIL;
 var polStr = swapPolarity ? 'swapped' : 'normal';
 var fHz = (Math.abs(omega) / (2*Math.PI)).toFixed(2);
 var msg = 'Supply: ' + U.toFixed(1) + ' V (polarity ' + polStr + '), current ' + I.toFixed(2) + ' A. ';
-msg += 'Field: ' + Bmag.toFixed(2) + ' T, pointing ' + dirWords() + '. ';
 msg += 'Rotation: ' + fHz + ' Hz. ';
 if(slow) msg += 'Slow motion enabled. ';
 if(showForce) msg += 'Force vectors visible. ';
-msg += running ? 'Running. ' : 'Powered off. ';
-msg += '<em>' + fieldNote() + '</em>';
+msg += running ? 'Running. <em>Forces on the wires generate torque around the axis.</em>' : 'Powered off.';
 momMotA11y.narrate(msg);
 }
-function fieldNote(){
-var c = Math.cos(phiRad());
-if(Bmag <= 0.001) return 'No magnetic field: the wires feel no force, so there is no torque and the loop only coasts to a stop.';
-if(Math.abs(c) < 1e-6) return 'B is parallel to the line of the brushes, so the commutator flips the current at exactly the wrong moments: the torque averages to zero and the loop rocks and settles instead of spinning.';
-if(phiDeg === 0) return 'Forces on the wires (perpendicular to B) make a torque about the axis; the commutator keeps it turning one way.';
-if(phiDeg === 180) return 'The field is reversed, so every force reverses and the motor turns the other way -- the same effect as swapping the supply polarity.';
-return 'The commutator is timed for a horizontal field, so with B at ' + phiDeg + '° the torque reverses for part of each turn. The average torque is reduced by cos φ = ' + c.toFixed(2) + (c < 0 ? ', and its negative sign means the motor tends to turn backwards.' : '.');
-}
-function syncDirButtons(){
-[0, 90, 180, 270].forEach(function(a){
-var b = g('motDir' + a);
-if(!b) return;
-var on = (a === phiDeg);
-b.classList.toggle('mot_dirbtnon', on);
-b.setAttribute('aria-pressed', on ? 'true' : 'false');
-});
-}
 // ---- Reactions ----
-function reactionField(v){
-Bmag = parseFloat(v);
-setText('motBmagVal', Bmag.toFixed(2));
-draw(); updateStatus(); narrate();
-}
-function reactionDirection(v){
-phiDeg = ((Math.round(parseFloat(v)) % 360) + 360) % 360;
-var sl = g('motBdir'); if(sl && parseFloat(sl.value) !== phiDeg) sl.value = phiDeg;
-setText('motBdirVal', phiDeg + '° (' + dirGlyph() + ')');
-setText('motDiagNote', 'B ' + dirWords() + ' · loop wires carry current into or out of the page');
-syncDirButtons();
-draw(); updateStatus(); narrate();
-}
 function reactionVoltage(v){
 voltage = parseFloat(v);
 setText('motVoltageVal', voltage.toFixed(1));
@@ -782,23 +605,20 @@ draw(); updateStatus();
 momMotA11y.narrate('Reset. Rotor at θ = 25°, ω = 0.');
 }
 function reactionNudge(){
-// kick in the direction the motor will tend to turn: sign of U · cos φ
-omega += 1.5 * (swapPolarity ? -1 : 1) * (Math.cos(phiRad()) < -1e-6 ? -1 : 1);
+omega += 1.5 * (swapPolarity ? -1 : 1);
 momMotA11y.narrate('Rotor nudged. ω = ' + omega.toFixed(2) + ' rad/s.');
 }
 // ---- Init ----
 window.setTimeout(function(){
 draw();
 updateStatus();
-momMotA11y.narrate('DC motor loaded. Supply at 6 V, normal polarity; field 0.50 T to the right (N pole on the left, S pole on the right). Change the field strength and direction in the Magnetic Field panel. Press <strong>Power on</strong> to start the motor. If it sits at a dead spot (θ = 0° or 180°), press <strong>Nudge</strong> to give it a starting kick.');
+momMotA11y.narrate('DC motor loaded. Supply at 6 V, normal polarity. Press <strong>Power on</strong> to start the motor. If it sits at a dead spot (θ = 0° or 180°), press <strong>Nudge</strong> to give it a starting kick.');
 requestAnimationFrame(tick);
 }, 0);
 return {
 draw: draw,
 reactionVoltage: reactionVoltage,
 reactionPolarity: reactionPolarity,
-reactionField: reactionField,
-reactionDirection: reactionDirection,
 reactionShow: reactionShow,
 reactionSlow: reactionSlow,
 reactionPlay: reactionPlay,

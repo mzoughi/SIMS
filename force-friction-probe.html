@@ -1,13 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations- Mechanics: Static and Kinetic Friction with a Force Probe</title>
+<title>Physics Simulations-Forces: Friction -- Force Probe &amp; Block on Inclined Track</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,friction,static,kinetic,coefficient,force probe,normal force,incline,contact area,mass,lesson,scientific">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, force, forces, mechanics, friction, static friction, kinetic friction, coefficient of friction, force probe, incline, normal force, lesson, scientific">
+<meta name="description" content="Interactive friction lab: a force probe pushes a block on an inclined track; the force-time graph shows static and kinetic friction.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
+<main class="page">
 <!-- ═══════════════════════════════════════════════════════
 SIM 3 -- Force Probe pushing block: Static & Kinetic Friction
 A11y: High Contrast | Color-Blind | Narration  (MOM-ready)
@@ -31,7 +45,7 @@ plotted against any parameter (e.g. mu_s vs mass).
 <input type="button" id="btnReset" value="↺ Reset"  onclick="sim3.resetSim()">
 </div>
 <!-- A11y -->
-<div class="sl_bbar">
+<div class="sl_bbar sl_a11ybar" role="toolbar" aria-label="Display options">
 <input type="button" id="btnHC"   value="High Contrast: OFF" onclick="sim3.toggleHC()">
 <input type="button" id="btnCB"   value="Color-Blind: OFF"   onclick="sim3.toggleCB()">
 <input type="button" id="btnNarr" value="Narration: ON"       onclick="sim3.toggleNarr()">
@@ -69,15 +83,15 @@ plotted against any parameter (e.g. mu_s vs mass).
 </div>
 <div class="sl_prow">
 <span class="sl_plbl">Track angle &theta; (&deg;):</span>
-<input type="range" id="angleSlider" min="0" max="30" step="1" value="0" style="flex:1;"
+<input type="range" id="angleSlider" min="0" max="30" step="1" value="20" style="flex:1;"
  onchange="sim3.setAngle(this.value)">
-<span id="angleVal" class="sl_pval">0deg</span>
+<span id="angleVal" class="sl_pval">20deg</span>
 </div>
 <div class="sl_prow">
 <span class="sl_plbl">Sim Speed:</span>
-<input type="range" id="speedSlider" min="1" max="80" step="1" value="12" style="flex:1;"
+<input type="range" id="speedSlider" min="1" max="80" step="1" value="75" style="flex:1;"
  onchange="sim3.setSpeed(this.value)">
-<span id="speedVal" class="sl_pval">0.12×</span>
+<span id="speedVal" class="sl_pval">0.75×</span>
 </div>
 </div>
 <div class="sl_info" role="note">
@@ -188,10 +202,10 @@ Run Data -- each completed run (block stopped) is recorded automatically
 </div>
 </div>
 <div id="srAnnounce" class="sl_sronly" aria-live="assertive" aria-atomic="true"></div>
+</div><!-- #sl_root -->
 <!-- ══════════ STYLES ══════════ -->
 <style>
-* { margin:0; box-sizing:border-box; }
-body { background:#f4f4f4; }
+#sl_root, #sl_root * { margin:0; box-sizing:border-box; }
 #sl_root { width:683px; font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; }
 .sl_tbar { width:683px; height:48px; background:#f90; display:flex; align-items:center; justify-content:center; }
 .sl_tbar h3 { font-size:1rem; color:#222; }
@@ -238,44 +252,145 @@ body { background:#f4f4f4; }
 .dt_btn { font-size:0.75rem; padding:3px 9px; cursor:pointer; border:1px solid #888; border-radius:3px; background:#d4d4d4; }
 .dt_btnwarn { background:#f0b8b8; border-color:#cc6655; }
 /* HC overrides */
-body.hc-mode { background:#111; }
-body.hc-mode #sl_root .sl_tbar  { background:#cc7700; }
-body.hc-mode #sl_root .sl_bbar  { background:#1a2a1a; }
-body.hc-mode #sl_root .sl_fbar  { background:#1a1a2a; }
-body.hc-mode #sl_root .sl_params,
-body.hc-mode #sl_root .sl_readout { background:#111; border-color:#aaa; color:#eee; }
-body.hc-mode #sl_root .sl_narr  { background:#0a0a22; border-color:#6699ff; }
-body.hc-mode #sl_root .sl_info  { background:#111100; border-color:#aa8800; color:#ddd; }
-body.hc-mode #sl_root .sl_boxhd { color:#fff; border-bottom-color:#aaa; }
-body.hc-mode #sl_root .sl_pval  { color:#88aaff; }
-body.hc-mode #sl_root .sl_rv    { color:#ff8888; }
-body.hc-mode #sl_root .sl_badge { background:#003300; color:#88ff88; }
-body.hc-mode #sl_root .sl_narrtext { color:#aaccff; }
-body.hc-mode #sl_root .sl_plbl,
-body.hc-mode #sl_root .sl_rrow  { color:#ddd; }
-body.hc-mode #ftCanvas, body.hc-mode #dataCanvas { background:#111; border-color:#555; }
-body.hc-mode .stats_box { background:#111; border-color:#555; color:#eee; }
-body.hc-mode .stats_title { color:#fff; border-bottom-color:#555; }
-body.hc-mode #sl_root .dt_wrap { background:#111; border-color:#555; }
-body.hc-mode #sl_root .dt_table th { background:#333; color:#fff; border-bottom-color:#777; }
-body.hc-mode #sl_root .dt_table td { color:#eee; border-bottom-color:#333; }
-body.hc-mode #sl_root .dt_table tr.dt_noslip td { color:#888; }
-body.hc-mode #sl_root .dt_empty, body.hc-mode #sl_root .dt_ctrl { color:#ddd; }
+#sl_root.hc-mode { background:#111; }
+#sl_root.hc-mode .sl_tbar  { background:#cc7700; }
+#sl_root.hc-mode .sl_bbar  { background:#1a2a1a; }
+#sl_root.hc-mode .sl_fbar  { background:#1a1a2a; }
+#sl_root.hc-mode .sl_params,
+#sl_root.hc-mode .sl_readout { background:#111; border-color:#aaa; color:#eee; }
+#sl_root.hc-mode .sl_narr  { background:#0a0a22; border-color:#6699ff; }
+#sl_root.hc-mode .sl_info  { background:#111100; border-color:#aa8800; color:#ddd; }
+#sl_root.hc-mode .sl_boxhd { color:#fff; border-bottom-color:#aaa; }
+#sl_root.hc-mode .sl_pval  { color:#88aaff; }
+#sl_root.hc-mode .sl_rv    { color:#ff8888; }
+#sl_root.hc-mode .sl_badge { background:#003300; color:#88ff88; }
+#sl_root.hc-mode .sl_narrtext { color:#aaccff; }
+#sl_root.hc-mode .sl_plbl,
+#sl_root.hc-mode .sl_rrow  { color:#ddd; }
+#sl_root.hc-mode #ftCanvas, #sl_root.hc-mode #dataCanvas { background:#111; border-color:#555; }
+#sl_root.hc-mode .stats_box { background:#111; border-color:#555; color:#eee; }
+#sl_root.hc-mode .stats_title { color:#fff; border-bottom-color:#555; }
+#sl_root.hc-mode .dt_wrap { background:#111; border-color:#555; }
+#sl_root.hc-mode .dt_table th { background:#333; color:#fff; border-bottom-color:#777; }
+#sl_root.hc-mode .dt_table td { color:#eee; border-bottom-color:#333; }
+#sl_root.hc-mode .dt_table tr.dt_noslip td { color:#888; }
+#sl_root.hc-mode .dt_empty, #sl_root.hc-mode .dt_ctrl { color:#ddd; }
+/* ════════ Hall effect template layer: mobile friendly, scoped to #sl_root ════════ */
+#sl_root {
+--tp-chassis:#1a1c1f; --tp-panel:#22262b; --tp-panel-hi:#2c3138; --tp-panel-lo:#14161a;
+--tp-border:#3a4048; --tp-border-hi:#525c66; --tp-text:#c8d0d8; --tp-dim:#8a94a3; --tp-bright:#e8eef5;
+--tp-accent:#e8a020; --tp-green:#3ad08f; --tp-val:#ffdd66; --tp-warn:#e0605a;
+--tp-focus:#e8a020; --tp-nar-bg:#2a2410; --tp-nar-border:#e0b040; --tp-nar-text:#f0e2b8;
+width:100%; max-width:760px; margin:0 auto 10px; box-sizing:border-box; position:relative;
+display:flex; flex-direction:column; gap:10px; padding:14px 10px 18px; border-radius:6px;
+font-family:Arial, sans-serif; color:var(--tp-text); background:var(--tp-chassis);
+background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px),
+repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
+}
+#sl_root.hc-mode { --tp-chassis:#000000; --tp-panel:#000000; --tp-panel-hi:#111111; --tp-panel-lo:#000000; --tp-border:#ffffff; --tp-border-hi:#ffffff;
+--tp-text:#ffffff; --tp-dim:#e0e0e0; --tp-bright:#ffffff; --tp-accent:#ffd700; --tp-green:#00ff88; --tp-val:#ffff00; --tp-warn:#ff5555;
+--tp-focus:#ffff00; --tp-nar-bg:#000000; --tp-nar-border:#ffd700; --tp-nar-text:#ffffff; background-image:none; }
+#sl_root *, #sl_root *::before, #sl_root *::after { box-sizing:border-box; }
+#sl_root input:focus-visible, #sl_root select:focus-visible, #sl_root canvas:focus-visible { outline:2px solid var(--tp-focus); outline-offset:2px; }
+#sl_root .sl_tbar { width:auto; height:auto; min-height:0; background:none !important; padding:2px 4px; display:flex; justify-content:center; }
+#sl_root .sl_tbar h3 { font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--tp-accent) !important; text-align:center; line-height:1.35; }
+#sl_root .sl_mcontent { width:auto; background:var(--tp-panel); border:1px solid var(--tp-border); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+#sl_root canvas#simCanvas { display:block; width:100%; max-width:680px; height:auto; margin:0 auto; }
+#sl_root canvas#ftCanvas { display:block; width:100%; max-width:660px; height:auto; margin:0 auto; }
+#sl_root canvas#dataCanvas { display:block; width:100%; max-width:660px; height:auto; margin:0 auto; }
+#sl_root .sl_bbar { width:auto; min-height:0; background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border); border-radius:6px; padding:8px 10px; gap:6px; justify-content:center; color:var(--tp-text); }
+#sl_root .sl_a11ybar { background:none !important; border:none; padding:0; }
+#sl_root input[type=button] { font-family:monospace; font-size:.7rem; letter-spacing:.04em; text-transform:uppercase; font-weight:bold; padding:7px 10px; cursor:pointer;
+  background:var(--tp-panel-hi) !important; border:1px solid var(--tp-border-hi) !important; color:var(--tp-text) !important; border-radius:3px; line-height:1.25; white-space:normal; }
+#sl_root input[type=button]:hover { border-color:var(--tp-accent) !important; }
+#sl_root .sl_a11ybar input[type=button] { font-size:.68rem; font-weight:normal; letter-spacing:.06em; padding:4px 10px; color:var(--tp-dim) !important; }
+#sl_root #btnPlay { color:var(--tp-accent) !important; border-color:var(--tp-accent) !important; }
+#sl_root #btnStart { color:var(--tp-accent) !important; border-color:var(--tp-accent) !important; }
+#sl_root #btnCheck { color:var(--tp-accent) !important; border-color:var(--tp-accent) !important; }
+#sl_root #btnRecord { color:var(--tp-accent) !important; border-color:var(--tp-accent) !important; }
+#sl_root input[type=button][value*="Clear"], #sl_root input[type=button][value*="Delete"], #sl_root input[type=button][value*="Retry"], #sl_root #btnReset, #sl_root #btnReplay { color:var(--tp-warn) !important; border-color:#a04040 !important; }
+#sl_root input[type=button].sl_active { background:rgba(58,208,143,.14) !important; border-color:var(--tp-green) !important; color:var(--tp-green) !important; }
+#sl_root #btnViewStatic { border-bottom:3px solid #5599cc !important; }
+#sl_root #btnViewKinetic { border-bottom:3px solid #779933 !important; }
+#sl_root .sl_taglbl, #sl_root .sl_plbl { color:var(--tp-dim) !important; font-size:.72rem; font-weight:600; letter-spacing:.03em; }
+#sl_root .sl_pval { color:var(--tp-val) !important; font-family:monospace; }
+#sl_root select { background:var(--tp-panel-hi); color:var(--tp-text); border:1px solid var(--tp-border-hi); border-radius:3px; padding:4px 6px; font-size:.78rem; max-width:100%; }
+#sl_root input[type=number], #sl_root input[type=text], #sl_root .sl_input { background:var(--tp-panel-hi); color:var(--tp-text); border:1px solid var(--tp-border-hi); border-radius:3px; }
+#sl_root .sl_good { color:#111 !important; }
+#sl_root .sl_ok { color:#111 !important; }
+#sl_root .sl_off { color:#111 !important; }
+#sl_root input[type=range] { accent-color:var(--tp-accent); min-width:0; }
+#sl_root select { min-width:0; }
+#sl_root .hl_axislbl { display:inline-flex; flex-wrap:wrap; align-items:center; gap:4px; max-width:100%; }
+#sl_root input[type=checkbox] { accent-color:var(--tp-accent); }
+#sl_root .sl_fbar { width:auto; min-height:0; background:none !important; padding:0; gap:10px; }
+#sl_root .sl_fbar[style*="column"] { background:var(--tp-panel) !important; border:1px solid var(--tp-border); border-radius:6px; padding:10px; box-shadow:0 4px 20px rgba(0,0,0,.3); }
+#sl_root .sl_prompt, #sl_root .sl_readout, #sl_root .sl_narr, #sl_root .sl_info, #sl_root .sl_params, #sl_root .sl_tablebox { background:var(--tp-panel) !important; border:1px solid var(--tp-border) !important; border-radius:6px; padding:9px 12px; color:var(--tp-text) !important; box-shadow:0 4px 20px rgba(0,0,0,.3); }
+#sl_root .hl_tblbox { background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border) !important; border-radius:6px; color:var(--tp-text); }
+#sl_root .hl_axisbar { background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border) !important; border-radius:4px; }
+#sl_root .sl_boxhd { font-family:monospace; font-size:.66rem; font-weight:bold; letter-spacing:.12em; text-transform:uppercase; color:var(--tp-dim) !important; border-bottom-color:var(--tp-border) !important; }
+#sl_root .sl_prompt > .sl_boxhd:first-child, #sl_root .sl_readout > .sl_boxhd:first-child, #sl_root .sl_narr > .sl_boxhd:first-child, #sl_root .sl_info > .sl_boxhd:first-child, #sl_root .sl_params > .sl_boxhd:first-child, #sl_root .sl_tablebox > .sl_boxhd:first-child { background:var(--tp-panel-lo); margin:-9px -12px 9px; padding:6px 12px; border-bottom:1px solid var(--tp-border); }
+#sl_root .sl_prompttext, #sl_root .sl_info, #sl_root .sl_rrow { color:var(--tp-text) !important; }
+#sl_root .sl_info { font-size:.74rem; }
+#sl_root .sl_rv { color:var(--tp-val) !important; font-family:monospace; }
+#sl_root .sl_badge { background:rgba(58,208,143,.14) !important; color:var(--tp-green) !important; }
+#sl_root .sl_narr { background:var(--tp-nar-bg) !important; border:none !important; border-left:4px solid var(--tp-nar-border) !important; border-radius:3px; }
+#sl_root .sl_narr > .sl_boxhd:first-child { background:none; color:var(--tp-nar-border) !important; border-bottom-color:rgba(224,176,64,.35) !important; }
+#sl_root .sl_narrtext { color:var(--tp-nar-text) !important; font-style:italic; font-size:.82rem; }
+#sl_root .sl_stats_box { background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border) !important; color:var(--tp-text) !important; border-radius:4px; }
+#sl_root .stats_box { background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border) !important; color:var(--tp-text) !important; border-radius:4px; }
+#sl_root .sl_stats_title { color:var(--tp-accent) !important; border-bottom-color:var(--tp-border) !important; }
+#sl_root .stats_title { color:var(--tp-accent) !important; border-bottom-color:var(--tp-border) !important; }
+#sl_root .sl_table { color:var(--tp-text); }
+#sl_root .sl_table th { background:var(--tp-panel-hi) !important; color:var(--tp-text) !important; }
+#sl_root .sl_table th, #sl_root .sl_table td { border-color:var(--tp-border) !important; }
+#sl_root .dt_table { color:var(--tp-text); }
+#sl_root .dt_table th { background:var(--tp-panel-hi) !important; color:var(--tp-text) !important; }
+#sl_root .dt_table th, #sl_root .dt_table td { border-color:var(--tp-border) !important; }
+#sl_root .hl_table { color:var(--tp-text); }
+#sl_root .hl_table th { background:var(--tp-panel-hi) !important; color:var(--tp-text) !important; }
+#sl_root .hl_table th, #sl_root .hl_table td { border-color:var(--tp-border) !important; }
+#sl_root .dt_wrap { background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border) !important; overflow:auto; -webkit-overflow-scrolling:touch; }
+#sl_root .hl_tblwrap { background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border) !important; overflow:auto; -webkit-overflow-scrolling:touch; }
+#sl_root .dt_ctrl, #sl_root .hl_axisbar, #sl_root .hl_graphbar, #sl_root .hl_axislbl, #sl_root .hl_fitlabel, #sl_root .hl_hint, #sl_root .hl_nodatamsg, #sl_root .dt_empty { color:var(--tp-text) !important; }
+#sl_root [style*="color:#333"], #sl_root [style*="color:#555"] { color:var(--tp-dim) !important; }
+#sl_root [style*="color:#0072b2"], #sl_root [style*="color:#d55e00"] { background:#ffffff; border-radius:2px; padding:0 3px; }
+/* phones and tablets: bigger touch targets */
+@media (pointer:coarse) {
+#sl_root input[type=button] { min-height:40px; }
+#sl_root .sl_a11ybar input[type=button] { min-height:36px; }
+#sl_root select { min-height:36px; font-size:16px; }
+#sl_root input[type=number], #sl_root input[type=text], #sl_root .sl_input { font-size:16px; min-height:30px; }
+#sl_root input[type=checkbox] { width:20px; height:20px; }
+#sl_root input[type=range] { height:28px; }
+}
+@media (max-width:560px) {
+#sl_root { padding:10px 6px 14px; }
+#sl_root .sl_fbar > *:not(.sl_sronly) { min-width:100% !important; }
+#sl_root .sl_fbar[style*="column"] { padding:8px 6px; }
+#sl_root .sl_plbl { min-width:0 !important; width:100%; }
+#sl_root .sl_prow { flex-wrap:wrap; row-gap:2px; margin-bottom:10px; }
+}
 </style>
 <!-- ══════════ JAVASCRIPT ══════════ -->
 <script>
 var sim3 = (function(){
+var ROOT_EL = document.getElementById('sl_root');
 /* ── Canvas refs ── */
 var sc  = document.getElementById('simCanvas');
 var ctx = sc.getContext('2d');
 var CW=sc.width, CH=sc.height;
+var DPR = window.devicePixelRatio || 1;   /* sharp on phones: draw at device resolution, CSS scales each canvas to the page */
+sc.width = CW*DPR; sc.height = CH*DPR; ctx.scale(DPR, DPR);
 var fc  = document.getElementById('ftCanvas');
 var ftx = fc.getContext('2d');
 var FW=fc.width, FH=fc.height;
+fc.width = FW*DPR; fc.height = FH*DPR; ftx.scale(DPR, DPR);
 var FP={l:52,r:20,t:16,b:40};
 var dc  = document.getElementById('dataCanvas');
 var dtx = dc.getContext('2d');
 var DW=dc.width, DH=dc.height;
+dc.width = DW*DPR; dc.height = DH*DPR; dtx.scale(DPR, DPR);
 var DP={l:58,r:20,t:30,b:42};   /* top margin holds the legend row */
 /* ── Palettes ── */
 var PAL={
@@ -322,7 +437,7 @@ var K_PROBE=80;
 var mass=1.0;
 var pushLevel=5;
 var simSpeed=0.12;
-var theta_deg=0, theta=0;   /* incline angle */
+var theta_deg=20, theta=0.349;   /* incline angle */
 var areaCm2=100;            /* contact area. Ideal (Amontons) friction: F_f = mu N, independent of area */
 /* ── Derived physics ── */
 var Fs_max, Fk_target, F_push_target;
@@ -377,7 +492,7 @@ function toggleHC(){
 hcMode=!hcMode;
 if(hcMode){cbMode=false;btnActive('btnCB',false);document.getElementById('btnCB').value='Color-Blind: OFF';}
 pal=hcMode?PAL.hc:(cbMode?PAL.cb:PAL.def);
-document.body.classList.toggle('hc-mode', hcMode);
+ROOT_EL.classList.toggle('hc-mode', hcMode);
 btnActive('btnHC',hcMode);
 document.getElementById('btnHC').value=hcMode?'High Contrast: ON':'High Contrast: OFF';
 draw(); redrawGraph(); redrawDataPlot();
@@ -386,7 +501,7 @@ function toggleCB(){
 cbMode=!cbMode;
 if(cbMode&&hcMode){hcMode=false;btnActive('btnHC',false);document.getElementById('btnHC').value='High Contrast: OFF';}
 pal=hcMode?PAL.hc:(cbMode?PAL.cb:PAL.def);
-document.body.classList.remove('hc-mode');
+ROOT_EL.classList.remove('hc-mode');
 btnActive('btnCB',cbMode);
 document.getElementById('btnCB').value=cbMode?'Color-Blind: ON':'Color-Blind: OFF';
 draw(); redrawGraph(); redrawDataPlot();
@@ -1199,6 +1314,6 @@ redrawDataPlot, deleteRun, clearRuns, downloadCSV, copyTable
 };
 })();
 </script>
-
+</main>
 </body>
 </html>
