@@ -24,15 +24,17 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <main class="page">
 <div id="mobslid" class="mob_wrap">
 <div id="slroot" role="main" aria-label="Frictionless sliding simulator">
-<p class="sl_h1">Frictionless Sliding Simulator</p>
-<p class="sl_sub">Conservation of Energy -- Frictionless Inclined Plane</p>
-<!-- Accessibility toolbar -->
 <div class="sl_a11ybar" role="toolbar" aria-label="Accessibility options">
 <input type="button" id="btnHC"    value="High Contrast"    class="sl_abtn" onclick="slidingSimF.toggleHC()">
 <input type="button" id="btnLight" value="Light Mode"       class="sl_abtn" onclick="slidingSimF.toggleLight()">
 <input type="button" id="btnCB"    value="Color-Blind Safe" class="sl_abtn" onclick="slidingSimF.toggleCB()">
 <input type="button" id="btnNarr"  value="Narration: ON"    class="sl_abtn sl_abtnon" onclick="slidingSimF.toggleNarr()">
 </div>
+
+<p class="sl_h1">Frictionless Sliding Simulator</p>
+<p class="sl_sub">Conservation of Energy -- Frictionless Inclined Plane</p>
+<!-- Accessibility toolbar -->
+
 <!-- Reduced motion notice -->
 <div id="motionNotice" class="sl_motionnotice" role="status">
 &#9888; Reduced motion is enabled. The animation jumps directly to the final state without sliding.
@@ -856,6 +858,9 @@ if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise(
 #mobslid input[type=checkbox], #mobslid input[type=radio] { width:22px; height:22px; }
 #mobslid select { min-height:36px; font-size:16px; }
 }
+/* display options moved to the top */
+#mobslid .mob_a11ytop { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:6px 4px 8px; width:auto; max-width:100%; height:auto; }
+#mobslid .mob_a11ytop input[type=button], #mobslid .mob_a11ytop button { padding:5px 12px; font-size:13px; border:1px solid #8a94a3; border-radius:4px; background:#f4f6f8; color:#1d232a; cursor:pointer; width:auto; height:auto; margin:0; }
 /* SIM description */
 #mobslid .mob_descwrap { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
 #mobslid .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }

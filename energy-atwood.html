@@ -33,6 +33,12 @@ with realistic run-to-run variability on every Release, like a real experiment.
 A11y: High Contrast | Color-Blind | Narration
 ═══════════════════════════════════════════════════════ -->
 <div id="aw_root">
+<div class="mob_a11ytop" role="toolbar" aria-label="Display options">
+<input type="button" id="btnHC"   value="High Contrast: OFF" onclick="sim1.toggleHC()">
+<input type="button" id="btnCB"   value="Color-Blind: OFF"   onclick="sim1.toggleCB()">
+<input type="button" id="btnNarr" value="Narration: ON"      onclick="sim1.toggleNarr()">
+</div>
+
 <div class="sl_tbar"><h3>Two-Pulley Atwood Machine -- Friction Lab</h3></div>
 <div class="sl_mcontent">
 <canvas id="simCanvas" width="680" height="500" role="img" aria-label="Two pulleys at the same height connected by a string, with a mass hanging between them on each side" aria-describedby="canvasDesc"></canvas>
@@ -47,9 +53,9 @@ A11y: High Contrast | Color-Blind | Narration
 </div>
 <!-- A11y buttons -->
 <div class="sl_bbar">
-<input type="button" id="btnHC"   value="High Contrast: OFF" onclick="sim1.toggleHC()">
-<input type="button" id="btnCB"   value="Color-Blind: OFF"   onclick="sim1.toggleCB()">
-<input type="button" id="btnNarr" value="Narration: ON"      onclick="sim1.toggleNarr()">
+
+
+
 </div>
 <!-- Parameters + Info -->
 <div class="sl_fbar">
@@ -841,6 +847,9 @@ if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise(
 #mobatw input[type=checkbox], #mobatw input[type=radio] { width:22px; height:22px; }
 #mobatw select { min-height:36px; font-size:16px; }
 }
+/* display options moved to the top */
+#mobatw .mob_a11ytop { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:6px 4px 8px; width:auto; max-width:100%; height:auto; }
+#mobatw .mob_a11ytop input[type=button], #mobatw .mob_a11ytop button { padding:5px 12px; font-size:13px; border:1px solid #8a94a3; border-radius:4px; background:#f4f6f8; color:#1d232a; cursor:pointer; width:auto; height:auto; margin:0; }
 /* SIM description */
 #mobatw .mob_descwrap { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
 #mobatw .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }

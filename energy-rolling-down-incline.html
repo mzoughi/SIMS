@@ -24,15 +24,17 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <main class="page">
 <div id="mobroll" class="mob_wrap">
 <div id="rlroot" role="main" aria-label="Rolling object simulator">
-<p class="rl_h1">Rolling Object Simulator</p>
-<p class="rl_sub">Conservation of Energy -- Rolling Without Slipping</p>
-<!-- Accessibility toolbar -->
 <div class="rl_a11ybar" role="toolbar" aria-label="Accessibility options">
 <input type="button" id="btnHC"    value="High Contrast"    class="rl_abtn" onclick="rollingSimF.toggleHC()">
 <input type="button" id="btnLight" value="Light Mode"       class="rl_abtn" onclick="rollingSimF.toggleLight()">
 <input type="button" id="btnCB"    value="Color-Blind Safe" class="rl_abtn" onclick="rollingSimF.toggleCB()">
 <input type="button" id="btnNarr"  value="Narration: ON"    class="rl_abtn rl_abtnon" onclick="rollingSimF.toggleNarr()">
 </div>
+
+<p class="rl_h1">Rolling Object Simulator</p>
+<p class="rl_sub">Conservation of Energy -- Rolling Without Slipping</p>
+<!-- Accessibility toolbar -->
+
 <!-- Reduced motion notice -->
 <div id="motionNotice" class="rl_motionnotice" role="status">
 &#9888; Reduced motion is enabled. The animation jumps directly to the final state without rolling.
@@ -856,6 +858,9 @@ if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise(
 #mobroll input[type=checkbox], #mobroll input[type=radio] { width:22px; height:22px; }
 #mobroll select { min-height:36px; font-size:16px; }
 }
+/* display options moved to the top */
+#mobroll .mob_a11ytop { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:6px 4px 8px; width:auto; max-width:100%; height:auto; }
+#mobroll .mob_a11ytop input[type=button], #mobroll .mob_a11ytop button { padding:5px 12px; font-size:13px; border:1px solid #8a94a3; border-radius:4px; background:#f4f6f8; color:#1d232a; cursor:pointer; width:auto; height:auto; margin:0; }
 /* SIM description */
 #mobroll .mob_descwrap { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
 #mobroll .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }

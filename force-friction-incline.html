@@ -24,6 +24,12 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <main class="page">
 <div id="mobfric" class="mob_wrap">
 <div id="fr_root">
+<div class="mob_a11ytop" role="toolbar" aria-label="Display options">
+<input type="button" id="btnHC"   value="High Contrast: OFF" onclick="sim1.toggleHC()">
+<input type="button" id="btnCB"   value="Color-Blind: OFF"   onclick="sim1.toggleCB()">
+<input type="button" id="btnNarr" value="Narration: ON"      onclick="sim1.toggleNarr()">
+</div>
+
   <div class="sl_tbar"><h3>Inclined Track -- Friction &amp; Materials Lab</h3></div>
   <div class="sl_mcontent">
     <canvas id="simCanvas" width="680" height="360" role="img" aria-label="Block on an inclined track with friction" aria-describedby="canvasDesc"></canvas>
@@ -38,9 +44,9 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
   </div>
   <!-- A11y buttons -->
   <div class="sl_bbar">
-    <input type="button" id="btnHC"   value="High Contrast: OFF" onclick="sim1.toggleHC()">
-    <input type="button" id="btnCB"   value="Color-Blind: OFF"   onclick="sim1.toggleCB()">
-    <input type="button" id="btnNarr" value="Narration: ON"      onclick="sim1.toggleNarr()">
+    
+    
+    
   </div>
   <!-- Parameters + Info -->
   <div class="sl_fbar">
@@ -1145,6 +1151,9 @@ if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise(
 #mobfric input[type=checkbox], #mobfric input[type=radio] { width:22px; height:22px; }
 #mobfric select { min-height:36px; font-size:16px; }
 }
+/* display options moved to the top */
+#mobfric .mob_a11ytop { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:6px 4px 8px; width:auto; max-width:100%; height:auto; }
+#mobfric .mob_a11ytop input[type=button], #mobfric .mob_a11ytop button { padding:5px 12px; font-size:13px; border:1px solid #8a94a3; border-radius:4px; background:#f4f6f8; color:#1d232a; cursor:pointer; width:auto; height:auto; margin:0; }
 /* SIM description */
 #mobfric .mob_descwrap { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
 #mobfric .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }

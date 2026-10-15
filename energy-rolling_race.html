@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Energy: Rolling Race</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, rolling without slipping, moment of inertia, incline, energy, lesson, scientific">
+<meta name="description" content="Rolling Race -- interactive physics simulation.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<main class="page">
+<div id="mobrrace" class="mob_wrap">
+<!-- ════════════════════════════════════════════════════════
+Rolling Race — All 4 Shapes Simultaneously
+Rolling WITHOUT slipping — each shape has different acceleration
+myOpenMath embed fragment
+════════════════════════════════════════════════════════ -->
+<div id="rlrace" role="main" aria-label="Rolling race simulator">
+
+  <div class="rr_header">
+    <div class="rr_title">🏆 Rolling Race</div>
+    <div class="rr_sub">All 4 shapes released together — Rolling Without Slipping</div>
+  </div>
+
+  <!-- Canvas -->
+  <div class="rr_canvaswrap">
+    <canvas id="rlraceCanvas" width="680" height="380"
+      role="img" aria-label="Four objects racing down a ramp while rolling"></canvas>
+  </div>
+
+  <!-- Controls row -->
+  <div class="rr_controls">
+
+    <div class="rr_ctrlgroup">
+      <label class="rr_lbl" for="rlAngle">Angle</label>
+      <input type="range" id="rlAngle" min="10" max="60" value="30" step="1"
+        oninput="rollingRace.onAngle(this.value)">
+      <span class="rr_val" id="rlAngleVal">30°</span>
+    </div>
+
+    <div class="rr_ctrlgroup">
+      <label class="rr_lbl" for="rlMass">Mass</label>
+      <input type="range" id="rlMass" min="50" max="500" value="200" step="10"
+        oninput="rollingRace.onMass(this.value)">
+      <span class="rr_val" id="rlMassVal">200 g</span>
+    </div>
+
+    <div class="rr_ctrlgroup">
+      <label class="rr_lbl" for="rlRadius">Radius</label>
+      <input type="range" id="rlRadius" min="5" max="25" value="14" step="1"
+        oninput="rollingRace.onRadius(this.value)">
+      <span class="rr_val" id="rlRadiusVal">14 cm</span>
+    </div>
+
+    <div class="rr_ctrlgroup">
+      <label class="rr_lbl" for="rlSpeed">Speed</label>
+      <input type="range" id="rlSpeed" min="1" max="10" value="4" step="1"
+        oninput="rollingRace.onSpeed(this.value)">
+      <span class="rr_val" id="rlSpeedVal">0.4×</span>
+    </div>
+
+    <div class="rr_btnrow">
+      <button class="rr_btn rr_go" onclick="rollingRace.race()">▶ RACE!</button>
+      <button class="rr_btn rr_reset" onclick="rollingRace.reset()">↺ RESET</button>
+    </div>
+
+  </div>
+
+  <!-- Live data table -->
+  <div class="rr_datatbl">
+    <div class="rr_thdr">
+      <span class="rr_tc"></span>
+      <span class="rr_tc">Shape</span>
+      <span class="rr_tc">I / mr²</span>
+      <span class="rr_tc">a (m/s²)</span>
+      <span class="rr_tc">v (m/s)</span>
+      <span class="rr_tc">ω (rad/s)</span>
+      <span class="rr_tc">KT / KR</span>
+      <span class="rr_tc">Place</span>
+    </div>
+    <!-- rows filled by JS -->
+    <div id="rlTableBody"></div>
+  </div>
+
+  <!-- Result banner -->
+  <div class="rr_result" id="rlResult" style="display:none">
+    <div class="rr_result_title" id="rlResultTitle"></div>
+    <div class="rr_result_body" id="rlResultBody"></div>
+  </div>
+
+  <!-- Physics note -->
+  <div class="rr_note">
+    <strong>Key Physics:</strong> Rolling without slipping → v = ωr → a = g·sinθ / (1 + I/mr²).
+    A <em>smaller</em> moment of inertia means <em>more</em> energy goes to translation → <em>faster</em> roll.
+    The <strong>solid sphere</strong> (I = 2/5 mr²) always wins; the <strong>thin hoop</strong> (I = mr²) always finishes last.
+    Mass and radius cancel out — only <em>shape</em> determines the finishing order.
+  </div>
+
+  <p class="rr_credit">Rolling Race · Conservation of Energy · Rolling Without Slipping · MOM · 2025</p>
+</div>
+
+<!-- ═══ STYLES ═══ -->
+<style>@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap');
+
+#rlrace {
+  --bg:      #070b10;
+  --panel:   #0c1118;
+  --panel2:  #111820;
+  --bd:      #1a2535;
+  --bd2:     #243050;
+  --text:    #c0d0e4;
+  --dim:     #445570;
+  --accent:  #e8b030;
+  --green:   #2ecc71;
+  --red:     #e74c3c;
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse at 15% 0%,   rgba(232,176,48,0.07) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 100%, rgba(46,204,113,0.04) 0%, transparent 50%);
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 14px 20px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 740px;
+  margin: 0 auto;
+  border-radius: 8px;
+  border: 1px solid var(--bd);
+  box-shadow: 0 16px 70px rgba(0,0,0,0.8);
+  gap: 11px;
+  position: relative;
+}
+#rlrace *, #rlrace *::before, #rlrace *::after {
+  box-sizing: border-box; margin: 0; padding: 0;
+}
+.rr_header { text-align: center; }
+.rr_title {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.1rem; font-weight: 900;
+  color: var(--accent);
+  letter-spacing: .22em; text-transform: uppercase;
+  text-shadow: 0 0 28px rgba(232,176,48,.45);
+}
+.rr_sub { font-size: .62rem; color: var(--dim); letter-spacing: .1em; margin-top: 3px; }
+.rr_canvaswrap {
+  background: #06090e;
+  border: 1px solid var(--bd2);
+  border-radius: 5px;
+  overflow: hidden;
+  width: 100%;
+  box-shadow: inset 0 0 40px rgba(46,204,113,0.04);
+}
+#rlraceCanvas { display: block; width: 100%; height: auto; }
+.rr_controls {
+  width: 100%;
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  background: var(--panel);
+  border: 1px solid var(--bd);
+  border-radius: 5px;
+  padding: 10px 12px;
+}
+.rr_ctrlgroup {
+  display: flex; align-items: center; gap: 7px; flex: 1; min-width: 140px;
+}
+.rr_lbl {
+  font-size: .62rem; color: var(--dim); text-transform: uppercase;
+  letter-spacing: .1em; min-width: 38px; flex-shrink: 0;
+}
+.rr_val { font-size: .72rem; color: var(--accent); min-width: 42px; text-align: right; }
+.rr_controls input[type=range] {
+  flex: 1; -webkit-appearance: none; height: 3px; border-radius: 2px;
+  background: linear-gradient(to right, #1a3060, #284880, #b03020);
+  outline: none; cursor: pointer;
+}
+.rr_controls input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
+  background: var(--accent); border: 2px solid var(--bg);
+  box-shadow: 0 0 6px rgba(232,176,48,.5); cursor: pointer;
+}
+.rr_btnrow { display: flex; gap: 7px; flex-shrink: 0; }
+.rr_btn {
+  padding: 8px 18px;
+  font-family: 'Orbitron', monospace; font-size: .65rem; font-weight: 700;
+  letter-spacing: .1em; border-radius: 4px; cursor: pointer;
+  text-transform: uppercase; border: none; transition: transform .1s, box-shadow .1s;
+}
+.rr_btn:active { transform: scale(.97); }
+.rr_go {
+  background: linear-gradient(135deg, #a06800, #e8b030);
+  color: #000; box-shadow: 0 0 18px rgba(232,176,48,.4);
+}
+.rr_go:hover { box-shadow: 0 0 28px rgba(232,176,48,.7); }
+.rr_reset {
+  background: var(--panel2); border: 1px solid var(--bd2); color: var(--dim);
+}
+.rr_reset:hover { color: var(--text); border-color: var(--text); }
+/* Data table */
+.rr_datatbl {
+  width: 100%;
+  background: var(--panel);
+  border: 1px solid var(--bd);
+  border-radius: 5px;
+  overflow: hidden;
+  font-size: .65rem;
+}
+.rr_thdr {
+  display: grid;
+  grid-template-columns: 18px 1.5fr .8fr .9fr .9fr .9fr 1.1fr .7fr;
+  background: var(--panel2);
+  border-bottom: 1px solid var(--bd2);
+}
+.rr_thdr .rr_tc {
+  color: var(--dim); font-size: .55rem; text-transform: uppercase;
+  letter-spacing: .1em; padding: 6px 7px;
+}
+.rr_trow {
+  display: grid;
+  grid-template-columns: 18px 1.5fr .8fr .9fr .9fr .9fr 1.1fr .7fr;
+  border-bottom: 1px solid var(--bd);
+  transition: background .3s;
+}
+.rr_trow:last-child { border-bottom: none; }
+.rr_trow .rr_tc { padding: 7px 7px; font-size: .65rem; }
+.rr_dim { color: var(--dim) !important; }
+.rr_dot { display: flex; align-items: center; padding-left: 3px !important; font-size: .95rem; line-height:1; }
+.rr_place { font-family: 'Orbitron', monospace; font-weight: 700; text-align: center; }
+/* Podium colours */
+.rr_p1 { background: rgba(232,176,48,.10);  }
+.rr_p2 { background: rgba(192,192,200,.06); }
+.rr_p3 { background: rgba(180,100,40,.06);  }
+.rr_p4 { background: rgba(80,80,100,.04);   }
+/* Result banner */
+.rr_result {
+  width: 100%;
+  background: linear-gradient(135deg, rgba(12,20,30,.95), rgba(18,28,44,.95));
+  border: 1px solid var(--green);
+  border-radius: 5px;
+  padding: 14px 18px;
+  text-align: center;
+  box-shadow: 0 0 34px rgba(46,204,113,.15);
+  animation: rr_fadein .4s ease;
+}
+@keyframes rr_fadein { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+.rr_result_title {
+  font-family: 'Orbitron', monospace;
+  font-size: .88rem; font-weight: 900;
+  color: var(--green); letter-spacing: .18em;
+  text-shadow: 0 0 18px rgba(46,204,113,.5);
+  margin-bottom: 8px;
+}
+.rr_result_body {
+  font-size: .67rem; color: var(--text); line-height: 1.7;
+}
+.rr_result_body strong { color: var(--accent); }
+.rr_result_body em { color: #8ac8f0; font-style: normal; }
+/* Podium grid inside result */
+.rr_podium {
+  display: flex; justify-content: center; gap: 10px;
+  margin: 10px 0 8px;
+}
+.rr_podium_card {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  background: rgba(255,255,255,.04); border-radius: 4px; padding: 7px 12px;
+  border: 1px solid rgba(255,255,255,.07);
+  min-width: 100px;
+}
+.rr_pod_place { font-family:'Orbitron',monospace; font-size:.75rem; font-weight:900; }
+.rr_pod_name { font-size:.6rem; color:var(--text); }
+.rr_pod_time { font-size:.62rem; color:var(--dim); }
+/* Physics note */
+.rr_note {
+  width: 100%;
+  background: rgba(8,16,30,.8);
+  border: 1px solid var(--bd2);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-size: .65rem; color: #7a9ab8; line-height: 1.7;
+}
+.rr_note strong { color: var(--accent); }
+.rr_note em { color: #8abcdc; font-style: normal; }
+.rr_credit { font-size: .55rem; color: var(--dim); letter-spacing: .08em; }</style>
+
+<!-- ═══ SCRIPT ═══ -->
+<script>
+var rollingRace = function() {
+  var ROOT   = document.getElementById('rlrace');
+  var canvas = document.getElementById('rlraceCanvas');
+  var ctx    = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  var g = 9.8;
+  var RAMP_H = 0.5; // fixed physical height (m)
+
+  /* ── Shape definitions ── */
+  var SHAPES = [
+    { key:'sphere',   name:'Solid Sphere',    shortName:'Sphere',   moi:'2/5', factor:2/5,
+      color:'#ff6b35', stroke:'#cc3300', spoke:'#ffcc88', nSpokes:4 },
+    { key:'cylinder', name:'Solid Cylinder',  shortName:'Cylinder', moi:'1/2', factor:1/2,
+      color:'#4ecdc4', stroke:'#1a8880', spoke:'#a0fff8', nSpokes:4 },
+    { key:'shell',    name:'Spherical Shell', shortName:'Shell',    moi:'2/3', factor:2/3,
+      color:'#ffe66d', stroke:'#b89000', spoke:'#fff8b0', nSpokes:4 },
+    { key:'hoop',     name:'Thin Hoop',       shortName:'Hoop',     moi:'1',   factor:1,
+      color:'#c77dff', stroke:'#8833cc', spoke:'#e8c0ff', nSpokes:8 }
+  ];
+
+  /* ── State ── */
+  var angleDeg  = 30;
+  var massG     = 200;
+  var radiusCm  = 14;
+  var speedFactor = 0.4;
+  var racing    = false;
+  var animFrame = null;
+  var progresses   = [0,0,0,0];
+  var rotAngles    = [0,0,0,0];
+  var simTime      = 0;
+  var finishTimes  = [null,null,null,null]; // wall-sim-time each finishes
+  var finished     = false;
+
+  function setEl(id,txt){ var e=document.getElementById(id); if(e) e.textContent=txt; }
+
+  /* ── Physics — each shape has its own acceleration ── */
+  function getPhysicsFor(factor){
+    var theta = angleDeg * Math.PI/180;
+    var m = massG/1000, r = radiusCm/100, h = RAMP_H;
+    var denom = 1 + factor;
+    var accel = g * Math.sin(theta) / denom;       // KEY: differs per shape!
+    var L = h / Math.sin(theta);
+    var v_final = Math.sqrt(2*g*h/denom);
+    var omega_final = v_final / r;
+    var T = Math.sqrt(2*L/accel);
+    var KE_t = 0.5*m*v_final*v_final;
+    var KE_r = 0.5*factor*m*v_final*v_final;
+    var PE = m*g*h;
+    return {m,r,h,L,accel,v_final,omega_final,T,KE_t,KE_r,PE};
+  }
+
+  /* ── Ramp geometry ── */
+  var LANE_GAP = 19;   // px between object centres perp-to-normal
+
+  function getRamp(){
+    var theta = angleDeg * Math.PI/180;
+    var rampLen = 500;
+    var bx = W - 36, by = H - 48;
+    var tx = bx - rampLen*Math.cos(theta);
+    var ty = by - rampLen*Math.sin(theta);
+    var dx = (bx-tx)/rampLen, dy = (by-ty)/rampLen;
+    var nx = dy, ny = -dx;               // outward normal from ramp surface
+    var lx = -ny, ly = nx;              // lateral: along ramp surface width
+    return {bx,by,tx,ty,theta,rampLen,dx,dy,nx,ny,lx,ly};
+  }
+
+  function getVisR(){ return Math.max(10, Math.min(20, radiusCm*1.25)); }
+
+  function getObjPos(i, prog){
+    var g2 = getRamp(), vr = getVisR();
+    var cpx = g2.tx + (g2.bx - g2.tx)*prog;
+    var cpy = g2.ty + (g2.by - g2.ty)*prog;
+    var cx0 = cpx + g2.nx*vr;
+    var cy0 = cpy + g2.ny*vr;
+    // Spread 4 objects; centre the pack around ramp midline
+    var offset = (i - (SHAPES.length-1)/2) * LANE_GAP;
+    return { cx: cx0 + g2.lx*offset, cy: cy0 + g2.ly*offset, r: vr };
+  }
+
+  /* ── Build table rows (once) ── */
+  function buildTable(){
+    var body = document.getElementById('rlTableBody');
+    if(!body) return;
+    var html = '';
+    for(var i=0;i<SHAPES.length;i++){
+      var sh = SHAPES[i];
+      html += '<div class="rr_trow" id="rlRow_'+sh.key+'">'
+        +'<span class="rr_tc rr_dot" style="color:'+sh.color+'">●</span>'
+        +'<span class="rr_tc" style="color:'+sh.color+'">'+sh.name+'</span>'
+        +'<span class="rr_tc rr_dim">'+sh.moi+' mr²</span>'
+        +'<span class="rr_tc" id="rlA_'+sh.key+'">—</span>'
+        +'<span class="rr_tc" id="rlV_'+sh.key+'">0.000</span>'
+        +'<span class="rr_tc" id="rlW_'+sh.key+'">0.000</span>'
+        +'<span class="rr_tc" id="rlKTR_'+sh.key+'">—</span>'
+        +'<span class="rr_tc rr_place" id="rlPl_'+sh.key+'">—</span>'
+        +'</div>';
+    }
+    body.innerHTML = html;
+  }
+
+  /* ── Update table during animation ── */
+  function updateTable(){
+    for(var i=0;i<SHAPES.length;i++){
+      var sh = SHAPES[i];
+      var ph = getPhysicsFor(sh.factor);
+      var v_now = ph.accel * simTime;
+      var om_now = (ph.r>0) ? v_now/ph.r : 0;
+      var prog = progresses[i];
+      var KT_now = 0.5*ph.m*v_now*v_now;
+      var KR_now = 0.5*sh.factor*ph.m*v_now*v_now;
+      var ktPct = ph.PE>0 ? Math.round(KT_now/ph.PE*100) : 0;
+      var krPct = ph.PE>0 ? Math.round(KR_now/ph.PE*100) : 0;
+
+      setEl('rlA_'+sh.key+'',  ph.accel.toFixed(3));
+      setEl('rlV_'+sh.key+'',  v_now.toFixed(3));
+      setEl('rlW_'+sh.key+'',  om_now.toFixed(2));
+      setEl('rlKTR_'+sh.key+'', ktPct+'% / '+krPct+'%');
+
+      // Place = rank by progress descending
+      // (will be set by updatePlaces)
+    }
+    updatePlaces();
+  }
+
+  var MEDALS = ['🥇','🥈','🥉','④'];
+  var PLACE_CLASSES = ['rr_p1','rr_p2','rr_p3','rr_p4'];
+
+  function updatePlaces(){
+    // Sort by progress descending
+    var sorted = SHAPES.slice().sort(function(a,b){
+      var pa = progresses[SHAPES.indexOf(a)];
+      var pb = progresses[SHAPES.indexOf(b)];
+      return pb - pa;
+    });
+    for(var p=0;p<sorted.length;p++){
+      var sh = sorted[p];
+      var plEl = document.getElementById('rlPl_'+sh.key+'');
+      var rowEl = document.getElementById('rlRow_'+sh.key+'');
+      if(plEl) plEl.textContent = MEDALS[p];
+      if(rowEl){
+        rowEl.className = 'rr_trow '+PLACE_CLASSES[p];
+      }
+    }
+  }
+
+  /* ── Draw ── */
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    var g2 = getRamp();
+
+    // Sky
+    var sky = ctx.createLinearGradient(0,0,0,H*0.72);
+    sky.addColorStop(0,'#08121e'); sky.addColorStop(1,'#162840');
+    ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
+
+    // Stars
+    var stars=[[40,22],[110,14],[195,32],[290,10],[390,28],[500,18],[600,36],[630,12],
+               [60,60],[170,52],[340,44],[460,58],[25,85],[580,72]];
+    ctx.fillStyle='rgba(255,255,255,0.55)';
+    for(var s=0;s<stars.length;s++){
+      var sz = (stars[s][0]%3===0)?1.1:0.7;
+      ctx.beginPath(); ctx.arc(stars[s][0],stars[s][1],sz,0,Math.PI*2); ctx.fill();
+    }
+
+    // Ground
+    var gnd = ctx.createLinearGradient(0,g2.by,0,H);
+    gnd.addColorStop(0,'#28501a'); gnd.addColorStop(0.06,'#182e0e'); gnd.addColorStop(1,'#080e04');
+    ctx.fillStyle=gnd; ctx.fillRect(0,g2.by,W,H-g2.by);
+    ctx.fillStyle='#3a7020'; ctx.fillRect(0,g2.by-2,W,4);
+
+    // Ramp
+    var rampG = ctx.createLinearGradient(g2.tx,g2.ty,g2.bx,g2.by);
+    rampG.addColorStop(0,'#524230'); rampG.addColorStop(1,'#28201c');
+    ctx.beginPath();
+    ctx.moveTo(g2.tx,g2.ty); ctx.lineTo(g2.bx,g2.by);
+    ctx.lineTo(g2.bx,H); ctx.lineTo(g2.tx,H); ctx.closePath();
+    ctx.fillStyle=rampG; ctx.fill();
+
+    // Ramp surface edge with glow
+    ctx.beginPath(); ctx.moveTo(g2.tx,g2.ty); ctx.lineTo(g2.bx,g2.by);
+    ctx.strokeStyle='#907050'; ctx.lineWidth=2.5; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(g2.tx,g2.ty); ctx.lineTo(g2.bx,g2.by);
+    ctx.strokeStyle='rgba(255,200,100,0.12)'; ctx.lineWidth=6; ctx.stroke();
+
+    // Lane guide lines (faint, along ramp surface)
+    ctx.strokeStyle='rgba(255,255,255,0.04)'; ctx.lineWidth=1;
+    for(var li=0;li<SHAPES.length;li++){
+      var loff = (li - (SHAPES.length-1)/2) * LANE_GAP;
+      var lx1 = g2.tx + g2.lx*loff + g2.nx*getVisR();
+      var ly1 = g2.ty + g2.ly*loff + g2.ny*getVisR();
+      var lx2 = g2.bx + g2.lx*loff + g2.nx*getVisR();
+      var ly2 = g2.by + g2.ly*loff + g2.ny*getVisR();
+      ctx.beginPath(); ctx.moveTo(lx1,ly1); ctx.lineTo(lx2,ly2); ctx.stroke();
+    }
+
+    // Angle arc
+    ctx.save(); ctx.translate(g2.bx,g2.by);
+    var arcR=46;
+    ctx.beginPath(); ctx.arc(0,0,arcR,Math.PI+g2.theta,Math.PI,true);
+    ctx.strokeStyle='rgba(232,176,48,0.55)'; ctx.lineWidth=1.5; ctx.stroke();
+    var midA=Math.PI+g2.theta/2;
+    ctx.fillStyle='#e8c060'; ctx.font='bold 12px Arial';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(angleDeg+'°',Math.cos(midA)*(arcR+16),Math.sin(midA)*(arcR+16));
+    ctx.restore();
+
+    // Finish line
+    var finAlpha = finished ? 1.0 : 0.55;
+    ctx.save();
+    ctx.strokeStyle='rgba(255,255,255,'+finAlpha+')'; ctx.lineWidth=2.5;
+    ctx.setLineDash([7,5]);
+    ctx.beginPath(); ctx.moveTo(g2.bx-55,g2.by); ctx.lineTo(g2.bx+12,g2.by); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='rgba(255,255,255,'+finAlpha+')';
+    ctx.font='bold 10px monospace'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+    ctx.fillText('FINISH',g2.bx-22,g2.by-4);
+    ctx.restore();
+
+    // Height indicator (left side, tracks leading object)
+    var leadIdx=0;
+    for(var li2=1;li2<SHAPES.length;li2++) if(progresses[li2]>progresses[leadIdx]) leadIdx=li2;
+    if(progresses[leadIdx]<0.93){
+      var opTop = getObjPos(leadIdx,0), opNow = getObjPos(leadIdx,progresses[leadIdx]);
+      var hx = g2.tx - getVisR() - 20;
+      ctx.save();
+      ctx.strokeStyle='rgba(46,204,113,0.65)'; ctx.lineWidth=1.5; ctx.setLineDash([4,3]);
+      ctx.beginPath(); ctx.moveTo(hx,opTop.cy); ctx.lineTo(hx,opNow.cy); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.beginPath(); ctx.moveTo(hx-5,opTop.cy); ctx.lineTo(hx+5,opTop.cy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(hx-5,opNow.cy); ctx.lineTo(hx+5,opNow.cy); ctx.stroke();
+      ctx.fillStyle='rgba(46,204,113,0.85)'; ctx.font='10px Courier New';
+      ctx.textAlign='right'; ctx.textBaseline='middle';
+      ctx.fillText('h=0.5m',hx-7,(opTop.cy+opNow.cy)/2);
+      ctx.restore();
+    }
+
+    // Draw energy bars (one set per shape, stacked left)
+    drawEnergyBars();
+
+    // Draw objects back-to-front (furthest back = index 3 in lateral spread, draw first)
+    for(var di=SHAPES.length-1;di>=0;di--){
+      drawObj(di);
+    }
+
+    // Draw finish-order labels if race is done
+    if(finished){
+      drawPodiumLabels();
+    }
+
+    // Legend
+    drawLegend(g2);
+  }
+
+  function drawObj(i){
+    var sh = SHAPES[i];
+    var op = getObjPos(i, progresses[i]);
+    var vr = op.r;
+    var isHoop = (sh.key==='hoop');
+    var rotA = rotAngles[i];
+
+    ctx.save();
+    ctx.translate(op.cx, op.cy);
+    ctx.rotate(rotA);
+
+    // Glow
+    ctx.shadowColor = sh.color; ctx.shadowBlur = 12;
+
+    if(isHoop){
+      ctx.beginPath(); ctx.arc(0,0,vr,0,Math.PI*2);
+      ctx.strokeStyle = sh.color; ctx.lineWidth = 5; ctx.stroke();
+      ctx.shadowBlur=0;
+      ctx.strokeStyle = sh.stroke; ctx.lineWidth = 1.5; ctx.stroke();
+    } else {
+      var grad = ctx.createRadialGradient(-vr*.32,-vr*.32,1,0,0,vr);
+      grad.addColorStop(0, lighten(sh.color,55));
+      grad.addColorStop(0.55, sh.color);
+      grad.addColorStop(1, sh.stroke);
+      ctx.beginPath(); ctx.arc(0,0,vr,0,Math.PI*2);
+      ctx.fillStyle=grad; ctx.fill();
+      ctx.shadowBlur=0;
+      ctx.strokeStyle=sh.stroke; ctx.lineWidth=1.8; ctx.stroke();
+    }
+    ctx.shadowBlur=0;
+
+    // Spokes
+    ctx.strokeStyle = isHoop ? sh.spoke : 'rgba(255,255,255,0.38)';
+    ctx.lineWidth = isHoop ? 1.4 : 1.8;
+    for(var k=0;k<sh.nSpokes;k++){
+      var a=(Math.PI*2/sh.nSpokes)*k;
+      ctx.beginPath();
+      if(isHoop){
+        ctx.moveTo(Math.cos(a)*vr*.12, Math.sin(a)*vr*.12);
+        ctx.lineTo(Math.cos(a)*vr*.82, Math.sin(a)*vr*.82);
+      } else {
+        ctx.moveTo(0,0);
+        ctx.lineTo(Math.cos(a)*vr*.82, Math.sin(a)*vr*.82);
+      }
+      ctx.stroke();
+    }
+    // Centre
+    ctx.beginPath(); ctx.arc(0,0,2.5,0,Math.PI*2);
+    ctx.fillStyle = isHoop ? sh.spoke : 'rgba(255,255,255,0.65)'; ctx.fill();
+
+    ctx.restore();
+
+    // Name tag while racing (floating above object)
+    if(!finished && progresses[i]>0.02 && progresses[i]<0.97){
+      ctx.save();
+      ctx.font='bold 8px monospace';
+      ctx.fillStyle=sh.color;
+      ctx.textAlign='center'; ctx.textBaseline='bottom';
+      ctx.fillText(sh.shortName, op.cx, op.cy - vr - 3);
+      ctx.restore();
+    }
+  }
+
+  /* Energy bars — one column set per shape */
+  function drawEnergyBars(){
+    var barW=8, barMaxH=60, gap=3;
+    var groupW = SHAPES.length*(barW+gap)-gap;
+    var bx0=14, by0=H-14;
+
+    // Background panel
+    ctx.fillStyle='rgba(0,0,0,0.45)';
+    roundRect(bx0-5, by0-barMaxH-24, groupW+38, barMaxH+30, 4);
+    ctx.fill();
+
+    // Title
+    ctx.fillStyle='rgba(180,190,210,0.7)'; ctx.font='8px Arial';
+    ctx.textAlign='left'; ctx.textBaseline='top';
+    ctx.fillText('Energy ▼', bx0-3, by0-barMaxH-20);
+
+    for(var i=0;i<SHAPES.length;i++){
+      var sh = SHAPES[i];
+      var ph = getPhysicsFor(sh.factor);
+      var prog = progresses[i];
+      var v_now = ph.accel*simTime;
+      var KT_now = 0.5*ph.m*v_now*v_now;
+      var KR_now = 0.5*sh.factor*ph.m*v_now*v_now;
+      var PE_now = Math.max(0, ph.PE - KT_now - KR_now);
+
+      var bx = bx0 + i*(barW+gap);
+
+      // PE bar (green, bottom portion)
+      var peFrac = ph.PE>0 ? PE_now/ph.PE : 0;
+      var ktFrac = ph.PE>0 ? KT_now/ph.PE : 0;
+      var krFrac = ph.PE>0 ? KR_now/ph.PE : 0;
+
+      // Stack: PE on bottom, KT in middle, KR on top
+      var peH = peFrac*barMaxH, ktH = ktFrac*barMaxH, krH = krFrac*barMaxH;
+
+      ctx.fillStyle='#228844';
+      ctx.fillRect(bx, by0-peH, barW, peH);
+      ctx.fillStyle='#2244cc';
+      ctx.fillRect(bx, by0-peH-ktH, barW, ktH);
+      ctx.fillStyle=sh.color;
+      ctx.fillRect(bx, by0-peH-ktH-krH, barW, krH);
+
+      // Outline
+      ctx.strokeStyle='rgba(255,255,255,0.18)'; ctx.lineWidth=0.8;
+      ctx.strokeRect(bx, by0-barMaxH, barW, barMaxH);
+
+      // Shape dot label
+      ctx.fillStyle=sh.color; ctx.font='7px Arial';
+      ctx.textAlign='center'; ctx.textBaseline='top';
+      ctx.fillText('●', bx+barW/2, by0+3);
+    }
+
+    // Legend for bar colours
+    var lx=bx0+groupW+8, ly=by0-barMaxH+2;
+    var entries=[['#228844','PE'],['#2244cc','KT'],['#cc4422','KR']];
+    for(var ei=0;ei<entries.length;ei++){
+      ctx.fillStyle=entries[ei][0];
+      ctx.fillRect(lx,ly+ei*14,7,7);
+      ctx.fillStyle='rgba(180,190,210,0.7)'; ctx.font='7px Arial';
+      ctx.textAlign='left'; ctx.textBaseline='top';
+      ctx.fillText(entries[ei][1],lx+9,ly+ei*14);
+    }
+  }
+
+  function drawPodiumLabels(){
+    // Sort shapes by finish time
+    var order = SHAPES.slice().sort(function(a,b){
+      var ta=finishTimes[SHAPES.indexOf(a)], tb=finishTimes[SHAPES.indexOf(b)];
+      return ta-tb;
+    });
+    var medals=['🥇','🥈','🥉','4th'];
+    for(var pi=0;pi<order.length;pi++){
+      var sh=order[pi];
+      var i=SHAPES.indexOf(sh);
+      var op=getObjPos(i,1);
+      ctx.save();
+      ctx.font='bold 13px Arial';
+      ctx.textAlign='center'; ctx.textBaseline='bottom';
+      ctx.fillStyle=sh.color;
+      ctx.shadowColor=sh.color; ctx.shadowBlur=10;
+      ctx.fillText(medals[pi], op.cx, op.cy-op.r-4);
+      ctx.restore();
+    }
+  }
+
+  function drawLegend(g2){
+    var lx=14, ly=14, lh=19, lw=132;
+    ctx.fillStyle='rgba(6,9,14,0.80)';
+    roundRect(lx-6,ly-6,lw,SHAPES.length*lh+16,5); ctx.fill();
+    ctx.strokeStyle='rgba(36,48,80,0.9)'; ctx.lineWidth=1; ctx.stroke();
+
+    for(var i=0;i<SHAPES.length;i++){
+      var sh=SHAPES[i], y=ly+10+i*lh;
+      ctx.beginPath(); ctx.arc(lx+6,y,5.5,0,Math.PI*2);
+      ctx.fillStyle=sh.color; ctx.shadowColor=sh.color; ctx.shadowBlur=7;
+      ctx.fill(); ctx.shadowBlur=0;
+      ctx.fillStyle='rgba(192,208,228,.9)';
+      ctx.font='8.5px monospace'; ctx.textAlign='left'; ctx.textBaseline='middle';
+      ctx.fillText(sh.name+' ('+sh.moi+')', lx+16, y);
+    }
+  }
+
+  function roundRect(x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+    ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+    ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+    ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
+    ctx.closePath();
+  }
+
+  function lighten(hex,amt){
+    var r=parseInt(hex.slice(1,3),16),g2=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+    return 'rgb('+Math.min(255,r+amt)+','+Math.min(255,g2+amt)+','+Math.min(255,b+amt)+')';
+  }
+
+  /* ── Race animation ── */
+  function race(){
+    if(racing) return;
+    document.getElementById('rlResult').style.display='none';
+    racing=true; finished=false; simTime=0;
+    progresses=[0,0,0,0]; rotAngles=[0,0,0,0]; finishTimes=[null,null,null,null];
+
+    // Pre-compute physics for each shape
+    var physics = SHAPES.map(function(sh){ return getPhysicsFor(sh.factor); });
+    var g2 = getRamp();
+    var vr = getVisR();
+    var allDone=false;
+    var wallStart=null;
+
+    function tick(now){
+      if(wallStart===null) wallStart=now;
+      simTime=(now-wallStart)/1000*speedFactor;
+      allDone=true;
+
+      for(var i=0;i<SHAPES.length;i++){
+        var ph=physics[i];
+        if(finishTimes[i]===null){
+          var rawP=(ph.accel*simTime*simTime)/(2*ph.L);
+          if(rawP>=1){
+            progresses[i]=1;
+            finishTimes[i]=ph.T; // use exact physics time
+          } else {
+            progresses[i]=rawP;
+            allDone=false;
+          }
+          // Rotation: arc-length on ramp / visual radius
+          rotAngles[i]=(g2.rampLen*progresses[i])/vr;
+        }
+      }
+
+      // If a shape finished but others haven't, keep it at base (progress=1) but keep time going
+      if(!allDone) allDone=false;
+      else allDone=true;
+
+      draw(); updateTable();
+
+      if(!allDone){
+        animFrame=requestAnimationFrame(tick);
+      } else {
+        racing=false; finished=true;
+        draw(); updateTable();
+        showResult(physics);
+      }
+    }
+    animFrame=requestAnimationFrame(tick);
+  }
+
+  function showResult(physics){
+    var res  = document.getElementById('rlResult');
+    var titl = document.getElementById('rlResultTitle');
+    var body = document.getElementById('rlResultBody');
+    if(!res||!titl||!body) return;
+
+    // Sort by finish time
+    var order = SHAPES.slice().sort(function(a,b){
+      return finishTimes[SHAPES.indexOf(a)] - finishTimes[SHAPES.indexOf(b)];
+    });
+
+    titl.textContent='🏁 Race Complete!';
+
+    // Podium cards
+    var podColors=['#e8b030','#b0b0b8','#c07830','#6060a0'];
+    var podHtml='<div class="rr_podium">';
+    var medals2=['🥇 1st','🥈 2nd','🥉 3rd','4th'];
+    for(var pi=0;pi<order.length;pi++){
+      var sh=order[pi], idx=SHAPES.indexOf(sh);
+      var ph=physics[idx];
+      podHtml+='<div class="rr_podium_card" style="border-color:'+podColors[pi]+'22">'
+        +'<span class="rr_pod_place" style="color:'+podColors[pi]+'">'+medals2[pi]+'</span>'
+        +'<span class="rr_pod_name" style="color:'+sh.color+'">'+sh.shortName+'</span>'
+        +'<span class="rr_pod_time">T='+ph.T.toFixed(3)+' s</span>'
+        +'<span class="rr_pod_time">v='+ph.v_final.toFixed(3)+' m/s</span>'
+        +'</div>';
+    }
+    podHtml+='</div>';
+
+    // Physics explanation
+    var winner=order[0], loser=order[order.length-1];
+    var winPh=physics[SHAPES.indexOf(winner)], losPh=physics[SHAPES.indexOf(loser)];
+    var timeDiff=(losPh.T-winPh.T).toFixed(3);
+    var bodyHtml=podHtml
+      +'<strong>'+winner.name+'</strong> wins every time! Its small I/mr² = '+winner.moi
+      +' means only <em>'+(Math.round(winner.factor/(1+winner.factor)*100))+'%</em> of energy goes to rotation — the rest powers translation.<br>'
+      +'<strong>'+loser.name+'</strong> finishes last: I/mr² = '+loser.moi+' locks <em>'
+      +(Math.round(loser.factor/(1+loser.factor)*100))+'%</em> of energy into rotation, leaving less for speed.<br>'
+      +'Gap between 1st and last: <strong>'+timeDiff+' s</strong> — try changing the angle; the order <em>never</em> changes!';
+    body.innerHTML=bodyHtml;
+    res.style.display='block';
+  }
+
+  /* ── Reset ── */
+  function reset(){
+    if(animFrame){ cancelAnimationFrame(animFrame); animFrame=null; }
+    racing=false; finished=false; simTime=0;
+    progresses=[0,0,0,0]; rotAngles=[0,0,0,0]; finishTimes=[null,null,null,null];
+    document.getElementById('rlResult').style.display='none';
+    // Reset table
+    for(var i=0;i<SHAPES.length;i++){
+      var sh=SHAPES[i];
+      setEl('rlA_'+sh.key+'','—');
+      setEl('rlV_'+sh.key+'','0.000');
+      setEl('rlW_'+sh.key+'','0.000');
+      setEl('rlKTR_'+sh.key+'','—');
+      setEl('rlPl_'+sh.key+'','—');
+      var row=document.getElementById('rlRow_'+sh.key+'');
+      if(row) row.className='rr_trow';
+    }
+    draw();
+  }
+
+  /* ── Control handlers ── */
+  function onAngle(val){
+    angleDeg=Math.max(10,Math.min(60,parseInt(val)));
+    setEl('rlAngleVal',angleDeg+'°');
+    var sl=document.getElementById('rlAngle'); if(sl) sl.value=angleDeg;
+    if(!racing) reset();
+  }
+  function onMass(val){
+    massG=parseInt(val); setEl('rlMassVal',massG+' g');
+    if(!racing) reset();
+  }
+  function onRadius(val){
+    radiusCm=parseInt(val); setEl('rlRadiusVal',radiusCm+' cm');
+    if(!racing) reset();
+  }
+  function onSpeed(val){
+    speedFactor=parseInt(val)/10;
+    var label=(speedFactor===1.0)?'1×':speedFactor.toFixed(1).replace(/\.?0+$/,'')+'×';
+    setEl('rlSpeedVal',label);
+  }
+
+  /* ── Boot ── */
+  buildTable();
+  draw();
+
+  return {race,reset,onAngle,onMass,onRadius,onSpeed};
+};
+</script>
+<script>
+var rollingRace = new rollingRace();
+</script>
+<!-- SIM description: a button below the sim toggles the description into view (math in AsciiMath, typeset when opened) -->
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc" onclick="mobDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>This simulation releases four objects -- a solid sphere, a solid cylinder, a spherical shell and a thin hoop -- at the same moment on an incline, where they roll without slipping. Their mass, radius and the angle of the incline can be changed.</p>
+<p>Rolling without slipping links the speed and the rate of turning, `v = omega r`. With a moment of inertia `I = c m r^2`, the acceleration down the incline is</p>
+<p class="mob_eq">`a = (g sin theta)/(1 + I/(m r^2)) = (g sin theta)/(1 + c)`,</p>
+<p>and from energy conservation the speed after dropping a height `h` is `v = sqrt((2 g h)/(1 + c))`. The kinetic energy is shared between translation and rotation, `K_R/K_T = c`.</p>
+<p>Mass and radius cancel out: only the shape decides the order. The solid sphere (`c = 2/5`) always wins, then the solid cylinder (`1/2`), the spherical shell (`2/3`), and the thin hoop (`1`) always comes last, because the more of its energy goes into turning, the slower it moves down the incline.</p>
+<p>This simulation is useful for studying rolling motion, moment of inertia, and conservation of energy.</p>
+</div>
+</div>
+<script>
+function mobDesc(){
+var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+var open = (d.style.display === 'none');
+d.style.display = open ? 'block' : 'none';
+b.setAttribute('aria-expanded', open ? 'true' : 'false');
+b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }
+}
+</script>
+<style>
+/* ════════ mobile layer: the sim adapts to the width it gets (a phone, or a column in MOM) ════════ */
+#mobrrace { container-type:inline-size; width:100%; max-width:100%; box-sizing:border-box; }
+/* only when the sim is narrower than its design (680 px): nothing is wider than the sim, canvases scale down,
+   rows wrap, fixed heights relax, wide tables scroll inside the sim -- on a wide screen nothing changes */
+@container (max-width:720px) {
+#mobrrace div, #mobrrace p, #mobrrace fieldset, #mobrrace form, #mobrrace section, #mobrrace ol, #mobrrace ul, #mobrrace table { max-width:100%; box-sizing:border-box; }
+#mobrrace canvas, #mobrrace img, #mobrrace svg { max-width:100%; height:auto !important; }
+#mobrrace input[type=range], #mobrrace select { max-width:100%; min-width:0; }
+#mobrrace .rr_controls, #mobrrace .rr_ctrlgroup, #mobrrace .rr_btnrow, #mobrrace .rr_dot, #mobrrace .rr_podium, #mobrrace .rr_podium_card { flex-wrap:wrap; }
+#mobrrace .rr_controls > div, #mobrrace .rr_ctrlgroup > div, #mobrrace .rr_btnrow > div, #mobrrace .rr_dot > div, #mobrrace .rr_podium > div, #mobrrace .rr_podium_card > div { min-width:min(100%, 260px); }
+#mobrrace div[style*="height"] { height:auto !important; }
+#mobrrace table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+}
+@media (max-width:740px) {
+#mobrrace div, #mobrrace p, #mobrrace fieldset, #mobrrace form, #mobrrace section, #mobrrace ol, #mobrrace ul, #mobrrace table { max-width:100%; box-sizing:border-box; }
+#mobrrace canvas, #mobrrace img, #mobrrace svg { max-width:100%; height:auto !important; }
+#mobrrace input[type=range], #mobrrace select { max-width:100%; min-width:0; }
+#mobrrace .rr_controls, #mobrrace .rr_ctrlgroup, #mobrrace .rr_btnrow, #mobrrace .rr_dot, #mobrrace .rr_podium, #mobrrace .rr_podium_card { flex-wrap:wrap; }
+#mobrrace .rr_controls > div, #mobrrace .rr_ctrlgroup > div, #mobrrace .rr_btnrow > div, #mobrrace .rr_dot > div, #mobrrace .rr_podium > div, #mobrrace .rr_podium_card > div { min-width:min(100%, 260px); }
+#mobrrace div[style*="height"] { height:auto !important; }
+#mobrrace table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+}
+/* touch screens: larger targets */
+@media (pointer:coarse) {
+#mobrrace button, #mobrrace input[type=button], #mobrrace input[type=submit], #mobrrace input[type=reset] { min-height:40px; }
+#mobrrace input[type=range] { height:28px; }
+#mobrrace input[type=checkbox], #mobrrace input[type=radio] { width:22px; height:22px; }
+#mobrrace select { min-height:36px; font-size:16px; }
+}
+/* display options moved to the top */
+#mobrrace .mob_a11ytop { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:6px 4px 8px; width:auto; max-width:100%; height:auto; }
+#mobrrace .mob_a11ytop input[type=button], #mobrrace .mob_a11ytop button { padding:5px 12px; font-size:13px; border:1px solid #8a94a3; border-radius:4px; background:#f4f6f8; color:#1d232a; cursor:pointer; width:auto; height:auto; margin:0; }
+/* SIM description */
+#mobrrace .mob_descwrap { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
+#mobrrace .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
+#mobrrace .mob_descbtn[aria-expanded="true"] { background:#3a3220; }
+#mobrrace .mob_desc { width:100%; max-width:860px; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; text-align:left; }
+#mobrrace .mob_desc p { margin:0 0 9px 0; }
+#mobrrace .mob_eq { text-align:center; font-size:1rem; }
+</style>
+</div><!-- #mobrrace -->
+</main>
+</body>
+</html>

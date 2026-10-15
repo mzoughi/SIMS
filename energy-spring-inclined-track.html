@@ -23,6 +23,12 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <body style=margin:25px>
 <main class="page">
 <div id="mobspi" class="mob_wrap">
+<div class="mob_a11ytop" role="toolbar" aria-label="Display options">
+<input type="button" id="btnHC"   value="High Contrast: OFF"  onclick="springLaunch.toggleHC()">
+<input type="button" id="btnCB"   value="Color-Blind: OFF"    onclick="springLaunch.toggleCB()">
+<input type="button" id="btnNarr" value="Narration: ON"       onclick="springLaunch.toggleNarr()">
+</div>
+
 <div id="canvasesdiv" class="sl_tbar"><h3>Spring Launch -- Block on Horizontal Track</h3></div>
 <div class="sl_mcontent">
 <canvas id="simCanvas" width="680" height="220"
@@ -38,9 +44,9 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <input type="button" id="btnReset" value="↺ Reset"  onclick="springLaunch.resetSim()">
 </div>
 <div class="sl_bbar">
-<input type="button" id="btnHC"   value="High Contrast: OFF"  onclick="springLaunch.toggleHC()">
-<input type="button" id="btnCB"   value="Color-Blind: OFF"    onclick="springLaunch.toggleCB()">
-<input type="button" id="btnNarr" value="Narration: ON"       onclick="springLaunch.toggleNarr()">
+
+
+
 </div>
 <div class="sl_fbar">
 <div class="sl_params">
@@ -527,6 +533,9 @@ if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise(
 #mobspi input[type=checkbox], #mobspi input[type=radio] { width:22px; height:22px; }
 #mobspi select { min-height:36px; font-size:16px; }
 }
+/* display options moved to the top */
+#mobspi .mob_a11ytop { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:6px 4px 8px; width:auto; max-width:100%; height:auto; }
+#mobspi .mob_a11ytop input[type=button], #mobspi .mob_a11ytop button { padding:5px 12px; font-size:13px; border:1px solid #8a94a3; border-radius:4px; background:#f4f6f8; color:#1d232a; cursor:pointer; width:auto; height:auto; margin:0; }
 /* SIM description */
 #mobspi .mob_descwrap { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
 #mobspi .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }

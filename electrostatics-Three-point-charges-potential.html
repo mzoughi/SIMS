@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Electrostatics: Electric Potential Due to Three Point Charges</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, electrostatics, electric potential, equipotential, point charges, superposition, lesson, scientific">
+<meta name="description" content="Electric Potential Due to Three Point Charges -- interactive physics simulation.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<main class="page">
+<div id="tqRoot" class="tq_root" role="region" aria-label="Electric Potential Due to Three Point Charges simulator">
+<div class="tq_header">
+<p class="tq_h1">Electric Potential Due to Three Point Charges</p>
+<p class="tq_sub">Drag the charges -- the map shows the electric potential around them</p>
+</div>
+<div class="tq_grid">
+<div class="tq_diag">
+<canvas id="myCanvas" width="600" height="520" role="img" aria-label="The three charges, drawn on a grid. Drag them to move them."></canvas>
+
+</div>
+<div class="tq_controls">
+<div class="tq_card" style="border-left-color:#2a9d8f">
+<div class="tq_chead"><b>Q1</b><span class="tq_val"><span id="q1Value">-2</span>&nbsp;&mu;C</span></div>
+<label class="tq_row"><span>charge</span><input type="range" id="q1v" min="-5" max="5" step="1" value="-2" oninput="document.getElementById('q1Value').innerHTML=this.value;threePchargeP.setQ1(this.value);" onchange="document.getElementById('q1Value').innerHTML=this.value;threePchargeP.setQ1(this.value);"></label>
+</div>
+<div class="tq_card" style="border-left-color:#3a86ff">
+<div class="tq_chead"><b>Q2</b><span class="tq_val"><span id="q2Value">-1</span>&nbsp;&mu;C</span></div>
+<label class="tq_row"><span>charge</span><input type="range" id="q2v" min="-5" max="5" step="1" value="-1" oninput="document.getElementById('q2Value').innerHTML=this.value;threePchargeP.setQ2(this.value);" onchange="document.getElementById('q2Value').innerHTML=this.value;threePchargeP.setQ2(this.value);"></label>
+</div>
+<div class="tq_card" style="border-left-color:#8ab17d">
+<div class="tq_chead"><b>Q3</b><span class="tq_val"><span id="q3Value">3</span>&nbsp;&mu;C</span></div>
+<label class="tq_row"><span>charge</span><input type="range" id="q3v" min="-5" max="5" step="1" value="3" oninput="document.getElementById('q3Value').innerHTML=this.value;threePchargeP.setQ3(this.value);" onchange="document.getElementById('q3Value').innerHTML=this.value;threePchargeP.setQ3(this.value);"></label>
+</div>
+<div class="tq_hidden" aria-hidden="true"><input type="checkbox" id="check1" checked onchange="threePchargeP.drawMotion ? threePchargeP.drawMotion() : 0;" tabindex="-1"><input type="checkbox" id="check2" checked onchange="threePchargeP.drawMotion ? threePchargeP.drawMotion() : 0;" tabindex="-1"><input type="checkbox" id="check3" checked onchange="threePchargeP.drawMotion ? threePchargeP.drawMotion() : 0;" tabindex="-1"><input type="checkbox" id="check4" checked onchange="threePchargeP.drawMotion ? threePchargeP.drawMotion() : 0;" tabindex="-1"></div>
+</div>
+</div>
+<div class="tq_descwrap">
+<button type="button" class="tq_descbtn" id="tqDescBtn" aria-expanded="false" aria-controls="tqDesc" onclick="tqDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="tq_desc" id="tqDesc" role="region" aria-labelledby="tqDescBtn" style="display:none">
+<p>In this simulation, you can explore the electric potential due to point charges. The simulation shows three charges. A positive charge is indicated with a plus sign (+), if its corresponding slider is set to a positive value, and a negative charge with a minus sign (&minus;), if its slider is set to a negative value. You can drag the charges around the screen to change their positions, and change the charges with the sliders.</p>
+<p>A point charge `q` produces at a distance `r` the electric potential</p>
+<p class="tq_eq">`V = k q/r`,</p>
+<p>positive near a positive charge and negative near a negative one. Potential is a scalar, so the potential of several charges is simply the sum, with signs:</p>
+<p class="tq_eq">`V = k (q_1/r_1 + q_2/r_2 + q_3/r_3)`.</p>
+<p>Lines of equal potential (equipotentials) are always perpendicular to the electric field, which points from high potential toward low potential.</p><p>This simulation was developed by Taha Mzoughi in August&ndash;September 2025. It is based on a simulation written by Andrew Duffy, available at <a href="https://physics.bu.edu/~duffy/HTML5/charge_interaction.html" target="_blank" rel="noopener">physics.bu.edu/~duffy/HTML5/charge_interaction.html</a>.</p>
+</div>
+</div>
+</div><!-- #tqRoot -->
+<style>
+#tqRoot { container-type:inline-size; width:100%; max-width:980px; margin:0 auto 10px; box-sizing:border-box; padding:14px 10px 18px; border-radius:6px;
+  background:#1a1c1f; color:#c8d0d8; font-family:Arial, sans-serif; display:flex; flex-direction:column; gap:12px; }
+#tqRoot *, #tqRoot *::before, #tqRoot *::after { box-sizing:border-box; }
+#tqRoot .tq_header { text-align:center; }
+#tqRoot .tq_h1 { margin:0; font-size:.95rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:#e8a020; }
+#tqRoot .tq_sub { margin:3px 0 0; font-size:.72rem; color:#8a94a3; letter-spacing:.06em; text-transform:uppercase; }
+#tqRoot .tq_grid { display:grid; grid-template-columns:minmax(0,600px) minmax(0,1fr); gap:12px; align-items:start; }
+#tqRoot .tq_diag { background:#22262b; border:1px solid #3a4048; border-radius:6px; overflow:hidden; }
+#tqRoot canvas { display:block; width:100%; max-width:600px; height:auto; background:#fff; touch-action:pan-y; }
+#tqRoot .tq_bar { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:8px; background:#14161a; border-top:1px solid #3a4048; }
+#tqRoot .tq_btn, #tqRoot .tq_descbtn { padding:8px 12px; font-size:.78rem; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
+#tqRoot .tq_controls { display:flex; flex-direction:column; gap:8px; }
+#tqRoot .tq_card { background:#22262b; border:1px solid #3a4048; border-left:4px solid #888; border-radius:6px; padding:8px 12px; display:flex; flex-direction:column; gap:6px; }
+#tqRoot .tq_chead { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+#tqRoot .tq_chead b { color:#fff; font-size:.95rem; }
+#tqRoot .tq_val { font-family:monospace; color:#ffdd66; font-size:.85rem; }
+#tqRoot .tq_row { display:grid; grid-template-columns:52px minmax(0,1fr); align-items:center; gap:8px; font-size:.76rem; color:#8a94a3; }
+#tqRoot input[type=range] { width:100%; min-width:0; accent-color:#e8a020; }
+#tqRoot .tq_hidden { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+#tqRoot .tq_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; }
+#tqRoot .tq_descbtn[aria-expanded="true"] { background:#3a3220; }
+#tqRoot .tq_desc { width:100%; background:#22262b; border:1px solid #3a4048; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; font-size:.88rem; line-height:1.55; color:#c8d0d8; }
+#tqRoot .tq_desc p { margin:0 0 9px; }
+#tqRoot .tq_desc a { color:#9fd4ff; }
+#tqRoot .tq_eq { text-align:center; font-size:1rem; }
+.tq_qwrap { width:100%; max-width:980px; margin:0 auto; padding:4px; }
+@container (max-width:860px) { #tqRoot .tq_grid { grid-template-columns:minmax(0,1fr); } #tqRoot canvas { margin:0 auto; } }
+@media (max-width:880px) { #tqRoot .tq_grid { grid-template-columns:minmax(0,1fr); } #tqRoot canvas { margin:0 auto; } }
+@media (pointer:coarse) { #tqRoot input[type=range] { height:28px; } }
+</style>
+<script>
+var threePchargePCtor = function() {
+var canvas = document.getElementById("myCanvas");
+var context = canvas.getContext("2d");
+/* ── input on any screen: canvas coordinates from the canvas's position and displayed size ── */
+var touchDrag = false, grabDX = 0, grabDY = 0;
+function evXY(e){ var r = canvas.getBoundingClientRect(); return { x:(e.clientX - r.left)*canvas.width/r.width, y:(e.clientY - r.top)*canvas.height/r.height }; }
+function nearestCharge(p, touch){
+var k = canvas.width/canvas.getBoundingClientRect().width, R = 24 + (touch ? 12*k : 0), best = null, bd = 1e9;
+[[charge1X,charge1Y],[charge2X,charge2Y],[charge3X,charge3Y],[charge4X,charge4Y]].forEach(function(c){ var d = Math.max(Math.abs(p.x - c[0]), Math.abs(p.y - c[1])); if (d < R && d < bd){ bd = d; best = c; } });
+return best;
+}
+
+canvas.onmousedown = myDown;							//mouse event handler for computer browsers
+canvas.onmouseup = myUp;								//mouse event handler for computer browsers
+canvas.addEventListener("touchstart", myTouchStart, false);	//touch handler for iPhones, iPads, and Cndroids
+canvas.addEventListener("touchmove", myTouchMove, false);	//touch handler for iPhones, iPads, and Cndroids
+canvas.addEventListener("touchend", myTouchEnd, false);		//touch handler for iPhones, iPads, and Cndroids
+var check1 = document.getElementById("check1");
+var check2 = document.getElementById("check2");
+var check3 = document.getElementById("check3");
+var check4 = document.getElementById("check4");
+var index = 0;
+var xBase = 50;
+var yBase = 200;
+var radius = 10;
+var runFlag = 1;
+var time = 0.0;
+var timer;
+var charge1X = 300-3*40;
+var charge1Y = yBase+40;
+var charge2X = 300+3*40;
+var charge2Y = yBase+40;
+var charge3X = 300;
+var charge3Y = yBase-140;
+var charge4X = 380;
+var charge4Y = 140;
+var showNetForce = 0;
+var EP = 0;
+var EP1 = 0;
+var EP2 = 0;
+var EP3 = 0;
+var EP4 = 0;
+var potential = 0;
+var k = 9E5;
+var rSq = 0;
+var xPos = 0;
+var yPos = 0;
+var vectorColor = 'black';
+var Q1 = -2;
+var Q2 = -1;
+var Q3 = 3;
+var Q4 = 0;
+//  var i1sliderX = 300;
+var i1sliderY = 420;
+var i1sliderXMin = 50;
+var i1sliderXMax = 250;
+var i1sliderValueMin = -5.0;
+var i1sliderValueMax = 5.0;
+var i1sliderValue = Q1;
+var i1sliderX = i1sliderXMin+(i1sliderXMax-i1sliderXMin)*(Q1-i1sliderValueMin)/(i1sliderValueMax-i1sliderValueMin);
+var i1sliderDecimals = 0;
+//var i2sliderX = 580;
+var i2sliderY = 420;
+var i2sliderXMin = 350;
+var i2sliderXMax = 550;
+var i2sliderValueMin = -5.0;
+var i2sliderValueMax = 5.0;
+var i2sliderValue = Q2;
+var i2sliderX = i2sliderXMin+(i2sliderXMax-i2sliderXMin)*(Q2-i2sliderValueMin)/(i2sliderValueMax-i2sliderValueMin);
+var i2sliderDecimals = 0;
+//  var i3sliderX = 300;
+var i3sliderY = 500;
+var i3sliderXMin = 50;
+var i3sliderXMax = 250;
+var i3sliderValueMin = -5.0;
+var i3sliderValueMax = 5.0;
+var i3sliderValue = Q3;
+var i3sliderX = i3sliderXMin+(i3sliderXMax-i3sliderXMin)*(Q3-i3sliderValueMin)/(i3sliderValueMax-i3sliderValueMin);
+var i3sliderDecimals = 0;
+var arraySize = 5;
+var ray = new Array(arraySize);
+for (var i = 0; i < arraySize; i++) {
+ray[i] = {};
+ray[i].x = 0.0;
+ray[i].y = 0.0;
+ray[i].charge = 0.0;
+ray[i].color = "black";
+}
+ray[1].x = charge1X;
+ray[1].y = charge1Y;
+ray[1].charge = Q1;
+ray[1].color = "green";//"#f66";
+ray[2].x = charge2X;
+ray[2].y = charge2Y;
+ray[2].charge = Q2;
+ray[2].color = "red";//"#b6b";
+ray[3].x = charge3X;
+ray[3].y = charge3Y;
+ray[3].charge = Q3;
+ray[3].color = "cyan";//"#fa6";
+ray[4].x = charge4X;
+ray[4].y = charge4Y;
+ray[4].charge = Q4;
+ray[4].color = "black";
+drawMotion();
+function drawMotion() {
+// console.log("In the drawMotion function, with runFlag = " + runFlag );
+runFlag = 1;
+// console.log("In the drawMotion function, with runFlag = " + runFlag + " yPos = " + yPos + " index = " +index);
+if (runFlag == 1) {    //run if runFlag equal 1, not if equal 0
+//clear
+context.clearRect(0, 0, canvas.width, canvas.height);
+index = index + 1;
+//console.log(Q1 + "   " +Q2 + "    " + Q3);
+//clear
+context.clearRect(0, 0, canvas.width, canvas.height);
+//set background color for the entire thing
+context.fillStyle = "#ffd";
+context.fillRect(0, 0, canvas.width, canvas.height);
+//set line color
+context.strokeStyle = 'black';
+context.lineWidth = 2;
+//draw grid
+for (var i = 0; i<11; i++) {
+context.beginPath();
+context.moveTo(60*i, 0);
+context.lineTo(60*i, 360);
+context.stroke();
+}
+for (var j = 0; j<7; j++) {
+context.beginPath();
+context.moveTo(0,60*j);
+context.lineTo(600,60*j);
+context.stroke();
+}
+//calculate the EP due to charge 1
+//console.log("E12x ="+E12x+" k="+k+" Q1="+Q1+" Q2="+Q2+" charge1X="+charge1X+" charge1Y="+charge1Y+" charge2X="+charge2X+" charge2Y="+charge2Y+" rSq="+rSq+"E21x ="+E21x);
+//console.log("E13y ="+E13y+" k="+k+" Q1="+Q1+" Q3="+Q3+" charge1X="+charge1X+" charge1Y="+charge1Y+" charge3X="+charge3X+" charge3Y="+charge3Y+" rSq="+rSq+"E31x ="+E31x);
+rSq = Math.sqrt((charge4X-charge1X)*(charge4X-charge1X) + (charge4Y-charge1Y)*(charge4Y-charge1Y));
+var V1 = k*Q1/rSq;
+//calculate EP due to charge 2
+rSq = Math.sqrt((charge4X-charge2X)*(charge4X-charge2X) + (charge4Y-charge2Y)*(charge4Y-charge2Y));
+var V2 = k*Q2/rSq;
+//calculate EP due to charge 3
+rSq = Math.sqrt((charge4X-charge3X)*(charge4X-charge3X) + (charge4Y-charge3Y)*(charge4Y-charge3Y));
+var V3 = k*Q3/rSq;
+//draw the EP due to charge 4
+potential = V1 + V2 + V3;
+sLabel = 'V1 : '+V1.toFixed(1)+' V';
+context.font = '14pt Calibri';
+context.textAlign = 'left';
+context.textBaseline = 'middle';
+context.fillStyle = ray[1].color;
+context.fillText(sLabel,i1sliderXMin-25, i1sliderY-25);
+sLabel = 'V2 : '+V2.toFixed(1)+' V';
+context.fillStyle = ray[2].color;
+context.fillText(sLabel,i1sliderXMin-25, i1sliderY+10);
+sLabel = 'V3 : '+V3.toFixed(1)+' V';
+context.fillStyle = ray[3].color;
+context.fillText(sLabel,i1sliderXMin-25, i1sliderY+45);
+sLabel = 'V : '+potential.toFixed(1)+' V';
+context.fillStyle = 'black';
+context.fillText(sLabel,i1sliderXMin-25, i1sliderY+80);
+//position
+sLabel = 'P1 : ('+charge1X.toFixed(1)+','+(360-charge1Y).toFixed(1)+') cm';
+context.fillStyle = ray[1].color;
+context.fillText(sLabel,i1sliderXMin+200, i1sliderY-25);
+sLabel = 'P2 : ('+charge2X.toFixed(1)+','+(360-charge2Y).toFixed(1)+') cm';
+context.fillStyle = ray[2].color;
+context.fillText(sLabel,i1sliderXMin+200, i1sliderY+10);
+sLabel = 'P3 : ('+charge3X.toFixed(1)+','+(360-charge3Y).toFixed(1)+') cm';
+context.fillStyle = ray[3].color;
+context.fillText(sLabel,i1sliderXMin+200, i1sliderY+45);
+sLabel = 'P : ('+charge4X.toFixed(1)+','+charge4Y.toFixed(1)+') cm';
+context.fillStyle = 'black';
+context.fillText(sLabel,i1sliderXMin+200, i1sliderY+80);
+//draw charges
+var chargeSymbol = " ";
+if (Q1 > 0) chargeSymbol = "+";
+if (Q1 < 0) chargeSymbol = "-";
+chargeColor = ray[1].color;
+context.fillStyle = chargeColor;
+context.strokeStyle = chargeColor;
+context.beginPath();
+context.arc(charge1X, charge1Y, radius, 0, 2 * Math.PI, false);
+context.fill();
+context.lineWidth = 2;
+context.stroke();
+context.font = '20pt Calibri';
+context.fillStyle = 'black';
+context.textAlign = 'center';
+context.fillText(chargeSymbol, charge1X, charge1Y-2);
+chargeSymbol = " ";
+if (Q2 > 0) chargeSymbol = "+";
+if (Q2 < 0) chargeSymbol = "-";
+chargeColor = ray[2].color;
+context.fillStyle = chargeColor;
+context.strokeStyle = chargeColor;
+context.beginPath();
+context.arc(charge2X, charge2Y, radius, 0, 2 * Math.PI, false);
+context.fill();
+context.lineWidth = 2;
+context.stroke();
+context.fillStyle = 'black';
+context.fillText(chargeSymbol, charge2X, charge2Y-2);
+chargeSymbol = " ";
+if (Q3 > 0) chargeSymbol = "+";
+if (Q3 < 0) chargeSymbol = "-";
+chargeColor = ray[3].color;
+context.fillStyle = chargeColor;
+context.strokeStyle = chargeColor;
+context.beginPath();
+context.arc(charge3X, charge3Y, radius, 0, 2 * Math.PI, false);
+context.fill();
+context.lineWidth = 2;
+context.stroke();
+context.fillStyle = 'black';
+context.fillText(chargeSymbol, charge3X, charge3Y-2);
+chargeSymbol = " ";
+if (Q4 > 0) chargeSymbol = "";
+if (Q4 < 0) chargeSymbol = "";
+chargeColor = ray[4].color;
+context.fillStyle = chargeColor;
+context.strokeStyle = chargeColor;
+context.beginPath();
+context.arc(charge4X, charge4Y, radius/2, 0, 2 * Math.PI, false);
+context.fill();
+context.lineWidth = 2;
+context.stroke();
+context.fillStyle = 'black';
+context.fillText(chargeSymbol, charge4X, charge4Y-2);
+context.font = '16pt Calibri';
+context.fillStyle = 'black';
+context.textAlign = 'center';
+context.fillText("1", charge1X+8, charge1Y+24);
+context.fillText("2", charge2X+8, charge2Y+24);
+context.fillText("3", charge3X+8, charge3Y+24);
+context.fillText("P", charge4X+8, charge4Y+18);
+}
+}
+function runMotion() {
+drawMotion();
+if (runFlag == 1) {
+timer = window.setTimeout(runMotion, 2000/60);
+}
+}
+function drawArrow(Fx,Fy,Px,Py, arrowColor) {
+var theta = Math.atan2(Fy,Fx);
+var fMult=1;
+context.strokeStyle = arrowColor;
+context.lineWidth = 4;
+context.beginPath();
+context.moveTo(Px, Py);
+context.lineTo(Px+fMult*Fx, Py-fMult*Fy);
+context.stroke();
+context.lineWidth = 2;
+var Fmag = Math.sqrt(Fx*Fx+Fy*Fy);
+if (Fmag > 5) Fmag = 5;
+context.fillStyle = arrowColor;
+context.beginPath();
+context.moveTo(Px+fMult*Fx-3*Fmag*Math.cos(theta+0.25*(3.1416/2)),Py-fMult*Fy+3*Fmag*Math.sin(theta+0.25*(3.1416/2)));
+context.lineTo(Px+fMult*Fx,Py-fMult*Fy);
+context.lineTo(Px+fMult*Fx-3*Fmag*Math.cos(theta-0.25*(3.1416/2)),Py-fMult*Fy+3*Fmag*Math.sin(theta-0.25*(3.1416/2)));
+context.stroke();
+context.fill();
+}
+//Mouse and Touch event functions from  Wolfgang Bauer
+function whereClicked(x_,y_,what_) {    //underscore denotes local variables
+//if (what_ == 'down') {console.log('('+x_+','+y_+')'+what_)};
+//	console.log('('+x_+','+y_+')'+what_);
+// console.log("x offset = " + charge1X + " y offset = " + charge1Y);
+if ((Math.abs(x_ - charge1X) < 24) && (Math.abs(y_ - charge1Y) < 24))   //moving charge 1
+{
+charge1X = x_ ;
+charge1Y = y_ ;
+if (charge1Y > 360) charge1Y = 360;
+//if (masssliderX > masssliderXMax) masssliderX = masssliderXMax;
+//reset();
+drawMotion();
+}
+else if ((Math.abs(x_ - charge2X) < 24) && (Math.abs(y_ - charge2Y) < 24))   //moving charge 2
+{
+charge2X = x_ ;
+charge2Y = y_ ;
+if (charge2Y > 360) charge2Y = 360;
+//if (lengthsliderX > lengthsliderXMax) lengthsliderX = lengthsliderXMax;
+//reset();
+drawMotion();
+}
+else if ((Math.abs(x_ - charge3X) < 24) && (Math.abs(y_ - charge3Y) < 24))   //moving charge 3
+{
+charge3X = x_ ;
+charge3Y = y_ ;
+if (charge3Y > 360) charge3Y = 360;
+//if (lengthsliderX > lengthsliderXMax) lengthsliderX = lengthsliderXMax;
+//reset();
+drawMotion();
+}
+else if ((Math.abs(x_ - charge4X) < 24) && (Math.abs(y_ - charge4Y) < 24))   //moving point P
+{
+charge4X = x_ ;
+charge4Y = y_ ;
+if (charge4Y > 360) charge4Y = 360;
+//if (lengthsliderX > lengthsliderXMax) lengthsliderX = lengthsliderXMax;
+//reset();
+drawMotion();
+}
+}
+function myMove(event){
+var _p = evXY(event); var xClick = _p.x, yClick = _p.y;
+whereClicked(xClick,yClick,'move');
+//	drawAll();
+//	drawMotion();
+}
+function myDown(event){
+var _p = evXY(event); var xClick = _p.x, yClick = _p.y;
+whereClicked(xClick,yClick,'down');
+canvas.onmousemove = myMove;
+//	drawMotion();
+}
+function myUp(event){
+var _p = evXY(event); var xClick = _p.x, yClick = _p.y;
+whereClicked(xClick,yClick,'up');
+canvas.onmousemove = null;
+//	drawMotion();
+}
+function myTouchMove(event){ if (!touchDrag) return; event.preventDefault();
+var _t = (event.targetTouches && event.targetTouches[0]) || (event.changedTouches && event.changedTouches[0]); var _p = evXY(_t); var xClick = _p.x + grabDX, yClick = _p.y + grabDY;
+whereClicked(xClick,yClick,'move');
+//	drawMotion();
+}
+function myTouchStart(event){ var _f = evXY(event.targetTouches[0]), _c = nearestCharge(_f, true); if (!_c) return; event.preventDefault(); touchDrag = true; grabDX = _c[0] - _f.x; grabDY = _c[1] - _f.y; whereClicked(_c[0], _c[1], "down"); return;
+var _t = (event.targetTouches && event.targetTouches[0]) || (event.changedTouches && event.changedTouches[0]); var _p = evXY(_t); var xClick = _p.x + grabDX, yClick = _p.y + grabDY;
+whereClicked(xClick,yClick,'down');
+//	drawMotion();
+}
+function myTouchEnd(event){ if (!touchDrag) return; touchDrag = false; event.preventDefault();
+var _t = (event.targetTouches && event.targetTouches[0]) || (event.changedTouches && event.changedTouches[0]); var _p = evXY(_t); var xClick = _p.x + grabDX, yClick = _p.y + grabDY;
+whereClicked(xClick,yClick,'up');
+//	drawMotion();
+}
+function setQ1(newQ1){Q1 = Number(newQ1);drawMotion();}
+function setQ2(newQ2){Q2 = Number(newQ2);drawMotion();}
+function setQ3(newQ3){Q3 = Number(newQ3);drawMotion();}
+  return {
+    setQ1,
+    setQ2,
+    setQ3
+  };
+}
+</script>
+<script>
+var threePchargeP = new threePchargePCtor();
+</script>
+<script>
+function tqDesc(){
+var b = document.getElementById('tqDescBtn'), d = document.getElementById('tqDesc'); if (!b || !d) return;
+var open = (d.style.display === 'none');
+d.style.display = open ? 'block' : 'none';
+b.setAttribute('aria-expanded', open ? 'true' : 'false');
+b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }
+}
+</script>
+</main>
+</body>
+</html>

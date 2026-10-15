@@ -122,7 +122,8 @@ width:100%; max-width:860px; margin:0 auto 10px; border-radius:6px; position:rel
 --tp-focus:#ffff00; --tp-nar-bg:#000000; --tp-nar-border:#ffd700; --tp-nar-text:#ffffff; background-image:none;
 }
 #snellRoot.sn_hc .sn_panel, #snellRoot.sn_hc .sn_diagpanel { border-width:2px; }
-#snellRoot *, #snellRoot *::before, #snellRoot *::after { box-sizing:border-box; margin:0; }
+/* the reset leaves MathJax's own elements alone (it would zero the spacing its layout relies on) */
+#snellRoot :not(mjx-container):not(mjx-container *), #snellRoot :not(mjx-container):not(mjx-container *)::before, #snellRoot :not(mjx-container):not(mjx-container *)::after { box-sizing:border-box; margin:0; }
 #snellRoot input:focus-visible, #snellRoot button:focus-visible, #snellRoot select:focus-visible, #snellRoot canvas:focus-visible { outline:2px solid var(--tp-focus); outline-offset:2px; }
 /* display options */
 #snellRoot .sn_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; width:100%; padding:0; background:none; }
