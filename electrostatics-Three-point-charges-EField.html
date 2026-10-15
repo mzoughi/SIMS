@@ -23,42 +23,54 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <body style=margin:25px>
 <main class="page">
 <div id="tqRoot" class="tq_root" role="region" aria-label="Electric Field Due to Three Point Charges simulator">
-<div class="tq_header">
-<p class="tq_h1">Electric Field Due to Three Point Charges</p>
-<p class="tq_sub">Drag the charges and the point P -- the arrows show the field at P</p>
+<div class="tq_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="tq_a11ybtn" id="tqBtnHC" onclick="tqA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="tq_a11ybtn" id="tqBtnLM" onclick="tqA11y.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="tq_a11ybtn" id="tqBtnCB" onclick="tqA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="tq_a11ybtn tq_a11yon" id="tqBtnNR" onclick="tqA11y.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
 </div>
-<div class="tq_grid">
-<div class="tq_diag">
-<canvas id="myCanvas" width="600" height="520" role="img" aria-label="The three charges and the point P, drawn on a grid. Drag them to move them."></canvas>
-<div class="tq_bar"><button type="button" class="tq_btn" id="showbutton" onclick="if(this.textContent=='Show net electric field arrows'){threePchargeF.setF(1);this.textContent='Hide net electric field arrows';}else{this.textContent='Show net electric field arrows';threePchargeF.setF(0);}">Show net electric field arrows</button></div>
+<div class="tq_tbar"><h3>Electric Field Due to Three Point Charges</h3></div>
+<div class="tq_mcontent">
+<div class="tq_stage"><canvas id="myCanvas" width="600" height="380" role="img" aria-label="The charges and the point P on a grid; drag them to move them. The readout below gives the values."></canvas></div>
+<div class="tq_readout" id="tqRead" aria-label="Readout"></div>
+<div class="tq_fnote">Drag the charges and the point P -- the arrows show the field at P</div>
 </div>
+<div id="tqNarBar" class="tq_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="tq_bbar"><button type="button" class="tq_btn" id="showbutton" onclick="if(this.textContent=='Show net electric field arrows'){threePchargeF.setF(1);this.textContent='Hide net electric field arrows';}else{this.textContent='Show net electric field arrows';threePchargeF.setF(0);}">Show net electric field arrows</button></div>
 <div class="tq_controls">
-<div class="tq_card" style="border-left-color:#2a9d8f">
-<div class="tq_chead"><b>Q1</b><span class="tq_val"><span id="q1Value">2</span>&nbsp;&mu;C</span></div>
-<label class="tq_row"><span>charge</span><input type="range" id="q1v" min="-5" max="5" step="1" value="2" oninput="document.getElementById('q1Value').innerHTML=this.value;threePchargeF.setQ1(this.value);" onchange="document.getElementById('q1Value').innerHTML=this.value;threePchargeF.setQ1(this.value);"></label>
-<label class="tq_row"><span>x</span><input type="range" min="0" max="600" step="30" value="120" oninput="threePchargeF.setQ1x(this.value);"></label>
-<label class="tq_row"><span>y</span><input type="range" min="-360" max="0" step="30" value="-180" oninput="threePchargeF.setQ1y(this.value);"></label>
-</div>
-<div class="tq_card" style="border-left-color:#3a86ff">
-<div class="tq_chead"><b>Q2</b><span class="tq_val"><span id="q2Value">-3</span>&nbsp;&mu;C</span></div>
-<label class="tq_row"><span>charge</span><input type="range" id="q2v" min="-5" max="5" step="1" value="-3" oninput="document.getElementById('q2Value').innerHTML=this.value;threePchargeF.setQ2(this.value);" onchange="document.getElementById('q2Value').innerHTML=this.value;threePchargeF.setQ2(this.value);"></label>
-<label class="tq_row"><span>x</span><input type="range" min="0" max="600" step="30" value="450" oninput="threePchargeF.setQ2x(this.value);"></label>
-<label class="tq_row"><span>y</span><input type="range" min="-360" max="0" step="30" value="-240" oninput="threePchargeF.setQ2y(this.value);"></label>
-</div>
-<div class="tq_card" style="border-left-color:#8ab17d">
-<div class="tq_chead"><b>Q3</b><span class="tq_val"><span id="q3Value">1</span>&nbsp;&mu;C</span></div>
-<label class="tq_row"><span>charge</span><input type="range" id="q3v" min="-5" max="5" step="1" value="1" oninput="document.getElementById('q3Value').innerHTML=this.value;threePchargeF.setQ3(this.value);" onchange="document.getElementById('q3Value').innerHTML=this.value;threePchargeF.setQ3(this.value);"></label>
-<label class="tq_row"><span>x</span><input type="range" min="0" max="600" step="30" value="300" oninput="threePchargeF.setQ3x(this.value);"></label>
-<label class="tq_row"><span>y</span><input type="range" min="-360" max="0" step="30" value="-330" oninput="threePchargeF.setQ3y(this.value);"></label>
-</div>
-<div class="tq_card" style="border-left-color:#e76f51">
-<div class="tq_chead"><b>Point P</b><span class="tq_val">where the field is found</span></div>
-<label class="tq_row"><span>x</span><input type="range" min="0" max="600" step="30" value="300" oninput="threePchargeF.setQ4x(this.value);"></label>
-<label class="tq_row"><span>y</span><input type="range" min="-360" max="0" step="30" value="-90" oninput="threePchargeF.setQ4y(this.value);"></label>
-</div>
-<div class="tq_hidden" aria-hidden="true"><input type="checkbox" id="check1" checked onchange="threePchargeF.drawMotion ? threePchargeF.drawMotion() : 0;" tabindex="-1"><input type="checkbox" id="check2" checked onchange="threePchargeF.drawMotion ? threePchargeF.drawMotion() : 0;" tabindex="-1"><input type="checkbox" id="check3" checked onchange="threePchargeF.drawMotion ? threePchargeF.drawMotion() : 0;" tabindex="-1"><input type="checkbox" id="check4" checked onchange="threePchargeF.drawMotion ? threePchargeF.drawMotion() : 0;" tabindex="-1"></div>
+<div class="tq_crow" style="border-left-color:#50c88c">
+<div class="tq_cname"><b>Q1</b> <span class="tq_cval"><span id="q1Value">-2</span>&nbsp;&mu;C</span></div>
+<div class="tq_csl{S}">
+<label>charge <input type="range" id="q1v" min="-5" max="5" step="1" value="-2" oninput="document.getElementById('q1Value').innerHTML=this.value;threePchargeF.setQ1(this.value);"></label>
+<label>x <input type="range" min="0" max="600" step="30" value="60" oninput="threePchargeF.setQ1x(this.value);"></label>
+<label>y <input type="range" min="-360" max="0" step="30" value="-180" oninput="threePchargeF.setQ1y(this.value);"></label>
 </div>
 </div>
+<div class="tq_crow" style="border-left-color:#ff6f7d">
+<div class="tq_cname"><b>Q2</b> <span class="tq_cval"><span id="q2Value">3</span>&nbsp;&mu;C</span></div>
+<div class="tq_csl{S}">
+<label>charge <input type="range" id="q2v" min="-5" max="5" step="1" value="3" oninput="document.getElementById('q2Value').innerHTML=this.value;threePchargeF.setQ2(this.value);"></label>
+<label>x <input type="range" min="0" max="600" step="30" value="480" oninput="threePchargeF.setQ2x(this.value);"></label>
+<label>y <input type="range" min="-360" max="0" step="30" value="-240" oninput="threePchargeF.setQ2y(this.value);"></label>
+</div>
+</div>
+<div class="tq_crow" style="border-left-color:#5ad1ff">
+<div class="tq_cname"><b>Q3</b> <span class="tq_cval"><span id="q3Value">2</span>&nbsp;&mu;C</span></div>
+<div class="tq_csl{S}">
+<label>charge <input type="range" id="q3v" min="-5" max="5" step="1" value="2" oninput="document.getElementById('q3Value').innerHTML=this.value;threePchargeF.setQ3(this.value);"></label>
+<label>x <input type="range" min="0" max="600" step="30" value="320" oninput="threePchargeF.setQ3x(this.value);"></label>
+<label>y <input type="range" min="-360" max="0" step="30" value="-280" oninput="threePchargeF.setQ3y(this.value);"></label>
+</div>
+</div>
+<div class="tq_crow" style="border-left-color:#c9d6de">
+<div class="tq_cname"><b>Point P</b><span class="tq_cnote">where the field is found</span></div>
+<div class="tq_csl{S}">
+<label>x <input type="range" min="0" max="600" step="30" value="300" oninput="threePchargeF.setQ4x(this.value);"></label>
+<label>y <input type="range" min="-360" max="0" step="30" value="-120" oninput="threePchargeF.setQ4y(this.value);"></label>
+</div>
+</div>
+</div>
+<div class="tq_hidden" aria-hidden="true"><input type="checkbox" id="check1" checked tabindex="-1"><input type="checkbox" id="check2" checked tabindex="-1"><input type="checkbox" id="check3" checked tabindex="-1"><input type="checkbox" id="check4" checked tabindex="-1"></div>
 <div class="tq_descwrap">
 <button type="button" class="tq_descbtn" id="tqDescBtn" aria-expanded="false" aria-controls="tqDesc" onclick="tqDesc()">&#9656; SIM DESCRIPTION</button>
 <div class="tq_desc" id="tqDesc" role="region" aria-labelledby="tqDescBtn" style="display:none">
@@ -73,36 +85,93 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 </div><!-- #tqRoot -->
 
 <style>
-#tqRoot { container-type:inline-size; width:100%; max-width:980px; margin:0 auto 10px; box-sizing:border-box; padding:14px 10px 18px; border-radius:6px;
-  background:#1a1c1f; color:#c8d0d8; font-family:Arial, sans-serif; display:flex; flex-direction:column; gap:12px; }
-#tqRoot *, #tqRoot *::before, #tqRoot *::after { box-sizing:border-box; }
-#tqRoot .tq_header { text-align:center; }
-#tqRoot .tq_h1 { margin:0; font-size:.95rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:#e8a020; }
-#tqRoot .tq_sub { margin:3px 0 0; font-size:.72rem; color:#8a94a3; letter-spacing:.06em; text-transform:uppercase; }
-#tqRoot .tq_grid { display:grid; grid-template-columns:minmax(0,600px) minmax(0,1fr); gap:12px; align-items:start; }
-#tqRoot .tq_diag { background:#22262b; border:1px solid #3a4048; border-radius:6px; overflow:hidden; }
-#tqRoot canvas { display:block; width:100%; max-width:600px; height:auto; background:#fff; touch-action:pan-y; }
-#tqRoot .tq_bar { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:8px; background:#14161a; border-top:1px solid #3a4048; }
-#tqRoot .tq_btn, #tqRoot .tq_descbtn { padding:8px 12px; font-size:.78rem; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
-#tqRoot .tq_controls { display:flex; flex-direction:column; gap:8px; }
-#tqRoot .tq_card { background:#22262b; border:1px solid #3a4048; border-left:4px solid #888; border-radius:6px; padding:8px 12px; display:flex; flex-direction:column; gap:6px; }
-#tqRoot .tq_chead { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
-#tqRoot .tq_chead b { color:#fff; font-size:.95rem; }
-#tqRoot .tq_val { font-family:monospace; color:#ffdd66; font-size:.85rem; }
-#tqRoot .tq_row { display:grid; grid-template-columns:52px minmax(0,1fr); align-items:center; gap:8px; font-size:.76rem; color:#8a94a3; }
-#tqRoot input[type=range] { width:100%; min-width:0; accent-color:#e8a020; }
+#tqRoot, #tqRoot * { box-sizing:border-box; }
+#tqRoot { container-type:inline-size; width:100%; max-width:640px; margin:0 auto 10px; font-family:ui-monospace, SFMono-Regular, Menlo, monospace; background:#f4f6f8; }
+#tqRoot .tq_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; justify-content:center; }
+#tqRoot .tq_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#tqRoot .tq_a11ybtn:hover { border-color:#00e8d0; color:#00e8d0; }
+#tqRoot .tq_a11yon { background:rgba(0,232,208,.12); border-color:#00e8d0; color:#00e8d0; }
+#tqRoot .tq_tbar { padding:4px 8px; min-height:35px; background:#f90; text-align:center; }
+#tqRoot .tq_tbar h3 { margin:0; line-height:1.3; padding:4px 0; font-size:1rem; color:#1a1f24; font-family:system-ui, sans-serif; }
+#tqRoot .tq_mcontent { background:var(--tq-bg); color:#c9d6de; padding:10px; }
+#tqRoot .tq_stage { border:1px solid var(--tq-border); border-radius:6px; overflow:hidden; margin:0 auto 8px; max-width:602px; }
+#tqRoot canvas { display:block; width:100%; height:auto; touch-action:pan-y; }
+#tqRoot .tq_readout { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:6px 10px; background:var(--tq-panel); border:1px solid var(--tq-border); border-radius:8px; padding:8px 12px; font-family:system-ui, sans-serif; }
+#tqRoot .tq_card .tq_flabel { font-size:10px; color:var(--tq-muted); letter-spacing:1px; }
+#tqRoot .tq_card .tq_fvalue { font-size:14px; font-variant-numeric:tabular-nums; }
+#tqRoot .tq_fnote { color:var(--tq-muted); font-size:11px; margin-top:6px; font-family:system-ui, sans-serif; }
+#tqRoot .tq_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.85rem; color:#333; font-style:italic; font-family:system-ui, sans-serif; }
+#tqRoot .tq_bbar { background:#df9; padding:8px 10px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center; font-size:.85rem; color:#222; font-family:system-ui, sans-serif; }
+#tqRoot .tq_btn { padding:6px 12px; border:1px solid #6a8f2a; background:#f6ffe8; color:#223; border-radius:4px; cursor:pointer; font-size:.82rem; min-height:36px; }
+#tqRoot .tq_controls { display:flex; flex-direction:column; gap:6px; padding:8px 10px; background:#e3f2fd; font-family:system-ui, sans-serif; }
+#tqRoot .tq_crow { background:#ffffff; border:1px solid #b7cde0; border-left:5px solid #888; border-radius:6px; padding:6px 10px; color:#222; }
+#tqRoot .tq_cname { display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 10px; font-size:.88rem; }
+#tqRoot .tq_cval { font-family:monospace; color:#8a4a00; font-weight:bold; }
+#tqRoot .tq_cnote { font-size:.72rem; color:#667; }
+#tqRoot .tq_csl { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:2px 14px; }
+#tqRoot .tq_csl label { display:flex; align-items:center; gap:6px; font-size:.78rem; color:#445; }
+#tqRoot input[type=range] { flex:1; min-width:0; accent-color:#e8a020; }
 #tqRoot .tq_hidden { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
-#tqRoot .tq_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; }
+#tqRoot .tq_descwrap { display:flex; flex-direction:column; align-items:center; gap:8px; padding:10px; font-family:system-ui, sans-serif; }
+#tqRoot .tq_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
 #tqRoot .tq_descbtn[aria-expanded="true"] { background:#3a3220; }
-#tqRoot .tq_desc { width:100%; background:#22262b; border:1px solid #3a4048; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; font-size:.88rem; line-height:1.55; color:#c8d0d8; }
+#tqRoot .tq_desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; }
 #tqRoot .tq_desc p { margin:0 0 9px; }
-#tqRoot .tq_desc a { color:#9fd4ff; }
 #tqRoot .tq_eq { text-align:center; font-size:1rem; }
-.tq_qwrap { width:100%; max-width:980px; margin:0 auto; padding:4px; }
-@container (max-width:860px) { #tqRoot .tq_grid { grid-template-columns:minmax(0,1fr); } #tqRoot canvas { margin:0 auto; } }
-@media (max-width:880px) { #tqRoot .tq_grid { grid-template-columns:minmax(0,1fr); } #tqRoot canvas { margin:0 auto; } }
-@media (pointer:coarse) { #tqRoot input[type=range] { height:28px; } }
+#tqRoot .tq_bnote { color:#333; }
+.tq_qwrap { width:100%; max-width:640px; margin:0 auto; padding:4px; }
+@media (pointer:coarse) { #tqRoot input[type=range] { height:28px; } #tqRoot .tq_a11ybtn { min-height:40px; } }
 </style>
+<script>
+/* ════ display options, readout and narration. The drawing code is untouched: its five colours are mapped to
+   the chosen theme as they are set, and the text it prints below the plot is shown as readout cards ════ */
+var tqA11y = (function(){
+var ROOT = document.getElementById('tqRoot'), cv = document.getElementById('myCanvas'), RD = document.getElementById('tqRead');
+var states = { hc:false, lm:false, cb:false, nr:true };
+var BASE = { dark:{ '#ffd':'#0a0e12', 'black':'#9fb0bc', 'green':'#50c88c', 'red':'#ff6f7d', 'cyan':'#5ad1ff' },
+             light:{ '#ffd':'#ffffdd', 'black':'#000000', 'green':'#008000', 'red':'#ff0000', 'cyan':'#00b7c7' },
+             hc:{ '#ffd':'#000000', 'black':'#ffffff', 'green':'#00ff88', 'red':'#ff5555', 'cyan':'#00ffff' } };
+var CB = { dark:{ 'green':'#e69f00', 'red':'#cc79a7', 'cyan':'#56b4e9' }, light:{ 'green':'#b36b00', 'red':'#a83f7d', 'cyan':'#0072b2' }, hc:{ 'green':'#ffb000', 'red':'#ff79c6', 'cyan':'#56d4ff' } };
+var UI = { dark:{bg:'#0a0e12', panel:'#0d1318', border:'#1c262e', muted:'#5f7180', val:'#8fe3b0'}, light:{bg:'#f4f6f8', panel:'#ffffff', border:'#ccd6dd', muted:'#556070', val:'#1a5f3a'}, hc:{bg:'#000000', panel:'#000000', border:'#ffffff', muted:'#e0e0e0', val:'#ffff00'} };
+function mode(){ return states.hc ? 'hc' : (states.lm ? 'light' : 'dark'); }
+function map(v){ var k = String(v).toLowerCase().replace(/\s/g, ''); var m = mode(); if (states.cb && CB[m][k]) return CB[m][k]; return BASE[m][k] || v; }
+/* the canvas: colours mapped as they are set; text printed below the plot (y > 372) goes to the readout */
+var ctx = cv.getContext('2d'), Pr = CanvasRenderingContext2D.prototype;
+var fd = Object.getOwnPropertyDescriptor(Pr, 'fillStyle'), sd = Object.getOwnPropertyDescriptor(Pr, 'strokeStyle'), ft = Pr.fillText, lastFill = 'black';
+Object.defineProperty(ctx, 'fillStyle', { configurable:true, set:function(v){ lastFill = String(v); fd.set.call(ctx, map(v)); }, get:function(){ return fd.get.call(ctx); } });
+Object.defineProperty(ctx, 'strokeStyle', { configurable:true, set:function(v){ sd.set.call(ctx, map(v)); }, get:function(){ return sd.get.call(ctx); } });
+var cards = {}, order = [], pending = false;
+ctx.fillText = function(t, x, y){
+if (y > 372){ var s = String(t), i = s.indexOf(':'); var lab = i > 0 ? s.slice(0, i).trim() : s, val = i > 0 ? s.slice(i + 1).trim() : '';
+if (!(lab in cards)) order.push(lab); cards[lab] = { v:val, c:lastFill }; if (!pending){ pending = true; requestAnimationFrame(flush); } return; }
+return ft.apply(ctx, arguments);
+};
+function flush(){
+pending = false; var u = UI[mode()];
+RD.innerHTML = order.map(function(l){ var cc = cards[l], col = (String(cc.c).toLowerCase() === 'black') ? u.val : map(cc.c);
+return '<div class="tq_card"><div class="tq_flabel">' + l + '</div><div class="tq_fvalue" style="color:' + col + '">' + cc.v.replace(/,/g, ', ') + '</div></div>'; }).join('');
+later();
+}
+var nt = null;
+function later(){ clearTimeout(nt); nt = setTimeout(function(){ say(describe()); }, 700); }
+function describe(){
+var q = [1,2,3,4].map(function(n){ var e = document.getElementById('q' + n + 'Value'); return e ? 'Q' + n + ' = ' + e.textContent + ' microcoulombs' : null; }).filter(Boolean);
+return q.join(', ') + '. ' + order.map(function(l){ return l + ': ' + cards[l].v; }).join('; ') + '.';
+}
+function say(m){ if (!states.nr) return; var nb = document.getElementById('tqNarBar'); if (nb) nb.textContent = m; }
+function redraw(){ if (typeof threePchargeF === 'undefined') return; var r = document.getElementById('q1v'); if (r) r.dispatchEvent(new Event('input', { bubbles:true })); }
+function apply(){
+var u = UI[mode()];
+ROOT.style.setProperty('--tq-bg', u.bg); ROOT.style.setProperty('--tq-panel', u.panel); ROOT.style.setProperty('--tq-border', u.border); ROOT.style.setProperty('--tq-muted', u.muted);
+[['hc','tqBtnHC'],['lm','tqBtnLM'],['cb','tqBtnCB'],['nr','tqBtnNR']].forEach(function(p){ var b = document.getElementById(p[1]); b.classList.toggle('tq_a11yon', states[p[0]]); b.setAttribute('aria-pressed', states[p[0]] ? 'true' : 'false'); });
+document.getElementById('tqBtnNR').textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+document.getElementById('tqNarBar').style.display = states.nr ? 'block' : 'none';
+redraw();
+}
+apply();
+return { toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.lm = false; if (k === 'lm' && states.lm) states.hc = false; apply(); }, say:say, redraw:redraw };
+})();
+</script>
 <script>
 var threePchargeFCtor = function() {
     var canvas = document.getElementById("myCanvas");
@@ -437,7 +506,8 @@ drawMotion();
     function setQ4x(newQ4x){charge4X = Number(newQ4x);drawMotion();}
     function setQ4y(newQ4y){charge4Y = -Number(newQ4y);drawMotion();}
     function setF(newF){showNetForce = Number(newF);drawMotion();}
-    return {
+    /* setters for charge 4 / point P (added) */
+return { drawMotion,
       setQ1,setQ1x,setQ1y,
       setQ2,setQ2x,setQ2y,
       setQ3,setQ3x,setQ3y,
@@ -450,6 +520,7 @@ drawMotion();
 var threePchargeF = new threePchargeFCtor();
 </script>
 <script>
+tqA11y.redraw();
 function tqDesc(){
 var b = document.getElementById('tqDescBtn'), d = document.getElementById('tqDesc'); if (!b || !d) return;
 var open = (d.style.display === 'none');
