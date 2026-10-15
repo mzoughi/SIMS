@@ -35,6 +35,12 @@ experimental error follow the same pattern as the Atwood machine sim.
 A11y: High Contrast | Color-Blind | Narration
 ═══════════════════════════════════════════════════════ -->
 <div id="bp_root">
+<div class="mob_a11ytop" role="toolbar" aria-label="Display options">
+<input type="button" id="btnHC"   value="High Contrast: OFF" onclick="sim1.toggleHC()">
+<input type="button" id="btnCB"   value="Color-Blind: OFF"   onclick="sim1.toggleCB()">
+<input type="button" id="btnNarr" value="Narration: ON"      onclick="sim1.toggleNarr()">
+</div>
+
 <div class="sl_tbar"><h3>Ballistic Pendulum -- Spring Gun Lab</h3></div>
 <div class="sl_mcontent">
 <canvas id="mainCanvas" width="680" height="460" role="img" aria-label="Spring gun firing a ball at a rod-and-box pendulum" aria-describedby="canvasDesc"></canvas>
@@ -51,9 +57,9 @@ A11y: High Contrast | Color-Blind | Narration
 </div>
 <!-- A11y buttons -->
 <div class="sl_bbar">
-<input type="button" id="btnHC"   value="High Contrast: OFF" onclick="sim1.toggleHC()">
-<input type="button" id="btnCB"   value="Color-Blind: OFF"   onclick="sim1.toggleCB()">
-<input type="button" id="btnNarr" value="Narration: ON"      onclick="sim1.toggleNarr()">
+
+
+
 </div>
 <!-- Parameters + Info -->
 <div class="sl_fbar">
@@ -568,7 +574,7 @@ draw(); updateReadouts();
 if(phase==='swing'){ /* keep going */ }
 if(phase==='settle'){
 /* stop animating once it's essentially at rest */
-if(Math.abs(omega)<0.002 && Math.abs(theta)<0.01+Math.abs(thetaMax||0)*0.02){ running=false; document.getElementById('btnPlay').value='▶ Fire'; srAnnounce('Settled.'); return; }
+if(Math.abs(omega)<0.002 && Math.abs(theta)<0.01+Math.abs(thetaMax||0)*0.02){ running=false; document.getElementById('btnPlay').value='▶ Fire'; srAnnounce('Settled.'); var stEl=document.getElementById('r_state'); if(stEl) stEl.textContent='Settled'; return; }
 }
 if(phase==='overflow'||phase==='landed'){ running=false; document.getElementById('btnPlay').value='▶ Fire'; return; }
 if(running) timer=window.setTimeout(loop,20);
@@ -576,7 +582,7 @@ if(running) timer=window.setTimeout(loop,20);
 function playSim(){
 if(running) return;
 if(phase==='ready'){ v0actual=fireVelocity(); phase='approach'; narrateApproach(); }
-else if(phase==='overflow'||phase==='landed'){ resetSim(); v0actual=fireVelocity(); phase='approach'; narrateApproach(); }
+else if(phase==='overflow'||phase==='landed'||phase==='settle'){ resetSim(); v0actual=fireVelocity(); phase='approach'; narrateApproach(); }  /* a settled pendulum can be fired again */
 running=true; document.getElementById('btnPlay').value='⏸ ...'; loop();
 }
 function pauseSim(){ running=false; window.clearTimeout(timer); document.getElementById('btnPlay').value='▶ Fire'; }
@@ -803,6 +809,9 @@ if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise(
 #mobbpnc input[type=checkbox], #mobbpnc input[type=radio] { width:22px; height:22px; }
 #mobbpnc select { min-height:36px; font-size:16px; }
 }
+/* display options moved to the top */
+#mobbpnc .mob_a11ytop { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:6px 4px 8px; width:auto; max-width:100%; height:auto; }
+#mobbpnc .mob_a11ytop input[type=button], #mobbpnc .mob_a11ytop button { padding:5px 12px; font-size:13px; border:1px solid #8a94a3; border-radius:4px; background:#f4f6f8; color:#1d232a; cursor:pointer; width:auto; height:auto; margin:0; }
 /* SIM description */
 #mobbpnc .mob_descwrap { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
 #mobbpnc .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
