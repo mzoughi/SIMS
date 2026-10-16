@@ -10,11 +10,12 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations-Transverse Wave Properties for a Rope</title>
+<title>Physics Simulations-Waves: Wave Properties: Frequency, Amplitude, Tension &amp;amp; Mass/Length</title>
 <meta name="author" content="Taha Mzoughi">
 <meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,Transverse, Frequency, Amplitude, Tension, Mass,Length,Wave,string, Properties,Rope, lesson, scientific">
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
+<div id="mobw790914" class="mob_wrap0914">
 <div id="waveRoot0914">
 <!-- ── Accessibility toolbar ── -->
 <div class="sn_a11y0914" id="snellA11yBar0914" role="toolbar" aria-label="Display options">
@@ -59,7 +60,7 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 </div>
 <div class="footer0914">
 <div class="left0914">Tension:</div>
-<div class="center0914">`T:\ ` <input class=islide0914 type="range" id="tensionSlider0914" min="50" max="250" value="100" step="25" oninput="wavePol0914.setTension(this.value)" onchange="wavePol0914.setTension(this.value)"> <span id="tensionValue0914">100</span> N</div>
+<div class="center0914">`T:\ ` <input class=islide0914 type="range" id="tensionSlider0914" min="50" max="250" value="100" step="25" oninput="wavePol0914.setTension(this.value)" onchange="wavePol0914.setTension(this.value)"> <span id="tensionValue0914">100100</span> N</div>
 </div>
 <div class="footer0914">
 <div class="left0914">Mass/length &#956;:</div>
@@ -70,15 +71,14 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <li>Turn on the amplitude tool. What is the amplitude of the wave, and how does moving the `A` slider change what you see on the animation?<br /></li>
 <li>Turn on the wavelength tool. Measure the wavelength `lambda`. With tension `T` and `mu` fixed, how does increasing the frequency `f` affect `lambda`?<br /></li>
 <li>What equation relates wave speed `v`, frequency `f`, and wavelength `lambda`? Use the wave-data panel to check your answer numerically.<br /></li>
-<li>With `mu` fixed, how does increasing the tension `T` affect the wave speed `v` and the wavelength `lambda`?<br />[AB3]</li>
+<li>With `mu` fixed, how does increasing the tension `T` affect the wave speed `v` and the wavelength `lambda`?</li>
 <li>With `T` fixed, how does increasing the mass per unit length `mu` affect the wave speed `v`? Why does a heavier rope behave this way?<br /></li>
 <li>Use "Start timer here" together with the animation-time panel to measure the period of the wave at one fixed point. How is the period related to the frequency `f`?<br /></li>
 <li>Does the amplitude `A` affect the wave speed `v`? Use the wave speed formula in terms of `T` and `mu` to justify your answer.<br /></li>
 </ol>
 </div><!-- #waveRoot0914 -->
-<style>
-* { margin: 0; box-sizing: border-box; }
-div { width: 663px; margin: 0; }
+<style>:where(#mobw790914) * { margin: 0; box-sizing: border-box; }
+:where(#mobw790914) div { width: 663px; margin: 0; }
 #waveRoot0914 {
 --sn-toolbar-bg: #222;
 --sn-rope:    #ff0000;
@@ -110,7 +110,7 @@ width: 663px; min-height: 28px; padding: 5px 10px;
 background: #ffefc0; border-left: 4px solid #e0b040;
 font-size: .88rem; color: #333; font-style: italic;
 }
-.tbar0914    { padding: 4px; height: 30px; background-color: #f90; text-align: center; }
+.tbar0914 { padding: 4px; height: 30px; background-color: #f90; text-align: center; }
 .mcontent0914 { height: 322px; }
 .islide0914 { width: 220px; }
 .playbar0914 {
@@ -127,12 +127,11 @@ background-color: #df9; padding: 8px; text-align: left;
 display: flex; flex-wrap: wrap; gap: 4px 16px;
 }
 .bbar0914 .chk0914 { width: auto; font-size: .84rem; white-space: nowrap; }
-.footer0914  { height: 40px; text-align: center; font-size: normal; display: flex; }
-.footer0914 .left0914   { width: 136px; padding: 2px; }
+.footer0914 { height: 40px; text-align: center; font-size: normal; display: flex; }
+.footer0914 .left0914 { width: 136px; padding: 2px; }
 .footer0914 .center0914 { width: 527px; padding: 4px; }
-.footer0914:nth-of-type(odd)  { background-color: #fce4ec; }
-.footer0914:nth-of-type(even) { background-color: #e8f5e9; }
-</style>
+.footer0914:nth-of-type(odd) { background-color: #fce4ec; }
+.footer0914:nth-of-type(even) { background-color: #e8f5e9; }</style>
 <!-- ════════════════ ACCESSIBILITY CONTROLLER ════════════════ -->
 <script>
 var waveA11y0914 = (function(){
@@ -664,14 +663,14 @@ if (pointInBox(x, y, yCal.box)) { dragging = { tool: 'y', part: 'beam' }; return
 }
 }
 function reactionDown(x, y) {
-var r = canvas.getBoundingClientRect(); x -= r.left; y -= r.top;
+var r = canvas.getBoundingClientRect(); x = (x - r.left)*canvas.width/r.width; y = (y - r.top)*canvas.height/r.height;   /* canvas units, whatever its displayed size */
 canvas.style.cursor = 'pointer';
 checkIfCalipers(x, y);
 if (addWruleFlag) checkIfWrule(x, y);
 if (addAruleFlag) checkIfArule(x, y);
 }
 function reactionMove(x, y) {
-var r = canvas.getBoundingClientRect(); x -= r.left; y -= r.top;
+var r = canvas.getBoundingClientRect(); x = (x - r.left)*canvas.width/r.width; y = (y - r.top)*canvas.height/r.height;   /* canvas units, whatever its displayed size */
 if (!dragging && wrf === -1 && arf === -1) return;
 canvas.style.cursor = 'pointer';
 if (dragging) {
@@ -704,9 +703,12 @@ function init() {
 canvas.onmousedown = function (e) { reactionDown(e.clientX, e.clientY); };
 canvas.onmouseup   = reactionUp;
 canvas.onmousemove = function (e) { reactionMove(e.clientX, e.clientY); };
-canvas.ontouchstart = function (e) { var o = e.changedTouches[0]; reactionDown(o.clientX, o.clientY); };
-canvas.ontouchend   = reactionUp;
-canvas.ontouchmove  = function (e) { var o = e.changedTouches[0]; reactionMove(o.clientX, o.clientY); e.preventDefault(); };
+canvas.ontouchstart = function (e) { var o = e.changedTouches[0]; reactionDown(o.clientX, o.clientY);
+  /* only a touch on a tool takes over the finger; elsewhere the page scrolls */
+  canvas._grab = (typeof dragging !== 'undefined' && !!dragging) || (typeof wrf !== 'undefined' && wrf === 1) || (typeof arf !== 'undefined' && arf === 1) || (typeof drf !== 'undefined' && drf === 1);
+  if (canvas._grab) e.preventDefault(); };
+canvas.ontouchend   = function () { canvas._grab = false; reactionUp(); };
+canvas.ontouchmove  = function (e) { if (!canvas._grab) return; var o = e.changedTouches[0]; reactionMove(o.clientX, o.clientY); e.preventDefault(); };
 draw();
 }
 window.setTimeout(function () { init(); narrate(); }, 0);
@@ -724,5 +726,71 @@ toggleWaveData: toggleWaveData, toggleAnimData: toggleAnimData, toggleMarker: to
 waveA11y0914.init();
 waveA11y0914.narrate('Wave Properties sim ready. Adjust frequency, amplitude, tension, and mass per length, then press Play. Use the tool checkboxes to reveal caliper tools with a live reading for measuring wavelength and amplitude.');
 </script>
-
+<!-- SIM description: a button below the sim toggles the description into view (math in AsciiMath, typeset when opened) -->
+<div class="mob_descwrap0914">
+<button type="button" class="mob_descbtn0914" id="mobDescBtn0914" aria-expanded="false" aria-controls="mobDesc0914" onclick="mobDesc0914()">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc0914" id="mobDesc0914" role="region" aria-labelledby="mobDescBtn0914" style="display:none">
+<p>This simulation shows a continuous transverse wave on a rope. The frequency, the amplitude, the tension and the mass per unit length of the rope can be changed, and tools measure the amplitude, the wavelength and distances on the rope.</p>
+<p>The speed of the wave is set by the rope alone:</p>
+<p class="mob_eq0914">`v = sqrt(T/mu)`,</p>
+<p>while the frequency `f` is set by the source. Together they fix the wavelength,</p>
+<p class="mob_eq0914">`lambda = v/f`,&nbsp;&nbsp; and the period `T_p = 1/f`.</p>
+<p>Changing the frequency changes the wavelength but not the speed. Changing the amplitude changes neither: it only makes the wave taller. Each point of the rope moves straight up and down -- perpendicular to the direction the wave travels -- which is what makes the wave transverse.</p>
+<p>The timer, the tracked point and the calipers can be used to measure the period, the wavelength and the speed, and to check `v = f lambda`.</p>
+</div>
+</div>
+<script>
+function mobDesc0914(){
+var b = document.getElementById('mobDescBtn0914'), d = document.getElementById('mobDesc0914'); if (!b || !d) return;
+var open = (d.style.display === 'none');
+d.style.display = open ? 'block' : 'none';
+b.setAttribute('aria-expanded', open ? 'true' : 'false');
+b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }
+}
+</script>
+<style>
+/* ════════ mobile layer: the sim adapts to the width it gets (a phone, or a column in MOM) ════════ */
+#mobw790914 { container-type:inline-size; width:100%; max-width:100%; box-sizing:border-box; }
+/* only when the sim is narrower than its design (663 px): nothing is wider than the sim, canvases scale down,
+   rows wrap, fixed heights relax, wide tables scroll inside the sim -- on a wide screen nothing changes */
+@container (max-width:703px) {
+#mobw790914 div, #mobw790914 p, #mobw790914 fieldset, #mobw790914 form, #mobw790914 section, #mobw790914 ol, #mobw790914 ul, #mobw790914 table { max-width:100%; box-sizing:border-box; }
+#mobw790914 canvas, #mobw790914 img, #mobw790914 svg { max-width:100%; height:auto !important; }
+#mobw790914 input[type=range], #mobw790914 select { max-width:100%; min-width:0; }
+#mobw790914 #waveRoot0914 .sn_a11y0914, #mobw790914 .playbar0914, #mobw790914 .bbar0914, #mobw790914 .footer0914 { flex-wrap:wrap; }
+#mobw790914 #waveRoot0914 .sn_a11y0914 > div, #mobw790914 .playbar0914 > div, #mobw790914 .bbar0914 > div, #mobw790914 .footer0914 > div { min-width:min(100%, 260px); }
+#mobw790914 div[style*="height"] { height:auto !important; }
+#mobw790914 .tbar0914, #mobw790914 .mcontent0914, #mobw790914 .footer0914 { height:auto; min-height:0; }
+#mobw790914 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+}
+@media (max-width:723px) {
+#mobw790914 div, #mobw790914 p, #mobw790914 fieldset, #mobw790914 form, #mobw790914 section, #mobw790914 ol, #mobw790914 ul, #mobw790914 table { max-width:100%; box-sizing:border-box; }
+#mobw790914 canvas, #mobw790914 img, #mobw790914 svg { max-width:100%; height:auto !important; }
+#mobw790914 input[type=range], #mobw790914 select { max-width:100%; min-width:0; }
+#mobw790914 #waveRoot0914 .sn_a11y0914, #mobw790914 .playbar0914, #mobw790914 .bbar0914, #mobw790914 .footer0914 { flex-wrap:wrap; }
+#mobw790914 #waveRoot0914 .sn_a11y0914 > div, #mobw790914 .playbar0914 > div, #mobw790914 .bbar0914 > div, #mobw790914 .footer0914 > div { min-width:min(100%, 260px); }
+#mobw790914 div[style*="height"] { height:auto !important; }
+#mobw790914 .tbar0914, #mobw790914 .mcontent0914, #mobw790914 .footer0914 { height:auto; min-height:0; }
+#mobw790914 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+}
+/* touch screens: larger targets */
+@media (pointer:coarse) {
+#mobw790914 button, #mobw790914 input[type=button], #mobw790914 input[type=submit], #mobw790914 input[type=reset] { min-height:40px; }
+#mobw790914 input[type=range] { height:28px; }
+#mobw790914 input[type=checkbox], #mobw790914 input[type=radio] { width:22px; height:22px; }
+#mobw790914 select { min-height:36px; font-size:16px; }
+}
+/* display options moved to the top */
+#mobw790914 .mob_a11ytop0914 { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:6px 4px 8px; width:auto; max-width:100%; height:auto; }
+#mobw790914 .mob_a11ytop0914 input[type=button], #mobw790914 .mob_a11ytop0914 button { padding:5px 12px; font-size:13px; border:1px solid #8a94a3; border-radius:4px; background:#f4f6f8; color:#1d232a; cursor:pointer; width:auto; height:auto; margin:0; }
+/* SIM description */
+#mobw790914 .mob_descwrap0914 { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
+#mobw790914 .mob_descbtn0914 { padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
+#mobw790914 .mob_descbtn0914[aria-expanded="true"] { background:#3a3220; }
+#mobw790914 .mob_desc0914 { width:100%; max-width:860px; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; text-align:left; }
+#mobw790914 .mob_desc0914 p { margin:0 0 9px 0; }
+#mobw790914 .mob_eq0914 { text-align:center; font-size:1rem; }
+</style>
+</div><!-- #mobw790914 -->
 </body></html>

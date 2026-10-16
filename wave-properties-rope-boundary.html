@@ -10,11 +10,12 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations- Waves: Two Ropes</title>
+<title>Physics Simulations-Waves: Wave on a String: Crossing a Boundary Between Two Media</title>
 <meta name="author" content="Taha Mzoughi">
 <meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,Transverse, Longitudinal,Frequency, Amplitude, Tension, Mass,Length,Wave,string, Properties,Rope, lesson, scientific">
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
+<div id="mobw27200915" class="mob_wrap0915">
 <div id="boundaryRoot0915">
 <!-- ── Accessibility toolbar ── -->
 <div class="sn_a11y0915" id="snBar0915" role="toolbar" aria-label="Display options">
@@ -73,9 +74,8 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <li>How does increasing the tension `T` affect `lambda_1` and `lambda_2` together? Why does a tension change affect both ropes the same way?<br /></li>
 </ol>
 </div><!-- #boundaryRoot0915 -->
-<style>
-* { margin: 0; box-sizing: border-box; }
-div { width: 663px; margin: 0; }
+<style>:where(#mobw27200915) * { margin: 0; box-sizing: border-box; }
+:where(#mobw27200915) div { width: 663px; margin: 0; }
 #boundaryRoot0915 {
 --sn-toolbar-bg: #222;
 --sn-rope1:    #cc0000;
@@ -105,7 +105,7 @@ width: 663px; min-height: 28px; padding: 5px 10px;
 background: #ffefc0; border-left: 4px solid #e0b040;
 font-size: .88rem; color: #333; font-style: italic;
 }
-.tbar0915    { padding: 3px; height: 30px; background-color: #f90; text-align: center; }
+.tbar0915 { padding: 3px; height: 30px; background-color: #f90; text-align: center; }
 .mcontent0915 { height: 322px; }
 .islide0915 { width: 220px; }
 .playbar0915 {
@@ -122,12 +122,11 @@ background-color: #df9; padding: 8px; text-align: left;
 display: flex; flex-wrap: wrap; gap: 4px 16px;
 }
 .bbar0915 .chk0915 { width: auto; font-size: .84rem; white-space: nowrap; }
-.footer0915  { height: 40px; text-align: center; font-size: normal; display: flex; }
-.footer0915 .left0915   { width: 150px; padding: 2px; }
+.footer0915 { height: 40px; text-align: center; font-size: normal; display: flex; }
+.footer0915 .left0915 { width: 150px; padding: 2px; }
 .footer0915 .center0915 { width: 513px; padding: 4px; }
-.footer0915:nth-of-type(odd)  { background-color: #fce4ec; }
-.footer0915:nth-of-type(even) { background-color: #e8f5e9; }
-</style>
+.footer0915:nth-of-type(odd) { background-color: #fce4ec; }
+.footer0915:nth-of-type(even) { background-color: #e8f5e9; }</style>
 <!-- ════════════════ ACCESSIBILITY CONTROLLER ════════════════ -->
 <script>
 var boundaryA11y0915 = (function(){
@@ -594,13 +593,13 @@ boundaryA11y0915.narrate('Vertical-distance caliper ' + (cb.checked ? 'shown, wi
 function toggleWaveData(cb) { showWaveDataFlag = cb.checked ? 1 : 0; draw(); setLabel('waveDataLbl0915', cb.checked, 'wave-data panel'); }
 function toggleAnimData(cb) { showAnimDataFlag = cb.checked ? 1 : 0; draw(); setLabel('animDataLbl0915', cb.checked, 'animation-time panel'); }
 function reactionDown(x, y) {
-var r = canvas.getBoundingClientRect(); x -= r.left; y -= r.top;
+var r = canvas.getBoundingClientRect(); x = (x - r.left)*canvas.width/r.width; y = (y - r.top)*canvas.height/r.height;   /* canvas units, whatever its displayed size */
 canvas.style.cursor = 'pointer';
 checkIfCalipers(x, y);
 if (!dragging) checkIfWlen(x, y);
 }
 function reactionMove(x, y) {
-var r = canvas.getBoundingClientRect(); x -= r.left; y -= r.top;
+var r = canvas.getBoundingClientRect(); x = (x - r.left)*canvas.width/r.width; y = (y - r.top)*canvas.height/r.height;   /* canvas units, whatever its displayed size */
 if (!dragging) return;
 canvas.style.cursor = 'pointer';
 if (dragging.tool === 'x') {
@@ -626,9 +625,12 @@ function init() {
 canvas.onmousedown = function (e) { reactionDown(e.clientX, e.clientY); };
 canvas.onmouseup   = reactionUp;
 canvas.onmousemove = function (e) { reactionMove(e.clientX, e.clientY); };
-canvas.ontouchstart = function (e) { var o = e.changedTouches[0]; reactionDown(o.clientX, o.clientY); };
-canvas.ontouchend   = reactionUp;
-canvas.ontouchmove  = function (e) { var o = e.changedTouches[0]; reactionMove(o.clientX, o.clientY); e.preventDefault(); };
+canvas.ontouchstart = function (e) { var o = e.changedTouches[0]; reactionDown(o.clientX, o.clientY);
+  /* only a touch on a tool takes over the finger; elsewhere the page scrolls */
+  canvas._grab = (typeof dragging !== 'undefined' && !!dragging) || (typeof wrf !== 'undefined' && wrf === 1) || (typeof arf !== 'undefined' && arf === 1) || (typeof drf !== 'undefined' && drf === 1);
+  if (canvas._grab) e.preventDefault(); };
+canvas.ontouchend   = function () { canvas._grab = false; reactionUp(); };
+canvas.ontouchmove  = function (e) { if (!canvas._grab) return; var o = e.changedTouches[0]; reactionMove(o.clientX, o.clientY); e.preventDefault(); };
 recompute();
 draw();
 }
@@ -645,5 +647,71 @@ toggleWaveData: toggleWaveData, toggleAnimData: toggleAnimData
 boundaryA11y0915.init();
 boundaryA11y0915.narrate('Two-rope wave sim ready. Adjust frequency, tension, and each rope\u2019s mass per length, then press Play. Watch the wavelength and amplitude change as the wave crosses the junction.');
 </script>
-
+<!-- SIM description: a button below the sim toggles the description into view (math in AsciiMath, typeset when opened) -->
+<div class="mob_descwrap0915">
+<button type="button" class="mob_descbtn0915" id="mobDescBtn0915" aria-expanded="false" aria-controls="mobDesc0915" onclick="mobDesc0915()">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc0915" id="mobDesc0915" role="region" aria-labelledby="mobDescBtn0915" style="display:none">
+<p>This simulation sends a continuous wave along a rope made of two parts joined together, rope 1 and rope 2, with different masses per unit length. The frequency, the amplitude, the tension and the masses per unit length can be changed.</p>
+<p>The speed of the wave in each rope is</p>
+<p class="mob_eq0915">`v = sqrt(T/mu)`,</p>
+<p>When the wave crosses into the second rope its speed changes, but its frequency does not: every point of the joint moves up and down at the frequency of the source. Since</p>
+<p class="mob_eq0915">`v = f lambda`,</p>
+<p>the wavelength changes in proportion to the speed: the wave gets shorter in the slower (heavier) rope. Part of the wave is also reflected at the joint.</p>
+<p>The wavelength guide, the calipers and the timer help measure the wavelength, the period and the speed in each rope.</p>
+</div>
+</div>
+<script>
+function mobDesc0915(){
+var b = document.getElementById('mobDescBtn0915'), d = document.getElementById('mobDesc0915'); if (!b || !d) return;
+var open = (d.style.display === 'none');
+d.style.display = open ? 'block' : 'none';
+b.setAttribute('aria-expanded', open ? 'true' : 'false');
+b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }
+}
+</script>
+<style>
+/* ════════ mobile layer: the sim adapts to the width it gets (a phone, or a column in MOM) ════════ */
+#mobw27200915 { container-type:inline-size; width:100%; max-width:100%; box-sizing:border-box; }
+/* only when the sim is narrower than its design (663 px): nothing is wider than the sim, canvases scale down,
+   rows wrap, fixed heights relax, wide tables scroll inside the sim -- on a wide screen nothing changes */
+@container (max-width:703px) {
+#mobw27200915 div, #mobw27200915 p, #mobw27200915 fieldset, #mobw27200915 form, #mobw27200915 section, #mobw27200915 ol, #mobw27200915 ul, #mobw27200915 table { max-width:100%; box-sizing:border-box; }
+#mobw27200915 canvas, #mobw27200915 img, #mobw27200915 svg { max-width:100%; height:auto !important; }
+#mobw27200915 input[type=range], #mobw27200915 select { max-width:100%; min-width:0; }
+#mobw27200915 #boundaryRoot0915 .sn_a11y0915, #mobw27200915 .playbar0915, #mobw27200915 .bbar0915, #mobw27200915 .footer0915 { flex-wrap:wrap; }
+#mobw27200915 #boundaryRoot0915 .sn_a11y0915 > div, #mobw27200915 .playbar0915 > div, #mobw27200915 .bbar0915 > div, #mobw27200915 .footer0915 > div { min-width:min(100%, 260px); }
+#mobw27200915 div[style*="height"] { height:auto !important; }
+#mobw27200915 .tbar0915, #mobw27200915 .mcontent0915, #mobw27200915 .footer0915 { height:auto; min-height:0; }
+#mobw27200915 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+}
+@media (max-width:723px) {
+#mobw27200915 div, #mobw27200915 p, #mobw27200915 fieldset, #mobw27200915 form, #mobw27200915 section, #mobw27200915 ol, #mobw27200915 ul, #mobw27200915 table { max-width:100%; box-sizing:border-box; }
+#mobw27200915 canvas, #mobw27200915 img, #mobw27200915 svg { max-width:100%; height:auto !important; }
+#mobw27200915 input[type=range], #mobw27200915 select { max-width:100%; min-width:0; }
+#mobw27200915 #boundaryRoot0915 .sn_a11y0915, #mobw27200915 .playbar0915, #mobw27200915 .bbar0915, #mobw27200915 .footer0915 { flex-wrap:wrap; }
+#mobw27200915 #boundaryRoot0915 .sn_a11y0915 > div, #mobw27200915 .playbar0915 > div, #mobw27200915 .bbar0915 > div, #mobw27200915 .footer0915 > div { min-width:min(100%, 260px); }
+#mobw27200915 div[style*="height"] { height:auto !important; }
+#mobw27200915 .tbar0915, #mobw27200915 .mcontent0915, #mobw27200915 .footer0915 { height:auto; min-height:0; }
+#mobw27200915 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+}
+/* touch screens: larger targets */
+@media (pointer:coarse) {
+#mobw27200915 button, #mobw27200915 input[type=button], #mobw27200915 input[type=submit], #mobw27200915 input[type=reset] { min-height:40px; }
+#mobw27200915 input[type=range] { height:28px; }
+#mobw27200915 input[type=checkbox], #mobw27200915 input[type=radio] { width:22px; height:22px; }
+#mobw27200915 select { min-height:36px; font-size:16px; }
+}
+/* display options moved to the top */
+#mobw27200915 .mob_a11ytop0915 { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:6px 4px 8px; width:auto; max-width:100%; height:auto; }
+#mobw27200915 .mob_a11ytop0915 input[type=button], #mobw27200915 .mob_a11ytop0915 button { padding:5px 12px; font-size:13px; border:1px solid #8a94a3; border-radius:4px; background:#f4f6f8; color:#1d232a; cursor:pointer; width:auto; height:auto; margin:0; }
+/* SIM description */
+#mobw27200915 .mob_descwrap0915 { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
+#mobw27200915 .mob_descbtn0915 { padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
+#mobw27200915 .mob_descbtn0915[aria-expanded="true"] { background:#3a3220; }
+#mobw27200915 .mob_desc0915 { width:100%; max-width:860px; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; text-align:left; }
+#mobw27200915 .mob_desc0915 p { margin:0 0 9px 0; }
+#mobw27200915 .mob_eq0915 { text-align:center; font-size:1rem; }
+</style>
+</div><!-- #mobw27200915 -->
 </body></html>

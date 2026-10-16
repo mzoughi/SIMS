@@ -10,11 +10,12 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations- Waves: Two Ropes</title>
+<title>Physics Simulations-Waves: A Single Pulse on One Rope: Reflection at a Fixed or Free End</title>
 <meta name="author" content="Taha Mzoughi">
 <meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,Transverse, Longitudinal,Frequency, Amplitude, Tension, Mass,Length,Wave,string, Properties,Rope, lesson, scientific">
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
+<div id="mobw32210920" class="mob_wrap0920">
 <div id="pulseEndRoot0920">
 <!-- ── Accessibility toolbar ── -->
 <div class="sn_a11y0920" id="snBar0920" role="toolbar" aria-label="Display options">
@@ -85,9 +86,8 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <li>Turn on damping and send a pulse. Compare the reflected pulse's height to what you'd see with no damping. Does damping change <em>when</em> the reflection happens, or only <em>how big</em> it is by the time it gets back to the hand?<br /></li>
 </ol>
 </div><!-- #pulseEndRoot0920 -->
-<style>
-* { margin: 0; box-sizing: border-box; }
-div { width: 663px; margin: 0; }
+<style>:where(#mobw32210920) * { margin: 0; box-sizing: border-box; }
+:where(#mobw32210920) div { width: 663px; margin: 0; }
 #pulseEndRoot0920 {
 --sn-toolbar-bg: #222;
 --sn-rope:     #cc0000;
@@ -115,7 +115,7 @@ width: 663px; min-height: 28px; padding: 5px 10px;
 background: #ffefc0; border-left: 4px solid #e0b040;
 font-size: .88rem; color: #333; font-style: italic;
 }
-.tbar0920    { padding: 2px; height: 30px; background-color: #f90; text-align: center; }
+.tbar0920 { padding: 2px; height: 30px; background-color: #f90; text-align: center; }
 .mcontent0920 { height: 322px; }
 .islide0920 { width: 220px; }
 .playbar0920 {
@@ -134,12 +134,11 @@ background-color: #df9; padding: 8px; text-align: left;
 display: flex; flex-wrap: wrap; gap: 4px 16px;
 }
 .bbar0920 .chk0920 { width: auto; font-size: .84rem; white-space: nowrap; }
-.footer0920  { height: 40px; text-align: center; font-size: normal; display: flex; }
-.footer0920 .left0920   { width: 136px; padding: 2px; }
+.footer0920 { height: 40px; text-align: center; font-size: normal; display: flex; }
+.footer0920 .left0920 { width: 136px; padding: 2px; }
 .footer0920 .center0920 { width: 527px; padding: 4px; }
-.footer0920:nth-of-type(odd)  { background-color: #fce4ec; }
-.footer0920:nth-of-type(even) { background-color: #e8f5e9; }
-</style>
+.footer0920:nth-of-type(odd) { background-color: #fce4ec; }
+.footer0920:nth-of-type(even) { background-color: #e8f5e9; }</style>
 <!-- ════════════════ ACCESSIBILITY CONTROLLER ════════════════ -->
 <script>
 var pulseEndA11y0920 = (function(){
@@ -584,12 +583,12 @@ pulseEndA11y0920.narrate('Vertical-distance caliper ' + (cb.checked ? 'shown, wi
 function toggleLabels(cb) { showLabelsFlag = cb.checked ? 1 : 0; draw(); setLabel('labelsLbl0920', cb.checked, 'pulse labels'); }
 function toggleWaveData(cb) { showWaveDataFlag = cb.checked ? 1 : 0; draw(); setLabel('waveDataLbl0920', cb.checked, 'wave-data panel'); }
 function reactionDown(x, y) {
-var r0 = canvas.getBoundingClientRect(); x -= r0.left; y -= r0.top;
+var r0 = canvas.getBoundingClientRect(); x = (x - r0.left)*canvas.width/r0.width; y = (y - r0.top)*canvas.height/r0.height;   /* canvas units, whatever its displayed size */
 canvas.style.cursor = 'pointer';
 checkIfCalipers(x, y);
 }
 function reactionMove(x, y) {
-var r0 = canvas.getBoundingClientRect(); x -= r0.left; y -= r0.top;
+var r0 = canvas.getBoundingClientRect(); x = (x - r0.left)*canvas.width/r0.width; y = (y - r0.top)*canvas.height/r0.height;   /* canvas units, whatever its displayed size */
 if (!dragging) return;
 canvas.style.cursor = 'pointer';
 if (dragging.tool === 'x') {
@@ -615,9 +614,12 @@ function init() {
 canvas.onmousedown = function (e) { reactionDown(e.clientX, e.clientY); };
 canvas.onmouseup   = reactionUp;
 canvas.onmousemove = function (e) { reactionMove(e.clientX, e.clientY); };
-canvas.ontouchstart = function (e) { var o = e.changedTouches[0]; reactionDown(o.clientX, o.clientY); };
-canvas.ontouchend   = reactionUp;
-canvas.ontouchmove  = function (e) { var o = e.changedTouches[0]; reactionMove(o.clientX, o.clientY); e.preventDefault(); };
+canvas.ontouchstart = function (e) { var o = e.changedTouches[0]; reactionDown(o.clientX, o.clientY);
+  /* only a touch on a tool takes over the finger; elsewhere the page scrolls */
+  canvas._grab = (typeof dragging !== 'undefined' && !!dragging) || (typeof wrf !== 'undefined' && wrf === 1) || (typeof arf !== 'undefined' && arf === 1) || (typeof drf !== 'undefined' && drf === 1);
+  if (canvas._grab) e.preventDefault(); };
+canvas.ontouchend   = function () { canvas._grab = false; reactionUp(); };
+canvas.ontouchmove  = function (e) { if (!canvas._grab) return; var o = e.changedTouches[0]; reactionMove(o.clientX, o.clientY); e.preventDefault(); };
 recompute();
 draw();
 }
@@ -634,4 +636,71 @@ toggleLabels: toggleLabels, toggleWaveData: toggleWaveData
 pulseEndA11y0920.init();
 pulseEndA11y0920.narrate('Pulse sim ready. Choose a fixed or free far end, set direction, amplitude, tension, and mass per length, then press Send Pulse.');
 </script>
+<!-- SIM description: a button below the sim toggles the description into view (math in AsciiMath, typeset when opened) -->
+<div class="mob_descwrap0920">
+<button type="button" class="mob_descbtn0920" id="mobDescBtn0920" aria-expanded="false" aria-controls="mobDesc0920" onclick="mobDesc0920()">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc0920" id="mobDesc0920" role="region" aria-labelledby="mobDescBtn0920" style="display:none">
+<p>This simulation sends a single pulse along a rope and watches it reflect at the far end. The far end can be fixed (tied to a wall) or free (a light ring that slides on a pole). The pulse can be sent upward or downward, and the amplitude, the tension and the mass per unit length of the rope can be changed.</p>
+<p>On a real rope some energy is lost as the pulse travels, so its amplitude shrinks along the way. Here the amplitude decays exponentially with the distance travelled, `A(x) = A_0 e^(-gamma x)`, with an adjustable damping constant `gamma` (per metre).</p>
+<p>A pulse on a rope travels at the speed</p>
+<p class="mob_eq0920">`v = sqrt(T/mu)`,</p>
+<p>where `T` is the tension and `mu` the mass per unit length: a tighter or lighter rope carries the pulse faster. The speed does not depend on the amplitude.</p>
+<p>At a fixed end, the rope cannot move, so the wall pulls back and the pulse comes back upside down (inverted). At a free end, the ring overshoots and the pulse comes back the same way up. Either way, the reflected pulse travels back at the same speed.</p>
+<p>The calipers measure distances on the rope: the horizontal caliper gives how far the pulse has moved, and with the time, its speed; the vertical caliper gives its height.</p>
+</div>
+</div>
+<script>
+function mobDesc0920(){
+var b = document.getElementById('mobDescBtn0920'), d = document.getElementById('mobDesc0920'); if (!b || !d) return;
+var open = (d.style.display === 'none');
+d.style.display = open ? 'block' : 'none';
+b.setAttribute('aria-expanded', open ? 'true' : 'false');
+b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }
+}
+</script>
+<style>
+/* ════════ mobile layer: the sim adapts to the width it gets (a phone, or a column in MOM) ════════ */
+#mobw32210920 { container-type:inline-size; width:100%; max-width:100%; box-sizing:border-box; }
+/* only when the sim is narrower than its design (663 px): nothing is wider than the sim, canvases scale down,
+   rows wrap, fixed heights relax, wide tables scroll inside the sim -- on a wide screen nothing changes */
+@container (max-width:703px) {
+#mobw32210920 div, #mobw32210920 p, #mobw32210920 fieldset, #mobw32210920 form, #mobw32210920 section, #mobw32210920 ol, #mobw32210920 ul, #mobw32210920 table { max-width:100%; box-sizing:border-box; }
+#mobw32210920 canvas, #mobw32210920 img, #mobw32210920 svg { max-width:100%; height:auto !important; }
+#mobw32210920 input[type=range], #mobw32210920 select { max-width:100%; min-width:0; }
+#mobw32210920 #pulseEndRoot0920 .sn_a11y0920, #mobw32210920 .playbar0920, #mobw32210920 .bbar0920, #mobw32210920 .footer0920 { flex-wrap:wrap; }
+#mobw32210920 #pulseEndRoot0920 .sn_a11y0920 > div, #mobw32210920 .playbar0920 > div, #mobw32210920 .bbar0920 > div, #mobw32210920 .footer0920 > div { min-width:min(100%, 260px); }
+#mobw32210920 div[style*="height"] { height:auto !important; }
+#mobw32210920 .tbar0920, #mobw32210920 .mcontent0920, #mobw32210920 .footer0920 { height:auto; min-height:0; }
+#mobw32210920 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+}
+@media (max-width:723px) {
+#mobw32210920 div, #mobw32210920 p, #mobw32210920 fieldset, #mobw32210920 form, #mobw32210920 section, #mobw32210920 ol, #mobw32210920 ul, #mobw32210920 table { max-width:100%; box-sizing:border-box; }
+#mobw32210920 canvas, #mobw32210920 img, #mobw32210920 svg { max-width:100%; height:auto !important; }
+#mobw32210920 input[type=range], #mobw32210920 select { max-width:100%; min-width:0; }
+#mobw32210920 #pulseEndRoot0920 .sn_a11y0920, #mobw32210920 .playbar0920, #mobw32210920 .bbar0920, #mobw32210920 .footer0920 { flex-wrap:wrap; }
+#mobw32210920 #pulseEndRoot0920 .sn_a11y0920 > div, #mobw32210920 .playbar0920 > div, #mobw32210920 .bbar0920 > div, #mobw32210920 .footer0920 > div { min-width:min(100%, 260px); }
+#mobw32210920 div[style*="height"] { height:auto !important; }
+#mobw32210920 .tbar0920, #mobw32210920 .mcontent0920, #mobw32210920 .footer0920 { height:auto; min-height:0; }
+#mobw32210920 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+}
+/* touch screens: larger targets */
+@media (pointer:coarse) {
+#mobw32210920 button, #mobw32210920 input[type=button], #mobw32210920 input[type=submit], #mobw32210920 input[type=reset] { min-height:40px; }
+#mobw32210920 input[type=range] { height:28px; }
+#mobw32210920 input[type=checkbox], #mobw32210920 input[type=radio] { width:22px; height:22px; }
+#mobw32210920 select { min-height:36px; font-size:16px; }
+}
+/* display options moved to the top */
+#mobw32210920 .mob_a11ytop0920 { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:6px 4px 8px; width:auto; max-width:100%; height:auto; }
+#mobw32210920 .mob_a11ytop0920 input[type=button], #mobw32210920 .mob_a11ytop0920 button { padding:5px 12px; font-size:13px; border:1px solid #8a94a3; border-radius:4px; background:#f4f6f8; color:#1d232a; cursor:pointer; width:auto; height:auto; margin:0; }
+/* SIM description */
+#mobw32210920 .mob_descwrap0920 { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
+#mobw32210920 .mob_descbtn0920 { padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
+#mobw32210920 .mob_descbtn0920[aria-expanded="true"] { background:#3a3220; }
+#mobw32210920 .mob_desc0920 { width:100%; max-width:860px; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; text-align:left; }
+#mobw32210920 .mob_desc0920 p { margin:0 0 9px 0; }
+#mobw32210920 .mob_eq0920 { text-align:center; font-size:1rem; }
+</style>
+</div><!-- #mobw32210920 -->
 </body></html>

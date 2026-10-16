@@ -10,11 +10,12 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations- Waves: Two Ropes</title>
+<title>Physics Simulations-Waves: A Single Pulse on Two Joined Slinkies: Reflection &amp;amp; Transmission</title>
 <meta name="author" content="Taha Mzoughi">
 <meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,Transverse, Longitudinal,Frequency, Amplitude, Tension, Mass,Length,Wave,string, Properties,Rope, lesson, scientific">
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
+<div id="mobw97700916" class="mob_wrap0916">
 <div id="slinkyPulseRoot0916">
 <!-- ── Accessibility toolbar ── -->
 <div class="sn_a11y0916" id="snBar0916" role="toolbar" aria-label="Display options">
@@ -61,7 +62,7 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 </div>
 <div class="footer0916">
 <div class="left0916">Slinky 2 (linked):</div>
-<div class="center0916">`n_2:\ ` <input class=islide0916 type="range" id="n2Slider0916" min="1" max="3" value="2" step="0.5" oninput="slinkyPulsePol0916.setN2(this.value)" onchange="slinkyPulsePol0916.setN2(this.value)" style=width:120px> <span id="n2Value0916">2</span>&times; slinky 1 (`K_2=` <span id="k2Derived0916">$k2D</span> N/m, `M_2=` <span id="m2Derived0916">$m2D</span> kg)</div>
+<div class="center0916">`n_2:\ ` <input class=islide0916 type="range" id="n2Slider0916" min="1" max="3" value="2" step="0.5" oninput="slinkyPulsePol0916.setN2(this.value)" onchange="slinkyPulsePol0916.setN2(this.value)" style=width:120px> <span id="n2Value0916">2</span>&times; slinky 1 (`K_2=` <span id="k2Derived0916">--</span> N/m, `M_2=` <span id="m2Derived0916">--</span> kg)</div>
 </div>
 <hr>
 <ol type="a">
@@ -75,9 +76,8 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <li>Compare this to the two-rope pulse demo: what physical quantity sets the reflection amplitude for a transverse pulse, versus for this longitudinal one?<br /></li>
 </ol>
 </div><!-- #slinkyPulseRoot0916 -->
-<style>
-* { margin: 0; box-sizing: border-box; }
-div { width: 663px; margin: 0; }
+<style>:where(#mobw97700916) * { margin: 0; box-sizing: border-box; }
+:where(#mobw97700916) div { width: 663px; margin: 0; }
 #slinkyPulseRoot0916 {
 --sn-toolbar-bg: #222;
 --sn-rope:     #2e8b57;
@@ -106,7 +106,7 @@ width: 663px; min-height: 28px; padding: 5px 10px;
 background: #ffefc0; border-left: 4px solid #e0b040;
 font-size: .88rem; color: #333; font-style: italic;
 }
-.tbar0916    { padding: 2px; height: 30px; background-color: #f90; text-align: center; }
+.tbar0916 { padding: 2px; height: 30px; background-color: #f90; text-align: center; }
 .mcontent0916 { height: 322px; }
 .islide0916 { width: 220px; }
 .playbar0916 {
@@ -125,12 +125,11 @@ background-color: #df9; padding: 8px; text-align: left;
 display: flex; flex-wrap: wrap; gap: 4px 16px;
 }
 .bbar0916 .chk0916 { width: auto; font-size: .84rem; white-space: nowrap; }
-.footer0916  { height: 40px; text-align: center; font-size: normal; display: flex; }
-.footer0916 .left0916   { width: 160px; padding: 2px; }
+.footer0916 { height: 40px; text-align: center; font-size: normal; display: flex; }
+.footer0916 .left0916 { width: 160px; padding: 2px; }
 .footer0916 .center0916 { width: 503px; padding: 4px; }
-.footer0916:nth-of-type(odd)  { background-color: #fce4ec; }
-.footer0916:nth-of-type(even) { background-color: #e8f5e9; }
-</style>
+.footer0916:nth-of-type(odd) { background-color: #fce4ec; }
+.footer0916:nth-of-type(even) { background-color: #e8f5e9; }</style>
 <!-- ════════════════ ACCESSIBILITY CONTROLLER ════════════════ -->
 <script>
 var slinkyPulseA11y0916 = (function(){
@@ -593,12 +592,12 @@ slinkyPulseA11y0916.narrate('Horizontal-distance caliper ' + (cb.checked ? 'show
 function toggleLabels(cb) { showLabelsFlag = cb.checked ? 1 : 0; draw(); setLabel('labelsLbl0916', cb.checked, 'pulse labels'); }
 function toggleWaveData(cb) { showWaveDataFlag = cb.checked ? 1 : 0; draw(); setLabel('waveDataLbl0916', cb.checked, 'wave-data panel'); }
 function reactionDown(x, y) {
-var r0 = canvas.getBoundingClientRect(); x -= r0.left; y -= r0.top;
+var r0 = canvas.getBoundingClientRect(); x = (x - r0.left)*canvas.width/r0.width; y = (y - r0.top)*canvas.height/r0.height;   /* canvas units, whatever its displayed size */
 canvas.style.cursor = 'pointer';
 checkIfCaliper(x, y);
 }
 function reactionMove(x, y) {
-var r0 = canvas.getBoundingClientRect(); x -= r0.left; y -= r0.top;
+var r0 = canvas.getBoundingClientRect(); x = (x - r0.left)*canvas.width/r0.width; y = (y - r0.top)*canvas.height/r0.height;   /* canvas units, whatever its displayed size */
 if (!dragging) return;
 canvas.style.cursor = 'pointer';
 if (dragging.part === 'j1') xCal.x1 = x;
@@ -616,9 +615,12 @@ function init() {
 canvas.onmousedown = function (e) { reactionDown(e.clientX, e.clientY); };
 canvas.onmouseup   = reactionUp;
 canvas.onmousemove = function (e) { reactionMove(e.clientX, e.clientY); };
-canvas.ontouchstart = function (e) { var o = e.changedTouches[0]; reactionDown(o.clientX, o.clientY); };
-canvas.ontouchend   = reactionUp;
-canvas.ontouchmove  = function (e) { var o = e.changedTouches[0]; reactionMove(o.clientX, o.clientY); e.preventDefault(); };
+canvas.ontouchstart = function (e) { var o = e.changedTouches[0]; reactionDown(o.clientX, o.clientY);
+  /* only a touch on a tool takes over the finger; elsewhere the page scrolls */
+  canvas._grab = (typeof dragging !== 'undefined' && !!dragging) || (typeof wrf !== 'undefined' && wrf === 1) || (typeof arf !== 'undefined' && arf === 1) || (typeof drf !== 'undefined' && drf === 1);
+  if (canvas._grab) e.preventDefault(); };
+canvas.ontouchend   = function () { canvas._grab = false; reactionUp(); };
+canvas.ontouchmove  = function (e) { if (!canvas._grab) return; var o = e.changedTouches[0]; reactionMove(o.clientX, o.clientY); e.preventDefault(); };
 deriveK2M2();
 recompute();
 draw();
@@ -635,5 +637,69 @@ toggleMarker: toggleMarker, toggleDeltaX: toggleDeltaX, toggleLabels: toggleLabe
 slinkyPulseA11y0916.init();
 slinkyPulseA11y0916.narrate('Pulse sim ready. Set the direction, amplitude, and each slinky\u2019s spring properties, then press Send Pulse to watch it split at the junction.');
 </script>
-
+<!-- SIM description: a button below the sim toggles the description into view (math in AsciiMath, typeset when opened) -->
+<div class="mob_descwrap0916">
+<button type="button" class="mob_descbtn0916" id="mobDescBtn0916" aria-expanded="false" aria-controls="mobDesc0916" onclick="mobDesc0916()">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc0916" id="mobDesc0916" role="region" aria-labelledby="mobDescBtn0916" style="display:none">
+<p>This simulation sends a single pulse along two slinkies joined end to end. The pulse is longitudinal: the coils are pushed together (a compression) or pulled apart, along the direction the pulse travels. The spring constants and masses of the slinkies can be changed.</p>
+<p>The speed of a pulse on a slinky depends on its stiffness and its mass. For a slinky of length `L`, spring constant `K` and mass `M`,</p>
+<p class="mob_eq0916">`v = L sqrt(K/M)`.</p>
+<p>At the joint, part of the pulse is reflected and part is transmitted into the second slinky, just as for two ropes. Going into a slower slinky, the reflected pulse comes back inverted (a push returns as a pull).</p>
+<p>The tracked coils and the caliper help measure how far and how fast the pulse travels in each slinky.</p>
+</div>
+</div>
+<script>
+function mobDesc0916(){
+var b = document.getElementById('mobDescBtn0916'), d = document.getElementById('mobDesc0916'); if (!b || !d) return;
+var open = (d.style.display === 'none');
+d.style.display = open ? 'block' : 'none';
+b.setAttribute('aria-expanded', open ? 'true' : 'false');
+b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }
+}
+</script>
+<style>
+/* ════════ mobile layer: the sim adapts to the width it gets (a phone, or a column in MOM) ════════ */
+#mobw97700916 { container-type:inline-size; width:100%; max-width:100%; box-sizing:border-box; }
+/* only when the sim is narrower than its design (663 px): nothing is wider than the sim, canvases scale down,
+   rows wrap, fixed heights relax, wide tables scroll inside the sim -- on a wide screen nothing changes */
+@container (max-width:703px) {
+#mobw97700916 div, #mobw97700916 p, #mobw97700916 fieldset, #mobw97700916 form, #mobw97700916 section, #mobw97700916 ol, #mobw97700916 ul, #mobw97700916 table { max-width:100%; box-sizing:border-box; }
+#mobw97700916 canvas, #mobw97700916 img, #mobw97700916 svg { max-width:100%; height:auto !important; }
+#mobw97700916 input[type=range], #mobw97700916 select { max-width:100%; min-width:0; }
+#mobw97700916 #slinkyPulseRoot0916 .sn_a11y0916, #mobw97700916 .playbar0916, #mobw97700916 .bbar0916, #mobw97700916 .footer0916 { flex-wrap:wrap; }
+#mobw97700916 #slinkyPulseRoot0916 .sn_a11y0916 > div, #mobw97700916 .playbar0916 > div, #mobw97700916 .bbar0916 > div, #mobw97700916 .footer0916 > div { min-width:min(100%, 260px); }
+#mobw97700916 div[style*="height"] { height:auto !important; }
+#mobw97700916 .tbar0916, #mobw97700916 .mcontent0916, #mobw97700916 .footer0916 { height:auto; min-height:0; }
+#mobw97700916 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+}
+@media (max-width:723px) {
+#mobw97700916 div, #mobw97700916 p, #mobw97700916 fieldset, #mobw97700916 form, #mobw97700916 section, #mobw97700916 ol, #mobw97700916 ul, #mobw97700916 table { max-width:100%; box-sizing:border-box; }
+#mobw97700916 canvas, #mobw97700916 img, #mobw97700916 svg { max-width:100%; height:auto !important; }
+#mobw97700916 input[type=range], #mobw97700916 select { max-width:100%; min-width:0; }
+#mobw97700916 #slinkyPulseRoot0916 .sn_a11y0916, #mobw97700916 .playbar0916, #mobw97700916 .bbar0916, #mobw97700916 .footer0916 { flex-wrap:wrap; }
+#mobw97700916 #slinkyPulseRoot0916 .sn_a11y0916 > div, #mobw97700916 .playbar0916 > div, #mobw97700916 .bbar0916 > div, #mobw97700916 .footer0916 > div { min-width:min(100%, 260px); }
+#mobw97700916 div[style*="height"] { height:auto !important; }
+#mobw97700916 .tbar0916, #mobw97700916 .mcontent0916, #mobw97700916 .footer0916 { height:auto; min-height:0; }
+#mobw97700916 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+}
+/* touch screens: larger targets */
+@media (pointer:coarse) {
+#mobw97700916 button, #mobw97700916 input[type=button], #mobw97700916 input[type=submit], #mobw97700916 input[type=reset] { min-height:40px; }
+#mobw97700916 input[type=range] { height:28px; }
+#mobw97700916 input[type=checkbox], #mobw97700916 input[type=radio] { width:22px; height:22px; }
+#mobw97700916 select { min-height:36px; font-size:16px; }
+}
+/* display options moved to the top */
+#mobw97700916 .mob_a11ytop0916 { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:6px 4px 8px; width:auto; max-width:100%; height:auto; }
+#mobw97700916 .mob_a11ytop0916 input[type=button], #mobw97700916 .mob_a11ytop0916 button { padding:5px 12px; font-size:13px; border:1px solid #8a94a3; border-radius:4px; background:#f4f6f8; color:#1d232a; cursor:pointer; width:auto; height:auto; margin:0; }
+/* SIM description */
+#mobw97700916 .mob_descwrap0916 { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
+#mobw97700916 .mob_descbtn0916 { padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
+#mobw97700916 .mob_descbtn0916[aria-expanded="true"] { background:#3a3220; }
+#mobw97700916 .mob_desc0916 { width:100%; max-width:860px; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; text-align:left; }
+#mobw97700916 .mob_desc0916 p { margin:0 0 9px 0; }
+#mobw97700916 .mob_eq0916 { text-align:center; font-size:1rem; }
+</style>
+</div><!-- #mobw97700916 -->
 </body></html>

@@ -12,8 +12,8 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Physics Simulations-Magnetism: Right-Hand Rule -- Field of a Straight Current</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching,magnetism, magnet, teach, learn,force, current, right-hand rule, straight wire, magnetic field, field lines, Ampere, field sensor, lesson, scientific">
-<meta name="description" content="Interactive right-hand rule simulation: the magnetic field around a straight current, in 3-D and top views, with a movable field sensor.">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching,magnetism, magnet, teach, learn,force, current, magnetism, magnetic field, physics simulation, lesson, scientific">
+<meta name="description" content="Right-Hand Rule -- Field of a Straight Current -- interactive physics simulation.">
 <style>
 body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
 .page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
@@ -242,6 +242,21 @@ background-image:none;
 #rhroot .rh_panelbody { gap:10px; }
 }
 @media (max-width:560px) {
+#rhroot { padding:10px 6px 14px; }
+#rhroot .rh_rrow { flex-wrap:wrap; }
+#rhroot .rh_rkey { white-space:normal; }
+#rhroot .rh_hoverbar { font-size:.68rem; }
+}
+
+/* ════ layout by the width the sim actually gets (in a MOM column it can be much narrower than the window);
+   the @media rules above stay as the fallback for browsers without container queries ════ */
+#rhroot { container-type:inline-size; }
+@container (max-width:820px) {
+#rhroot .rh_instrument { grid-template-columns:minmax(0,1fr); }
+#rhroot .rh_instrument > * { grid-column:auto; grid-row:auto; }
+#rhroot .rh_rightcol { width:auto; }
+}
+@container (max-width:560px) {
 #rhroot { padding:10px 6px 14px; }
 #rhroot .rh_rrow { flex-wrap:wrap; }
 #rhroot .rh_rkey { white-space:normal; }

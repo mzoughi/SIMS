@@ -12,7 +12,7 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Physics Simulations-Electrostatics: Work and Potential in a Uniform Field</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, uniform electric field, work, potential energy, electric potential, lesson, scientific">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, electrostatics, uniform electric field, work, potential energy, electric potential, lesson, scientific">
 <meta name="description" content="Work and Potential in a Uniform Field -- interactive physics simulation.">
 <style>
 body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
@@ -42,6 +42,11 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <input type="range" id="ufdQ" min="-50" max="50" value="20" step="1"
 oninput="document.getElementById('ufdQVal').textContent=(this.value/10).toFixed(1);ufdSim.setQ(parseInt(this.value,10)/10);">
 <span id="ufdQVal">2.0</span> µC
+</div>
+<div class="ufd_motion">
+<input type="button" value="&#9654; Move q to B" onclick="ufdSim.goB();">
+<input type="button" value="&#8634; Back to A" onclick="ufdSim.goA();">
+<span class="ufd_hint">or drag q, A and B on the picture</span>
 </div>
 <div class="footer">
 <div class="row3">
@@ -138,6 +143,9 @@ font-size:.83rem; color:#333; font-style:italic;
 .tbar { padding:4px; height:50px; background-color:#f90; text-align:center; line-height:42px; }
 .tbar h3 { font-size:1.1rem; font-weight:bold; }
 .mcontent { height:442px; }
+.ufd_motion { width:auto; background:#eaf6d0; padding:6px 8px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center; font-family:monospace; font-size:.8rem; }
+.ufd_motion input[type=button] { padding:4px 12px; cursor:pointer; font-weight:bold; }
+.ufd_hint { color:#556; font-style:italic; }
 .bbar { background-color:#df9; padding:8px; text-align:center; font-size:.83rem; font-family:monospace; }
 .bbar input[type=range] { vertical-align:middle; width:130px; }
 .bbar input[type=button] { padding:3px 12px; cursor:pointer; }
@@ -257,6 +265,11 @@ return { x: sceneCx + xcm*pxPerCm, y: sceneCy - ycm*pxPerCm };
 function getEvec() {
 /* Eang stored in math convention (CCW from +x).  Components:           */
 return { x: Emag * Math.cos(Eang), y: Emag * Math.sin(Eang) };
+}
+/* the same physics, from A to any point (x, y) */
+function physAt(x, y) {
+var E = getEvec(), sx = x - Ax, sy = y - Ay, Edots = E.x*sx + E.y*sy, WE = qVal*Edots;
+return { WE:WE, dU:-WE, dV:-Edots };
 }
 function physics() {
 var E = getEvec();
@@ -475,6 +488,14 @@ ctx.fillText(label, cx, bcBot + 3);
 ctx.font = '10px monospace';
 ctx.fillText(valTxt+' '+unit, cx, bcBot + 17);
 }
+/* the value a bar will reach when q arrives at B */
+function drawTarget(cx, value, scaleMax) {
+var y = bcMidY - Math.max(-1, Math.min(1, value/scaleMax))*bcH;
+ctx.save(); ctx.strokeStyle = c('--ufd-text','#111'); ctx.lineWidth = 1.5; ctx.setLineDash([5,3]);
+ctx.beginPath(); ctx.moveTo(cx - barW/2 - 3, y); ctx.lineTo(cx + barW/2 + 3, y); ctx.stroke(); ctx.setLineDash([]);
+ctx.fillStyle = c('--ufd-text','#111'); ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+ctx.fillText('B', cx + barW/2 + 5, y); ctx.restore();
+}
 /* ── full redraw ── */
 function drawFrame() {
 ctx.clearRect(0, 0, W, H);
@@ -487,26 +508,21 @@ ctx.strokeRect(sceneLeft, sceneTop, sceneRight - sceneLeft, sceneBot - sceneTop)
 drawAxes();
 drawFieldArrows();
 drawChargeAndPath();
-/* Bar scales */
-var p = physics();
-/* energy bar scale: pick a round number based on extremes
- |W_E|_max occurs at |q|=5 µC, |E|=100 V/cm, |s|≤√(400+400)=28.3 cm
- → max ≈ 5 * 100 * 28 = 14000 µJ.  Use 14000 µJ cap.                */
-var Emax = 14000;
-/* potential bar scale: |ΔV|_max = 100 V/cm * 28.3 cm ≈ 2830 V. Use 3000 V. */
-var Vmax = 3000;
-var WEtxt = fmt(p.WE);
-var dUtxt = fmt(p.dU);
-var dVtxt = fmt(p.dV);
-drawBar(bar1X, 'W_E',  p.WE, WEtxt, c('--ufd-bar-w','#2a7a2a'), Emax, true,  'µJ');
-drawBar(bar2X, 'ΔU',   p.dU, dUtxt, c('--ufd-bar-u','#b06800'), Emax, false, 'µJ');
-drawBar(bar3X, 'ΔV',   p.dV, dVtxt, c('--ufd-bar-v','#1e6fa8'), Vmax, true,  'V');
-/* readouts above bars: E·s, etc. */
+/* Bar scales: set by the whole journey from A to B, so the bars fill up as q travels;
+   the dashed marks show the values the bars will reach when q arrives at B */
+var p = physics(), pB = physAt(Bx, By);
+function nice(v){ v = Math.max(v, 1e-9); var e = Math.pow(10, Math.floor(Math.log(v)/Math.LN10)), m = v/e; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10)*e; }
+var Emax = nice(1.1*Math.max(Math.abs(pB.WE), Math.abs(p.WE), 1));
+var Vmax = nice(1.1*Math.max(Math.abs(pB.dV), Math.abs(p.dV), 1));
+drawBar(bar1X, 'W_E',  p.WE, fmt(p.WE), c('--ufd-bar-w','#2a7a2a'), Emax, true,  'µJ'); drawTarget(bar1X, pB.WE, Emax);
+drawBar(bar2X, 'ΔU',   p.dU, fmt(p.dU), c('--ufd-bar-u','#b06800'), Emax, false, 'µJ'); drawTarget(bar2X, pB.dU, Emax);
+drawBar(bar3X, 'ΔV',   p.dV, fmt(p.dV), c('--ufd-bar-v','#1e6fa8'), Vmax, true,  'V');  drawTarget(bar3X, pB.dV, Vmax);
+var atB = Math.abs(Qx - Bx) < 0.01 && Math.abs(Qy - By) < 0.01, atA = Math.abs(Qx - Ax) < 0.01 && Math.abs(Qy - Ay) < 0.01;
 ctx.fillStyle = c('--ufd-text','#111');
 ctx.font = 'bold 11px sans-serif';
 ctx.textAlign = 'center';
 ctx.textBaseline = 'top';
-ctx.fillText('Energy & Potential Changes (B − A)', W/2, bcTop - 18);
+ctx.fillText(atB ? 'Changes from A to B -- q has arrived at B' : (atA ? 'q is at A: nothing has changed yet (dashed marks: values at B)' : 'Changes from A to q (dashed marks: values at B)'), W/2, bcTop - 18);
 }
 function fmt(v) {
 if (Math.abs(v) >= 1000) return (v>=0?'+':'')+(v/1000).toFixed(2)+'k';
@@ -518,15 +534,17 @@ var p = physics();
 var msg = 'E = '+Emag+' V/cm at ∠'+Math.round(Eang*180/Math.PI)+'°. ';
 msg += 'q = '+qVal.toFixed(1)+' µC. ';
 msg += 'Start A = ('+Ax+', '+Ay+') cm. ';
-msg += 'Current q-position = ('+Qx+', '+Qy+') cm. ';
+msg += 'Current q-position = ('+(+Qx.toFixed(1))+', '+(+Qy.toFixed(1))+') cm. ';
 msg += 'Target B = ('+Bx+', '+By+') cm. ';
-msg += 's⃗ (A → q) = ('+p.sx+', '+p.sy+') cm. ';
+msg += 's⃗ (A → q) = ('+(+p.sx.toFixed(1))+', '+(+p.sy.toFixed(1))+') cm. ';
 msg += 'E·s = '+p.Edots.toFixed(1)+' V. ';
 msg += 'W_E = q(E·s) = '+fmt(p.WE)+' µJ. ';
 msg += 'ΔU = −W_E = '+fmt(p.dU)+' µJ. ';
 msg += 'ΔV = −E·s = '+fmt(p.dV)+' V. ';
-if (p.sMag < 0.1) {
-msg += 'q is still at the starting point A → no displacement, no work done yet.';
+if (Math.abs(Qx - Bx) < 0.01 && Math.abs(Qy - By) < 0.01 && p.sMag >= 0.1) {
+msg += 'q has arrived at B. ' + (Math.abs(p.WE) < 1 ? 'A to B is perpendicular to E: the field does no work.' : (p.WE > 0 ? 'The field did positive work, so the potential energy decreased.' : 'The field did negative work, so the potential energy increased.')) + ' Any other path from A to B gives the same result.';
+} else if (p.sMag < 0.1) {
+msg += 'q is at the starting point A: no displacement, no work done yet. Press Move q to B, or drag it.';
 } else if (Math.abs(p.WE) < 1) {
 msg += 'q has moved perpendicular to E → field does no work.';
 } else if (p.WE > 0) {
@@ -630,8 +648,56 @@ drawFrame();
 narrate();
 }
 /* boot */
+/* ── moving the charge ── */
+var anim = null;
+function stopAnim(){ if (anim){ cancelAnimationFrame(anim.raf); anim = null; } }
+function showSliders(){
+[['ufdAx',Ax],['ufdAy',Ay],['ufdQx',Qx],['ufdQy',Qy],['ufdBx',Bx],['ufdBy',By]].forEach(function(p){
+var r = document.getElementById(p[0] + ''), t = document.getElementById(p[0] + 'Val'), v = Math.round(p[1]);
+if (r) r.value = v; if (t) t.textContent = v; });
+}
+function goB(){
+stopAnim();
+var x0 = Qx, y0 = Qy, d = Math.hypot(Bx - x0, By - y0); if (d < 0.01){ narrate(); return; }
+var T = Math.max(600, d*110), t0 = null;
+anim = { raf:0 };
+function step(t){
+if (!anim) return; if (t0 === null) t0 = t;
+var f = Math.min(1, (t - t0)/T), e = f < 0.5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
+Qx = x0 + (Bx - x0)*e; Qy = y0 + (By - y0)*e;
+if (f >= 1){ Qx = Bx; Qy = By; anim = null; }
+showSliders(); drawFrame();
+if (anim) anim.raf = requestAnimationFrame(step); else narrate();
+}
+anim.raf = requestAnimationFrame(step);
+}
+function goA(){ stopAnim(); Qx = Ax; Qy = Ay; showSliders(); drawFrame(); narrate(); }
+/* dragging q, A or B on the picture (1 cm steps, like the sliders) */
+var drag = null;
+function cmAt(cx, cy){ var r = canvas.getBoundingClientRect(), px = (cx - r.left)*W/r.width, py = (cy - r.top)*H/r.height;
+return { x:(px - sceneCx)/pxPerCm, y:(sceneCy - py)/pxPerCm, k:W/r.width }; }
+function pick(p, touch){
+var tol = (12 + (touch ? 10 : 0))*p.k/pxPerCm;
+var cands = [['Q', Qx, Qy], ['B', Bx, By], ['A', Ax, Ay]], best = null, bd = 1e9;
+cands.forEach(function(c2){ var d = Math.hypot(p.x - c2[1], p.y - c2[2]); if (d < tol && d < bd){ bd = d; best = c2[0]; } });
+return best;
+}
+function dragTo(p){
+var x = Math.max(-10, Math.min(10, Math.round(p.x))), y = Math.max(-10, Math.min(10, Math.round(p.y)));
+if (drag === 'Q'){ Qx = x; Qy = y; }
+else if (drag === 'B'){ Bx = x; By = y; }
+else { Ax = x; Ay = y; Qx = Ax; Qy = Ay; }      /* a new start: the charge goes back to A */
+showSliders(); drawFrame();
+}
+canvas.addEventListener('mousedown', function(e){ drag = pick(cmAt(e.clientX, e.clientY), false); if (drag){ stopAnim(); canvas.style.cursor = 'grabbing'; } });
+window.addEventListener('mousemove', function(e){ var p = cmAt(e.clientX, e.clientY); if (drag){ dragTo(p); return; } canvas.style.cursor = pick(p, false) ? 'grab' : 'default'; });
+window.addEventListener('mouseup', function(){ if (drag){ drag = null; canvas.style.cursor = 'default'; narrate(); } });
+canvas.addEventListener('touchstart', function(e){ var t = e.touches[0]; drag = pick(cmAt(t.clientX, t.clientY), true); if (drag){ stopAnim(); e.preventDefault(); } }, { passive:false });
+canvas.addEventListener('touchmove', function(e){ if (!drag) return; e.preventDefault(); var t = e.touches[0]; dragTo(cmAt(t.clientX, t.clientY)); }, { passive:false });
+canvas.addEventListener('touchend', function(){ if (drag){ drag = null; narrate(); } });
 init();
-return { setQ:setQ, setE:setE, setPt:setPt, rst:rst };
+return { setQ:setQ, setE:setE, setPt:function(w){ stopAnim(); setPt(w); }, rst:function(){ stopAnim(); rst(); }, goB:goB, goA:goA,
+_state:function(){ var p = physics(), pB = physAt(Bx, By); return { A:[Ax,Ay], Q:[Qx,Qy], B:[Bx,By], q:qVal, E:Emag, ang:Eang, WE:p.WE, dU:p.dU, dV:p.dV, WEB:pB.WE, dVB:pB.dV }; } };
 };
 var ufdSim = new ufdGen();
 </script>

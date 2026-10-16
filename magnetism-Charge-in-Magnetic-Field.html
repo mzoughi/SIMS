@@ -1,246 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations- Electricity and Magnetism: One Charge in a Magnetic Field</title>
+<title>Physics Simulations-Magnetism: A Charge in a Magnetic Field</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,magnetism,magnetic force,charge,Lorentz force,F=qvB,cyclotron,helix,right-hand rule,lesson,scientific">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching,magnetism, magnet, teach, learn,force, current, magnetism, magnetic field, physics simulation, lesson, scientific">
+<meta name="description" content="A Charge in a Magnetic Field -- interactive physics simulation.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
-<div id="mqroot1011" role="main" aria-label="One charge in a magnetic field simulator">
+<main class="page">
+<hr><hr>
+<div id="mqroot" role="main" aria-label="One charge in a magnetic field simulator">
 <!-- Accessibility toolbar -->
-<div class="mq_a11y1011" role="toolbar" aria-label="Display options">
-<button type="button" class="mq_a11ybtn1011" id="mqBtnHC1011" onclick="chBField1011.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="mq_a11ybtn1011" id="mqBtnLM1011" onclick="chBField1011.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
-<button type="button" class="mq_a11ybtn1011" id="mqBtnCB1011" onclick="chBField1011.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
-<button type="button" class="mq_a11ybtn1011 mq_a11yon1011" id="mqBtnNR1011" onclick="chBField1011.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+<div class="mq_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="mq_a11ybtn" id="mqBtnHC" onclick="chBField.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="mq_a11ybtn" id="mqBtnLM" onclick="chBField.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="mq_a11ybtn" id="mqBtnCB" onclick="chBField.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="mq_a11ybtn mq_a11yon" id="mqBtnNR" onclick="chBField.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
 </div>
 <!-- Header -->
-<div class="mq_header1011">
-<p class="mq_h11011">One Charge in a Magnetic Field</p>
-<p class="mq_sub1011">F = q v × B -- the force is always perpendicular to v and to B -- XY, YZ or XZ view</p>
+<div class="mq_header">
+<p class="mq_h1">One Charge in a Magnetic Field</p>
+<p class="mq_sub">F = q v × B -- the force is always perpendicular to v and to B -- XY, YZ or XZ view</p>
 </div>
 <!-- Instrument grid -->
-<div class="mq_instrument1011">
+<div class="mq_instrument">
 <!-- Diagram panel -->
-<div class="mq_diagpanel1011">
-<div class="mq_diaglabel1011">
-<span class="mq_viewtgl1011" role="group" aria-label="Choose view">
-<button type="button" class="mq_viewbtn1011 mq_viewon1011" id="mqViewXY1011" onclick="chBField1011.setView('xy')" aria-pressed="true">XY VIEW</button>
-<button type="button" class="mq_viewbtn1011" id="mqViewYZ1011" onclick="chBField1011.setView('yz')" aria-pressed="false">YZ VIEW</button>
-<button type="button" class="mq_viewbtn1011" id="mqViewXZ1011" onclick="chBField1011.setView('xz')" aria-pressed="false">XZ VIEW</button>
+<div class="mq_diagpanel">
+<div class="mq_diaglabel">
+<span class="mq_viewtgl" role="group" aria-label="Choose view">
+<button type="button" class="mq_viewbtn mq_viewon" id="mqViewXY" onclick="chBField.setView('xy')" aria-pressed="true">XY VIEW</button>
+<button type="button" class="mq_viewbtn" id="mqViewYZ" onclick="chBField.setView('yz')" aria-pressed="false">YZ VIEW</button>
+<button type="button" class="mq_viewbtn" id="mqViewXZ" onclick="chBField.setView('xz')" aria-pressed="false">XZ VIEW</button>
 </span>
-<span id="mqDiagCaption1011">looking along −z · z out of the screen</span>
+<span id="mqDiagCaption">looking along −z · z out of the screen</span>
 </div>
-<canvas id="myCanvas1011" width="520" height="360" role="img" aria-label="Charge moving in a magnetic field" aria-describedby="mqDiagDesc1011"></canvas>
-<p id="mqDiagDesc1011" class="mq_sronly1011">Plot of the charge, its path, its velocity and the magnetic force.</p>
-<div class="mq_playbar1011">
-<input type="button" class="mq_pbtn1011 mq_pplay1011" value="▶ Play" onclick="chBField1011.play()" aria-label="Play">
-<input type="button" class="mq_pbtn1011" value="⏸ Pause" onclick="chBField1011.pause()" aria-label="Pause">
-<input type="button" class="mq_pbtn1011" value="⏮ Step" onclick="chBField1011.stepBack()" aria-label="Step back">
-<input type="button" class="mq_pbtn1011" value="Step ⏭" onclick="chBField1011.stepForward()" aria-label="Step forward">
-<input type="button" class="mq_pbtn1011" value="↺ Restart" onclick="chBField1011.reStart()" aria-label="Restart with the current settings">
-<input type="button" class="mq_pbtn1011" value="⟲ Reinitialize" onclick="chBField1011.reInitialize();chBField1011.reStart();" aria-label="Reset all settings to their defaults">
+<canvas id="myCanvas" width="520" height="360" role="img" aria-label="Charge moving in a magnetic field" aria-describedby="mqDiagDesc"></canvas>
+<p id="mqDiagDesc" class="mq_sronly">Plot of the charge, its path, its velocity and the magnetic force.</p>
+<div class="mq_playbar">
+<input type="button" class="mq_pbtn mq_pplay" value="▶ Play" onclick="chBField.play()" aria-label="Play">
+<input type="button" class="mq_pbtn" value="⏸ Pause" onclick="chBField.pause()" aria-label="Pause">
+<input type="button" class="mq_pbtn" value="⏮ Step" onclick="chBField.stepBack()" aria-label="Step back">
+<input type="button" class="mq_pbtn" value="Step ⏭" onclick="chBField.stepForward()" aria-label="Step forward">
+<input type="button" class="mq_pbtn" value="↺ Restart" onclick="chBField.reStart()" aria-label="Restart with the current settings">
+<input type="button" class="mq_pbtn" value="⟲ Reinitialize" onclick="chBField.reInitialize();chBField.reStart();" aria-label="Reset all settings to their defaults">
 </div>
 </div>
 <!-- Right column -->
-<div class="mq_rightcol1011">
+<div class="mq_rightcol">
 <!-- Parameters -->
-<div class="mq_instpanel1011">
-<div class="mq_insttitle1011">Parameters</div>
-<div class="mq_instbody1011">
-<div class="mq_ctrlrow1011">
-<div class="mq_ctrlhdr1011"><label class="mq_ctrlname1011" for="f1">Magnetic field B</label><span class="mq_ctrlval1011 mq_mag1011" id="f001">1</span></div>
-<input type="range" class="mq_rangmag1011" id="f1" min="-3" max="3" value="1" step="1" aria-label="Magnetic field strength" oninput="chBField1011.setField(this.value)" onchange="chBField1011.setField(this.value)">
-<div class="mq_segrow1011" role="group" aria-label="Field direction">
-<button type="button" class="mq_segbtn1011 mq_segon1011" id="version2" onclick="chBField1011.setMode(2)" aria-pressed="true">B along x<br><small>+B → +x</small></button>
-<button type="button" class="mq_segbtn1011" id="version4" onclick="chBField1011.setMode(4)" aria-pressed="false">B along y<br><small>+B → +y</small></button>
-<button type="button" class="mq_segbtn1011" id="version3" onclick="chBField1011.setMode(3)" aria-pressed="false" title="B &gt; 0 points along −z, into the XY screen">B along z<br><small>+B → −z</small></button>
+<div class="mq_instpanel">
+<div class="mq_insttitle">Parameters</div>
+<div class="mq_instbody">
+<div class="mq_ctrlrow">
+<div class="mq_ctrlhdr"><label class="mq_ctrlname" for="f1">Magnetic field B</label><span class="mq_ctrlval mq_mag" id="f001">2</span></div>
+<input type="range" class="mq_rangmag" id="f1" min="-3" max="3" value="2" step="1" aria-label="Magnetic field strength" oninput="chBField.setField(this.value)" onchange="chBField.setField(this.value)">
+<div class="mq_segrow" role="group" aria-label="Field direction">
+<button type="button" class="mq_segbtn mq_segon" id="version2" onclick="chBField.setMode(2)" aria-pressed="true">B along x<br><small>+B → +x</small></button>
+<button type="button" class="mq_segbtn" id="version4" onclick="chBField.setMode(4)" aria-pressed="false">B along y<br><small>+B → +y</small></button>
+<button type="button" class="mq_segbtn" id="version3" onclick="chBField.setMode(3)" aria-pressed="false" title="B &gt; 0 points along −z, into the XY screen">B along z<br><small>+B → −z</small></button>
 </div>
 </div>
-<div class="mq_ctrlrow1011">
-<div class="mq_ctrlhdr1011"><label class="mq_ctrlname1011" for="v1x">Initial v<sub>x</sub></label><span class="mq_ctrlval1011 mq_cyan1011" id="s001">1</span></div>
-<input type="range" class="mq_rangcyan1011" id="v1x" min="0" max="6" value="1" step="1" aria-label="Initial velocity x component" oninput="chBField1011.setSpeed(this.value)" onchange="chBField1011.setSpeed(this.value)">
+<div class="mq_ctrlrow">
+<div class="mq_ctrlhdr"><label class="mq_ctrlname" for="v1x">Initial v<sub>x</sub></label><span class="mq_ctrlval mq_cyan" id="s001">3</span></div>
+<input type="range" class="mq_rangcyan" id="v1x" min="0" max="6" value="3" step="1" aria-label="Initial velocity x component" oninput="chBField.setSpeed(this.value)" onchange="chBField.setSpeed(this.value)">
 </div>
-<div class="mq_ctrlrow1011">
-<div class="mq_ctrlhdr1011"><label class="mq_ctrlname1011" for="v1y">Initial v<sub>y</sub></label><span class="mq_ctrlval1011 mq_cyan1011" id="s002">0</span></div>
-<input type="range" class="mq_rangcyan1011" id="v1y" min="-1" max="6" value="0" step="1" aria-label="Initial velocity y component" oninput="chBField1011.setSpeedY(this.value)" onchange="chBField1011.setSpeedY(this.value)">
+<div class="mq_ctrlrow">
+<div class="mq_ctrlhdr"><label class="mq_ctrlname" for="v1y">Initial v<sub>y</sub></label><span class="mq_ctrlval mq_cyan" id="s002">0</span></div>
+<input type="range" class="mq_rangcyan" id="v1y" min="-1" max="6" value="0" step="1" aria-label="Initial velocity y component" oninput="chBField.setSpeedY(this.value)" onchange="chBField.setSpeedY(this.value)">
 </div>
-<div class="mq_ctrlrow1011">
-<div class="mq_ctrlhdr1011"><label class="mq_ctrlname1011" for="ch1">Charge q</label><span class="mq_ctrlval1011" id="c001">1</span></div>
-<input type="range" id="ch1" min="-3" max="3" value="1" step="1" aria-label="Charge" oninput="chBField1011.setCharge(this.value)" onchange="chBField1011.setCharge(this.value)">
+<div class="mq_ctrlrow">
+<div class="mq_ctrlhdr"><label class="mq_ctrlname" for="ch1">Charge q</label><span class="mq_ctrlval" id="c001">1</span></div>
+<input type="range" id="ch1" min="-3" max="3" value="1" step="1" aria-label="Charge" oninput="chBField.setCharge(this.value)" onchange="chBField.setCharge(this.value)">
 </div>
-<div class="mq_ctrlrow1011">
-<div class="mq_ctrlhdr1011"><label class="mq_ctrlname1011" for="ch2">Mass m</label><span class="mq_ctrlval1011 mq_green1011" id="c002">1</span></div>
-<input type="range" class="mq_ranggreen1011" id="ch2" min="1" max="6" value="1" step="1" aria-label="Mass" oninput="chBField1011.setMass(this.value)" onchange="chBField1011.setMass(this.value)">
+<div class="mq_ctrlrow">
+<div class="mq_ctrlhdr"><label class="mq_ctrlname" for="ch2">Mass m</label><span class="mq_ctrlval mq_green" id="c002">2</span></div>
+<input type="range" class="mq_ranggreen" id="ch2" min="1" max="6" value="2" step="1" aria-label="Mass" oninput="chBField.setMass(this.value)" onchange="chBField.setMass(this.value)">
 </div>
-<div class="mq_ctrlrow1011">
-<div class="mq_ctrlhdr1011"><label class="mq_ctrlname1011" for="x1i">Initial position x</label><span class="mq_ctrlval1011 mq_green1011" id="p001">-2</span></div>
-<input type="range" class="mq_ranggreen1011" id="x1i" min="-3" max="3.5" value="-2" step="0.5" aria-label="Initial x position" oninput="chBField1011.setPosition(this.value)" onchange="chBField1011.setPosition(this.value)">
+<div class="mq_ctrlrow">
+<div class="mq_ctrlhdr"><label class="mq_ctrlname" for="x1i">Initial position x</label><span class="mq_ctrlval mq_green" id="p001">-2</span></div>
+<input type="range" class="mq_ranggreen" id="x1i" min="-3" max="3.5" value="-2" step="0.5" aria-label="Initial x position" oninput="chBField.setPosition(this.value)" onchange="chBField.setPosition(this.value)">
 </div>
 </div>
 </div>
 <!-- Readout -->
-<div class="mq_readout1011">
-<div class="mq_insttitle1011">Readout</div>
-<div class="mq_rinner1011">
-<div class="mq_rrow1011"><span class="mq_rkey1011">t</span><span class="mq_rval1011" id="mqRT1011">--</span></div>
-<div class="mq_rrow1011"><span class="mq_rkey1011">r = (x,y,z)</span><span class="mq_rval1011" id="mqRPos1011">--</span></div>
-<div class="mq_rrow1011"><span class="mq_rkey1011">v</span><span class="mq_rval1011 mq_cyan1011" id="mqRV1011">--</span></div>
-<div class="mq_rrow1011"><span class="mq_rkey1011">|v|</span><span class="mq_rval1011 mq_cyan1011" id="mqRVm1011">--</span></div>
-<div class="mq_rrow1011"><span class="mq_rkey1011">F = qv×B</span><span class="mq_rval1011 mq_amber1011" id="mqRF1011">--</span></div>
-<div class="mq_rrow1011"><span class="mq_rkey1011">|F|</span><span class="mq_rval1011 mq_amber1011" id="mqRFm1011">--</span></div>
-<div class="mq_rrow1011"><span class="mq_rkey1011">Radius m v⊥/|q|B</span><span class="mq_rval1011" id="mqRR1011">--</span></div>
-<div class="mq_rrow1011"><span class="mq_rkey1011">Status</span><span class="mq_rval1011" id="mqRS1011">--</span></div>
+<div class="mq_readout">
+<div class="mq_insttitle">Readout</div>
+<div class="mq_rinner">
+<div class="mq_rrow"><span class="mq_rkey">t</span><span class="mq_rval" id="mqRT">--</span></div>
+<div class="mq_rrow"><span class="mq_rkey">r = (x,y,z)</span><span class="mq_rval" id="mqRPos">--</span></div>
+<div class="mq_rrow"><span class="mq_rkey">v</span><span class="mq_rval mq_cyan" id="mqRV">--</span></div>
+<div class="mq_rrow"><span class="mq_rkey">|v|</span><span class="mq_rval mq_cyan" id="mqRVm">--</span></div>
+<div class="mq_rrow"><span class="mq_rkey">F = qv×B</span><span class="mq_rval mq_amber" id="mqRF">--</span></div>
+<div class="mq_rrow"><span class="mq_rkey">|F|</span><span class="mq_rval mq_amber" id="mqRFm">--</span></div>
+<div class="mq_rrow"><span class="mq_rkey">Radius m v⊥/|q|B</span><span class="mq_rval" id="mqRR">--</span></div>
+<div class="mq_rrow"><span class="mq_rkey">Status</span><span class="mq_rval" id="mqRS">--</span></div>
 </div>
 </div>
 </div><!-- right column -->
 <!-- Formula strip -->
-<div class="mq_formulastrip1011">
-<span class="mq_formulatxt1011">F = q v × B &nbsp;|&nbsp; a = F/m &nbsp;|&nbsp; |F| = |q| v B sinθ &nbsp;|&nbsp; field region: 0 ≤ x ≤ 5, −4 ≤ y ≤ 4 (all z) &nbsp;|&nbsp; arbitrary units</span>
-<span class="mq_formulalive1011" id="mqFormulaLive1011">--</span>
+<div class="mq_formulastrip">
+<span class="mq_formulatxt">F = q v × B &nbsp;|&nbsp; a = F/m &nbsp;|&nbsp; |F| = |q| v B sinθ &nbsp;|&nbsp; field region: 0 ≤ x ≤ 5, −4 ≤ y ≤ 4 (all z) &nbsp;|&nbsp; arbitrary units</span>
+<span class="mq_formulalive" id="mqFormulaLive">--</span>
 </div>
 </div><!-- instrument -->
-<div id="mqNarBar1011" class="mq_narbar1011" role="status" aria-live="polite" aria-atomic="true"></div>
-<div id="mqSrAnnounce1011" class="mq_sronly1011" aria-live="assertive" aria-atomic="true"></div>
-<p class="mq_credit1011">Simulation by Taha Mzoughi (first posted 2-10-2016) -- MOM adaptation</p>
+<div id="mqNarBar" class="mq_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div id="mqSrAnnounce" class="mq_sronly" aria-live="assertive" aria-atomic="true"></div>
+<p class="mq_credit">Simulation by Taha Mzoughi (first posted 2-10-2016) -- MOM adaptation</p>
 </div><!-- #mqroot -->
-<div class="flex1011">
-<p>In this simulation, you can investigate the force that a Magnetic Field exerts on a charged particle. </p>
-</div>
-<hr><p><b>Activity:</b>  Direction of Magnetic Field</p>
-<p><span style=font-weight:bold>Task:</span> Set the magnetic field to a positive value (e.g., B = +2) and observe the direction of the field arrows. Then switch to a negative value (e.g., B = -2) and compare.</p>
-<p><span style=font-weight:bold>Questions:</span>
-<ol><li>What happens to the direction of the field arrows when the magnetic field is set to a negative value?  </li>
-
-<li>Increasing the magnitude of the magnetic field results in:  </li>
-</ol>
-<hr><p><b>Activity:</b>  Velocity and Magnetic Force</p>
-<p><span style=font-weight:bold>Task:</span> Set the charge to q = +1 and the magnetic field to B = +2. Vary the velocity components and observe the direction and magnitude of the magnetic force.</p>
-<p><span style=font-weight:bold>Questions:</span>
-<ol><li>The magnetic force on a moving charge is:  </li>
-
-<li>If the velocity is zero, the magnetic force is:  </li>
-</ol>
-<hr><p><b>Activity:</b>  Charge Sign and Force Direction</p>
-<p><span style=font-weight:bold>Task:</span> Set the velocity to (vx, vy) = (3, 0) and the magnetic field to B = +2. Observe the force direction for q = +1 and then for q = -1.</p>
-<p><span style=font-weight:bold>Questions:</span>
-<ol><li>Reversing the sign of the charge will:  </li>
-
-<li>A negative charge moving in a magnetic field experiences a force:  </li>
-</ol>
-<hr><p><b>Activity:</b>  Charge Magnitude and Force Strength</p>
-<p><span style=font-weight:bold>Task:</span> Keep velocity and field constant. Vary the charge from q = -3 to q = +3 and observe how the force magnitude changes.</p>
-<p><span style=font-weight:bold>Questions:</span>
-<ol><li>The magnitude of the magnetic force is proportional to:  </li>
-
-<li>Which charge value results in the strongest force (assuming constant velocity and field)?  </li>
-</ol>
-<hr><p><b>Activity:</b>  Field Orientation Effects</p>
-<p><span style=font-weight:bold>Task:</span> Use the field orientation buttons to switch between horizontal field parallel to the screen and horizontal field perpendicular to the screen. Observe how the force direction changes.</p>
-<p><span style=font-weight:bold>Questions:</span>
-<ol><li>A magnetic field perpendicular to the screen affects the particle's motion by:  </li>
-
-<li>Changing the field orientation affects:  </li>
-</ol>
-<hr><p><b>Activity:</b>  Velocity Direction and Force Orientation</p>
-<p><span style=font-weight:bold>Task:</span> Set the magnetic field to B = +2 and the charge to q = +1. Try different velocity directions (e.g., vx = 3, vy = 0 vs. vx = 0, vy = 3) and observe how the force vector changes.</p>
-<p><span style=font-weight:bold>Questions:</span>
-<ol><li>The magnetic force is always:  </li>
-
-<li>Changing the direction of velocity while keeping charge and field constant will:  </li>
-</ol>
-<hr><p><b>Activity:</b>  Velocity Magnitude and Force Strength</p>
-<p><span style=font-weight:bold>Task:</span> Keep charge and field constant. Vary the velocity magnitude (e.g., vx = 1 to vx = 6) and observe how the force magnitude changes.</p>
-<p><span style=font-weight:bold>Questions:</span>
-<ol><li>The magnitude of the magnetic force increases when:  </li>
-
-<li>Which velocity value results in the strongest force (assuming constant charge and field)?  </li>
-</ol>
-<hr><p><b>Activity:</b>  Combined Effect of Charge and Velocity</p>
-<p><span style=font-weight:bold>Task:</span> Set the magnetic field to B = +2. Try combinations of charge and velocity:
-<br>Observe how the force direction and magnitude change.</p>
-<p><span style=font-weight:bold>Questions:</span>
-<ol><li>Reversing both charge and velocity will:  </li>
-
-<li>The magnetic force depends on:  </li>
-</ol>
-<hr><p><b>Activity:</b>  Force Magnitude and Field Strength</p>
-<p><span style=font-weight:bold>Task:</span> Set the charge to q = +1 and vary the magnetic field strength from B = -3 to B = +3. Observe how the force magnitude changes.</p>
-<p><span style=font-weight:bold>Questions:</span>
-<ol><li>The magnetic force on a charged particle increases when:  </li>
-
-<li>Which magnetic field value produces the strongest force for q = +1 and constant velocity?  </li>
-</ol>
-<hr><p><b>Activity:</b>  Charge Sign and Field Strength Interaction</p>
-<p><span style=font-weight:bold>Task:</span> Set the velocity to vx = 3 and vary the charge from q = +1 to q = -1 while also varying the field from B = +2 to B = -2. Observe how the force direction changes.</p>
-<p><span style=font-weight:bold>Questions:</span>
-<ol><li>Reversing both the charge and the field direction will:  </li>
-
-<li>A negative charge in a negative magnetic field experiences a force:  </li>
-</ol>
-<hr><p><b>Activity:</b>  Zero Field and Charge Effects</p>
-<p><span style=font-weight:bold>Task:</span> Set the magnetic field to B = 0 and vary the charge from q = -3 to q = +3. Observe whether the particle experiences any force.</p>
-<p><span style=font-weight:bold>Questions:</span>
-<ol><li>When the magnetic field is zero, the magnetic force is:  </li>
-
-<li>A charged particle in zero magnetic field will:  </li>
-</ol>
-<hr><p><b>Activity:</b>  Velocity Perpendicular to Field</p>
-<p><span style=font-weight:bold>Task:</span> Set the magnetic field to B = +2 and the charge to q = +1. Set the velocity to vx = 3, vy = 0. Observe the direction and magnitude of the magnetic force.</p>
-<p><span style=font-weight:bold>Questions:</span>
-<ol><li>When velocity is perpendicular to the magnetic field, the magnetic force is:  </li>
-
-<li>The direction of the magnetic force is:  </li>
-</ol>
-<hr><p><b>Activity:</b>  Velocity Parallel to Field</p>
-<p><span style=font-weight:bold>Task:</span> Set the magnetic field to B = +2 and the velocity to vx = 0, vy = 0. Then try vx = 2, vy = 0 with the field also horizontal. Observe the force.</p>
-<p><span style=font-weight:bold>Questions:</span>
-<ol><li>When velocity is parallel to the magnetic field, the magnetic force is:  </li>
-
-<li>A charged particle moving parallel to the magnetic field will:  </li>
-</ol>
-<hr><p><b>Activity:</b>  Velocity at an Angle to Field</p>
-<p><span style=font-weight:bold>Task:</span> Set the magnetic field to B = +2 and velocity to vx = 3, vy = 3. Observe the curved path and force vector.</p>
-<p><span style=font-weight:bold>Questions:</span>
-<ol><li>When velocity is at an angle to the magnetic field, the particle experiences:  </li>
-
-<li>The magnetic force depends on which component of velocity?  </li>
-</ol>
-<hr><p><b>Activity:</b>  Reversing Charge Sign in a Fixed Field</p>
-<p><span style=font-weight:bold>Task:</span> Set the magnetic field to B = +2 and velocity to vx = 3, vy = 0. First, set the charge to q = +1 and observe the force direction. Then reverse the charge to q = -1 and compare.</p>
-<p><span style=font-weight:bold>Questions:</span>
-<ol><li>Reversing the sign of the charge will:  </li>
-
-<li>A negative charge moving in a magnetic field experiences a force:  </li>
-</ol>
-<hr><p><b>Activity:</b>  Charge Sign Reversal and Curved Motion</p>
-<p><span style=font-weight:bold>Task:</span> Set the magnetic field to B = +2 and velocity to vx = 3, vy = 3. Observe the curved path for q = +1. Then reverse the charge to q = -1 and observe how the curvature changes.</p>
-<p><span style=font-weight:bold>Questions:</span>
-<ol><li>Reversing the charge sign causes the particle to:  </li>
-
-<li>The curvature of the particle's path is determined by:  </li>
-</ol>
-<hr><p><b>Activity:</b>  Charge Sign Reversal with Field Reversal</p>
-<p><span style=font-weight:bold>Task:</span> Set velocity to vx = 3 and try combinations of charge and field:
-<br>Observe how the force direction changes in each case.</p>
-<p><span style=font-weight:bold>Questions:</span>
-<ol><li>Reversing both the charge and the field direction will:  </li>
-
-<li>Which combination results in a force pointing in the same direction as the original (q = +1, B = +2)?  </li>
-</ol>
-<hr><p><b>Activity:</b>  Changing Velocity Direction</p>
-<p><span style=font-weight:bold>Task:</span> Set the magnetic field to B = +2 and charge to q = +1. Try different velocity directions:
-<br>Observe how the force vector changes in direction and magnitude.</p>
-<p><span style=font-weight:bold>Questions:</span>
-<ol><li>When the velocity vector is rotated, the magnetic force:  </li>
-
-<li>The magnetic force is strongest when the velocity is:  </li>
-</ol>
 <style>
-/* ════════ All simulator rules scoped to #mqroot1011 ════════ */
-#mqroot1011 {
+/* ════════ All simulator rules scoped to #mqroot ════════ */
+#mqroot {
 --mq-chassis:#1a1c1f; --mq-panel:#22262b; --mq-panel-hi:#2c3138; --mq-panel-lo:#14161a;
 --mq-border:#3a4048; --mq-border-hi:#525c66; --mq-text:#c8d0d8; --mq-dim:#8a94a3; --mq-bright:#e8eef5;
 --mq-accent:#e8a020; --mq-green:#3ad08f; --mq-cyan:#3ad0ff; --mq-amber:#ffb020; --mq-mag:#d070ff;
@@ -254,88 +137,96 @@ display:flex; flex-direction:column; align-items:center;
 padding:16px 10px 20px; gap:12px; box-sizing:border-box;
 width:100%; max-width:860px; margin:0 auto 10px; border-radius:6px; position:relative;
 }
-#mqroot1011.mq_lm1011 {
+#mqroot.mq_lm {
 --mq-chassis:#e9edf1; --mq-panel:#ffffff; --mq-panel-hi:#f1f4f7; --mq-panel-lo:#f4f6f9;
 --mq-border:#c3cad3; --mq-border-hi:#9aa3ae; --mq-text:#1d232a; --mq-dim:#556070; --mq-bright:#000000;
 --mq-accent:#a8620a; --mq-green:#12805a; --mq-cyan:#0a6f99; --mq-amber:#a8620a; --mq-mag:#8a2fb0;
 --mq-focus:#a8620a; --mq-nar-bg:#ffefc0; --mq-nar-border:#e0b040; --mq-nar-text:#333333;
 background-image:none;
 }
-#mqroot1011.mq_hc1011 {
+#mqroot.mq_hc {
 --mq-chassis:#000000; --mq-panel:#000000; --mq-panel-hi:#111111; --mq-panel-lo:#000000;
 --mq-border:#ffffff; --mq-border-hi:#ffffff; --mq-text:#ffffff; --mq-dim:#e0e0e0; --mq-bright:#ffffff;
 --mq-accent:#ffd700; --mq-green:#00ff88; --mq-cyan:#00e5ff; --mq-amber:#ffd700; --mq-mag:#ff80ff;
 --mq-focus:#ffff00; --mq-nar-bg:#000000; --mq-nar-border:#ffd700; --mq-nar-text:#ffffff;
 background-image:none;
 }
-#mqroot1011.mq_hc1011 .mq_instpanel1011, #mqroot1011.mq_hc1011 .mq_readout1011, #mqroot1011.mq_hc1011 .mq_diagpanel1011 { border-width:2px; }
-#mqroot1011.mq_cb1011 { --mq-cyan:#56B4E9; --mq-amber:#E69F00; --mq-mag:#CC79A7; --mq-green:#009E73; }
-#mqroot1011.mq_cb1011.mq_lm1011 { --mq-cyan:#0072B2; --mq-amber:#a86f00; --mq-mag:#a0507f; }
-#mqroot1011 *, #mqroot1011 *::before, #mqroot1011 *::after { box-sizing:border-box; margin:0; padding:0; }
-#mqroot1011 input:focus-visible, #mqroot1011 button:focus-visible { outline:2px solid var(--mq-focus); outline-offset:2px; }
+#mqroot.mq_hc .mq_instpanel, #mqroot.mq_hc .mq_readout, #mqroot.mq_hc .mq_diagpanel { border-width:2px; }
+#mqroot.mq_cb { --mq-cyan:#56B4E9; --mq-amber:#E69F00; --mq-mag:#CC79A7; --mq-green:#009E73; }
+#mqroot.mq_cb.mq_lm { --mq-cyan:#0072B2; --mq-amber:#a86f00; --mq-mag:#a0507f; }
+#mqroot *, #mqroot *::before, #mqroot *::after { box-sizing:border-box; margin:0; padding:0; }
+#mqroot input:focus-visible, #mqroot button:focus-visible { outline:2px solid var(--mq-focus); outline-offset:2px; }
 /* toolbar */
-#mqroot1011 .mq_a11y1011 { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; width:100%; }
-#mqroot1011 .mq_a11ybtn1011 { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--mq-panel-hi); border:1px solid var(--mq-border-hi); color:var(--mq-dim); }
-#mqroot1011 .mq_a11ybtn1011:hover { border-color:var(--mq-accent); color:var(--mq-accent); }
-#mqroot1011 .mq_a11yon1011 { background:rgba(58,208,143,.14); border-color:var(--mq-green); color:var(--mq-green); font-weight:bold; }
+#mqroot .mq_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; width:100%; }
+#mqroot .mq_a11ybtn { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--mq-panel-hi); border:1px solid var(--mq-border-hi); color:var(--mq-dim); }
+#mqroot .mq_a11ybtn:hover { border-color:var(--mq-accent); color:var(--mq-accent); }
+#mqroot .mq_a11yon { background:rgba(58,208,143,.14); border-color:var(--mq-green); color:var(--mq-green); font-weight:bold; }
 /* header */
-#mqroot1011 .mq_header1011 { display:flex; flex-direction:column; align-items:center; gap:3px; }
-#mqroot1011 .mq_h11011 { font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--mq-accent); }
-#mqroot1011 .mq_sub1011 { font-size:.7rem; color:var(--mq-dim); letter-spacing:.08em; text-transform:uppercase; text-align:center; }
+#mqroot .mq_header { display:flex; flex-direction:column; align-items:center; gap:3px; }
+#mqroot .mq_h1 { font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--mq-accent); }
+#mqroot .mq_sub { font-size:.7rem; color:var(--mq-dim); letter-spacing:.08em; text-transform:uppercase; text-align:center; }
 /* grid */
-#mqroot1011 .mq_instrument1011 { display:grid; grid-template-columns:1fr auto; gap:12px; width:100%; }
-#mqroot1011 .mq_diagpanel1011 { background:var(--mq-panel); border:1px solid var(--mq-border); border-radius:6px; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 4px 20px rgba(0,0,0,.35); }
-#mqroot1011 .mq_diaglabel1011 { background:var(--mq-panel-lo); border-bottom:1px solid var(--mq-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; color:var(--mq-dim); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px; }
-#mqroot1011 #mqDiagCaption1011 { color:var(--mq-accent); }
-#mqroot1011 .mq_viewtgl1011 { display:flex; }
-#mqroot1011 .mq_viewbtn1011 { padding:3px 10px; font-size:.62rem; font-family:monospace; letter-spacing:.08em; cursor:pointer; background:var(--mq-panel-hi); border:1px solid var(--mq-border-hi); color:var(--mq-dim); }
-#mqroot1011 .mq_viewbtn1011:first-child { border-radius:3px 0 0 3px; }
-#mqroot1011 .mq_viewbtn1011:last-child { border-radius:0 3px 3px 0; }
-#mqroot1011 .mq_viewbtn1011 + .mq_viewbtn1011 { border-left:none; }
-#mqroot1011 .mq_viewon1011 { background:var(--mq-accent); color:#111; border-color:var(--mq-accent); font-weight:bold; }
-#mqroot1011 #myCanvas1011 { display:block; max-width:100%; }
-#mqroot1011 .mq_playbar1011 { display:flex; gap:5px; flex-wrap:wrap; justify-content:center; padding:7px; background:var(--mq-panel-lo); border-top:1px solid var(--mq-border); }
-#mqroot1011 .mq_pbtn1011 { padding:5px 9px; font-family:monospace; font-size:.68rem; letter-spacing:.05em; border-radius:4px; cursor:pointer; background:var(--mq-panel-hi); border:1px solid var(--mq-border-hi); color:var(--mq-text); }
-#mqroot1011 .mq_pbtn1011:hover { color:var(--mq-bright); border-color:var(--mq-accent); }
-#mqroot1011 .mq_pplay1011 { color:var(--mq-green); border-color:var(--mq-green); font-weight:bold; }
+#mqroot .mq_instrument { display:grid; grid-template-columns:1fr auto; gap:12px; width:100%; }
+#mqroot .mq_diagpanel { background:var(--mq-panel); border:1px solid var(--mq-border); border-radius:6px; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+#mqroot .mq_diaglabel { background:var(--mq-panel-lo); border-bottom:1px solid var(--mq-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; color:var(--mq-dim); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px; }
+#mqroot #mqDiagCaption { color:var(--mq-accent); }
+#mqroot .mq_viewtgl { display:flex; }
+#mqroot .mq_viewbtn { padding:3px 10px; font-size:.62rem; font-family:monospace; letter-spacing:.08em; cursor:pointer; background:var(--mq-panel-hi); border:1px solid var(--mq-border-hi); color:var(--mq-dim); }
+#mqroot .mq_viewbtn:first-child { border-radius:3px 0 0 3px; }
+#mqroot .mq_viewbtn:last-child { border-radius:0 3px 3px 0; }
+#mqroot .mq_viewbtn + .mq_viewbtn { border-left:none; }
+#mqroot .mq_viewon { background:var(--mq-accent); color:#111; border-color:var(--mq-accent); font-weight:bold; }
+#mqroot #myCanvas { display:block; max-width:100%; }
+#mqroot .mq_playbar { display:flex; gap:5px; flex-wrap:wrap; justify-content:center; padding:7px; background:var(--mq-panel-lo); border-top:1px solid var(--mq-border); }
+#mqroot .mq_pbtn { padding:5px 9px; font-family:monospace; font-size:.68rem; letter-spacing:.05em; border-radius:4px; cursor:pointer; background:var(--mq-panel-hi); border:1px solid var(--mq-border-hi); color:var(--mq-text); }
+#mqroot .mq_pbtn:hover { color:var(--mq-bright); border-color:var(--mq-accent); }
+#mqroot .mq_pplay { color:var(--mq-green); border-color:var(--mq-green); font-weight:bold; }
 /* right column */
-#mqroot1011 .mq_rightcol1011 { display:flex; flex-direction:column; gap:12px; width:250px; }
-#mqroot1011 .mq_instpanel1011, #mqroot1011 .mq_readout1011 { background:var(--mq-panel); border:1px solid var(--mq-border); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.3); }
-#mqroot1011 .mq_insttitle1011 { background:var(--mq-panel-lo); border-bottom:1px solid var(--mq-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--mq-dim); }
-#mqroot1011 .mq_instbody1011 { padding:9px 12px; display:flex; flex-direction:column; gap:8px; }
-#mqroot1011 .mq_ctrlrow1011 { display:flex; flex-direction:column; gap:4px; }
-#mqroot1011 .mq_ctrlhdr1011 { display:flex; justify-content:space-between; align-items:baseline; }
-#mqroot1011 .mq_ctrlname1011 { font-size:.7rem; font-weight:600; letter-spacing:.04em; color:var(--mq-dim); text-transform:uppercase; }
-#mqroot1011 .mq_ctrlval1011 { font-family:monospace; font-size:.84rem; color:var(--mq-accent); text-align:right; }
-#mqroot1011 .mq_mag1011 { color:var(--mq-mag); }
-#mqroot1011 .mq_cyan1011 { color:var(--mq-cyan); }
-#mqroot1011 .mq_green1011 { color:var(--mq-green); }
-#mqroot1011 .mq_amber1011 { color:var(--mq-amber); }
-#mqroot1011 input[type=range] { width:100%; -webkit-appearance:none; height:4px; border-radius:2px; outline:none; cursor:pointer; background:var(--mq-panel-lo); border:1px solid var(--mq-border); }
-#mqroot1011 input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:15px; height:15px; border-radius:50%; background:var(--mq-accent); border:2px solid var(--mq-panel); cursor:pointer; }
-#mqroot1011 .mq_rangmag1011::-webkit-slider-thumb { background:var(--mq-mag); }
-#mqroot1011 .mq_rangcyan1011::-webkit-slider-thumb { background:var(--mq-cyan); }
-#mqroot1011 .mq_ranggreen1011::-webkit-slider-thumb { background:var(--mq-green); }
-#mqroot1011 .mq_segrow1011 { display:flex; margin-top:3px; }
-#mqroot1011 .mq_segbtn1011 { flex:1; padding:4px 3px; font-family:monospace; font-size:.64rem; line-height:1.2; cursor:pointer; background:var(--mq-panel-hi); border:1px solid var(--mq-border-hi); color:var(--mq-dim); }
-#mqroot1011 .mq_segbtn1011:first-child { border-radius:3px 0 0 3px; }
-#mqroot1011 .mq_segbtn1011:last-child { border-radius:0 3px 3px 0; }
-#mqroot1011 .mq_segbtn1011 + .mq_segbtn1011 { border-left:none; }
-#mqroot1011 .mq_segbtn1011 small { font-size:.58rem; }
-#mqroot1011 .mq_segon1011 { background:var(--mq-mag); color:#111; border-color:var(--mq-mag); font-weight:bold; }
-#mqroot1011 .mq_rinner1011 { padding:8px 10px; display:flex; flex-direction:column; gap:4px; }
-#mqroot1011 .mq_rrow1011 { display:flex; justify-content:space-between; align-items:center; gap:6px; padding:4px 7px; background:var(--mq-panel-lo); border:1px solid var(--mq-border); border-radius:3px; }
-#mqroot1011 .mq_rkey1011 { font-family:monospace; font-size:.6rem; color:var(--mq-dim); letter-spacing:.05em; text-transform:uppercase; white-space:nowrap; }
-#mqroot1011 .mq_rval1011 { font-family:monospace; font-size:.74rem; text-align:right; }
+#mqroot .mq_rightcol { display:flex; flex-direction:column; gap:12px; width:250px; }
+#mqroot .mq_instpanel, #mqroot .mq_readout { background:var(--mq-panel); border:1px solid var(--mq-border); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.3); }
+#mqroot .mq_insttitle { background:var(--mq-panel-lo); border-bottom:1px solid var(--mq-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--mq-dim); }
+#mqroot .mq_instbody { padding:9px 12px; display:flex; flex-direction:column; gap:8px; }
+#mqroot .mq_ctrlrow { display:flex; flex-direction:column; gap:4px; }
+#mqroot .mq_ctrlhdr { display:flex; justify-content:space-between; align-items:baseline; }
+#mqroot .mq_ctrlname { font-size:.7rem; font-weight:600; letter-spacing:.04em; color:var(--mq-dim); text-transform:uppercase; }
+#mqroot .mq_ctrlval { font-family:monospace; font-size:.84rem; color:var(--mq-accent); text-align:right; }
+#mqroot .mq_mag { color:var(--mq-mag); }
+#mqroot .mq_cyan { color:var(--mq-cyan); }
+#mqroot .mq_green { color:var(--mq-green); }
+#mqroot .mq_amber { color:var(--mq-amber); }
+#mqroot input[type=range] { width:100%; -webkit-appearance:none; height:4px; border-radius:2px; outline:none; cursor:pointer; background:var(--mq-panel-lo); border:1px solid var(--mq-border); }
+#mqroot input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:15px; height:15px; border-radius:50%; background:var(--mq-accent); border:2px solid var(--mq-panel); cursor:pointer; }
+#mqroot .mq_rangmag::-webkit-slider-thumb { background:var(--mq-mag); }
+#mqroot .mq_rangcyan::-webkit-slider-thumb { background:var(--mq-cyan); }
+#mqroot .mq_ranggreen::-webkit-slider-thumb { background:var(--mq-green); }
+#mqroot .mq_segrow { display:flex; margin-top:3px; }
+#mqroot .mq_segbtn { flex:1; padding:4px 3px; font-family:monospace; font-size:.64rem; line-height:1.2; cursor:pointer; background:var(--mq-panel-hi); border:1px solid var(--mq-border-hi); color:var(--mq-dim); }
+#mqroot .mq_segbtn:first-child { border-radius:3px 0 0 3px; }
+#mqroot .mq_segbtn:last-child { border-radius:0 3px 3px 0; }
+#mqroot .mq_segbtn + .mq_segbtn { border-left:none; }
+#mqroot .mq_segbtn small { font-size:.58rem; }
+#mqroot .mq_segon { background:var(--mq-mag); color:#111; border-color:var(--mq-mag); font-weight:bold; }
+#mqroot .mq_rinner { padding:8px 10px; display:flex; flex-direction:column; gap:4px; }
+#mqroot .mq_rrow { display:flex; justify-content:space-between; align-items:center; gap:6px; padding:4px 7px; background:var(--mq-panel-lo); border:1px solid var(--mq-border); border-radius:3px; }
+#mqroot .mq_rkey { font-family:monospace; font-size:.6rem; color:var(--mq-dim); letter-spacing:.05em; text-transform:uppercase; white-space:nowrap; }
+#mqroot .mq_rval { font-family:monospace; font-size:.74rem; text-align:right; }
 /* formula strip + narration */
-#mqroot1011 .mq_formulastrip1011 { grid-column:1 / 3; background:var(--mq-panel-lo); border:1px solid var(--mq-border); border-radius:4px; padding:7px 14px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:7px; }
-#mqroot1011 .mq_formulatxt1011 { font-family:monospace; font-size:.66rem; color:var(--mq-dim); letter-spacing:.05em; }
-#mqroot1011 .mq_formulalive1011 { font-family:monospace; font-size:.68rem; color:var(--mq-accent); }
-#mqroot1011 .mq_narbar1011 { width:100%; min-height:28px; padding:6px 12px; background:var(--mq-nar-bg); border-left:4px solid var(--mq-nar-border); font-size:.84rem; color:var(--mq-nar-text); font-style:italic; line-height:1.45; border-radius:3px; }
-#mqroot1011 .mq_credit1011 { font-size:.62rem; color:var(--mq-dim); text-align:center; }
-#mqroot1011 .mq_sronly1011 { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+#mqroot .mq_formulastrip { grid-column:1 / 3; background:var(--mq-panel-lo); border:1px solid var(--mq-border); border-radius:4px; padding:7px 14px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:7px; }
+#mqroot .mq_formulatxt { font-family:monospace; font-size:.66rem; color:var(--mq-dim); letter-spacing:.05em; }
+#mqroot .mq_formulalive { font-family:monospace; font-size:.68rem; color:var(--mq-accent); }
+#mqroot .mq_narbar { width:100%; min-height:28px; padding:6px 12px; background:var(--mq-nar-bg); border-left:4px solid var(--mq-nar-border); font-size:.84rem; color:var(--mq-nar-text); font-style:italic; line-height:1.45; border-radius:3px; }
+#mqroot .mq_credit { font-size:.62rem; color:var(--mq-dim); text-align:center; }
+#mqroot .mq_sronly { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
 /* text section below the simulator */
-.flex1011 { width:100%; max-width:860px; min-height:40px; background-color:#fec; padding:8px; margin:0 auto 6px; box-sizing:border-box; }
+.flex { width:100%; max-width:860px; min-height:40px; background-color:#fec; padding:8px; margin:0 auto 6px; box-sizing:border-box; }
+
+/* ════ layout by the width the sim actually gets (in a MOM column it can be much narrower than the window);
+   the @media rules above stay as the fallback for browsers without container queries ════ */
+#mqroot { container-type:inline-size; }
+#mqroot #myCanvas { width:100%; max-width:520px; height:auto; margin:0 auto; }
+@media (max-width:820px) { #mqroot .mq_instrument { grid-template-columns:minmax(0,1fr); } #mqroot .mq_rightcol { width:auto; } #mqroot .mq_formulastrip { grid-column:auto; } }
+@container (max-width:820px) { #mqroot .mq_instrument { grid-template-columns:minmax(0,1fr); } #mqroot .mq_rightcol { width:auto; } #mqroot .mq_formulastrip { grid-column:auto; } }
+
 </style>
 <script>
 var chBField = function() {
@@ -343,8 +234,8 @@ var chBField = function() {
    Units are arbitrary. F = q v x B, a = F/m. The field fills the region 0 <= x <= 5, -4 <= y <= 4
    (all z). Mode 2: B along +x (Bx = B). Mode 4: B along +y (By = B). Mode 3: B perpendicular to the
    screen of the XY view, Bz = -B, so B > 0 points INTO that screen (shown as x).                                        */
-var ROOT = document.getElementById('mqroot1011');
-var canvas = document.getElementById('myCanvas1011');
+var ROOT = document.getElementById('mqroot');
+var canvas = document.getElementById('myCanvas');
 var ctx = canvas.getContext('2d');
 var CW = canvas.width, CH = canvas.height;
 function el(id){ return document.getElementById(id); }
@@ -569,14 +460,14 @@ if (s.t > T_END - 1e-9) { ctx.fillStyle = st.lm ? '#c0262a' : '#ff6060'; ctx.fon
 function fmtV(a) { return '(' + a.x.toFixed(2) + ', ' + a.y.toFixed(2) + ', ' + a.z.toFixed(2) + ')'; }
 function readouts() {
 var v = {x:s.vx, y:s.vy, z:s.vz}, F = forceAt(s), B = Bvec(), Bm = mag(B), vm = mag(v), Fm = mag(F);
-set('mqRT1011', s.t.toFixed(2));
-set('mqRPos1011', fmtV(s));
-set('mqRV1011', fmtV(v)); set('mqRVm1011', vm.toFixed(3));
-set('mqRF1011', fmtV(F)); set('mqRFm1011', Fm.toFixed(3));
+set('mqRT', s.t.toFixed(2));
+set('mqRPos', fmtV(s));
+set('mqRV', fmtV(v)); set('mqRVm', vm.toFixed(3));
+set('mqRF', fmtV(F)); set('mqRFm', Fm.toFixed(3));
 var vperp = 0; if (Bm > 0) { var vpar = (v.x*B.x + v.y*B.y + v.z*B.z)/Bm; vperp = Math.sqrt(Math.max(0, vm*vm - vpar*vpar)); }
-set('mqRR1011', (Bm > 0 && charge !== 0 && vperp > 1e-6) ? (mass*vperp/(Math.abs(charge)*Bm)).toFixed(2) : '\u2014 (no circle)');
-set('mqRS1011', s.t > T_END - 1e-9 ? 'Ended' : (inField(s) ? 'In field' : 'Outside field'));
-set('mqFormulaLive1011', 'q = ' + charge + ',  B = ' + field + (mode === 3 ? ' (along \u2212z)' : (mode === 4 ? ' (along +y)' : ' (along +x)')) + ',  |F| = ' + Fm.toFixed(2));
+set('mqRR', (Bm > 0 && charge !== 0 && vperp > 1e-6) ? (mass*vperp/(Math.abs(charge)*Bm)).toFixed(2) : '\u2014 (no circle)');
+set('mqRS', s.t > T_END - 1e-9 ? 'Ended' : (inField(s) ? 'In field' : 'Outside field'));
+set('mqFormulaLive', 'q = ' + charge + ',  B = ' + field + (mode === 3 ? ' (along \u2212z)' : (mode === 4 ? ' (along +y)' : ' (along +x)')) + ',  |F| = ' + Fm.toFixed(2));
 }
 function describe() {
 var v = {x:s.vx, y:s.vy, z:s.vz}, F = forceAt(s), Fm = mag(F);
@@ -595,8 +486,8 @@ var now = Date.now();
 if (!force && now - lastNarr < 1500) return;
 lastNarr = now;
 var d = describe();
-canvas.setAttribute('aria-label', d); set('mqDiagDesc1011', d);
-if (st.nr) set('mqNarBar1011', d);
+canvas.setAttribute('aria-label', d); set('mqDiagDesc', d);
+if (st.nr) set('mqNarBar', d);
 }
 function render(forceNarr) { draw(); readouts(); narrate(forceNarr); }
 /* ── controls ── */
@@ -608,7 +499,7 @@ set('c002', mass + ' mg');
 set('p001', x0 + ' m');
 [['version2',2],['version4',4],['version3',3]].forEach(function(pr){
 var bb = el(pr[0]), on = (mode === pr[1]) || (pr[1] === 2 && mode !== 3 && mode !== 4);
-if (bb) { bb.classList.toggle('mq_segon1011', on); bb.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+if (bb) { bb.classList.toggle('mq_segon', on); bb.setAttribute('aria-pressed', on ? 'true' : 'false'); }
 });
 }
 function reStart() {
@@ -649,20 +540,20 @@ function setMass(v) { reStart(); }
 function setPosition(v) { reStart(); }
 function setView(v) {
 view = v;
-[['mqViewXY1011','xy'],['mqViewYZ1011','yz'],['mqViewXZ1011','xz']].forEach(function(pr){
-var bb = el(pr[0]); if (bb) { bb.classList.toggle('mq_viewon1011', v === pr[1]); bb.setAttribute('aria-pressed', v === pr[1] ? 'true' : 'false'); }
+[['mqViewXY','xy'],['mqViewYZ','yz'],['mqViewXZ','xz']].forEach(function(pr){
+var bb = el(pr[0]); if (bb) { bb.classList.toggle('mq_viewon', v === pr[1]); bb.setAttribute('aria-pressed', v === pr[1] ? 'true' : 'false'); }
 });
-set('mqDiagCaption1011', v === 'xy' ? 'looking along \u2212z \u00b7 z out of the screen' : (v === 'yz' ? 'looking along +x \u00b7 x into the screen' : 'looking along +y \u00b7 y into the screen'));
+set('mqDiagCaption', v === 'xy' ? 'looking along \u2212z \u00b7 z out of the screen' : (v === 'yz' ? 'looking along +x \u00b7 x into the screen' : 'looking along +y \u00b7 y into the screen'));
 render(true);
 srAnnounce(v === 'yz' ? 'YZ view: looking along plus x; z to the right, y up, x into the screen.' : (v === 'xz' ? 'XZ view: looking along plus y; x to the right, z up, y into the screen.' : 'XY view: x to the right, y up, z out of the screen.'));
 }
 /* ── display options ── */
-function styleBtn(id, on) { var b = el(id); if (!b) return; b.classList.toggle('mq_a11yon1011', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function styleBtn(id, on) { var b = el(id); if (!b) return; b.classList.toggle('mq_a11yon', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
 function applyDisplay() {
-ROOT.classList.toggle('mq_hc1011', st.hc); ROOT.classList.toggle('mq_lm1011', st.lm); ROOT.classList.toggle('mq_cb1011', st.cb);
-styleBtn('mqBtnHC1011', st.hc); styleBtn('mqBtnLM1011', st.lm); styleBtn('mqBtnCB1011', st.cb); styleBtn('mqBtnNR1011', st.nr);
-var nb = el('mqBtnNR1011'); if (nb) nb.textContent = 'NARRATION: ' + (st.nr ? 'ON' : 'OFF');
-var bar = el('mqNarBar1011'); if (bar) bar.style.display = st.nr ? '' : 'none';
+ROOT.classList.toggle('mq_hc', st.hc); ROOT.classList.toggle('mq_lm', st.lm); ROOT.classList.toggle('mq_cb', st.cb);
+styleBtn('mqBtnHC', st.hc); styleBtn('mqBtnLM', st.lm); styleBtn('mqBtnCB', st.cb); styleBtn('mqBtnNR', st.nr);
+var nb = el('mqBtnNR'); if (nb) nb.textContent = 'NARRATION: ' + (st.nr ? 'ON' : 'OFF');
+var bar = el('mqNarBar'); if (bar) bar.style.display = st.nr ? '' : 'none';
 }
 function toggle(k) {
 st[k] = !st[k];
@@ -673,7 +564,7 @@ var names = { hc:'High contrast', lm:'Light mode', cb:'Color-blind safe colors',
 srAnnounce(names[k] + (st[k] ? ' on.' : ' off.'));
 }
 var srTimer = null;
-function srAnnounce(msg) { var e = el('mqSrAnnounce1011'); if (!e) return; e.textContent = ''; clearTimeout(srTimer); srTimer = setTimeout(function(){ e.textContent = msg; }, 60); }
+function srAnnounce(msg) { var e = el('mqSrAnnounce'); if (!e) return; e.textContent = ''; clearTimeout(srTimer); srTimer = setTimeout(function(){ e.textContent = msg; }, 60); }
 /* ── boot: start from the values set in the page ── */
 applyDisplay();
 reStart();
@@ -685,8 +576,140 @@ setView:setView, toggle:toggle
 };
 </script>
 <script>
-var chBField1011 = new chBField();
+var chBField = new chBField();
 </script>
-
+<div class="flex">
+<p>In this simulation, you can investigate the force that a Magnetic Field exerts on a charged particle. </p>
+</div>
+<hr><p><b>Activity:</b>  Direction of Magnetic Field</p>
+<p><span style=font-weight:bold>Task:</span> Set the magnetic field to a positive value (e.g., B = +2) and observe the direction of the field arrows. Then switch to a negative value (e.g., B = -2) and compare.</p>
+<p><span style=font-weight:bold>Questions:</span>
+<ol><li>What happens to the direction of the field arrows when the magnetic field is set to a negative value?  </li>
+ _____
+<li>Increasing the magnitude of the magnetic field results in:  </li>
+ _____</ol>
+<hr><p><b>Activity:</b>  Velocity and Magnetic Force</p>
+<p><span style=font-weight:bold>Task:</span> Set the charge to q = +1 and the magnetic field to B = +2. Vary the velocity components and observe the direction and magnitude of the magnetic force.</p>
+<p><span style=font-weight:bold>Questions:</span>
+<ol><li>The magnetic force on a moving charge is:  </li>
+ _____
+<li>If the velocity is zero, the magnetic force is:  </li>
+ _____</ol>
+<hr><p><b>Activity:</b>  Charge Sign and Force Direction</p>
+<p><span style=font-weight:bold>Task:</span> Set the velocity to (vx, vy) = (3, 0) and the magnetic field to B = +2. Observe the force direction for q = +1 and then for q = -1.</p>
+<p><span style=font-weight:bold>Questions:</span>
+<ol><li>Reversing the sign of the charge will:  </li>
+ _____
+<li>A negative charge moving in a magnetic field experiences a force:  </li>
+ _____</ol>
+<hr><p><b>Activity:</b>  Charge Magnitude and Force Strength</p>
+<p><span style=font-weight:bold>Task:</span> Keep velocity and field constant. Vary the charge from q = -3 to q = +3 and observe how the force magnitude changes.</p>
+<p><span style=font-weight:bold>Questions:</span>
+<ol><li>The magnitude of the magnetic force is proportional to:  </li>
+ _____
+<li>Which charge value results in the strongest force (assuming constant velocity and field)?  </li>
+ _____</ol>
+<hr><p><b>Activity:</b>  Field Orientation Effects</p>
+<p><span style=font-weight:bold>Task:</span> Use the field orientation buttons to switch between horizontal field parallel to the screen and horizontal field perpendicular to the screen. Observe how the force direction changes.</p>
+<p><span style=font-weight:bold>Questions:</span>
+<ol><li>A magnetic field perpendicular to the screen affects the particle's motion by:  </li>
+ _____
+<li>Changing the field orientation affects:  </li>
+ _____</ol>
+<hr><p><b>Activity:</b>  Velocity Direction and Force Orientation</p>
+<p><span style=font-weight:bold>Task:</span> Set the magnetic field to B = +2 and the charge to q = +1. Try different velocity directions (e.g., vx = 3, vy = 0 vs. vx = 0, vy = 3) and observe how the force vector changes.</p>
+<p><span style=font-weight:bold>Questions:</span>
+<ol><li>The magnetic force is always:  </li>
+ _____
+<li>Changing the direction of velocity while keeping charge and field constant will:  </li>
+ _____</ol>
+<hr><p><b>Activity:</b>  Velocity Magnitude and Force Strength</p>
+<p><span style=font-weight:bold>Task:</span> Keep charge and field constant. Vary the velocity magnitude (e.g., vx = 1 to vx = 6) and observe how the force magnitude changes.</p>
+<p><span style=font-weight:bold>Questions:</span>
+<ol><li>The magnitude of the magnetic force increases when:  </li>
+ _____
+<li>Which velocity value results in the strongest force (assuming constant charge and field)?  </li>
+ _____</ol>
+<hr><p><b>Activity:</b>  Combined Effect of Charge and Velocity</p>
+<p><span style=font-weight:bold>Task:</span> Set the magnetic field to B = +2. Try combinations of charge and velocity:
+<br>Observe how the force direction and magnitude change.</p>
+<p><span style=font-weight:bold>Questions:</span>
+<ol><li>Reversing both charge and velocity will:  </li>
+ _____
+<li>The magnetic force depends on:  </li>
+ _____</ol>
+<hr><p><b>Activity:</b>  Force Magnitude and Field Strength</p>
+<p><span style=font-weight:bold>Task:</span> Set the charge to q = +1 and vary the magnetic field strength from B = -3 to B = +3. Observe how the force magnitude changes.</p>
+<p><span style=font-weight:bold>Questions:</span>
+<ol><li>The magnetic force on a charged particle increases when:  </li>
+ _____
+<li>Which magnetic field value produces the strongest force for q = +1 and constant velocity?  </li>
+ _____</ol>
+<hr><p><b>Activity:</b>  Charge Sign and Field Strength Interaction</p>
+<p><span style=font-weight:bold>Task:</span> Set the velocity to vx = 3 and vary the charge from q = +1 to q = -1 while also varying the field from B = +2 to B = -2. Observe how the force direction changes.</p>
+<p><span style=font-weight:bold>Questions:</span>
+<ol><li>Reversing both the charge and the field direction will:  </li>
+ _____
+<li>A negative charge in a negative magnetic field experiences a force:  </li>
+ _____</ol>
+<hr><p><b>Activity:</b>  Zero Field and Charge Effects</p>
+<p><span style=font-weight:bold>Task:</span> Set the magnetic field to B = 0 and vary the charge from q = -3 to q = +3. Observe whether the particle experiences any force.</p>
+<p><span style=font-weight:bold>Questions:</span>
+<ol><li>When the magnetic field is zero, the magnetic force is:  </li>
+ _____
+<li>A charged particle in zero magnetic field will:  </li>
+ _____</ol>
+<hr><p><b>Activity:</b>  Velocity Perpendicular to Field</p>
+<p><span style=font-weight:bold>Task:</span> Set the magnetic field to B = +2 and the charge to q = +1. Set the velocity to vx = 3, vy = 0. Observe the direction and magnitude of the magnetic force.</p>
+<p><span style=font-weight:bold>Questions:</span>
+<ol><li>When velocity is perpendicular to the magnetic field, the magnetic force is:  </li>
+ _____
+<li>The direction of the magnetic force is:  </li>
+ _____</ol>
+<hr><p><b>Activity:</b>  Velocity Parallel to Field</p>
+<p><span style=font-weight:bold>Task:</span> Set the magnetic field to B = +2 and the velocity to vx = 0, vy = 0. Then try vx = 2, vy = 0 with the field also horizontal. Observe the force.</p>
+<p><span style=font-weight:bold>Questions:</span>
+<ol><li>When velocity is parallel to the magnetic field, the magnetic force is:  </li>
+ _____
+<li>A charged particle moving parallel to the magnetic field will:  </li>
+ _____</ol>
+<hr><p><b>Activity:</b>  Velocity at an Angle to Field</p>
+<p><span style=font-weight:bold>Task:</span> Set the magnetic field to B = +2 and velocity to vx = 3, vy = 3. Observe the curved path and force vector.</p>
+<p><span style=font-weight:bold>Questions:</span>
+<ol><li>When velocity is at an angle to the magnetic field, the particle experiences:  </li>
+ _____
+<li>The magnetic force depends on which component of velocity?  </li>
+ _____</ol>
+<hr><p><b>Activity:</b>  Reversing Charge Sign in a Fixed Field</p>
+<p><span style=font-weight:bold>Task:</span> Set the magnetic field to B = +2 and velocity to vx = 3, vy = 0. First, set the charge to q = +1 and observe the force direction. Then reverse the charge to q = -1 and compare.</p>
+<p><span style=font-weight:bold>Questions:</span>
+<ol><li>Reversing the sign of the charge will:  </li>
+ _____
+<li>A negative charge moving in a magnetic field experiences a force:  </li>
+ _____</ol>
+<hr><p><b>Activity:</b>  Charge Sign Reversal and Curved Motion</p>
+<p><span style=font-weight:bold>Task:</span> Set the magnetic field to B = +2 and velocity to vx = 3, vy = 3. Observe the curved path for q = +1. Then reverse the charge to q = -1 and observe how the curvature changes.</p>
+<p><span style=font-weight:bold>Questions:</span>
+<ol><li>Reversing the charge sign causes the particle to:  </li>
+ _____
+<li>The curvature of the particle's path is determined by:  </li>
+ _____</ol>
+<hr><p><b>Activity:</b>  Charge Sign Reversal with Field Reversal</p>
+<p><span style=font-weight:bold>Task:</span> Set velocity to vx = 3 and try combinations of charge and field:
+<br>Observe how the force direction changes in each case.</p>
+<p><span style=font-weight:bold>Questions:</span>
+<ol><li>Reversing both the charge and the field direction will:  </li>
+ _____
+<li>Which combination results in a force pointing in the same direction as the original (q = +1, B = +2)?  </li>
+ _____</ol>
+<hr><p><b>Activity:</b>  Changing Velocity Direction</p>
+<p><span style=font-weight:bold>Task:</span> Set the magnetic field to B = +2 and charge to q = +1. Try different velocity directions:
+<br>Observe how the force vector changes in direction and magnitude.</p>
+<p><span style=font-weight:bold>Questions:</span>
+<ol><li>When the velocity vector is rotated, the magnetic force:  </li>
+ _____
+<li>The magnetic force is strongest when the velocity is:  </li>
+ _____</ol>
+</main>
 </body>
 </html>
