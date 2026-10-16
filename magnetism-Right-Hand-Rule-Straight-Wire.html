@@ -387,8 +387,8 @@ for (var k = 0; k < HAND.nails.length; k++) { path(HAND.nails[k], true); ctx.fil
 var HAND_TZ = 1.6, THUMB_X = 52;   /* image x of the thumb's centre line: placed on the wire */
 function drawHand() {
 if (!showHand || view !== '3d') return;
-var tx = (fl === 0) ? CX - THUMB_X/HAND_TZ : CX + 20 - (200 - THUMB_X)/HAND_TZ;
-thumbsup(tx, 40, HAND_TZ, fl);
+var tx = (fl === 0) ? CX - THUMB_X/HAND_TZ : CX + 59 - (200 - THUMB_X)/HAND_TZ;
+thumbsup(tx-20, 40, HAND_TZ, fl);
 }
 /* ── 3D view ── */
 function drawWireSegment(p, y0, y1) {
@@ -416,10 +416,10 @@ ctx.fillText('front (toward you)', c4[0] + 4, c4[1] + 14);
 drawFieldLines(p);
 /* hole where the wire goes through */
 ctx.beginPath(); ctx.ellipse(CX, BOARD_Y, 6, 6*K3, 0, 0, Math.PI*2); ctx.fillStyle = p.bg; ctx.fill();
+drawHand();
 /* upper part of the wire */
 drawWireSegment(p, 8, BOARD_Y);
 drawCurrentArrows(p, [300, 180]);
-drawHand();
 drawSensor(p);
 }
 /* ── Top view ── */
