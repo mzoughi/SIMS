@@ -10,96 +10,214 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations- Waves: Convex Mirror</title>
+<title>Physics Simulations-Optics: Convex Mirror</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,EM,spectrum,transmission,image,object,real, Wave,virtual,reflection,refraction, Properties,concave,convex,lesson,mirror,convergent,divergent,focal,length,scientific">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, light, optics, geometrical optics, lenses, convex mirror, focal length, virtual focus, spherical aberration, lesson, scientific">
+<meta name="description" content="This simulation shows a beam of rays parallel to the axis striking a convex mirror. The radius of curvature, the diameter of the mirror and the position of the beam can be changed.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
+<main class="page">
 <hr><h2>Convex Mirror Simulation</h2><hr>
 <p>In the simulation below, your aim is to identify how different parameters affect the behaviour of a convex mirror.</p>
-<div id="cxRoot1004">
+<div id="cxRoot" class="sn_root" role="region" aria-label="Convex Mirror simulator">
 <!-- ── Accessibility toolbar ── -->
-<div class="cx_a11y1004" id="cxA11yBar1004" role="toolbar" aria-label="Display options">
-<button type="button" class="cx_a11ybtn1004" id="cxBtnHC1004"  onclick="cxA11y1004.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="cx_a11ybtn1004" id="cxBtnLM1004"  onclick="cxA11y1004.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
-<button type="button" class="cx_a11ybtn1004" id="cxBtnCB1004"  onclick="cxA11y1004.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
-<button type="button" class="cx_a11ybtn1004 cx_a11yon1004" id="cxBtnNR1004" onclick="cxA11y1004.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+<div class="sn_a11y" id="cxA11yBar" role="toolbar" aria-label="Display options">
+<button type="button" class="sn_a11ybtn" id="cxBtnHC"  onclick="cxA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="sn_a11ybtn" id="cxBtnLM"  onclick="cxA11y.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="sn_a11ybtn" id="cxBtnCB"  onclick="cxA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="sn_a11ybtn sn_a11yon" id="cxBtnNR" onclick="cxA11y.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
 </div>
+<!-- Header -->
+<div class="sn_header">
 <!-- Title bar -->
-<div class="cx_tbar1004"><h3>Convex Mirror</h3></div>
+<div class="tbar"><h3>Convex Mirror</h3></div>
+<p class="sn_sub">Parallel rays reflected by a convex mirror: a virtual focal point</p>
+</div>
+<!-- Ray diagram -->
+<div class="sn_diagpanel">
+<div class="sn_diaglabel"><b>RAY DIAGRAM</b><span class="sn_diagnote">use the sliders below to move the object, the screen and the eye, and to change the lens</span></div>
 <!-- Canvas -->
-<div class="cx_mcontent1004">
-<canvas id="cxCv1004" style="margin:auto;border:1px solid" width="600" height="300"></canvas>
+<div class="mcontent">
+<canvas id="cxCv" style="margin:auto;border:1px solid" width="600" height="300"></canvas>
 </div>
-<!-- Readout bar -->
-<div class="cx_bbar1004">
-`R\ =\ `<span id="cxRValue1004"></span>
-<span style="width:40px">&nbsp;</span>
-`f\ =\ `<span id="cxFValue1004"></span>
-<span style="width:40px">&nbsp;</span>
-`n_{"medium"}\ =\ `<span id="cxNValue1004"></span>
 </div>
+<div class="sn_grid">
+<div class="sn_leftcol">
 <!-- Narration bar -->
-<div id="cxNarBar1004" class="cx_narbar1004" role="status" aria-live="polite" aria-atomic="true"></div>
+<div id="cxNarBar" class="sn_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+</div>
+<div class="sn_rightcol">
+<div class="sn_panel" role="group" aria-label="Controls">
+<div class="sn_paneltitle">Controls</div>
+<div class="sn_panelbody">
+<!-- Readout bar -->
+<div class="bbar">
+`R\ =\ `<span id="cxRValue"></span>
+<span style="width:40px">&nbsp;</span>
+`f\ =\ `<span id="cxFValue"></span>
+<span style="width:40px">&nbsp;</span>
+`n_{"medium"}\ =\ `<span id="cxNValue"></span>
+</div>
 <!-- Sliders row 1: R, Diameter, n -->
-<div class="cx_footer1004">
-<div class="cx_left1004">20 <input oninput="cxSim1004.reaction()" onchange="cxSim1004.reaction()" aria-label="Radius of curvature in millimetres, positive for convex mirror" style="width:120px;" type="range" id="cxChR1004" min="20" max="300" value="150" step="10" > 300
-Radius R = <span id="cxN0011004">150</span> mm</div>
-<div class="cx_center1004">50 <input oninput="cxSim1004.reaction()" onchange="cxSim1004.reaction()"  aria-label="Mirror diameter in millimetres" style="width:120px;" type="range" id="cxChD1004" min="50" max="280" value="180" step="10"> 280
-Diameter = <span id="cxN0021004">180</span> mm</div>
-<div class="cx_right1004">1.0 <input oninput="cxSim1004.reaction()" onchange="cxSim1004.reaction()" aria-label="Refractive index of surrounding medium (informational)" style="width:120px;" type="range" id="cxChN1004" min="1.0" max="2.0" value="1.0" step="0.1"> 2.0
-n<sub>medium</sub> = <span id="cxN0031004">1.0</span></div>
+<div class="footer">
+<div class="left sn_cell">20 <input oninput="cxSim.reaction()" onchange="cxSim.reaction()" aria-label="Radius of curvature in millimetres, positive for convex mirror" style="width:120px;" type="range" id="cxChR" min="20" max="300" value="200" step="10" > 300
+Radius R = <span id="cxN001">200</span> mm</div>
+<div class="center sn_cell">50 <input oninput="cxSim.reaction()" onchange="cxSim.reaction()"  aria-label="Mirror diameter in millimetres" style="width:120px;" type="range" id="cxChD" min="50" max="280" value="150" step="10"> 280
+Diameter = <span id="cxN002">150</span> mm</div>
+<div class="right sn_cell">1.0 <input oninput="cxSim.reaction()" onchange="cxSim.reaction()" aria-label="Refractive index of surrounding medium (informational)" style="width:120px;" type="range" id="cxChN" min="1.0" max="2.0" value="1.0" step="0.1"> 2.0
+n<sub>medium</sub> = <span id="cxN003">1.0</span></div>
 </div>
 <!-- Sliders row 2: mirror position -->
-<div class="cx_footer1004">
-<div class="cx_left1004">0 <input style="width:120px;" type="range" id="cxChPos1004" min="0" max="480" value="240" step="10" oninput="cxSim1004.reaction()" onchange="cxSim1004.reaction()" aria-label="Mirror horizontal position on canvas, slide left to reveal virtual focal point"> 480 Mirror position = <span id="cxN0041004">240</span> px</div>
-<div class="cx_center1004">&nbsp;</div>
-<div class="cx_right1004">&nbsp;</div>
+<div class="footer">
+<div class="left sn_cell">0 <input style="width:120px;" type="range" id="cxChPos" min="0" max="480" value="240" step="10" oninput="cxSim.reaction()" onchange="cxSim.reaction()" aria-label="Mirror horizontal position on canvas, slide left to reveal virtual focal point"> 480 Mirror position = <span id="cxN004">240</span> px</div>
+<div class="center">&nbsp;</div>
+<div class="right">&nbsp;</div>
 </div>
-<!--hr&gt;$hintlink[0]<br>$hintlink[1]&lt;hr-->
-<p>Part of the lab involves investigating a convex mirror. Set the radius of the mirror to `150\ "mm`. What is the resulting focal length `f`?<br>`f\ =\ `</p>
-<p>Where is the focal point of a concave mirror located relative to the mirror surface?<br></p>
-<p>How do parallel incoming rays behave after reflecting off a concave mirror?<br></p>
-<p>How does increasing the magnitude of the radius of curvature `|R|` affect the focal length `f`?<br></p>
-<p>Does changing the refractive index of the surrounding medium affect the focal length of the mirror? Explain.<br></p>
-<p>How does changing the diameter of the mirror affect the focal length?<br></p>
-</div><!-- #cxRoot1004 -->
+</div>
+</div>
+</div>
+</div>
+<!-- SIM description: a button below the sim toggles the description into view (math in AsciiMath, typeset when opened) -->
+<div class="sn_descwrap">
+<button type="button" class="sn_descbtn" id="snDescBtn" aria-expanded="false" aria-controls="snDesc" onclick="snDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="sn_desc" id="snDesc" role="region" aria-labelledby="snDescBtn" style="display:none">
+<p>This simulation shows a beam of rays parallel to the axis striking a convex mirror. The radius of curvature, the diameter of the mirror and the position of the beam can be changed.</p>
+<p>A convex mirror spreads the rays out: after reflecting, they move apart as if they came from a single point behind the mirror, the virtual focal point `F`.</p>
+<p>For rays close to the axis (paraxial rays), the focal length of a spherical mirror is half its radius of curvature:</p>
+<p class="sn_eq">`f = R/2`.</p>
+<p>Rays far from the axis do not quite meet at the focal point: the wider the mirror compared with its radius, the more the reflected rays spread out near `F`. This is spherical aberration, which is why telescope mirrors are made parabolic instead of spherical.</p>
+<p>This simulation is useful for studying convex mirrors, focal length, virtual foci and spherical aberration.</p>
+</div>
+</div>
+<script>
+function snDesc(){
+var b = document.getElementById('snDescBtn'), d = document.getElementById('snDesc'); if (!b || !d) return;
+var open = (d.style.display === 'none');
+d.style.display = open ? 'block' : 'none';
+b.setAttribute('aria-expanded', open ? 'true' : 'false');
+b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }
+}
+</script>
+</div><!-- #cxRoot -->
+<div class="sn_qwrap">
+<!--hr&gt;<br>&lt;hr-->
+<p>Part of the lab involves investigating a convex mirror. Set the radius of the mirror to `200\ "mm`. What is the resulting focal length `f`?<br>`f\ =\ ` _____</p>
+<p>Where is the focal point of a concave mirror located relative to the mirror surface?</p>
+<p>How do parallel incoming rays behave after reflecting off a concave mirror?</p>
+<p>How does increasing the magnitude of the radius of curvature `|R|` affect the focal length `f`?</p>
+<p>Does changing the refractive index of the surrounding medium affect the focal length of the mirror? Explain.</p>
+<p>How does changing the diameter of the mirror affect the focal length?</p>
+</div>
+
 <style>
-* { margin: 0; box-sizing: border-box; }
-div { width: 603px; margin: 0; }
-#cxRoot1004 { --cx-toolbar-bg: #222; }
-/* ── Accessibility toolbar ── */
-#cxRoot1004 .cx_a11y1004 {
-display: flex; gap: 6px; padding: 6px 8px;
-background: var(--cx-toolbar-bg); flex-wrap: wrap; width: 603px;
+/* ════════ Hall effect template, scoped to #cxRoot (mobile friendly) ════════ */
+#cxRoot {
+--tp-chassis:#1a1c1f; --tp-panel:#22262b; --tp-panel-hi:#2c3138; --tp-panel-lo:#14161a;
+--tp-border:#3a4048; --tp-border-hi:#525c66; --tp-text:#c8d0d8; --tp-dim:#8a94a3;
+--tp-accent:#e8a020; --tp-green:#3ad08f; --tp-val:#ffdd66;
+--tp-focus:#e8a020; --tp-nar-bg:#2a2410; --tp-nar-border:#e0b040; --tp-nar-text:#f0e2b8;
+background:var(--tp-chassis);
+background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px),
+repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
+font-family:Arial, sans-serif; color:var(--tp-text);
+display:flex; flex-direction:column; gap:12px; padding:16px 10px 20px; box-sizing:border-box;
+width:100%; max-width:880px; margin:0 auto 10px; border-radius:6px; position:relative;
 }
-#cxRoot1004 .cx_a11ybtn1004 {
-padding: 4px 10px; font-size: .72rem; font-family: monospace;
-letter-spacing: .06em; border-radius: 3px; cursor: pointer;
-background: #2a2e3a; border: 1px solid #404a60; color: #7a8aaa;
-transition: border-color .15s, color .15s;
+#cxRoot.sn_lm {
+--tp-chassis:#e9edf1; --tp-panel:#ffffff; --tp-panel-hi:#f1f4f7; --tp-panel-lo:#f4f6f9;
+--tp-border:#c3cad3; --tp-border-hi:#9aa3ae; --tp-text:#1d232a; --tp-dim:#556070;
+--tp-accent:#a8620a; --tp-green:#12805a; --tp-val:#8a4a00;
+--tp-focus:#a8620a; --tp-nar-bg:#ffefc0; --tp-nar-border:#e0b040; --tp-nar-text:#333333; background-image:none;
 }
-#cxRoot1004 .cx_a11ybtn1004:hover { border-color: #00e8d0; color: #00e8d0; }
-#cxRoot1004 .cx_a11yon1004 { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
-/* ── Narration bar ── */
-#cxRoot1004 .cx_narbar1004 {
-width: 603px; min-height: 28px; padding: 5px 10px;
-background: #ffefc0; border-left: 4px solid #e0b040;
-font-size: .88rem; color: #333; font-style: italic;
+#cxRoot.sn_hc {
+--tp-chassis:#000000; --tp-panel:#000000; --tp-panel-hi:#111111; --tp-panel-lo:#000000;
+--tp-border:#ffffff; --tp-border-hi:#ffffff; --tp-text:#ffffff; --tp-dim:#e0e0e0;
+--tp-accent:#ffd700; --tp-green:#00ff88; --tp-val:#ffff00;
+--tp-focus:#ffff00; --tp-nar-bg:#000000; --tp-nar-border:#ffd700; --tp-nar-text:#ffffff; background-image:none;
 }
-.cx_tbar1004     { padding: 2px; height: 30px; background-color: #f90; text-align: center; }
-.cx_mcontent1004 { height: 302px; }
-.cx_bbar1004     { height: 30px; background-color: #df9; padding: 5px; text-align: center; }
-.cx_footer1004   { height: 60px; text-align: center; font-size: normal; display: flex; }
-.cx_footer1004 .cx_left1004   { width: 201px; padding: 2px; }
-.cx_footer1004 .cx_center1004 { width: 201px; padding: 4px; }
-.cx_footer1004 .cx_right1004  { width: 201px; padding: 4px; }
-.cx_footer1004:nth-child(6) { background-color: #fce4ec; }
-.cx_footer1004:nth-child(7) { background-color: #e8f5e9; }
+#cxRoot.sn_hc .sn_panel, #cxRoot.sn_hc .sn_diagpanel { border-width:2px; }
+/* the reset leaves MathJax's own elements alone (it would zero the spacing its layout relies on) */
+#cxRoot :not(mjx-container):not(mjx-container *), #cxRoot :not(mjx-container):not(mjx-container *)::before, #cxRoot :not(mjx-container):not(mjx-container *)::after { box-sizing:border-box; margin:0; }
+#cxRoot input:focus-visible, #cxRoot button:focus-visible, #cxRoot select:focus-visible { outline:2px solid var(--tp-focus); outline-offset:2px; }
+/* display options */
+#cxRoot .sn_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; width:100%; padding:0; background:none; }
+#cxRoot .sn_a11ybtn { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--tp-panel-hi); border:1px solid var(--tp-border-hi); color:var(--tp-dim); }
+#cxRoot .sn_a11ybtn:hover { border-color:var(--tp-accent); color:var(--tp-accent); }
+#cxRoot .sn_a11ybtn[aria-pressed="true"] { background:rgba(58,208,143,.14); border-color:var(--tp-green); color:var(--tp-green); font-weight:bold; }
+/* header */
+#cxRoot .tbar { height:auto; padding:0 4px; background:none; text-align:center; }
+#cxRoot .tbar h3 { font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--tp-accent); }
+#cxRoot .sn_sub { font-size:.7rem; color:var(--tp-dim); letter-spacing:.08em; text-transform:uppercase; text-align:center; margin-top:3px; }
+/* the ray diagram */
+#cxRoot .sn_diagpanel { background:var(--tp-panel); border:1px solid var(--tp-border); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+#cxRoot .sn_diaglabel, #cxRoot .sn_paneltitle { background:var(--tp-panel-lo); border-bottom:1px solid var(--tp-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; color:var(--tp-dim); }
+#cxRoot .sn_diaglabel { display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+#cxRoot .sn_diaglabel b { color:var(--tp-accent); }
+#cxRoot .sn_diagnote { text-transform:none; letter-spacing:.02em; }
+#cxRoot .mcontent { height:auto; }
+#cxRoot canvas { display:block; height:auto; margin:0 auto; }
+#cxRoot .mcontent canvas { width:100%; max-width:820px; }
+/* below the diagram: views and narration on the left, controls on the right */
+#cxRoot .sn_grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:12px; }
+#cxRoot .sn_leftcol, #cxRoot .sn_rightcol { display:flex; flex-direction:column; gap:12px; min-width:0; }
+#cxRoot .sn_panel { background:var(--tp-panel); border:1px solid var(--tp-border); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.3); }
+#cxRoot .sn_panelbody { padding:9px 12px; display:flex; flex-direction:column; gap:8px; }
+#cxRoot .sn_views { display:flex; gap:8px; padding:9px; justify-content:center; }
+#cxRoot .sn_view { flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; gap:4px; }
+#cxRoot .sn_view canvas { width:100%; max-width:192px; border:2px solid var(--tp-border-hi); border-radius:3px; background:#fff; }
+#cxRoot .sn_view figcaption { font-family:monospace; font-size:.6rem; letter-spacing:.06em; text-transform:uppercase; color:var(--tp-dim); text-align:center; }
+/* narration */
+#cxRoot .sn_narbar { width:100%; min-height:28px; padding:6px 12px; background:var(--tp-nar-bg); border:none; border-left:4px solid var(--tp-nar-border); font-size:.82rem; color:var(--tp-nar-text); font-style:italic; line-height:1.45; border-radius:3px; }
+/* slider rows */
+#cxRoot .bbbar, #cxRoot .bbbar2, #cxRoot .sbbar, #cxRoot .bbar, #cxRoot .footer { height:auto !important; width:auto; display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; padding:8px 10px; background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border); border-left:3px solid var(--tp-accent); border-radius:4px; text-align:left; font-size:.8rem; color:var(--tp-text); }
+#cxRoot .bbbar > div, #cxRoot .bbbar2 > div, #cxRoot .sbbar > div, #cxRoot .bbar > div, #cxRoot .footer > div { width:auto !important; padding:0 !important; background:none !important; flex:1 1 auto; display:flex; flex-wrap:wrap; align-items:center; gap:4px 8px; }
+#cxRoot .left, #cxRoot .centerR { font-weight:bold; color:var(--tp-dim); font-size:.74rem; flex:0 0 auto !important; }
+#cxRoot .sn_cell { flex:1 1 100% !important; font-weight:normal; color:var(--tp-text); font-size:.8rem; }
+#cxRoot .sn_br { flex-basis:100%; height:0; }
+#cxRoot .bbar > .left, #cxRoot .bbar > .centerR, #cxRoot .sbbar > .left, #cxRoot .sbbar > .centerR { flex-basis:100% !important; }
+#cxRoot .slider, #cxRoot .zslider, #cxRoot .Bslider { flex:1 1 120px; width:auto !important; min-width:0; height:auto; accent-color:var(--tp-accent); }
+#cxRoot .bbbar input[type=range], #cxRoot .bbbar2 input[type=range], #cxRoot .sbbar input[type=range], #cxRoot .bbar input[type=range], #cxRoot .footer input[type=range] { flex:1 1 120px; width:auto !important; min-width:0; max-width:100%; accent-color:var(--tp-accent); }   /* sliders without a class, or with a fixed width */
+#cxRoot .txtDPL { background:var(--tp-panel-hi); color:var(--tp-val); border:1px solid var(--tp-border); border-radius:3px; font-family:monospace; font-size:.76rem; width:auto; min-width:58px; height:auto; padding:2px 6px; margin-left:0; text-align:right; }
+#cxRoot input[type=checkbox] { accent-color:var(--tp-accent); width:16px; height:16px; }
+#cxRoot select { width:100%; background:var(--tp-panel-hi); color:var(--tp-text); border:1px solid var(--tp-border-hi); border-radius:3px; padding:4px 6px; font-size:.78rem; }
+#cxRoot .sn_objrow { display:flex; flex-direction:column; gap:4px; padding:8px 10px; background:var(--tp-panel-lo); border:1px solid var(--tp-border); border-left:3px solid #e31836; border-radius:4px; }
+#cxRoot .sn_objrow label { font-size:.74rem; font-weight:bold; color:var(--tp-dim); }
+/* SIM description (toggle) */
+#cxRoot .sn_descwrap { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; }
+#cxRoot .sn_descbtn { padding:8px 18px; font-family:monospace; font-size:.74rem; letter-spacing:.08em; cursor:pointer; background:var(--tp-panel-hi); border:1px solid var(--tp-accent); color:var(--tp-accent); border-radius:3px; font-weight:bold; }
+#cxRoot .sn_descbtn[aria-expanded="true"] { background:rgba(232,160,32,.12); }
+#cxRoot .sn_desc { width:100%; background:var(--tp-panel); border:1px solid var(--tp-border); border-left:4px solid var(--tp-accent); border-radius:4px; padding:12px 16px; color:var(--tp-text); font-size:.86rem; line-height:1.55; }
+#cxRoot .sn_desc p { margin:0 0 9px 0; }
+#cxRoot .sn_desc p:last-child { margin-bottom:0; }
+#cxRoot .sn_eq { text-align:center; font-size:1rem; }
+/* questions (outside the instrument) */
+.sn_qwrap { width:100%; max-width:880px; margin:0 auto; padding:4px; box-sizing:border-box; }
+.sn_qwrap li { margin:0 0 10px 0; line-height:1.5; }
+/* narrow screens */
+@media (max-width:760px) {
+#cxRoot .sn_grid { grid-template-columns:minmax(0,1fr); }
+}
+/* phones and tablets: bigger touch targets */
+@media (pointer:coarse) {
+#cxRoot input[type=range] { height:28px; }
+#cxRoot .sn_a11ybtn, #cxRoot .sn_descbtn { min-height:40px; }
+#cxRoot select { min-height:36px; font-size:16px; }
+#cxRoot input[type=checkbox] { width:22px; height:22px; }
+}
+@media (max-width:560px) {
+#cxRoot { padding:10px 6px 14px; }
+#cxRoot .sn_views { gap:5px; padding:6px; }
+}
 </style>
 <!-- ════════════════ ACCESSIBILITY CONTROLLER ════════════════ -->
 <script>
-var cxA11y1004 = (function(){
+var cxA11y = (function(){
 var ROOT = null;
 var states = { hc: false, lm: false, cb: false, nr: true };
 var COLOURS = {
@@ -114,16 +232,16 @@ else        { b.style.background='#2a2e3a';             b.style.borderColor='#40
 b.setAttribute('aria-pressed', active ? 'true' : 'false');
 }
 function applyCanvas() {
-var cv = document.getElementById('cxCv1004');
+var cv = document.getElementById('cxCv');
 if (cv) cv.style.filter = states.lm ? 'invert(1) hue-rotate(180deg) brightness(0.9)' : '';
 }
 function applyNarBar() {
-var nb = document.getElementById('cxNarBar1004');
+var nb = document.getElementById('cxNarBar');
 if (nb) nb.style.display = states.nr ? 'block' : 'none';
-var btn = document.getElementById('cxBtnNR1004');
+var btn = document.getElementById('cxBtnNR');
 if (btn) {
 btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
-styleBtn('cxBtnNR1004', states.nr);
+styleBtn('cxBtnNR', states.nr);
 }
 }
 function applyToolbar() {
@@ -131,24 +249,25 @@ if (ROOT) ROOT.style.setProperty('--cx-toolbar-bg', (states.hc || states.lm) ? '
 }
 function apply() {
 if (!ROOT) return;
+ROOT.classList.toggle('sn_hc', states.hc); ROOT.classList.toggle('sn_lm', states.lm); ROOT.classList.toggle('sn_cb', states.cb);
 applyCanvas(); applyNarBar(); applyToolbar();
-styleBtn('cxBtnHC1004', states.hc);
-styleBtn('cxBtnLM1004', states.lm);
-styleBtn('cxBtnCB1004', states.cb);
+styleBtn('cxBtnHC', states.hc);
+styleBtn('cxBtnLM', states.lm);
+styleBtn('cxBtnCB', states.cb);
 }
 return {
-init: function() { ROOT = document.getElementById('cxRoot1004'); apply(); },
+init: function() { ROOT = document.getElementById('cxRoot'); apply(); },
 toggle: function(k) {
 states[k] = !states[k];
 if (k === 'hc' && states.hc) states.lm = false;
 if (k === 'lm' && states.lm) states.hc = false;
 apply();
-if (typeof cxSim1004 !== 'undefined') cxSim1004.redraw();
+if (typeof cxSim !== 'undefined') cxSim.redraw();
 },
 isHC:    function() { return states.hc; },
 narrate: function(msg) {
 if (!states.nr) return;
-var nb = document.getElementById('cxNarBar1004');
+var nb = document.getElementById('cxNarBar');
 if (!nb) return;
 nb.innerHTML = msg;
 if (window.MathJax) {
@@ -166,7 +285,7 @@ return COLOURS.def;
 </script>
 <!-- ════════════════ SIMULATION ════════════════ -->
 <script>
-var cxSim1004 = (function(){
+var cxSim = (function(){
 /* ── Canvas constants ── */
 var CW = 600, CH = 300;
 var my = CH / 2;          /* optical axis y (fixed) */
@@ -183,10 +302,10 @@ var varFont = '11pt Calibri';
 var canvas, ctx;
 /* ── Read sliders ── */
 function readSliders() {
-var eR   = document.getElementById('cxChR1004');
-var eD   = document.getElementById('cxChD1004');
-var eN   = document.getElementById('cxChN1004');
-var ePos = document.getElementById('cxChPos1004');
+var eR   = document.getElementById('cxChR');
+var eD   = document.getElementById('cxChD');
+var eN   = document.getElementById('cxChN');
+var ePos = document.getElementById('cxChPos');
 if (eR)   R  = parseFloat(eR.value);
 if (eD)   D  = parseFloat(eD.value);
 if (eN)   nm = parseFloat(eN.value);
@@ -257,7 +376,7 @@ ctx.lineWidth = 4;
 ctx.stroke();
 /* Mirror backing: hatch lines on the right (non-reflective) side */
 ctx.lineWidth = 1;
-ctx.strokeStyle = cxA11y1004.isHC() ? '#555' : '#888';
+ctx.strokeStyle = cxA11y.isHC() ? '#555' : '#888';
 var steps = 8;
 for (var i = 0; i <= steps; i++) {
 var t  = i / steps;
@@ -363,10 +482,10 @@ ctx.setLineDash([]);
 }
 /* ── Display data box ── */
 function displayData() {
-var bgCol  = cxA11y1004.isHC() ? '#222' : 'yellow';
-var txtCol = cxA11y1004.isHC() ? '#fff' : 'black';
+var bgCol  = cxA11y.isHC() ? '#222' : 'yellow';
+var txtCol = cxA11y.isHC() ? '#fff' : 'black';
 ctx.fillStyle = bgCol;
-ctx.strokeStyle = cxA11y1004.isHC() ? '#888' : 'blue';
+ctx.strokeStyle = cxA11y.isHC() ? '#888' : 'blue';
 ctx.lineWidth = 0;
 ctx.beginPath();
 ctx.rect(0, 0, 160, 72);
@@ -384,13 +503,13 @@ ctx.fillText('D = '  + D.toFixed(0)  + ' mm', x0, y0 + 54);
 function draw() {
 readSliders();
 calcOptics();
-canvas = document.getElementById('cxCv1004');
+canvas = document.getElementById('cxCv');
 ctx    = canvas.getContext('2d');
 /* Background */
-var bgFill = cxA11y1004.isHC() ? '#111' : '#f8f8ff';
+var bgFill = cxA11y.isHC() ? '#111' : '#f8f8ff';
 ctx.fillStyle = bgFill;
 ctx.fillRect(0, 0, CW, CH);
-var cols = cxA11y1004.getColors();
+var cols = cxA11y.getColors();
 drawAxis(cols.axis);
 /* Virtual focal point x in pixels (behind mirror, to the right) */
 var xFpx = xV + Math.abs(f) * SC;
@@ -412,23 +531,23 @@ ctx.fillText('F (virtual) off-screen \u2192  slide mirror left to reveal', CW - 
 }
 /* Mark centre of curvature C (behind mirror) if on canvas */
 if (xCpx >= 0 && xCpx <= CW) {
-markPoint(xCpx, 'C', cxA11y1004.isHC() ? '#aaa' : '#888', false);
+markPoint(xCpx, 'C', cxA11y.isHC() ? '#aaa' : '#888', false);
 }
 /* Mark vertex V */
-markPoint(xV, 'V', cxA11y1004.isHC() ? '#eee' : '#444', false);
+markPoint(xV, 'V', cxA11y.isHC() ? '#eee' : '#444', false);
 displayData();
 /* Update readout bar */
-var eRV = document.getElementById('cxRValue1004');
-var eFV = document.getElementById('cxFValue1004');
-var eNV = document.getElementById('cxNValue1004');
+var eRV = document.getElementById('cxRValue');
+var eFV = document.getElementById('cxFValue');
+var eNV = document.getElementById('cxNValue');
 if (eRV) eRV.innerHTML = R.toFixed(0) + ' mm';
 if (eFV) eFV.innerHTML = f.toFixed(1) + ' mm (virtual, behind mirror)';
 if (eNV) eNV.innerHTML = nm.toFixed(1);
 /* Update slider readout spans */
-var n001 = document.getElementById('cxN0011004');
-var n002 = document.getElementById('cxN0021004');
-var n003 = document.getElementById('cxN0031004');
-var n004 = document.getElementById('cxN0041004');
+var n001 = document.getElementById('cxN001');
+var n002 = document.getElementById('cxN002');
+var n003 = document.getElementById('cxN003');
+var n004 = document.getElementById('cxN004');
 if (n001) n001.innerHTML = R.toFixed(0);
 if (n002) n002.innerHTML = D.toFixed(0);
 if (n003) n003.innerHTML = nm.toFixed(1);
@@ -449,13 +568,13 @@ return 'Convex mirror. '
 /* ── Public ── */
 function reaction() {
 draw();
-cxA11y1004.narrate(buildNarration());
+cxA11y.narrate(buildNarration());
 }
 function redraw() { draw(); }
 /* ── Boot ── */
 window.setTimeout(function() {
 draw();
-cxA11y1004.narrate(buildNarration());
+cxA11y.narrate(buildNarration());
 }, 0);
 return {
 reaction: reaction,
@@ -464,8 +583,8 @@ redraw:   redraw
 })();
 </script>
 <script>
-cxA11y1004.init();
+cxA11y.init();
 </script>
-
+</main>
 </body>
 </html>
