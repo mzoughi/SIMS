@@ -12,7 +12,7 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Physics Simulations-Momentum: Collisions with Spin: Angular Momentum and Rotational Energy</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, momentum, rotation, angular momentum, spin, rotation, collision, friction, moment of inertia, rotational kinetic energy, conservation, billiards, parallel axis theorem, lesson, scientific">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, momentum, rotation, angular momentum, spin, rotation, collision, friction, moment of inertia, rotational kinetic energy, conservation, billiards, parallel axis theorem, lever arm, lesson, scientific">
 <meta name="description" content="Interactive simulation of two spinning balls colliding with friction: conservation of momentum and angular momentum, orbital and spin parts, translational and rotational kinetic energy.">
 <style>
 body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
@@ -53,6 +53,7 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <p>The friction impulse is at most `mu` times the normal impulse (Coulomb friction); if it is large enough it stops the slipping. Because it acts at the edge of each ball, it changes both the balls' velocities and their spins. With smooth balls (`mu = 0`) the spins cannot change at all.</p>
 <p>The impulses on the two balls are equal and opposite and act at the same point, so they cannot change the total momentum or the total angular momentum. About any fixed point, the angular momentum has two parts -- the orbital part of each ball moving past the point, and the spin part of each ball turning about its own centre:</p>
 <p class="cs_eq">`L = sum (vec r xx m vec v)_z + sum I omega`.</p>
+<p>The orbital part of each ball is `(vec r xx m vec v)_z = m v r_(_|_)`, where `vec r` runs from the reference point O to the ball and `r_(_|_)` (the lever arm) is the perpendicular distance from O to the ball's line of motion; it counts as positive when the ball goes counterclockwise around O. Tick the box to see `vec r`, the line of motion and the lever arm of each ball.</p>
 <p>The parts can trade -- a spinning ball can set the other moving sideways, or set it spinning -- but their sum stays the same. The kinetic energy likewise has a translational part, `sum 1/2 m v^2`, and a rotational part, `sum 1/2 I omega^2`; friction while slipping turns some of it into heat, even when the collision is elastic along the line of centres.</p>
 <p>When the balls stick together, they move off as one rigid body: its centre of mass moves in a straight line, while the pair turns about it at the angular speed `Omega = L_(cm)/I_"total"`, where `I_"total" = sum (I + m d^2)` (the parallel-axis theorem) and `L_(cm)` is the angular momentum about the centre of mass.</p>
 </div>
@@ -110,7 +111,7 @@ function el(id){ return document.getElementById(id); }
 var ROOT = el('csRoot'), cv = el('csCv'), g = cv.getContext('2d'), W = cv.width, H = cv.height, DPR = window.devicePixelRatio || 1;
 cv.width = W*DPR; cv.height = H*DPR; g.scale(DPR, DPR);
 var TW = 1.6, TH = 0.9, BR = 0.0286, D = 2*BR, DEG = Math.PI/180, TC = 2.0;
-var S = { tab:0, run:true, ghosts:true, trail:true, cm:true, m1:0.17, m2:0.17, v1:0.3, v2:0, d2:180, b:0, e:0.6, stick:false, w1:15, w2:0, mu:0.2 };
+var S = { tab:0, run:true, ghosts:true, trail:true, cm:true, m1:0.17, m2:0.17, v1:0.3, v2:0, d2:180, b:0, e:0.6, stick:false, w1:15, w2:0, mu:0.2, showr:false, coords:false };
 var th = { hc:false, lm:false, cb:false, nr:true };
 var TABS = ['elastic along the line of impact (e = 1), with friction at the contact', 'inelastic (e < 1), or sticking together into one rigid body'];
 /* ══════════ motion ══════════ */
@@ -125,9 +126,9 @@ B = [{ x:r1c[0] - v1[0]*TC, y:r1c[1] - v1[1]*TC, vx:v1[0], vy:v1[1], m:S.m1, w:S
 ghosts = []; trail = [[], []]; tGhost = 0; simT = 0; hit = null; stopped = false; stuck = false; before = totals();
 }
 var O = [TW/2, TH/2];                                    /* angular momentum is taken about the meeting point */
-function totals(){ var px = 0, py = 0, Kt = 0, Kr = 0, Lo = 0, Ls = 0;
-B.forEach(function(b){ px += b.m*b.vx; py += b.m*b.vy; Kt += 0.5*b.m*(b.vx*b.vx + b.vy*b.vy); Kr += 0.5*b.I*b.w*b.w; Lo += b.m*((b.x - O[0])*b.vy - (b.y - O[1])*b.vx); Ls += b.I*b.w; });
-var M = S.m1 + S.m2; return { px:px, py:py, K:Kt + Kr, Kt:Kt, Kr:Kr, Lo:Lo, Ls:Ls, L:Lo + Ls, v:B.map(function(b){ return [b.vx, b.vy]; }), w:B.map(function(b){ return b.w; }), cm:[(B[0].m*B[0].x + B[1].m*B[1].x)/M, (B[0].m*B[0].y + B[1].m*B[1].y)/M] }; }
+function totals(){ var px = 0, py = 0, Kt = 0, Kr = 0, Lo = 0, Ls = 0, lo = [];
+B.forEach(function(b){ px += b.m*b.vx; py += b.m*b.vy; Kt += 0.5*b.m*(b.vx*b.vx + b.vy*b.vy); Kr += 0.5*b.I*b.w*b.w; var li = b.m*((b.x - O[0])*b.vy - (b.y - O[1])*b.vx); lo.push(li); Lo += li; Ls += b.I*b.w; });
+var M = S.m1 + S.m2; return { px:px, py:py, K:Kt + Kr, Kt:Kt, Kr:Kr, Lo:Lo, Ls:Ls, L:Lo + Ls, lo:lo, v:B.map(function(b){ return [b.vx, b.vy]; }), w:B.map(function(b){ return b.w; }), cm:[(B[0].m*B[0].x + B[1].m*B[1].x)/M, (B[0].m*B[0].y + B[1].m*B[1].y)/M] }; }
 var RB = null;                                           /* the stuck pair: a rigid body */
 function collide(){
 var a = B[0], c = B[1], nx = c.x - a.x, ny = c.y - a.y, d = Math.hypot(nx, ny); nx /= d; ny /= d;
@@ -166,10 +167,10 @@ if (out && (hit || simT > TC + 0.5)){ stopped = true; B.forEach(function(b){ b.x
 }
 /* ══════════ drawing ══════════ */
 function pal(){
-if (th.hc) return { bg:'#000', felt:'#003300', cush:'#666', wood:'#444', b1:'#ffffff', b2:'#ffdd00', v:'#00ffff', p1:'#ffffff', p2:'#ffdd00', P:'#ff66ff', cm:'#ff4040', txt:'#fff', muted:'#ddd' };
+if (th.hc) return { bg:'#000', felt:'#003300', cush:'#666', wood:'#444', b1:'#ffffff', b2:'#ffdd00', r1:'#ff8800', r2:'#ff66ff', v:'#00ffff', p1:'#ffffff', p2:'#ffdd00', P:'#ff66ff', cm:'#ff4040', txt:'#fff', muted:'#ddd' };
 var p = th.lm ? { bg:'#eef2f6', txt:'#1d232a', muted:'#556070' } : { bg:'#0d1318', txt:'#dbe5ec', muted:'#7a8a98' };
 p.felt = '#1f7a45'; p.cush = '#145a32'; p.wood = '#6b3f1f'; p.b1 = '#fbfbf4'; p.b2 = th.cb ? '#e69f00' : '#e8c020';
-p.v = th.cb ? '#56b4e9' : '#4fc3ff'; p.p1 = '#fbfbf4'; p.p2 = p.b2; p.P = th.cb ? '#cc79a7' : '#ff7ad9'; p.cm = th.cb ? '#d55e00' : '#ff5a4a';
+p.v = th.cb ? '#56b4e9' : '#4fc3ff'; p.r1 = th.cb ? '#e69f00' : '#ff9a3c'; p.r2 = th.cb ? '#cc79a7' : '#b48cff'; p.p1 = '#fbfbf4'; p.p2 = p.b2; p.P = th.cb ? '#cc79a7' : '#ff7ad9'; p.cm = th.cb ? '#d55e00' : '#ff5a4a';
 return p;
 }
 var TX0 = 60, TY0 = 50, TSC = (780 - 120)/TW;
@@ -207,7 +208,46 @@ g.strokeStyle = p.P; g.lineWidth = 2; g.beginPath(); g.arc(X(b.x), Y(b.y), r, -a
 var ea = -a0 - dir*span, ex = X(b.x) + r*Math.cos(ea), ey = Y(b.y) + r*Math.sin(ea), ta = ea - dir*Math.PI/2; g.fillStyle = p.P; g.beginPath(); g.moveTo(ex + 6*Math.cos(ta), ey + 6*Math.sin(ta)); g.lineTo(ex - 4*Math.cos(ta) + 4*Math.cos(ta + Math.PI/2), ey - 4*Math.sin(ta) + 4*Math.sin(ta + Math.PI/2)); g.lineTo(ex - 4*Math.cos(ta) - 4*Math.cos(ta + Math.PI/2), ey - 4*Math.sin(ta) - 4*Math.sin(ta + Math.PI/2)); g.closePath(); g.fill();
 g.font = '10px system-ui, sans-serif'; g.textAlign = 'center'; g.fillText('\u03C9' + (i + 1), X(b.x), Y(b.y) - r - 6); } });
 
+if (S.coords) coordinates(p);
+if (S.showr) leverArms(p);
 if (S.cm){ var c = totals().cm; g.fillStyle = p.cm; g.beginPath(); g.arc(X(c[0]), Y(c[1]), 4.5, 0, 2*Math.PI); g.fill(); g.font = '10px system-ui, sans-serif'; g.textAlign = 'left'; g.fillText('CM', X(c[0]) + 6, Y(c[1]) - 6); }
+}
+/* axes through O (x to the right, y up), ticks every 10 cm, and each ball's coordinates */
+function coordinates(p){
+var ox = X(O[0]), oy = Y(O[1]); g.strokeStyle = 'rgba(255,255,255,0.55)'; g.fillStyle = 'rgba(255,255,255,0.75)'; g.lineWidth = 1.2; g.font = '10px system-ui, sans-serif';
+arrow(X(0.02), oy, X(TW - 0.02), oy, 'rgba(255,255,255,0.55)', 1.2, ''); arrow(ox, Y(0.02), ox, Y(TH - 0.02), 'rgba(255,255,255,0.55)', 1.2, '');
+g.textAlign = 'center'; g.fillText('x', X(TW - 0.04), oy - 8); g.fillText('y', ox + 10, Y(TH - 0.04));
+for (var k = -7; k <= 7; k++){ if (!k) continue; var x = O[0] + k*0.1; if (x > 0.03 && x < TW - 0.05){ g.beginPath(); g.moveTo(X(x), oy - 4); g.lineTo(X(x), oy + 4); g.stroke(); if (k % 2 === 0) g.fillText((k*10) + '', X(x), oy + 15); } }
+for (var j = -4; j <= 4; j++){ if (!j) continue; var y = O[1] + j*0.1; if (y > 0.03 && y < TH - 0.05){ g.beginPath(); g.moveTo(ox - 4, Y(y)); g.lineTo(ox + 4, Y(y)); g.stroke(); g.textAlign = 'right'; g.fillText((j*10) + '', ox - 7, Y(y) + 3); } }
+g.textAlign = 'left'; g.fillText('cm', X(TW - 0.12), oy + 15);
+var cols = [p.b1, p.b2]; B.forEach(function(b, i){ g.fillStyle = cols[i]; g.font = '11px system-ui, sans-serif'; g.textAlign = 'left';
+g.fillText('(' + ((b.x - O[0])*100).toFixed(1) + ', ' + ((b.y - O[1])*100).toFixed(1) + ') cm', X(b.x) + 14, Y(b.y) - 14); });
+}
+/* r from O to each ball, its line of motion, and the lever arm r_perp: L_orbital = m v r_perp (+ counterclockwise) */
+function leverArms(p){
+var ox = X(O[0]), oy = Y(O[1]), cols = [p.r1, p.r2], tt = totals();   /* r colours, distinct from the balls */
+g.strokeStyle = p.txt; g.lineWidth = 2; g.beginPath(); g.moveTo(ox - 7, oy); g.lineTo(ox + 7, oy); g.moveTo(ox, oy - 7); g.lineTo(ox, oy + 7); g.stroke();
+g.fillStyle = p.txt; g.font = 'bold 12px system-ui, sans-serif'; g.textAlign = 'right'; g.fillText('O', ox - 9, oy + 16);
+B.forEach(function(b, i){
+var bx = X(b.x), by = Y(b.y), v = Math.hypot(b.vx, b.vy), col = cols[i];
+/* r: from O to the ball */
+g.setLineDash([6, 4]); arrow(ox, oy, bx, by, col, 1.6, ''); g.setLineDash([]);
+g.fillStyle = col; g.font = 'bold 12px system-ui, sans-serif'; g.textAlign = 'center'; g.fillText('r' + (i + 1), (ox + bx)/2 + (i ? 10 : -10), (oy + by)/2 - 6);
+if (v < 1e-6){ g.fillStyle = col; g.font = '11px system-ui, sans-serif'; g.fillText('v = 0: L = 0', bx, by + 24); return; }
+var ux = b.vx/v, uy = b.vy/v, rx = b.x - O[0], ry = b.y - O[1], along = rx*ux + ry*uy, fx = b.x - along*ux, fy = b.y - along*uy, rp = Math.hypot(fx - O[0], fy - O[1]);
+/* the line of motion, across the view */
+g.strokeStyle = col; g.globalAlpha = 0.45; g.lineWidth = 1; g.setLineDash([2, 5]); g.beginPath(); g.moveTo(X(b.x - ux*3), Y(b.y - uy*3)); g.lineTo(X(b.x + ux*3), Y(b.y + uy*3)); g.stroke(); g.setLineDash([]); g.globalAlpha = 1;
+/* the lever arm: O to the foot of the perpendicular, with a right-angle mark */
+var Fx = X(fx), Fy = Y(fy);
+if (rp > 1e-4){ g.strokeStyle = col; g.lineWidth = 2.2; g.beginPath(); g.moveTo(ox, oy); g.lineTo(Fx, Fy); g.stroke();
+var px1 = (ox - Fx)/Math.hypot(ox - Fx, oy - Fy), py1 = (oy - Fy)/Math.hypot(ox - Fx, oy - Fy), qx = ux, qy = -uy, k = 7;
+g.lineWidth = 1.2; g.beginPath(); g.moveTo(Fx + px1*k, Fy + py1*k); g.lineTo(Fx + px1*k + qx*k, Fy + py1*k + qy*k); g.lineTo(Fx + qx*k, Fy + qy*k); g.stroke();
+g.fillStyle = col; g.font = '11px system-ui, sans-serif'; g.textAlign = 'left'; g.fillText('r\u22A5 = ' + (rp*100).toFixed(1) + ' cm', (ox + Fx)/2 + 6, (oy + Fy)/2 + 4); }
+/* the value: L = m v r_perp, signed */
+var Li = tt.lo[i];
+g.fillStyle = col; g.font = 'bold 11px system-ui, sans-serif'; g.textAlign = 'center';
+g.fillText('L' + (i + 1) + ' = m v r\u22A5 = ' + (Li >= 0 ? '+' : '\u2212') + (Math.abs(Li)*1e3).toFixed(3), bx, by + 26);
+});
 }
 /* the momentum diagram: p1 + p2 = P, head to tail, before and after */
 function momentumInset(p){
@@ -231,6 +271,7 @@ function both(lbl, fa, fb){ cells.push([lbl, fa + (b ? '  \u2192  ' + fb : '')])
 both('P (kg\u00B7m/s)', '(' + f3(a.px) + ', ' + f3(a.py) + ')', b ? '(' + f3(b.px) + ', ' + f3(b.py) + ')' : '');
 both('L TOTAL (g\u00B7m\u00B2/s)', fL(a.L), b ? fL(b.L) : '');
 both('L ORBITAL + SPIN', fL(a.Lo) + ' + ' + fL(a.Ls), b ? fL(b.Lo) + ' + ' + fL(b.Ls) : '');
+both('ORBITAL L\u2081, L\u2082 = m v r\u22A5', fL(a.lo[0]) + ', ' + fL(a.lo[1]), b ? fL(b.lo[0]) + ', ' + fL(b.lo[1]) : '');
 both('KE TRANS + ROT (mJ)', (a.Kt*1e3).toFixed(2) + ' + ' + (a.Kr*1e3).toFixed(2), b ? (b.Kt*1e3).toFixed(2) + ' + ' + (b.Kr*1e3).toFixed(2) : '');
 both('SPINS \u03C9\u2081, \u03C9\u2082 (rad/s)', a.w[0].toFixed(2) + ', ' + a.w[1].toFixed(2), b ? b.w[0].toFixed(2) + ', ' + b.w[1].toFixed(2) : '');
 if (b){ cells.push(['KE LOST', ((a.K - b.K)*1e3).toFixed(2) + ' mJ (' + (100*(a.K - b.K)/a.K).toFixed(1) + ' %)']);
@@ -276,7 +317,7 @@ function buildCtl(){
 var b = '<button type="button" class="cs_btn cs_go" id="csRun">' + (S.run ? '&#10074;&#10074; Pause' : '&#9654; Run') + '</button><button type="button" class="cs_btn" id="csRst">Start over</button>' +
 Object.keys(PRESETS).map(function(k){ return '<button type="button" class="cs_btn" data-p="' + k + '">' + PRESETS[k].txt + '</button>'; }).join('') +
 (S.tab === 1 ? '<label><input type="checkbox" id="csStick"' + (S.stick ? ' checked' : '') + '> stick together</label>' : '') +
-'<label><input type="checkbox" id="csGh"' + (S.ghosts ? ' checked' : '') + '> ghost images</label><label><input type="checkbox" id="csTr"' + (S.trail ? ' checked' : '') + '> paths</label><label><input type="checkbox" id="csCm"' + (S.cm ? ' checked' : '') + '> centre of mass</label>' +
+'<label><input type="checkbox" id="csGh"' + (S.ghosts ? ' checked' : '') + '> ghost images</label><label><input type="checkbox" id="csTr"' + (S.trail ? ' checked' : '') + '> paths</label><label><input type="checkbox" id="csCm"' + (S.cm ? ' checked' : '') + '> centre of mass</label><label><input type="checkbox" id="csShowR"' + (S.showr ? ' checked' : '') + '> r and lever arms (orbital L)</label><label><input type="checkbox" id="csCoord"' + (S.coords ? ' checked' : '') + '> coordinates</label>' +
 '<button type="button" class="cs_btn" id="csDsc">Describe</button>';
 var c = row('csM1', 'mass of ball 1', 0.05, 0.5, 0.01, S.m1, S.m1.toFixed(2) + ' kg') + row('csM2', 'mass of ball 2', 0.05, 0.5, 0.01, S.m2, S.m2.toFixed(2) + ' kg') +
 row('csV1', 'speed of ball 1', 0.05, 0.6, 0.01, S.v1, S.v1.toFixed(2) + ' m/s') + row('csV2', 'speed of ball 2', 0, 0.6, 0.01, S.v2, S.v2.toFixed(2) + ' m/s') +
@@ -288,7 +329,8 @@ function on(id, ev, fn){ var e = el(id + ''); if (e) e.addEventListener(ev, fn);
 on('csRun', 'click', function(){ S.run = !S.run; buildCtl(); }); on('csRst', 'click', restart);
 [].forEach.call(el('csBtns').querySelectorAll('button[data-p]'), function(x){ x.addEventListener('click', function(){ var P = PRESETS[x.getAttribute('data-p')]; for (var k in P) if (k !== 'txt') S[k] = P[k]; buildCtl(); restart(); }); });
 on('csStick', 'change', function(){ S.stick = this.checked; restart(); });
-on('csGh', 'change', function(){ S.ghosts = this.checked; }); on('csTr', 'change', function(){ S.trail = this.checked; }); on('csCm', 'change', function(){ S.cm = this.checked; }); on('csDsc', 'click', describe);
+on('csGh', 'change', function(){ S.ghosts = this.checked; }); on('csTr', 'change', function(){ S.trail = this.checked; }); on('csCm', 'change', function(){ S.cm = this.checked; }); on('csCoord', 'change', function(){ S.coords = this.checked; });
+on('csShowR', 'change', function(){ S.showr = this.checked; if (S.showr) narrate('Each ball\u2019s orbital angular momentum about O is m v r\u22A5: its mass, times its speed, times the lever arm r\u22A5, the perpendicular distance from O to its line of motion. Counterclockwise counts as positive. A ball moving straight toward or away from O has no lever arm, so no orbital angular momentum.'); }); on('csDsc', 'click', describe);
 [['csM1', 'm1', ' kg', 2], ['csM2', 'm2', ' kg', 2], ['csV1', 'v1', ' m/s', 2], ['csV2', 'v2', ' m/s', 2], ['csD2', 'd2', '\u00B0', 0], ['csB', 'b', '', 2], ['csE', 'e', '', 2], ['csW1', 'w1', ' rad/s', 1], ['csW2', 'w2', ' rad/s', 1], ['csMu', 'mu', '', 2]].forEach(function(q){
 on(q[0], 'input', function(){ S[q[1]] = +this.value; var t = el(q[0] + 'v'); if (t) t.textContent = S[q[1]].toFixed(q[3]) + q[2]; restart(); }); });
 }
