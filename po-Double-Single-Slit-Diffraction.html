@@ -22,7 +22,7 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
 <main class="page">
-<div id="mobp33" class="mob_wrap">
+<div id="mobp8725" class="mob_wrap">
 <div id="snellRoot">
 <!-- ── Accessibility toolbar ── -->
 <div class="sn_a11y" id="snellA11yBar" role="toolbar" aria-label="Display options">
@@ -37,10 +37,18 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <div class="mcontent">
 <canvas id="cv" width="820" height="450"></canvas>
 </div>
-<div class="face_wrap"><div class="face_lbl">The screen seen face-on (turned on its side): the same pattern, enlarged</div><canvas id="cvFace" width="820" height="240" role="img" aria-label="The pattern on the screen seen face-on, with the intensity graph below it."></canvas></div>
+<div class="face_wrap"><div class="face_lbl">The screen seen face-on (turned on its side): the same pattern, enlarged</div><canvas id="cvFace" width="820" height="240" role="img" aria-label="The pattern on the screen seen face-on, with the intensity graph below it."></canvas><div class="mk_bar"><label for="mkSl"><b>Marker</b></label><input type="range" id="mkSl" min="-1000" max="1000" value="250" step="1" aria-label="marker position on the screen, from -10 to +10 cm"><span class="mk_opts">read as <label><input type="radio" name="mkU" value="y" checked> y</label> <label><input type="radio" name="mkU" value="t"> angle &theta;</label> &nbsp;<label><input type="checkbox" id="mkOn" checked> show</label></span><div class="mk_val" id="mkVal" aria-live="polite"></div></div></div>
 <style>.face_wrap { width:100%; margin-top:6px; }
 .face_lbl { font-family:Calibri, Arial, sans-serif; font-size:.82rem; color:#555; padding:2px 4px; }
-.face_wrap canvas { display:block; width:100%; height:auto; border:1px solid #bbb; }</style>
+.face_wrap canvas { display:block; width:100%; height:auto; border:1px solid #bbb; }
+.mk_bar { display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px; padding:6px 8px; background:#eef6ff; border:1px solid #b7cde0; border-top:none; font-family:Calibri, Arial, sans-serif; font-size:.9rem; color:#1d232a; }
+.mk_bar input[type=range] { flex:1 1 220px; min-width:0; accent-color:#0a84ff; }
+.mk_bar label { display:inline-flex; align-items:center; gap:3px; cursor:pointer; }
+.mk_val { flex:1 1 100%; font-family:monospace; font-size:.92rem; color:#0b4f8a; font-weight:bold; }
+@media (pointer:coarse) {
+.mk_bar input[type=range] { height:28px; }
+.mk_bar input[type=radio], .mk_bar input[type=checkbox] { width:20px; height:20px; }
+}</style>
 
 <div class="sbbar sbbar-pink">
 <div class="left">Screen distance</div>
@@ -102,8 +110,8 @@ oninput="lightinterf2.showd(this.value)" onchange="lightinterf2.showd(this.value
 <li>Keeping the same settings, estimate the width of the 1st order bright fringe.<br />Two Slits: `Delta y_{"1st fringe"}\ =\ ``Delta x\ =\ ` _____ </li>
 </ol>
 </div><!-- #snellRoot -->
-<style>:where(#mobp33) * { margin: 0; box-sizing: border-box; }
-:where(#mobp33) div { width: 823px; margin: 0; }
+<style>:where(#mobp8725) * { margin: 0; box-sizing: border-box; }
+:where(#mobp8725) div { width: 823px; margin: 0; }
 #snellRoot { --sn-toolbar-bg: #222; }
 #snellRoot .sn_a11y {
 display: flex; gap: 6px; padding: 6px 8px;
@@ -332,12 +340,12 @@ var cc=Math.PI*a*Math.sin(x)/lambda;
 return Math.sin(cc)/cc;
 }
 function intensity(x) { var amp=amplitude(x); return amp*amp; }
-function drawMotion() { drawMotion0(); drawFace(); }
+function drawMotion() { var i0 = index; drawMotion0(); if (index !== i0) sideMarker(); faceMarker(drawFace()); mkUpdate(false); }
 
 /* ════════ the screen seen face-on: the side view's screen column, laid out as a wide band, with the intensity graph ════════ */
 var SCR = null;
 function drawFace(){
-var fc = document.getElementById('cvFace'); if (!fc || !SCR) return;
+var fc = document.getElementById('cvFace'); if (!fc || !SCR) return null;
 var HASI = (typeof computeI === 'function'), showI = HASI && plotgraph;
 var FW = 820, FH = showI ? 240 : 128, dpr = window.devicePixelRatio || 1;
 if (fc.width !== Math.round(FW*dpr) || fc.height !== Math.round(FH*dpr)){ fc.width = Math.round(FW*dpr); fc.height = Math.round(FH*dpr); }
@@ -364,7 +372,7 @@ g.strokeStyle = ax; g.lineWidth = 1; g.strokeRect(X0, BT, X1 - X0, BB - BT);
 g.font = '12px Calibri, Arial, sans-serif'; g.fillStyle = ax; g.textAlign = 'center'; g.textBaseline = 'top';
 for (var ic=-10; ic<=10; ic++){ var x = X(ic); g.beginPath(); g.moveTo(x, BB); g.lineTo(x, BB + (ic % 2 === 0 ? 6 : 3)); g.stroke(); if (ic % 2 === 0) g.fillText(String(ic), x, BB + 7); }
 g.textAlign = 'left'; g.fillText('y (cm)', X1 + 14, BB + 7);
-if (!showI) return;
+if (!showI) return { X0:X0, X1:X1, top:BT, bot:BB };
 /* the intensity graph: computeI, with the same magnification as the side view's curve */
 var GT = 130, GB = 222;
 g.strokeStyle = 'rgba(128,128,128,0.35)';
@@ -380,6 +388,44 @@ var y_cm = -10 + 20*px2/(X1 - X0), y_m = y_cm*0.01, sinT = y_m/Math.sqrt(y_m*y_m
 var yy2 = GB - Math.min(I0, 1.06)*(GB - GT); if (px2) g.lineTo(X0 + px2, yy2); else g.moveTo(X0, yy2); }
 g.stroke(); g.restore();
 g.textAlign = 'center'; g.textBaseline = 'top'; g.fillText('y (cm)', (X0 + X1)/2, GB + 4);
+return { X0:X0, X1:X1, top:BT, bot:GB };
+}
+
+/* ════════ the marker: a line across the screen views, read as y or as the angle ════════ */
+var MK = { y:2.5, unit:'y', on:true }, mkT = null;
+function mkText(){
+var ym = MK.y/100, th = Math.atan2(ym, L), sn = Math.sin(th), t;
+t = MK.unit === 'y' ? 'y = ' + MK.y.toFixed(2) + ' cm' : '\u03B8 = ' + (th*180/Math.PI).toFixed(2) + '\u00B0  (sin \u03B8 = ' + sn.toFixed(4) + ')';
+if (typeof computeI === 'function' && !false) t += '   \u00B7   I/I\u2080 = ' + computeI(sn).toFixed(3);
+if (false) t += '   \u00B7   if a first-order line: \u03BB = d sin \u03B8 = ' + Math.abs(d*sn).toFixed(1) + ' nm; second order: ' + Math.abs(d*sn/2).toFixed(1) + ' nm';
+return t;
+}
+function mkUpdate(say){ var v = document.getElementById('mkVal'); if (v) v.textContent = MK.on ? mkText() : 'Marker hidden.'; if (say){ clearTimeout(mkT); mkT = setTimeout(function(){ _narrate('Marker: ' + mkText().split('   \u00B7   ').join('. ') + '.'); }, 500); } }
+(function(){
+var sl = document.getElementById('mkSl'); if (!sl) return;
+sl.addEventListener('input', function(){ MK.y = this.value/100; mkUpdate(true); reset(); });
+[].forEach.call(document.getElementsByName('mkU'), function(r){ r.addEventListener('change', function(){ MK.unit = this.value; mkUpdate(true); }); });
+document.getElementById('mkOn').addEventListener('change', function(){ MK.on = this.checked; mkUpdate(false); reset(); });
+})();
+function sideMarker(){
+/* on the side view: a dashed line from the slits to the marked point, the angle at the slits, and a tick beside the screen */
+if (!SCR || !MK.on) return;
+var yS = SCR.cy - MK.y*20, x0 = SCR.sx + 9, x1 = SCR.l - 3, th = Math.atan2(SCR.cy - yS, x1 - x0);
+ctx.save(); ctx.strokeStyle = '#0a84ff'; ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
+ctx.beginPath(); ctx.moveTo(x0, SCR.cy); ctx.lineTo(x1, yS); ctx.stroke(); ctx.setLineDash([2, 4]); ctx.lineWidth = 1;
+ctx.beginPath(); ctx.moveTo(x0, SCR.cy); ctx.lineTo(x1, SCR.cy); ctx.stroke(); ctx.setLineDash([]);
+ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x0, SCR.cy, 60, -th, 0, th < 0); ctx.stroke();
+ctx.fillStyle = '#0a84ff'; ctx.font = 'bold 14px Calibri, Arial, sans-serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('\u03B8', x0 + 66, SCR.cy - (yS < SCR.cy ? 10 : -10));
+ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(SCR.l - 16, yS); ctx.lineTo(SCR.l - 1, yS); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(SCR.l - 1, yS); ctx.lineTo(SCR.l - 8, yS - 5); ctx.lineTo(SCR.l - 8, yS + 5); ctx.closePath(); ctx.fill();
+ctx.restore();
+}
+function faceMarker(lay){
+if (!MK.on || !lay) return;
+var fc = document.getElementById('cvFace'), g = fc.getContext('2d'), x = lay.X0 + (MK.y + 10)/20*(lay.X1 - lay.X0);
+g.save(); g.strokeStyle = '#ffffff'; g.lineWidth = 4; g.beginPath(); g.moveTo(x, lay.top); g.lineTo(x, lay.bot); g.stroke();
+g.strokeStyle = '#0a84ff'; g.lineWidth = 2; g.beginPath(); g.moveTo(x, lay.top); g.lineTo(x, lay.bot); g.stroke();
+g.fillStyle = '#0a84ff'; g.beginPath(); g.moveTo(x, 7); g.lineTo(x - 6, 0); g.lineTo(x + 6, 0); g.closePath(); g.fill(); g.restore();
 }
 function drawMotion0() {
 if (index>=400) runFlag=0;
@@ -400,7 +446,7 @@ var Y_BOT = CY + 10*PX_CM; /* y=425 (bottom) */
 /* (5) Screen x-position moves with L: L=1→scrL=580, L=2→scrL=680 */
 var slitX  = 80;           /* x of slit slide -- (6) shifted left */
 var scrL   = slitX + 16 + Math.round((L-1)*100) + 500; /* screen left edge moves with L */
-var scrW   = 35; SCR = { x: scrL + scrW/2, top: Y_TOP, bot: Y_BOT, cy: CY };           /* width of screen strip */
+var scrW   = 35; SCR = { x: scrL + scrW/2, l: scrL, sx: slitX, top: Y_TOP, bot: Y_BOT, cy: CY };           /* width of screen strip */
 /* (1) Graph sits LEFT of screen, base touching screen */
 var graphW = 180;          /* width of graph (max I extent) */
 var graphL = scrL - graphW; /* graph LEFT edge = screen minus graph width */
@@ -636,48 +682,48 @@ if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise(
 </script>
 <style>
 /* ════════ mobile layer: the sim adapts to the width it gets (a phone, or a column in MOM) ════════ */
-#mobp33 { container-type:inline-size; width:100%; max-width:100%; box-sizing:border-box; }
+#mobp8725 { container-type:inline-size; width:100%; max-width:100%; box-sizing:border-box; }
 /* only when the sim is narrower than its design (823 px): nothing is wider than the sim, canvases scale down,
    rows wrap, fixed heights relax, wide tables scroll inside the sim -- on a wide screen nothing changes */
 @container (max-width:863px) {
-#mobp33 div, #mobp33 p, #mobp33 fieldset, #mobp33 form, #mobp33 section, #mobp33 ol, #mobp33 ul, #mobp33 table { max-width:100%; box-sizing:border-box; }
-#mobp33 canvas, #mobp33 img, #mobp33 svg { max-width:100%; height:auto !important; }
-#mobp33 input[type=range], #mobp33 select { max-width:100%; min-width:0; }
-#mobp33 #snellRoot .sn_a11y, #mobp33 .mcontent2, #mobp33 .sbbar, #mobp33 .bbar, #mobp33 .bbbar, #mobp33 .footer { flex-wrap:wrap; }
-#mobp33 #snellRoot .sn_a11y > div, #mobp33 .mcontent2 > div, #mobp33 .sbbar > div, #mobp33 .bbar > div, #mobp33 .bbbar > div, #mobp33 .footer > div { min-width:min(100%, 260px); }
-#mobp33 div[style*="height"] { height:auto !important; }
-#mobp33 .tbar, #mobp33 .mcontent, #mobp33 .mcontent2, #mobp33 .sbbar, #mobp33 .bbar, #mobp33 .bbbar, #mobp33 .footer { height:auto; min-height:0; }
-#mobp33 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+#mobp8725 div, #mobp8725 p, #mobp8725 fieldset, #mobp8725 form, #mobp8725 section, #mobp8725 ol, #mobp8725 ul, #mobp8725 table { max-width:100%; box-sizing:border-box; }
+#mobp8725 canvas, #mobp8725 img, #mobp8725 svg { max-width:100%; height:auto !important; }
+#mobp8725 input[type=range], #mobp8725 select { max-width:100%; min-width:0; }
+#mobp8725 .mk_bar, #mobp8725 .mk_bar label, #mobp8725 #snellRoot .sn_a11y, #mobp8725 .mcontent2, #mobp8725 .sbbar, #mobp8725 .bbar, #mobp8725 .bbbar, #mobp8725 .footer { flex-wrap:wrap; }
+#mobp8725 .mk_bar > div, #mobp8725 .mk_bar label > div, #mobp8725 #snellRoot .sn_a11y > div, #mobp8725 .mcontent2 > div, #mobp8725 .sbbar > div, #mobp8725 .bbar > div, #mobp8725 .bbbar > div, #mobp8725 .footer > div { min-width:min(100%, 260px); }
+#mobp8725 div[style*="height"] { height:auto !important; }
+#mobp8725 .tbar, #mobp8725 .mcontent, #mobp8725 .mcontent2, #mobp8725 .sbbar, #mobp8725 .bbar, #mobp8725 .bbbar, #mobp8725 .footer { height:auto; min-height:0; }
+#mobp8725 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
 }
 @media (max-width:883px) {
-#mobp33 div, #mobp33 p, #mobp33 fieldset, #mobp33 form, #mobp33 section, #mobp33 ol, #mobp33 ul, #mobp33 table { max-width:100%; box-sizing:border-box; }
-#mobp33 canvas, #mobp33 img, #mobp33 svg { max-width:100%; height:auto !important; }
-#mobp33 input[type=range], #mobp33 select { max-width:100%; min-width:0; }
-#mobp33 #snellRoot .sn_a11y, #mobp33 .mcontent2, #mobp33 .sbbar, #mobp33 .bbar, #mobp33 .bbbar, #mobp33 .footer { flex-wrap:wrap; }
-#mobp33 #snellRoot .sn_a11y > div, #mobp33 .mcontent2 > div, #mobp33 .sbbar > div, #mobp33 .bbar > div, #mobp33 .bbbar > div, #mobp33 .footer > div { min-width:min(100%, 260px); }
-#mobp33 div[style*="height"] { height:auto !important; }
-#mobp33 .tbar, #mobp33 .mcontent, #mobp33 .mcontent2, #mobp33 .sbbar, #mobp33 .bbar, #mobp33 .bbbar, #mobp33 .footer { height:auto; min-height:0; }
-#mobp33 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+#mobp8725 div, #mobp8725 p, #mobp8725 fieldset, #mobp8725 form, #mobp8725 section, #mobp8725 ol, #mobp8725 ul, #mobp8725 table { max-width:100%; box-sizing:border-box; }
+#mobp8725 canvas, #mobp8725 img, #mobp8725 svg { max-width:100%; height:auto !important; }
+#mobp8725 input[type=range], #mobp8725 select { max-width:100%; min-width:0; }
+#mobp8725 .mk_bar, #mobp8725 .mk_bar label, #mobp8725 #snellRoot .sn_a11y, #mobp8725 .mcontent2, #mobp8725 .sbbar, #mobp8725 .bbar, #mobp8725 .bbbar, #mobp8725 .footer { flex-wrap:wrap; }
+#mobp8725 .mk_bar > div, #mobp8725 .mk_bar label > div, #mobp8725 #snellRoot .sn_a11y > div, #mobp8725 .mcontent2 > div, #mobp8725 .sbbar > div, #mobp8725 .bbar > div, #mobp8725 .bbbar > div, #mobp8725 .footer > div { min-width:min(100%, 260px); }
+#mobp8725 div[style*="height"] { height:auto !important; }
+#mobp8725 .tbar, #mobp8725 .mcontent, #mobp8725 .mcontent2, #mobp8725 .sbbar, #mobp8725 .bbar, #mobp8725 .bbbar, #mobp8725 .footer { height:auto; min-height:0; }
+#mobp8725 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
 }
 /* touch screens: larger targets */
 @media (pointer:coarse) {
-#mobp33 button, #mobp33 input[type=button], #mobp33 input[type=submit], #mobp33 input[type=reset] { min-height:40px; }
-#mobp33 input[type=range] { height:28px; }
-#mobp33 input[type=checkbox], #mobp33 input[type=radio] { width:22px; height:22px; }
-#mobp33 select { min-height:36px; font-size:16px; }
+#mobp8725 button, #mobp8725 input[type=button], #mobp8725 input[type=submit], #mobp8725 input[type=reset] { min-height:40px; }
+#mobp8725 input[type=range] { height:28px; }
+#mobp8725 input[type=checkbox], #mobp8725 input[type=radio] { width:22px; height:22px; }
+#mobp8725 select { min-height:36px; font-size:16px; }
 }
 /* display options moved to the top */
-#mobp33 .mob_a11ytop { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:6px 4px 8px; width:auto; max-width:100%; height:auto; }
-#mobp33 .mob_a11ytop input[type=button], #mobp33 .mob_a11ytop button { padding:5px 12px; font-size:13px; border:1px solid #8a94a3; border-radius:4px; background:#f4f6f8; color:#1d232a; cursor:pointer; width:auto; height:auto; margin:0; }
+#mobp8725 .mob_a11ytop { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:6px 4px 8px; width:auto; max-width:100%; height:auto; }
+#mobp8725 .mob_a11ytop input[type=button], #mobp8725 .mob_a11ytop button { padding:5px 12px; font-size:13px; border:1px solid #8a94a3; border-radius:4px; background:#f4f6f8; color:#1d232a; cursor:pointer; width:auto; height:auto; margin:0; }
 /* SIM description */
-#mobp33 .mob_descwrap { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
-#mobp33 .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
-#mobp33 .mob_descbtn[aria-expanded="true"] { background:#3a3220; }
-#mobp33 .mob_desc { width:100%; max-width:860px; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; text-align:left; }
-#mobp33 .mob_desc p { margin:0 0 9px 0; }
-#mobp33 .mob_eq { text-align:center; font-size:1rem; }
+#mobp8725 .mob_descwrap { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
+#mobp8725 .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
+#mobp8725 .mob_descbtn[aria-expanded="true"] { background:#3a3220; }
+#mobp8725 .mob_desc { width:100%; max-width:860px; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; text-align:left; }
+#mobp8725 .mob_desc p { margin:0 0 9px 0; }
+#mobp8725 .mob_eq { text-align:center; font-size:1rem; }
 </style>
-</div><!-- #mobp33 -->
+</div><!-- #mobp8725 -->
 </main>
 </body>
 </html>
