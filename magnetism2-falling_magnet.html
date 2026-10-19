@@ -10,10 +10,10 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations-Magnetism: Falling Magnet Induced EMF</title>
+<title>Physics Simulations-Magnetism: Falling Magnet: Induced EMF</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching,magnetism, magnet, teach, learn,force, current, falling magnet, coil, electromagnetic induction, Faraday, Lenz, EMF, flux, induced voltage, free fall, data logger, linear fit, uncertainty, lesson, scientific">
-<meta name="description" content="Interactive falling magnet simulation: a bar magnet falls through a coil and induces an EMF, with voltage sensor, flips of magnet and coil, and a data logger with linear fit.">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching,magnetism, magnet, teach, learn,force, current, Faraday law, induced EMF, falling magnet, coil, flux, magnetic flux, induction, Lenz law, lesson, scientific">
+<meta name="description" content="Interactive simulation of a magnet falling through a coil: the induced EMF, the flux change under each peak, and the data graph.">
 <style>
 body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
 .page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
@@ -22,6 +22,16 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
 <main class="page">
+<!-- SETTINGS: 1 = shown, 0 = hidden (a MOM variable set to 0 or 1 also works) -->
+<script>
+var fmShow = {
+heightPanel:1, coilPanel:1, turns:1, flipCoil:1,
+magnetPanel:1, strength:1, flipMagnet:1,
+playback:1, logger:1, hint:1, uncertainty:1,
+xHeight:1, xTurns:1, xStrength:1, yMaxV:1, yFlux:1,
+title:'', subtitle:''
+};
+</script>
 <div id="fmroot" class="fm_root" role="region" aria-label="Falling magnet EMF simulator">
 <!-- Accessibility toolbar -->
 <div class="fm_a11y" id="fmA11yBar" role="toolbar" aria-label="Display options">
@@ -126,7 +136,7 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <div class="fm_state fm_center" id="fmDataCount">No data yet -- run sim first</div>
 </div>
 </div>
-<p class="fm_hint">Drop the magnet, then flip the magnet, then flip the coil, and compare the signs of V₁ and V₂. Log max V for several heights, turn counts or strengths and graph them.</p>
+<p class="fm_hint" id="fmHint">Drop the magnet, then flip the magnet, then flip the coil, and compare the signs of V₁ and V₂. Log max V for several heights, turn counts or strengths and graph them.</p>
 </div><!-- right column -->
 <!-- Formula strip -->
 <div class="fm_formulastrip">
@@ -141,13 +151,16 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <div class="fm_gphdr">
 <div>
 <span class="fm_gptitle">Data Graph</span>
-<span class="fm_gpsubtitle">max V vs. parameter</span>
+<span class="fm_gpsubtitle" id="fmGSub">max V vs. parameter</span>
 </div>
 <div class="fm_gpbtnrow">
 <span class="fm_gpaxlbl">X-axis:</span>
 <button type="button" class="fm_gpbtn" id="fmGBtnH" data-axis="h">Height</button>
 <button type="button" class="fm_gpbtn" id="fmGBtnN" data-axis="N">N turns</button>
 <button type="button" class="fm_gpbtn" id="fmGBtnB" data-axis="B">B (mT)</button>
+<span class="fm_gpaxlbl">Y-axis:</span>
+<button type="button" class="fm_gpbtn" id="fmGBtnYV" data-axis="V">max V</button>
+<button type="button" class="fm_gpbtn" id="fmGBtnYF" data-axis="F">avg |&Delta;&Phi;|</button>
 <button type="button" class="fm_gpbtn" id="fmGBtnFit">Linear Fit: ON</button>
 <button type="button" class="fm_gpbtn" id="fmGBtnUnc">± Unc: ON</button>
 <button type="button" class="fm_gpbtn fm_gpclear" id="fmGBtnClear">Clear</button>
@@ -157,7 +170,7 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <div id="fmGUncBar" class="fm_uncbar">
 <span class="fm_gpaxlbl">Uncertainty:</span>
 <label class="fm_unclbl"><input type="radio" name="fmUncMode" value="percent" checked> % of value</label>
-<label class="fm_unclbl"><input type="radio" name="fmUncMode" value="abs"> Abs ±mV</label>
+<label class="fm_unclbl"><input type="radio" name="fmUncMode" value="abs"> Abs ±<span id="fmUncAbsU">mV</span></label>
 <span id="fmUncLbl" class="fm_gpaxlbl">δV %:</span>
 <input type="range" id="fmUncSl" min="1" max="30" step="1" value="5" aria-label="Y uncertainty">
 <span id="fmUncVLbl" class="fm_uncval">5%</span>
@@ -300,7 +313,6 @@ width:100%; max-width:860px; margin:0 auto 10px; border-radius:6px; position:rel
 #fmroot .fm_rgrid { grid-template-columns:1fr; }
 }
 </style>
-
 <script>
 /* ════════════════════════════════════════════════
 Accessibility controller
@@ -496,10 +508,7 @@ for(var si=peak1Idx;si<=peak2Idx;si++){
 if(peak1Val>0&&emfArr[si]<=0){ splitIdx=si; break; }
 if(peak1Val<0&&emfArr[si]>=0){ splitIdx=si; break; }
 }
-area1=0; area2=0;
-for(var ai=0;ai<emfArr.length;ai++){
-if(ai<splitIdx) area1+=emfArr[ai]*DT; else area2+=emfArr[ai]*DT;
-}
+area1=-(fluxLinkage(0)-fluxLinkage(h0)); area2=-(fluxLinkage(yArr[yArr.length-1])-fluxLinkage(0));   /* = integral of the EMF under each peak, exactly */
 var mx=0;
 for(var k=0;k<emfArr.length;k++) if(Math.abs(emfArr[k])>mx) mx=Math.abs(emfArr[k]);
 emfScale=mx<1e-9?1:mx*1.15;
@@ -901,6 +910,7 @@ return;
 rafId=requestAnimationFrame(animate);
 }
 /* ── Formatting ── */
+function fmtPhi(v){ var a=Math.abs(v); if(a>=1) return v.toFixed(3)+' Wb'; if(a>=0.001) return (v*1000).toFixed(2)+' mWb'; return (v*1e6).toFixed(1)+' \u03BCWb'; }
 function fmtV(v){ var a=Math.abs(v); if(a>=1) return v.toFixed(3)+' V'; if(a>=0.001) return (v*1000).toFixed(2)+' mV'; return (v*1e6).toFixed(1)+' μV'; }
 function fmtWb(wb){ var a=Math.abs(wb); if(a>=1) return wb.toFixed(4)+' Wb'; if(a>=0.001) return (wb*1000).toFixed(3)+' mWb'; return (wb*1e6).toFixed(2)+' μWb'; }
 function setPlayLabel(on){ var b=el('fmBtnPlay'); if(b) b.textContent=on?'▶ Playing':'▶ Play'; }
@@ -965,10 +975,13 @@ if(simIdx<peak2Idx){ set('fmDataCount','⚠ Wait for the 2nd peak'); narrate('Wa
 var trueMaxV=(Math.abs(peak1Val)+Math.abs(peak2Val))/2;
 var noise=gaussianRand()*0.08*trueMaxV+gaussianRand()*0.0005;
 var maxV=Math.max(0,trueMaxV+noise);
-fmGraphPanel.addPoint({h:h0,N:N_turns,B:B_str,peak1:peak1Val,peak2:peak2Val,maxV:maxV,trueMaxV:trueMaxV});
+var a1=area1, a2=area2;   /* the readout's areas: exact flux-linkage changes */
+var truePhi=(Math.abs(a1)+Math.abs(a2))/2;
+var avgPhi=Math.max(0,truePhi*(1+gaussianRand()*0.04));
+fmGraphPanel.addPoint({h:h0,N:N_turns,B:B_str,peak1:peak1Val,peak2:peak2Val,maxV:maxV,trueMaxV:trueMaxV,dphi1:a1,dphi2:a2,avgPhi:avgPhi,truePhi:truePhi});
 var n=fmGraphPanel.getCount();
 set('fmDataCount',n+' point'+(n===1?'':'s')+' logged ✓');
-narrate('Data point '+n+' logged. max V = '+fmtV(maxV));
+narrate('Data point '+n+' logged. max V = '+fmtV(maxV)+'; average flux change under the two peaks = '+fmtPhi(avgPhi)+'.');
 }
 };
 };
@@ -989,7 +1002,7 @@ All button event listeners wired here (not inline onclick)
 so axis switching never touches the main sim.
 ════════════════════════════════════════════════ */
 var fmGraphPanel = (function(){
-var data=[], xAxis='h', showUnc=true, showFit=true, uncMode='percent', uncY=5, uncX=2;
+var data=[], xAxis='h', yAxis='V', showUnc=true, showFit=true, uncMode='percent', uncY=5, uncX=2;
 var cv=null, ctx=null, wired=false;
 function init(){
 if(wired) return;
@@ -1004,6 +1017,8 @@ if(b) b.addEventListener('click',function(e){ e.stopPropagation(); fn(); });
 wire('fmGBtnH',  function(){ setAxis('h'); });
 wire('fmGBtnN',  function(){ setAxis('N'); });
 wire('fmGBtnB',  function(){ setAxis('B'); });
+wire('fmGBtnYV', function(){ setYAxis('V'); });
+wire('fmGBtnYF', function(){ setYAxis('F'); });
 wire('fmGBtnFit', toggleFit);
 wire('fmGBtnUnc', toggleUnc);
 wire('fmGBtnClear', clearData);
@@ -1022,13 +1037,17 @@ if(e.key==='Escape' && p && p.style.display!=='none') close();
 function col(prop,def){ return fmA11y.col(prop,def); }
 function xLabel(){ if(xAxis==='h') return 'Drop Height h (m)'; if(xAxis==='N') return 'Number of Turns N'; return 'Magnet Strength B (mT)'; }
 function xVal(pt){ if(xAxis==='h') return pt.h; if(xAxis==='N') return pt.N; return pt.B*1000; }
-function uY(pt){ if(!showUnc) return 0; return uncMode==='percent'?pt.maxV*uncY/100:uncY*0.001; }
+function yVal(pt){ return yAxis==='F' ? pt.avgPhi : pt.maxV; }
+function yName(){ return yAxis==='F' ? 'Average |Flux Change|' : 'Max Induced Voltage'; }
+function yLabel(){ return yAxis==='F' ? 'avg |\u0394N\u03A6| (Wb)' : 'Max Voltage (V)'; }
+function uY(pt){ if(!showUnc) return 0; return uncMode==='percent'?yVal(pt)*uncY/100:uncY*0.001; }
 function uX(pt){ return showUnc?xVal(pt)*uncX/100:0; }
+function fmtPhi(v){ var a=Math.abs(v); if(a>=1) return v.toFixed(3)+' Wb'; if(a>=0.001) return (v*1000).toFixed(2)+' mWb'; return (v*1e6).toFixed(1)+' \u03BCWb'; }
 function fmtV(v){ var a=Math.abs(v); if(a>=1) return v.toFixed(3)+' V'; if(a>=0.001) return (v*1000).toFixed(2)+' mV'; return (v*1e6).toFixed(1)+' μV'; }
 function linFit(){
 if(data.length<2) return null;
 var n=data.length,sx=0,sy=0,sxx=0,sxy=0;
-for(var i=0;i<n;i++){ var bx=xVal(data[i]),by=data[i].maxV; sx+=bx;sy+=by;sxx+=bx*bx;sxy+=bx*by; }
+for(var i=0;i<n;i++){ var bx=xVal(data[i]),by=yVal(data[i]); sx+=bx;sy+=by;sxx+=bx*bx;sxy+=bx*by; }
 var denom=n*sxx-sx*sx; if(Math.abs(denom)<1e-30) return null;
 var sl=(n*sxy-sx*sy)/denom, ic=(sy-sl*sx)/n;
 return {slope:sl,intercept:ic};
@@ -1043,13 +1062,13 @@ var pw=W-P.l-P.r, ph=H-P.t-P.b;
 ctx.clearRect(0,0,W,H);
 ctx.fillStyle='#060810'; ctx.fillRect(0,0,W,H);
 ctx.fillStyle=accent; ctx.font='bold 11px monospace'; ctx.textAlign='center';
-ctx.fillText('Max Induced Voltage  vs.  '+xLabel(), P.l+pw/2, 20);
+ctx.fillText(yName()+'  vs.  '+xLabel(), P.l+pw/2, 20);
 if(data.length===0){
 ctx.fillStyle='#8a94a3'; ctx.font='11px monospace';
 ctx.fillText('No data yet -- run the sim and click + Add point', P.l+pw/2, P.t+ph/2);
 updateFitInfo(null); return;
 }
-var xs=data.map(xVal), ys=data.map(function(d){return d.maxV;});
+var xs=data.map(xVal), ys=data.map(yVal);
 var xMn=Math.min.apply(null,xs), xMx=Math.max.apply(null,xs);
 var yMn=0, yMx=Math.max.apply(null,ys);
 if(showUnc){ yMx+=Math.max.apply(null,data.map(uY))*1.1; }
@@ -1064,9 +1083,9 @@ ctx.strokeStyle='rgba(255,255,255,0.32)'; ctx.lineWidth=1.2;
 ctx.beginPath(); ctx.moveTo(P.l,P.t); ctx.lineTo(P.l,P.t+ph); ctx.lineTo(P.l+pw,P.t+ph); ctx.stroke();
 ctx.fillStyle='rgba(180,195,215,0.75)'; ctx.font='10px monospace'; ctx.textAlign='center';
 ctx.fillText(xLabel(),P.l+pw/2,H-6);
-ctx.save(); ctx.translate(14,P.t+ph/2); ctx.rotate(-Math.PI/2); ctx.fillText('Max Voltage (V)',0,0); ctx.restore();
+ctx.save(); ctx.translate(14,P.t+ph/2); ctx.rotate(-Math.PI/2); ctx.fillText(yLabel(),0,0); ctx.restore();
 ctx.textAlign='right'; ctx.font='9px monospace'; ctx.fillStyle='rgba(180,195,215,0.65)';
-for(var yi=0;yi<=5;yi++){ var yv=yMn+yR*yi/5; ctx.fillText(yv.toFixed(3),P.l-5,toY(yv)+3); }
+for(var yi=0;yi<=5;yi++){ var yv=yMn+yR*yi/5; ctx.fillText(yR<0.05?yv.toExponential(1):yv.toFixed(3),P.l-5,toY(yv)+3); }
 ctx.textAlign='center';
 for(var xi=0;xi<=6;xi++){ var xv=xMn+xR*xi/6; ctx.fillText(xv.toFixed(xAxis==='N'?0:2),toX(xv),P.t+ph+14); }
 var fit=linFit();
@@ -1079,11 +1098,11 @@ ctx.fillText('fit',P.l+pw-2,toY(fy1)-6);
 }
 updateFitInfo(fit);
 for(var di=0;di<data.length;di++){
-var pt=data[di], px2=toX(xVal(pt)), py2=toY(pt.maxV);
+var pt=data[di], px2=toX(xVal(pt)), py2=toY(yVal(pt));
 var eY=uY(pt), eX2=uX(pt);
 ctx.strokeStyle=errCol; ctx.lineWidth=1.5;
 if(eY>0){
-var ey1=toY(pt.maxV+eY), ey2=toY(pt.maxV-eY);
+var ey1=toY(yVal(pt)+eY), ey2=toY(yVal(pt)-eY);
 ctx.beginPath(); ctx.moveTo(px2,ey1); ctx.lineTo(px2,ey2); ctx.stroke();
 ctx.beginPath(); ctx.moveTo(px2-4,ey1); ctx.lineTo(px2+4,ey1); ctx.stroke();
 ctx.beginPath(); ctx.moveTo(px2-4,ey2); ctx.lineTo(px2+4,ey2); ctx.stroke();
@@ -1107,10 +1126,10 @@ if(!showFit||!fit||data.length<2){ bar.textContent=''; return; }
 var sl=fit.slope, ic=fit.intercept;
 var slStr=Math.abs(sl)>=0.001?sl.toFixed(4):sl.toExponential(3);
 var icStr=Math.abs(ic)>=0.001?ic.toFixed(4):ic.toExponential(3);
-var ys=data.map(function(d){return d.maxV;});
+var ys=data.map(yVal);
 var yMean=ys.reduce(function(a,b){return a+b;},0)/ys.length;
 var ssTot=ys.reduce(function(s,y){return s+(y-yMean)*(y-yMean);},0);
-var ssRes=data.reduce(function(s,pt){var pred=sl*xVal(pt)+ic;return s+(pt.maxV-pred)*(pt.maxV-pred);},0);
+var ssRes=data.reduce(function(s,pt){var pred=sl*xVal(pt)+ic;return s+(yVal(pt)-pred)*(yVal(pt)-pred);},0);
 var r2=ssTot<1e-30?1:1-ssRes/ssTot;
 bar.textContent='Linear fit: y = '+slStr+' · x + ('+icStr+')    R² = '+r2.toFixed(4);
 }
@@ -1120,7 +1139,8 @@ var msg=document.getElementById('fmDNone');
 if(!tbl) return;
 if(data.length===0){ tbl.innerHTML=''; if(msg) msg.style.display='block'; return; }
 if(msg) msg.style.display='none';
-var hds=['#','h (m)','N','B (mT)','V₁','V₂','max V (meas.)'];
+var hds=['#','h (m)','N','B (mT)','V₁','V₂','max V (meas.)','avg |ΔΦ| (meas.)'];
+tbl.style.gridTemplateColumns='32px repeat(7, minmax(0,1fr))';
 var html=hds.map(function(h){return '<div class="fmTH">'+h+'</div>';}).join('');
 for(var i=0;i<data.length;i++){
 var pt=data[i];
@@ -1130,7 +1150,8 @@ html+='<div class="'+(xAxis==='N'?'fmTDx':'fmTD')+'">'+pt.N+'</div>';
 html+='<div class="'+(xAxis==='B'?'fmTDx':'fmTD')+'">'+(pt.B*1000).toFixed(1)+'</div>';
 html+='<div class="fmTD">'+fmtV(pt.peak1)+'</div>';
 html+='<div class="fmTD">'+fmtV(pt.peak2)+'</div>';
-html+='<div class="fmTDv">'+fmtV(pt.maxV)+'</div>';
+html+='<div class="'+(yAxis==='V'?'fmTDv':'fmTD')+'">'+fmtV(pt.maxV)+'</div>';
+html+='<div class="'+(yAxis==='F'?'fmTDv':'fmTD')+'">'+fmtPhi(pt.avgPhi)+'</div>';
 }
 tbl.innerHTML=html;
 }
@@ -1146,12 +1167,19 @@ function refreshAxisBtns(){
 styleToggle(document.getElementById('fmGBtnH'), xAxis==='h');
 styleToggle(document.getElementById('fmGBtnN'), xAxis==='N');
 styleToggle(document.getElementById('fmGBtnB'), xAxis==='B');
+styleToggle(document.getElementById('fmGBtnYV'), yAxis==='V');
+styleToggle(document.getElementById('fmGBtnYF'), yAxis==='F');
+var sub=document.getElementById('fmGSub'); if(sub) sub.textContent=(yAxis==='F'?'avg |\u0394\u03A6|':'max V')+' vs. parameter';
+var au=document.getElementById('fmUncAbsU'); if(au) au.textContent=yAxis==='F'?'mWb':'mV';
+var uv=document.getElementById('fmUncVLbl'); if(uv) uv.textContent=uncMode==='percent'?uncY+'%':uncY+(yAxis==='F'?' mWb':' mV');
+var ul=document.getElementById('fmUncLbl'); if(ul) ul.textContent=(yAxis==='F'?'\u03B4\u03A6':'\u03B4V')+(uncMode==='percent'?' %:':(yAxis==='F'?' mWb:':' mV:'));
 var fitBtn=document.getElementById('fmGBtnFit');
 if(fitBtn){ fitBtn.textContent='Linear Fit: '+(showFit?'ON':'OFF'); styleToggle(fitBtn, showFit); }
 var uncBtn=document.getElementById('fmGBtnUnc');
 if(uncBtn){ uncBtn.textContent='± Unc: '+(showUnc?'ON':'OFF'); styleToggle(uncBtn, showUnc); }
 }
 function setAxis(a){ xAxis=a; refreshAxisBtns(); draw(); renderTable(); }
+function setYAxis(a){ yAxis=a; refreshAxisBtns(); draw(); renderTable(); }
 function toggleFit(){ showFit=!showFit; refreshAxisBtns(); draw(); }
 function toggleUnc(){
 showUnc=!showUnc;
@@ -1164,12 +1192,12 @@ function setUncMode(m){
 uncMode=m;
 var lbl=document.getElementById('fmUncLbl');
 var vl=document.getElementById('fmUncVLbl');
-if(lbl) lbl.textContent=m==='percent'?'δV %:':'δV mV:';
+if(lbl) lbl.textContent=(yAxis==='F'?'δΦ':'δV')+(m==='percent'?' %:':(yAxis==='F'?' mWb:':' mV:'));
 uncY=parseFloat(document.getElementById('fmUncSl').value)||5;
-if(vl) vl.textContent=m==='percent'?uncY+'%':uncY+' mV';
+if(vl) vl.textContent=m==='percent'?uncY+'%':uncY+(yAxis==='F'?' mWb':' mV');
 draw();
 }
-function setUncValY(v){ uncY=parseFloat(v); var vl=document.getElementById('fmUncVLbl'); if(vl) vl.textContent=uncMode==='percent'?uncY+'%':uncY+' mV'; draw(); }
+function setUncValY(v){ uncY=parseFloat(v); var vl=document.getElementById('fmUncVLbl'); if(vl) vl.textContent=uncMode==='percent'?uncY+'%':uncY+(yAxis==='F'?' mWb':' mV'); draw(); }
 function setUncValX(v){ uncX=parseFloat(v); var xl=document.getElementById('fmUncXLbl'); if(xl) xl.textContent=uncX+'%'; draw(); }
 function clearData(){
 data=[]; renderTable(); draw();
@@ -1193,7 +1221,7 @@ if(document.getElementById('fmDGCanvas')){ init(); }
 else { setTimeout(waitForDOM, 50); }
 })();
 return {
-open:open, close:close, clearData:clearData, setAxis:setAxis, toggleFit:toggleFit, toggleUnc:toggleUnc,
+open:open, close:close, clearData:clearData, setAxis:setAxis, setYAxis:setYAxis, _data:function(){ return data; }, _axes:function(){ return [xAxis, yAxis, showUnc]; }, toggleFit:toggleFit, toggleUnc:toggleUnc,
 setUncMode:setUncMode, setUncValY:setUncValY, setUncValX:setUncValX,
 redraw:function(){ var p=document.getElementById('fmGPanel'); if(p && p.style.display!=='none') draw(); },
 addPoint: function(pt){ init(); data.push(pt); renderTable(); },
@@ -1201,7 +1229,39 @@ getCount: function(){ return data.length; }
 };
 })();
 </script>
+<script>
+(function(){ /* applies the SETTINGS at the top */
+var S=(typeof fmShow==='object'&&fmShow)||{}, G=fmGraphPanel;
+function on(k){ return !(k in S)||String(S[k])!=='0'; }
+function el(i){ return document.getElementById(i+''); }
+function hide(e){ if(e){ e.style.display='none'; e.setAttribute('aria-hidden','true'); } }
+function up(i,c){ var e=el(i); return e?e.closest(c):null; }
+[['heightPanel','fmHHd'],['coilPanel','fmCoilHd'],['magnetPanel','fmMagHd'],['playback','fmPlayHd'],['logger','fmLogHd']].forEach(function(q){ if(!on(q[0])) hide(up(q[1],'.fm_panel')); });
+[['turns','fmVN','fmSlN'],['strength','fmVB','fmSlB']].forEach(function(q){ if(!on(q[0])){ hide(up(q[1],'.fm_ctrlhdr')); hide(el(q[2])); } });
+[['flipCoil','fmBtnFlipC','fmCoilState'],['flipMagnet','fmBtnFlip','fmPolarity'],['hint','fmHint','']].forEach(function(q){ if(!on(q[0])){ hide(el(q[1])); hide(el(q[2])); } });
+if(!on('uncertainty')){ hide(el('fmGUncBar')); hide(el('fmGBtnUnc')); G.toggleUnc(); }
+var x=[['xHeight','fmGBtnH','h'],['xTurns','fmGBtnN','N'],['xStrength','fmGBtnB','B']].filter(function(q){ if(!on(q[0])) hide(el(q[1])); return on(q[0]); }); if(x.length) G.setAxis(x[0][2]);
+var y=[['yMaxV','fmGBtnYV','V'],['yFlux','fmGBtnYF','F']].filter(function(q){ if(!on(q[0])) hide(el(q[1])); return on(q[0]); }); if(y.length) G.setYAxis(y[0][2]);
+var r=el('fmroot'), h=r.querySelector('.fm_h1'), t=r.querySelector('.fm_sub'); if(S.title&&h) h.textContent=S.title; if(S.subtitle&&t) t.textContent=S.subtitle;
+})();
+</script>
 </div><!-- #fmroot -->
+<div>
+<hr>
+<hr><h2>Doing the Flips</h2><hr>
+<p>The simulation provided above mimmicks the lab setup. The first part of the lab involves dropping a magnet in one orientation, then flipping it and then flipping the coil instead. In collecting the data, you expected to notice what happens.</p>
+<p>In the lab, what you are going to measure is voltage versus time `V(t)`. The graph will look similar to what you see in the bottom panel of the simulation. In parts 2, 3, and 4, you are expected to graph data. That is not the case for part 1.<p>
+<ol type="a">
+<li>When you drop the magnet with North pole leading (going through the coil first), the first voltage peak observed is:
+</li>
+<li>the second voltage peak observed is:
+</li>
+<li>When you flip the magnet:
+</li>
+<li>When you flip the coil ends:
+</li>
+</ol>
+</div>
 </main>
 </body>
 </html>

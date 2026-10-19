@@ -132,7 +132,36 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <div id="gtrNarrBox" class="gtr_narbar" role="status" aria-live="polite" aria-atomic="true"><span id="gtrNarration">--</span></div>
 <div id="gtrSrAnnounce" class="gtr_sronly" aria-live="assertive" aria-atomic="true"></div>
 <p class="gtr_credit">Simulation by Taha Mzoughi &copy; 2026 -- MOM adaptation</p>
-</div><!-- #gtrroot -->
+</div>
+<!-- SIM description: a button below the sim toggles the description into view (math in AsciiMath, typeset when opened) -->
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc" onclick="mobDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>This simulation shows how an electric guitar pickup works. A permanent magnet magnetizes the steel string above it, and a coil of `N` turns is wound around the magnet. When the plucked string vibrates, the magnetic flux through the coil changes, and by Faraday's law the coil produces an emf,</p>
+<p class="mob_eq">`epsilon = -N (d Phi)/(dt)`.</p>
+<p>The string vibrates at its fundamental frequency and at its harmonics. A pickup placed at a node of a harmonic does not sense it, so moving the pickup changes the tone; plucking at a different point changes the mix of harmonics. The coil's inductance and the cable's capacitance form a resonant filter, `f_r = 1/(2 pi sqrt(L C))`, that shapes the sound. Fretting the string shortens it and raises the pitch. Each note is synthesized from this model and played.</p>
+<p>Only a magnetic (steel) string works: a nylon string changes no flux and the pickup stays silent.</p>
+</div>
+</div>
+<script>
+function mobDesc(){
+var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+var open = (d.style.display === 'none');
+d.style.display = open ? 'block' : 'none';
+b.setAttribute('aria-expanded', open ? 'true' : 'false');
+b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }
+}
+</script>
+<style>
+.mob_descwrap { width:100%; max-width:860px; margin:8px auto 10px; display:flex; flex-direction:column; align-items:center; gap:8px; box-sizing:border-box; font-family:Arial, sans-serif; }
+.mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
+.mob_descbtn[aria-expanded="true"] { background:#3a3220; }
+.mob_desc { width:100%; box-sizing:border-box; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; }
+.mob_desc p { margin:0 0 9px; } .mob_desc p:last-child { margin-bottom:0; }
+.mob_eq { text-align:center; font-size:1rem; }
+</style>
+<!-- #gtrroot -->
 <style>
 /* ════════ All simulator rules scoped to #gtrroot ════════ */
 #gtrroot {
@@ -372,7 +401,7 @@ var BARS = [
   ['B4 C5 B4', 'B2', 'A3 D#4'], ['D#5 C5 B4', 'B2', 'A3 D#4'], ['B4 A4 G4', 'E2', 'G3 B3'], ['G4 F#4 E4', 'E2', 'G3 B3']
 ];
 var TRIP = 0.19;
-function pm(s) { var m = s.match(/^([A-G])(#?)(\d)$/), base = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }[m[1]] + (m[2] ? 1 : 0); return 12*(parseInt(m[3], 10) + 1) + base; }
+function pm(s) { var m = s.match(/^([A-G])(#?)(\d)(?![\s\S])/), base = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }[m[1]] + (m[2] ? 1 : 0); return 12*(parseInt(m[3], 10) + 1) + base; }
 function onString(midi, s) { while (s < 6 && midi - OPEN[s] < 0) s++; return { s: s, fr: midi - OPEN[s] }; }
 function buildTune() {
   var ev = [], t = 0.15;

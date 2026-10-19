@@ -125,7 +125,36 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <div id="pndNarrBox" class="pnd_narbar" role="status" aria-live="polite" aria-atomic="true"><span id="pndNarration">--</span></div>
 <div id="pndSrAnnounce" class="pnd_sronly" aria-live="assertive" aria-atomic="true"></div>
 <p class="pnd_credit">Simulation by Taha Mzoughi &copy; 2026 -- MOM adaptation</p>
-</div><!-- #pndroot -->
+</div>
+<!-- SIM description: a button below the sim toggles the description into view (math in AsciiMath, typeset when opened) -->
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc" onclick="mobDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>This simulation shows an eddy-current pendulum: a metal plate on a rod swings between the poles of a magnet. As the plate moves through the field, the changing flux induces currents that circulate inside the metal, eddy currents. By Lenz's law, their magnetic force opposes the motion: a drag that grows with the speed,</p>
+<p class="mob_eq">`F = -k v`,&nbsp;&nbsp; `k prop sigma t B^2`,</p>
+<p>where `sigma` is the conductivity of the plate and `t` its thickness. A solid copper or aluminium plate stops in a swing or two; a plastic plate, with no free charges, swings freely.</p>
+<p>Cutting slits in the plate confines the currents to narrow fingers: the current loops are much smaller, and the braking almost disappears. The energy removed from the swing becomes heat in the plate, `I^2 R`.</p>
+</div>
+</div>
+<script>
+function mobDesc(){
+var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+var open = (d.style.display === 'none');
+d.style.display = open ? 'block' : 'none';
+b.setAttribute('aria-expanded', open ? 'true' : 'false');
+b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }
+}
+</script>
+<style>
+.mob_descwrap { width:100%; max-width:860px; margin:8px auto 10px; display:flex; flex-direction:column; align-items:center; gap:8px; box-sizing:border-box; font-family:Arial, sans-serif; }
+.mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
+.mob_descbtn[aria-expanded="true"] { background:#3a3220; }
+.mob_desc { width:100%; box-sizing:border-box; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; }
+.mob_desc p { margin:0 0 9px; } .mob_desc p:last-child { margin-bottom:0; }
+.mob_eq { text-align:center; font-size:1rem; }
+</style>
+<!-- #pndroot -->
 <style>
 /* ════════ All simulator rules scoped to #pndroot ════════ */
 #pndroot {
