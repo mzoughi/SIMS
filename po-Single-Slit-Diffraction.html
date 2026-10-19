@@ -10,135 +10,146 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations- Optics: Single Slit</title>
+<title>Physics Simulations-Physical Optics: Single-Slit Diffraction</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,optics, interference,diffraction, physical, slit, single,color,Wave,interference,frequency, lesson, scientific">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, diffraction, interference, single slit, double slit, multiple slits, diffraction grating, wavelength, fringes, intensity, lesson, scientific">
+<meta name="description" content="Single-Slit Diffraction -- interactive physics simulation.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
-<div id="snellRoot0920">
+<main class="page">
+<div id="mobp26" class="mob_wrap">
+<div id="snellRoot">
 <!-- ── Accessibility toolbar ── -->
-<div class="sn_a11y0920" id="snellA11yBar0920" role="toolbar" aria-label="Display options">
-<button type="button" class="sn_a11ybtn0920" id="snBtnHC0920" onclick="snellA11y0920.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="sn_a11ybtn0920" id="snBtnLM0920" onclick="snellA11y0920.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
-<button type="button" class="sn_a11ybtn0920" id="snBtnCB0920" onclick="snellA11y0920.toggle('cb')" aria-pressed="false">THICK CURVES</button>
-<button type="button" class="sn_a11ybtn0920 sn_a11yon0920" id="snBtnNR0920" onclick="snellA11y0920.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+<div class="sn_a11y" id="snellA11yBar" role="toolbar" aria-label="Display options">
+<button type="button" class="sn_a11ybtn" id="snBtnHC" onclick="snellA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="sn_a11ybtn" id="snBtnLM" onclick="snellA11y.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="sn_a11ybtn" id="snBtnCB" onclick="snellA11y.toggle('cb')" aria-pressed="false">THICK CURVES</button>
+<button type="button" class="sn_a11ybtn sn_a11yon" id="snBtnNR" onclick="snellA11y.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
 </div>
-<hr>
-<div id="canvasesdiv" class="tbar0920"><H3>Single Slit</H3></div>
-<div class="mcontent0920">
-<canvas id="cv0920" width="820" height="450"></canvas>
+<hr><hr>
+<div id="canvasesdiv" class="tbar"><H3>Single Slit</H3></div>
+<div class="mcontent">
+<canvas id="cv" width="820" height="450"></canvas>
 </div>
-<div class="sbbar0920 sbbar-pink0920">
-<div class="left0920">Screen distance</div>
-<div class="centerL0920">
-`L=\ `<input class="slider0920" type="range" id="LValue0920" min="1" max="2" value="1.00" step="0.1"
-oninput="lightinterf10920.showL(this.value)" onchange="lightinterf10920.showL(this.value)">
-<span class="txtDPL0920"><span id="initialLValue0920">1.0</span> m</span>
+<div class="face_wrap"><div class="face_lbl">The screen seen face-on (turned on its side): the same pattern, enlarged</div><canvas id="cvFace" width="820" height="240" role="img" aria-label="The pattern on the screen seen face-on, with the intensity graph below it."></canvas></div>
+<style>.face_wrap { width:100%; margin-top:6px; }
+.face_lbl { font-family:Calibri, Arial, sans-serif; font-size:.82rem; color:#555; padding:2px 4px; }
+.face_wrap canvas { display:block; width:100%; height:auto; border:1px solid #bbb; }</style>
+
+<div class="sbbar sbbar-pink">
+<div class="left">Screen distance</div>
+<div class="centerL">
+`L=\ `<input class="slider" type="range" id="LValue" min="1" max="2" value="1.00" step="0.1"
+oninput="lightinterf1.showL(this.value)" onchange="lightinterf1.showL(this.value)">
+<span class="txtDPL"><span id="initialLValue">1.0</span> m</span>
 </div>
-<div class="centerR0920">
-<input type="checkbox" id="myCheck0920" onchange="lightinterf10920.reset();">
-<label for="myCheck0920"><span id="selectSoundL">Show Intensity Curve</span></label>
+<div class="centerR">
+<input type="checkbox" id="myCheck" onchange="lightinterf1.reset();">
+<label for="myCheck"><span id="selectSoundL">Show Intensity Curve</span></label>
 </div>
-<div class="right0920">
-<input type="radio" id="scale10920" name="scale" value="1" onclick="lightinterf10920.changeScale(this.value)" checked/><label for="scale10920">x1</label>
-<input type="radio" id="scale20920" name="scale" value="2" onclick="lightinterf10920.changeScale(this.value)"/><label for="scale20920">x2</label>
-<input type="radio" id="scale40920" name="scale" value="4" onclick="lightinterf10920.changeScale(this.value)"/><label for="scale40920">x4</label>
-<input type="radio" id="scale80920" name="scale" value="8" onclick="lightinterf10920.changeScale(this.value)"/><label for="scale80920">x8</label>
-<input type="radio" id="scale160920" name="scale" value="16" onclick="lightinterf10920.changeScale(this.value)"/><label for="scale160920">x16</label>
+<div class="right">
+<input type="radio" id="scale1" name="scale" value="1" onclick="lightinterf1.changeScale(this.value)" checked/><label for="scale1">x1</label>
+<input type="radio" id="scale2" name="scale" value="2" onclick="lightinterf1.changeScale(this.value)"/><label for="scale2">x2</label>
+<input type="radio" id="scale4" name="scale" value="4" onclick="lightinterf1.changeScale(this.value)"/><label for="scale4">x4</label>
+<input type="radio" id="scale8" name="scale" value="8" onclick="lightinterf1.changeScale(this.value)"/><label for="scale8">x8</label>
+<input type="radio" id="scale16" name="scale" value="16" onclick="lightinterf1.changeScale(this.value)"/><label for="scale16">x16</label>
 </div>
 </div>
 <!-- Narration bar -->
-<div id="snNarBar0920" class="sn_narbar0920" role="status" aria-live="polite" aria-atomic="true"></div>
-<div class="bbar0920 bbar-blue0920">
-<div class="left0920">Slits</div>
-<div class="centerL0920">
-`a =\ `<input class="slider0920" type="range" id="v1Value0920" min="0.5" max="80" value="12" step="0.5"
-oninput="lightinterf10920.showa(this.value)" onchange="lightinterf10920.showa(this.value)">
-<span class="txtDPL0920"><span id="initialaValue0920">12</span> &mu;m</span>
-<br><span style="visibility:hidden">`d =\ `<input class="main-ctrlVctrlI1" type="range" id="v2Value0920" min="20" max="72" value="36" step="1.0"
-oninput="lightinterf10920.showd(this.value)" onchange="lightinterf10920.showd(this.value)">
-<span class="txtDPL0920"><span id="initialdValue0920">36</span> &mu;m</span></span>
-<p style="visibility:hidden;height:1px">
-<input type="button" id="open10920" value="1 slit"     onclick="lightinterf10920.setOpening(1)">
-<input type="button" id="open20920" value="2 sources"  onclick="lightinterf10920.setOpening(2)">
-<input type="button" id="open30920" value="2 slits"    onclick="lightinterf10920.setOpening(3)">
-<input type="button" id="open40920" value="3 slits"    onclick="lightinterf10920.setOpening(4)">
-<input type="button" id="open50920" value="4 slits"    onclick="lightinterf10920.setOpening(5)">
+<div id="snNarBar" class="sn_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="bbar bbar-blue">
+<div class="left">Slits</div>
+<div class="centerL">
+`a =\ `<input class="slider" type="range" id="v1Value" min="0.5" max="80" value="12" step="0.5"
+oninput="lightinterf1.showa(this.value)" onchange="lightinterf1.showa(this.value)">
+<span class="txtDPL"><span id="initialaValue">12</span> &mu;m</span>
+<br><span style="visibility:hidden">`d =\ `<input class="main-ctrlVctrlI1" type="range" id="v2Value" min="20" max="72" value="36" step="1.0"
+                      oninput="lightinterf1.showd(this.value)" onchange="lightinterf1.showd(this.value)">
+<span class="txtDPL"><span id="initialdValue">36</span> &mu;m</span></span>
+<p style="visibility:hidden">
+<input type="button" id="open1" value="1 slit"     onclick="lightinterf1.setOpening(1)">
+<input type="button" id="open2" value="2 sources"  onclick="lightinterf1.setOpening(2)">
+<input type="button" id="open3" value="2 slits"    onclick="lightinterf1.setOpening(3)">
+<input type="button" id="open4" value="3 slits"    onclick="lightinterf1.setOpening(4)">
+<input type="button" id="open5" value="4 slits"    onclick="lightinterf1.setOpening(5)">
 </p>
 </div>
-<div class="centerR0920">Light Source</div>
-<div class="right0920">
-`lambda =\ `<input class="slider0920" type="range" id="CValue0920" min="0.4" max="0.65" value="0.65" step="0.01"
- oninput="lightinterf10920.showC(this.value)" onchange="lightinterf10920.showC(this.value)">
-<span class="txtDPL0920"><span id="initialCValue0920">0.65</span> &mu;m</span>
+<div class="centerR">Light Source</div>
+<div class="right">
+`lambda =\ `<input class="slider" type="range" id="CValue" min="0.4" max="0.65" value="0.65" step="0.01"
+ oninput="lightinterf1.showC(this.value)" onchange="lightinterf1.showC(this.value)">
+<span class="txtDPL"><span id="initialCValue">0.65</span> &mu;m</span>
 <p>
-<input type="button" id="color30920" value="Violet" onclick="lightinterf10920.setColor(0.4)">
-<input type="button" id="color20920" value="Green"  onclick="lightinterf10920.setColor(0.52)">
-<input type="button" id="color10920" value="Red"    onclick="lightinterf10920.setColor(0.65)">
+<input type="button" id="color3" value="Violet" onclick="lightinterf1.setColor(0.4)">
+<input type="button" id="color2" value="Green"  onclick="lightinterf1.setColor(0.52)">
+<input type="button" id="color1" value="Red"    onclick="lightinterf1.setColor(0.65)">
 </p>
 </div>
 </div>
 <hr><p>&nbsp;</p>
 <ol type="a">
-<li>Change the slit width a and observe the light pattern on the screen. Which slit widths result in less light diffraction (more uniform lighting)<br /></li>
-<li>Set the slit width to the maximum possible value (`80\ mu"m"`), and now change the wavelength of the light &lambda; and observe the light pattern on the screen. Which wavelengths result in less light diffraction<br /></li>
-<li>With the slit width at the maximum possible value (`80\ mu"m"`), and the wavelength of light at `0.65\ mu"m"`, use the intensity curve and the x16 magnification to estimate the width of the central bright fringe (peak on the intensity curve).<br />One Slit: `Delta y_{"central maximum"}\ =\ `</li>
-<li>With the slit width at the maximum possible value (`80\ mu"m"`), and the wavelength of light at `0.65\ mu"m"`, use the intensity curve and the x16 magnification to estimate the width of the first order bright fringe (peak on the intensity curve).<br />One Slit: `Delta y_{"1st fringe"}\ =\ ` </li>
-<li>With the slit width again at the maximum possible value (`80\ mu"m"`), and the wavelength of light at `0.65\ mu"m"`, use the intensity curve and the x16 magnification to estimate the width of the 2nd order bright fringe (peak on the intensity curve).<br />One Slit: `Delta y_{"2nd fringe"}\ =\ `</li>
+<li>Change the slit width a and observe the light pattern on the screen. Which slit widths result in less light diffraction (more uniform lighting)</li>
+<li>Set the slit width to the maximum possible value (`80\ mu"m"`), and now change the wavelength of the light &lambda; and observe the light pattern on the screen. Which wavelengths result in less light diffraction</li>
+<li>With the slit width at the maximum possible value (`80\ mu"m"`), and the wavelength of light at `0.65\ mu"m"`, use the intensity curve and the x16 magnification to estimate the width of the central bright fringe (peak on the intensity curve).<br />One Slit: `Delta y_{"central maximum"}\ =\ ` _____ </li>
+<li>With the slit width at the maximum possible value (`80\ mu"m"`), and the wavelength of light at `0.65\ mu"m"`, use the intensity curve and the x16 magnification to estimate the width of the first order bright fringe (peak on the intensity curve).<br />One Slit: `Delta y_{"1st fringe"}\ =\ ` _____  </li>
+<li>With the slit width again at the maximum possible value (`80\ mu"m"`), and the wavelength of light at `0.65\ mu"m"`, use the intensity curve and the x16 magnification to estimate the width of the 2nd order bright fringe (peak on the intensity curve).<br />One Slit: `Delta y_{"2nd fringe"}\ =\ ` _____ </li>
 </ol>
-</div><!-- #snellRoot0920 -->
-<style>
-* { margin: 0; box-sizing: border-box; }
-div { width: 823px; margin: 0; }
-#snellRoot0920 { --sn-toolbar-bg: #222; }
-#snellRoot0920 .sn_a11y0920 {
+</div><!-- #snellRoot -->
+<style>:where(#mobp26) * { margin: 0; box-sizing: border-box; }
+:where(#mobp26) div { width: 823px; margin: 0; }
+#snellRoot { --sn-toolbar-bg: #222; }
+#snellRoot .sn_a11y {
 display: flex; gap: 6px; padding: 6px 8px;
 background: var(--sn-toolbar-bg); flex-wrap: wrap; width: 823px;
 }
-#snellRoot0920 .sn_a11ybtn0920 {
+#snellRoot .sn_a11ybtn {
 padding: 4px 10px; font-size: .72rem; font-family: monospace;
 letter-spacing: .06em; border-radius: 3px; cursor: pointer;
 background: #2a2e3a; border: 1px solid #404a60; color: #7a8aaa;
 transition: border-color .15s, color .15s;
 }
-#snellRoot0920 .sn_a11ybtn0920:hover { border-color: #00e8d0; color: #00e8d0; }
-#snellRoot0920 .sn_a11yon0920 { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
-#snellRoot0920 .sn_narbar0920 {
+#snellRoot .sn_a11ybtn:hover { border-color: #00e8d0; color: #00e8d0; }
+#snellRoot .sn_a11yon { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
+#snellRoot .sn_narbar {
 width: 823px; min-height: 28px; padding: 5px 10px;
 background: #ffefc0; border-left: 4px solid #e0b040;
 font-size: .88rem; color: #333; font-style: italic;
 }
-.slider0920  { width: 155px; height: 14px; display: inline-block; }
-.zslider0920 { width: 145px; height: 14px; display: inline-block; }
-.txtDPL0920  { background-color: blue; color: yellow; margin-left: 10px; padding-top: 2px;
+.slider { width: 155px; height: 14px; display: inline-block; }
+.zslider { width: 145px; height: 14px; display: inline-block; }
+.txtDPL { background-color: blue; color: yellow; margin-left: 10px; padding-top: 2px;
 display: inline-block; font-size: 14px; text-align: center; height: 20px; width: 58px; }
-.tbar0920    { padding: 2px; height: 30px; background-color: #f90; text-align: center; }
-.mcontent0920  { height: 452px; }
-.mcontent20920 { height: 192px; text-align: center; display: flex; }
-.sbbar0920 { height: 45px; text-align: center; display: flex; }
-.sbbar0920 .left0920    { width: 110px; padding: 5px; }
-.sbbar0920 .centerL0920 { width: 302px; padding: 5px; }
-.sbbar0920 .centerR0920 { width: 110px; padding: 5px; }
-.sbbar0920 .right0920   { width: 302px; padding: 5px; }
-.sbbar-pink0920 { background-color: #fce4ec; }
-.bbar0920 { height: 55px; text-align: center; display: flex; }
-.bbar0920 .left0920    { width: 110px; padding: 5px; }
-.bbar0920 .centerL0920 { width: 302px; padding: 5px; }
-.bbar0920 .centerR0920 { width: 110px; padding: 5px; }
-.bbar0920 .right0920   { width: 302px; padding: 5px; }
-.bbar-blue0920 { background-color: #e3f2fd; }
-.bbbar0920 { height: 45px; padding: 5px; text-align: left; display: flex; }
-.bbbar0920 .left0920  { width: 723px; padding: 5px; }
-.bbbar0920 .right0920 { width: 95px; padding: 5px; }
-.footer0920 { height: 40px; text-align: center; font-size: larger; display: flex; }
-.footer0920 .left0920   { width: 206px; padding: 2px; }
-.footer0920 .center0920 { width: 206px; padding: 4px; }
-.footer0920 .right0920  { width: 206px; padding: 4px; }
-.flex0920 { min-height: 50px; background-color: #fec; padding: 4px; }
-</style>
+.tbar { padding: 4px; height: 50px; background-color: #f90; text-align: center; }
+.mcontent { height: 452px; }
+.mcontent2 { height: 192px; text-align: center; display: flex; }
+.sbbar { height: 45px; text-align: center; display: flex; }
+.sbbar .left { width: 110px; padding: 5px; }
+.sbbar .centerL { width: 302px; padding: 5px; }
+.sbbar .centerR { width: 110px; padding: 5px; }
+.sbbar .right { width: 302px; padding: 5px; }
+.sbbar-pink { background-color: #fce4ec; }
+.bbar { height: 80px; text-align: center; display: flex; }
+.bbar .left { width: 110px; padding: 5px; }
+.bbar .centerL { width: 302px; padding: 5px; }
+.bbar .centerR { width: 110px; padding: 5px; }
+.bbar .right { width: 302px; padding: 5px; }
+.bbar-blue { background-color: #e3f2fd; }
+.bbbar { height: 45px; padding: 5px; text-align: left; display: flex; }
+.bbbar .left { width: 723px; padding: 5px; }
+.bbbar .right { width: 95px; padding: 5px; }
+.footer { height: 60px; text-align: center; font-size: larger; display: flex; }
+.footer .left { width: 206px; padding: 2px; }
+.footer .center { width: 206px; padding: 4px; }
+.footer .right { width: 206px; padding: 4px; }
+.flex { min-height: 100px; background-color: #fec; padding: 4px; }</style>
 <!-- ════════════════ ACCESSIBILITY CONTROLLER ════════════════ -->
 <script>
-var snellA11y0920 = (function(){
+var snellA11y = (function(){
 var ROOT = null;
 var states = { hc: false, lm: false, cb: false, nr: true };
 /* cb here means "thick curves" for better visibility of intensity plot */
@@ -149,14 +160,14 @@ else        { b.style.background='#2a2e3a';             b.style.borderColor='#40
 b.setAttribute('aria-pressed', active ? 'true' : 'false');
 }
 function applyCanvas() {
-var cv = document.getElementById('cv0920');
+var cv = document.getElementById('cv');
 if (cv) cv.style.filter = states.lm ? 'invert(1) hue-rotate(180deg) brightness(0.9)' : '';
 }
 function applyNarBar() {
-var nb = document.getElementById('snNarBar0920');
+var nb = document.getElementById('snNarBar');
 if (nb) nb.style.display = states.nr ? 'block' : 'none';
-var btn = document.getElementById('snBtnNR0920');
-if (btn) { btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF'); styleBtn('snBtnNR0920', states.nr); }
+var btn = document.getElementById('snBtnNR');
+if (btn) { btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF'); styleBtn('snBtnNR', states.nr); }
 }
 function applyToolbar() {
 if (ROOT) ROOT.style.setProperty('--sn-toolbar-bg', (states.hc || states.lm) ? '#111' : '#222');
@@ -164,23 +175,23 @@ if (ROOT) ROOT.style.setProperty('--sn-toolbar-bg', (states.hc || states.lm) ? '
 function apply() {
 if (!ROOT) return;
 applyCanvas(); applyNarBar(); applyToolbar();
-styleBtn('snBtnHC0920', states.hc);
-styleBtn('snBtnLM0920', states.lm);
-styleBtn('snBtnCB0920', states.cb);
+styleBtn('snBtnHC', states.hc);
+styleBtn('snBtnLM', states.lm);
+styleBtn('snBtnCB', states.cb);
 }
 return {
-init: function() { ROOT = document.getElementById('snellRoot0920'); apply(); },
+init: function() { ROOT = document.getElementById('snellRoot'); apply(); },
 toggle: function(k) {
 states[k] = !states[k];
 if (k === 'hc' && states.hc) states.lm = false;
 if (k === 'lm' && states.lm) states.hc = false;
 apply();
-if (typeof lightinterf10920 !== 'undefined') lightinterf10920.reset();
+if (typeof lightinterf1 !== 'undefined') lightinterf1.reset();
 },
 isNarOn: function() { return states.nr; },
 narrate: function(msg) {
 if (!states.nr) return;
-var nb = document.getElementById('snNarBar0920');
+var nb = document.getElementById('snNarBar');
 if (!nb) return;
 nb.innerHTML = msg;
 if (window.MathJax) {
@@ -201,7 +212,7 @@ getAxis:    function() { return states.hc ? '#fff' : '#000'; }
 <!-- ════════════════ SIMULATION ════════════════ -->
 <script>
 var lightinterf1 = function() {
-var canvas = document.getElementById("cv0920");
+var canvas = document.getElementById("cv");
 var ctx = canvas.getContext("2d");
 var index = -1;
 var xBase=50, yBase=200;
@@ -220,7 +231,7 @@ var redness,greenness,blueness,redString,greenString,blueString,colorString;
 var plotgraph=0, scaleGraph=1;
 var timer, runFlag=1;
 var px, py, axisValue, axisLabel;
-function _narrate(msg) { snellA11y0920.narrate(msg); }
+function _narrate(msg) { snellA11y.narrate(msg); }
 function _colourName(wl) {
 if (wl >= 0.62) return 'red';
 if (wl >= 0.59) return 'orange';
@@ -239,25 +250,25 @@ function _firstMinPos() {
 return (wavelength * L / a * 100).toFixed(2);
 }
 function showa(v) {
-document.getElementById("initialaValue0920").innerHTML = v;
+document.getElementById("initialaValue").innerHTML = v;
 a = Number(v); reset();
 _narrate('Slit width a = ' + v + ' &mu;m. '
 + 'Central maximum &Delta;y &approx; ' + _centralMaxWidth() + ' cm. '
 + 'First minimum at &plusmn;' + _firstMinPos() + ' cm.');
 }
 function showd(v) {
-document.getElementById("initialdValue0920").innerHTML = v;
+document.getElementById("initialdValue").innerHTML = v;
 d = Number(v); reset();
 _narrate('Slit separation d = ' + v + ' &mu;m.');
 }
 function showC(v) {
-document.getElementById("initialCValue0920").innerHTML = v;
+document.getElementById("initialCValue").innerHTML = v;
 wavelength = Number(v); lambda = wavelength*1000; reset();
 _narrate('Wavelength &lambda; = ' + v + ' &mu;m (' + _colourName(Number(v)) + '). '
 + 'Central maximum &Delta;y &approx; ' + _centralMaxWidth() + ' cm.');
 }
 function showL(v) {
-document.getElementById("initialLValue0920").innerHTML = v;
+document.getElementById("initialLValue").innerHTML = v;
 L = Number(v);
 sBase = sBase0 + (L-1)*sBase0;
 Lheight = yBase + slitTop - 2*sBase0 + sBase;
@@ -317,17 +328,66 @@ var cc=Math.PI*a*Math.sin(x)/lambda;
 return Math.sin(cc)/cc;
 }
 function intensity(x) { var amp=amplitude(x); return amp*amp; }
-function drawMotion() {
+function drawMotion() { drawMotion0(); drawFace(); }
+
+/* ════════ the screen seen face-on: the side view's screen column, laid out as a wide band, with the intensity graph ════════ */
+var SCR = null;
+function drawFace(){
+var fc = document.getElementById('cvFace'); if (!fc || !SCR) return;
+var HASI = (typeof computeI === 'function'), showI = HASI && plotgraph;
+var FW = 820, FH = showI ? 240 : 128, dpr = window.devicePixelRatio || 1;
+if (fc.width !== Math.round(FW*dpr) || fc.height !== Math.round(FH*dpr)){ fc.width = Math.round(FW*dpr); fc.height = Math.round(FH*dpr); }
+var g = fc.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+var bg = snellA11y.getBg(), ax = snellA11y.getAxis();
+g.fillStyle = bg; g.fillRect(0, 0, FW, FH);
+var X0 = 40, X1 = FW - 62, BT = 8, BB = 92;   /* the band: y from -10 cm (left) to +10 cm (right) */
+function X(ycm){ return X0 + (ycm + 10)/20*(X1 - X0); }
+/* read the side view's screen, one pixel column down its middle, at the canvas's real resolution */
+var sc = canvas.width/820, top = Math.round(SCR.top*sc), n = Math.round((SCR.bot - SCR.top)*sc);
+var col = ctx.getImageData(Math.round(SCR.x*sc), top, 1, n).data;
+var bw = Math.round((X1 - X0)*dpr), bh = Math.round((BB - BT)*dpr), img = g.createImageData(bw, bh);
+for (var k=0; k<bw; k++){
+var ycm = -10 + 20*k/(bw - 1), row = Math.min(n - 1, Math.max(0, Math.round((SCR.cy - ycm*20 - SCR.top)*sc - 0.5)));
+var r = col[4*row], gg = col[4*row + 1], b = col[4*row + 2];
+for (var j=0; j<bh; j++){ var q = 4*(j*bw + k); img.data[q] = r; img.data[q + 1] = gg; img.data[q + 2] = b; img.data[q + 3] = 255; }
+}
+g.putImageData(img, Math.round(X0*dpr), Math.round(BT*dpr));
+if (HASI){   /* the slit sims: the band straight from the intensity (the side view's strip compresses the brightness strongly, for its narrow strip) */
+for (var k2=0; k2<=X1 - X0; k2++){ var yc = -10 + 20*k2/(X1 - X0), ym = yc*0.01, I1 = computeI(ym/Math.sqrt(ym*ym + L*L)); g.fillStyle = rgb(lambda, Math.sqrt(Math.max(0, I1)));   /* sqrt(I): dark fringes dark, faint maxima still visible */ g.fillRect(X0 + k2, BT, 1.6, BB - BT); }
+}
+g.strokeStyle = ax; g.lineWidth = 1; g.strokeRect(X0, BT, X1 - X0, BB - BT);
+/* the y axis, in cm, as on the side view */
+g.font = '12px Calibri, Arial, sans-serif'; g.fillStyle = ax; g.textAlign = 'center'; g.textBaseline = 'top';
+for (var ic=-10; ic<=10; ic++){ var x = X(ic); g.beginPath(); g.moveTo(x, BB); g.lineTo(x, BB + (ic % 2 === 0 ? 6 : 3)); g.stroke(); if (ic % 2 === 0) g.fillText(String(ic), x, BB + 7); }
+g.textAlign = 'left'; g.fillText('y (cm)', X1 + 14, BB + 7);
+if (!showI) return;
+/* the intensity graph: computeI, with the same magnification as the side view's curve */
+var GT = 130, GB = 222;
+g.strokeStyle = 'rgba(128,128,128,0.35)';
+for (var ic2=-10; ic2<=10; ic2++){ var x2 = X(ic2); g.beginPath(); g.moveTo(x2, GT); g.lineTo(x2, GB); g.stroke(); }
+for (var f=0; f<=4; f++){ var yy = GB - f*(GB - GT)/4; g.beginPath(); g.moveTo(X0, yy); g.lineTo(X1, yy); g.stroke(); }
+g.strokeStyle = ax; g.beginPath(); g.moveTo(X0, GT - 4); g.lineTo(X0, GB); g.lineTo(X1, GB); g.stroke();
+g.fillStyle = ax; g.textAlign = 'left'; g.textBaseline = 'middle'; g.font = '13px Calibri, Arial, sans-serif';
+g.fillText('I' + (scaleGraph > 1 ? '  (\u00D7' + scaleGraph + ')' : ''), X0 + 4, GT + 2);
+g.save(); g.beginPath(); g.rect(X0, GT - 6, X1 - X0, GB - GT + 6); g.clip();
+g.strokeStyle = rgb2(lambda, 0.9); g.lineWidth = snellA11y.isThick() ? 4 : 2; g.beginPath();
+for (var px2=0; px2<=X1 - X0; px2++){
+var y_cm = -10 + 20*px2/(X1 - X0), y_m = y_cm*0.01, sinT = y_m/Math.sqrt(y_m*y_m + L*L), I0 = computeI(sinT)*scaleGraph;
+var yy2 = GB - Math.min(I0, 1.06)*(GB - GT); if (px2) g.lineTo(X0 + px2, yy2); else g.moveTo(X0, yy2); }
+g.stroke(); g.restore();
+g.textAlign = 'center'; g.textBaseline = 'top'; g.fillText('y (cm)', (X0 + X1)/2, GB + 4);
+}
+function drawMotion0() {
 if (index>=400) runFlag=0;
 if (runFlag==1) {
 ctx.clearRect(0,0,canvas.width,canvas.height);
 index+=1;
-var myCheck = document.getElementById("myCheck0920");
+var myCheck = document.getElementById("myCheck");
 plotgraph = myCheck.checked ? 1 : 0;
-var bgCol      = snellA11y0920.getBg();
-var graphBgCol = snellA11y0920.getGraphBg();
-var axisCol    = snellA11y0920.getAxis();
-var curveWidth = snellA11y0920.isThick() ? 4 : 2;
+var bgCol      = snellA11y.getBg();
+var graphBgCol = snellA11y.getGraphBg();
+var axisCol    = snellA11y.getAxis();
+var curveWidth = snellA11y.isThick() ? 4 : 2;
 /* ── Layout constants ── */
 var CY    = 225;           /* canvas vertical centre = y=0 on screen */
 var PX_CM = 20;            /* pixels per cm on screen */
@@ -336,7 +396,7 @@ var Y_BOT = CY + 10*PX_CM; /* y=425 (bottom) */
 /* (5) Screen x-position moves with L: L=1→scrL=580, L=2→scrL=680 */
 var slitX  = 80;           /* x of slit slide -- (6) shifted left */
 var scrL   = slitX + 16 + Math.round((L-1)*100) + 500; /* screen left edge moves with L */
-var scrW   = 35;           /* width of screen strip */
+var scrW   = 35; SCR = { x: scrL + scrW/2, top: Y_TOP, bot: Y_BOT, cy: CY };           /* width of screen strip */
 /* (1) Graph sits LEFT of screen, base touching screen */
 var graphW = 180;          /* width of graph (max I extent) */
 var graphL = scrL - graphW; /* graph LEFT edge = screen minus graph width */
@@ -523,12 +583,78 @@ redraw: function(){ reset(); }
 };
 </script>
 <script>
-var lightinterf10920 = new lightinterf1();
-snellA11y0920.init();
+var lightinterf1 = new lightinterf1();
+snellA11y.init();
 window.setTimeout(function(){
-lightinterf10920.reset();
-snellA11y0920.narrate('Single Slit ready. a=12 &mu;m, &lambda;=0.65 &mu;m (red), L=1 m. Central maximum &Delta;y &approx; ' + (2*0.65*1/12*100).toFixed(2) + ' cm. Enable "Show Intensity Curve" and use zoom controls to measure fringe widths.');
+lightinterf1.reset();
+snellA11y.narrate('Single Slit ready. a=12 &mu;m, &lambda;=0.65 &mu;m (red), L=1 m. Central maximum &Delta;y &approx; ' + (2*0.65*1/12*100).toFixed(2) + ' cm. Enable "Show Intensity Curve" and use zoom controls to measure fringe widths.');
 }, 0);
 </script>
+<!-- SIM description: a button below the sim toggles the description into view (math in AsciiMath, typeset when opened) -->
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc" onclick="mobDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>This simulation shows the diffraction of light through a single narrow slit. Light of wavelength `lambda` passes through a slit of width `a` and falls on a screen a distance `L` away. Instead of a sharp image of the slit, the screen shows a broad bright central fringe with weaker fringes on either side.</p>
+<p>Each point across the slit sends out its own wavelet. In the direction `theta`, the wavelets from the two halves of the slit cancel when</p>
+<p class="mob_eq">`a sin theta = m lambda`,&nbsp;&nbsp; `m = +-1, +-2, ...`,</p>
+<p>which gives the dark fringes. The intensity is `I = I_0 ((sin beta)/beta)^2` with `beta = (pi a sin theta)/lambda`. The central maximum is twice as wide as the others: on the screen its width is `Delta y ~~ (2 lambda L)/a`. A narrower slit or a longer wavelength spreads the light more.</p>
+<p>The side view shows the slit and the screen; below it, the screen is seen face-on, enlarged, with the intensity graph aligned beneath it. The magnification buttons enlarge the intensity curve, to reveal the faint side fringes.</p>
+</div>
+</div>
+<script>
+function mobDesc(){
+var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+var open = (d.style.display === 'none');
+d.style.display = open ? 'block' : 'none';
+b.setAttribute('aria-expanded', open ? 'true' : 'false');
+b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }
+}
+</script>
+<style>
+/* ════════ mobile layer: the sim adapts to the width it gets (a phone, or a column in MOM) ════════ */
+#mobp26 { container-type:inline-size; width:100%; max-width:100%; box-sizing:border-box; }
+/* only when the sim is narrower than its design (823 px): nothing is wider than the sim, canvases scale down,
+   rows wrap, fixed heights relax, wide tables scroll inside the sim -- on a wide screen nothing changes */
+@container (max-width:863px) {
+#mobp26 div, #mobp26 p, #mobp26 fieldset, #mobp26 form, #mobp26 section, #mobp26 ol, #mobp26 ul, #mobp26 table { max-width:100%; box-sizing:border-box; }
+#mobp26 canvas, #mobp26 img, #mobp26 svg { max-width:100%; height:auto !important; }
+#mobp26 input[type=range], #mobp26 select { max-width:100%; min-width:0; }
+#mobp26 #snellRoot .sn_a11y, #mobp26 .mcontent2, #mobp26 .sbbar, #mobp26 .bbar, #mobp26 .bbbar, #mobp26 .footer { flex-wrap:wrap; }
+#mobp26 #snellRoot .sn_a11y > div, #mobp26 .mcontent2 > div, #mobp26 .sbbar > div, #mobp26 .bbar > div, #mobp26 .bbbar > div, #mobp26 .footer > div { min-width:min(100%, 260px); }
+#mobp26 div[style*="height"] { height:auto !important; }
+#mobp26 .tbar, #mobp26 .mcontent, #mobp26 .mcontent2, #mobp26 .sbbar, #mobp26 .bbar, #mobp26 .bbbar, #mobp26 .footer { height:auto; min-height:0; }
+#mobp26 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+}
+@media (max-width:883px) {
+#mobp26 div, #mobp26 p, #mobp26 fieldset, #mobp26 form, #mobp26 section, #mobp26 ol, #mobp26 ul, #mobp26 table { max-width:100%; box-sizing:border-box; }
+#mobp26 canvas, #mobp26 img, #mobp26 svg { max-width:100%; height:auto !important; }
+#mobp26 input[type=range], #mobp26 select { max-width:100%; min-width:0; }
+#mobp26 #snellRoot .sn_a11y, #mobp26 .mcontent2, #mobp26 .sbbar, #mobp26 .bbar, #mobp26 .bbbar, #mobp26 .footer { flex-wrap:wrap; }
+#mobp26 #snellRoot .sn_a11y > div, #mobp26 .mcontent2 > div, #mobp26 .sbbar > div, #mobp26 .bbar > div, #mobp26 .bbbar > div, #mobp26 .footer > div { min-width:min(100%, 260px); }
+#mobp26 div[style*="height"] { height:auto !important; }
+#mobp26 .tbar, #mobp26 .mcontent, #mobp26 .mcontent2, #mobp26 .sbbar, #mobp26 .bbar, #mobp26 .bbbar, #mobp26 .footer { height:auto; min-height:0; }
+#mobp26 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+}
+/* touch screens: larger targets */
+@media (pointer:coarse) {
+#mobp26 button, #mobp26 input[type=button], #mobp26 input[type=submit], #mobp26 input[type=reset] { min-height:40px; }
+#mobp26 input[type=range] { height:28px; }
+#mobp26 input[type=checkbox], #mobp26 input[type=radio] { width:22px; height:22px; }
+#mobp26 select { min-height:36px; font-size:16px; }
+}
+/* display options moved to the top */
+#mobp26 .mob_a11ytop { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:6px 4px 8px; width:auto; max-width:100%; height:auto; }
+#mobp26 .mob_a11ytop input[type=button], #mobp26 .mob_a11ytop button { padding:5px 12px; font-size:13px; border:1px solid #8a94a3; border-radius:4px; background:#f4f6f8; color:#1d232a; cursor:pointer; width:auto; height:auto; margin:0; }
+/* SIM description */
+#mobp26 .mob_descwrap { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
+#mobp26 .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
+#mobp26 .mob_descbtn[aria-expanded="true"] { background:#3a3220; }
+#mobp26 .mob_desc { width:100%; max-width:860px; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; text-align:left; }
+#mobp26 .mob_desc p { margin:0 0 9px 0; }
+#mobp26 .mob_eq { text-align:center; font-size:1rem; }
+</style>
+</div><!-- #mobp26 -->
+</main>
 </body>
 </html>
