@@ -28,6 +28,13 @@ Frictionless Sliding Race — All 4 Shapes Simultaneously
 myOpenMath embed fragment
 ════════════════════════════════════════════════════════ -->
 <div id="raceroot" role="main" aria-label="Frictionless sliding race simulator">
+  <div class="rr_a11y" role="toolbar" aria-label="Display options">
+    <button type="button" class="rr_a11ybtn" id="rrBtnHC" onclick="slidingRace.a11y('hc')" aria-pressed="false">HIGH CONTRAST</button>
+    <button type="button" class="rr_a11ybtn" id="rrBtnLM" onclick="slidingRace.a11y('lm')" aria-pressed="false">LIGHT MODE</button>
+    <button type="button" class="rr_a11ybtn" id="rrBtnCB" onclick="slidingRace.a11y('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+    <button type="button" class="rr_a11ybtn rr_a11yon" id="rrBtnNR" onclick="slidingRace.a11y('nr')" aria-pressed="true">NARRATION: ON</button>
+  </div>
+
 
   <div class="rr_header">
     <div class="rr_title">⚡ Frictionless Sliding Race</div>
@@ -39,6 +46,7 @@ myOpenMath embed fragment
     <canvas id="raceCanvas" width="660" height="360"
       role="img" aria-label="Four objects racing down a frictionless ramp"></canvas>
   </div>
+  <div class="rr_nar" id="rrNar" role="status" aria-live="polite" aria-atomic="true"></div>
 
   <!-- Controls row -->
   <div class="rr_controls">
@@ -72,10 +80,14 @@ myOpenMath embed fragment
     </div>
 
     <div class="rr_btnrow">
-      <button class="rr_btn rr_go" onclick="slidingRace.race()">▶ RACE!</button>
-      <button class="rr_btn rr_reset" onclick="slidingRace.reset()">↺ RESET</button>
+      <button type="button" class="rr_btn rr_go" onclick="slidingRace.race()">▶ RACE!</button>
+      <button type="button" class="rr_btn rr_reset" onclick="slidingRace.reset()">↺ RESET</button>
     </div>
 
+  </div>
+  <div class="rr_each">
+    <label class="rr_eachchk"><input type="checkbox" id="rrEach" onchange="slidingRace.onEach(this.checked)"> Set each object's mass and radius</label>
+    <div class="rr_indiv" id="rrIndiv" style="display:none"></div>
   </div><!-- /controls -->
 
   <!-- Live data table -->
@@ -144,6 +156,31 @@ myOpenMath embed fragment
 </div>
 
 <!-- ═══ STYLES ═══ -->
+<style>
+#raceroot .rr_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; width:100%; }
+#raceroot .rr_a11ybtn { padding:5px 10px; font-size:.7rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--panel2); border:1px solid var(--bd2); color:var(--dim); min-height:34px; }
+#raceroot .rr_a11ybtn:hover { border-color:var(--accent); color:var(--accent); }
+#raceroot .rr_a11yon { background:rgba(46,204,113,.14); border-color:#2ecc71; color:#2ecc71; font-weight:bold; }
+#raceroot .rr_nar { width:100%; box-sizing:border-box; min-height:30px; padding:6px 12px; background:#2a2410; border-left:4px solid #e0b040; color:#f0e2b8; font-size:.84rem; font-style:italic; line-height:1.45; border-radius:3px; font-family:Arial, sans-serif; }
+#raceroot .rr_each { width:100%; display:flex; flex-direction:column; gap:6px; }
+#raceroot .rr_eachchk { display:flex; align-items:center; gap:8px; font-size:.85rem; color:var(--text); cursor:pointer; }
+#raceroot .rr_eachchk input { width:18px; height:18px; accent-color:var(--accent); }
+#raceroot .rr_indiv { display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:6px; }
+#raceroot .rr_erow { display:grid; grid-template-columns:auto minmax(0,1fr) 4.2em; gap:3px 8px; align-items:center; background:var(--panel2); border:1px solid var(--bd); border-left:4px solid var(--c); border-radius:5px; padding:6px 10px; font-size:.8rem; }
+#raceroot .rr_ename { grid-column:1 / 4; font-weight:bold; }
+#raceroot .rr_erow label { color:var(--dim); }
+#raceroot .rr_erow input[type=range] { width:100%; min-width:0; accent-color:var(--c); }
+#raceroot .rr_controls { row-gap:10px; }
+#raceroot .rr_ctrlgroup { flex:1 1 200px; min-width:200px; }
+#raceroot .rr_controls input[type=range] { min-width:0; width:100%; }
+#raceroot .rr_btnrow { flex:1 1 100%; justify-content:center; }
+#raceroot button:focus-visible, #raceroot input:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+#raceroot.rr_lm { --bg:#f4f6f9; --panel:#ffffff; --panel2:#eef2f6; --bd:#c3cad3; --bd2:#9aa3ae; --text:#1d232a; --dim:#4a5666; --accent:#a8620a; --green:#12805a; background-image:none; box-shadow:0 4px 20px rgba(0,0,0,.15); }
+#raceroot.rr_lm .rr_nar { background:#ffefc0; color:#333; }
+#raceroot.rr_hc { --bg:#000; --panel:#000; --panel2:#000; --bd:#fff; --bd2:#fff; --text:#fff; --dim:#e6e6e6; --accent:#ffd700; --green:#00ff88; background-image:none; }
+#raceroot.rr_hc .rr_nar { background:#000; color:#fff; border-left-color:#ffd700; }
+@media (pointer:coarse) { #raceroot .rr_erow input[type=range] { height:28px; } }
+</style>
 <style>@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap');
 
 #raceroot {
@@ -326,7 +363,7 @@ var slidingRace = function() {
   var ROOT   = document.getElementById('raceroot');
   var canvas = document.getElementById('raceCanvas');
   var ctx    = canvas.getContext('2d');
-  var W = canvas.width, H = canvas.height;
+  var W = canvas.width, H = canvas.height, DPR = window.devicePixelRatio || 1; canvas.width = W*DPR; canvas.height = H*DPR; ctx.scale(DPR, DPR);
   var g = 9.8;
 
   /* ── Shape definitions ── */
@@ -352,6 +389,68 @@ var slidingRace = function() {
   var simTime   = 0;
   var finished  = false;
 
+
+  /* ════════ accessibility: display options and narration ════════ */
+  var TH = { hc:false, lm:false, cb:false, nr:true }, ROOTEL = document.getElementById('raceroot');
+  var COL0 = SHAPES.map(function(sh){ return [sh.color, sh.stroke, sh.spoke]; });
+  var COLCB = [['#E69F00', '#9a6a00', '#ffd27a'], ['#56B4E9', '#1f6f9f', '#bfe4fa'], ['#F0E442', '#a39a1a', '#fbf6b8'], ['#CC79A7', '#8a3f6c', '#f0c6dd']];   /* Okabe-Ito */
+  var SKY = ['#0a1628', '#1a3055'];
+  function PAL(){
+    if (TH.hc) return { sky0:'#000000', sky1:'#000000', star:'rgba(0,0,0,0)', fl0:'#000000', fl1:'#000000', flLine:'#ffffff', front0:'#000000', front1:'#000000', top:'#000000', laneA:0.38, lane:'#ffffff', edge:'#ffffff', start:'#ffffff', fin:'255,255,255', angle:'#ffd700', h:'#00ff88' };
+    if (TH.lm) return { sky0:'#bcd8f5', sky1:'#eaf4fd', star:'rgba(0,0,0,0)', fl0:'#8cc276', fl1:'#5f9a49', flLine:'rgba(40,90,30,0.6)', front0:'#a27c55', front1:'#7c5a3a', top:'#ddd2c2', laneA:0.24, lane:'rgba(0,0,0,0.28)', edge:'#6b4e30', start:'rgba(0,0,0,0.55)', fin:'25,25,25', angle:'#8a4a00', h:'#11704a' };
+    return { sky0:SKY[0], sky1:SKY[1], star:'rgba(255,255,255,0.5)', fl0:'#24481a', fl1:'#0a1206', flLine:'rgba(90,160,60,0.5)', front0:'#5a4630', front1:'#2c221a', top:'#8a7a66', laneA:0.16, lane:'rgba(255,255,255,0.28)', edge:'#c8a878', start:'rgba(255,255,255,0.45)', fin:'255,255,255', angle:'#f0c060', h:'rgba(46,204,113,0.95)' };
+  }
+  function narrate(m){ if (!TH.nr) return; var b = document.getElementById('rrNar'); if (b) b.textContent = m; }
+  var nT = null; function narrateLater(m){ clearTimeout(nT); nT = setTimeout(function(){ narrate(m); }, 450); }
+  function repaint(){
+    /* the objects' colours in the page (table, panels): from each element's original style, mapped to the current modes */
+    SHAPES.forEach(function(sh, i){ var c = TH.cb ? COLCB[i] : COL0[i]; sh.color = c[0]; sh.stroke = c[1]; sh.spoke = c[2]; });
+    [].forEach.call(ROOTEL.querySelectorAll('[style]'), function(el){
+      if (!el.hasAttribute('data-st0')){ var o = el.getAttribute('style'); if (!COL0.some(function(c0){ return o.indexOf(c0[0]) >= 0; })) return; el.setAttribute('data-st0', o); }   /* only styles that carry an object colour */
+      var st = el.getAttribute('data-st0');
+      COL0.forEach(function(c0, i){ var c = TH.cb ? COLCB[i] : COL0[i]; st = st.split(c0[0]).join(TH.lm ? c[1] : c[0]); });
+      if (st !== el.getAttribute('style')) el.setAttribute('style', st); });
+  }
+  function a11y(k){
+    TH[k] = !TH[k]; if (k === 'hc' && TH.hc) TH.lm = false; if (k === 'lm' && TH.lm) TH.hc = false;
+    ROOTEL.classList.toggle('rr_hc', TH.hc); ROOTEL.classList.toggle('rr_lm', TH.lm);
+    if (k === 'cb' || k === 'lm' || k === 'hc') repaint();
+    [['hc', 'BtnHC'], ['lm', 'BtnLM'], ['cb', 'BtnCB'], ['nr', 'BtnNR']].forEach(function(q){ var b = document.getElementById('rr' + q[1] + ''); if (b){ b.classList.toggle('rr_a11yon', TH[q[0]]); b.setAttribute('aria-pressed', TH[q[0]] ? 'true' : 'false'); } });
+    var nb = document.getElementById('rrBtnNR'); if (nb) nb.textContent = 'NARRATION: ' + (TH.nr ? 'ON' : 'OFF');
+    var bar = document.getElementById('rrNar'); if (bar) bar.style.display = TH.nr ? '' : 'none';
+    draw();
+    if (k === 'nr' && TH.nr) narrate('Narration on.');
+    else narrate({ hc:'High contrast ' + (TH.hc ? 'on.' : 'off.'), lm:'Light mode ' + (TH.lm ? 'on.' : 'off.'), cb:'Colour-blind-safe colours ' + (TH.cb ? 'on: orange, sky blue, yellow and reddish purple.' : 'off.') }[k] || '');
+  }
+  /* ════════ each object's own mass and radius (all the same unless chosen) ════════ */
+  var each = false, massArr = [massG, massG, massG, massG], radArr = [radiusCm, radiusCm, radiusCm, radiusCm];
+  function buildEach(){
+    var box = document.getElementById('rrIndiv'), h = '';
+    for (var i=0; i<SHAPES.length; i++){ var sh = SHAPES[i];
+      h += '<div class="rr_erow" style="--c:' + COL0[i][0] + '"><span class="rr_ename" style="color:' + COL0[i][0] + '">' + sh.name + '</span>'
+        + '<label for="rrM' + i + '">mass</label><input type="range" id="rrM' + i + '" min="50" max="500" step="10" value="' + massArr[i] + '" oninput="slidingRace.onObj(' + i + ',0,this.value)"><span class="rr_val" id="rrMV' + i + '">' + massArr[i] + ' g</span>'
+        + '<label for="rrR' + i + '">radius</label><input type="range" id="rrR' + i + '" min="5" max="25" step="1" value="' + radArr[i] + '" oninput="slidingRace.onObj(' + i + ',1,this.value)"><span class="rr_val" id="rrRV' + i + '">' + radArr[i] + ' cm</span></div>'; }
+    box.innerHTML = h; repaint();
+  }
+  function onEach(on){
+    each = !!on;
+    if (!each){ for (var i=0; i<4; i++){ massArr[i] = massG; radArr[i] = radiusCm; } }
+    document.getElementById('rrIndiv').style.display = each ? '' : 'none';
+    [document.getElementById('rrMass'), document.getElementById('rrRadius')].forEach(function(sl){ var g = sl.closest('.rr_ctrlgroup'); if (g) g.style.display = each ? 'none' : ''; });
+    if (each) buildEach();
+    if (!racing) reset(); else draw();
+    narrate(each ? 'Each object now has its own mass and radius sliders; they start at ' + massG + ' grams and ' + radiusCm + ' centimetres.' : 'All four objects share the same mass, ' + massG + ' grams, and radius, ' + radiusCm + ' centimetres, again.');
+  }
+  function onObj(i, k, v){
+    v = parseInt(v); if (k === 0){ massArr[i] = v; setT('rrMV' + i + '', v + ' g'); } else { radArr[i] = v; setT('rrRV' + i + '', v + ' cm'); }
+    if (!racing) reset(); else draw();
+    narrateLater(SHAPES[i].name + ': ' + (k === 0 ? 'mass ' + v + ' grams.' : 'radius ' + v + ' centimetres.'));
+  }
+  function setT(id, t){ var x = document.getElementById(id); if (x) x.textContent = t; }
+  function finishNarration(){
+    var msg = ''; var T = getPhysics().T; msg = 'Race complete. All four objects reach the bottom together, after ' + T.toFixed(2) + ' seconds: without friction nothing rolls, and every object slides with the same acceleration, g sin theta' + (each ? ', whatever its mass and radius.' : '.');
+    repaint(); narrate(msg); var cv = document.getElementById('raceCanvas'); if (cv) cv.setAttribute('aria-label', 'Four objects on an incline, each in its own lane. ' + msg);
+  }
   function set(id,txt){ var e=document.getElementById(id); if(e) e.textContent=txt; }
 
   /* ── Physics — FRICTIONLESS: a = g sinθ identical for all shapes ── */
@@ -368,43 +467,79 @@ var slidingRace = function() {
   /* ── Ramp geometry ── */
   // We draw ONE ramp and stack 4 objects laterally (slight lateral offset so all visible)
   // Objects are separated by a small constant perpendicular-to-ramp offset
-  var LATERAL_GAP = 18; // px between object centres, perpendicular to ramp normal direction
 
-  function getRamp(){
-    var theta = angleDeg * Math.PI/180;
-    var rampLen = 490;
-    var bx = W - 38, by = H - 45;
-    var tx = bx - rampLen*Math.cos(theta);
-    var ty = by - rampLen*Math.sin(theta);
-    var dx = (bx-tx)/rampLen, dy = (by-ty)/rampLen;  // along-ramp unit vec
-    var nx = dy, ny = -dx;  // outward normal (away from ramp body)
-    // lateral direction (along the ramp surface's "width" axis) = perpendicular to normal, in 2D this is (-dy, dx) rotated
-    // We spread objects in the direction (-ny, nx) which is parallel to the ramp surface
-    var lx = -ny, ly = nx;  // lateral unit vector (along ramp surface plane, across width)
-    return {bx,by,tx,ty,theta,rampLen,dx,dy,nx,ny,lx,ly};
-  }
 
-  function getVisR(){ return Math.max(10, Math.min(22, radiusCm*1.35)); }
+
 
   // Get canvas position for object i at progress t
-  function getObjPos(i, t){
-    var g2 = getRamp();
-    var vr = getVisR();
-    // Contact point on ramp surface
-    var cpx = g2.tx + (g2.bx - g2.tx)*t;
-    var cpy = g2.ty + (g2.by - g2.ty)*t;
-    // Lift off ramp surface by normal*radius
-    var cx0 = cpx + g2.nx*vr;
-    var cy0 = cpy + g2.ny*vr;
-    // Spread laterally so all 4 are visible (centered around the ramp midline)
-    var totalSpread = (SHAPES.length-1)*LATERAL_GAP;
-    var offset = (i - (SHAPES.length-1)/2) * LATERAL_GAP;
-    // Move in the "surface lateral" direction (along the ramp face)
-    // In 2D top-view this just nudges them horizontally
-    var cx = cx0 + g2.lx * offset;
-    var cy = cy0 + g2.ly * offset;
-    return {cx, cy, r: vr};
+  /* ── The incline in oblique 3D: x along the floor, y up, z across the ramp (one lane per object, receding up and right) ── */
+  var DZX = 0.62, DZY = -0.42, LANE_W = 44;
+  function getRamp(){
+    var theta = angleDeg*Math.PI/180, c = Math.cos(theta), s = Math.sin(theta), N = SHAPES.length, depth = LANE_W*N;
+    var dzx = depth*DZX, dzy = depth*DZY, ox = 30, gy = H - 34;
+    var L = Math.min(440, (W - ox - dzx - 175)/c, (gy + dzy - 46)/s);   /* the ramp fits the canvas at every angle, with room for the lane labels */
+    var run = L*c, rise = L*s;
+    function P(x, y, z){ return { x: ox + x + z*DZX, y: gy - y + z*DZY }; }
+    var top = P(0, rise, 0), bot = P(run, 0, 0);
+    return { theta:theta, c:c, s:s, rampLen:L, run:run, rise:rise, depth:depth, ox:ox, gy:gy, P:P,
+             tx:top.x, ty:top.y, bx:bot.x, by:bot.y, dx:c, dy:s, nx:s, ny:-c };
   }
+  function laneZ(i){ return (i + 0.5)*LANE_W; }
+  function getVisR(i){ var g2 = getRamp(), gap = LANE_W*(0.42*g2.c + 0.62*g2.s), rc = (i === undefined) ? radiusCm : radArr[i]; return Math.max(5, Math.min(14, rc*0.95, 0.46*gap)); }
+  function getObjPos(i, prog){
+    var g2 = getRamp(), vr = getVisR(i);
+    /* the centre: on the slope at this progress, lifted by the radius along the slope's normal, in its own lane */
+    var q = g2.P(prog*g2.run + vr*g2.s, g2.rise*(1 - prog) + vr*g2.c, laneZ(i));
+    return { cx: q.x, cy: q.y, r: vr };
+  }
+  function poly(pts){ ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); for (var k=1; k<pts.length; k++) ctx.lineTo(pts[k].x, pts[k].y); ctx.closePath(); }
+  function drawScene3D(g2){
+    var P = g2.P, D = g2.depth, R = g2.rise, U = g2.run;
+    /* the floor */
+    var C = PAL(), fy = P(0, 0, D).y, gnd = ctx.createLinearGradient(0, fy, 0, H);
+    gnd.addColorStop(0, C.fl0); gnd.addColorStop(1, C.fl1); ctx.fillStyle = gnd; ctx.fillRect(0, fy, W, H - fy);
+    ctx.strokeStyle = C.flLine; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, fy); ctx.lineTo(W, fy); ctx.stroke();
+    /* the ramp's front face, then its sloping top, lane by lane */
+    var fr = ctx.createLinearGradient(P(0, R, 0).x, P(0, R, 0).y, P(U, 0, 0).x, P(U, 0, 0).y);
+    fr.addColorStop(0, C.front0); fr.addColorStop(1, C.front1); poly([P(0, 0, 0), P(0, R, 0), P(U, 0, 0)]); ctx.fillStyle = fr; ctx.fill();
+    poly([P(0, R, 0), P(U, 0, 0), P(U, 0, D), P(0, R, D)]); ctx.fillStyle = C.top; ctx.fill();
+    for (var i=0; i<SHAPES.length; i++){
+      var z0 = i*LANE_W, z1 = (i + 1)*LANE_W;
+      poly([P(0, R, z0), P(U, 0, z0), P(U, 0, z1), P(0, R, z1)]); ctx.fillStyle = hexA(SHAPES[i].color, C.laneA); ctx.fill();
+    }
+    ctx.strokeStyle = C.lane; ctx.lineWidth = 1;
+    for (var k=1; k<SHAPES.length; k++){ var a = P(0, R, k*LANE_W), b = P(U, 0, k*LANE_W); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+    ctx.strokeStyle = C.edge; ctx.lineWidth = 2; poly([P(0, R, 0), P(U, 0, 0), P(U, 0, D), P(0, R, D)]); ctx.stroke();
+    /* the start line across the top, and the finish line across the foot */
+    var s0 = P(0, R, 0), s1 = P(0, R, D); ctx.strokeStyle = C.start; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(s0.x, s0.y); ctx.lineTo(s1.x, s1.y); ctx.stroke();
+    var f0 = P(U, 0, 0), f1 = P(U, 0, D), fa = finished ? 1.0 : 0.7;
+    ctx.save(); ctx.strokeStyle = 'rgba(' + C.fin + ',' + fa + ')'; ctx.lineWidth = 3; ctx.setLineDash([7, 5]); ctx.beginPath(); ctx.moveTo(f0.x, f0.y); ctx.lineTo(f1.x, f1.y); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(' + C.fin + ',' + fa + ')'; ctx.font = 'bold 10px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText('FINISH', f0.x, f0.y + 5); ctx.restore();
+    /* the angle, at the foot of the front face */
+    ctx.save(); ctx.translate(f0.x, f0.y); var arcR = 40;
+    ctx.beginPath(); ctx.arc(0, 0, arcR, Math.PI + g2.theta, Math.PI, true); ctx.strokeStyle = C.angle; ctx.lineWidth = 1.5; ctx.stroke();
+    var midA = Math.PI + g2.theta/2; ctx.fillStyle = C.angle; ctx.font = 'bold 12px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(angleDeg + '\u00B0', Math.cos(midA)*(arcR + 15), Math.sin(midA)*(arcR + 15)); ctx.restore();
+    /* the height, along the front face's vertical edge */
+    var h0 = P(0, 0, 0), h1 = P(0, R, 0), hx = h0.x - 12;
+    ctx.save(); ctx.strokeStyle = C.h; ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]); ctx.beginPath(); ctx.moveTo(hx, h0.y); ctx.lineTo(hx, h1.y); ctx.stroke(); ctx.setLineDash([]);
+    [h0.y, h1.y].forEach(function(y){ ctx.beginPath(); ctx.moveTo(hx - 5, y); ctx.lineTo(hx + 5, y); ctx.stroke(); });
+    ctx.translate(hx - 7, (h0.y + h1.y)/2); ctx.rotate(-Math.PI/2); ctx.fillStyle = C.h; ctx.font = '11px Courier New'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText('h = 0.5 m', 0, 0); ctx.restore();
+  }
+  /* each lane's name, just past its finish line */
+  function drawLaneLabels(g2){
+    for (var i=0; i<SHAPES.length; i++){
+      var sh = SHAPES[i], big = 0; for (var j=0; j<SHAPES.length; j++) big = Math.max(big, getVisR(j)); var q = g2.P(g2.run + 2.3*big + 12, 0, laneZ(i));   /* clear of the largest object */   /* clear of the objects once they finish */
+      var txt = each ? (sh.shortName || sh.name.split(' ').pop()) + ' \u00B7 ' + massArr[i] + ' g \u00B7 ' + radArr[i] + ' cm' : sh.name + ' (' + String(sh.moi).replace(' mr\u00B2', '').replace('mr\u00B2', '1') + ')';
+      ctx.font = 'bold 10px monospace'; var tw = ctx.measureText(txt).width, lm = (typeof TH === 'object' && TH.lm);
+      ctx.fillStyle = lm ? 'rgba(255,255,255,0.88)' : 'rgba(0,0,0,0.55)'; roundRect(q.x - 8, q.y - 8, tw + 20, 16, 4); ctx.fill();   /* a backing panel, so the label reads on any floor */
+      ctx.beginPath(); ctx.arc(q.x, q.y, 4.5, 0, Math.PI*2); ctx.fillStyle = sh.color; ctx.fill(); if (lm){ ctx.strokeStyle = sh.stroke; ctx.lineWidth = 1; ctx.stroke(); }
+      ctx.fillStyle = lm ? sh.stroke : sh.color; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+      ctx.fillText(txt, q.x + 9, q.y);
+    }
+  }
+  function hexA(hex, a){ var h = hex.replace('#', ''); return 'rgba(' + parseInt(h.substr(0, 2), 16) + ',' + parseInt(h.substr(2, 2), 16) + ',' + parseInt(h.substr(4, 2), 16) + ',' + a + ')'; }
+
 
   /* ── Draw ── */
   function draw(){
@@ -414,13 +549,13 @@ var slidingRace = function() {
 
     // Sky gradient
     var skyGrad = ctx.createLinearGradient(0,0,0,H*0.7);
-    skyGrad.addColorStop(0,'#0a1628');
-    skyGrad.addColorStop(1,'#1a3055');
+    skyGrad.addColorStop(0,PAL().sky0);
+    skyGrad.addColorStop(1,PAL().sky1);
     ctx.fillStyle = skyGrad;
     ctx.fillRect(0,0,W,H);
 
     // Stars (static)
-    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.fillStyle = PAL().star;
     var stars=[[50,30],[120,20],[200,40],[310,15],[420,35],[520,22],[600,45],[30,80],[150,65],[380,55],[480,70]];
     for(var s=0;s<stars.length;s++){
       ctx.beginPath();
@@ -428,98 +563,7 @@ var slidingRace = function() {
       ctx.fill();
     }
 
-    // Ground
-    var groundGrad = ctx.createLinearGradient(0,g2.by-2,0,H);
-    groundGrad.addColorStop(0,'#2a5a1a');
-    groundGrad.addColorStop(0.05,'#1a3a0a');
-    groundGrad.addColorStop(1,'#0a1a05');
-    ctx.fillStyle = groundGrad;
-    ctx.fillRect(0,g2.by,W,H-g2.by);
-    // ground top stripe
-    ctx.fillStyle = '#3a7a2a';
-    ctx.fillRect(0,g2.by-2,W,4);
-
-    // Ramp body
-    var rampGrad = ctx.createLinearGradient(g2.tx, g2.ty, g2.bx, g2.by);
-    rampGrad.addColorStop(0,'#4a3a28');
-    rampGrad.addColorStop(1,'#2a2018');
-    ctx.beginPath();
-    ctx.moveTo(g2.tx,g2.ty);
-    ctx.lineTo(g2.bx,g2.by);
-    ctx.lineTo(g2.bx,H);
-    ctx.lineTo(g2.tx,H);
-    ctx.closePath();
-    ctx.fillStyle = rampGrad;
-    ctx.fill();
-    // Ramp surface edge
-    ctx.beginPath();
-    ctx.moveTo(g2.tx,g2.ty);
-    ctx.lineTo(g2.bx,g2.by);
-    ctx.strokeStyle = '#8a6a3a';
-    ctx.lineWidth = 2.5;
-    ctx.stroke();
-    // Ramp surface texture lines
-    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
-    ctx.lineWidth = 1;
-    for(var ri=1;ri<6;ri++){
-      var t2=ri/6;
-      var rx1=g2.tx+(g2.bx-g2.tx)*t2, ry1=g2.ty+(g2.by-g2.ty)*t2;
-      ctx.beginPath();
-      ctx.moveTo(rx1,ry1);
-      ctx.lineTo(rx1+g2.nx*4,ry1+g2.ny*4);
-      ctx.stroke();
-    }
-
-    // Angle arc at base
-    ctx.save();
-    ctx.translate(g2.bx,g2.by);
-    var arcR=44;
-    ctx.beginPath();
-    ctx.arc(0,0,arcR, Math.PI+g2.theta, Math.PI, true);
-    ctx.strokeStyle='rgba(240,160,32,0.6)'; ctx.lineWidth=1.5;
-    ctx.stroke();
-    var midA=Math.PI+g2.theta/2;
-    ctx.fillStyle='#f0c060'; ctx.font='bold 12px Arial';
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(angleDeg+'°', Math.cos(midA)*(arcR+16), Math.sin(midA)*(arcR+16));
-    ctx.restore();
-
-    // Finish line at base of ramp
-    var finY = g2.by;
-    ctx.save();
-    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
-    ctx.lineWidth = 2;
-    ctx.setLineDash([6,4]);
-    ctx.beginPath();
-    ctx.moveTo(g2.bx - 40, finY);
-    ctx.lineTo(g2.bx + 10, finY);
-    ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle = 'rgba(255,255,255,0.7)';
-    ctx.font = 'bold 10px monospace';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'bottom';
-    ctx.fillText('FINISH', g2.bx - 18, finY - 3);
-    ctx.restore();
-
-    // Height indicator (from first shape start)
-    if(!finished){
-      var op0 = getObjPos(0,0), opN = getObjPos(0,progresses[0]);
-      if(progresses[0]<0.95){
-        var lx2 = g2.tx - getVisR() - 18;
-        ctx.save();
-        ctx.strokeStyle = 'rgba(46,204,113,0.7)'; ctx.lineWidth=1.5;
-        ctx.setLineDash([4,3]);
-        ctx.beginPath(); ctx.moveTo(lx2,op0.cy); ctx.lineTo(lx2,opN.cy); ctx.stroke();
-        ctx.setLineDash([]);
-        ctx.beginPath(); ctx.moveTo(lx2-5,op0.cy); ctx.lineTo(lx2+5,op0.cy); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(lx2-5,opN.cy); ctx.lineTo(lx2+5,opN.cy); ctx.stroke();
-        ctx.fillStyle='rgba(46,204,113,0.9)'; ctx.font='11px Courier New';
-        ctx.textAlign='right'; ctx.textBaseline='middle';
-        ctx.fillText('h=0.5m', lx2-7, (op0.cy+opN.cy)/2);
-        ctx.restore();
-      }
-    }
+    drawScene3D(g2);
 
     // Draw all 4 objects (back to front by lateral offset so they don't overlap)
     for(var i=SHAPES.length-1;i>=0;i--){
@@ -527,7 +571,7 @@ var slidingRace = function() {
     }
 
     // Legend (top-right)
-    drawLegend();
+    drawLaneLabels(g2);
   }
 
   function drawObj(i){
@@ -633,11 +677,11 @@ var slidingRace = function() {
   /* ── Update table readouts ── */
   function updateTable(){
     var ph = getPhysics();
-    var v_now = ph.accel * simTime;
+    var v_now = ph.accel * Math.min(simTime, ph.T);
     for(var i=0;i<SHAPES.length;i++){
       var sh=SHAPES[i], p=progresses[i];
       set('rrA_'+sh.key+'', ph.accel.toFixed(3)+' m/s²');
-      set('rrV_'+sh.key+'', (ph.accel*simTime).toFixed(3));
+      set('rrV_'+sh.key+'', v_now.toFixed(3));
       set('rrT_'+sh.key+'', simTime.toFixed(2));
       var pct=Math.round(p*100);
       set('rrP_'+sh.key+'', pct+'%');
@@ -674,7 +718,7 @@ var slidingRace = function() {
         for(var j=0;j<4;j++) progresses[j]=1;
         simTime=ph.T; racing=false; finished=true;
         draw(); updateTable();
-        showResult(ph);
+        showResult(ph); finishNarration();
       }
     }
     animFrame=requestAnimationFrame(tick);
@@ -723,18 +767,18 @@ var slidingRace = function() {
 
   /* ── Control handlers ── */
   function onAngle(val){
-    angleDeg=Math.max(10,Math.min(60,parseInt(val)));
+    angleDeg=Math.max(10,Math.min(60,parseInt(val))); narrateLater('Angle of the incline: '+angleDeg+' degrees. Press Race.');
     set('rrAngleVal',angleDeg+'°');
     var sl=document.getElementById('rrAngle'); if(sl) sl.value=angleDeg;
     if(!racing) reset();
   }
   function onMass(val){
-    massG=parseInt(val);
+    massG=parseInt(val); if(!each) for(var q=0;q<4;q++) massArr[q]=massG; narrateLater('Mass of every object: '+massG+' grams.');
     set('rrMassVal',massG+' g');
     if(!racing) reset();
   }
   function onRadius(val){
-    radiusCm=parseInt(val);
+    radiusCm=parseInt(val); if(!each) for(var q=0;q<4;q++) radArr[q]=radiusCm; narrateLater('Radius of every object: '+radiusCm+' centimetres.');
     set('rrRadiusVal',radiusCm+' cm');
     if(!racing) reset();
   }
@@ -746,8 +790,10 @@ var slidingRace = function() {
 
   /* ── Boot ── */
   draw();
+  narrate('Ready. Four objects, each in its own lane, wait at the top of the frictionless incline. Press Race.');
 
-  return {race,reset,onAngle,onMass,onRadius,onSpeed};
+  return { race:function(){ var was = racing; race(); if (!was) narrate('Race started: all four objects are released together.'); }, reset:function(){ reset(); narrate('Reset: the objects are back at the start.'); },
+    onAngle:onAngle, onMass:onMass, onRadius:onRadius, onSpeed:onSpeed, a11y:a11y, onEach:onEach, onObj:onObj, _state:function(){ return { each:each, massArr:massArr.slice(), radArr:radArr.slice(), TH:TH, finishTimes:(typeof finishTimes !== 'undefined' ? finishTimes.slice() : null), progresses:progresses.slice(), colors:SHAPES.map(function(s){ return s.color; }) }; } };
 };
 </script>
 <script>
@@ -815,6 +861,7 @@ if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise(
 #mobsrace .mob_desc p { margin:0 0 9px 0; }
 #mobsrace .mob_eq { text-align:center; font-size:1rem; }
 </style>
+</div><!-- #mobsrace -->
 </div><!-- #mobsrace -->
 </main>
 </body>
