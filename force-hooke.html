@@ -28,7 +28,7 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <input type="button" id="thBtnLM" value="Light Mode: OFF" aria-pressed="false"><input type="button" id="btnCB"   value="Color-Blind: OFF"    onclick="pushScale.toggleCB()">
 <input type="button" id="btnNarr" value="Narration: ON"       onclick="pushScale.toggleNarr()">
 </div>
-<div id="canvasesdiv" class="tbar th_title"><h3>Hooke's Law -- Push Scale (Spring Compression/Extension)</h3></div>
+<div id="canvasesdiv" class="tbar th_title"><h3>Hooke's Law - Push Scale</h3></div>
 <div class="mcontent th_diag">
 <div class="hl_cols">
 <div class="hl_left">
@@ -47,7 +47,7 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <canvas id="fkxCanvas" width="450" height="250"
  role="img" aria-label="Force vs displacement graph">
 </canvas>
-<div class="hl_graphbar th_panel th_bar">
+<div class="hl_graphbar th_bar">
 <label class="hl_fitlabel th_lbl">
 <input id="showFit" type="checkbox"> Show linear fit
 </label>
@@ -111,10 +111,10 @@ Graph plots |F| vs |x|.
 <div id="srAnnounce" aria-live="assertive" aria-atomic="true" class="sronly"></div>
 <style>:where(#mobhook) * { margin: 0; box-sizing: border-box; }
 .tbar {
-width: 560px; height: 48px; background: #f90;
+min-width: 360px; height: 48px; background: #f90;
 text-align: center; display: flex; align-items: center; justify-content: center;
 }
-.tbar h3 { font-size: 1rem; color: #222; margin: 0; }
+.tbar h3 { font-size: 1rem; color: #222; margin: 0; text-align: center;}
 .mcontent { width: 560px; background: #e8e8e8; }
 .hl_cols { display: flex; height: 240px; }
 .hl_left { width: 296px; padding: 2px; flex-shrink: 0; }
@@ -881,7 +881,7 @@ b.addEventListener('click', function(){ var on = !W.classList.contains('th_lm');
 <style>
 /* ════════ theme: the instrument look of the balance beam (dark; light and high-contrast variants) ════════ */
 #mobhook { --t-chassis:#1a1c1f; --t-panel:#22262b; --t-panel-hi:#2c3138; --t-panel-lo:#14161a; --t-border:#3a4048; --t-border-hi:#525c66; --t-text:#c8d0d8; --t-dim:#8a94a3; --t-accent:#e8a020; --t-green:#3ad08f; --t-val:#ffdd66; --t-nar-bg:#2a2410; --t-nar-bd:#e0b040; --t-nar-tx:#f0e2b8; --t-grid:rgba(255,255,255,0.015); --t-warn:#e0605a; --t-warnbd:#a04040; background:var(--t-chassis) !important; background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, var(--t-grid) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, var(--t-grid) 40px) !important;
-  color:var(--t-text); font-family:Arial, sans-serif; padding:14px 10px 18px !important; border-radius:6px; box-sizing:border-box; max-width:860px; margin:0 auto 10px !important; }
+color:var(--t-text); font-family:Arial, sans-serif; padding:14px 10px 18px !important; border-radius:6px; box-sizing:border-box; max-width:860px; margin:0 auto 10px !important; }
 #mobhook.th_lm { --t-chassis:#e9edf1; --t-panel:#ffffff; --t-panel-hi:#f1f4f7; --t-panel-lo:#f4f6f9; --t-border:#c3cad3; --t-border-hi:#9aa3ae; --t-text:#1d232a; --t-dim:#556070; --t-accent:#a8620a; --t-green:#12805a; --t-val:#8a4a00; --t-nar-bg:#ffefc0; --t-nar-bd:#e0b040; --t-nar-tx:#333333; --t-grid:transparent; --t-warn:#b02020; --t-warnbd:#c06060; }
 #mobhook.th_hc { --t-chassis:#000000; --t-panel:#000000; --t-panel-hi:#111111; --t-panel-lo:#000000; --t-border:#ffffff; --t-border-hi:#ffffff; --t-text:#ffffff; --t-dim:#e0e0e0; --t-accent:#ffd700; --t-green:#00ff88; --t-val:#ffff00; --t-nar-bg:#000000; --t-nar-bd:#ffd700; --t-nar-tx:#ffffff; --t-grid:transparent; --t-warn:#ff6a5a; --t-warnbd:#ff6a5a; }
 #mobhook .th_btn, #mobhook .th_a11y input[type=button], #mobhook .th_a11y button { padding:4px 10px !important; font-size:.68rem !important; font-family:monospace !important; letter-spacing:.06em; border-radius:3px !important; cursor:pointer; background:var(--t-panel-hi) !important; border:1px solid var(--t-border-hi) !important; color:var(--t-dim) !important; text-transform:uppercase; min-height:30px; box-shadow:none !important; }
@@ -915,8 +915,8 @@ b.addEventListener('click', function(){ var on = !W.classList.contains('th_lm');
 #mobhook table th { background:var(--t-panel-lo) !important; color:var(--t-dim) !important; font-family:monospace; border-color:var(--t-border) !important; }
 #mobhook table td { background:var(--t-panel) !important; color:var(--t-text) !important; border-color:var(--t-border) !important; }
 #mobhook .mob_descbtn { background:var(--t-panel-hi) !important; border:1px solid var(--t-accent) !important; color:var(--t-accent) !important; }
-#mobhook > h2, #mobhook > hr + h2 { color:var(--t-accent) !important; font-size:1rem !important; font-family:Arial, sans-serif; margin:4px 0 !important; }
-#mobhook > hr { border:none !important; border-top:1px solid var(--t-border) !important; margin:6px 0 !important; }
+#mobhook h2 { color:var(--t-accent) !important; font-size:1rem !important; font-family:Arial, sans-serif; margin:4px 0 !important; }
+#mobhook hr { border:none !important; border-top:1px solid var(--t-border) !important; margin:6px 0 !important; }
 #mobhook .th_q { background:#fbfbf7; color:#1d232a; border:1px solid #c9ccd2; border-left:4px solid var(--t-accent); border-radius:6px; padding:12px 16px; margin:12px 0 8px; font-family:Arial, sans-serif; font-size:.92rem; line-height:1.5; }
 #mobhook .th_q h2, #mobhook .th_q h3 { color:#1d232a !important; font-size:1.05rem !important; margin:4px 0 8px !important; }
 #mobhook .th_q hr { border:none; border-top:1px solid #c9ccd2; margin:8px 0; }
@@ -937,7 +937,7 @@ b.addEventListener('click', function(){ var on = !W.classList.contains('th_lm');
 #mobhook .th_graph { display:flex !important; flex-direction:column !important; flex:1 1 100% !important; width:100% !important; max-width:none !important; box-sizing:border-box; padding:0 !important; margin:0 0 10px !important; overflow:hidden; }
 #mobhook .th_graph .th_ptitle { margin:0 !important; }
 #mobhook .th_graph canvas { display:block; background:#ffffff; max-width:100%; height:auto; margin:8px auto !important; }
-#mobhook .th_graph > * { flex:0 0 auto !important; }
+#mobhook .th_graph .th_bar, #mobhook .th_graph .th_ptitle, #mobhook .th_graph canvas, #mobhook .th_graph .hl_fitresult { flex:0 0 auto !important; }
 #mobhook .th_graph .th_bar { border:none !important; border-top:1px solid var(--t-border) !important; border-radius:0 !important; margin:0 !important; width:100% !important; height:auto !important; min-height:0 !important; align-self:stretch; box-sizing:border-box; }
 #mobhook .th_graph .hl_fitlabel { color:var(--t-dim) !important; font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; display:flex; align-items:center; gap:6px; }
 #mobhook .th_graph .hl_fitresult { padding:4px 12px 8px !important; text-align:center; }
