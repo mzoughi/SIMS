@@ -24,15 +24,15 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <main class="page">
 <div id="mobslid" class="mob_wrap">
 <div id="slroot" role="main" aria-label="Frictionless sliding simulator">
-<div class="sl_a11ybar" role="toolbar" aria-label="Accessibility options">
+<div class="sl_a11ybar th_a11y" role="toolbar" aria-label="Accessibility options">
 <input type="button" id="btnHC"    value="High Contrast"    class="sl_abtn" onclick="slidingSimF.toggleHC()">
 <input type="button" id="btnLight" value="Light Mode"       class="sl_abtn" onclick="slidingSimF.toggleLight()">
 <input type="button" id="btnCB"    value="Color-Blind Safe" class="sl_abtn" onclick="slidingSimF.toggleCB()">
-<input type="button" id="btnNarr"  value="Narration: ON"    class="sl_abtn sl_abtnon" onclick="slidingSimF.toggleNarr()">
+<input type="button" id="btnNarr"  value="Narration: ON"    class="sl_abtn sl_abtnon th_on" onclick="slidingSimF.toggleNarr()">
 </div>
 
-<p class="sl_h1">Frictionless Sliding Simulator</p>
-<p class="sl_sub">Conservation of Energy -- Frictionless Inclined Plane</p>
+<p class="sl_h1 th_title">Frictionless Sliding Simulator</p>
+<p class="sl_sub th_sub">Conservation of Energy -- Frictionless Inclined Plane</p>
 <!-- Accessibility toolbar -->
 
 <!-- Reduced motion notice -->
@@ -40,7 +40,7 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 &#9888; Reduced motion is enabled. The animation jumps directly to the final state without sliding.
 </div>
 <!-- Canvas -->
-<div class="sl_wrapper">
+<div class="sl_wrapper th_diag">
 <canvas id="slidingCanvas" width="600" height="320" role="img" aria-label="Frictionless sliding simulation" aria-describedby="canvasDesc">
 This browser doesn't support HTML5 canvas.
 </canvas>
@@ -53,10 +53,10 @@ are shown in the readings panel below.
 <!-- Controls + Live Readings side by side -->
 <div class="sl_bottom">
 <!-- LEFT: Controls -->
-<div class="sl_controls" id="sl_controls">
+<div class="sl_controls th_panel" id="sl_controls">
 <!-- Shape selector -->
 <div class="sl_fieldrow" role="group" aria-labelledby="shapeLbl">
-<span class="sl_fieldlbl" id="shapeLbl">Shape</span>
+<span class="sl_fieldlbl th_lbl" id="shapeLbl">Shape</span>
 <select id="shapeSelect" class="sl_select" aria-label="Select rolling object shape" onchange="slidingSimF.onShapeChange(this.value)">
 <option value="sphere">Solid Sphere (2/5 mr²)</option>
 <option value="cylinder">Solid Cylinder (1/2 mr²)</option>
@@ -66,30 +66,30 @@ are shown in the readings panel below.
 </div>
 <!-- Mass slider -->
 <div class="sl_fieldrow" role="group" aria-labelledby="massLbl">
-<span class="sl_fieldlbl" id="massLbl">Mass</span>
+<span class="sl_fieldlbl th_lbl" id="massLbl">Mass</span>
 <input type="range" id="massSlider" min="50" max="500" value="100" step="10" aria-label="Object mass" aria-valuemin="50" aria-valuemax="500" aria-valuenow="100" aria-valuetext="100 g" onchange="slidingSimF.onMassChange(this.value)">
-<span class="sl_fieldval" id="massDisplay" aria-live="off">100 g</span>
+<span class="sl_fieldval th_val" id="massDisplay" aria-live="off">100 g</span>
 </div>
 <!-- Radius slider -->
 <div class="sl_fieldrow" role="group" aria-labelledby="radiusLbl">
-<span class="sl_fieldlbl" id="radiusLbl">Radius</span>
+<span class="sl_fieldlbl th_lbl" id="radiusLbl">Radius</span>
 <input type="range" id="radiusSlider" min="5" max="30" value="15" step="1" aria-label="Object radius" aria-valuemin="5" aria-valuemax="30" aria-valuenow="15" aria-valuetext="15 cm" onchange="slidingSimF.onRadiusChange(this.value)">
-<span class="sl_fieldval" id="radiusDisplay" aria-live="off">15 cm</span>
+<span class="sl_fieldval th_val" id="radiusDisplay" aria-live="off">15 cm</span>
 </div>
 <!-- Ramp angle slider -->
 <div class="sl_fieldrow" role="group" aria-labelledby="angleLbl">
-<span class="sl_fieldlbl" id="angleLbl">Angle</span>
+<span class="sl_fieldlbl th_lbl" id="angleLbl">Angle</span>
 <input type="range" id="angleSlider" min="10" max="60" value="30" step="1" aria-label="Ramp incline angle in degrees" aria-valuemin="10" aria-valuemax="60" aria-valuenow="30" aria-valuetext="30 degrees" onchange="slidingSimF.onAngleChange(this.value)">
-<span class="sl_fieldval" id="angleDisplay" aria-live="off">30&#176;</span>
+<span class="sl_fieldval th_val" id="angleDisplay" aria-live="off">30&#176;</span>
 </div>
 <!-- Speed slider -->
 <div class="sl_fieldrow" role="group" aria-labelledby="speedLbl">
-<span class="sl_fieldlbl" id="speedLbl">Speed</span>
+<span class="sl_fieldlbl th_lbl" id="speedLbl">Speed</span>
 <input type="range" id="speedSlider" min="1" max="10" value="10" step="1" aria-label="Simulation speed multiplier" aria-valuemin="1" aria-valuemax="10" aria-valuenow="10" aria-valuetext="1x (normal)" onchange="slidingSimF.onSpeedChange(this.value)">
-<span class="sl_fieldval" id="speedDisplay" aria-live="off">1x</span>
+<span class="sl_fieldval th_val" id="speedDisplay" aria-live="off">1x</span>
 </div>
 <!-- Action buttons -->
-<div class="sl_btnrow" role="group" aria-label="Simulation controls">
+<div class="sl_btnrow th_bar" role="group" aria-label="Simulation controls">
 <input type="button" value="&#9654; GO!!" class="sl_btn" aria-label="Start the sliding animation" onclick="slidingSimF.roll()">
 <input type="button" value="&#8634; RESET" class="sl_btn" aria-label="Reset object to top of ramp" onclick="slidingSimF.reset()">
 </div>
@@ -102,43 +102,43 @@ are shown in the readings panel below.
 </p>
 </div><!-- /sl_controls -->
 <!-- RIGHT: Live Readings -->
-<div class="sl_readout" role="region" aria-labelledby="readHd" aria-live="polite" aria-atomic="false" aria-relevant="text">
-<h2 id="readHd">Live Readings</h2>
+<div class="sl_readout th_panel" role="region" aria-labelledby="readHd" aria-live="polite" aria-atomic="false" aria-relevant="text">
+<h2 id="readHd" class="th_ptitle">Live Readings</h2>
 <div class="sl_rg">
-<span class="sl_rglbl">Shape:</span>
-<span class="sl_rgval" id="r_shape">Solid Sphere</span>
-<span class="sl_rglbl">I =</span>
-<span class="sl_rgval" id="r_moi">2/5 mr&#178;</span>
-<span class="sl_rglbl">I =</span>
-<span class="sl_rgval" id="r_moiv">0.0009 kg m&#178;</span>
-<span class="sl_rglbl">Angle:</span>
-<span class="sl_rgval" id="r_angle">30&#176;</span>
-<span class="sl_rglbl">Height:</span>
-<span class="sl_rgval" id="r_height">0.50 m</span>
+<span class="sl_rglbl th_lbl">Shape:</span>
+<span class="sl_rgval th_val" id="r_shape">Solid Sphere</span>
+<span class="sl_rglbl th_lbl">I =</span>
+<span class="sl_rgval th_val" id="r_moi">2/5 mr&#178;</span>
+<span class="sl_rglbl th_lbl">I =</span>
+<span class="sl_rgval th_val" id="r_moiv">0.0018 kg m&#178;</span>
+<span class="sl_rglbl th_lbl">Angle:</span>
+<span class="sl_rgval th_val" id="r_angle">30&#176;</span>
+<span class="sl_rglbl th_lbl">Height:</span>
+<span class="sl_rgval th_val" id="r_height">0.50 m</span>
 <span class="sl_rgdivider"></span>
-<span class="sl_rglbl">U:</span>
-<span class="sl_rgval" id="r_PE">&#8212; J</span>
-<span class="sl_rglbl">KT:</span>
-<span class="sl_rgval" id="r_KE_t">&#8212; J</span>
-<span class="sl_rglbl">KR:</span>
-<span class="sl_rgval" id="r_KE_r">&#8212; J</span>
-<span class="sl_rglbl">E:</span>
-<span class="sl_rgval" id="r_E">&#8212; J</span>
+<span class="sl_rglbl th_lbl">U:</span>
+<span class="sl_rgval th_val" id="r_PE">&#8212; J</span>
+<span class="sl_rglbl th_lbl">KT:</span>
+<span class="sl_rgval th_val" id="r_KE_t">&#8212; J</span>
+<span class="sl_rglbl th_lbl">KR:</span>
+<span class="sl_rgval th_val" id="r_KE_r">&#8212; J</span>
+<span class="sl_rglbl th_lbl">E:</span>
+<span class="sl_rgval th_val" id="r_E">&#8212; J</span>
 <span class="sl_rgdivider"></span>
-<span class="sl_rglbl">t:</span>
-<span class="sl_rgval" id="r_time">0.00 s</span>
-<span class="sl_rglbl">v:</span>
-<span class="sl_rgval" id="r_v">0.00 m/s</span>
-<span class="sl_rglbl">&#969;:</span>
-<span class="sl_rgval" id="r_omega">0.00 rad/s</span>
-<span class="sl_rglbl">a:</span>
-<span class="sl_rgval" id="r_accel">&#8212; m/s&#178;</span>
+<span class="sl_rglbl th_lbl">t:</span>
+<span class="sl_rgval th_val" id="r_time">0.00 s</span>
+<span class="sl_rglbl th_lbl">v:</span>
+<span class="sl_rgval th_val" id="r_v">0.00 m/s</span>
+<span class="sl_rglbl th_lbl">&#969;:</span>
+<span class="sl_rgval th_val" id="r_omega">0.00 rad/s</span>
+<span class="sl_rglbl th_lbl">a:</span>
+<span class="sl_rgval th_val" id="r_accel">&#8212; m/s&#178;</span>
 </div>
 </div><!-- /sl_readout -->
 </div><!-- /sl_bottom -->
 <!-- Narration (full width below) -->
-<div class="sl_narrbox" id="narrationBox" role="region" aria-labelledby="narrHd" aria-live="polite" aria-atomic="true">
-<h2 id="narrHd">What's happening</h2>
+<div class="sl_narrbox th_panel th_nar" id="narrationBox" role="region" aria-labelledby="narrHd" aria-live="polite" aria-atomic="true">
+<h2 id="narrHd" class="th_ptitle">What's happening</h2>
 <p id="narration" class="sl_narrtext">
 A solid sphere (mass 100 g, radius 15 cm) sits at the top of a frictionless 30&#176; ramp.
 No friction means no torque and no rotation &#8212; &#969; = 0 and KR = 0 for every shape.
@@ -146,7 +146,7 @@ All gravitational PE converts entirely to translational KE. Press Slide to relea
 </p>
 </div>
 <!-- Physics note -->
-<p class="sl_info" role="note">
+<p class="sl_info th_note" role="note">
 Frictionless incline: no torque, no rotation &nbsp;|&nbsp;
 All shapes slide identically &nbsp;|&nbsp;
 a = g&thinsp;sin&thinsp;&#952; &nbsp;|&nbsp;
@@ -423,10 +423,10 @@ hoop:     { name: 'Thin Hoop',       moi: 'mr\u00b2',     factor: 1   },
 shell:    { name: 'Spherical Shell', moi: '2/3 mr\u00b2', factor: 2/3 }
 };
 var shapeKey = 'sphere';
-var massG    = 100;
+var massG    = 200;
 var radiusCm = 15;
 var angleDeg = 30;
-var II = 0.0009;
+var II = 0.0018;
 var rolling  = false;
 var animFrame= null;
 var progress = 0;
@@ -868,6 +868,57 @@ if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise(
 #mobslid .mob_desc { width:100%; max-width:860px; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; text-align:left; }
 #mobslid .mob_desc p { margin:0 0 9px 0; }
 #mobslid .mob_eq { text-align:center; font-size:1rem; }
+</style>
+<style>
+/* ════════ theme: the instrument look of the balance beam (dark; light and high-contrast variants) ════════ */
+#mobslid { --t-chassis:#1a1c1f; --t-panel:#22262b; --t-panel-hi:#2c3138; --t-panel-lo:#14161a; --t-border:#3a4048; --t-border-hi:#525c66; --t-text:#c8d0d8; --t-dim:#8a94a3; --t-accent:#e8a020; --t-green:#3ad08f; --t-val:#ffdd66; --t-nar-bg:#2a2410; --t-nar-bd:#e0b040; --t-nar-tx:#f0e2b8; --t-grid:rgba(255,255,255,0.015); --t-warn:#e0605a; --t-warnbd:#a04040; background:var(--t-chassis) !important; background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, var(--t-grid) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, var(--t-grid) 40px) !important;
+  color:var(--t-text); font-family:Arial, sans-serif; padding:14px 10px 18px !important; border-radius:6px; box-sizing:border-box; max-width:860px; margin:0 auto 10px !important; }
+#mobslid.th_lm, #mobslid:has(#slroot.light) { --t-chassis:#e9edf1; --t-panel:#ffffff; --t-panel-hi:#f1f4f7; --t-panel-lo:#f4f6f9; --t-border:#c3cad3; --t-border-hi:#9aa3ae; --t-text:#1d232a; --t-dim:#556070; --t-accent:#a8620a; --t-green:#12805a; --t-val:#8a4a00; --t-nar-bg:#ffefc0; --t-nar-bd:#e0b040; --t-nar-tx:#333333; --t-grid:transparent; --t-warn:#b02020; --t-warnbd:#c06060; }
+#mobslid.th_hc, #mobslid:has(#slroot.hc) { --t-chassis:#000000; --t-panel:#000000; --t-panel-hi:#111111; --t-panel-lo:#000000; --t-border:#ffffff; --t-border-hi:#ffffff; --t-text:#ffffff; --t-dim:#e0e0e0; --t-accent:#ffd700; --t-green:#00ff88; --t-val:#ffff00; --t-nar-bg:#000000; --t-nar-bd:#ffd700; --t-nar-tx:#ffffff; --t-grid:transparent; --t-warn:#ff6a5a; --t-warnbd:#ff6a5a; }
+#mobslid .th_btn, #mobslid .th_a11y input[type=button], #mobslid .th_a11y button { padding:4px 10px !important; font-size:.68rem !important; font-family:monospace !important; letter-spacing:.06em; border-radius:3px !important; cursor:pointer; background:var(--t-panel-hi) !important; border:1px solid var(--t-border-hi) !important; color:var(--t-dim) !important; text-transform:uppercase; min-height:30px; box-shadow:none !important; }
+#mobslid .th_a11y { display:flex !important; gap:6px; flex-wrap:wrap; justify-content:center; width:100%; background:transparent !important; border:none !important; padding:0 0 10px !important; margin:0 !important; }
+#mobslid .th_a11y .th_on, #mobslid .th_a11y [aria-pressed="true"] { background:rgba(58,208,143,.14) !important; border-color:var(--t-green) !important; color:var(--t-green) !important; font-weight:bold; }
+#mobslid .th_title, #mobslid .th_title h3, #mobslid .th_title H3 { background:transparent !important; border:none !important; color:var(--t-accent) !important; font-size:.95rem !important; font-weight:700 !important; letter-spacing:.2em; text-transform:uppercase; text-align:center; font-family:Arial, sans-serif !important; margin:0 !important; padding:2px 0 !important; min-height:0 !important; }
+#mobslid .th_sub { color:var(--t-dim) !important; font-size:.7rem !important; letter-spacing:.08em; text-transform:uppercase; text-align:center; font-family:Arial, sans-serif !important; margin:0 0 8px !important; }
+#mobslid .th_diag { background:var(--t-panel) !important; border:1px solid var(--t-border) !important; border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.35); margin:8px 0 0 !important; padding:0 !important; }
+#mobslid .th_diag::before { content:'APPARATUS'; display:block; flex:1 1 100%; background:var(--t-panel-lo); border-bottom:1px solid var(--t-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; color:var(--t-accent); font-weight:bold; text-align:left; }
+#mobslid .th_diag canvas { background:#ffffff; display:block; max-width:100%; height:auto; margin:0 auto; border:none !important; }
+#mobslid .th_bar { background:var(--t-panel-lo) !important; border:1px solid var(--t-border) !important; border-top:none !important; border-radius:0 0 6px 6px; display:flex !important; flex-wrap:wrap; gap:6px; justify-content:center; align-items:center; padding:8px 10px !important; margin:0 0 10px !important; color:var(--t-text) !important; }
+#mobslid .th_bar input[type=button], #mobslid .th_bar button, #mobslid .th_bbtn { padding:8px 12px !important; font-family:monospace !important; font-size:.72rem !important; letter-spacing:.04em; cursor:pointer; background:var(--t-panel-hi) !important; border:1px solid var(--t-border-hi) !important; color:var(--t-text) !important; border-radius:3px !important; text-transform:uppercase; min-height:34px; box-shadow:none !important; }
+#mobslid .th_bar input[type=button]:hover, #mobslid .th_bar button:hover { border-color:var(--t-accent) !important; }
+#mobslid .th_bar .th_primary { font-weight:bold; border-color:var(--t-accent) !important; color:var(--t-accent) !important; }
+#mobslid .th_bar .th_warn { color:var(--t-warn) !important; border-color:var(--t-warnbd) !important; }
+#mobslid .th_panel { background:var(--t-panel) !important; border:1px solid var(--t-border) !important; border-radius:6px !important; box-shadow:0 4px 20px rgba(0,0,0,.3); color:var(--t-text) !important; font-family:Arial, sans-serif !important; }
+#mobslid .th_ptitle { background:var(--t-panel-lo) !important; color:var(--t-dim) !important; font-family:monospace !important; font-size:.66rem !important; letter-spacing:.15em; text-transform:uppercase; font-weight:normal !important; border:none !important; border-bottom:1px solid var(--t-border) !important; border-left:4px solid var(--t-accent) !important; padding:6px 10px !important; margin:0 0 6px !important; text-align:left; }
+#mobslid .th_lbl { color:var(--t-dim) !important; font-size:.72rem !important; font-weight:600 !important; letter-spacing:.04em; text-transform:uppercase; font-family:Arial, sans-serif !important; }
+#mobslid .th_val { color:var(--t-val) !important; font-family:monospace !important; font-weight:bold; font-size:.78rem !important; background:transparent !important; }
+#mobslid .th_chip { background:var(--t-panel-lo) !important; border:1px solid var(--t-border) !important; border-radius:3px; padding:3px 7px !important; margin:2px 0 !important; color:var(--t-dim) !important; font-family:monospace !important; font-size:.72rem !important; }
+#mobslid .th_note { background:var(--t-panel-lo) !important; border:1px solid var(--t-border) !important; border-radius:4px; color:var(--t-dim) !important; font-family:monospace !important; font-size:.7rem !important; line-height:1.55; padding:7px 12px !important; }
+#mobslid .th_note * { color:inherit !important; }
+#mobslid .th_nar { background:var(--t-nar-bg) !important; border:none !important; border-left:4px solid var(--t-nar-bd) !important; color:var(--t-nar-tx) !important; font-style:italic; border-radius:3px !important; box-shadow:none !important; }
+#mobslid .th_nar * { color:var(--t-nar-tx) !important; }
+#mobslid .th_nar .th_ptitle, #mobslid .th_nar h2 { font-style:normal; color:var(--t-dim) !important; }
+#mobslid input[type=range] { -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; outline:none; cursor:pointer; background:var(--t-panel-lo) !important; border:1px solid var(--t-border); accent-color:var(--t-accent); }
+#mobslid input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--t-accent); border:2px solid var(--t-panel); cursor:pointer; }
+#mobslid input[type=range]::-moz-range-thumb { width:12px; height:12px; border-radius:50%; background:var(--t-accent); border:2px solid var(--t-panel); cursor:pointer; }
+#mobslid select, #mobslid input[type=number] { background:var(--t-panel-hi) !important; color:var(--t-text) !important; border:1px solid var(--t-border-hi) !important; border-radius:3px; padding:3px 5px; font-size:.78rem; }
+#mobslid input:focus-visible, #mobslid button:focus-visible, #mobslid select:focus-visible { outline:2px solid var(--t-accent); outline-offset:2px; }
+#mobslid table th { background:var(--t-panel-lo) !important; color:var(--t-dim) !important; font-family:monospace; border-color:var(--t-border) !important; }
+#mobslid table td { background:var(--t-panel) !important; color:var(--t-text) !important; border-color:var(--t-border) !important; }
+#mobslid .mob_descbtn { background:var(--t-panel-hi) !important; border:1px solid var(--t-accent) !important; color:var(--t-accent) !important; }
+#mobslid > h2, #mobslid > hr + h2 { color:var(--t-accent) !important; font-size:1rem !important; font-family:Arial, sans-serif; margin:4px 0 !important; }
+#mobslid > hr { border:none !important; border-top:1px solid var(--t-border) !important; margin:6px 0 !important; }
+#mobslid .th_q { background:#fbfbf7; color:#1d232a; border:1px solid #c9ccd2; border-left:4px solid var(--t-accent); border-radius:6px; padding:12px 16px; margin:12px 0 8px; font-family:Arial, sans-serif; font-size:.92rem; line-height:1.5; }
+#mobslid .th_q h2, #mobslid .th_q h3 { color:#1d232a !important; font-size:1.05rem !important; margin:4px 0 8px !important; }
+#mobslid .th_q hr { border:none; border-top:1px solid #c9ccd2; margin:8px 0; }
+#mobslid .th_q li { margin:0 0 8px; }
+@media (pointer:coarse) { #mobslid input[type=range] { height:8px; } #mobslid input[type=range]::-webkit-slider-thumb { width:26px; height:26px; } #mobslid input[type=range]::-moz-range-thumb { width:24px; height:24px; } #mobslid .th_bar input[type=button], #mobslid .th_bar button { min-height:40px; } }
+#mobslid [data-th="p"] { font-weight:bold; border-color:var(--t-accent) !important; color:var(--t-accent) !important; }
+#mobslid [data-th="w"] { color:var(--t-warn) !important; border-color:var(--t-warnbd) !important; }
+#mobslid .sl_rg { background:transparent !important; }
+#mobslid .sl_fieldrow { background:var(--t-panel-lo) !important; border:1px solid var(--t-border) !important; border-radius:3px; }
+#mobslid .sl_controls, #mobslid .sl_readout, #mobslid .sl_narrbox { padding:0 10px 10px !important; }
+#mobslid .sl_credit { color:var(--t-dim) !important; }
 </style>
 </div><!-- #mobslid -->
 </main>

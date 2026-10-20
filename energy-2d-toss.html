@@ -25,30 +25,32 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <div id="mobtoss" class="mob_wrap">
 <hr><h2>2D-Motion: Free Fall</h2><hr>
 <!--p&gt;In the simulation right below, your aim is to match the motion of the Cyan spacecraft. The only forces present are the forces you can set by using the controls at the bottom. In this case, you can control the force only on the second time span. But you can control the time spans.&lt;/p-->
-<div id="canvasesdiv" class="tbar"><H3>Two Dimensional Motion</H3></div>
-<div class="mcontent"><canvas id="myCanvas" style="margin:auto;border:1px solid" width="620" height="620"></canvas>
+<div class="th_a11y" role="toolbar" aria-label="Display options"><button type="button" id="thBtnHC" aria-pressed="false">HIGH CONTRAST</button><button type="button" id="thBtnLM" aria-pressed="false">LIGHT MODE</button><button type="button" id="thBtnCB" aria-pressed="false" onclick="twoDmotionV.toggleCB(this)">COLOR-BLIND SAFE</button><button type="button" id="thBtnNR" aria-pressed="true" class="th_on" onclick="twoDmotionV.toggleNR(this)">NARRATION: ON</button></div>
+<div id="canvasesdiv" class="tbar th_title"><H3>Two Dimensional Motion</H3></div>
+<div class="mcontent th_diag"><canvas id="myCanvas" style="margin:auto;border:1px solid" width="620" height="620"></canvas>
 </div>
-<div class="bbar">
-<input type="button" id="play" value="Play" onclick="if(this.value=='Play'){twoDmotionV.pl();this.value='Pause';}else{this.value='Play';twoDmotionV.ps();}">
+<div class="bbar th_bar">
+<input type="button" id="play" data-th="p" value="Play" onclick="if(this.value=='Play'){twoDmotionV.pl();this.value='Pause';}else{this.value='Play';twoDmotionV.ps();}">
 <input type="button" id="stepforward" value="Step &#9654;&#9654;" onclick="twoDmotionV.stepForward()">
 <input type="button" id="stepback" value="Step &#9664;&#9664;" onclick="twoDmotionV.stepBack()">
-<input type="button" id="restart" value="Reset" onclick="twoDmotionV.restart()">
+<input type="button" id="restart" data-th="w" value="Reset" onclick="twoDmotionV.restart()">
 </div>
+<div id="thNar" class="th_nar th_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
 <!-- Repeated 80px sections -->
-<div class="footer">
-<div class="left">`vecv_i`<br>`(v_x,v_y)`</div>
-<div class="center"><input style="width: 170px;" type="range" id="vix" min="0" max="30" value="10" step="1" onChange="document.getElementById('vxValue').innerHTML=this.value;twoDmotionV.setvx(this.value);"> <span id="vxValue">10</span></div>
-<div class="right"><input style="width: 310px;" type="range" id="viy" min="-20" max="45" value="15" step="1" onChange="document.getElementById('vyValue').innerHTML=this.value;twoDmotionV.setvy(this.value);"> <span id="vyValue">15</span></div>
+<div class="footer th_panel th_row">
+<div class="left th_lbl">`vecv_i`<br>`(v_x,v_y)`</div>
+<div class="center"><input style="width: 170px;" type="range" id="vix" min="0" max="30" value="10" step="1" onChange="document.getElementById('vxValue').innerHTML=this.value;twoDmotionV.setvx(this.value);"> <span id="vxValue" class="th_val">10</span></div>
+<div class="right"><input style="width: 310px;" type="range" id="viy" min="-20" max="45" value="20" step="1" onChange="document.getElementById('vyValue').innerHTML=this.value;twoDmotionV.setvy(this.value);"> <span id="vyValue" class="th_val">20</span></div>
 </div>
-<div class="footer">
-<div class="left">`vecv_i`<br>`(|vecv|,theta)`</div>
-<div class="center"><input style="width: 170px;" type="range" id="viM" min="0" max="54" value="18" step="1" onChange="document.getElementById('vMValue').innerHTML=this.value;twoDmotionV.setvM(this.value);"> <span id="vMValue">18</span></div>
-<div class="right"><input style="width: 310px;" type="range" id="viaD" min="-90" max="90" value="56" step="1" onChange="document.getElementById('vaDValue').innerHTML=this.value;twoDmotionV.setvd(this.value);"> <span id="vaDValue">56</span></div>
+<div class="footer th_panel th_row">
+<div class="left th_lbl">`vecv_i`<br>`(|vecv|,theta)`</div>
+<div class="center"><input style="width: 170px;" type="range" id="viM" min="0" max="54" value="22" step="1" onChange="document.getElementById('vMValue').innerHTML=this.value;twoDmotionV.setvM(this.value);"> <span id="vMValue" class="th_val">22</span></div>
+<div class="right"><input style="width: 310px;" type="range" id="viaD" min="-90" max="90" value="63" step="1" onChange="document.getElementById('vaDValue').innerHTML=this.value;twoDmotionV.setvd(this.value);"> <span id="vaDValue" class="th_val">63</span></div>
 </div>
-<div class="footer">
-<div class="left">`vecP_i`<br>`(P_{ix},P_{iy})`</div>
-<div class="center"><input style="width: 170px;" type="range" id="piX" min="0" max="0" value="0" step="0"> <span id="pXValue">0</span></div>
-<div class="right"><input style="width: 310px;" type="range" id="piY" min="-120" max="60" value="0" step="10" onChange="document.getElementById('piYValue').innerHTML=this.value;twoDmotionV.setpi(this.value);"> <span id="piYValue">0</span></div>
+<div class="footer th_panel th_row">
+<div class="left th_lbl">`vecP_i`<br>`(P_{ix},P_{iy})`</div>
+<div class="center"><input style="width: 170px;" type="range" id="piX" min="0" max="0" value="0" step="0"> <span id="pXValue" class="th_val">0</span></div>
+<div class="right"><input style="width: 310px;" type="range" id="piY" min="-120" max="60" value="0" step="10" onChange="document.getElementById('piYValue').innerHTML=this.value;twoDmotionV.setpi(this.value);"> <span id="piYValue" class="th_val">0</span></div>
 </div>
 <style>:where(#mobtoss) * {
 margin: 0;
@@ -184,7 +186,7 @@ var plotColor = '#ff0000'; //#ff00ff
 var radius = 8;
 var duration = 2.0;
 var vInit = 10, v2Init = 2.0, v3Init = 0.0;
-var vInitY = -15, v2InitY = 2.0, v3InitY = 0.0;
+var vInitY = -20, v2InitY = 2.0, v3InitY = 0.0;
 var ai = 0, a2i = 0.0, a3i = 0.0;//This is to calculate the initial acceleration
 var aiY = 9.8, a2iY = 0.0, a3iY = 0.0;//This is to calculate the initial acceleration
 var a = 0.0, a2 = 0.0, a3 = 0.0;//This is to calculate the initial acceleration
@@ -208,7 +210,7 @@ var time0=0,force0=30;
 function drawMotion() {
 canvas = document.getElementById("myCanvas");
 ctx = canvas.getContext("2d");
-ballR= {x:xPos,v:vInit,a:ai,x0:xPos0,iv:vInit,ia:ai, ida:da,y:yPos,vY:vInitY,aY:aiY,y0:yPos0,ivY:vInitY,iaY:aiY, idaY:daY, col: "red",colG: "#F8E0E6",dspV: "XVA",MDPos: 0,lbl: 1 };
+ballR= {x:xPos,v:vInit,a:ai,x0:xPos0,iv:vInit,ia:ai, ida:da,y:yPos,vY:vInitY,aY:aiY,y0:yPos0,ivY:vInitY,iaY:aiY, idaY:daY, col: PAL("red"),colG: PAL("#F8E0E6"),dspV: "XVA",MDPos: 0,lbl: 1 };
 console.log(vM+"-"+vaD);
 //    console.log("In the drawMotion function, with runFlag = " + runFlag );
 if (xPos >= (maxL) || xPos2 >= maxL || xPos3 >= maxL || xPos < minL || xPos2 < minL || xPos3 < minL || time >= maxtime) {
@@ -236,8 +238,8 @@ aY = 0;//ai + da*time;
 //arrowDraw(20,Math.PI/2);
 if(time>0){arrowF(ballR,4);}  
 if(time>0){arrowFB(ballR,4,-force0,"red","F",10);
-arrowFB(ballR,4,force0,"blue","Fg",5);
-arrowVy(ballR,4,vY,"green","vy",5);arrowA(ballR,4,aY,"purple","ay",5);}
+arrowFB(ballR,4,force0,PAL("blue"),"Fg",5);
+arrowVy(ballR,4,vY,PAL("green"),"vy",5);arrowA(ballR,4,aY,"purple","ay",5);}
 //if(time>0){}arrowA(ballR,4,ballR.aY,"purple","ay",5);
 }
 else{
@@ -250,7 +252,7 @@ ballR.y=yPos;ballR.vY=vY;ballR.aY=aY;
 }
 //x2Pos0=x01; v2Init=v01; a2=a01;v2=v01;
 if(Sspdup){MD(ballR,yStartMD,0);}
-if(time>0){arrowVB(ballR,4,2*v,-2*vY,"grey","v",10);arrowVBx(ballR,4,v,"blue","vx",10);arrowVBy(ballR,4,vY,"purple","vy",5);arrowA(ballR,4,aY,"green","ay",5);}
+if(time>0){arrowVB(ballR,4,2*v,-2*vY,"grey","v",10);arrowVBx(ballR,4,v,PAL("blue"),"vx",10);arrowVBy(ballR,4,vY,PAL("purple"),"vy",5);arrowA(ballR,4,aY,PAL("green"),"ay",5);}
 displayValues();
 }
 } //end of drawMotion
@@ -488,7 +490,7 @@ timer = window.setTimeout(runMotion, 1000/30);
 }
 }
 function drawHAxisWLabels(x0,y0,Mx,Dx,aT,colT,colA) {
-if (!x0) x0 = xBase;if (!y0) y0 = yBase;if (!Mx) Mx = maxX;if (!Dx) Dx = Daxis;if (!aT) aT = 'x (m)';if (!colT) colT = 'black';if (!colA) colA = 'green';
+if (!x0) x0 = xBase;if (!y0) y0 = yBase;if (!Mx) Mx = maxX;if (!Dx) Dx = Daxis;if (!aT) aT = 'x (m)';if (!colT) colT = 'black';if (!colA) colA = PAL('green');
 ctx.fillStyle = colT;
 ctx.strokeStyle = colT;
 ctx.textBaseline = 'middle';
@@ -516,7 +518,7 @@ ctx.textAlign = 'left';
 ctx.fillText(aT, x0+(Mx+3*Dx/2), y0+0);
 }
 function drawAxisWLabels(x0,y0,Mx,Dx,My,Dy,aT,colT,colA) {
-if (!x0) x0 = xBase+160;if (!y0) y0 = yStartG;if (!Mx) Mx = maxXG;if (!Dx) Dx = Daxis;if (!My) My = maxYG;if (!Dy) Dy = DaxisY;if (!aT) aT = 'x (m)';if (!colT) colT = 'black';if (!colA) colA = 'green';
+if (!x0) x0 = xBase+160;if (!y0) y0 = yStartG;if (!Mx) Mx = maxXG;if (!Dx) Dx = Daxis;if (!My) My = maxYG;if (!Dy) Dy = DaxisY;if (!aT) aT = 'x (m)';if (!colT) colT = 'black';if (!colA) colA = PAL('green');
 // x-axis
 ctx.strokeStyle = colA;
 px=x0-1; py=2*my-3*Dy;
@@ -581,7 +583,7 @@ ctx.fillText(axisLabel, xBase-24, yBase-40+40*i);
 }
 }
 function addMarks(x0,y0,Mx,Dx,My,Dy,aT,colT,colA) {
-if (!x0) x0 = xBase+160;if (!y0) y0 = yStartG;if (!Mx) Mx = maxXG;if (!Dx) Dx = Daxis;if (!My) My = maxYG;if (!Dy) Dy = DaxisY;if (!aT) aT = 'x (m)';if (!colT) colT = 'black';if (!colA) colA = 'green';
+if (!x0) x0 = xBase+160;if (!y0) y0 = yStartG;if (!Mx) Mx = maxXG;if (!Dx) Dx = Daxis;if (!My) My = maxYG;if (!Dy) Dy = DaxisY;if (!aT) aT = 'x (m)';if (!colT) colT = 'black';if (!colA) colA = PAL('green');
 // set background color for the graph
 //ctx.fillStyle = "#eff";
 // set line color
@@ -732,10 +734,24 @@ document.getElementById('vix').value=Math.round(vInit,0);document.getElementById
 document.getElementById('viy').value=Math.round(-vInitY,0);document.getElementById('vyValue').innerHTML=Math.round(-vInitY,0);
 restart();}
 function setpi(newV){yPos0 = -Number(newV);restart();}
+
+var CB = false, NR = true, playing = false;
+var PALCB = { 'red':'#D55E00', '#F8E0E6':'#F6D2BC', 'green':'#0072B2', 'blue':'#56B4E9', 'purple':'#CC79A7' };   /* Okabe-Ito */
+function PAL(c){ return CB ? (PALCB[c] || c) : c; }
+function narrate(m){ if (!NR) return; var b = document.getElementById('thNar'); if (b) b.textContent = m; }
+function launchMsg(){ var vx = vInit, vy = -vInitY, sp = Math.sqrt(vx*vx + vy*vy), th = Math.atan2(vy, vx)*180/Math.PI, y0 = -yPos0, Ki = 0.5*m*sp*sp, Ui = m*9.81*y0;
+return 'Launch: v = (' + vx.toFixed(0) + ', ' + vy.toFixed(0) + ') m/s, a speed of ' + sp.toFixed(1) + ' m/s at ' + th.toFixed(0) + ' degrees, from y = ' + y0.toFixed(0) + ' m. At the start K = ' + Ki.toFixed(0) + ' J, U = ' + Ui.toFixed(0) + ' J, E = ' + (Ki + Ui).toFixed(0) + ' J.'; }
+function redraw(){ if (playing) return; index = Math.max(-1, index - 1); runFlag = 1; drawMotion(); }
 drawMotion();
+setTimeout(function(){ narrate('Ready. ' + launchMsg() + ' Press Play.'); }, 0);
+function W(f, msg){ return function(v){ var r = f(v); narrate(typeof msg === 'function' ? msg() : msg); return r; }; }
 return {
-restart,stepBack,stepForward,
-ps,pl,setvx,setvy,setvM,setvd,setpi
+restart:W(function(){ playing = false; restart(); }, function(){ return 'Reset. ' + launchMsg(); }),
+stepBack:W(function(){ playing = false; stepBack(); }, 'One step back.'), stepForward:W(function(){ playing = false; stepForward(); }, 'One step forward.'),
+ps:W(function(){ playing = false; ps(); }, 'Paused.'), pl:W(function(){ playing = true; pl(); }, function(){ return 'Playing. ' + launchMsg(); }),
+setvx:W(setvx, launchMsg), setvy:W(setvy, launchMsg), setvM:W(setvM, launchMsg), setvd:W(setvd, launchMsg), setpi:W(setpi, launchMsg),
+toggleCB:function(b){ CB = !CB; if (b){ b.setAttribute('aria-pressed', CB ? 'true' : 'false'); b.classList.toggle('th_on', CB); } redraw(); narrate(CB ? 'Colour-blind-safe colours on: a vermilion ball on blue axes.' : 'Colour-blind-safe colours off.'); },
+toggleNR:function(b){ if (NR) narrate('Narration off.'); NR = !NR; var bar = document.getElementById('thNar'); if (bar) bar.style.display = NR ? '' : 'none'; if (b){ b.textContent = 'NARRATION: ' + (NR ? 'ON' : 'OFF'); b.setAttribute('aria-pressed', NR ? 'true' : 'false'); b.classList.toggle('th_on', NR); } if (NR) narrate('Narration on. ' + launchMsg()); }
 };
 }
 </script>
@@ -808,7 +824,66 @@ if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise(
 #mobtoss .mob_desc p { margin:0 0 9px 0; }
 #mobtoss .mob_eq { text-align:center; font-size:1rem; }
 </style>
+<style>
+/* ════════ theme: the instrument look of the balance beam (dark; light and high-contrast variants) ════════ */
+#mobtoss { --t-chassis:#1a1c1f; --t-panel:#22262b; --t-panel-hi:#2c3138; --t-panel-lo:#14161a; --t-border:#3a4048; --t-border-hi:#525c66; --t-text:#c8d0d8; --t-dim:#8a94a3; --t-accent:#e8a020; --t-green:#3ad08f; --t-val:#ffdd66; --t-nar-bg:#2a2410; --t-nar-bd:#e0b040; --t-nar-tx:#f0e2b8; --t-grid:rgba(255,255,255,0.015); --t-warn:#e0605a; --t-warnbd:#a04040; background:var(--t-chassis) !important; background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, var(--t-grid) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, var(--t-grid) 40px) !important;
+  color:var(--t-text); font-family:Arial, sans-serif; padding:14px 10px 18px !important; border-radius:6px; box-sizing:border-box; max-width:860px; margin:0 auto 10px !important; }
+#mobtoss.th_lm { --t-chassis:#e9edf1; --t-panel:#ffffff; --t-panel-hi:#f1f4f7; --t-panel-lo:#f4f6f9; --t-border:#c3cad3; --t-border-hi:#9aa3ae; --t-text:#1d232a; --t-dim:#556070; --t-accent:#a8620a; --t-green:#12805a; --t-val:#8a4a00; --t-nar-bg:#ffefc0; --t-nar-bd:#e0b040; --t-nar-tx:#333333; --t-grid:transparent; --t-warn:#b02020; --t-warnbd:#c06060; }
+#mobtoss.th_hc { --t-chassis:#000000; --t-panel:#000000; --t-panel-hi:#111111; --t-panel-lo:#000000; --t-border:#ffffff; --t-border-hi:#ffffff; --t-text:#ffffff; --t-dim:#e0e0e0; --t-accent:#ffd700; --t-green:#00ff88; --t-val:#ffff00; --t-nar-bg:#000000; --t-nar-bd:#ffd700; --t-nar-tx:#ffffff; --t-grid:transparent; --t-warn:#ff6a5a; --t-warnbd:#ff6a5a; }
+#mobtoss .th_btn, #mobtoss .th_a11y input[type=button], #mobtoss .th_a11y button { padding:4px 10px !important; font-size:.68rem !important; font-family:monospace !important; letter-spacing:.06em; border-radius:3px !important; cursor:pointer; background:var(--t-panel-hi) !important; border:1px solid var(--t-border-hi) !important; color:var(--t-dim) !important; text-transform:uppercase; min-height:30px; box-shadow:none !important; }
+#mobtoss .th_a11y { display:flex !important; gap:6px; flex-wrap:wrap; justify-content:center; width:100%; background:transparent !important; border:none !important; padding:0 0 10px !important; margin:0 !important; }
+#mobtoss .th_a11y .th_on, #mobtoss .th_a11y [aria-pressed="true"] { background:rgba(58,208,143,.14) !important; border-color:var(--t-green) !important; color:var(--t-green) !important; font-weight:bold; }
+#mobtoss .th_title, #mobtoss .th_title h3, #mobtoss .th_title H3 { background:transparent !important; border:none !important; color:var(--t-accent) !important; font-size:.95rem !important; font-weight:700 !important; letter-spacing:.2em; text-transform:uppercase; text-align:center; font-family:Arial, sans-serif !important; margin:0 !important; padding:2px 0 !important; min-height:0 !important; }
+#mobtoss .th_sub { color:var(--t-dim) !important; font-size:.7rem !important; letter-spacing:.08em; text-transform:uppercase; text-align:center; font-family:Arial, sans-serif !important; margin:0 0 8px !important; }
+#mobtoss .th_diag { background:var(--t-panel) !important; border:1px solid var(--t-border) !important; border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.35); margin:8px 0 0 !important; padding:0 !important; }
+#mobtoss .th_diag::before { content:'APPARATUS'; display:block; flex:1 1 100%; background:var(--t-panel-lo); border-bottom:1px solid var(--t-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; color:var(--t-accent); font-weight:bold; text-align:left; }
+#mobtoss .th_diag canvas { background:#ffffff; display:block; max-width:100%; height:auto; margin:0 auto; border:none !important; }
+#mobtoss .th_bar { background:var(--t-panel-lo) !important; border:1px solid var(--t-border) !important; border-top:none !important; border-radius:0 0 6px 6px; display:flex !important; flex-wrap:wrap; gap:6px; justify-content:center; align-items:center; padding:8px 10px !important; margin:0 0 10px !important; color:var(--t-text) !important; }
+#mobtoss .th_bar input[type=button], #mobtoss .th_bar button, #mobtoss .th_bbtn { padding:8px 12px !important; font-family:monospace !important; font-size:.72rem !important; letter-spacing:.04em; cursor:pointer; background:var(--t-panel-hi) !important; border:1px solid var(--t-border-hi) !important; color:var(--t-text) !important; border-radius:3px !important; text-transform:uppercase; min-height:34px; box-shadow:none !important; }
+#mobtoss .th_bar input[type=button]:hover, #mobtoss .th_bar button:hover { border-color:var(--t-accent) !important; }
+#mobtoss .th_bar .th_primary { font-weight:bold; border-color:var(--t-accent) !important; color:var(--t-accent) !important; }
+#mobtoss .th_bar .th_warn { color:var(--t-warn) !important; border-color:var(--t-warnbd) !important; }
+#mobtoss .th_panel { background:var(--t-panel) !important; border:1px solid var(--t-border) !important; border-radius:6px !important; box-shadow:0 4px 20px rgba(0,0,0,.3); color:var(--t-text) !important; font-family:Arial, sans-serif !important; }
+#mobtoss .th_ptitle { background:var(--t-panel-lo) !important; color:var(--t-dim) !important; font-family:monospace !important; font-size:.66rem !important; letter-spacing:.15em; text-transform:uppercase; font-weight:normal !important; border:none !important; border-bottom:1px solid var(--t-border) !important; border-left:4px solid var(--t-accent) !important; padding:6px 10px !important; margin:0 0 6px !important; text-align:left; }
+#mobtoss .th_lbl { color:var(--t-dim) !important; font-size:.72rem !important; font-weight:600 !important; letter-spacing:.04em; text-transform:uppercase; font-family:Arial, sans-serif !important; }
+#mobtoss .th_val { color:var(--t-val) !important; font-family:monospace !important; font-weight:bold; font-size:.78rem !important; background:transparent !important; }
+#mobtoss .th_chip { background:var(--t-panel-lo) !important; border:1px solid var(--t-border) !important; border-radius:3px; padding:3px 7px !important; margin:2px 0 !important; color:var(--t-dim) !important; font-family:monospace !important; font-size:.72rem !important; }
+#mobtoss .th_note { background:var(--t-panel-lo) !important; border:1px solid var(--t-border) !important; border-radius:4px; color:var(--t-dim) !important; font-family:monospace !important; font-size:.7rem !important; line-height:1.55; padding:7px 12px !important; }
+#mobtoss .th_note * { color:inherit !important; }
+#mobtoss .th_nar { background:var(--t-nar-bg) !important; border:none !important; border-left:4px solid var(--t-nar-bd) !important; color:var(--t-nar-tx) !important; font-style:italic; border-radius:3px !important; box-shadow:none !important; }
+#mobtoss .th_nar * { color:var(--t-nar-tx) !important; }
+#mobtoss .th_nar .th_ptitle, #mobtoss .th_nar h2 { font-style:normal; color:var(--t-dim) !important; }
+#mobtoss input[type=range] { -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; outline:none; cursor:pointer; background:var(--t-panel-lo) !important; border:1px solid var(--t-border); accent-color:var(--t-accent); }
+#mobtoss input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--t-accent); border:2px solid var(--t-panel); cursor:pointer; }
+#mobtoss input[type=range]::-moz-range-thumb { width:12px; height:12px; border-radius:50%; background:var(--t-accent); border:2px solid var(--t-panel); cursor:pointer; }
+#mobtoss select, #mobtoss input[type=number] { background:var(--t-panel-hi) !important; color:var(--t-text) !important; border:1px solid var(--t-border-hi) !important; border-radius:3px; padding:3px 5px; font-size:.78rem; }
+#mobtoss input:focus-visible, #mobtoss button:focus-visible, #mobtoss select:focus-visible { outline:2px solid var(--t-accent); outline-offset:2px; }
+#mobtoss table th { background:var(--t-panel-lo) !important; color:var(--t-dim) !important; font-family:monospace; border-color:var(--t-border) !important; }
+#mobtoss table td { background:var(--t-panel) !important; color:var(--t-text) !important; border-color:var(--t-border) !important; }
+#mobtoss .mob_descbtn { background:var(--t-panel-hi) !important; border:1px solid var(--t-accent) !important; color:var(--t-accent) !important; }
+#mobtoss > h2, #mobtoss > hr + h2 { color:var(--t-accent) !important; font-size:1rem !important; font-family:Arial, sans-serif; margin:4px 0 !important; }
+#mobtoss > hr { border:none !important; border-top:1px solid var(--t-border) !important; margin:6px 0 !important; }
+#mobtoss .th_q { background:#fbfbf7; color:#1d232a; border:1px solid #c9ccd2; border-left:4px solid var(--t-accent); border-radius:6px; padding:12px 16px; margin:12px 0 8px; font-family:Arial, sans-serif; font-size:.92rem; line-height:1.5; }
+#mobtoss .th_q h2, #mobtoss .th_q h3 { color:#1d232a !important; font-size:1.05rem !important; margin:4px 0 8px !important; }
+#mobtoss .th_q hr { border:none; border-top:1px solid #c9ccd2; margin:8px 0; }
+#mobtoss .th_q li { margin:0 0 8px; }
+@media (pointer:coarse) { #mobtoss input[type=range] { height:8px; } #mobtoss input[type=range]::-webkit-slider-thumb { width:26px; height:26px; } #mobtoss input[type=range]::-moz-range-thumb { width:24px; height:24px; } #mobtoss .th_bar input[type=button], #mobtoss .th_bar button { min-height:40px; } }
+#mobtoss [data-th="p"] { font-weight:bold; border-color:var(--t-accent) !important; color:var(--t-accent) !important; }
+#mobtoss [data-th="w"] { color:var(--t-warn) !important; border-color:var(--t-warnbd) !important; }
+#mobtoss .th_row { display:grid !important; grid-template-columns:minmax(80px, auto) minmax(0,1fr) minmax(0,1fr); gap:6px 16px; align-items:center; padding:8px 12px !important; margin:0 0 8px !important; width:auto !important; height:auto !important; }
+#mobtoss .th_row > div { background:transparent !important; color:var(--t-text) !important; width:auto !important; float:none !important; margin:0 !important; padding:0 !important; display:flex; align-items:center; gap:8px; min-width:0; text-align:left !important; }
+#mobtoss .th_row > div:first-child { display:block; text-align:center !important; }
+#mobtoss .th_row input[type=range] { width:auto !important; flex:1 1 auto; min-width:0; }
+#mobtoss .th_row span { min-width:2.2em; }
+#mobtoss .th_narbar { width:100%; min-height:28px; padding:6px 12px !important; margin:0 0 10px !important; font-size:.84rem; line-height:1.45; }
+@media (max-width:560px) { #mobtoss .th_row { grid-template-columns:minmax(0,1fr); } }
+</style>
 </div><!-- #mobtoss -->
+<script>
+(function(){ var W = document.getElementById("mobtoss"); [["thBtnHC", "th_hc", "th_lm", "thBtnLM"], ["thBtnLM", "th_lm", "th_hc", "thBtnHC"]].forEach(function(q){ var b = document.getElementById(q[0]); if (!b || !W) return;
+b.addEventListener("click", function(){ var on = !W.classList.contains(q[1]); W.classList.toggle(q[1], on); if (on){ W.classList.remove(q[2]); var o = document.getElementById(q[3]); o.setAttribute("aria-pressed", "false"); o.classList.remove("th_on"); } b.setAttribute("aria-pressed", on ? "true" : "false"); b.classList.toggle("th_on", on); }); });
+})();
+</script>
 </main>
 </body>
 </html>

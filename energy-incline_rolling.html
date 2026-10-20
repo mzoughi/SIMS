@@ -30,60 +30,55 @@ A11y: High Contrast | Color-Blind | Narration
 MOM-ready (no friction, wheeled block, gravity release -- no spring)
 ═══════════════════════════════════════════════════════ -->
 <div id="rl_root">
-<div class="mob_a11ytop" role="toolbar" aria-label="Display options">
+<div class="mob_a11ytop th_a11y" role="toolbar" aria-label="Display options">
 <input type="button" id="btnHC"   value="High Contrast: OFF" onclick="sim1.toggleHC()">
-<input type="button" id="btnCB"   value="Color-Blind: OFF"   onclick="sim1.toggleCB()">
+<input type="button" id="thBtnLM" value="Light Mode: OFF" aria-pressed="false"><input type="button" id="btnCB"   value="Color-Blind: OFF"   onclick="sim1.toggleCB()">
 <input type="button" id="btnNarr" value="Narration: ON"      onclick="sim1.toggleNarr()">
 </div>
 
-<div class="sl_tbar"><h3>Inclined Track -- Release-from-Rest Data Collection</h3></div>
-<div class="sl_mcontent">
+<div class="sl_tbar th_title"><h3>Inclined Track -- Release-from-Rest Data Collection</h3></div>
+<div class="sl_mcontent th_diag">
 <canvas id="simCanvas" width="680" height="360" role="img" aria-label="Wheeled block released from rest on an inclined track" aria-describedby="canvasDesc"></canvas>
 <p id="canvasDesc" class="sl_sronly">A wheeled block is released from rest at an adjustable distance up an inclined track and rolls down under gravity. No friction.</p>
 </div>
 <!-- Playback buttons -->
-<div class="sl_bbar">
-<input type="button" id="btnPlay"  value="▶ Release" onclick="sim1.playSim()">
+<div class="sl_bbar th_bar">
+<input type="button" id="btnPlay" data-th="p"  value="▶ Release" onclick="sim1.playSim()">
 <input type="button" id="btnPause" value="⏸ Pause"   onclick="sim1.pauseSim()">
 <input type="button" id="btnStep"  value="⏭ Step"    onclick="sim1.stepSim()">
 <input type="button" id="btnReset" value="↺ Reset"   onclick="sim1.resetSim()">
 </div>
 <!-- A11y buttons -->
-<div class="sl_bbar">
-
-
-
-</div>
 <!-- Parameters + Info -->
 <div class="sl_fbar">
-<div class="sl_params">
-<div class="sl_boxhd">Parameters</div>
+<div class="sl_params th_panel">
+<div class="sl_boxhd th_ptitle">Parameters</div>
 <div class="sl_prow">
-<span class="sl_plbl">Release distance d (m):</span>
+<span class="sl_plbl th_lbl">Release distance d (m):</span>
 <input type="range" id="dSlider" min="0.3" max="1.8" step="0.1" value="1.0" style="flex:1;" onchange="sim1.setDist(this.value)">
-<span id="dVal" class="sl_pval">1.00</span>
+<span id="dVal" class="sl_pval th_val">1.00</span>
 </div>
 <div class="sl_prow">
-<span class="sl_plbl">Block mass m (kg):</span>
+<span class="sl_plbl th_lbl">Block mass m (kg):</span>
 <input type="range" id="mSlider" min="0.1" max="2" step="0.1" value="0.5" style="flex:1;" onchange="sim1.setMass(this.value)">
-<span id="mVal" class="sl_pval">0.50</span>
+<span id="mVal" class="sl_pval th_val">0.50</span>
 </div>
 <div class="sl_prow">
-<span class="sl_plbl">Track angle θ (°):</span>
+<span class="sl_plbl th_lbl">Track angle θ (°):</span>
 <input type="range" id="angleSlider" min="5" max="40" step="1" value="20" style="flex:1;" onchange="sim1.setAngle(this.value)">
-<span id="angleVal" class="sl_pval">20°</span>
+<span id="angleVal" class="sl_pval th_val">20°</span>
 </div>
 <div class="sl_prow">
-<span class="sl_plbl">Sim Speed:</span>
+<span class="sl_plbl th_lbl">Sim Speed:</span>
 <input type="range" id="speedSlider" min="1" max="80" step="1" value="20" style="flex:1;" onchange="sim1.setSpeed(this.value)">
-<span id="speedVal" class="sl_pval">0.20×</span>
+<span id="speedVal" class="sl_pval th_val">0.20×</span>
 </div>
 <div class="sl_prow" style="margin-bottom:0;">
-<span class="sl_plbl">Vertical height h (m):</span>
-<span id="hVal" class="sl_pval" style="min-width:auto;">0.34</span>
+<span class="sl_plbl th_lbl">Vertical height h (m):</span>
+<span id="hVal" class="sl_pval th_val" style="min-width:auto;">0.34</span>
 </div>
 </div>
-<div class="sl_info" role="note">
+<div class="sl_info th_panel" role="note">
 <strong>Physics (no friction):</strong><br>
 a = g sinθ &nbsp;(independent of m!)<br>
 v(t) = a·t<br>
@@ -94,32 +89,32 @@ h = d·sinθ<br>
 </div>
 <!-- Live readings + Narration -->
 <div class="sl_fbar">
-<div class="sl_readout" role="region" aria-live="polite" aria-atomic="false">
-<div class="sl_boxhd">Live Readings</div>
-<div class="sl_rrow"><span>Velocity v:</span>        <span id="r_v"     class="sl_rv">0.000 m/s</span></div>
-<div class="sl_rrow"><span>Distance traveled s:</span><span id="r_s"    class="sl_rv">0.000 m</span></div>
-<div class="sl_rrow"><span>Accel. a:</span>          <span id="r_a"     class="sl_rv">0.000 m/s²</span></div>
-<div class="sl_rrow"><span>Time t:</span>            <span id="r_t"     class="sl_rv">0.000 s</span></div>
-<div class="sl_rrow"><span>Status:</span>            <span id="r_state" class="sl_badge" role="status">Ready</span></div>
+<div class="sl_readout th_panel" role="region" aria-live="polite" aria-atomic="false">
+<div class="sl_boxhd th_ptitle">Live Readings</div>
+<div class="sl_rrow th_chip"><span>Velocity v:</span>        <span id="r_v"     class="sl_rv th_val">0.000 m/s</span></div>
+<div class="sl_rrow th_chip"><span>Distance traveled s:</span><span id="r_s"    class="sl_rv th_val">0.000 m</span></div>
+<div class="sl_rrow th_chip"><span>Accel. a:</span>          <span id="r_a"     class="sl_rv th_val">0.000 m/s²</span></div>
+<div class="sl_rrow th_chip"><span>Time t:</span>            <span id="r_t"     class="sl_rv th_val">0.000 s</span></div>
+<div class="sl_rrow th_chip"><span>Status:</span>            <span id="r_state" class="sl_badge" role="status">Ready</span></div>
 </div>
-<div id="narrationBox" class="sl_narr" role="region" aria-live="polite" aria-atomic="true">
-<div class="sl_boxhd sl_narrboxhd">What's happening</div>
+<div id="narrationBox" class="sl_narr th_panel th_nar" role="region" aria-live="polite" aria-atomic="true">
+<div class="sl_boxhd sl_narrboxhd th_ptitle">What's happening</div>
 <p id="narration" class="sl_narrtext">Block (0.5 kg) resting 1.00 m up a 20° incline (height 0.34 m). Press Release to let it roll down and collect data.</p>
 </div>
 </div>
 <!-- ── Data Collection & Graph section ── -->
 <div class="sl_fbar" style="flex-direction:column;gap:6px;">
-<div class="sl_boxhd" style="width:100%;padding-bottom:3px;border-bottom:1px solid #888;">Data Collection -- change d, θ, or m to set up a new run, then record</div>
+<div class="sl_boxhd th_ptitle" style="width:100%;padding-bottom:3px;border-bottom:1px solid #888;">Data Collection -- change d, θ, or m to set up a new run, then record</div>
 <!-- Axis controls -->
-<div class="hl_axisbar">
-<label class="hl_axislbl">Y-axis:
+<div class="hl_axisbar th_panel">
+<label class="hl_axislbl th_lbl">Y-axis:
 <select id="yAxisSel" onchange="sim1.setYAxis(this.value)">
 <option value="s">Displacement s</option>
 <option value="v">Velocity v</option>
 <option value="a">Acceleration a</option>
 </select>
 </label>
-<label class="hl_axislbl">X-axis:
+<label class="hl_axislbl th_lbl">X-axis:
 <select id="xAxisSel" onchange="sim1.setXAxis(this.value)">
 <option value="t">Time t (single run)</option>
 <option value="mass">Mass m (all runs)</option>
@@ -127,7 +122,7 @@ h = d·sinθ<br>
 <option value="dist">Release distance d (all runs)</option>
 </select>
 </label>
-<label class="hl_axislbl" id="runSelWrap">Run:
+<label class="hl_axislbl th_lbl" id="runSelWrap">Run:
 <select id="fitRun" onchange="sim1.redrawGraph()">
 <option value="-1">Current (unsaved)</option>
 </select>
@@ -136,20 +131,20 @@ h = d·sinθ<br>
 <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start;width:100%;">
 <!-- Graph -->
 <div style="flex:2;min-width:280px;">
-<div class="hl_hint" id="graphHint">Displacement s vs. time t -- select a run above.</div>
+<div class="hl_hint th_lbl" id="graphHint">Displacement s vs. time t -- select a run above.</div>
 <canvas id="vtCanvas" width="420" height="240" role="img" aria-label="Data graph"></canvas>
-<div class="hl_graphbar">
-<label class="hl_fitlabel">
+<div class="hl_graphbar th_panel">
+<label class="hl_fitlabel th_lbl">
 <input id="showFit" type="checkbox" onchange="sim1.redrawGraph()"> Show linear fit
 </label>
 <input type="button" value="Clear graph" onclick="sim1.clearGraph()" style="font-size:0.75rem;padding:3px 8px;cursor:pointer;background:#ffe0a0;border:1px solid #cc9900;border-radius:3px;">
 <input type="button" value="Clear all data" onclick="sim1.clearData()" style="font-size:0.75rem;padding:3px 8px;cursor:pointer;background:#f0b8b8;border:1px solid #cc6655;border-radius:3px;">
 </div>
-<div id="fitResult" role="status" aria-live="polite" class="hl_fitresult"></div>
+<div id="fitResult" role="status" aria-live="polite" class="hl_fitresult th_val"></div>
 </div>
 <!-- Data table -->
-<div id="datatableBox" class="hl_tblbox" style="flex:1;min-width:190px;">
-<div class="sl_boxhd">Recorded Runs</div>
+<div id="datatableBox" class="hl_tblbox th_panel" style="flex:1;min-width:190px;">
+<div class="sl_boxhd th_ptitle">Recorded Runs</div>
 <p id="noDataMsg" class="hl_nodatamsg">Run simulation and click "Record this run".</p>
 <table id="dataTable" class="hl_table" style="display:none;" aria-label="Recorded run data">
 <thead><tr><th>Run</th><th>θ°</th><th>m(kg)</th><th>d(m)</th><th>a(m/s²)</th><th>v_f(m/s)</th></tr></thead>
@@ -208,23 +203,23 @@ h = d·sinθ<br>
 :where(#mobincl) .hl_axislbl { font-size:0.78rem; font-weight:bold; color:#333; display:flex; align-items:center; gap:5px; }
 :where(#mobincl) .hl_axislbl select { font-size:0.78rem; padding:2px 4px; }
 /* ── HIGH CONTRAST overrides ── */
-:where(#mobincl) body.hc-mode { background:#111; }
-body.hc-mode #rl_root .sl_tbar { background:#cc7700; }
-body.hc-mode #rl_root .sl_bbar { background:#1a2a1a; }
-body.hc-mode #rl_root .sl_fbar { background:#1a1a2a; }
-body.hc-mode #rl_root .sl_params, body.hc-mode #rl_root .sl_readout, body.hc-mode #rl_root .hl_tblbox, body.hc-mode #rl_root .hl_axisbar { background:#111; border-color:#aaa; color:#eee; }
-body.hc-mode #rl_root .sl_narr { background:#0a0a22; border-color:#6699ff; }
-body.hc-mode #rl_root .sl_info { background:#111100; border-color:#aa8800; color:#ddd; }
-body.hc-mode #rl_root .sl_boxhd { color:#fff; border-bottom-color:#aaa; }
-body.hc-mode #rl_root .sl_pval { color:#88aaff; }
-body.hc-mode #rl_root .sl_rv { color:#ff8888; }
-body.hc-mode #rl_root .sl_badge { background:#003300; color:#88ff88; }
-body.hc-mode #rl_root .sl_narrtext { color:#aaccff; }
-body.hc-mode #rl_root .sl_plbl, body.hc-mode #rl_root .sl_rrow { color:#ddd; }
-body.hc-mode #rl_root .hl_hint { color:#aaa; }
-body.hc-mode #rl_root .hl_fitresult { color:#88ff88; }
-body.hc-mode #rl_root .hl_axislbl { color:#eee; }
-body.hc-mode #vtCanvas { background:#111; border-color:#555; }</style>
+:where(#mobincl) #mobincl.th_hc { background:#111; }
+#mobincl.th_hc #rl_root .sl_tbar { background:#cc7700; }
+#mobincl.th_hc #rl_root .sl_bbar { background:#1a2a1a; }
+#mobincl.th_hc #rl_root .sl_fbar { background:#1a1a2a; }
+#mobincl.th_hc #rl_root .sl_params, #mobincl.th_hc #rl_root .sl_readout, #mobincl.th_hc #rl_root .hl_tblbox, #mobincl.th_hc #rl_root .hl_axisbar { background:#111; border-color:#aaa; color:#eee; }
+#mobincl.th_hc #rl_root .sl_narr { background:#0a0a22; border-color:#6699ff; }
+#mobincl.th_hc #rl_root .sl_info { background:#111100; border-color:#aa8800; color:#ddd; }
+#mobincl.th_hc #rl_root .sl_boxhd { color:#fff; border-bottom-color:#aaa; }
+#mobincl.th_hc #rl_root .sl_pval { color:#88aaff; }
+#mobincl.th_hc #rl_root .sl_rv { color:#ff8888; }
+#mobincl.th_hc #rl_root .sl_badge { background:#003300; color:#88ff88; }
+#mobincl.th_hc #rl_root .sl_narrtext { color:#aaccff; }
+#mobincl.th_hc #rl_root .sl_plbl, #mobincl.th_hc #rl_root .sl_rrow { color:#ddd; }
+#mobincl.th_hc #rl_root .hl_hint { color:#aaa; }
+#mobincl.th_hc #rl_root .hl_fitresult { color:#88ff88; }
+#mobincl.th_hc #rl_root .hl_axislbl { color:#eee; }
+#mobincl.th_hc #vtCanvas { background:#111; border-color:#555; }</style>
 <!-- ═══════ JAVASCRIPT ═══════ -->
 <script>
 var sim1 = (function(){
@@ -290,8 +285,8 @@ function toggleHC(){
 hcMode=!hcMode;
 if(hcMode){cbMode=false; setBtnActive('btnCB',false); document.getElementById('btnCB').value='Color-Blind: OFF';}
 pal=hcMode?PAL.hc:(cbMode?PAL.cb:PAL.def);
-document.body.className = hcMode ? 'hc-mode' : '';
-setBtnActive('btnHC',hcMode);
+(function(w){ if (w){ w.classList.toggle('th_hc', hcMode); if (hcMode) w.classList.remove('th_lm'); } })(document.getElementById('mobincl'));
+setBtnActive('btnHC',hcMode); (function(w){ if (!w) return; w.classList.toggle('th_hc', !!hcMode); if (hcMode){ w.classList.remove('th_lm'); var lb = document.getElementById('thBtnLM'); if (lb){ lb.value = 'Light Mode: OFF'; lb.setAttribute('aria-pressed', 'false'); lb.classList.remove('th_on'); } } })(document.getElementById('mobincl'));
 document.getElementById('btnHC').value=hcMode?'High Contrast: ON':'High Contrast: OFF';
 draw(); redrawGraph();
 }
@@ -299,8 +294,8 @@ function toggleCB(){
 cbMode=!cbMode;
 if(cbMode&&hcMode){hcMode=false; setBtnActive('btnHC',false); document.getElementById('btnHC').value='High Contrast: OFF';}
 pal=hcMode?PAL.hc:(cbMode?PAL.cb:PAL.def);
-document.body.className='';
-setBtnActive('btnCB',cbMode);
+(function(w){ if (w) w.classList.remove('th_hc'); })(document.getElementById('mobincl'));
+setBtnActive('btnCB',cbMode); (function(w){ if (!w) return; w.classList.toggle('th_hc', !!hcMode); if (hcMode){ w.classList.remove('th_lm'); var lb = document.getElementById('thBtnLM'); if (lb){ lb.value = 'Light Mode: OFF'; lb.setAttribute('aria-pressed', 'false'); lb.classList.remove('th_on'); } } })(document.getElementById('mobincl'));
 document.getElementById('btnCB').value=cbMode?'Color-Blind: ON':'Color-Blind: OFF';
 draw(); redrawGraph();
 }
@@ -786,6 +781,65 @@ if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise(
 #mobincl .mob_desc { width:100%; max-width:860px; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; text-align:left; }
 #mobincl .mob_desc p { margin:0 0 9px 0; }
 #mobincl .mob_eq { text-align:center; font-size:1rem; }
+</style>
+<script>
+/* the light-mode button and the theme classes: on this sim's wrapper only (never on the page's body) */
+(function(){ var W = document.getElementById('mobincl'), b = document.getElementById('thBtnLM'); if (!W || !b) return;
+b.addEventListener('click', function(){ var on = !W.classList.contains('th_lm'); var hb = document.getElementById('btnHC'); if (on && hb && /ON/.test(hb.value)) hb.click();   /* light mode turns high contrast off, through the sim's own button */
+ W.classList.toggle('th_lm', on); if (on) W.classList.remove('th_hc'); b.setAttribute('aria-pressed', on ? 'true' : 'false'); b.classList.toggle('th_on', on); b.value = 'Light Mode: ' + (on ? 'ON' : 'OFF'); if (b.tagName === 'BUTTON') b.textContent = 'LIGHT MODE'; });
+})();
+</script>
+<style>
+/* ════════ theme: the instrument look of the balance beam (dark; light and high-contrast variants) ════════ */
+#mobincl { --t-chassis:#1a1c1f; --t-panel:#22262b; --t-panel-hi:#2c3138; --t-panel-lo:#14161a; --t-border:#3a4048; --t-border-hi:#525c66; --t-text:#c8d0d8; --t-dim:#8a94a3; --t-accent:#e8a020; --t-green:#3ad08f; --t-val:#ffdd66; --t-nar-bg:#2a2410; --t-nar-bd:#e0b040; --t-nar-tx:#f0e2b8; --t-grid:rgba(255,255,255,0.015); --t-warn:#e0605a; --t-warnbd:#a04040; background:var(--t-chassis) !important; background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, var(--t-grid) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, var(--t-grid) 40px) !important;
+  color:var(--t-text); font-family:Arial, sans-serif; padding:14px 10px 18px !important; border-radius:6px; box-sizing:border-box; max-width:860px; margin:0 auto 10px !important; }
+#mobincl.th_lm { --t-chassis:#e9edf1; --t-panel:#ffffff; --t-panel-hi:#f1f4f7; --t-panel-lo:#f4f6f9; --t-border:#c3cad3; --t-border-hi:#9aa3ae; --t-text:#1d232a; --t-dim:#556070; --t-accent:#a8620a; --t-green:#12805a; --t-val:#8a4a00; --t-nar-bg:#ffefc0; --t-nar-bd:#e0b040; --t-nar-tx:#333333; --t-grid:transparent; --t-warn:#b02020; --t-warnbd:#c06060; }
+#mobincl.th_hc { --t-chassis:#000000; --t-panel:#000000; --t-panel-hi:#111111; --t-panel-lo:#000000; --t-border:#ffffff; --t-border-hi:#ffffff; --t-text:#ffffff; --t-dim:#e0e0e0; --t-accent:#ffd700; --t-green:#00ff88; --t-val:#ffff00; --t-nar-bg:#000000; --t-nar-bd:#ffd700; --t-nar-tx:#ffffff; --t-grid:transparent; --t-warn:#ff6a5a; --t-warnbd:#ff6a5a; }
+#mobincl .th_btn, #mobincl .th_a11y input[type=button], #mobincl .th_a11y button { padding:4px 10px !important; font-size:.68rem !important; font-family:monospace !important; letter-spacing:.06em; border-radius:3px !important; cursor:pointer; background:var(--t-panel-hi) !important; border:1px solid var(--t-border-hi) !important; color:var(--t-dim) !important; text-transform:uppercase; min-height:30px; box-shadow:none !important; }
+#mobincl .th_a11y { display:flex !important; gap:6px; flex-wrap:wrap; justify-content:center; width:100%; background:transparent !important; border:none !important; padding:0 0 10px !important; margin:0 !important; }
+#mobincl .th_a11y .th_on, #mobincl .th_a11y [aria-pressed="true"] { background:rgba(58,208,143,.14) !important; border-color:var(--t-green) !important; color:var(--t-green) !important; font-weight:bold; }
+#mobincl .th_title, #mobincl .th_title h3, #mobincl .th_title H3 { background:transparent !important; border:none !important; color:var(--t-accent) !important; font-size:.95rem !important; font-weight:700 !important; letter-spacing:.2em; text-transform:uppercase; text-align:center; font-family:Arial, sans-serif !important; margin:0 !important; padding:2px 0 !important; min-height:0 !important; }
+#mobincl .th_sub { color:var(--t-dim) !important; font-size:.7rem !important; letter-spacing:.08em; text-transform:uppercase; text-align:center; font-family:Arial, sans-serif !important; margin:0 0 8px !important; }
+#mobincl .th_diag { background:var(--t-panel) !important; border:1px solid var(--t-border) !important; border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.35); margin:8px 0 0 !important; padding:0 !important; }
+#mobincl .th_diag::before { content:'APPARATUS'; display:block; flex:1 1 100%; background:var(--t-panel-lo); border-bottom:1px solid var(--t-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; color:var(--t-accent); font-weight:bold; text-align:left; }
+#mobincl .th_diag canvas { background:#ffffff; display:block; max-width:100%; height:auto; margin:0 auto; border:none !important; }
+#mobincl .th_bar { background:var(--t-panel-lo) !important; border:1px solid var(--t-border) !important; border-top:none !important; border-radius:0 0 6px 6px; display:flex !important; flex-wrap:wrap; gap:6px; justify-content:center; align-items:center; padding:8px 10px !important; margin:0 0 10px !important; color:var(--t-text) !important; }
+#mobincl .th_bar input[type=button], #mobincl .th_bar button, #mobincl .th_bbtn { padding:8px 12px !important; font-family:monospace !important; font-size:.72rem !important; letter-spacing:.04em; cursor:pointer; background:var(--t-panel-hi) !important; border:1px solid var(--t-border-hi) !important; color:var(--t-text) !important; border-radius:3px !important; text-transform:uppercase; min-height:34px; box-shadow:none !important; }
+#mobincl .th_bar input[type=button]:hover, #mobincl .th_bar button:hover { border-color:var(--t-accent) !important; }
+#mobincl .th_bar .th_primary { font-weight:bold; border-color:var(--t-accent) !important; color:var(--t-accent) !important; }
+#mobincl .th_bar .th_warn { color:var(--t-warn) !important; border-color:var(--t-warnbd) !important; }
+#mobincl .th_panel { background:var(--t-panel) !important; border:1px solid var(--t-border) !important; border-radius:6px !important; box-shadow:0 4px 20px rgba(0,0,0,.3); color:var(--t-text) !important; font-family:Arial, sans-serif !important; }
+#mobincl .th_ptitle { background:var(--t-panel-lo) !important; color:var(--t-dim) !important; font-family:monospace !important; font-size:.66rem !important; letter-spacing:.15em; text-transform:uppercase; font-weight:normal !important; border:none !important; border-bottom:1px solid var(--t-border) !important; border-left:4px solid var(--t-accent) !important; padding:6px 10px !important; margin:0 0 6px !important; text-align:left; }
+#mobincl .th_lbl { color:var(--t-dim) !important; font-size:.72rem !important; font-weight:600 !important; letter-spacing:.04em; text-transform:uppercase; font-family:Arial, sans-serif !important; }
+#mobincl .th_val { color:var(--t-val) !important; font-family:monospace !important; font-weight:bold; font-size:.78rem !important; background:transparent !important; }
+#mobincl .th_chip { background:var(--t-panel-lo) !important; border:1px solid var(--t-border) !important; border-radius:3px; padding:3px 7px !important; margin:2px 0 !important; color:var(--t-dim) !important; font-family:monospace !important; font-size:.72rem !important; }
+#mobincl .th_note { background:var(--t-panel-lo) !important; border:1px solid var(--t-border) !important; border-radius:4px; color:var(--t-dim) !important; font-family:monospace !important; font-size:.7rem !important; line-height:1.55; padding:7px 12px !important; }
+#mobincl .th_note * { color:inherit !important; }
+#mobincl .th_nar { background:var(--t-nar-bg) !important; border:none !important; border-left:4px solid var(--t-nar-bd) !important; color:var(--t-nar-tx) !important; font-style:italic; border-radius:3px !important; box-shadow:none !important; }
+#mobincl .th_nar * { color:var(--t-nar-tx) !important; }
+#mobincl .th_nar .th_ptitle, #mobincl .th_nar h2 { font-style:normal; color:var(--t-dim) !important; }
+#mobincl input[type=range] { -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; outline:none; cursor:pointer; background:var(--t-panel-lo) !important; border:1px solid var(--t-border); accent-color:var(--t-accent); }
+#mobincl input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--t-accent); border:2px solid var(--t-panel); cursor:pointer; }
+#mobincl input[type=range]::-moz-range-thumb { width:12px; height:12px; border-radius:50%; background:var(--t-accent); border:2px solid var(--t-panel); cursor:pointer; }
+#mobincl select, #mobincl input[type=number] { background:var(--t-panel-hi) !important; color:var(--t-text) !important; border:1px solid var(--t-border-hi) !important; border-radius:3px; padding:3px 5px; font-size:.78rem; }
+#mobincl input:focus-visible, #mobincl button:focus-visible, #mobincl select:focus-visible { outline:2px solid var(--t-accent); outline-offset:2px; }
+#mobincl table th { background:var(--t-panel-lo) !important; color:var(--t-dim) !important; font-family:monospace; border-color:var(--t-border) !important; }
+#mobincl table td { background:var(--t-panel) !important; color:var(--t-text) !important; border-color:var(--t-border) !important; }
+#mobincl .mob_descbtn { background:var(--t-panel-hi) !important; border:1px solid var(--t-accent) !important; color:var(--t-accent) !important; }
+#mobincl > h2, #mobincl > hr + h2 { color:var(--t-accent) !important; font-size:1rem !important; font-family:Arial, sans-serif; margin:4px 0 !important; }
+#mobincl > hr { border:none !important; border-top:1px solid var(--t-border) !important; margin:6px 0 !important; }
+#mobincl .th_q { background:#fbfbf7; color:#1d232a; border:1px solid #c9ccd2; border-left:4px solid var(--t-accent); border-radius:6px; padding:12px 16px; margin:12px 0 8px; font-family:Arial, sans-serif; font-size:.92rem; line-height:1.5; }
+#mobincl .th_q h2, #mobincl .th_q h3 { color:#1d232a !important; font-size:1.05rem !important; margin:4px 0 8px !important; }
+#mobincl .th_q hr { border:none; border-top:1px solid #c9ccd2; margin:8px 0; }
+#mobincl .th_q li { margin:0 0 8px; }
+@media (pointer:coarse) { #mobincl input[type=range] { height:8px; } #mobincl input[type=range]::-webkit-slider-thumb { width:26px; height:26px; } #mobincl input[type=range]::-moz-range-thumb { width:24px; height:24px; } #mobincl .th_bar input[type=button], #mobincl .th_bar button { min-height:40px; } }
+#mobincl [data-th="p"] { font-weight:bold; border-color:var(--t-accent) !important; color:var(--t-accent) !important; }
+#mobincl [data-th="w"] { color:var(--t-warn) !important; border-color:var(--t-warnbd) !important; }
+#mobincl .sl_fbar, #mobincl .sl_fbar { background:transparent !important; border:none !important; display:flex; flex-wrap:wrap; gap:10px; padding:6px 0 !important; }
+#mobincl .th_panel { flex:1 1 260px; padding:0 10px 8px !important; }
+#mobincl .th_chip { color:var(--t-dim) !important; }
+#mobincl .sl_badge, #mobincl .sl_badge { background:rgba(58,208,143,.14) !important; color:var(--t-green) !important; border:1px solid var(--t-green); }
+#mobincl [id^="btnReset"] { color:var(--t-warn) !important; border-color:var(--t-warnbd) !important; }
 </style>
 </div><!-- #mobincl -->
 </main>

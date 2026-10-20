@@ -23,66 +23,61 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <body style=margin:25px>
 <main class="page">
 <div id="mobsph" class="mob_wrap">
-<div class="mob_a11ytop" role="toolbar" aria-label="Display options">
+<div class="mob_a11ytop th_a11y" role="toolbar" aria-label="Display options">
 <input type="button" id="btnHC"   value="High Contrast: OFF"  onclick="springLaunch.toggleHC()">
-<input type="button" id="btnCB"   value="Color-Blind: OFF"    onclick="springLaunch.toggleCB()">
+<input type="button" id="thBtnLM" value="Light Mode: OFF" aria-pressed="false"><input type="button" id="btnCB"   value="Color-Blind: OFF"    onclick="springLaunch.toggleCB()">
 <input type="button" id="btnNarr" value="Narration: ON"       onclick="springLaunch.toggleNarr()">
 </div>
 
-<div id="canvasesdiv" class="sl_tbar"><h3>Spring Launch -- Block on Horizontal Track</h3></div>
-<div class="sl_mcontent">
+<div id="canvasesdiv" class="sl_tbar th_title"><h3>Spring Launch -- Block on Horizontal Track</h3></div>
+<div class="sl_mcontent th_diag">
 <canvas id="simCanvas" width="680" height="220"
  role="img" aria-label="Spring launch simulation"
  aria-describedby="canvasDesc">
 </canvas>
 <p id="canvasDesc" class="sl_sronly">A block rests against a compressed spring on an inclined track.</p>
 </div>
-<div class="sl_bbar">
-<input type="button" id="btnPlay"  value="▶ Play"   onclick="springLaunch.playSim()">
+<div class="sl_bbar th_bar">
+<input type="button" id="btnPlay" data-th="p"  value="▶ Play"   onclick="springLaunch.playSim()">
 <input type="button" id="btnPause" value="⏸ Pause"  onclick="springLaunch.pauseSim()">
 <input type="button" id="btnStep"  value="⏭ Step"   onclick="springLaunch.stepSim()">
 <input type="button" id="btnReset" value="↺ Reset"  onclick="springLaunch.resetSim()">
 </div>
-<div class="sl_bbar">
-
-
-
-</div>
 <div class="sl_fbar">
-<div class="sl_params">
-<div class="sl_boxhd">Parameters</div>
+<div class="sl_params th_panel">
+<div class="sl_boxhd th_ptitle">Parameters</div>
 <div class="sl_prow" style=visibility:hidden;height:1px>
-<span class="sl_plbl">Spring constant k (N/m):</span>
+<span class="sl_plbl th_lbl">Spring constant k (N/m):</span>
 <input type="range" id="kSlider" min="10" max="300" step="5" value="100" style="flex:1;" onchange="springLaunch.setK(this.value)">
-<span id="kVal" class="sl_pval">100</span>
+<span id="kVal" class="sl_pval th_val">100</span>
 </div>
 <div class="sl_prow">
-<span class="sl_plbl">Compression x (cm):</span>
+<span class="sl_plbl th_lbl">Compression x (cm):</span>
 <input type="range" id="xSlider" min="1" max="20" step="0.5" value="8" style="flex:1;" onchange="springLaunch.setX(this.value)">
-<span id="xVal" class="sl_pval">8.0</span>
+<span id="xVal" class="sl_pval th_val">8.0</span>
 </div>
 <div class="sl_prow">
-<span class="sl_plbl">Block mass m (kg):</span>
+<span class="sl_plbl th_lbl">Block mass m (kg):</span>
 <input type="range" id="mSlider" min="0.1" max="5" step="0.1" value="0.5" style="flex:1;" onchange="springLaunch.setMass(this.value)">
-<span id="mVal" class="sl_pval">0.50</span>
+<span id="mVal" class="sl_pval th_val">0.50</span>
 </div>
 <div class="sl_prow" style=visibility:hidden;height:1px>
-<span class="sl_plbl">Friction coefficient μ:</span>
+<span class="sl_plbl th_lbl">Friction coefficient μ:</span>
 <input type="range" id="muSlider" min="0" max="0.8" step="0.01" value="0.2" style="flex:1;" onchange="springLaunch.setMu(this.value)">
-<span id="muVal" class="sl_pval">0.2</span>
+<span id="muVal" class="sl_pval th_val">0.2</span>
 </div>
 <div class="sl_prow" style=visibility:hidden;height:1px>
-<span class="sl_plbl">Track angle θ (°):</span>
+<span class="sl_plbl th_lbl">Track angle θ (°):</span>
 <input type="range" id="angleSlider" min="0" max="30" step="0.5" value="0" style="flex:1;" onchange="springLaunch.setAngle(this.value)">
-<span id="angleVal" class="sl_pval">0.0°</span>
+<span id="angleVal" class="sl_pval th_val">0.0°</span>
 </div>
 <div class="sl_prow">
-<span class="sl_plbl">Simulation Speed:</span>
+<span class="sl_plbl th_lbl">Simulation Speed:</span>
 <input type="range" id="speedSlider" min="1" max="100" step="1" value="10" style="flex:1;" onchange="springLaunch.setSpeed(this.value)">
-<span id="speedVal" class="sl_pval">0.10×</span>
+<span id="speedVal" class="sl_pval th_val">0.10×</span>
 </div>
 </div>
-<div class="sl_info" role="note">
+<div class="sl_info th_panel" role="note">
 <strong>Physics:</strong><br>
 On spring: <br>a = (kx − μmg) / m<br>
 Free Forward: <br>a = − μg<br>
@@ -90,16 +85,16 @@ Free Backwards: <br>a = + μg<br>
 </div>
 </div>
 <div class="sl_fbar">
-<div class="sl_readout" role="region" aria-live="polite" aria-atomic="false">
-<div class="sl_boxhd">Live Readings</div>
-<div class="sl_rrow"><span>Velocity |v|:</span>     <span id="r_v"     class="sl_rv">0.000 m/s</span></div>
-<div class="sl_rrow"><span>Position:</span>         <span id="r_s"     class="sl_rv">0.000 m</span></div>
-<div class="sl_rrow"><span>Spring PE:</span>        <span id="r_pe"    class="sl_rv">0.000 J</span></div>
-<div class="sl_rrow"><span>Kinetic energy:</span>   <span id="r_ke"    class="sl_rv">0.000 J</span></div>
-<div class="sl_rrow"><span>Status:</span>           <span id="r_state" class="sl_badge" role="status">Ready</span></div>
+<div class="sl_readout th_panel" role="region" aria-live="polite" aria-atomic="false">
+<div class="sl_boxhd th_ptitle">Live Readings</div>
+<div class="sl_rrow th_chip"><span>Velocity |v|:</span>     <span id="r_v"     class="sl_rv th_val">0.000 m/s</span></div>
+<div class="sl_rrow th_chip"><span>Position:</span>         <span id="r_s"     class="sl_rv th_val">0.000 m</span></div>
+<div class="sl_rrow th_chip"><span>Spring PE:</span>        <span id="r_pe"    class="sl_rv th_val">0.000 J</span></div>
+<div class="sl_rrow th_chip"><span>Kinetic energy:</span>   <span id="r_ke"    class="sl_rv th_val">0.000 J</span></div>
+<div class="sl_rrow th_chip"><span>Status:</span>           <span id="r_state" class="sl_badge" role="status">Ready</span></div>
 </div>
-<div id="narrationBox" class="sl_narr" role="region" aria-live="polite" aria-atomic="true">
-<div class="sl_boxhd sl_narrboxhd">What's happening</div>
+<div id="narrationBox" class="sl_narr th_panel th_nar" role="region" aria-live="polite" aria-atomic="true">
+<div class="sl_boxhd sl_narrboxhd th_ptitle">What's happening</div>
 <p id="narration" class="sl_narrtext">
 A block of 0.5 kg sits against a spring compressed by 8.0 cm.
 Spring constant k = 100 N/m. Track is horizontal. 
@@ -108,11 +103,11 @@ Press Play to launch the block.
 </div>
 </div>
 <div id="srAnnounce" class="sl_sronly" aria-live="assertive" aria-atomic="true"></div>
-<hr><h2>Practicing with the simulation</h2><hr>
+<div class="th_q"><hr><h2>Practicing with the simulation</h2><hr>
 <p>In this part of the lab, we push the cart against the spring and let it go. We videotape the motion. Our ultimate aim is to collect the Spring Potential energy (`U_s`) that we start up with, and the magnitude of the resistive forces (`F_f`) acting on the cart while it is moving.</p>
 <ol type="a">
 <br><hr>
-<p>Let us start by using the simulation provided above. Without changing any of the default parameters, press the "play" button to observe the motion. Then press "Reset". Your aim is to collect this data: The amount of spring compression `X` (which is the same as the distance moved by the cart while in contact of the spring), the initial spring potential energy `U_s`, the speed of the cart `v_0` after it comes off the spring, the speed of the cart after if moves a distance `S\=\ 0.1\ "m"` and then use that information to calculate `K_o`, the kinetic energy of the cart once it comes off the spring, `K_f`, the kinetic energy of the cart after is has moved  `S\=\ 0.1\ "m"` and the magnitude of the resistive fore `F_f` the cart has experienced while moving throught the distance `S`. Note that you can slow the simulation and use the step button to easily read the needed quantities.</p>
+<p>Let us start by using the simulation provided above. Without changing any of the default parameters, press the "play" button to observe the motion. Then press "Reset". Your aim is to collect this data: The amount of spring compression `X` (which is the same as the distance moved by the cart while in contact of the spring), the initial spring potential energy `U_s`, the speed of the cart `v_0` after it comes off the spring, the speed of the cart after if moves a distance `S\=\ 0.5\ "m"` and then use that information to calculate `K_o`, the kinetic energy of the cart once it comes off the spring, `K_f`, the kinetic energy of the cart after is has moved  `S\=\ 0.5\ "m"` and the magnitude of the resistive fore `F_f` the cart has experienced while moving throught the distance `S`. Note that you can slow the simulation and use the step button to easily read the needed quantities.</p>
 <hr><br><li>What is the initial spring potential energy `U_s`?
 <br>`U_s\ =\ ` _____ </li>
 <li>What is the corresponding spring compression `X`?
@@ -126,7 +121,7 @@ Press Play to launch the block.
 <hr>
 <p>Note that the value obtained for `K_o` is lightly different than `U_s` bacause of the resistive forces. We are going to ignore that difference in lab and use `K_o` as a measure of `U_s`. </p>
 <hr>
-<li>Now get the speed of the cart `v_f`, after it has moved a distance `S\=\ 0.1\ "m"`?
+<li>Now get the speed of the cart `v_f`, after it has moved a distance `S\=\ 0.5\ "m"`?
 <br>`v_f\ =\ ` _____ </li>
 <li>Use eq. 5 in the handout to calculate the kinetic energy of the cart at that position `K_f`?
 <br>`K_f\ =\ ` _____ </li>
@@ -164,7 +159,7 @@ Press Play to launch the block.
 </li>
 <li>how do we get the average resitive force?
 </li>
-</ol>
+</ol></div>
 <style>:where(#mobsph) * { margin: 0; box-sizing: border-box; }
 .sl_tbar {
 width: 683px; height: 48px; background: #f90;
@@ -279,7 +274,7 @@ function toggleHC() {
 hcMode=!hcMode;
 if(hcMode){cbMode=false;setBtnActive('btnCB',false);document.getElementById('btnCB').value='Color-Blind: OFF';}
 palette=hcMode?PALETTES.hc:(cbMode?PALETTES.cb:PALETTES.def);
-setBtnActive('btnHC',hcMode);
+setBtnActive('btnHC',hcMode); (function(w){ if (!w) return; w.classList.toggle('th_hc', !!hcMode); if (hcMode){ w.classList.remove('th_lm'); var lb = document.getElementById('thBtnLM'); if (lb){ lb.value = 'Light Mode: OFF'; lb.setAttribute('aria-pressed', 'false'); lb.classList.remove('th_on'); } } })(document.getElementById('mobsph'));
 document.getElementById('btnHC').value=hcMode?'High Contrast: ON':'High Contrast: OFF';
 draw();
 }
@@ -287,7 +282,7 @@ function toggleCB() {
 cbMode=!cbMode;
 if(cbMode&&hcMode){hcMode=false;setBtnActive('btnHC',false);document.getElementById('btnHC').value='High Contrast: OFF';}
 palette=hcMode?PALETTES.hc:(cbMode?PALETTES.cb:PALETTES.def);
-setBtnActive('btnCB',cbMode);
+setBtnActive('btnCB',cbMode); (function(w){ if (!w) return; w.classList.toggle('th_hc', !!hcMode); if (hcMode){ w.classList.remove('th_lm'); var lb = document.getElementById('thBtnLM'); if (lb){ lb.value = 'Light Mode: OFF'; lb.setAttribute('aria-pressed', 'false'); lb.classList.remove('th_on'); } } })(document.getElementById('mobsph'));
 document.getElementById('btnCB').value=cbMode?'Color-Blind: ON':'Color-Blind: OFF';
 draw();
 }
@@ -560,6 +555,65 @@ if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise(
 #mobsph .mob_desc { width:100%; max-width:860px; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; text-align:left; }
 #mobsph .mob_desc p { margin:0 0 9px 0; }
 #mobsph .mob_eq { text-align:center; font-size:1rem; }
+</style>
+<script>
+/* the light-mode button and the theme classes: on this sim's wrapper only (never on the page's body) */
+(function(){ var W = document.getElementById('mobsph'), b = document.getElementById('thBtnLM'); if (!W || !b) return;
+b.addEventListener('click', function(){ var on = !W.classList.contains('th_lm'); var hb = document.getElementById('btnHC'); if (on && hb && /ON/.test(hb.value)) hb.click();   /* light mode turns high contrast off, through the sim's own button */
+ W.classList.toggle('th_lm', on); if (on) W.classList.remove('th_hc'); b.setAttribute('aria-pressed', on ? 'true' : 'false'); b.classList.toggle('th_on', on); b.value = 'Light Mode: ' + (on ? 'ON' : 'OFF'); if (b.tagName === 'BUTTON') b.textContent = 'LIGHT MODE'; });
+})();
+</script>
+<style>
+/* ════════ theme: the instrument look of the balance beam (dark; light and high-contrast variants) ════════ */
+#mobsph { --t-chassis:#1a1c1f; --t-panel:#22262b; --t-panel-hi:#2c3138; --t-panel-lo:#14161a; --t-border:#3a4048; --t-border-hi:#525c66; --t-text:#c8d0d8; --t-dim:#8a94a3; --t-accent:#e8a020; --t-green:#3ad08f; --t-val:#ffdd66; --t-nar-bg:#2a2410; --t-nar-bd:#e0b040; --t-nar-tx:#f0e2b8; --t-grid:rgba(255,255,255,0.015); --t-warn:#e0605a; --t-warnbd:#a04040; background:var(--t-chassis) !important; background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, var(--t-grid) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, var(--t-grid) 40px) !important;
+  color:var(--t-text); font-family:Arial, sans-serif; padding:14px 10px 18px !important; border-radius:6px; box-sizing:border-box; max-width:860px; margin:0 auto 10px !important; }
+#mobsph.th_lm { --t-chassis:#e9edf1; --t-panel:#ffffff; --t-panel-hi:#f1f4f7; --t-panel-lo:#f4f6f9; --t-border:#c3cad3; --t-border-hi:#9aa3ae; --t-text:#1d232a; --t-dim:#556070; --t-accent:#a8620a; --t-green:#12805a; --t-val:#8a4a00; --t-nar-bg:#ffefc0; --t-nar-bd:#e0b040; --t-nar-tx:#333333; --t-grid:transparent; --t-warn:#b02020; --t-warnbd:#c06060; }
+#mobsph.th_hc { --t-chassis:#000000; --t-panel:#000000; --t-panel-hi:#111111; --t-panel-lo:#000000; --t-border:#ffffff; --t-border-hi:#ffffff; --t-text:#ffffff; --t-dim:#e0e0e0; --t-accent:#ffd700; --t-green:#00ff88; --t-val:#ffff00; --t-nar-bg:#000000; --t-nar-bd:#ffd700; --t-nar-tx:#ffffff; --t-grid:transparent; --t-warn:#ff6a5a; --t-warnbd:#ff6a5a; }
+#mobsph .th_btn, #mobsph .th_a11y input[type=button], #mobsph .th_a11y button { padding:4px 10px !important; font-size:.68rem !important; font-family:monospace !important; letter-spacing:.06em; border-radius:3px !important; cursor:pointer; background:var(--t-panel-hi) !important; border:1px solid var(--t-border-hi) !important; color:var(--t-dim) !important; text-transform:uppercase; min-height:30px; box-shadow:none !important; }
+#mobsph .th_a11y { display:flex !important; gap:6px; flex-wrap:wrap; justify-content:center; width:100%; background:transparent !important; border:none !important; padding:0 0 10px !important; margin:0 !important; }
+#mobsph .th_a11y .th_on, #mobsph .th_a11y [aria-pressed="true"] { background:rgba(58,208,143,.14) !important; border-color:var(--t-green) !important; color:var(--t-green) !important; font-weight:bold; }
+#mobsph .th_title, #mobsph .th_title h3, #mobsph .th_title H3 { background:transparent !important; border:none !important; color:var(--t-accent) !important; font-size:.95rem !important; font-weight:700 !important; letter-spacing:.2em; text-transform:uppercase; text-align:center; font-family:Arial, sans-serif !important; margin:0 !important; padding:2px 0 !important; min-height:0 !important; }
+#mobsph .th_sub { color:var(--t-dim) !important; font-size:.7rem !important; letter-spacing:.08em; text-transform:uppercase; text-align:center; font-family:Arial, sans-serif !important; margin:0 0 8px !important; }
+#mobsph .th_diag { background:var(--t-panel) !important; border:1px solid var(--t-border) !important; border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.35); margin:8px 0 0 !important; padding:0 !important; }
+#mobsph .th_diag::before { content:'APPARATUS'; display:block; flex:1 1 100%; background:var(--t-panel-lo); border-bottom:1px solid var(--t-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; color:var(--t-accent); font-weight:bold; text-align:left; }
+#mobsph .th_diag canvas { background:#ffffff; display:block; max-width:100%; height:auto; margin:0 auto; border:none !important; }
+#mobsph .th_bar { background:var(--t-panel-lo) !important; border:1px solid var(--t-border) !important; border-top:none !important; border-radius:0 0 6px 6px; display:flex !important; flex-wrap:wrap; gap:6px; justify-content:center; align-items:center; padding:8px 10px !important; margin:0 0 10px !important; color:var(--t-text) !important; }
+#mobsph .th_bar input[type=button], #mobsph .th_bar button, #mobsph .th_bbtn { padding:8px 12px !important; font-family:monospace !important; font-size:.72rem !important; letter-spacing:.04em; cursor:pointer; background:var(--t-panel-hi) !important; border:1px solid var(--t-border-hi) !important; color:var(--t-text) !important; border-radius:3px !important; text-transform:uppercase; min-height:34px; box-shadow:none !important; }
+#mobsph .th_bar input[type=button]:hover, #mobsph .th_bar button:hover { border-color:var(--t-accent) !important; }
+#mobsph .th_bar .th_primary { font-weight:bold; border-color:var(--t-accent) !important; color:var(--t-accent) !important; }
+#mobsph .th_bar .th_warn { color:var(--t-warn) !important; border-color:var(--t-warnbd) !important; }
+#mobsph .th_panel { background:var(--t-panel) !important; border:1px solid var(--t-border) !important; border-radius:6px !important; box-shadow:0 4px 20px rgba(0,0,0,.3); color:var(--t-text) !important; font-family:Arial, sans-serif !important; }
+#mobsph .th_ptitle { background:var(--t-panel-lo) !important; color:var(--t-dim) !important; font-family:monospace !important; font-size:.66rem !important; letter-spacing:.15em; text-transform:uppercase; font-weight:normal !important; border:none !important; border-bottom:1px solid var(--t-border) !important; border-left:4px solid var(--t-accent) !important; padding:6px 10px !important; margin:0 0 6px !important; text-align:left; }
+#mobsph .th_lbl { color:var(--t-dim) !important; font-size:.72rem !important; font-weight:600 !important; letter-spacing:.04em; text-transform:uppercase; font-family:Arial, sans-serif !important; }
+#mobsph .th_val { color:var(--t-val) !important; font-family:monospace !important; font-weight:bold; font-size:.78rem !important; background:transparent !important; }
+#mobsph .th_chip { background:var(--t-panel-lo) !important; border:1px solid var(--t-border) !important; border-radius:3px; padding:3px 7px !important; margin:2px 0 !important; color:var(--t-dim) !important; font-family:monospace !important; font-size:.72rem !important; }
+#mobsph .th_note { background:var(--t-panel-lo) !important; border:1px solid var(--t-border) !important; border-radius:4px; color:var(--t-dim) !important; font-family:monospace !important; font-size:.7rem !important; line-height:1.55; padding:7px 12px !important; }
+#mobsph .th_note * { color:inherit !important; }
+#mobsph .th_nar { background:var(--t-nar-bg) !important; border:none !important; border-left:4px solid var(--t-nar-bd) !important; color:var(--t-nar-tx) !important; font-style:italic; border-radius:3px !important; box-shadow:none !important; }
+#mobsph .th_nar * { color:var(--t-nar-tx) !important; }
+#mobsph .th_nar .th_ptitle, #mobsph .th_nar h2 { font-style:normal; color:var(--t-dim) !important; }
+#mobsph input[type=range] { -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; outline:none; cursor:pointer; background:var(--t-panel-lo) !important; border:1px solid var(--t-border); accent-color:var(--t-accent); }
+#mobsph input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--t-accent); border:2px solid var(--t-panel); cursor:pointer; }
+#mobsph input[type=range]::-moz-range-thumb { width:12px; height:12px; border-radius:50%; background:var(--t-accent); border:2px solid var(--t-panel); cursor:pointer; }
+#mobsph select, #mobsph input[type=number] { background:var(--t-panel-hi) !important; color:var(--t-text) !important; border:1px solid var(--t-border-hi) !important; border-radius:3px; padding:3px 5px; font-size:.78rem; }
+#mobsph input:focus-visible, #mobsph button:focus-visible, #mobsph select:focus-visible { outline:2px solid var(--t-accent); outline-offset:2px; }
+#mobsph table th { background:var(--t-panel-lo) !important; color:var(--t-dim) !important; font-family:monospace; border-color:var(--t-border) !important; }
+#mobsph table td { background:var(--t-panel) !important; color:var(--t-text) !important; border-color:var(--t-border) !important; }
+#mobsph .mob_descbtn { background:var(--t-panel-hi) !important; border:1px solid var(--t-accent) !important; color:var(--t-accent) !important; }
+#mobsph > h2, #mobsph > hr + h2 { color:var(--t-accent) !important; font-size:1rem !important; font-family:Arial, sans-serif; margin:4px 0 !important; }
+#mobsph > hr { border:none !important; border-top:1px solid var(--t-border) !important; margin:6px 0 !important; }
+#mobsph .th_q { background:#fbfbf7; color:#1d232a; border:1px solid #c9ccd2; border-left:4px solid var(--t-accent); border-radius:6px; padding:12px 16px; margin:12px 0 8px; font-family:Arial, sans-serif; font-size:.92rem; line-height:1.5; }
+#mobsph .th_q h2, #mobsph .th_q h3 { color:#1d232a !important; font-size:1.05rem !important; margin:4px 0 8px !important; }
+#mobsph .th_q hr { border:none; border-top:1px solid #c9ccd2; margin:8px 0; }
+#mobsph .th_q li { margin:0 0 8px; }
+@media (pointer:coarse) { #mobsph input[type=range] { height:8px; } #mobsph input[type=range]::-webkit-slider-thumb { width:26px; height:26px; } #mobsph input[type=range]::-moz-range-thumb { width:24px; height:24px; } #mobsph .th_bar input[type=button], #mobsph .th_bar button { min-height:40px; } }
+#mobsph [data-th="p"] { font-weight:bold; border-color:var(--t-accent) !important; color:var(--t-accent) !important; }
+#mobsph [data-th="w"] { color:var(--t-warn) !important; border-color:var(--t-warnbd) !important; }
+#mobsph .sl_fbar, #mobsph .sl_fbar { background:transparent !important; border:none !important; display:flex; flex-wrap:wrap; gap:10px; padding:6px 0 !important; }
+#mobsph .th_panel { flex:1 1 260px; padding:0 10px 8px !important; }
+#mobsph .th_chip { color:var(--t-dim) !important; }
+#mobsph .sl_badge, #mobsph .sl_badge { background:rgba(58,208,143,.14) !important; color:var(--t-green) !important; border:1px solid var(--t-green); }
+#mobsph [id^="btnReset"] { color:var(--t-warn) !important; border-color:var(--t-warnbd) !important; }
 </style>
 </div><!-- #mobsph -->
 </main>
