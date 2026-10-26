@@ -150,9 +150,7 @@ myOpenMath embed fragment
 #rlrace.rr_hc .rr_nar { background:#000; color:#fff; border-left-color:#ffd700; }
 @media (pointer:coarse) { #rlrace .rr_erow input[type=range] { height:28px; } }
 </style>
-<style>@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap');
-
-#rlrace {
+<style>#rlrace {
   --bg:      #070b10;
   --panel:   #0c1118;
   --panel2:  #111820;
@@ -333,6 +331,12 @@ myOpenMath embed fragment
 .rr_note strong { color: var(--accent); }
 .rr_note em { color: #8abcdc; font-style: normal; }
 .rr_credit { font-size: .55rem; color: var(--dim); letter-spacing: .08em; }</style>
+<script>
+/* the sim's fonts, loaded by script: a CSS import rule can be stripped by a platform, taking the whole style block with it */
+(function(){ if (document.getElementById('rrFontsLink')) return; var l = document.createElement('link'); l.id = 'rrFontsLink'; l.rel = 'stylesheet';
+  l.href = 'https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght' + String.fromCharCode(64) + '700;900&display=swap'; (document.head || document.body).appendChild(l); })();
+</script>
+
 
 <!-- ═══ SCRIPT ═══ -->
 <script>
@@ -988,7 +992,7 @@ if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise(
 #mobrrace canvas, #mobrrace img, #mobrrace svg { max-width:100%; height:auto !important; }
 #mobrrace input[type=range], #mobrrace select { max-width:100%; min-width:0; }
 #mobrrace .rr_controls, #mobrrace .rr_ctrlgroup, #mobrrace .rr_btnrow, #mobrrace .rr_dot, #mobrrace .rr_podium, #mobrrace .rr_podium_card { flex-wrap:wrap; }
-#mobrrace .rr_controls > div, #mobrrace .rr_ctrlgroup > div, #mobrrace .rr_btnrow > div, #mobrrace .rr_dot > div, #mobrrace .rr_podium > div, #mobrrace .rr_podium_card > div { min-width:min(100%, 260px); }
+#mobrrace .rr_kid { min-width:min(100%, 260px); }   /* the direct children of the rows below, tagged by script */
 #mobrrace div[style*="height"] { height:auto !important; }
 #mobrrace table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
 }
@@ -997,7 +1001,7 @@ if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise(
 #mobrrace canvas, #mobrrace img, #mobrrace svg { max-width:100%; height:auto !important; }
 #mobrrace input[type=range], #mobrrace select { max-width:100%; min-width:0; }
 #mobrrace .rr_controls, #mobrrace .rr_ctrlgroup, #mobrrace .rr_btnrow, #mobrrace .rr_dot, #mobrrace .rr_podium, #mobrrace .rr_podium_card { flex-wrap:wrap; }
-#mobrrace .rr_controls > div, #mobrrace .rr_ctrlgroup > div, #mobrrace .rr_btnrow > div, #mobrrace .rr_dot > div, #mobrrace .rr_podium > div, #mobrrace .rr_podium_card > div { min-width:min(100%, 260px); }
+#mobrrace .rr_kid { min-width:min(100%, 260px); }   /* the direct children of the rows below, tagged by script */
 #mobrrace div[style*="height"] { height:auto !important; }
 #mobrrace table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
 }
@@ -1019,6 +1023,14 @@ if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise(
 #mobrrace .mob_desc p { margin:0 0 9px 0; }
 #mobrrace .mob_eq { text-align:center; font-size:1rem; }
 </style>
+<script>
+/* tag the direct children of these rows (rather than a CSS ">" selector, which a platform may escape) */
+(function(){ var W = document.getElementById('mobrrace'); if (!W) return;
+  var sel = '.rr_controls,.rr_ctrlgroup,.rr_btnrow,.rr_dot,.rr_podium,.rr_podium_card';
+  function tag(){ [].forEach.call(W.querySelectorAll(sel), function(p){ [].forEach.call(p.children, function(c){ if (c.tagName === 'DIV' && !c.classList.contains('rr_kid')) c.classList.add('rr_kid'); }); }); }
+  tag(); if (window.MutationObserver) new MutationObserver(tag).observe(W, { childList:true, subtree:true });
+})();
+</script>
 </div><!-- #mobrrace -->
 </div><!-- #mobrrace -->
 </main>

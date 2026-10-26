@@ -36,8 +36,8 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <!-- Left column -->
 <div class="sn_leftcol">
 <div class="sn_diagpanel">
-<div class="sn_diaglabel"><b>LIGHT RAYS</b></div>
-<div class="mcontent"><canvas id="myCanvas" style="margin:auto;border:1px solid" width="500" height="470"></canvas>
+<div class="sn_diaglabel"><b>LIGHT RAYS</b><span class="sn_diagnote">drag the light source to change the angle &middot; drag the aim point along the flat face &middot; drag a protractor sideways</span></div>
+<div class="mcontent"><canvas id="myCanvas" style="margin:auto;border:1px solid;touch-action:none;cursor:grab" width="500" height="470" role="img" aria-label="A beam from outside enters a half disk through its curved face and meets its flat face from inside. The light source, the aim point on the flat face and the protractors can be dragged."></canvas>
 </div>
 </div>
 <!-- Narration bar -->
@@ -55,7 +55,15 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 </div>
 <div class="footer">
 <div class="left">incidence block/medium interface:</div>
-<div class="center">`theta_i`: <input class=islide type="range" id="incidentAngleSlider" min="0" max="90" value="20" step=".1" oninput="snell.setIncidentAngle(this.value)" onchange="snell.setIncidentAngle(this.value)"> <span id="incidentAngleValue">20</span>`""^@`</div>
+<div class="center">`theta_i`: <input class=islide type="range" id="incidentAngleSlider" min="-90" max="90" value="20" step=".1" oninput="snell.setIncidentAngle(this.value)" onchange="snell.setIncidentAngle(this.value)"> <span id="incidentAngleValue">20</span>`""^@`</div>
+</div>
+<div class="footer">
+<div class="left">Aim point on the flat face (from the centre):</div>
+<div class="center"><input class=islide type="range" id="entrySlider" min="-9" max="9" value="0" step="0.1" aria-label="Aim point, in centimetres from the centre of the flat face" oninput="snell.setEntry(this.value)" onchange="snell.setEntry(this.value)"> <span id="entryValue">0.0 cm</span><br><button type="button" class="sn_a11ybtn" onclick="snell.setEntry(0, true)">Back to the centre</button></div>
+</div>
+<div class="footer">
+<div class="left">Protractors:</div>
+<div class="center"><button type="button" class="sn_a11ybtn" onclick="snell.protTo('hit')">Centre them where the beam meets the flat face</button> <button type="button" class="sn_a11ybtn" onclick="snell.protTo('centre')">On the centre</button></div>
 </div>
 <div class="footer">
 <div class="left">Index of refraction of the surrounding:</div>
@@ -65,23 +73,41 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <div class="left">Index of refraction of the block:</div>
 <div class="center">`n_2:\ ` <input class=islide type="range" id="n2Value" min="1.00" max="2.50" value="1.50" step="0.05" oninput="snell.shown2(this.value)" onchange="snell.shown2(this.value)"> <span id="initialn2Value">1.50</span></div>
 </div>
-
 </div>
 </div>
 </div><!-- right column -->
 </div><!-- instrument -->
+<div class="sn_descwrap">
+<button type="button" class="sn_descbtn" id="snDescBtn" aria-expanded="false" aria-controls="snDesc" onclick="snDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="sn_desc" id="snDesc" role="region" aria-labelledby="snDescBtn" style="display:none">
+<p>This simulation shows a beam of light entering a half-disk (a semicircular block of index `n_2`) through its curved face and meeting its flat face from inside; the block is surrounded by a medium of index `n_1`. Two protractors, one over the block and one below the flat face, measure the angles from the normal.</p>
+<p>Aimed at the centre of the flat face, the beam crosses the curved face along a radius, that is along the normal, and enters without bending. At the flat face it obeys Snell's law, from the block into the surrounding medium,</p>
+<p class="sn_eq">`n_2 sin theta_i = n_1 sin theta_t`,</p>
+<p>and part of it is reflected at an angle equal to the angle of incidence. When the block has the higher index (`n_2 > n_1`), the transmitted beam bends away from the normal; at the critical angle, `sin theta_c = n_1/n_2`, it runs along the flat face, and beyond it all the light is reflected: total internal reflection.</p>
+<p><b>Why the centre is special.</b> Drag the aim point away from the centre. The beam no longer crosses the curved face along a radius: it is bent as it enters (the dashed line shows where it would have gone), so it meets the flat face somewhere else, and at a different angle. Only a beam aimed at the centre keeps the angle that was set, which is why measurements are made there. The light source and the protractors can be dragged; the protractors slide along the flat face.</p>
+</div>
+</div>
+<script>
+function snDesc(){
+var b = document.getElementById('snDescBtn'), d = document.getElementById('snDesc'); if (!b || !d) return;
+var open = (d.style.display === 'none');
+d.style.display = open ? 'block' : 'none';
+b.setAttribute('aria-expanded', open ? 'true' : 'false');
+b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }
+}
+</script>
 </div><!-- #snellRoot -->
 <!-- Questions -->
 <div class="sn_qwrap">
 <hr>
-
 <hr>
 <ol type="a">
-<li>Start with the `n_2=1.50` for the index of refraction of the semicircular block and `n_1=1.00` for the index of refraction of surrounding medium. What is the angle of incidence of the light coming into the block?<br />`theta_i\ =\ `</li>
-<p>Because the beam is entering the block through normal incidence, it will not be refracted as it enters and moves through the block. Use the slider to set the angle of incidence of the beam at the interface where it exists the block to `theta_i=20^@`.</p><li>Use the protractor reading to estimate the angle the transmitted beam makes with the perpendicular to the interface as it exits the block: <br />`theta_t\ =\ `</li>
+<li>Start with the `n_2=1.50` for the index of refraction of the semicircular block and `n_1=1.00` for the index of refraction of surrounding medium. What is the angle of incidence of the light coming into the block?<br />`theta_i\ =\ ` _____ </li>
+<p>Because the beam is entering the block through normal incidence, it will not be refracted as it enters and moves through the block. Use the slider to set the angle of incidence of the beam at the interface where it exists the block to `theta_i=20^@`.</p><li>Use the protractor reading to estimate the angle the transmitted beam makes with the perpendicular to the interface as it exits the block: <br />`theta_t\ =\ ` _____ </li>
 <li>In which medium is the light slower in this case?</li>
 <li>Change the angle of incidence of the beam. What happens when you keep on increasing the angle of incidence?</li>
-<li>What is the critical angle, the angle for which transmission has stopped, in this case?<br />`theta_c\ =\ `</li>
+<li>What is the critical angle, the angle for which transmission has stopped, in this case?<br />`theta_c\ =\ ` _____ </li>
 </ol>
 </div>
 <!--XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-->
@@ -333,7 +359,8 @@ var redness, greenness, blueness;
 var redString = "0", greenString = "0", blueString = "0", colorString = "0";
 var x1 = -1.710101;
 var y1 = 4.698463;
-var x2 = 0.0, y2 = 0.0;
+var x2 = 0.0, y2 = 0.0;   /* the aim point on the flat face (units of 40 px from the centre) */
+var thI = Math.atan2(-x1, y1)*180/Math.PI, rayInfo = null, srcPt = { x:0, y:0 };
 var x3 = 5.5, y3 = -5.5;
 var x4, y4;
 var xMin = x2, xMax = x2;
@@ -441,6 +468,7 @@ ctx.drawImage(img, ix, iy);
 function redraw() {
 drawMotion();
 drawProtractors();
+drawHandles();
 }
 function drawDisk() {
 var DR = 200;
@@ -473,6 +501,7 @@ ctx.strokeStyle = snellA11y.col('normal');
 ctx.lineWidth = 1;
 ctx.moveTo(xBase, yBase - yW);
 ctx.lineTo(xBase, yBase + yW);
+ctx.globalAlpha = 1;
 ctx.stroke();
 ctx.lineWidth = 1;
 /* Medium 2 disk */
@@ -488,63 +517,93 @@ drawDisk();
 ctx.font = '16pt Calibri';
 ctx.fillStyle = "blue";
 if (source == 1) {
-/* ── Direction vector from source toward center ── */
-var normInc = Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
-var dirX = (x2 - x1) / normInc;   /* unit vector x toward center */
-var dirY = (y2 - y1) / normInc;   /* unit vector y toward center */
-/* ── Incident ray ──
- The ray enters the curved surface at normal incidence.
- Entry point on curved surface: radius 200px from canvas center,
- in the direction the ray is coming FROM (opposite of travel direction).
- Travel direction in canvas coords: (+dirX * xBfy, -dirY * yBfy) scaled.
- We work in canvas pixel coords directly.
- Canvas center: (xBase, yBase).
- Ray travel direction in pixels: (dirX, -dirY) [y flipped for canvas].
- Entry point on disk surface (radius 200):
-entryX = xBase - 200 * dirX
-entryY = yBase + 200 * dirY   (canvas y is flipped)
- Start the ray from radius 310 (well outside disk):
-startX = xBase - 310 * dirX
-startY = yBase + 310 * dirY                                        */
-var diskR = 200;
-var rayStartR = 310;
-var entryX = xBase - diskR * dirX;
-var entryY = yBase + diskR * dirY;
-var startX = xBase - rayStartR * dirX;
-var startY = yBase + rayStartR * dirY;
-/* drawArrow(Fx, Fy, Px, Py) draws from (Px,Py) to (Px+5*Fx, Py-5*Fy).
- We want: from (startX,startY) all the way to (xBase,yBase) -- the
- center of the flat base where refraction/reflection occurs.
- Fx = (xBase-startX)/5,  Fy = (startY-yBase)/5                    */
-var incFx = (xBase - startX) / 5;
-var incFy = (startY - yBase) / 5;
-drawArrow(incFx, incFy, startX, startY,
-snellA11y.col('incident'), 4);
-/* ── Reflected ray (at flat base, center) ── */
-var normalize = normInc;
-drawArrow(aMag*(x2-x1)/normalize, aMag*(y1-y2)/normalize, xBase, yBase,
-snellA11y.col('reflect'), 2);
-/* ── Refracted / TIR at flat base ──
- Light travels from n2 (disk) into n1 (outside).
- Snell: n2*sin(thetaI) = n1*sin(thetaT)
- sin2 = n2 * sin(thetaI) / n1
- TIR when n2 > n1 and |sin2| > 1 -- Math.abs(sin2) > 1 catches this.  */
-var sin2 = n2*(x2-x1) / (n1*normalize);
-if (Math.abs(sin2) <= 1) {
-var cos2 = Math.sqrt(1 - sin2*sin2);
-drawArrow(aMag*sin2, -aMag*cos2, xBase, yBase,
-snellA11y.col('refract'), 2);
-}
-/* else: TIR -- no refracted ray drawn */
+traceRays();
 }
 /* Source dot */
 ctx.beginPath();
-ctx.arc(xBase + xBfy*x1, yBase - yBfy*y1, radius, 0, 2*Math.PI, false);
+ctx.arc(srcPt.x, srcPt.y, radius, 0, 2*Math.PI, false);
 ctx.fillStyle = snellA11y.col('dot');
 ctx.fill();
 ctx.font = '16pt Calibri';
 }
 }
+/* ── the beam, traced: aimed at the point P on the flat face; refracted at the curved face (unless it crosses it along
+a radius, which only happens when P is the centre), reflected and refracted where it meets the flat face ── */
+function seg(x0, y0, x1_, y1_, col, w, dash){ ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = w; ctx.setLineDash(dash || []); ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1_, y1_); ctx.stroke(); ctx.restore(); }
+function hitCircle(px, py, dx, dy){ var ox = px - xBase, oy = py - yBase, b = ox*dx + oy*dy, c = ox*ox + oy*oy - 200*200, D = b*b - c; return D < 0 ? null : -b + Math.sqrt(D); }
+function snellVec(dx, dy, nx, ny, eta){ /* n points against the incoming ray */ var ci = -(dx*nx + dy*ny), k = 1 - eta*eta*(1 - ci*ci); if (k < 0) return null; var tx = eta*dx + (eta*ci - Math.sqrt(k))*nx, ty = eta*dy + (eta*ci - Math.sqrt(k))*ny, l = Math.hypot(tx, ty); return { x:tx/l, y:ty/l }; }
+function traceRays(){
+var th = thI*Math.PI/180, dx = Math.sin(th), dy = Math.cos(th), Px = xBase + xBfy*x2, Py = yBase, cInc = snellA11y.col('incident'), cRef = snellA11y.col('reflect'), cOut = snellA11y.col('refract'), cN = snellA11y.col('normal');
+/* where the straight line toward P crosses the curved face, coming from outside */
+var tb = hitCircle(Px, Py, -dx, -dy); if (tb === null){ rayInfo = null; return; }
+var Ex = Px - tb*dx, Ey = Py - tb*dy, Sx0 = Px - (tb + 110)*dx, Sy0 = Py - (tb + 110)*dy; srcPt = { x:Px - (tb + 16)*dx, y:Py - (tb + 16)*dy };   /* the source handle: just outside the curved face, always on screen */
+drawArrow((Ex - Sx0)/5, (Sy0 - Ey)/5, Sx0, Sy0, cInc, 4);
+var nx = (Ex - xBase)/200, ny = (Ey - yBase)/200, centred = Math.abs(x2) < 0.01;
+seg(Ex - 30*nx, Ey - 30*ny, Ex + 30*nx, Ey + 30*ny, cN, 1, [5, 4]);   /* the curved face's normal: a radius */
+var t1 = snellVec(dx, dy, nx, ny, n1/n2);
+if (!t1){ var rx = dx - 2*(dx*nx + dy*ny)*nx, ry = dy - 2*(dx*nx + dy*ny)*ny; seg(Ex, Ey, Ex + 120*rx, Ey + 120*ry, cRef, 2); rayInfo = { entryTIR:true }; return; }
+var bend = Math.acos(Math.max(-1, Math.min(1, dx*t1.x + dy*t1.y)))*180/Math.PI;
+if (!centred) seg(Ex, Ey, Px, Py, cInc, 1.2, [4, 4]);   /* where the beam would have gone, unbent */
+/* inside, down to the flat face */
+if (t1.y <= 0.01){ rayInfo = null; return; }
+var sQ = (yBase - Ey)/t1.y, Qx = Ex + sQ*t1.x, Qy = yBase;
+if (Math.abs(Qx - xBase) > 199){ var tc = hitCircle(Ex + 1e-3*t1.x, Ey + 1e-3*t1.y, t1.x, t1.y); seg(Ex, Ey, Ex + tc*t1.x, Ey + tc*t1.y, cInc, 4); rayInfo = { missed:true, bend:bend }; return; }
+seg(Ex, Ey, Qx, Qy, cInc, 4);
+seg(Qx, yBase - 150, Qx, yBase + 150, cN, 1, [2, 3]);   /* the flat face's normal, where the beam meets it */
+var thQ = Math.atan2(t1.x, t1.y)*180/Math.PI;
+/* reflected, back up through the block and out through the curved face */
+var rx2 = t1.x, ry2 = -t1.y, tr = hitCircle(Qx, Qy, rx2, ry2), Fx = Qx + tr*rx2, Fy = Qy + tr*ry2;
+seg(Qx, Qy, Fx, Fy, cRef, 2);
+var nfx = (Fx - xBase)/200, nfy = (Fy - yBase)/200, t2 = snellVec(rx2, ry2, -nfx, -nfy, n2/n1);
+if (t2) drawArrow(t2.x*14, -t2.y*14, Fx, Fy, cRef, 2);
+/* transmitted, out through the flat face */
+var sOut = n2*Math.sin(thQ*Math.PI/180)/n1, tir = Math.abs(sOut) > 1;
+if (!tir){ var co = Math.sqrt(1 - sOut*sOut); drawArrow(aMag*sOut, -aMag*co, Qx, Qy, cOut, 2); }
+rayInfo = { centred:centred, bend:bend, thQ:thQ, Qcm:(Qx - xBase)/20, Pcm:2*x2, tir:tir, thT:tir ? null : Math.asin(Math.abs(sOut))*180/Math.PI };
+}
+function drawHandles(){
+var Px = xBase + xBfy*x2;
+ctx.beginPath(); ctx.arc(srcPt.x, srcPt.y, radius + 2, 0, 2*Math.PI); ctx.fillStyle = snellA11y.col('dot'); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+ctx.fillStyle = '#c2185b'; ctx.beginPath(); ctx.moveTo(Px, yBase - 9); ctx.lineTo(Px + 8, yBase); ctx.lineTo(Px, yBase + 9); ctx.lineTo(Px - 8, yBase); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke();
+ctx.fillStyle = '#c2185b'; ctx.font = 'bold 12px Arial'; ctx.textAlign = 'center'; ctx.fillText('aim point', Px, yBase + 24); ctx.textAlign = 'left';
+if (Math.abs(x2) > 0.01){ ctx.fillStyle = '#333'; ctx.beginPath(); ctx.arc(xBase, yBase, 3, 0, 2*Math.PI); ctx.fill(); ctx.font = '11px Arial'; ctx.textAlign = 'center'; ctx.fillText('centre', xBase, yBase + 38); ctx.textAlign = 'left'; }
+}
+function setEntry(v, say){
+x2 = Math.max(-4.5, Math.min(4.5, Number(v)/2));   /* the disk is 20 cm across: 1 unit = 2 cm */
+var r = thI*Math.PI/180; x1 = x2 - 5*Math.sin(r); y1 = 5*Math.cos(r);
+var sl = document.getElementById('entrySlider'); if (sl) sl.value = (2*x2).toFixed(1); var vv = document.getElementById('entryValue'); if (vv) vv.textContent = (2*x2).toFixed(1) + ' cm';
+redraw(); if (say !== false) narrateAim();
+}
+function narrateAim(){
+var e = rayInfo; if (!e) return;
+if (e.entryTIR){ snellA11y.narrate('The beam is reflected at the curved face: it does not enter the block.'); return; }
+if (e.missed){ snellA11y.narrate('Bent at the curved face, the beam misses the flat face.'); return; }
+var m = e.centred ? 'Aimed at the centre, the beam crosses the curved face along a radius and enters without bending; it meets the flat face at the centre, at ' + Math.abs(e.thQ).toFixed(1) + ' degrees, the angle you set.'
+: 'Aimed ' + Math.abs(e.Pcm).toFixed(1) + ' cm ' + (e.Pcm < 0 ? 'left' : 'right') + ' of the centre, the beam is bent by ' + e.bend.toFixed(1) + ' degrees at the curved face; it meets the flat face ' + Math.abs(e.Qcm - e.Pcm).toFixed(1) + ' cm from where it was aimed, at ' + Math.abs(e.thQ).toFixed(1) + ' degrees instead of ' + Math.abs(thI).toFixed(1) + '.';
+m += e.tir ? ' There it is totally reflected.' : ' It leaves the flat face at ' + e.thT.toFixed(1) + ' degrees.';
+snellA11y.narrate(m);
+}
+/* ── dragging: the light source (rotation about the aim point), the aim point, the protractors (sideways) ── */
+var drag = null;
+function cpt(e){ var r = canvas.getBoundingClientRect(); return { x:(e.clientX - r.left)*LW/r.width, y:(e.clientY - r.top)*LH/r.height }; }
+canvas.addEventListener('pointerdown', function(e){
+var p = cpt(e), Px = xBase + xBfy*x2, c1x = p1X + protCx, c2x = p2X + protCx;
+if (Math.hypot(p.x - srcPt.x, p.y - srcPt.y) < 18) drag = { t:'src' };
+else if (Math.hypot(p.x - Px, p.y - yBase) < 14) drag = { t:'pt' };
+else if (showP1 && p.y <= yBase + 4 && Math.hypot(p.x - c1x, p.y - yBase) <= protR) drag = { t:'p1', x0:p.x, i0:p1X };
+else if (showP2 && p.y >= yBase - 4 && Math.hypot(p.x - c2x, p.y - yBase) <= protR) drag = { t:'p2', x0:p.x, i0:p2X };
+if (drag){ try { canvas.setPointerCapture(e.pointerId); } catch(err){} canvas.style.cursor = 'grabbing'; e.preventDefault(); } });
+canvas.addEventListener('pointermove', function(e){
+if (!drag) return; var p = cpt(e), Px = xBase + xBfy*x2;
+if (drag.t === 'src'){ var vx = p.x - Px, vy = Math.min(-1, p.y - yBase), a = Math.atan2(-vx, -vy)*180/Math.PI; a = Math.max(-89.9, Math.min(89.9, a));
+var sl = document.getElementById('incidentAngleSlider'); if (sl) sl.value = a.toFixed(1); setIncidentAngle(a.toFixed(1), true); }
+if (drag.t === 'pt') setEntry(2*(p.x - xBase)/xBfy, false);
+if (drag.t === 'p1' || drag.t === 'p2'){ var nx_ = Math.max(-protCx + 30, Math.min(LW - protCx - 30, drag.i0 + (p.x - drag.x0))); if (drag.t === 'p1') p1X = nx_; else p2X = nx_; redraw(); }
+e.preventDefault(); });
+canvas.addEventListener('pointerup', function(){ if (!drag) return; var t = drag.t; drag = null; canvas.style.cursor = 'grab';
+if (t === 'pt') narrateAim(); else if (t === 'src') setIncidentAngle(thI.toFixed(1)); else snellA11y.narrate('Protractor ' + (t === 'p1' ? '1' : '2') + ' is centred ' + (((t === 'p1' ? p1X : p2X) + protCx - xBase)/20).toFixed(1) + ' cm from the centre of the flat face.'); });
+function protTo(w){ var cx = (w === 'hit' && rayInfo && rayInfo.Qcm !== undefined) ? xBase + 20*rayInfo.Qcm : xBase; p1X = cx - protCx; p2X = cx - protCx; redraw();
+snellA11y.narrate((showP1 || showP2 ? '' : 'Tick Show Protractor 1 or 2 to see them. ') + (w === 'hit' ? 'The protractors are centred where the beam meets the flat face.' : 'The protractors are centred on the centre of the flat face.')); }
 function drawArrow(Fx, Fy, Px, Py, arrowColor, lineW) {
 var theta = Math.atan2(Fy, Fx);
 ctx.strokeStyle = arrowColor;
@@ -571,22 +630,24 @@ function runMotion() {
 drawMotion();
 if (runFlag == 1) timer = window.setTimeout(runMotion, 1000/30);
 }
-function setIncidentAngle(degrees) {
+function setIncidentAngle(degrees, quiet) {
 document.getElementById("incidentAngleValue").innerHTML = degrees;
+thI = Number(degrees);
 var radians = degrees * Math.PI / 180;
 var length = 5;
-x1 = -length * Math.sin(radians);
+x1 = x2 - length * Math.sin(radians);
 y1 =  length * Math.cos(radians);
-//      drawMotion();
 redraw();
+if (quiet) return;
+if (Math.abs(x2) > 0.01){ narrateAim(); return; }
 /* ── Narration ──
  At the flat base, light travels from n2 (disk) into n1 (outside).
  sin2 = n1 * sin(thetaI) / n2  (Snell's law at flat base).
  TIR when |sin2| > 1.                                               */
-var normA  = Math.sqrt(x1*x1 + y1*y1);
+var normA  = Math.sqrt((x2 - x1)*(x2 - x1) + y1*y1);
 /* Light goes from n2 (disk) into n1 (outside): sin2 = n2*sin(thetaI)/n1 */
 var sin2   = n2 * (x2 - x1) / (n1 * normA);
-var thetaI = parseFloat(degrees);
+var thetaI = Math.abs(parseFloat(degrees));
 var msg    = '\u03B8i = ' + thetaI.toFixed(1) + '\u00B0. ';
 msg += '\u03B8r = ' + thetaI.toFixed(1) + '\u00B0 (reflection). ';
 if (Math.abs(sin2) <= 1) {
@@ -611,7 +672,8 @@ showP2 = cb.checked;
 redraw();
 snellA11y.narrate('Protractor for Medium 2 ' + (showP2 ? 'shown.' : 'hidden.'));
 }
-return { shown1: shown1, shown2: shown2, setIncidentAngle: setIncidentAngle,
+return { shown1: shown1, shown2: shown2, setIncidentAngle: setIncidentAngle, setEntry: setEntry, protTo: protTo, redraw: redraw,
+_state: function(){ return { x1:x1, y1:y1, x2:x2, thI:thI, p1X:p1X, p2X:p2X, ray:rayInfo, src:srcPt, n1:n1, n2:n2 }; },
 toggleP1: toggleP1,
 toggleP2: toggleP2
 };
