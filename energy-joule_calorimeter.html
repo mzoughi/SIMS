@@ -576,6 +576,11 @@ if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise(
 #mobjoule .th_a11y { display:flex !important; gap:6px; flex-wrap:wrap; justify-content:center; width:100%; background:transparent !important; border:none !important; padding:0 0 10px !important; margin:0 !important; }
 #mobjoule .th_a11y .th_on, #mobjoule .th_a11y [aria-pressed="true"] { background:rgba(58,208,143,.14) !important; border-color:var(--t-green) !important; color:var(--t-green) !important; font-weight:bold; }
 #mobjoule .th_title, #mobjoule .th_title h3, #mobjoule .th_title H3 { background:transparent !important; border:none !important; color:var(--t-accent) !important; font-size:.95rem !important; font-weight:700 !important; letter-spacing:.2em; text-transform:uppercase; text-align:center; font-family:Arial, sans-serif !important; margin:0 !important; padding:2px 0 !important; min-height:0 !important; }
+#mobjoule .th_title { width:auto !important; min-width:0 !important; max-width:100% !important; height:auto !important; display:flex !important; align-items:center; justify-content:center; box-sizing:border-box; }
+#mobjoule .th_title h3, #mobjoule .th_title H3 { width:100%; text-align:center !important; }
+#mobjoule .th_diag, #mobjoule .th_bar, #mobjoule .th_a11y { width:auto !important; max-width:100% !important; box-sizing:border-box; }
+#mobjoule #aw_root, #mobjoule #rl_root { width:auto !important; max-width:100% !important; margin:0 auto !important; }
+#mobjoule .sl_fbar, #mobjoule .sl_fbar, #mobjoule .fbar { width:auto !important; max-width:100% !important; }
 #mobjoule .th_sub { color:var(--t-dim) !important; font-size:.7rem !important; letter-spacing:.08em; text-transform:uppercase; text-align:center; font-family:Arial, sans-serif !important; margin:0 0 8px !important; }
 #mobjoule .th_diag { background:var(--t-panel) !important; border:1px solid var(--t-border) !important; border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.35); margin:8px 0 0 !important; padding:0 !important; }
 #mobjoule .th_diag::before { content:'APPARATUS'; display:block; flex:1 1 100%; background:var(--t-panel-lo); border-bottom:1px solid var(--t-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; color:var(--t-accent); font-weight:bold; text-align:left; }
@@ -603,8 +608,8 @@ if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise(
 #mobjoule table th { background:var(--t-panel-lo) !important; color:var(--t-dim) !important; font-family:monospace; border-color:var(--t-border) !important; }
 #mobjoule table td { background:var(--t-panel) !important; color:var(--t-text) !important; border-color:var(--t-border) !important; }
 #mobjoule .mob_descbtn { background:var(--t-panel-hi) !important; border:1px solid var(--t-accent) !important; color:var(--t-accent) !important; }
-#mobjoule > h2, #mobjoule > hr + h2 { color:var(--t-accent) !important; font-size:1rem !important; font-family:Arial, sans-serif; margin:4px 0 !important; }
-#mobjoule > hr { border:none !important; border-top:1px solid var(--t-border) !important; margin:6px 0 !important; }
+#mobjoule h2 { color:var(--t-accent) !important; font-size:1rem !important; font-family:Arial, sans-serif; margin:4px 0 !important; }
+#mobjoule hr { border:none !important; border-top:1px solid var(--t-border) !important; margin:6px 0 !important; }
 #mobjoule .th_q { background:#fbfbf7; color:#1d232a; border:1px solid #c9ccd2; border-left:4px solid var(--t-accent); border-radius:6px; padding:12px 16px; margin:12px 0 8px; font-family:Arial, sans-serif; font-size:.92rem; line-height:1.5; }
 #mobjoule .th_q h2, #mobjoule .th_q h3 { color:#1d232a !important; font-size:1.05rem !important; margin:4px 0 8px !important; }
 #mobjoule .th_q hr { border:none; border-top:1px solid #c9ccd2; margin:8px 0; }
