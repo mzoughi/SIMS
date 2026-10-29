@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Rotation: The Spinning Bicycle Wheel</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, light, optics, refraction, refraction, Snell's law, apparent depth, image, Fermat's principle, total internal reflection, critical angle, Snell's window, pool, distortion, lesson, scientific">
+<meta name="description" content="Interactive simulation of the conservation of angular momentum: a person on a turning stool tilts a spinning bicycle wheel, and starts to turn.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<main class="page">
+<div id="bwRoot" class="bw_root" role="region" aria-label="A spinning bicycle wheel, held by a person on a turning stool">
+<div class="bw_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="bw_a11ybtn" id="bwBtnHC" onclick="bwSim.theme('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="bw_a11ybtn" id="bwBtnLM" onclick="bwSim.theme('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="bw_a11ybtn" id="bwBtnCB" onclick="bwSim.theme('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="bw_a11ybtn bw_a11yon" id="bwBtnNR" onclick="bwSim.theme('nr')" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div class="bw_header"><p class="bw_h1">The Spinning Bicycle Wheel</p><p class="bw_sub">tilt the wheel, and the stool starts to turn: the vertical angular momentum is conserved</p></div>
+<div class="bw_row2">
+<div class="bw_diag"><div class="bw_dlabel"><b>FROM THE SIDE</b><span id="bwHint"></span></div><canvas id="bwSide" width="430" height="420" role="img" aria-label="The person on the stool holding the spinning wheel by its axle, with the angular momentum arrows." aria-describedby="bwStatus"></canvas></div>
+<div class="bw_diag"><div class="bw_dlabel"><b>VERTICAL ANGULAR MOMENTUM</b></div><canvas id="bwBars" width="330" height="420" role="img" aria-label="Bars of the vertical angular momentum: of the wheel, of the person and stool, and their constant total."></canvas></div>
+</div>
+<div class="bw_bbar"><span>turn the wheel's axis:</span><button type="button" class="bw_btn" data-ph="0">&#8593; up</button><button type="button" class="bw_btn" data-ph="90">&#8594; sideways</button><button type="button" class="bw_btn" data-ph="180">&#8595; down</button><span id="bwStart"> &middot; start again with the axis: <button type="button" class="bw_btn" data-st="0">up</button><button type="button" class="bw_btn" data-st="90">sideways</button><button type="button" class="bw_btn" data-st="180">down</button></span></div>
+<div class="bw_bbar"><button type="button" class="bw_btn bw_btnon" id="bwPlay">&#10073;&#10073; Pause</button><button type="button" class="bw_btn" id="bwStep">Step &#9656;</button><label>slow motion <input type="range" id="bwSpd" min="0.05" max="1" step="0.05" value="0.5" style="width:100px"> <span id="bwSpdV">0.50&times;</span></label><label><input type="checkbox" id="bwVec" checked> angular momentum arrows</label></div>
+<div class="bw_status" id="bwStatus" role="status" aria-live="polite"></div>
+<div class="bw_diag"><div class="bw_dlabel"><b>AGAINST TIME</b><span>the tilt of the axis, and the vertical angular momentum of each part</span></div><canvas id="bwGraph" width="780" height="230" role="img" aria-label="Against time: the tilt of the wheel's axis, and the vertical angular momentum of the wheel, of the person, and their total."></canvas></div>
+<div class="bw_panels"><div class="bw_panel"><div class="bw_ptitle">Settings</div><div class="bw_pbody" id="bwCtl"></div></div>
+<div class="bw_panel"><div class="bw_ptitle">Readout</div><div class="bw_pbody" id="bwRead"></div></div></div>
+<div class="bw_eqs" id="bwEq"></div>
+<div id="bwNar" class="bw_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="bw_descwrap">
+<button type="button" class="bw_descbtn" id="bwDescBtn" aria-expanded="false" aria-controls="bwDesc" onclick="bwSim.toggleDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="bw_desc" id="bwDesc" role="region" aria-labelledby="bwDescBtn" style="display:none">
+<p>A person sits on a stool that turns freely about a vertical axis, holding a bicycle wheel by its axle. The wheel spins fast: its angular momentum `vec L_w = I_w omega_w` points along its axle (by the right-hand rule).</p>
+<p>The stool can turn only about the vertical, and nothing outside exerts a torque about that axis, so the <b>vertical component</b> of the total angular momentum stays constant. (The horizontal components are not conserved: the floor and the stool's bearing can push on them.) With the axle tilted by `phi` from the vertical, the wheel's vertical component is `I_w omega_w cos phi`, so</p>
+<p class="bw_eq">`I_w omega_w cos phi + I_p Omega = "constant"`,</p>
+<p>where `I_p` and `Omega` are the moment of inertia and the angular speed of the person and stool. Starting at rest with the axle sideways (no vertical component), turning the axle to point up makes the person turn the opposite way. Starting with the axle up and flipping it to point down changes the wheel's vertical component from `+L_w` to `-L_w`: the person must take `2 L_w`, and turns at `Omega = 2 I_w omega_w / I_p`. To tilt the axle, the person's hands exert a torque on the wheel; the wheel exerts the opposite torque on the person, which sets them turning.</p>
+</div></div>
+</div><!-- #bwRoot -->
+<style>
+#bwRoot { --c-chassis:#1a1c1f; --c-panel:#22262b; --c-hi:#2c3138; --c-lo:#14161a; --c-bd:#3a4048; --c-bd2:#525c66; --c-text:#c8d0d8; --c-dim:#8a94a3; --c-accent:#e8a020; --c-green:#3ad08f; --c-val:#ffdd66; --c-nbg:#2a2410; --c-nbd:#e0b040; --c-ntx:#f0e2b8;
+  background:var(--c-chassis); background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
+  color:var(--c-text); font-family:Arial, sans-serif; padding:14px 10px 18px; border-radius:6px; box-sizing:border-box; width:100%; max-width:860px; margin:0 auto 10px; display:flex; flex-direction:column; gap:10px; }
+#bwRoot * { box-sizing:border-box; }
+#bwRoot.bw_lm { --c-chassis:#e9edf1; --c-panel:#ffffff; --c-hi:#f1f4f7; --c-lo:#f4f6f9; --c-bd:#c3cad3; --c-bd2:#9aa3ae; --c-text:#1d232a; --c-dim:#556070; --c-accent:#a8620a; --c-green:#12805a; --c-val:#8a4a00; --c-nbg:#ffefc0; --c-ntx:#333; background-image:none; }
+#bwRoot.bw_hc { --c-chassis:#000; --c-panel:#000; --c-hi:#111; --c-lo:#000; --c-bd:#fff; --c-bd2:#fff; --c-text:#fff; --c-dim:#e0e0e0; --c-accent:#ffd700; --c-green:#00ff88; --c-val:#ffff00; --c-nbg:#000; --c-nbd:#ffd700; --c-ntx:#fff; background-image:none; }
+#bwRoot .bw_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+#bwRoot .bw_a11ybtn { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-dim); min-height:30px; }
+#bwRoot .bw_a11yon { background:rgba(58,208,143,.14); border-color:var(--c-green); color:var(--c-green); font-weight:bold; }
+#bwRoot .bw_header { text-align:center; }
+#bwRoot .bw_h1 { margin:0; font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--c-accent); }
+#bwRoot .bw_sub { margin:3px 0 0; font-size:.7rem; color:var(--c-dim); letter-spacing:.08em; text-transform:uppercase; }
+#bwRoot .bw_tabs { display:flex; gap:4px; flex-wrap:wrap; }
+#bwRoot .bw_tab { flex:1 1 90px; padding:8px 6px; border:1px solid var(--c-bd2); background:var(--c-hi); color:var(--c-text); border-radius:4px; cursor:pointer; font-family:monospace; font-size:.76rem; letter-spacing:.06em; text-transform:uppercase; min-height:38px; }
+#bwRoot .bw_tab[aria-selected="true"] { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#bwRoot .bw_diag { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+#bwRoot .bw_dlabel { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--c-dim); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+#bwRoot .bw_dlabel b { color:var(--c-accent); }
+#bwRoot canvas { display:block; width:100%; height:auto; touch-action:none; }
+#bwRoot .bw_row2 { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#bwRoot .bw_bbar { display:flex; flex-wrap:wrap; gap:6px 12px; justify-content:center; align-items:center; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:6px; padding:8px 10px; font-size:.8rem; }
+#bwRoot .bw_bbar label { display:flex; align-items:center; gap:5px; color:var(--c-dim); font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; cursor:pointer; }
+#bwRoot .bw_btn { padding:7px 12px; font-family:monospace; font-size:.72rem; letter-spacing:.04em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-text); border-radius:3px; text-transform:uppercase; min-height:34px; }
+#bwRoot .bw_btn:hover { border-color:var(--c-accent); }
+#bwRoot .bw_btnon { border-color:var(--c-accent); color:var(--c-accent); font-weight:bold; }
+#bwRoot select { background:var(--c-hi); color:var(--c-text); border:1px solid var(--c-bd2); border-radius:3px; padding:4px 6px; font-size:.8rem; }
+#bwRoot .bw_panels { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#bwRoot .bw_panel { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; box-shadow:0 4px 20px rgba(0,0,0,.3); overflow:hidden; }
+#bwRoot .bw_ptitle { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--c-dim); }
+#bwRoot .bw_pbody { padding:9px 12px; display:flex; flex-direction:column; gap:8px; }
+#bwRoot .bw_ctrl { display:flex; flex-direction:column; gap:3px; }
+#bwRoot .bw_ctrlhdr { display:flex; justify-content:space-between; align-items:baseline; gap:6px; }
+#bwRoot .bw_ctrlname { font-size:.72rem; font-weight:600; color:var(--c-dim); text-transform:uppercase; letter-spacing:.04em; }
+#bwRoot .bw_sval { font-family:monospace; font-size:.76rem; color:var(--c-val); white-space:nowrap; }
+#bwRoot input[type=range] { width:100%; -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; cursor:pointer; background:var(--c-lo); border:1px solid var(--c-bd); }
+#bwRoot input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#bwRoot input[type=range]::-moz-range-thumb { width:12px; height:12px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#bwRoot input[type=checkbox] { accent-color:var(--c-accent); width:16px; height:16px; }
+#bwRoot .bw_rrow { display:flex; justify-content:space-between; gap:6px; padding:4px 7px; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:3px; font-family:monospace; font-size:.72rem; }
+#bwRoot .bw_rkey { color:var(--c-dim); }
+#bwRoot .bw_rval { color:var(--c-val); font-weight:bold; text-align:right; }
+#bwRoot .bw_eqs { background:var(--c-lo); border:1px solid var(--c-bd); border-left:4px solid var(--c-accent); border-radius:4px; padding:8px 14px; font-family:monospace; font-size:.74rem; color:var(--c-dim); line-height:1.7; }
+#bwRoot .bw_eqs b { color:var(--c-val); }
+#bwRoot .bw_narbar { min-height:30px; padding:6px 12px; background:var(--c-nbg); border-left:4px solid var(--c-nbd); color:var(--c-ntx); font-size:.84rem; font-style:italic; line-height:1.45; border-radius:3px; }
+#bwRoot .bw_descwrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+#bwRoot .bw_descbtn { padding:8px 18px; font-family:monospace; font-size:.74rem; letter-spacing:.08em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-accent); color:var(--c-accent); border-radius:3px; font-weight:bold; min-height:40px; }
+#bwRoot .bw_desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid var(--c-accent); border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; }
+#bwRoot .bw_desc p { margin:0 0 9px; }
+#bwRoot .bw_eq { text-align:center; font-size:1rem; }
+#bwRoot button:focus-visible, #bwRoot input:focus-visible, #bwRoot select:focus-visible, #bwRoot canvas:focus-visible { outline:2px solid var(--c-accent); outline-offset:2px; }
+@media (max-width:640px) { #bwRoot .bw_row2, #bwRoot .bw_panels { grid-template-columns:minmax(0,1fr); } #bwRoot .bw_tab { font-size:.68rem; padding:8px 3px; } }
+@media (pointer:coarse) { #bwRoot input[type=range] { height:8px; } #bwRoot input[type=range]::-webkit-slider-thumb { width:26px; height:26px; } #bwRoot input[type=range]::-moz-range-thumb { width:24px; height:24px; } #bwRoot .bw_a11ybtn { min-height:40px; } #bwRoot input[type=checkbox] { width:22px; height:22px; } }
+#bwRoot .bw_status { width:100%; padding:8px 12px; border-radius:4px; background:var(--c-panel); border:1px solid var(--c-bd); font-size:.86rem; line-height:1.4; color:var(--c-text); }
+</style>
+<!-- ════════ SIMULATION ════════
+SI units. The wheel: a rim, I_w = m R^2, spinning at omega_w (constant) about its axle, tilted by phi from the vertical, sideways in the
+person's hands. The person and stool: I_p, turning at Omega. Conserved: L_z = I_w omega_w cos(phi) + I_p Omega. Drawn in 3D, projected.
+No dollar signs or backticks in the code.
+-->
+<script>
+var bwSim = (function(){
+function el(id){ return document.getElementById(id + ''); }
+var ROOT = el('bwRoot'), DPR = window.devicePixelRatio || 1;
+function hi(id){ var c = el(id), g = c.getContext('2d'), w = c.width, h = c.height; c.width = w*DPR; c.height = h*DPR; g.scale(DPR, DPR); return { c:c, g:g, W:w, H:h }; }
+var CS = hi('bwSide'), CB = hi('bwBars'), CG = hi('bwGraph');
+var th = { hc:false, lm:false, cb:false, nr:true }, play = true, spd = 0.5;
+var HEAD = { img:null }; (function(){ var im = new Image(); im.onload = function(){ HEAD.img = im; }; im.src = 'data:image/png;base64,' + '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'; })();
+var P = { mw:2.2, R:0.33, rps:5, Ip:4.0, phi:90, phiT:90, rate:90, psi:0, chi:0, L0:0, t:0, hist:[] };
+function Iw(){ return P.mw*P.R*P.R; } function ww(){ return 2*Math.PI*P.rps; } function Lw(){ return Iw()*ww(); }
+function Lwz(){ return Lw()*Math.cos(P.phi*Math.PI/180); } function Om(){ return (P.L0 - Lwz())/P.Ip; }
+function startWith(phi){ P.phi = P.phiT = phi; P.psi = 0; P.t = 0; P.hist = []; P.L0 = Lwz(); }
+function step(dt){ var h = 0.004;
+  while (dt > 1e-12){ var d = Math.min(h, dt); dt -= d; if (Math.abs(P.phi - P.phiT) > 1e-6) P.phi += Math.sign(P.phiT - P.phi)*Math.min(Math.abs(P.phiT - P.phi), P.rate*d);
+    P.psi += Om()*d; P.chi += ww()*d; P.t += d; var lh = P.hist[P.hist.length - 1]; if (!lh || P.t - lh[0] > 0.04){ P.hist.push([P.t, P.phi, Lwz(), P.Ip*Om(), P.L0]); if (P.hist.length > 700) P.hist.shift(); } } }
+function pal(){ var p = { bg:'#f4f7fa', text:'#1d2a36', dim:'#5b6876', grid:'rgba(0,0,0,0.1)', skin:'#f2a33a', stool:'#d6332a', rim:'#1f3fd6', tire:'#2a2a2a', Lw:'#c0392b', Lp:'#12805a', Lt:'#1d2a36', arrow:'#1f3fd6', phi:'#7d3cc8' };
+  if (th.cb){ p.Lw = '#d55e00'; p.Lp = '#009e73'; p.phi = '#cc79a7'; }
+  if (th.hc){ p.bg = '#000'; p.text = '#fff'; p.dim = '#ddd'; p.grid = 'rgba(255,255,255,0.25)'; p.Lw = '#ff5555'; p.Lp = '#00ff88'; p.Lt = '#fff'; p.arrow = '#55aaff'; p.rim = '#55aaff'; p.tire = '#bbb'; p.phi = '#ff66ff'; }
+  return p; }
+function Tx(g, t, x, y, col, al, font){ g.fillStyle = col; g.font = font || '12px Arial, sans-serif'; g.textAlign = al || 'left'; g.textBaseline = 'middle'; g.fillText(t, x, y); }
+function seg(g, x1, y1, x2, y2, col, w, dash){ g.strokeStyle = col; g.lineWidth = w || 1.5; g.setLineDash(dash || []); g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); g.stroke(); g.setLineDash([]); }
+function arrow(g, x, y, dx, dy, col, w){ var L = Math.hypot(dx, dy); if (L < 3) return; seg(g, x, y, x + dx, y + dy, col, w || 3); var a = Math.atan2(dy, dx), h = 11; g.fillStyle = col; g.beginPath(); g.moveTo(x + dx, y + dy); g.lineTo(x + dx - h*Math.cos(a - 0.4), y + dy - h*Math.sin(a - 0.4)); g.lineTo(x + dx - h*Math.cos(a + 0.4), y + dy - h*Math.sin(a + 0.4)); g.fill(); }
+function f2(v, k){ return (+v).toFixed(k === undefined ? 2 : k); }
+function narrate(m){ if (!th.nr) return; el('bwNar').textContent = m; }
+function rrow(k, v){ return '<div class="bw_rrow"><span class="bw_rkey">' + k + '</span><span class="bw_rval">' + v + '</span></div>'; }
+function limb(g, pts, col, w){ g.strokeStyle = col; g.lineWidth = w; g.lineCap = 'round'; g.lineJoin = 'round'; g.beginPath(); pts.forEach(function(q, i){ if (i) g.lineTo(q[0], q[1]); else g.moveTo(q[0], q[1]); }); g.stroke(); g.lineCap = 'butt'; }
+/* ══════════ the side view: 3D, projected ══════════ */
+var SC = 260, CX = 215, ZB = 300;   /* px per m; the axis of the stool; screen y of the seat */
+var CAM = 0.6;   /* the camera, turned 35 degrees about the vertical: no orientation of the wheel is seen exactly edge-on */
+function rotC(X, Y){ return [X*Math.cos(CAM) - Y*Math.sin(CAM), X*Math.sin(CAM) + Y*Math.cos(CAM)]; }
+function pr(X, Y, Z){ var q = rotC(X, Y); return [CX + q[0]*SC, ZB - Z*SC - q[1]*SC*0.28]; }   /* X right, Y away from us, Z up */
+function drawSide(){
+  var g = CS.g, W = CS.W, H = CS.H, p = pal(), ps = P.psi, f = [Math.sin(ps), -Math.cos(ps)], sd = [Math.cos(ps), Math.sin(ps)], ph = P.phi*Math.PI/180;
+  g.fillStyle = p.bg; g.fillRect(0, 0, W, H); seg(g, CX, 20, CX, H - 6, p.text, 1, [4, 4]);
+  /* the stool */ g.fillStyle = p.stool; g.fillRect(CX - 20, ZB + 8, 40, 80); g.fillRect(CX - 90, ZB + 86, 180, 9); g.beginPath(); g.ellipse(CX, ZB + 6, 92, 16, 0, 0, 2*Math.PI); g.fill(); g.beginPath(); g.ellipse(CX, ZB, 92, 16, 0, 0, 2*Math.PI); g.fill(); g.strokeStyle = '#7a1510'; g.lineWidth = 1; g.stroke();
+  for (var k=0; k<6; k++){ var a = ps + k*Math.PI/3; if (Math.sin(a) < 0.2){ g.fillStyle = '#fff'; g.beginPath(); g.arc(CX + 78*Math.cos(a), ZB - 13*Math.sin(a), 3, 0, 2*Math.PI); g.fill(); } }   /* far side higher, hidden */
+  /* the wheel: centre in front of the person; axle tilted sideways by phi */
+  var C = [0.42*f[0], 0.42*f[1], 0.62], ax = [Math.sin(ph)*sd[0], Math.sin(ph)*sd[1], Math.cos(ph)], u = [f[0], f[1], 0], v = [ax[1]*u[2] - ax[2]*u[1], ax[2]*u[0] - ax[0]*u[2], ax[0]*u[1] - ax[1]*u[0]];
+  function W3(t, r){ return [C[0] + r*(u[0]*Math.cos(t) + v[0]*Math.sin(t)), C[1] + r*(u[1]*Math.cos(t) + v[1]*Math.sin(t)), C[2] + r*(u[2]*Math.cos(t) + v[2]*Math.sin(t))]; }
+  var front = rotC(C[0], C[1])[1] < 0, R = P.R;   /* in front of the body, as the camera sees it */
+  function wheel(){ g.strokeStyle = p.tire; g.lineWidth = 6; g.beginPath(); for (var i=0; i<=64; i++){ var q = W3(2*Math.PI*i/64, R), s = pr(q[0], q[1], q[2]); if (i) g.lineTo(s[0], s[1]); else g.moveTo(s[0], s[1]); } g.stroke();
+      g.strokeStyle = p.rim; g.lineWidth = 2; g.beginPath(); for (var j=0; j<=64; j++){ var q2 = W3(2*Math.PI*j/64, R*0.9), s2 = pr(q2[0], q2[1], q2[2]); if (j) g.lineTo(s2[0], s2[1]); else g.moveTo(s2[0], s2[1]); } g.stroke();
+      var c = pr(C[0], C[1], C[2]); for (var n=0; n<8; n++){ var q3 = W3(P.chi + n*Math.PI/4, R*0.9), s3 = pr(q3[0], q3[1], q3[2]); seg(g, c[0], c[1], s3[0], s3[1], '#888', 1); }
+      var m = W3(P.chi, R), sm = pr(m[0], m[1], m[2]); g.fillStyle = '#f2c230'; g.beginPath(); g.arc(sm[0], sm[1], 5, 0, 2*Math.PI); g.fill();
+      var e1 = pr(C[0] - 0.16*ax[0], C[1] - 0.16*ax[1], C[2] - 0.16*ax[2]), e2 = pr(C[0] + 0.16*ax[0], C[1] + 0.16*ax[1], C[2] + 0.16*ax[2]); seg(g, e1[0], e1[1], e2[0], e2[1], '#444', 4); }
+  /* the person (the body faces f); the hands on the axle's ends */
+  var shL = [0.17*sd[0] - 0.05*f[0]*0, 0.17*sd[1], 0.78], shR = [-0.17*sd[0], -0.17*sd[1], 0.78], hA = [C[0] + 0.16*ax[0], C[1] + 0.16*ax[1], C[2] + 0.16*ax[2]], hB = [C[0] - 0.16*ax[0], C[1] - 0.16*ax[1], C[2] - 0.16*ax[2]];
+  function arms(){ [[shL, hA], [shR, hB]].forEach(function(q){ var a = pr(q[0][0], q[0][1], q[0][2]), b = pr(q[1][0], q[1][1], q[1][2]); limb(g, [a, [(a[0] + b[0])/2, (a[1] + b[1])/2 + 16], b], p.skin, 6); }); }
+  if (!front){ wheel(); arms(); }
+  limb(g, [[CX - 10, ZB - 6], [CX - 48, ZB + 4], [CX - 56, ZB + 74]], p.skin, 6); limb(g, [[CX + 10, ZB - 6], [CX + 44, ZB + 6], [CX + 52, ZB + 74]], p.skin, 6);
+  g.fillStyle = p.skin; g.beginPath(); g.ellipse(CX, ZB - 0.42*SC*0.5 - 40, 24, 66, 0, 0, 2*Math.PI); g.fill(); var hy = ZB - 0.98*SC; if (HEAD.img) g.drawImage(HEAD.img, 8, 0, 96, 92, CX - 36, hy - 34, 72, 69);
+  if (front){ arms(); wheel(); }
+  /* the angular momentum arrows: the wheel's, along its axle; the person's, vertical; the constant total, dashed */
+  if (el('bwVec').checked){ var k = 16, c0 = pr(C[0], C[1], C[2]), tip = pr(C[0] + ax[0]*Lw()*k/SC*1, C[1] + ax[1]*Lw()*k/SC, C[2] + ax[2]*Lw()*k/SC); arrow(g, c0[0], c0[1], tip[0] - c0[0], tip[1] - c0[1], p.Lw, 3.5); var nearEdge = tip[0] > W - 100; Tx(g, 'L of the wheel', tip[0] + (nearEdge ? -6 : 6), tip[1] + (nearEdge ? -12 : 0), p.Lw, nearEdge ? 'right' : 'left', 'bold 11px Arial');   /* kept inside the view */
+    var Lp = P.Ip*Om(), xp = CX + 120; arrow(g, xp, 110, 0, -Lp*k, p.Lp, 4); if (Math.abs(Lp) > 0.05) Tx(g, 'L of the person', xp + 6, 110 - Lp*k - (Lp < 0 ? -12 : 12), p.Lp, 'left', 'bold 11px Arial'); seg(g, xp - 12, 110, xp + 12, 110, p.dim, 1);
+    var xt = CX + 170; arrow(g, xt, 110, 0, -P.L0*k, p.Lt, 2.5); seg(g, xt - 12, 110, xt + 12, 110, p.dim, 1); if (Math.abs(P.L0) > 0.05) Tx(g, 'total (vertical)', xt + 6, 110 - P.L0*k + (P.L0 < 0 ? 12 : -12), p.Lt, 'left', '10px Arial'); }
+  /* the person's turning */ var Om_ = Om(); if (Math.abs(Om_) > 0.05){ var dir = Om_ > 0 ? 1 : -1, t = dir > 0 ? 0.15*Math.PI : 0.85*Math.PI; g.strokeStyle = p.arrow; g.lineWidth = 1.8; g.beginPath(); g.ellipse(CX, 30, 34, 9, 0, 0.15*Math.PI, 0.85*Math.PI); g.stroke();   /* the near edge's arc; its head where that edge goes */
+    var x = CX + 34*Math.cos(t), y = 30 + 9*Math.sin(t), dx = dir*34*Math.sin(t), dy = -dir*9*Math.cos(t), L = Math.hypot(dx, dy) || 1, ux = dx/L, uy = dy/L; g.fillStyle = p.arrow; g.beginPath(); g.moveTo(x + 9*ux, y + 9*uy); g.lineTo(x - 5*ux - 5*uy, y - 5*uy + 5*ux); g.lineTo(x - 5*ux + 5*uy, y - 5*uy - 5*ux); g.closePath(); g.fill(); }
+  el('bwHint').textContent = 'axis ' + f2(P.phi, 0) + '\u00B0 from the vertical \u00B7 the person turns ' + (Math.abs(Om_) < 0.02 ? 'not at all' : (Om_ > 0 ? 'counterclockwise' : 'clockwise') + ' (seen from above), ' + f2(Math.abs(Om_)/(2*Math.PI), 2) + ' turns/s');
+}
+function drawBars(){ var g = CB.g, W = CB.W, H = CB.H, p = pal(), y0 = H/2 + 20, mx = Math.max(2*Lw(), 1), k = (H/2 - 60)/mx, items = [['wheel', Lwz(), p.Lw], ['person', P.Ip*Om(), p.Lp], ['total', P.L0, p.Lt]];
+  g.fillStyle = th.hc ? '#000' : '#fff'; g.fillRect(0, 0, W, H); seg(g, 20, y0, W - 20, y0, p.text, 1.5);
+  items.forEach(function(q, i){ var x = 40 + i*95, h = q[1]*k; g.fillStyle = q[2]; g.fillRect(x, Math.min(y0, y0 - h), 60, Math.abs(h)); Tx(g, q[0], x + 30, H - 20, q[2], 'center', 'bold 12px Arial'); Tx(g, f2(q[1], 2), x + 30, y0 - h + (h >= 0 ? -10 : 12), p.text, 'center', '11px Arial'); });
+  Tx(g, 'up (kg\u00B7m\u00B2/s)', 10, 18, p.dim, 'left', '10px Arial'); Tx(g, '= wheel + person, always', W/2, 40, p.text, 'center', 'italic 11px Arial'); }
+function drawGraph(){ var g = CG.g, W = CG.W, H = CG.H, p = pal(), h = P.hist, X0 = 56, X1 = W - 14; g.fillStyle = th.hc ? '#000' : '#fff'; g.fillRect(0, 0, W, H); if (h.length < 2) return;
+  var t0 = h[0][0], t1 = Math.max(h[h.length - 1][0], t0 + 1), r1 = [10, 80], r2 = [96, H - 16], mx = Math.max(2*Lw(), 1);
+  function X(t){ return X0 + (t - t0)/(t1 - t0)*(X1 - X0); }
+  seg(g, X0, r1[1], X1, r1[1], p.grid, 1); Tx(g, 'tilt \u03C6', 6, (r1[0] + r1[1])/2, p.phi, 'left', 'bold 11px Arial'); Tx(g, '180\u00B0', X0 - 4, r1[0], p.dim, 'right', '9px Arial'); Tx(g, '0\u00B0', X0 - 4, r1[1], p.dim, 'right', '9px Arial');
+  g.strokeStyle = p.phi; g.lineWidth = 2; g.beginPath(); h.forEach(function(q, i){ var y = r1[1] - q[1]/180*(r1[1] - r1[0]); if (i) g.lineTo(X(q[0]), y); else g.moveTo(X(q[0]), y); }); g.stroke();
+  var ym = (r2[0] + r2[1])/2, ky = (r2[1] - r2[0])/2/mx; seg(g, X0, ym, X1, ym, p.grid, 1); Tx(g, 'L up', 6, ym, p.text, 'left', 'bold 11px Arial');
+  [[2, p.Lw], [3, p.Lp], [4, p.Lt]].forEach(function(c){ g.strokeStyle = c[1]; g.lineWidth = c[0] === 4 ? 1.5 : 2.2; g.setLineDash(c[0] === 4 ? [5, 4] : []); g.beginPath(); h.forEach(function(q, i){ var y = ym - q[c[0]]*ky; if (i) g.lineTo(X(q[0]), y); else g.moveTo(X(q[0]), y); }); g.stroke(); g.setLineDash([]); });
+  Tx(g, 'wheel', X1 - 120, r2[0] + 4, p.Lw, 'left', 'bold 10px Arial'); Tx(g, 'person', X1 - 80, r2[0] + 4, p.Lp, 'left', 'bold 10px Arial'); Tx(g, 'total', X1 - 34, r2[0] + 4, p.Lt, 'left', 'bold 10px Arial'); }
+function info(){ var O = Om();
+  el('bwRead').innerHTML = rrow('wheel: I_w = mR\u00B2', f2(Iw(), 3) + ' kg\u00B7m\u00B2, spinning ' + f2(P.rps, 1) + ' turns/s') + rrow('the wheel\u2019s angular momentum L_w', f2(Lw(), 2) + ' kg\u00B7m\u00B2/s, along the axle') + rrow('its vertical part L_w cos\u03C6', f2(Lwz(), 2) + ' kg\u00B7m\u00B2/s (\u03C6 = ' + f2(P.phi, 0) + '\u00B0)')
+    + rrow('the person and stool: I_p\u03A9', f2(P.Ip*O, 2) + ' kg\u00B7m\u00B2/s (I_p = ' + f2(P.Ip, 1) + ')') + rrow('the person turns at \u03A9', f2(O, 2) + ' rad/s = ' + f2(O/(2*Math.PI), 2) + ' turns/s') + rrow('total vertical angular momentum', f2(P.L0, 2) + ' kg\u00B7m\u00B2/s (constant)');
+  el('bwEq').innerHTML = 'Vertical part conserved: <b>I_w\u03C9_w cos\u03C6 + I_p\u03A9 = ' + f2(P.L0, 2) + '</b>. Flipping the axle from up to down changes the wheel\u2019s part by <b>2L_w</b>: the person turns at <b>\u03A9 = 2I_w\u03C9_w/I_p = ' + f2(2*Lw()/P.Ip, 2) + ' rad/s</b>.';
+  var st = Math.abs(O) < 0.02 ? 'The person is not turning: the wheel holds all the vertical angular momentum there is (' + f2(P.L0, 2) + ').' : 'The person turns ' + (O > 0 ? 'counterclockwise' : 'clockwise') + ' (seen from above) at ' + f2(Math.abs(O)/(2*Math.PI), 2) + ' turns per second, to make up for the change in the wheel\u2019s vertical angular momentum.';
+  el('bwStatus').innerHTML = st; }
+function draw(){ drawSide(); drawBars(); drawGraph(); info(); }
+/* ══════════ controls ══════════ */
+function on(id, ev, fn){ var e = el(id); if (e) e.addEventListener(ev, fn); }
+function row(id, label, min, max, step, val, txt){ return '<div class="bw_ctrl"><div class="bw_ctrlhdr"><label class="bw_ctrlname" for="' + id + '">' + label + '</label><span class="bw_sval" id="' + id + 'v">' + txt + '</span></div><input type="range" id="' + id + '" min="' + min + '" max="' + max + '" step="' + step + '" value="' + val + '"></div>'; }
+function build(){ el('bwCtl').innerHTML = row('bwPhi', 'tilt of the axle from the vertical \u03C6', 0, 180, 1, P.phi, f2(P.phi, 0) + '\u00B0') + row('bwRps', 'the wheel\u2019s spin (negative: the other way)', -10, 10, 0.5, P.rps, f2(P.rps, 1) + ' turns/s') + row('bwMw', 'mass of the wheel', 0.5, 5, 0.1, P.mw, f2(P.mw, 1) + ' kg') + row('bwR', 'radius of the wheel', 0.15, 0.4, 0.01, P.R, f2(P.R*100, 0) + ' cm') + row('bwIp', 'person and stool I_p', 1, 10, 0.1, P.Ip, f2(P.Ip, 1) + ' kg\u00B7m\u00B2') + row('bwRate', 'how fast the axle is turned', 20, 360, 10, P.rate, f2(P.rate, 0) + '\u00B0/s');
+  on('bwPhi', 'input', function(){ P.phiT = +this.value; el('bwPhiv').textContent = f2(P.phiT, 0) + '\u00B0'; });
+  [['bwRps', 'rps', 1, ' turns/s'], ['bwMw', 'mw', 1, ' kg'], ['bwIp', 'Ip', 1, ' kg\u00B7m\u00B2']].forEach(function(q){ on(q[0], 'input', function(){ P[q[1]] = +this.value; el(q[0] + 'v').textContent = f2(P[q[1]], q[2]) + q[3]; startWith(P.phi); narrate('Settings changed: starting again at rest, with the axle at ' + f2(P.phi, 0) + ' degrees.'); }); });
+  on('bwR', 'input', function(){ P.R = +this.value; el('bwRv').textContent = f2(P.R*100, 0) + ' cm'; startWith(P.phi); }); on('bwRate', 'input', function(){ P.rate = +this.value; el('bwRatev').textContent = f2(P.rate, 0) + '\u00B0/s'; }); }
+[].forEach.call(ROOT.querySelectorAll('button[data-ph]'), function(b){ b.addEventListener('click', function(){ var t = +b.getAttribute('data-ph'), was = P.phi; P.phiT = t; var e = el('bwPhi'); if (e){ e.value = t; el('bwPhiv').textContent = t + '\u00B0'; }
+    var Lnew = Lw()*Math.cos(t*Math.PI/180), Ofin = (P.L0 - Lnew)/P.Ip; narrate('Turning the axle from ' + f2(was, 0) + ' to ' + t + ' degrees: the wheel\u2019s vertical angular momentum goes from ' + f2(Lwz(), 2) + ' to ' + f2(Lnew, 2) + '. The person will end up turning at ' + f2(Ofin, 2) + ' rad/s' + (Math.abs(Ofin) > 0.02 ? (Ofin > 0 ? ', counterclockwise.' : ', clockwise.') : '.')); }); });
+[].forEach.call(ROOT.querySelectorAll('button[data-st]'), function(b){ b.addEventListener('click', function(){ var t = +b.getAttribute('data-st'); startWith(t); build(); narrate('At rest, with the spinning wheel\u2019s axle ' + (t === 0 ? 'pointing up' : t === 180 ? 'pointing down' : 'sideways') + ': the total vertical angular momentum is ' + f2(P.L0, 2) + '. Now turn the axle.'); }); });
+on('bwPlay', 'click', function(){ play = !play; el('bwPlay').innerHTML = play ? '\u2759\u2759 Pause' : '\u25B6 Play'; });
+on('bwStep', 'click', function(){ play = false; el('bwPlay').innerHTML = '\u25B6 Play'; step(0.1); draw(); }); on('bwSpd', 'input', function(){ spd = +this.value; el('bwSpdV').textContent = f2(spd, 2) + '\u00D7'; }); on('bwVec', 'change', draw);
+var last = 0; function loop(t){ var dt = Math.min(0.05, (t - (last || t))/1000); last = t; if (play) step(dt*spd); draw(); requestAnimationFrame(loop); }
+function theme(k){ th[k] = !th[k]; if (k === 'hc' && th.hc) th.lm = false; if (k === 'lm' && th.lm) th.hc = false; ROOT.classList.toggle('bw_hc', th.hc); ROOT.classList.toggle('bw_lm', th.lm);
+  [['hc', 'bwBtnHC'], ['lm', 'bwBtnLM'], ['cb', 'bwBtnCB'], ['nr', 'bwBtnNR']].forEach(function(q){ var b = el(q[1]); b.classList.toggle('bw_a11yon', th[q[0]]); b.setAttribute('aria-pressed', th[q[0]] ? 'true' : 'false'); });
+  el('bwBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('bwNar').style.display = th.nr ? '' : 'none'; draw(); }
+function toggleDesc(){ var b = el('bwDescBtn'), d = el('bwDesc'), open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+  if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }
+startWith(90); build(); draw(); narrate('Ready: the person sits still, holding the spinning wheel with its axle sideways. Turn the axle up, and watch the stool.'); requestAnimationFrame(loop);
+return { theme:theme, toggleDesc:toggleDesc, _P:P, _Om:Om, _Lw:Lw, _Lwz:Lwz, _step:function(dt){ step(dt); draw(); }, _start:startWith };
+})();
+</script>
+</main>
+</body>
+</html>
