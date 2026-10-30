@@ -41,7 +41,7 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <button type="button" class="fp_btn fp_btnon" id="fpPlay">&#10073;&#10073; Pause</button>
 <button type="button" class="fp_btn fp_kick" id="fpStart">&#8635; Start the swing again</button>
 <button type="button" class="fp_btn" id="fpPins">Stand the pins up</button>
-<label>Earth sped up <input type="range" id="fpN" min="0" max="3" step="0.01" value="2.3" style="width:110px"> <span id="fpNv"></span></label>
+<label for="fpN">Earth sped up <input type="range" id="fpN" min="0" max="3" step="0.01" value="2.3" style="width:110px"> <span id="fpNv"></span></label>
 </div>
 <div class="fp_bbar">
 <label><input type="checkbox" id="fpTr" checked> trace on the floor</label>
@@ -64,11 +64,11 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <p><b>At the North Pole</b> the floor simply turns once a day (once every 23 h 56 min, a sidereal day), counterclockwise seen from above. In the museum, the swing then appears to turn the other way, clockwise, once a day: 15&deg; per hour.</p>
 <p><b>At other latitudes</b> only part of the Earth&rsquo;s turning is a turning of the floor about the local vertical. The Earth&rsquo;s rotation, `vec Omega`, points along its axis; at latitude `phi` its part along the local vertical is `Omega sin phi`. The swing turns at this rate:</p>
 <p class="fp_eq">`Omega_(swing) = Omega sin phi`,&nbsp;&nbsp; `T_(turn) = (23.93 h)/(sin phi)`.</p>
-<p>In Atlanta (latitude 33.7&deg; N) the swing turns 8.3&deg; per hour, once around in about 43 hours. In Paris, 11.3&deg; per hour. At the equator, `sin phi = 0`: the swing does not turn at all. In the Southern Hemisphere it turns counterclockwise.</p>
+<p>In Atlanta (latitude 33.7&deg; N) the swing turns 8.4&deg; per hour, once around in about 43 hours. In Paris, 11.3&deg; per hour. At the equator, `sin phi = 0`: the swing does not turn at all. In the Southern Hemisphere it turns counterclockwise.</p>
 <p><b>The swing itself.</b> The period of one back-and-forth swing is that of any simple pendulum,</p>
 <p class="fp_eq">`T = 2 pi sqrt(L/g)`,</p>
 <p>about 9 s for a 20 m cable. It does not depend on the latitude. The long cable makes the swing slow and lets it go on for hours; in museums, a small magnetic push at the top or bottom makes up for the air drag. The SIM leaves out air drag.</p>
-<p><b>Speeding up the Earth.</b> In real time the turning is too slow to watch, so the SIM can make the Earth turn faster than it really does, while the pendulum swings at its real pace. The readout gives the real Earth time that corresponds. With a large speed-up the path on the floor shows small loops or points at the ends of each swing: the bob was released from rest in the turning room, so it carries a little sideways motion. A real Foucault pendulum does the same, but the effect is far too small to see.</p>
+<p><b>Speeding up the Earth.</b> In real time the turning is too slow to watch, so the SIM can make the Earth turn faster than it really does, while the pendulum swings at its real pace. The readout gives the real Earth time that corresponds. Each end of the swing comes back to the ring of pins once per full swing, and the pins are 10&deg; apart. If the swing turned more than that between two visits, it would skip pins, as a real pendulum on a fast-turning planet would. So the SIM limits the speed-up to keep the turn per swing below 7&deg;, and says so on screen when it does. With a large speed-up the path on the floor shows small points at the ends of each swing: the bob was released from rest in the turning room, so it carries a little sideways motion. A real Foucault pendulum does the same, but the effect is far too small to see.</p>
 </div></div>
 </div><!-- #fpRoot -->
 <style>
@@ -131,6 +131,8 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 Floor frame: x east, n north (drawn as -z), y up. The bob's horizontal position (x, n) obeys, in the turning room,
   x'' = -w0^2 x + 2 Wz n',   n'' = -w0^2 n - 2 Wz x',   w0^2 = g/L,  Wz = N * Omega * sin(latitude),
 the Coriolis terms of the turning Earth (centrifugal terms are absorbed in g). N is the speed-up of the Earth.
+N is limited so that the swing turns at most TURNMAX per full swing: each end of the swing visits the ring of pins
+once per full swing, and the pins are 360/NPIN degrees apart; a larger turn would skip pins.
 The swing itself runs in real time; the Earth time shown is N times the time elapsed. RK4 steps.
 Tab 2 draws the room turned by the angle Wz t about the vertical: then the swing plane stays (nearly) fixed.
 No dollar signs or backticks in the code.
@@ -141,7 +143,7 @@ function el(id){ return document.getElementById(id + ''); }
 var ROOT = el('fpRoot'), cv = el('fpCv'), g = cv.getContext('2d'), W = cv.width, H = cv.height, DPR = window.devicePixelRatio || 1;
 cv.width = W*DPR; cv.height = H*DPR; g.scale(DPR, DPR);
 var DEG = Math.PI/180, TAU = 2*Math.PI, GA = 9.81, OMEGA = TAU/86164.1;
-var NPIN = 36, BOBH = 0.45, PITR = 3.3;
+var NPIN = 36, BOBH = 0.45, PITR = 3.3, TURNMAX = 7*DEG;
 /* ══════════ vectors ══════════ */
 function add(a, b){ return [a[0] + b[0], a[1] + b[1], a[2] + b[2]]; } function sub(a, b){ return [a[0] - b[0], a[1] - b[1], a[2] - b[2]]; }
 function mul(a, k){ return [a[0]*k, a[1]*k, a[2]*k]; } function dot(a, b){ return a[0]*b[0] + a[1]*b[1] + a[2]*b[2]; }
@@ -156,14 +158,16 @@ var PLACES = [['North Pole', 90], ['Paris (Panth\u00E9on)', 48.85], ['Atlanta', 
 var U = { tab:0, play:true, yaw:-30, pitch:28, trace:true, globe:true, touched:{} };
 var th = { hc:false, lm:false, cb:false, nr:true };
 var S;
-function Nf(){ return Math.round(Math.pow(10, PRM.Nexp)); }
-function Wz(){ return Nf()*OMEGA*Math.sin(PRM.lat*DEG); }
 function w0(){ return Math.sqrt(GA/PRM.L); }
+function Nset(){ return Math.round(Math.pow(10, PRM.Nexp)); }                     /* the speed-up asked for */
+function Nmax(){ var s = Math.abs(Math.sin(PRM.lat*DEG)); return s < 1e-6 ? Infinity : Math.max(1, Math.floor(TURNMAX/(OMEGA*s*TAU/w0()))); }
+function Nf(){ return Math.min(Nset(), Nmax()); }                                    /* the speed-up used */
+function Wz(){ return Nf()*OMEGA*Math.sin(PRM.lat*DEG); }
 function restart(keepPins){
   var a = PRM.az*DEG;   /* release direction, measured from north toward east */
-  S = { x:PRM.A*Math.sin(a), n:PRM.A*Math.cos(a), vx:0, vn:0, t:0, te:0, trace:[], pins:keepPins && S ? S.pins : null, knocked:keepPins && S ? S.knocked : 0, beta:0, swings:0, lastSign:1 };
+  S = { x:PRM.A*Math.sin(a), n:PRM.A*Math.cos(a), vx:0, vn:0, t:0, te:0, trace:[], pins:keepPins && S ? S.pins : null, knocked:keepPins && S ? S.knocked : 0, beta:0 };
   if (!S.pins) standPins(); }
-function standPins(){ S.pins = []; var rp = PRM.A - 0.12; for (var i=0; i<NPIN; i++){ var a = TAU*i/NPIN; S.pins.push({ a:a, x:rp*Math.sin(a), n:rp*Math.cos(a), down:0, dir:[0, 0], t:0 }); } S.knocked = 0; }
+function standPins(){ S.pins = []; var rp = PRM.A - 0.12; for (var i=0; i<NPIN; i++){ var a = TAU*i/NPIN; S.pins.push({ a:a, x:rp*Math.sin(a), n:rp*Math.cos(a), down:0, dir:[0, 0] }); } S.knocked = 0; }
 function deriv(st, wz, w2){ return [st[2], st[3], -w2*st[0] + 2*wz*st[3], -w2*st[1] - 2*wz*st[2]]; }
 function step(dt){
   var wz = Wz(), w2 = w0()*w0(), y = [S.x, S.n, S.vx, S.vn], k1 = deriv(y, wz, w2), i;
@@ -172,18 +176,15 @@ function step(dt){
   var y4 = y.map(function(v, j){ return v + k3[j]*dt; }), k4 = deriv(y4, wz, w2);
   for (i=0; i<4; i++) y[i] += dt/6*(k1[i] + 2*k2[i] + 2*k3[i] + k4[i]);
   S.x = y[0]; S.n = y[1]; S.vx = y[2]; S.vn = y[3]; S.t += dt; S.te += dt*Nf(); S.beta += wz*dt;
-  /* pins */
-  S.pins.forEach(function(p){ if (p.down) return; var dx = S.x - p.x, dn = S.n - p.n; if (dx*dx + dn*dn < 0.012){ var v = Math.hypot(S.vx, S.vn) || 1; p.down = 1e-3; p.dir = [S.vx/v, S.vn/v]; S.knocked++; pinEvent(p); } });
+  S.pins.forEach(function(p){ if (p.down) return; var dx = S.x - p.x, dn = S.n - p.n; if (dx*dx + dn*dn < 0.04){ var v = Math.hypot(S.vx, S.vn) || 1; p.down = 1e-3; p.dir = [S.vx/v, S.vn/v]; S.knocked++; pinEvent(p); } });
   S.pins.forEach(function(p){ if (p.down && p.down < 1) p.down = Math.min(1, p.down + dt*3); }); }
 var lastPin = 0;
-function pinEvent(p){ var now = S.te; if (S.knocked === 1 || S.knocked % 6 === 0 || now - lastPin > 3*3600){
-  narrate('Pin knocked down: number ' + S.knocked + ', on the ' + compass(p.a) + ' side. Real Earth time so far: ' + hm(S.te) + '.'); } lastPin = now; }
+function pinEvent(p){ if (S.knocked === 1 || S.knocked % 6 === 0 || S.te - lastPin > 3*3600) narrate('Pin knocked down: number ' + S.knocked + ', on the ' + compass(p.a) + ' side. Real Earth time so far: ' + hm(S.te) + '.'); lastPin = S.te; }
 function compass(a){ var d = ((a/DEG) % 360 + 360) % 360, N = ['north', 'north-east', 'east', 'south-east', 'south', 'south-west', 'west', 'north-west']; return N[Math.round(d/45) % 8]; }
 function hm(s){ var h = Math.floor(s/3600), m = Math.floor((s - 3600*h)/60); return h + ' h ' + (m < 10 ? '0' : '') + m + ' min'; }
-function swingAngle(){   /* direction of the swing, from north toward east, 0..180 */
-  var a = Math.atan2(S.x, S.n)/DEG; if (Math.hypot(S.x, S.n) < 0.3*PRM.A) return null; a = ((a % 180) + 180) % 180; return a; }
+function swingAngle(){ var a = Math.atan2(S.x, S.n)/DEG; if (Math.hypot(S.x, S.n) < 0.3*PRM.A) return null; return ((a % 180) + 180) % 180; }
 /* ══════════ 3D renderer (as in the gyroscope SIM) ══════════ */
-var polys = [], labels = [], cam = {};
+var polys = [], cam = {};
 function setCam(){ var a = U.yaw*DEG, e = U.pitch*DEG; cam = { ca:Math.cos(a), sa:Math.sin(a), ce:Math.cos(e), se:Math.sin(e), s:76, D:16, T:[0, 0.9, 0] }; }
 function view(p){ var x0 = p[0] - cam.T[0], y0 = p[1] - cam.T[1], z0 = p[2] - cam.T[2], x1 = x0*cam.ca + z0*cam.sa, z1 = -x0*cam.sa + z0*cam.ca; return [x1, y0*cam.ce - z1*cam.se, y0*cam.se + z1*cam.ce]; }
 function proj(v){ var f2 = cam.D/Math.max(0.5, cam.D - v[2]); return [W/2 + v[0]*cam.s*f2, H*0.6 - v[1]*cam.s*f2]; }
@@ -211,11 +212,10 @@ function cone(b, tip, r, col, n){ var ax = nrm(sub(tip, b)), u = perp(ax), v = c
   for (var i=0; i<n; i++){ var a0 = TAU*i/n, a1 = TAU*(i + 1)/n, q0 = add(b, add(mul(u, r*Math.cos(a0)), mul(v, r*Math.sin(a0)))), q1 = add(b, add(mul(u, r*Math.cos(a1)), mul(v, r*Math.sin(a1)))); poly([q0, q1, tip], col); } }
 /* ══════════ colours ══════════ */
 function pal(){ var cb = th.cb, hc = th.hc, lm = th.lm;
-  return { bg:hc ? '#000' : (lm ? '#e8ecf1' : '#0d1016'), floor:hc ? [20, 20, 20] : (lm ? [214, 205, 188] : [92, 84, 72]), pit:hc ? [0, 0, 0] : (lm ? [190, 180, 160] : [64, 58, 50]), rail:[150, 130, 90],
+  return { bg:hc ? '#000' : (lm ? '#e8ecf1' : '#0d1016'), floor:hc ? [20, 20, 20] : (lm ? [214, 205, 188] : [92, 84, 72]), pit:hc ? [0, 0, 0] : (lm ? [190, 180, 160] : [64, 58, 50]),
     brass:[214, 170, 70], cable:[60, 60, 64], pin:cb ? [0, 114, 178] : [205, 40, 40], pinTop:[240, 240, 240], txt:hc ? '#fff' : (lm ? '#1d232a' : '#e8eef4'), dim:hc ? '#ddd' : (lm ? '#556070' : '#9aa4b2'),
     rose:hc ? 'rgba(255,255,255,0.8)' : (lm ? 'rgba(60,50,30,0.55)' : 'rgba(235,220,190,0.45)'), trace:cb ? 'rgba(230,159,0,0.85)' : 'rgba(255,215,64,0.85)', plane:cb ? '#56b4e9' : '#3ad08f', north:cb ? '#d55e00' : '#ff5a4a' }; }
-/* the room (floor frame) is drawn turned by beta about the vertical in tab 2 */
-function R(p){ if (!U.tab) return p; var c = Math.cos(S.beta), s = Math.sin(S.beta); return [p[0]*c + p[2]*s, p[1], -p[0]*s + p[2]*c]; }   /* counterclockwise seen from above for beta > 0 */
+function R(p){ if (!U.tab) return p; var c = Math.cos(S.beta), s = Math.sin(S.beta); return [p[0]*c + p[2]*s, p[1], -p[0]*s + p[2]*c]; }
 function F(x, n, y){ return R([x, y || 0, -n]); }
 function line3(a, b){ var A = scr(a), B = scr(b); g.beginPath(); g.moveTo(A[0], A[1]); g.lineTo(B[0], B[1]); g.stroke(); }
 function label(x, y, t, col, size){ g.font = 'bold ' + (size || 13) + 'px Arial, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineWidth = 3.5; g.strokeStyle = th.lm ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.85)'; g.strokeText(t, x, y); g.fillStyle = col; g.fillText(t, x, y); }
@@ -225,14 +225,12 @@ function drawRoom(p){
   for (k=0; k<n; k++){ var j = (k + 1) % n; poly([out[k], out[j], add(inn[j], [0, -0.02, 0]), add(inn[k], [0, -0.02, 0])], p.floor); }
   for (k=0; k<n; k++){ var j2 = (k + 1) % n; poly([F(0, 0, 0), inn[j2], inn[k]], p.pit); }
   flush();
-  /* the compass rose, hour marks */
   g.strokeStyle = p.rose; g.lineWidth = 1;
   for (k=0; k<72; k++){ var a2 = TAU*k/72, r1 = k % 6 === 0 ? 2.75 : 2.95; line3(F(r1*Math.sin(a2), r1*Math.cos(a2)), F(3.15*Math.sin(a2), 3.15*Math.cos(a2))); }
   g.beginPath(); for (k=0; k<=72; k++){ var a3 = TAU*k/72, q = scr(F(3.15*Math.sin(a3), 3.15*Math.cos(a3))); if (k) g.lineTo(q[0], q[1]); else g.moveTo(q[0], q[1]); } g.stroke();
   line3(F(0, -2.6), F(0, 2.6)); line3(F(-2.6, 0), F(2.6, 0));
   [['N', 0], ['E', 90], ['S', 180], ['W', 270]].forEach(function(q){ var a4 = q[1]*DEG, s2 = scr(F(3.6*Math.sin(a4), 3.6*Math.cos(a4))); label(s2[0], s2[1], q[0], q[0] === 'N' ? p.north : p.txt, 15); });
   if (U.trace && S.trace.length > 1){ g.strokeStyle = p.trace; g.lineWidth = 1.5; g.beginPath(); S.trace.forEach(function(q, i){ var s3 = scr(F(q[0], q[1], 0.005)); if (i) g.lineTo(s3[0], s3[1]); else g.moveTo(s3[0], s3[1]); }); g.stroke(); }
-  /* the swing plane in space (tab 2): the original direction, fixed */
   if (U.tab){ var a0 = PRM.az*DEG; g.strokeStyle = p.plane; g.lineWidth = 2.5; g.setLineDash([8, 6]); var A1 = scr([-3.4*Math.sin(a0), 0.01, 3.4*Math.cos(a0)]), B1 = scr([3.4*Math.sin(a0), 0.01, -3.4*Math.cos(a0)]); g.beginPath(); g.moveTo(A1[0], A1[1]); g.lineTo(B1[0], B1[1]); g.stroke(); g.setLineDash([]); } }
 function drawPins(p){
   S.pins.forEach(function(q){ var base = F(q.x, q.n, 0), h = 0.32;
@@ -244,6 +242,9 @@ function drawBob(p){
   tube(add(c, mul(dir, 0.2)), add(c, mul(dir, 9)), 0.018, p.cable, 6);
   ball(c, 0.26, p.brass, 16, 8);
   cone(add(c, [0, -0.2, 0]), add(c, mul(dir, -0.4)), 0.09, p.brass, 12); }
+function arrowL(x1, y1, x2, y2, col, w){ var dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy); if (L < 2) return; var ux = dx/L, uy = dy/L, hl = 9, hw = 5;
+  g.strokeStyle = col; g.fillStyle = col; g.lineWidth = w; g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2 - ux*hl*0.8, y2 - uy*hl*0.8); g.stroke();
+  g.beginPath(); g.moveTo(x2, y2); g.lineTo(x2 - ux*hl - uy*hw, y2 - uy*hl + ux*hw); g.lineTo(x2 - ux*hl + uy*hw, y2 - uy*hl - ux*hw); g.closePath(); g.fill(); }
 function drawGlobe(p){
   if (!U.globe) return; var gx = 676, gy = 92, r = 54, ph = PRM.lat*DEG;
   g.fillStyle = th.lm ? 'rgba(255,255,255,0.85)' : 'rgba(10,14,22,0.8)'; g.fillRect(gx - 98, gy - 80, 196, 176);
@@ -252,15 +253,11 @@ function drawGlobe(p){
   g.strokeStyle = '#ffdd66'; g.beginPath(); g.ellipse(gx, gy - r*Math.sin(ph), r*Math.cos(ph), Math.max(1, r*Math.cos(ph)*0.18), 0, 0, TAU); g.stroke();
   var px = gx + r*Math.cos(ph), py = gy - r*Math.sin(ph);
   arrowL(gx, gy + r + 6, gx, gy - r - 22, p.txt, 2.5); label(gx + 12, gy - r - 18, '\u03A9', p.txt, 14);
-  var ux = Math.cos(ph), uy = -Math.sin(ph), L1 = 34*Math.abs(Math.sin(ph));
-  if (L1 > 2) arrowL(px, py, px + ux*L1*Math.sign(Math.sin(ph)), py + uy*L1*Math.sign(Math.sin(ph)), p.plane, 3);
+  var ux = Math.cos(ph), uy = -Math.sin(ph), L1 = 34*Math.abs(Math.sin(ph)), sg = Math.sin(ph) >= 0 ? 1 : -1;
+  if (L1 > 2) arrowL(px, py, px + ux*L1*sg, py + uy*L1*sg, p.plane, 3);
   g.fillStyle = p.north; g.beginPath(); g.arc(px, py, 5, 0, TAU); g.fill();
   label(gx, gy + r + 20, 'latitude ' + f(Math.abs(PRM.lat), 1) + '\u00B0 ' + (PRM.lat >= 0 ? 'N' : 'S'), p.txt, 11);
-  label(gx, gy - r - 0 + 2*r + 34, '', p.txt, 11);
   g.font = '11px Arial, sans-serif'; g.fillStyle = p.plane; g.textAlign = 'center'; g.fillText('green: \u03A9 sin\u03C6 (local vertical)', gx, gy + r + 34); }
-function arrowL(x1, y1, x2, y2, col, w){ var dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy); if (L < 2) return; var ux = dx/L, uy = dy/L, hl = 9, hw = 5;
-  g.strokeStyle = col; g.fillStyle = col; g.lineWidth = w; g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2 - ux*hl*0.8, y2 - uy*hl*0.8); g.stroke();
-  g.beginPath(); g.moveTo(x2, y2); g.lineTo(x2 - ux*hl - uy*hw, y2 - uy*hl + ux*hw); g.lineTo(x2 - ux*hl + uy*hw, y2 - uy*hl - ux*hw); g.closePath(); g.fill(); }
 function draw(){
   var p = pal(); setCam(); g.fillStyle = p.bg; g.fillRect(0, 0, W, H);
   drawRoom(p); drawPins(p); drawBob(p); flush(); drawGlobe(p);
@@ -269,14 +266,16 @@ function draw(){
   el('fpHint').textContent = 'swing in real time \u00B7 Earth sped up \u00D7' + Nf() + ' \u00B7 drag to turn the view'; }
 /* ══════════ readout ══════════ */
 function info(){
-  var s = Math.sin(PRM.lat*DEG), Tturn = Math.abs(s) > 1e-6 ? 23.934/Math.abs(s) : Infinity, rate = 15.04*s, sw = swingAngle(), st;
+  var s = Math.sin(PRM.lat*DEG), Tturn = Math.abs(s) > 1e-6 ? 23.934/Math.abs(s) : Infinity, rate = 15.041*s, sw = swingAngle(), st;
+  var perSwing = Math.abs(Wz())*TAU/w0()/DEG;
   var cells = [['LATITUDE', f(Math.abs(PRM.lat), 2) + '\u00B0 ' + (PRM.lat >= 0 ? 'N' : 'S') + ' \u00B7 sin\u03C6 = ' + f(s, 3)], ['SWING PERIOD T = 2\u03C0\u221A(L/g)', f(TAU/w0(), 2) + ' s'],
     ['SWING TURNS', Math.abs(rate) < 0.005 ? 'not at all' : f(Math.abs(rate), 2) + '\u00B0 per hour, ' + (rate > 0 ? 'clockwise' : 'counterclockwise')], ['ONCE AROUND IN', isFinite(Tturn) ? f(Tturn, 1) + ' h (\u2248 ' + f(Tturn/24, 2) + ' days)' : 'never'],
-    ['REAL EARTH TIME', hm(S.te)], ['SWING DIRECTION NOW', sw === null ? '\u2026' : f(sw, 0) + '\u00B0 from N\u2013S'], ['PINS DOWN', S.knocked + ' of ' + NPIN]];
+    ['REAL EARTH TIME', hm(S.te)], ['TURN PER SWING (SPED UP)', f(perSwing, 1) + '\u00B0 \u00B7 pins every ' + (360/NPIN) + '\u00B0'], ['SWING DIRECTION NOW', sw === null ? '\u2026' : f(sw, 0) + '\u00B0 from N\u2013S'], ['PINS DOWN', S.knocked + ' of ' + NPIN]];
   el('fpRead').innerHTML = cells.map(function(c){ return '<div><div class="fp_flabel">' + c[0] + '</div><div class="fp_fvalue">' + c[1] + '</div></div>'; }).join('');
   if (Math.abs(s) < 0.01) st = 'At the equator the floor does not turn about the vertical: the swing keeps its direction relative to the floor, and no pins fall (except those it starts on).';
   else if (U.tab) st = 'Seen from space: the swing keeps its direction (dashed line); the room, carried by the Earth, turns ' + (s > 0 ? 'counterclockwise' : 'clockwise') + ' underneath it at \u03A9 sin\u03C6.';
   else st = 'In the museum: the swing slowly turns ' + (s > 0 ? 'clockwise' : 'counterclockwise') + ' (seen from above), ' + f(Math.abs(rate), 1) + '\u00B0 per hour, knocking down the pins one by one.';
+  if (Nset() > Nmax()) st += ' The speed-up is held at \u00D7' + Nmax() + ' here: any faster and the swing would turn more than a pin spacing between two visits to the ring, and skip pins.';
   el('fpStatus').textContent = st;
   el('fpEq').innerHTML = 'Swing: <b>T = 2\u03C0\u221A(L/g)</b> = 2\u03C0\u221A(' + f(PRM.L, 0) + '/9.81) = ' + f(TAU/w0(), 2) + ' s. The Earth turns once per sidereal day, 23 h 56 min: <b>\u03A9</b> = 15.04\u00B0/h.<br>Turning of the swing: <b>\u03A9 sin\u03C6</b> = 15.04 \u00D7 ' + f(s, 3) + ' = ' + f(Math.abs(rate), 2) + '\u00B0/h; once around in <b>23.93 h / sin\u03C6</b> = ' + (isFinite(Tturn) ? f(Tturn, 1) + ' h' : '\u221E') + '.';
   return st; }
@@ -293,13 +292,13 @@ function build(){
   el('fpCtlP').innerHTML = row('fpL', 'length of the cable L', 5, 67, 1, PRM.L, PRM.L + ' m') + row('fpA', 'amplitude (half the swing)', 1.5, 3.0, 0.1, PRM.A, PRM.A.toFixed(1) + ' m')
     + row('fpAz', 'starting direction of the swing', 0, 175, 5, PRM.az, PRM.az + '\u00B0 from N\u2013S')
     + '<p class="fp_note">The Panth\u00E9on pendulum in Paris has a 67 m cable. Changing the length or the amplitude restarts the swing and stands the pins up.</p>';
-  on('fpLat', 'input', function(){ PRM.lat = +this.value; el('fpLatv').textContent = latTxt(PRM.lat); restart(true); later(); });
-  [].forEach.call(el('fpCtlL').querySelectorAll('button[data-pl]'), function(b){ b.addEventListener('click', function(){ var q = PLACES[+b.getAttribute('data-pl')]; PRM.lat = q[1]; el('fpLat').value = q[1]; el('fpLatv').textContent = latTxt(q[1]); restart(true);
+  on('fpLat', 'input', function(){ PRM.lat = +this.value; el('fpLatv').textContent = latTxt(PRM.lat); restart(true); nTxt(); later(); });
+  [].forEach.call(el('fpCtlL').querySelectorAll('button[data-pl]'), function(b){ b.addEventListener('click', function(){ var q = PLACES[+b.getAttribute('data-pl')]; PRM.lat = q[1]; el('fpLat').value = q[1]; el('fpLatv').textContent = latTxt(q[1]); restart(true); nTxt();
     narrate(q[0] + ': ' + info()); }); });
-  on('fpL', 'input', function(){ PRM.L = +this.value; el('fpLv').textContent = PRM.L + ' m'; restart(false); later(); });
+  on('fpL', 'input', function(){ PRM.L = +this.value; el('fpLv').textContent = PRM.L + ' m'; restart(false); nTxt(); later(); });
   on('fpA', 'input', function(){ PRM.A = +this.value; el('fpAv').textContent = PRM.A.toFixed(1) + ' m'; restart(false); later(); });
   on('fpAz', 'input', function(){ PRM.az = +this.value; el('fpAzv').textContent = PRM.az + '\u00B0 from N\u2013S'; restart(true); later(); }); }
-function nTxt(){ el('fpNv').textContent = '\u00D7' + Nf(); }
+function nTxt(){ var a = Nset(), m = Nmax(); el('fpNv').textContent = a > m ? '\u00D7' + a + ' \u2192 \u00D7' + m + ' here' : '\u00D7' + a; }
 var lt = null; function later(){ clearTimeout(lt); lt = setTimeout(function(){ narrate(info()); }, 900); }
 function setPlay(v){ U.play = v; el('fpPlay').innerHTML = v ? '\u2759\u2759 Pause' : '\u25B6 Play'; el('fpPlay').classList.toggle('fp_btnon', v); }
 on('fpPlay', 'click', function(){ setPlay(!U.play); });
@@ -336,7 +335,7 @@ function loop(t){ var rdt = last ? Math.min(0.05, (t - last)/1000) : 0; last = t
 build(); nTxt(); restart(false); tab(0); setPlay(true);
 narrate('Ready: a Foucault pendulum in Atlanta, latitude 33.75\u00B0 N. The swing turns clockwise by 8.4\u00B0 per hour. The Earth is sped up \u00D7' + Nf() + ' so you can watch the pins fall; drag the speed-up to 1 for real time.');
 requestAnimationFrame(loop);
-return { tab:tab, theme:theme, toggleDesc:toggleDesc, describe:describe, _S:function(){ return S; }, _P:PRM, _adv:function(T){ var n = Math.round(T/0.05); for (var i=0; i<n; i++) advance(0.05); }, _swing:swingAngle, _restart:restart, _U:U };
+return { tab:tab, theme:theme, toggleDesc:toggleDesc, describe:describe, _S:function(){ return S; }, _P:PRM, _adv:function(T){ var n = Math.round(T/0.05); for (var i=0; i<n; i++) advance(0.05); }, _swing:swingAngle, _restart:restart, _U:U, _N:function(){ return [Nset(), Nmax(), Nf()]; } };
 })();
 </script>
 
