@@ -33,18 +33,18 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <div class="mm_main">
 <div class="mm_meterwrap"><div id="mmSvg" class="mm_svg"></div></div>
 <div class="mm_side">
-<div class="mm_panel"><div class="mm_ptitle">The source being measured</div><div class="mm_pbody" id="mmSources" role="radiogroup" aria-label="The source being measured"></div></div>
-<div class="mm_panel"><div class="mm_ptitle">The dial</div><div class="mm_pbody"><div class="mm_dialrow"><button type="button" class="mm_btn" id="mmPrev" aria-label="turn the dial one position counterclockwise">&#8249;</button><select id="mmSel" aria-label="dial position"></select><button type="button" class="mm_btn" id="mmNext" aria-label="turn the dial one position clockwise">&#8250;</button></div><div class="mm_note" id="mmNote"></div></div></div>
+<div class="mm_panel"><div class="mm_ptitle">The source being measured</div><div class="mm_pbody"><div id="mmKindRow" class="mm_kindrow"></div><div id="mmSources" role="radiogroup" aria-label="The source being measured"></div></div></div>
+<div class="mm_panel"><div class="mm_ptitle">The dial</div><div class="mm_pbody"><div class="mm_dialrow"><button type="button" class="mm_btn" id="mmPwr" aria-pressed="true" style="min-width:58px">ON</button><button type="button" class="mm_btn" id="mmPrev" aria-label="turn the dial one position counterclockwise">&#8249;</button><select id="mmSel" aria-label="dial position"></select><button type="button" class="mm_btn" id="mmNext" aria-label="turn the dial one position clockwise">&#8250;</button></div><div class="mm_note" id="mmNote"></div></div></div>
 <div class="mm_reading" id="mmReading" role="status" aria-live="polite"></div>
 </div>
 </div>
 <div id="mmNar" class="mm_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
 <div class="mm_spec">
-<div class="mm_explain"><p>Uncertainties for digital multimeters (DMMs) are always listed as a percentage of the reading plus some integer multiple of the least significant digit (dgt) on the scale.</p>
+<div class="mm_explain" id="mmExplain" style="display:none"><p>Uncertainties for digital multimeters (DMMs) are always listed as a percentage of the reading plus some integer multiple of the least significant digit (dgt) on the scale.</p>
 <p class="mm_eqc">e.g. &nbsp;&plusmn;(2.5% + 3&middot;dgt)</p>
 <p>So, for example, if we measure a voltage of 32.00 V on a scale that has the uncertainty listed above (where 0.01 V is the least significant digit on that scale), then the absolute uncertainty of our reading will be:</p>
 <p class="mm_eqc">(32.00 &times; 0.025) = 0.8<br>+ (3 &times; 0.01) = 0.03<br>= 0.83 &rArr; &plusmn;0.8 V</p></div>
-<div class="mm_specbtns" id="mmSpecBtns"></div>
+<div class="mm_specbtns"><button type="button" class="mm_specbtn" id="mmHow" aria-expanded="false" aria-controls="mmExplain">How is the uncertainty of a reading found?</button><span id="mmSpecBtns" style="display:contents"></span></div>
 <div id="mmSpecTables"></div>
 </div>
 <div class="mm_descwrap">
@@ -117,6 +117,7 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 #mmRoot .mm_dialrow { display:flex; gap:6px; align-items:center; }
 #mmRoot .mm_dialrow select { flex:1; padding:6px; font-size:.86rem; }
 #mmRoot .mm_dialrow .mm_btn { min-width:44px; font-size:1.2rem; }
+#mmRoot .mm_kindrow { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:6px; font-size:.8rem; color:var(--c-text); }
 #mmRoot .mm_note { font-size:.8rem; color:var(--c-text); margin-top:6px; line-height:1.35; }
 #mmRoot .mm_reading { padding:8px 12px; border-radius:4px; background:var(--c-panel); border:1px solid var(--c-bd); border-left:4px solid #e0b040; font-size:.9rem; line-height:1.4; color:var(--c-text); }
 #mmRoot .mm_spec { width:100%; color:#1d2a36; }
@@ -136,16 +137,16 @@ var mmSim = (function(){
    MODES: the functions on the dial, any of  V=  V~  A=  A~  Ohm  F  (separated by commas)
    KIND:  what the five sources are (one of the above); empty: the first of MODES
    SPEC:  accuracy overrides, 'range:% of reading:digits; ...', for example 'V=/20:0.7:2; Ohm/200:0.7:3'
-   In MOM, the variables $modes, $kind and $spec, when set, replace these defaults. 
-   MODES = 'V=,V~,A=,A~,Ohm,F';KIND = ''; //all
-   MODES='V%3D,V';KIND='V%3D'; //voltage
-   MODES='A~,A%3D';KIND='A%3D'; //current
-   MODES='Ohm';KIND='Ohm'; //resistance
-   MODES='F';KIND='F'; //capacitance
-	*/
+   In MOM, the variables $modes, $kind and $spec, when set, replace these defaults.
+   MODES = 'V=,V~,A=,A~,Ohm,F'; KIND = '';   //all
+   MODES = 'V=,V~'; KIND = 'V=';              //voltage
+   MODES = 'A=,A~'; KIND = 'A=';              //current
+   MODES = 'Ohm';   KIND = 'Ohm';             //resistance
+   MODES = 'F';     KIND = 'F';               //capacitance
+*/
 var MODES = 'V=,V~,A=,A~,Ohm,F';
 var KIND = '';
-   MODES='Ohm';KIND='Ohm'; //resistance
+   MODES = 'Ohm';   KIND = 'Ohm';             //resistance
 var SPEC = '';
 var ANSWER_NOTE = true;   // show the five-measurement question's wording for the kind of source
 /* ── from MOM (read as text: unset variables do no harm) ── */
@@ -172,14 +173,16 @@ var modes = MODES.split(',').map(function(s){ return s.trim(); }).filter(functio
 if (!KIND || !FUN[KIND]) KIND = modes[0];
 /* the accuracy overrides */
 SPEC.split(';').forEach(function(t){ var q = t.split(':'); if (q.length < 3) return; var key = q[0].trim(), f = key.split('/')[0], r = key.split('/')[1]; if (!FUN[f]) return; FUN[f].rng.forEach(function(R){ if (R[0] === r || R[0] === (r || '').replace('u', '\u00B5')){ R[4] = parseFloat(q[1]); R[5] = parseInt(q[2], 10); } }); });
-var POS = [{ k:'OFF' }]; modes.forEach(function(f){ FUN[f].rng.forEach(function(R){ POS.push({ k:f + '/' + R[0], f:f, R:R }); }); });
-var dial = 0; if (set_(MOM.dial)) POS.forEach(function(p, i){ if (p.k === MOM.dial || p.k === MOM.dial.replace('u', '\u00B5')) dial = i; });
+var POS = [], power = true; modes.forEach(function(f){ FUN[f].rng.forEach(function(R){ POS.push({ k:f + '/' + R[0], f:f, R:R }); }); });
+var dial = 0; if (set_(MOM.dial) && MOM.dial === 'OFF') power = false; if (set_(MOM.dial)) POS.forEach(function(p, i){ if (p.k === MOM.dial || p.k === MOM.dial.replace('u', '\u00B5')) dial = i; });
 /* the sources: from MOM, or examples */
 function ex(kind){ return { 'V=':[[1.2345, 'battery cell'], [0.0873, 'thermocouple'], [12.47, 'car battery'], [5.03, 'USB supply'], [152.6, 'DC bus']], 'V~':[[1.414, 'signal generator'], [11.86, 'transformer'], [120.3, 'wall outlet'], [6.31, 'doorbell transformer'], [240.5, 'mains (Europe)']], 'A=':[[0.00135, 'LED'], [0.0183, 'buzzer'], [0.142, 'small motor'], [0.000452, 'sensor'], [2.36, 'heater']], 'A~':[[0.00187, 'speaker coil'], [0.0156, 'relay coil'], [0.118, 'fan'], [0.82, 'lamp'], [4.73, 'kettle']], 'Ohm':[[47.3, 'resistor R\u2081'], [1500, 'resistor R\u2082'], [22100, 'resistor R\u2083'], [680000, 'resistor R\u2084'], [3.3e6, 'resistor R\u2085']], 'F':[[4.7e-9, 'capacitor C\u2081'], [3.3e-8, 'capacitor C\u2082'], [1.5e-7, 'capacitor C\u2083'], [4.7e-6, 'capacitor C\u2084'], [1e-4, 'capacitor C\u2085']] }[kind]; }
-var SRC = ex(KIND).map(function(d, i){ var v = parseFloat(MOM.values[i]), l = MOM.labels[i]; return { v:set_(MOM.values[i]) && isFinite(v) ? v : d[0], label:set_(l) ? l : 'Source ' + (i + 1) + ': ' + d[1] }; });
+var QKIND = KIND;   /* the kind the question (and MOM's five values) are about */
+function makeSources(kind){ return ex(kind).map(function(d, i){ if (kind !== QKIND) return { v:d[0], label:'Source ' + (i + 1) + ': ' + d[1] }; var v = parseFloat(MOM.values[i]), l = MOM.labels[i]; return { v:set_(MOM.values[i]) && isFinite(v) ? v : d[0], label:set_(l) ? l : 'Source ' + (i + 1) + ': ' + d[1] }; }); }
+var SRC = makeSources(KIND);
 var cur = 0;
 /* ══════════ the reading ══════════ */
-function reading(){ var P = POS[dial]; if (P.k === 'OFF') return { off:true };
+function reading(){ var P = POS[dial]; if (!power) return { off:true };
   if (P.f !== KIND) return { wrong:true, f:P.f };
   var R = P.R, x = SRC[cur].v, ac = P.f.indexOf('~') > 0; if (ac || P.f === 'Ohm' || P.f === 'F') x = Math.abs(x);
   var lim = Math.min(R[1], 1999*R[3]); if (Math.abs(x) > lim + R[3]/2) return { ol:true, R:R };
@@ -189,9 +192,10 @@ function reading(){ var P = POS[dial]; if (P.k === 'OFF') return { off:true };
 var SEG = { '0':'abcdef', '1':'bc', '2':'abged', '3':'abgcd', '4':'fgbc', '5':'afgcd', '6':'afgedc', '7':'abc', '8':'abcdefg', '9':'abcdfg', '-':'g', 'O':'abcdef', 'L':'def', ' ':'' };
 function seg7(x, y, w, h, ch, on, off){ var t = w*0.16, S = { a:[x + t, y, w - 2*t, t], d:[x + t, y + h - t, w - 2*t, t], g:[x + t, y + h/2 - t/2, w - 2*t, t], f:[x, y + t*0.6, t, h/2 - t], b:[x + w - t, y + t*0.6, t, h/2 - t], e:[x, y + h/2 + t*0.4, t, h/2 - t], c:[x + w - t, y + h/2 + t*0.4, t, h/2 - t] }, s = '';
   Object.keys(S).forEach(function(k){ var r = S[k], lit = (SEG[ch] || '').indexOf(k) >= 0; s += '<rect x="' + r[0].toFixed(1) + '" y="' + r[1].toFixed(1) + '" width="' + r[2].toFixed(1) + '" height="' + r[3].toFixed(1) + '" rx="1.5" fill="' + (lit ? on : off) + '"/>'; }); return s; }
-var ANG = []; (function(){ var n = POS.length, a0 = -150, a1 = 150; for (var i=0; i<n; i++) ANG.push(n > 1 ? a0 + (a1 - a0)*i/(n - 1) : 0); })();
+var ANG = [], TWO = false; (function(){ var n = POS.length, span = Math.min(340, (n - 1)*36), a0 = -span/2, a1 = span/2;   /* up to almost all the way round, at most 36 degrees apart */
+  TWO = n > 1 && 2*Math.PI*(54 + 44)*(span/(n - 1))/360 < 30;   /* two rings of labels only when one ring would be crowded */ for (var i=0; i<n; i++) ANG.push(n > 1 ? a0 + (a1 - a0)*i/(n - 1) : 0); })();
 var bodyCol = set_(MOM.color) ? MOM.color : '#f2c230', bgCol = set_(MOM.bg) ? MOM.bg : '#2b2f36';
-function svg(){ var W = 340, H = 520, CX = 170, CY = 300, Rk = 58, r = reading(), lcdOn = th.hc ? '#000' : '#1b1b1b', lcdOff = 'rgba(0,0,0,0.06)', s = '';
+function svg(){ var W = 340, H = 560, CX = 170, CY = 318, Rk = 54, r = reading(), lcdOn = th.hc ? '#000' : '#1b1b1b', lcdOff = 'rgba(0,0,0,0.06)', s = '';
   s += '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The multimeter: display, dial and input jacks" style="width:100%;height:auto;display:block;touch-action:none">';
   s += '<rect x="6" y="6" width="' + (W - 12) + '" height="' + (H - 12) + '" rx="26" fill="' + bodyCol + '" stroke="#333" stroke-width="2"/><rect x="20" y="20" width="' + (W - 40) + '" height="' + (H - 40) + '" rx="18" fill="' + bgCol + '"/>';
   /* the display */ s += '<rect x="38" y="36" width="' + (W - 76) + '" height="104" rx="8" fill="#9fb29a" stroke="#222" stroke-width="2"/>';
@@ -205,15 +209,18 @@ function svg(){ var W = 340, H = 520, CX = 170, CY = 300, Rk = 58, r = reading()
   if (POS[dial].f && POS[dial].f.indexOf('=') > 0) s += '<text x="46" y="132" font-family="Arial" font-weight="bold" font-size="14" fill="' + lcdOn + '">DC</text>';
   /* the dial: positions around the knob, grouped by function */
   var fcol = { 'V=':'#7be0a8', 'V~':'#8cc0ff', 'A=':'#ffc266', 'A~':'#ff9a9a', 'Ohm':'#7ff0f0', 'F':'#c9a8ff' };
-  POS.forEach(function(P, i){ var a = (ANG[i] - 90)*Math.PI/180, rt = Rk + 14, rl = Rk + 34, x1 = CX + rt*Math.cos(a), y1 = CY + rt*Math.sin(a), xl = CX + rl*Math.cos(a), yl = CY + rl*Math.sin(a), on = i === dial;
+  modes.forEach(function(f){ var ids = []; POS.forEach(function(P, i){ if (P.f === f) ids.push(i); }); var a0 = (ANG[ids[0]] - 4 - 90)*Math.PI/180, a1 = (ANG[ids[ids.length - 1]] + 4 - 90)*Math.PI/180, rr = Rk + 9;
+    s += '<path d="M' + (CX + rr*Math.cos(a0)) + ' ' + (CY + rr*Math.sin(a0)) + ' A ' + rr + ' ' + rr + ' 0 ' + (a1 - a0 > Math.PI ? 1 : 0) + ' 1 ' + (CX + rr*Math.cos(a1)) + ' ' + (CY + rr*Math.sin(a1)) + '" stroke="' + fcol[f] + '" stroke-width="5" fill="none" opacity="0.8"/>'; });   /* a coloured arc for each function */
+  POS.forEach(function(P, i){ var a = (ANG[i] - 90)*Math.PI/180, rt = Rk + 18, rl = Rk + 44 + (TWO && i % 2 ? 22 : 0),   /* two rings, alternately, only when crowded */ x1 = CX + rt*Math.cos(a), y1 = CY + rt*Math.sin(a), xl = CX + rl*Math.cos(a), yl = CY + rl*Math.sin(a), on = i === dial;
     s += '<line x1="' + (CX + (Rk + 6)*Math.cos(a)) + '" y1="' + (CY + (Rk + 6)*Math.sin(a)) + '" x2="' + x1 + '" y2="' + y1 + '" stroke="' + (on ? '#fff' : '#aaa') + '" stroke-width="' + (on ? 3 : 1.5) + '"/>';
-    s += '<g class="mm_pos" data-i="' + i + '" style="cursor:pointer"><circle cx="' + xl + '" cy="' + yl + '" r="15" fill="' + (on ? '#fff' : 'rgba(255,255,255,0.06)') + '"/><text x="' + xl + '" y="' + (yl + 4) + '" text-anchor="middle" font-family="Arial" font-size="' + (P.k === 'OFF' ? 10 : 11) + '" font-weight="bold" fill="' + (on ? '#000' : (P.f ? fcol[P.f] : '#eee')) + '">' + (P.k === 'OFF' ? 'OFF' : P.R[0]) + '</text></g>'; });
+    s += '<g class="mm_pos" data-i="' + i + '" style="cursor:pointer"><circle cx="' + xl + '" cy="' + yl + '" r="13.5" fill="' + (on ? '#fff' : 'rgba(255,255,255,0.06)') + '"/><text x="' + xl + '" y="' + (yl + 4) + '" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold" fill="' + (on ? '#000' : fcol[P.f]) + '">' + P.R[0] + '</text></g>'; });
   /* the function names, at the middle of each group */
-  modes.forEach(function(f){ var ids = []; POS.forEach(function(P, i){ if (P.f === f) ids.push(i); }); var am = (ANG[ids[0]] + ANG[ids[ids.length - 1]])/2, a = (am - 90)*Math.PI/180, rr = Rk + 62;
-    s += '<text x="' + (CX + rr*Math.cos(a)) + '" y="' + (CY + rr*Math.sin(a) + 5) + '" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="' + fcol[f] + '">' + FUN[f].sym + '</text>'; });
+  modes.forEach(function(f){ var ids = []; POS.forEach(function(P, i){ if (P.f === f) ids.push(i); }); var am = (ANG[ids[0]] + ANG[ids[ids.length - 1]])/2, a = (am - 90)*Math.PI/180, rr = Rk + 98;
+    s += '<text x="' + Math.max(40, Math.min(300, CX + rr*Math.cos(a))) + '" y="' + (CY + rr*Math.sin(a) + 5) + '" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="' + fcol[f] + '">' + FUN[f].sym + '</text>'; });
+  /* the power switch */ s += '<g class="mm_pwr" style="cursor:pointer"><rect x="30" y="150" width="58" height="26" rx="6" fill="' + (power ? '#2e7d32' : '#555') + '" stroke="#111" stroke-width="1.5"/><text x="59" y="168" text-anchor="middle" font-family="Arial" font-size="13" font-weight="bold" fill="#fff">' + (power ? 'ON' : 'OFF') + '</text></g>';
   /* the knob, pointing at the position */ var ap = (ANG[dial] - 90)*Math.PI/180;
   s += '<g id="mmKnob" style="cursor:grab"><circle cx="' + CX + '" cy="' + CY + '" r="' + Rk + '" fill="#3a3f47" stroke="#111" stroke-width="2"/><circle cx="' + CX + '" cy="' + CY + '" r="' + (Rk - 10) + '" fill="#4a505a"/><line x1="' + (CX - (Rk - 4)*Math.cos(ap)) + '" y1="' + (CY - (Rk - 4)*Math.sin(ap)) + '" x2="' + (CX + (Rk - 2)*Math.cos(ap)) + '" y2="' + (CY + (Rk - 2)*Math.sin(ap)) + '" stroke="#ddd" stroke-width="12" stroke-linecap="round"/><circle cx="' + (CX + (Rk - 10)*Math.cos(ap)) + '" cy="' + (CY + (Rk - 10)*Math.sin(ap)) + '" r="4" fill="#ff3b30"/></g>';
-  /* the jacks, and the probes in the right ones */ var jx = { '10A':70, 'mA':135, 'COM':205, 'V':270 }, jy = 470, f = POS[dial].f, red = !f ? 'V' : FUN[f].jack === 'mA' ? (POS[dial].R[1] >= 10 ? '10A' : 'mA') : 'V';
+  /* the jacks, and the probes in the right ones */ var jx = { '10A':70, 'mA':135, 'COM':205, 'V':270 }, jy = 512, f = POS[dial].f, red = !f ? 'V' : FUN[f].jack === 'mA' ? (POS[dial].R[1] >= 10 ? '10A' : 'mA') : 'V';
   Object.keys(jx).forEach(function(k){ var used = k === 'COM' || k === red; s += '<circle cx="' + jx[k] + '" cy="' + jy + '" r="13" fill="#111" stroke="' + (k === 'COM' ? '#000' : '#c00') + '" stroke-width="3"/><circle cx="' + jx[k] + '" cy="' + jy + '" r="6" fill="#444"/><text x="' + jx[k] + '" y="' + (jy - 20) + '" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold" fill="#eee">' + (k === 'V' ? 'V\u03A9F' : k) + '</text>';
     if (used) s += '<path d="M' + jx[k] + ' ' + jy + ' C ' + jx[k] + ' ' + (jy + 30) + ', ' + (k === 'COM' ? jx[k] - 40 : jx[k] + 40) + ' ' + (H + 10) + ', ' + (k === 'COM' ? jx[k] - 60 : jx[k] + 60) + ' ' + (H + 30) + '" stroke="' + (k === 'COM' ? '#111' : '#d01010') + '" stroke-width="6" fill="none"/><circle cx="' + jx[k] + '" cy="' + jy + '" r="9" fill="' + (k === 'COM' ? '#222' : '#d01010') + '"/>'; });
   s += '</svg>'; return s; }
@@ -224,35 +231,42 @@ function f2(v, k){ return (+v).toFixed(k === undefined ? 2 : k); }
 function narrate(m){ if (!th.nr) return; el('mmNar').textContent = m; }
 function prefixed(x, unit){ var a = Math.abs(x), P = [['G', 1e9], ['M', 1e6], ['k', 1e3], ['', 1], ['m', 1e-3], ['\u00B5', 1e-6], ['n', 1e-9], ['p', 1e-12]]; for (var i=0; i<P.length; i++) if (a >= P[i][1]*0.0999 || i === P.length - 1) return String(parseFloat((x/P[i][1]).toPrecision(4))) + ' ' + P[i][0] + unit; }
 function render(){ el('mmSvg').innerHTML = svg(); var r = reading(), P = POS[dial], txt;
-  if (r.off) txt = 'The meter is off. Turn the dial to a ' + FUN[KIND].name.toLowerCase() + ' range.';
+  if (r.off) txt = 'The meter is off. Press <b>ON</b>, and turn the dial to a ' + FUN[KIND].name.toLowerCase() + ' range.';
   else if (r.wrong) txt = '<b>Wrong function:</b> the dial is set to ' + FUN[r.f].name.toLowerCase() + ', but the source is a ' + FUN[KIND].name.toLowerCase().replace('resistance', 'resistor').replace('capacitance', 'capacitor') + '. Turn the dial to a ' + FUN[KIND].sym + ' range.';
   else if (r.ol) txt = '<b>OL: overload.</b> The ' + P.R[0] + ' range is too small for this source: choose a larger range.';
   else txt = 'Reading: <b>' + r.text + ' ' + r.unit + '</b> on the ' + P.R[0] + ' range (resolution ' + resText(P) + ').' + (r.text.replace('-', '').replace('.', '').replace(/^0+/, '').length < 3 && r.value !== 0 ? ' Few digits: a smaller range would be more precise.' : '');
-  el('mmReading').innerHTML = txt; el('mmSel').value = String(dial);
+  el('mmReading').innerHTML = txt; el('mmSel').value = String(dial); el('mmPwr').textContent = power ? 'ON' : 'OFF'; el('mmPwr').setAttribute('aria-pressed', power ? 'true' : 'false');
+  var pw = el('mmSvg').querySelector('.mm_pwr'); if (pw) pw.addEventListener('click', togglePower);
   var f = P.f; el('mmNote').innerHTML = !f ? '' : FUN[f].jack === 'mA' ? 'Current: the meter goes <b>in series</b>, red probe in <b>' + (P.R[1] >= 10 ? '10A' : 'mA') + '</b>, black in COM.' : (f === 'Ohm' || f === 'F' ? 'The component is disconnected, and connected across the probes (V\u03A9F and COM).' : 'Voltage: the meter goes <b>across</b> the source (V\u03A9F and COM).');
   [].forEach.call(el('mmSvg').querySelectorAll('.mm_pos'), function(g){ g.addEventListener('click', function(){ setDial(+g.getAttribute('data-i')); }); });
   }
+function togglePower(){ power = !power; render(); narrate(power ? 'The meter is on. ' + el('mmReading').textContent : 'The meter is off.'); }
 function setDial(i){ dial = Math.max(0, Math.min(POS.length - 1, i)); render(); var r = reading(), P = POS[dial];
-  narrate(P.k === 'OFF' ? 'Off.' : FUN[P.f].name + ', ' + P.R[0] + ' range: ' + (r.wrong ? 'the wrong function for this source.' : r.ol ? 'overload.' : 'the display reads ' + r.text + ' ' + r.unit + '.')); }
+  narrate(!power ? 'The meter is off.' : FUN[P.f].name + ', ' + P.R[0] + ' range: ' + (r.wrong ? 'the wrong function for this source.' : r.ol ? 'overload.' : 'the display reads ' + r.text + ' ' + r.unit + '.')); }
 var dragging = false;
-function angAt(e){ var svgEl = el('mmSvg').querySelector('svg'), r = svgEl.getBoundingClientRect(), x = (e.clientX - r.left)*340/r.width - 170, y = (e.clientY - r.top)*520/r.height - 300; return { a:Math.atan2(y, x)*180/Math.PI + 90, d:Math.hypot(x, y) }; }
-el('mmSvg').addEventListener('pointerdown', function(e){ var q = angAt(e); if (q.d > 64) return; dragging = true; try { el('mmSvg').setPointerCapture(e.pointerId); } catch(err){} e.preventDefault(); });
+function angAt(e){ var svgEl = el('mmSvg').querySelector('svg'), r = svgEl.getBoundingClientRect(), x = (e.clientX - r.left)*340/r.width - 170, y = (e.clientY - r.top)*560/r.height - 318; return { a:Math.atan2(y, x)*180/Math.PI + 90, d:Math.hypot(x, y) }; }
+el('mmSvg').addEventListener('pointerdown', function(e){ if (e.target.closest && e.target.closest('.mm_pwr')) return; var q = angAt(e); if (q.d > 60) return; dragging = true; try { el('mmSvg').setPointerCapture(e.pointerId); } catch(err){} e.preventDefault(); });
 el('mmSvg').addEventListener('pointermove', function(e){ if (!dragging) return; var a = angAt(e).a; if (a > 180) a -= 360; var best = 0, bd = 1e9; ANG.forEach(function(A, i){ var d = Math.abs(A - a); if (d < bd){ bd = d; best = i; } }); if (best !== dial){ dial = best; render(); } e.preventDefault(); });
 el('mmSvg').addEventListener('pointerup', function(){ if (dragging){ dragging = false; setDial(dial); } });
 /* the sources */
-el('mmSources').innerHTML = SRC.map(function(S, i){ return '<label class="mm_src"><input type="radio" name="mmSrc" value="' + i + '"' + (i === cur ? ' checked' : '') + '> ' + S.label + '</label>'; }).join('');
+function buildSources(){ el('mmSources').innerHTML = SRC.map(function(S, i){ return '<label class="mm_src"><input type="radio" name="mmSrc" value="' + i + '"' + (i === cur ? ' checked' : '') + '> ' + S.label + '</label>'; }).join('');
 [].forEach.call(el('mmSources').querySelectorAll('input'), function(r){ r.addEventListener('change', function(){ cur = +this.value; render(); narrate('Measuring ' + SRC[cur].label + '. ' + el('mmReading').textContent); }); });
+  el('mmKindRow').innerHTML = modes.length > 1 ? '<button type="button" class="mm_btn" id="mmKind">Next kind of source \u21BB</button> <span class="mm_kindname">' + FUN[KIND].name + (KIND === QKIND ? ' (the question\u2019s sources)' : ' (examples)') + '</span>' : '';
+  var kb = el('mmKind'); if (kb) kb.addEventListener('click', function(){ KIND = modes[(modes.indexOf(KIND) + 1) % modes.length]; SRC = makeSources(KIND); cur = 0; buildSources(); render(); el('mmSub').textContent = 'measuring ' + FUN[KIND].name.toLowerCase() + ': choose the range that gives the most precise reading'; narrate('Now measuring ' + FUN[KIND].name.toLowerCase() + ' sources' + (KIND === QKIND ? ', the ones of the question.' : ', examples to explore.') + ' Turn the dial to a ' + FUN[KIND].sym + ' range.'); }); }
+buildSources();
 /* the dial's menu and buttons */
-el('mmSel').innerHTML = POS.map(function(P, i){ return '<option value="' + i + '">' + (P.k === 'OFF' ? 'OFF' : FUN[P.f].sym + '  ' + P.R[0] + ' (' + FUN[P.f].name + ')') + '</option>'; }).join('');
+el('mmSel').innerHTML = POS.map(function(P, i){ return '<option value="' + i + '">' + FUN[P.f].sym + '  ' + P.R[0] + ' (' + FUN[P.f].name + ')</option>'; }).join('');
 el('mmSel').addEventListener('change', function(){ setDial(+this.value); });
+el('mmPwr').addEventListener('click', togglePower);
 el('mmPrev').addEventListener('click', function(){ setDial(dial - 1); }); el('mmNext').addEventListener('click', function(){ setDial(dial + 1); });
 /* the specification panels: one per function on the dial */
 el('mmSpecBtns').innerHTML = modes.map(function(f){ return '<button type="button" class="mm_specbtn" data-f="' + f + '" aria-expanded="false">' + FUN[f].name + ' (' + FUN[f].sym + ') Measurements</button>'; }).join('');
 el('mmSpecTables').innerHTML = modes.map(function(f){ var F = FUN[f]; return '<div class="mm_spectbl" data-f="' + f + '" style="display:none;background:' + F.col + '"><table><thead><tr><th>Function</th><th>Range</th><th>Resolution</th><th>Accuracy</th></tr></thead><tbody>'
   + F.rng.map(function(R, i){ return '<tr>' + (i ? '' : '<td rowspan="' + F.rng.length + '">' + F.name + '</td>') + '<td>' + R[0].replace(/^([0-9.]+)(.*)/, function(m0, n0, p0){ return n0 + ' ' + p0; }) + F.unit + '</td><td>' + RES[f][i] + '</td><td>\u00B1(' + pct(R[4]) + '% reading + ' + R[5] + ' digit' + (R[5] === 1 ? '' : 's') + ')</td></tr>'; }).join('') + '</tbody></table></div>'; }).join('');
 [].forEach.call(el('mmSpecBtns').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ var f = b.getAttribute('data-f'), t = el('mmSpecTables').querySelector('[data-f="' + f + '"]'), open = t.style.display === 'none'; t.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.classList.toggle('mm_specon', open); }); });
+el('mmHow').addEventListener('click', function(){ var d = el('mmExplain'), open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; this.setAttribute('aria-expanded', open ? 'true' : 'false'); this.classList.toggle('mm_specon', open); });
 /* the question's wording follows the kind of source */
-var WORD = { 'V=':['voltage', 'V', 'V'], 'V~':['AC voltage', 'V', 'V'], 'A=':['current', 'I', 'A'], 'A~':['AC current', 'I', 'A'], 'Ohm':['resistance', 'R', '\u03A9'], 'F':['capacitance', 'C', 'F'] }[KIND];
+var WORD = { 'V=':['voltage', 'V', 'V'], 'V~':['AC voltage', 'V', 'V'], 'A=':['current', 'I', 'A'], 'A~':['AC current', 'I', 'A'], 'Ohm':['resistance', 'R', '\u03A9'], 'F':['capacitance', 'C', 'F'] }[QKIND];
 function words(){ [].forEach.call(document.querySelectorAll('.mmQ'), function(e){ e.textContent = WORD[0]; }); [].forEach.call(document.querySelectorAll('.mmU'), function(e){ e.textContent = WORD[2]; }); }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', words); else setTimeout(words, 0);   /* the question comes after this script */
 el('mmSub').textContent = 'measuring ' + WORD[0] + ': choose the range that gives the most precise reading';
