@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations-Measurement: Reading a Graduated Cylinder (mobile)</title>
+<title>Physics Simulations-Measurement: Reading a Graduated Cylinder</title>
 <meta name="author" content="Taha Mzoughi">
 <meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, measurement, graduated cylinder, meniscus, reading a scale, uncertainty, lesson, scientific">
 <meta name="description" content="Interactive graduated cylinder: move a pointer to the bottom of the meniscus and read the liquid level, with a magnifier and accessibility options.">
@@ -15,7 +15,7 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
 <main class="page">
-<div id="gcRoot" class="gc_root gc_m1" role="region" aria-label="Graduated cylinder reading simulator: move the pointer line to the bottom of the meniscus and read the liquid level from the scale">
+<div id="gcRoot" class="gc_root gc_m0" role="region" aria-label="Graduated cylinder reading simulator: move the pointer line to the bottom of the meniscus and read the liquid level from the scale">
 <div class="gc_a11y" role="toolbar" aria-label="Display options">
 <button type="button" class="gc_a11ybtn" id="gcBtnHC" onclick="gcSim.theme('hc')" aria-pressed="false">HIGH CONTRAST</button>
 <button type="button" class="gc_a11ybtn" id="gcBtnLM" onclick="gcSim.theme('lm')" aria-pressed="false">LIGHT MODE</button>
@@ -24,7 +24,7 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 </div>
 <div class="gc_header"><p class="gc_h1">Reading a Graduated Cylinder</p><p class="gc_sub">line the pointer up with the bottom of the meniscus &middot; then read the scale</p></div>
 <div class="gc_diag"><div class="gc_dlabel"><b>THE CYLINDER</b><span id="gcHint"></span></div>
-<canvas id="gcCv" width="400" height="520" tabindex="0" role="img" aria-label="A graduated cylinder partly filled with liquid, with a scale in milliliters, a red pointer line and a purple ring that moves it, and a magnified view around the pointer. Drag the ring or the magnified view, or use the arrow keys, to move the pointer." aria-describedby="gcStatus"></canvas></div>
+<canvas id="gcCv" width="780" height="470" tabindex="0" role="img" aria-label="A graduated cylinder partly filled with liquid, with a scale in milliliters, a red pointer line and a purple ring that moves it, and a magnified view around the pointer. Drag the ring or the magnified view, or use the arrow keys, to move the pointer." aria-describedby="gcStatus"></canvas></div>
 <div class="gc_status" id="gcStatus"></div>
 <div class="gc_bbar">
 <div class="gc_ctrl"><div class="gc_ctrlhdr"><label class="gc_ctrlname" for="gcSl">pointer level</label><span class="gc_sval" id="gcSlv">15.0 ml</span></div>
@@ -127,7 +127,7 @@ var CFG = {
   PRECISION: 0.1,        /* pointer step, in ml */
   SHOW_HALF_TICKS: 1     /* 0/1: add a shorter mark halfway between the smallest divisions */
 };
-var MOB = 1, GH = 1;
+var MOB = 0, GH = 1;
 var ROOT = el('gcRoot'), cv = el('gcCv'), g = cv.getContext('2d'), W = cv.width, H = cv.height, DPR = window.devicePixelRatio || 1;
 cv.width = W*DPR; cv.height = H*DPR; g.scale(DPR, DPR);
 /* geometry */
