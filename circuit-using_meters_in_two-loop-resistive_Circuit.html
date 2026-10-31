@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations-Circuits: Series-Parallel Circuit - Resistance Measurements</title>
+<title>Physics Simulations-Circuits: Series-Parallel Resistor Circuit - Meter Practice</title>
 <meta name="author" content="Taha Mzoughi">
 <meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, circuits, ammeter, voltmeter, ohmmeter, series, parallel, resistance, lesson, scientific">
 <meta name="description" content="Interactive circuit board: place ammeters, voltmeters and ohmmeters and wire them up to measure currents, voltages and resistances.">
@@ -13,7 +13,7 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 </style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
-<div id="cmRoot" class="cm_root" role="region" aria-label="Series-Parallel Circuit &mdash; Resistance Measurements: place ammeters, voltmeters and ohmmeters in the circuit and wire them up">
+<div id="cmRoot" class="cm_root" role="region" aria-label="Series-Parallel Resistor Circuit &mdash; Meter Practice: place ammeters, voltmeters and ohmmeters in the circuit and wire them up">
 <div class="cm_a11y" role="toolbar" aria-label="Display options">
 <button type="button" class="cm_a11ybtn" id="cmBtnHC" aria-pressed="false">HIGH CONTRAST</button>
 <button type="button" class="cm_a11ybtn" id="cmBtnLM" aria-pressed="false">LIGHT MODE</button>
@@ -21,7 +21,7 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <button type="button" class="cm_a11ybtn cm_a11yon" id="cmBtnNR" aria-pressed="true">NARRATION: ON</button>
 <button type="button" class="cm_a11ybtn" id="cmBtnZ" aria-pressed="false">BIGGER DIAGRAM</button>
 </div>
-<div class="cm_header"><p class="cm_h1">Series-Parallel Circuit &mdash; Resistance Measurements</p><p class="cm_sub">measure R1, R2 and R3 with an ohmmeter &middot; isolate each one first</p></div>
+<div class="cm_header"><p class="cm_h1">Series-Parallel Resistor Circuit &mdash; Meter Practice</p><p class="cm_sub">R1 in series &middot; R2 and R3 in parallel</p></div>
 <div class="cm_diag"><div class="cm_dlabel"><b>THE CIRCUIT BOARD</b><span id="cmHintTop"></span></div>
 <div class="cm_cvwrap" id="cmWrap"><canvas id="cmCv" width="680" height="350" role="img" aria-label="Circuit diagram. Numbered zones can hold a meter or a wire. Use the controls below the diagram to place meters and make connections; every action can also be done by tapping the diagram." aria-describedby="cmRead"></canvas></div></div>
 <div class="cm_status" id="cmHint" aria-live="polite"></div>
@@ -57,7 +57,7 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <div class="cm_descwrap">
 <button type="button" class="cm_descbtn" id="cmDescBtn" aria-expanded="false" aria-controls="cmDesc">&#9656; SIM DESCRIPTION</button>
 <div class="cm_desc" id="cmDesc" role="region" aria-labelledby="cmDescBtn" hidden>
-<p>The main supply drives a current through R1; after R1 the current splits between two branches, R2 and R3, which join again at the bottom. The R3 branch also contains a second supply (zone 12) whose voltage V2 can be set from &minus;20 V to +20 V: its sign sets its polarity, and the + and &minus; marks on the drawing follow it. With V2 = 0 it is just a wire. The resistances are hidden (shown as ?): the task is to measure them. Zones 1, 3, 5, 8 and 11 carry a wire in the path of the current; zones 6, 7 and 10 are empty pads beside R1, R2 and R3.</p>
+<p>The supply drives a current through R1; after R1 the current splits between two branches, R2 and R3, which join again at the bottom. Zones 1, 3, 5 and 8 carry a wire in the path of the current; zones 6, 7 and 10 are empty pads beside R1, R2 and R3.</p>
 <p><b>Using the meters.</b> An <b>ammeter</b> measures the current through it; it has almost no resistance, so it must be placed <b>in series</b>, in a zone that is part of the path the current follows (zones that carry a wire by default). A <b>voltmeter</b> measures the voltage between its two terminals; its resistance is very large, so it is connected <b>in parallel</b>, across a component, in an empty zone, with wires from its terminals to the two ends of that component. An <b>ohmmeter</b> sends its own small current to measure a resistance, so it only works on a component that is <b>disconnected from every source</b>: if a voltage is still present across it, it shows an error. Remove wires (for example the wire in zone 1) to isolate a resistor before measuring it.</p>
 <p><b>Safety.</b> If any current would exceed 5 A (a short circuit, for example an ammeter placed in parallel across the supply), the supply switches itself off and shows TRIPPED.</p>
 <p><b>Controls.</b> Everything can be done without the diagram: choose a meter and a zone in panel 1, or two points in panel 2. On the diagram, tap a zone number to place the chosen meter, or tap two points to connect or disconnect them. The meter readings are listed under the diagram and announced. &ldquo;Bigger diagram&rdquo; lets the diagram scroll sideways on a small screen, so the points are easier to tap.</p>
@@ -126,14 +126,14 @@ CFG at the top of the script: the topology and the starting values (from the MOM
 <script>
 (function(){
 var thisq = '';
-var CFG = { topo:'two', V:9, R1:Math.round(5 + Math.random()*45)*10, R2:Math.round(5 + Math.random()*45)*10, R3:Math.round(5 + Math.random()*45)*10, V2:0, hideR:1, showSliders:0 };
+var CFG = { topo:'par', V:9, R1:100, R2:150, R3:200, V2:0, hideR:0, showSliders:1 };
 function el(id){ return document.getElementById(id + thisq); }
 var ROOT = el('cmRoot'), canvas = el('cmCv'), ctx = canvas.getContext('2d'), W = canvas.width, H = canvas.height, DPR = window.devicePixelRatio || 1;
 var OX = 30, OY = 95;   /* the drawing is cropped to the board */
 canvas.width = W*DPR; canvas.height = H*DPR; ctx.scale(DPR, DPR); ctx.translate(-OX, -OY);
 /* ══════════ the board ══════════ */
-var N, ZONES, LEADS, ZL, RES, SRC2 = CFG.topo === 'two';
-if (!SRC2){
+var N, ZONES, LEADS, ZL, RES, SRC2 = CFG.topo === 'two', PAR = CFG.topo !== 'series';
+if (!PAR){
   N = { SP:{x:180,y:243}, SN:{x:180,y:317}, S1A:{x:285,y:160}, S1B:{x:355,y:160}, R1L:{x:425,y:160}, R1R:{x:495,y:160}, S3A:{x:530,y:200}, S3B:{x:530,y:280},
     R2T:{x:530,y:290}, R2B:{x:530,y:350}, S5A:{x:425,y:390}, S5B:{x:355,y:390}, S6A:{x:420,y:190}, S6B:{x:500,y:190}, S7A:{x:490,y:290}, S7B:{x:490,y:350} };
   ZONES = { 1:{a:'S1A', b:'S1B', c:{x:320,y:160}, w:true, g:{x:320,y:120}}, 3:{a:'S3A', b:'S3B', c:{x:530,y:240}, w:true, g:{x:572,y:240}}, 5:{a:'S5A', b:'S5B', c:{x:390,y:390}, w:true, g:{x:390,y:422}},
@@ -152,6 +152,9 @@ if (!SRC2){
     {a:'R2B', b:'S5A', pts:['R2B', {x:430,y:390}, 'S5A']}, {a:'S5B', b:'SN', pts:['S5B', {x:70,y:390}, 'SN']}, {a:'R1R', b:'S11A', pts:['R1R', 'S11A']}, {a:'S11B', b:'S8A', pts:['S11B', {x:580,y:160}, 'S8A']},
     {a:'S8B', b:'R3T', pts:['S8B', 'R3T']}, {a:'R3B', b:'S12A', pts:['R3B', {x:580,y:390}, 'S12A']}, {a:'S12B', b:'S5A', pts:['S12B', 'S5A']}];
   ZL = [1, 3, 5, 6, 7, 8, 10, 11]; RES = [['R1', 'R1L', 'R1R', 'h'], ['R2', 'R2T', 'R2B', 'v'], ['R3', 'R3T', 'R3B', 'v']];
+  if (!SRC2){   /* R2 and R3 in parallel, no second supply */
+    ['S11A', 'S11B', 'S12A', 'S12B'].forEach(function(k){ delete N[k]; }); delete ZONES[11]; ZL = [1, 3, 5, 6, 7, 8, 10];
+    LEADS = LEADS.slice(0, 6).concat([{a:'R1R', b:'S8A', pts:['R1R', {x:580,y:160}, 'S8A']}, {a:'S8B', b:'R3T', pts:['S8B', 'R3T']}, {a:'R3B', b:'S5A', pts:['R3B', {x:580,y:390}, 'S5A']}]); }
 }
 LEADS.forEach(function(l){ l.pts = l.pts.map(function(p){ return typeof p === 'string' ? N[p] : p; }); });
 var LBL = { SP:'Supply + terminal', SN:'Supply \u2212 terminal', R1L:'R1, left lead', R1R:'R1, right lead', R2T:'R2, top lead', R2B:'R2, bottom lead', R3T:'R3, top lead', R3B:'R3, bottom lead',
@@ -264,7 +267,8 @@ function draw(){
   RES.forEach(function(r){ if (P[r[0]] > 0) zig(N[r[1]], N[r[2]], p); else line([N[r[1]], N[r[2]]], eI(ec, r[1], r[2]), p);
     var val = CFG.hideR ? '?' : P[r[0]]; ctx.fillStyle = p.txt; ctx.font = '12px monospace';
     if (r[3] === 'h'){ ctx.textAlign = 'center'; ctx.fillText(r[0] + ' = ' + val + ' \u03A9' + (P[r[0]] === 0 && !CFG.hideR ? ' (wire)' : ''), (N[r[1]].x + N[r[2]].x)/2, N[r[1]].y - 16); }
-    else { ctx.textAlign = 'left'; ctx.fillText(r[0] + ' = ' + val + ' \u03A9' + (P[r[0]] === 0 && !CFG.hideR ? ' (wire)' : ''), N[r[1]].x + (SRC2 ? 10 : 38), (N[r[1]].y + N[r[2]].y)/2); } });
+    else { ctx.textAlign = 'left'; var up = PAR && r[0] === 'R2';   /* R2 label above the resistor, clear of zone 10 */
+      ctx.fillText(r[0] + ' = ' + val + ' \u03A9' + (P[r[0]] === 0 && !CFG.hideR ? ' (wire)' : ''), N[r[1]].x + (PAR ? 10 : 38), up ? N[r[1]].y - 8 : (N[r[1]].y + N[r[2]].y)/2); } });
   supplyBox(N.SP.x - 20, N.SP.y, N.SP.x + 20, N.SN.y, p);
   ctx.font = 'bold 14px monospace'; ctx.fillStyle = p.struct; ctx.textAlign = 'center'; ctx.fillText('+', N.SP.x, N.SP.y + 16); ctx.fillText('\u2212', N.SP.x, N.SN.y - 6);
   if (last.tripped){ ctx.fillStyle = p.bad; ctx.font = 'bold 10px monospace'; ctx.fillText('TRIPPED', N.SP.x, (N.SP.y + N.SN.y)/2 - 3); ctx.font = '9px monospace'; ctx.fillText('0 V', N.SP.x, (N.SP.y + N.SN.y)/2 + 10); }
@@ -282,8 +286,9 @@ function readouts(){ var h = '', any = false;
   var open = ZL.filter(function(z){ return ZONES[z].w && !zoneDev[z] && !conn.has(ck(ZONES[z].a, ZONES[z].b)); });
   if (open.length) el('cmWires').textContent += (extra.length ? ' ' : '') + 'Open (wire removed): zone ' + open.join(', ') + '.'; }
 /* ══════════ the controls ══════════ */
-var SLD = [['V', 'supply voltage', 0, 20, 1, 'V'], ['R1', 'R1' + (SRC2 ? ' (series)' : ''), 0, 500, 10, '\u03A9'], ['R2', 'R2' + (SRC2 ? ' (parallel)' : ''), 0, 500, 10, '\u03A9']];
-if (SRC2){ SLD.push(['R3', 'R3 (parallel)', 0, 500, 10, '\u03A9']); SLD.push(['V2', 'zone 12 second supply V2 (\u00B1 = polarity)', -20, 20, 1, 'V']); }
+var SLD = [['V', 'supply voltage', 0, 20, 1, 'V'], ['R1', 'R1' + (PAR ? ' (series)' : ''), 0, 500, 10, '\u03A9'], ['R2', 'R2' + (PAR ? ' (parallel)' : ''), 0, 500, 10, '\u03A9']];
+if (PAR) SLD.push(['R3', 'R3 (parallel)', 0, 500, 10, '\u03A9']);
+if (SRC2){ SLD.push(['V2', 'zone 12 second supply V2 (\u00B1 = polarity)', -20, 20, 1, 'V']); }
 function buildSliders(){
   var shown = SLD.filter(function(s){ return CFG.showSliders || (s[0] === 'V2'); });
   if (!shown.length){ el('cmSrcP').hidden = true; return; }
@@ -330,7 +335,7 @@ function narrateState(){ var m;
   else { var I = Math.abs(eI(last.ec, 'SP', 'S1A')); m = 'The circuit is on' + (I > 1e-6 ? ', with current flowing from the main supply' : ', but no current flows from the main supply (the circuit is open)') + '.'; }
   ZL.forEach(function(z){ if (zoneDev[z]) m += ' Zone ' + z + ' ' + DEV[zoneDev[z]].toLowerCase() + ' reads ' + reading(z).text + '.'; });
   narrate(m); }
-on('cmDsc', 'click', function(){ var m = (SRC2 ? 'The main supply, on the left, drives R1 at the top; after R1 the circuit splits into two branches, R2 in the middle and R3 on the right, which join again at the bottom. The R3 branch also contains a second supply, zone 12, at the bottom. ' : 'The supply, on the left, drives a single loop: R1 at the top, then R2 on the right, back along the bottom. ')
+on('cmDsc', 'click', function(){ var m = (PAR ? 'The main supply, on the left, drives R1 at the top; after R1 the circuit splits into two branches, R2 in the middle and R3 on the right, which join again at the bottom.' + (SRC2 ? ' The R3 branch also contains a second supply, zone 12, at the bottom. ' : ' ') : 'The supply, on the left, drives a single loop: R1 at the top, then R2 on the right, back along the bottom. ')
   + 'Zones ' + ZL.filter(function(z){ return ZONES[z].w; }).join(', ') + ' carry a wire in the path of the current; zones ' + ZL.filter(function(z){ return !ZONES[z].w; }).join(', ') + ' are empty pads beside the resistors, for meters connected across them. ';
   narrate(m); setTimeout(narrateState, 6000); });
 /* display options */
