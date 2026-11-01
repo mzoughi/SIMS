@@ -92,7 +92,7 @@ liveReading: null,     /* the currently-displayed fluctuating value (farads) */
 data: [],              /* recorded measurements: [{d_cm, R_cm, dielectric, t_cm, r_cm, probeLength_cm, C_pF, t_stamp}, ...] */
 activeTab: 'data',     /* 'data' | 'graph' */
 graphX: 'd',           /* which variable to plot C against */
-a11y: { lightMode:false, narration:true, highContrast:false, fontSize:'normal' },
+a11y: { lightMode:false, narration:true, highContrast:false, fontSize:'normal', colorBlind:false },
 lastNarration: '',
 hasShownIntro: false
 };
@@ -147,15 +147,15 @@ return Math.max(0, C);
 /* We keep the same key names so the dial / range conversion code from
  the multimeter widget can be reused unchanged. */
 var positions = [
-{ k:'F/2p',   a:140, label:'2p',       group:'F' },
-{ k:'F/2n',   a:152, label:'2n',       group:'F' },
-{ k:'F/20n',  a:164, label:'20n',      group:'F' },
-{ k:'F/200n', a:176, label:'200n',     group:'F' },
-{ k:'F/2u',   a:-172,label:'2\u00B5',  group:'F' },
-{ k:'F/20u',  a:-160,label:'20\u00B5', group:'F' },
-{ k:'F/200u', a:-148,label:'200\u00B5',group:'F' }
+{ k:'F/2p',   a:-90, label:'2p',       group:'F' },
+{ k:'F/2n',   a:-60, label:'2n',       group:'F' },
+{ k:'F/20n',  a:-30, label:'20n',      group:'F' },
+{ k:'F/200n', a:0, label:'200n',     group:'F' },
+{ k:'F/2u',   a:30,label:'2\u00B5',  group:'F' },
+{ k:'F/20u',  a:60,label:'20\u00B5', group:'F' },
+{ k:'F/200u', a:90,label:'200\u00B5',group:'F' }
 ];
-var dialMap = { 'off': 0 };
+var dialMap = { 'off': 180 };   /* OFF at the bottom; the ranges spread across the top, 30 degrees apart */
 for (var ipi = 0; ipi < positions.length; ipi++) dialMap[positions[ipi].k] = positions[ipi].a;
 /* Range / display helpers */
 var rangeMultiplier = function(d){
@@ -458,15 +458,14 @@ var rawReading = getReading();   /* in farads, or null if dial=off */
 var meterOn = (state.dial !== 'off');
 var displayValue = meterOn ? (rawReading * rangeMultiplier(state.dial)) : 0;
 var maxRange = rangeMaxValue(state.dial);
-var overflow = meterOn && (Math.abs(displayValue) > maxRange * 1.05);
+var overflow = meterOn && (Math.abs(displayValue) >= maxRange * 0.99975);   /* 3 1/2 digits: at most 1999 counts */
 /* Parse for LCD */
 var parsed = (function(v){
 if (overflow) return { overflow:true, sign:'' };
 if (!meterOn) return { overflow:false, sign:'', digits:'    ', dp:0, blank:true };
 var sign='';   /* capacitance is non-negative */
 var mag = Math.abs(v);
-var dp;
-if(mag>=1000)dp=0;else if(mag>=100)dp=1;else if(mag>=10)dp=2;else dp=3;
+var dp = Math.max(0, 3 - Math.round(Math.log(maxRange)/Math.LN10));   /* the range sets the resolution: 2 -> 0.001, 20 -> 0.01, 200 -> 0.1 */
 var scaled=Math.round(mag*Math.pow(10,dp));
 var digits=String(scaled);
 while(digits.length<4)digits='0'+digits;
@@ -507,7 +506,7 @@ return{svg:out,w:totW,h:totH};
 })();
 /* Dial SVG */
 var buildDial = (function(){
-var CX=175,CY=320,R_DIAL=78,R_TICK_IN=86,R_TICK_OUT=94,R_DOT=100,R_LABEL=114,R_GLABEL=132;
+var CX=175,CY=320,R_DIAL=78,R_TICK_IN=86,R_TICK_OUT=94,R_DOT=100,R_LABEL=117,R_GLABEL=140;
 var out='';
 out+='<circle cx="'+CX+'" cy="'+CY+'" r="'+R_DIAL+'" fill="'+dialFace+'" stroke="'+dialStroke+'" stroke-width="1.5"/>';
 for(var s2=-3;s2<=3;s2++){var sy=CY+s2*7;var dx=Math.sqrt(Math.max(0,(R_DIAL-4)*(R_DIAL-4)-(s2*7)*(s2*7)));out+='<line x1="'+(CX-dx)+'" y1="'+sy+'" x2="'+(CX+dx)+'" y2="'+sy+'" stroke="'+stripeColor+'" stroke-width="1.3" opacity="0.55"/>'}
@@ -524,7 +523,8 @@ var dx=CX+R_DOT*sn,dy=CY-R_DOT*cs;
 var lx=CX+R_LABEL*sn,ly=CY-R_LABEL*cs;
 out+='<line x1="'+tx1.toFixed(1)+'" y1="'+ty1.toFixed(1)+'" x2="'+tx2.toFixed(1)+'" y2="'+ty2.toFixed(1)+'" stroke="'+dialStroke+'" stroke-width="1"/>';
 out+='<circle cx="'+dx.toFixed(1)+'" cy="'+dy.toFixed(1)+'" r="2" fill="'+dialStroke+'"/>';
-out+='<text x="'+lx.toFixed(1)+'" y="'+(ly+3).toFixed(1)+'" text-anchor="middle" font-size="8" font-family="Arial,sans-serif" fill="'+dialText+'">'+p.label+'</text>';
+out+='<text x="'+lx.toFixed(1)+'" y="'+(ly+4).toFixed(1)+'" text-anchor="middle" font-size="12" font-weight="bold" font-family="Arial,sans-serif" fill="'+dialText+'">'+p.label+'</text>';
+out+='<circle cx="'+lx.toFixed(1)+'" cy="'+ly.toFixed(1)+'" r="15" fill="transparent" style="cursor:pointer" onclick="clSliderUpdate_'+thisq+'('+(i+1)+')"><title>'+p.label+'F range</title></circle>';   /* tap a range to turn the dial there */
 groupAngles.push(p.a);
 }
 /* "F" label at the center of the F group */
@@ -536,6 +536,7 @@ sumX += Math.sin(rr); sumY += Math.cos(rr);
 var midA = Math.atan2(sumX/groupAngles.length, sumY/groupAngles.length) * 180/Math.PI;
 var rrm = midA*Math.PI/180;
 var gx = CX+R_GLABEL*Math.sin(rrm), gy = CY-R_GLABEL*Math.cos(rrm);
+out+='<text x="'+CX+'" y="'+(CY+R_LABEL+4)+'" text-anchor="middle" font-size="12" font-weight="bold" font-family="Arial,sans-serif" fill="'+dialText+'">OFF</text><circle cx="'+CX+'" cy="'+(CY+R_LABEL)+'" r="15" fill="transparent" style="cursor:pointer" onclick="clSliderUpdate_'+thisq+'(0)"><title>off</title></circle>';
 out+='<text x="'+gx.toFixed(1)+'" y="'+(gy+4).toFixed(1)+'" text-anchor="middle" font-size="14" font-weight="bold" font-family="Arial,sans-serif" fill="'+dialTextM+'">F</text>';
 /* Pointer */
 var angle=(typeof dialMap[state.dial]!=='undefined')?dialMap[state.dial]:0;
@@ -559,6 +560,7 @@ html += '<div role="toolbar" aria-label="Display options" style="display:flex;ga
 html += '<button type="button" id="cl_btn_lm_'+thisq+'" onclick="clToggleA11y_'+thisq+'(\'lightMode\')" aria-pressed="'+state.a11y.lightMode+'" style="'+a11yBtnStyle(state.a11y.lightMode)+'">LIGHT MODE'+(state.a11y.lightMode?': ON':'')+'</button>';
 html += '<button type="button" id="cl_btn_nr_'+thisq+'" onclick="clToggleA11y_'+thisq+'(\'narration\')" aria-pressed="'+state.a11y.narration+'" style="'+a11yBtnStyle(state.a11y.narration)+'">NARRATION: '+(state.a11y.narration?'ON':'OFF')+'</button>';
 html += '<button type="button" id="cl_btn_hc_'+thisq+'" onclick="clToggleA11y_'+thisq+'(\'highContrast\')" aria-pressed="'+state.a11y.highContrast+'" style="'+a11yBtnStyle(state.a11y.highContrast)+'">HIGH CONTRAST'+(state.a11y.highContrast?': ON':'')+'</button>';
+html += '<button type="button" id="cl_btn_cb_'+thisq+'" onclick="clToggleA11y_'+thisq+'(\'colorBlind\')" aria-pressed="'+(!!state.a11y.colorBlind)+'" style="'+a11yBtnStyle(!!state.a11y.colorBlind)+'">COLOR-BLIND SAFE'+(state.a11y.colorBlind?': ON':'')+'</button>';
 var fsLabels={'normal':'NORMAL','large':'LARGE','xl':'XL'};
 html += '<button type="button" id="cl_btn_fs_'+thisq+'" onclick="clCycleFont_'+thisq+'()" aria-label="Font size: '+fsLabels[state.a11y.fontSize]+'. Click to cycle." style="'+a11yBtnStyle(state.a11y.fontSize!=='normal')+'">FONT: '+fsLabels[state.a11y.fontSize]+'</button>';
 html += '</div>';
@@ -725,7 +727,7 @@ html += '<td style="padding:3px 4px;text-align:right">'+dp.kappa.toFixed(1)+'</t
 html += '<td style="padding:3px 4px;text-align:right">'+dp.t_cm.toFixed(2)+'</td>';
 html += '<td style="padding:3px 4px;text-align:right">'+dp.r_cm.toFixed(1)+'</td>';
 html += '<td style="padding:3px 4px;text-align:right">'+dp.probeLength_cm.toFixed(0)+'</td>';
-html += '<td style="padding:3px 4px;text-align:right;color:#0f6;font-weight:bold">'+dp.C_pF.toFixed(0)+'</td>';
+html += '<td style="padding:3px 4px;text-align:right;color:#0f6;font-weight:bold">'+(dp.C_pF % 1 === 0 ? dp.C_pF.toFixed(0) : String(+dp.C_pF.toFixed(3)))+'</td>';
 html += '<td style="padding:2px"><button type="button" onclick="clDeleteRow_'+thisq+'('+i+')" aria-label="Delete row '+(i+1)+'" style="padding:1px 4px;background:#600;color:#faa;border:none;border-radius:2px;cursor:pointer;font-size:9px">×</button></td>';
 html += '</tr>';
 }
@@ -789,6 +791,8 @@ html += '</div>';   /* end tab content */
 html += '</div>';   /* end right col */
 html += '</div>';   /* end main flex */
 html += '</div>';   /* end region */
+if (state.a11y.colorBlind) { var CBMAP = { '#c33':'#d55e00', '#700':'#7a3000', '#06a':'#0072b2', '#0a6':'#009e73', '#0a4':'#009e73', '#0f6':'#56b4e9', '#3eff70':'#56b4e9', '#bfffd0':'#cde6f7', '#c00':'#d55e00', '#2050a0':'#0072b2', '#a04':'#cc79a7', '#9c9':'#9ecae1', '#ff6666':'#e69f00' };   /* colour-blind safe (Okabe-Ito) */
+  html = html.replace(/#(?:c33|700|06a|0a6|0a4|0f6|3eff70|bfffd0|c00|2050a0|a04|9c9|ff6666)(?![0-9a-fA-F])/g, function(c){ return CBMAP[c] || c; }); }
 document.getElementById(rootId).innerHTML = html;
 restoreFocus(focusId);
 };
@@ -857,7 +861,9 @@ render();
 window['clRecord_'+thisq] = function(){
 var C = state.liveReading;   /* snapshot whatever is currently displayed */
 if (C === null || state.dial === 'off') return;
-var Cp = Math.round(C*1e12);
+var mx_ = rangeMaxValue(state.dial), mul_ = rangeMultiplier(state.dial), dp_ = Math.max(0, 3 - Math.round(Math.log(mx_)/Math.LN10)), shown_ = Math.round(C*mul_*Math.pow(10, dp_))/Math.pow(10, dp_);
+if (shown_ >= mx_*0.99975) { narrate('The meter shows OL: choose a larger range before recording.'); return; }
+var Cp = +(shown_/mul_*1e12).toPrecision(6);   /* the reading as displayed, in pF */
 state.data.push({
 d_cm: state.d_cm,
 R_cm: state.R_cm,
