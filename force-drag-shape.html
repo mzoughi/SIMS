@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Forces: Shape and Drag, a Falling Race</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, air resistance, drag coefficient, shape, streamlined, terminal velocity, parachute, forces, lesson, scientific">
+<meta name="description" content="Three objects with the same mass and frontal area but different shapes fall side by side: see how the drag coefficient changes the drag and the terminal velocity.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+@media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="shRoot" class="sh_root" role="region" aria-label="Drag and shape simulator: up to three objects with the same mass and the same frontal area, but different shapes, fall side by side">
+<div class="sh_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="sh_a11ybtn" id="shBtnHC" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="sh_a11ybtn" id="shBtnLM" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="sh_a11ybtn" id="shBtnCB" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="sh_a11ybtn sh_a11yon" id="shBtnNR" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div class="sh_header"><p class="sh_h1">Shape and Drag: A Falling Race</p><p class="sh_sub">same mass &middot; same frontal area &middot; only the shape differs &middot; D = &frac12; &rho; C<sub>d</sub> A v&sup2;</p></div>
+<div class="sh_main">
+<div class="sh_panel"><div class="sh_ptitle">The whole fall</div><canvas id="shFull" width="150" height="400" role="img" aria-label="The full height of the fall, with the three objects' positions"></canvas></div>
+<div class="sh_panel"><div class="sh_ptitle">Close-up: forces to scale, air flowing past</div><canvas id="shZoom" width="360" height="400" role="img" aria-label="Close-up of the three falling objects, each with its weight and drag arrows and the air flowing past it" aria-describedby="shStatus"></canvas></div>
+<div class="sh_panel sh_graphs"><div class="sh_ptitle">Speed and drag against time</div><canvas id="shGr" width="340" height="400" role="img" aria-label="Graphs of the speed and of the drag of the three objects against time"></canvas></div>
+</div>
+<div class="sh_status" id="shStatus"></div>
+<div class="sh_bbar">
+<button type="button" class="sh_btn sh_kick" id="shPlay">&#9654; Drop them</button>
+<button type="button" class="sh_btn" id="shRst">&#8635; Back to the top</button>
+<label class="sh_lab">speed of the clock <select id="shSpd"><option value="0.25">&frac14;&times;</option><option value="0.5">&frac12;&times;</option><option value="1" selected>1&times; (real time)</option><option value="2">2&times;</option><option value="5">5&times;</option><option value="10">10&times;</option></select></label>
+<label class="sh_lab"><input type="checkbox" id="shFlow" checked> airflow</label>
+<button type="button" class="sh_btn" id="shDsc">Describe</button>
+</div>
+<div class="sh_panel"><div class="sh_ptitle">The racers</div><div class="sh_pbody"><div class="sh_lanes" id="shLanes"></div>
+<div class="sh_tblwrap"><table class="sh_tbl" id="shTbl" aria-label="Readings for each object"></table></div></div></div>
+<div class="sh_panels">
+<div class="sh_panel"><div class="sh_ptitle">Kept the same for all three</div><div class="sh_pbody">
+<div class="sh_ctrl"><div class="sh_ctrlhdr"><label class="sh_ctrlname" for="shM">mass m</label><span class="sh_sval" id="shMv"></span></div><input type="range" id="shM" min="0" max="1000" step="1"></div>
+<div class="sh_ctrl"><div class="sh_ctrlhdr"><label class="sh_ctrlname" for="shA">frontal area A (the area the air meets)</label><span class="sh_sval" id="shAv"></span></div><input type="range" id="shA" min="0" max="1000" step="1"></div>
+<div class="sh_ctrl"><div class="sh_ctrlhdr"><label class="sh_ctrlname" for="shH">starting height</label><span class="sh_sval" id="shHv"></span></div><input type="range" id="shH" min="50" max="3000" step="50"></div>
+</div></div>
+<div class="sh_panel"><div class="sh_ptitle">Quick comparisons</div><div class="sh_pbody"><div class="sh_qb" id="shQuick"></div>
+<p class="sh_note">Air density 1.20 kg/m&sup3;, g = 9.81 m/s&sup2;. Each shape falls front first (the front is at the bottom). Changing anything brings the objects back to the top.</p></div></div>
+</div>
+<div class="sh_eqs" id="shEq"></div>
+<div id="shNar" class="sh_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="sh_descwrap">
+<button type="button" class="sh_descbtn" id="shDescBtn" aria-expanded="false" aria-controls="shDesc">&#9656; SIM DESCRIPTION</button>
+<div class="sh_desc" id="shDesc" role="region" aria-labelledby="shDescBtn" hidden>
+<p>Up to three objects fall side by side from the same height, released together from rest. They have the <b>same mass</b>, so the same weight `W = m g`, and the <b>same frontal area</b> `A`, the area the oncoming air meets. Only their shape differs. The drag of the air on each one is</p>
+<p class="sh_eq">`D = 1/2 rho C_d A v^2`,</p>
+<p>where `C_d`, the <b>drag coefficient</b>, carries the effect of the shape. Each object speeds up until its drag equals its weight, at its terminal velocity</p>
+<p class="sh_eq">`v_t = sqrt((2 m g)/(rho C_d A))`.</p>
+<p>So the shape with the smallest `C_d` falls fastest. Since `v_t` goes as `1/sqrt(C_d)`, a shape with four times the drag coefficient falls half as fast.</p>
+<p><b>Why shape matters.</b> The air has to get out of the way of the object and close up again behind it. A blunt shape (a flat plate, a cube) leaves a wide, swirling wake behind it, a region of low pressure that holds the object back: large `C_d`. A streamlined shape lets the air close up smoothly behind it, leaving a thin wake: small `C_d`. The tail matters as much as the nose: the cone and the streamlined body have similar fronts, but the streamlined body's tapered tail cuts the drag by more than ten times. An open cup facing the air, like a parachute, catches the air and has the largest `C_d` here.</p>
+<p><b>Drag coefficients used</b> (measured, at speeds where they are nearly constant; Hoerner, as reproduced on Wikipedia and in engineering tables): streamlined body 0.04, half-sphere (round side first) 0.42, sphere 0.47, cone (point first) 0.50, angled cube (edge first) 0.80, long cylinder (end first) 0.82, cube (face first) 1.05, short cylinder (end first) 1.15, flat disk 1.17, open cup facing the air (parachute) 1.42. Real values change somewhat with speed and size; a sphere&rsquo;s can drop sharply at high speed.</p>
+<p><b>Layout.</b> Left: the whole fall, with each object&rsquo;s height. Middle: a close-up of the three objects, in the frame where the air rushes up past them; each object&rsquo;s weight (down) and drag (up) are drawn to the same scale, and the width of the swirling wake above it shows how much the air is disturbed. Right: the speed and the drag of each object against time, with its terminal velocity dashed. The readings for each object are in the table under the controls, and are announced.</p>
+</div></div>
+</div><!-- #shRoot -->
+<style>
+#shRoot { --c-chassis:#1a1c1f; --c-panel:#22262b; --c-hi:#2c3138; --c-lo:#14161a; --c-bd:#3a4048; --c-bd2:#525c66; --c-text:#c8d0d8; --c-dim:#8a94a3; --c-accent:#e8a020; --c-green:#3ad08f; --c-val:#ffdd66; --c-nbg:#2a2410; --c-nbd:#e0b040; --c-ntx:#f0e2b8;
+  background:var(--c-chassis); color:var(--c-text); font-family:Arial, sans-serif; font-size:14px; padding:14px 10px 18px; border-radius:6px; box-sizing:border-box; width:100%; max-width:880px; margin:0 auto 10px; display:flex; flex-direction:column; gap:10px; }
+#shRoot * { box-sizing:border-box; }
+#shRoot.sh_lm { --c-chassis:#e9edf1; --c-panel:#ffffff; --c-hi:#f1f4f7; --c-lo:#f4f6f9; --c-bd:#c3cad3; --c-bd2:#9aa3ae; --c-text:#1d232a; --c-dim:#556070; --c-accent:#a8620a; --c-green:#12805a; --c-val:#8a4a00; --c-nbg:#ffefc0; --c-ntx:#333; }
+#shRoot.sh_hc { --c-chassis:#000; --c-panel:#000; --c-hi:#111; --c-lo:#000; --c-bd:#fff; --c-bd2:#fff; --c-text:#fff; --c-dim:#e8e8e8; --c-accent:#ffd700; --c-green:#00ff88; --c-val:#ffff00; --c-nbg:#000; --c-nbd:#ffd700; --c-ntx:#fff; }
+#shRoot .sh_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+#shRoot .sh_a11ybtn { padding:4px 10px; font-size:.72em; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-dim); min-height:32px; }
+#shRoot .sh_a11yon { background:rgba(58,208,143,.14); border-color:var(--c-green); color:var(--c-green); font-weight:bold; }
+#shRoot .sh_header { text-align:center; }
+#shRoot .sh_h1 { margin:0; font-size:1.05em; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--c-accent); }
+#shRoot .sh_sub { margin:3px 0 0; font-size:.75em; color:var(--c-dim); letter-spacing:.05em; text-transform:uppercase; }
+#shRoot .sh_main { display:grid; grid-template-columns:minmax(0,150fr) minmax(0,360fr) minmax(0,340fr); gap:8px; }
+#shRoot .sh_panels { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#shRoot .sh_panel { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; overflow:hidden; min-width:0; }
+#shRoot .sh_ptitle { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 10px; font-family:monospace; font-size:.66em; letter-spacing:.1em; text-transform:uppercase; color:var(--c-dim); }
+#shRoot .sh_pbody { padding:9px 12px; display:flex; flex-direction:column; gap:9px; }
+#shRoot canvas { display:block; width:100%; height:auto; }
+#shRoot .sh_lanes { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:8px; }
+#shRoot .sh_lane { border:2px solid var(--c-bd2); border-radius:5px; padding:6px; display:flex; flex-direction:column; gap:4px; }
+#shRoot .sh_lane label { font-size:.78em; font-weight:bold; text-transform:uppercase; letter-spacing:.03em; }
+#shRoot .sh_ctrl { display:flex; flex-direction:column; gap:3px; min-width:0; }
+#shRoot .sh_ctrlhdr { display:flex; justify-content:space-between; align-items:baseline; gap:6px; }
+#shRoot .sh_ctrlname { font-size:.8em; font-weight:600; color:var(--c-dim); text-transform:uppercase; letter-spacing:.03em; }
+#shRoot .sh_sval { font-family:monospace; font-size:.9em; color:var(--c-val); white-space:nowrap; }
+#shRoot .sh_note { margin:0; font-size:.8em; color:var(--c-dim); line-height:1.4; }
+#shRoot .sh_qb { display:flex; flex-wrap:wrap; gap:6px; }
+#shRoot select { background:var(--c-hi); color:var(--c-text); border:1px solid var(--c-bd2); border-radius:3px; padding:5px; font-size:.9em; min-height:36px; width:100%; }
+#shRoot .sh_lab select { width:auto; }
+#shRoot input[type=range] { width:100%; -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; cursor:pointer; background:var(--c-lo); border:1px solid var(--c-bd); margin:9px 0; }
+#shRoot input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#shRoot input[type=range]::-moz-range-thumb { width:16px; height:16px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#shRoot input[type=checkbox] { accent-color:var(--c-accent); width:16px; height:16px; }
+#shRoot .sh_bbar { display:flex; flex-wrap:wrap; gap:6px 12px; justify-content:center; align-items:center; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:6px; padding:8px 10px; }
+#shRoot .sh_lab { display:flex; align-items:center; gap:6px; font-size:.8em; color:var(--c-dim); text-transform:uppercase; cursor:pointer; }
+#shRoot .sh_btn { padding:7px 11px; font-family:monospace; font-size:.78em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-text); border-radius:3px; min-height:36px; }
+#shRoot .sh_btn:hover { border-color:var(--c-accent); }
+#shRoot .sh_kick { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; text-transform:uppercase; }
+#shRoot .sh_tblwrap { overflow-x:auto; }
+#shRoot .sh_tbl { border-collapse:collapse; font-family:monospace; font-size:.82em; width:100%; }
+#shRoot .sh_tbl th, #shRoot .sh_tbl td { border:1px solid var(--c-bd); padding:4px 6px; text-align:right; white-space:nowrap; }
+#shRoot .sh_tbl th { background:var(--c-hi); text-align:left; }
+#shRoot .sh_tbl td { color:var(--c-val); }
+#shRoot .sh_eqs { background:var(--c-lo); border:1px solid var(--c-bd); border-left:4px solid var(--c-accent); border-radius:4px; padding:8px 14px; font-family:monospace; font-size:.8em; color:var(--c-dim); line-height:1.7; }
+#shRoot .sh_eqs b { color:var(--c-val); }
+#shRoot .sh_status { padding:8px 12px; border-radius:4px; background:var(--c-panel); border:1px solid var(--c-bd); font-size:.9em; line-height:1.4; }
+#shRoot .sh_narbar { min-height:30px; padding:6px 12px; background:var(--c-nbg); border-left:4px solid var(--c-nbd); color:var(--c-ntx); font-size:.92em; font-style:italic; line-height:1.45; border-radius:3px; }
+#shRoot .sh_descwrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+#shRoot .sh_descbtn { padding:8px 18px; font-family:monospace; font-size:.8em; letter-spacing:.08em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-accent); color:var(--c-accent); border-radius:3px; font-weight:bold; min-height:40px; }
+#shRoot .sh_desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid var(--c-accent); border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.95em; line-height:1.55; }
+#shRoot .sh_desc p { margin:0 0 9px; }
+#shRoot .sh_eq { text-align:center; font-size:1rem; }
+#shRoot [hidden] { display:none !important; }
+#shRoot button:focus-visible, #shRoot input:focus-visible, #shRoot select:focus-visible { outline:2px solid var(--c-accent); outline-offset:2px; }
+@media (max-width:640px) { #shRoot { padding:10px 6px 14px; } #shRoot .sh_main { grid-template-columns:minmax(0,1fr) minmax(0,2.4fr); } #shRoot .sh_graphs { grid-column:1 / -1; } #shRoot .sh_panels { grid-template-columns:minmax(0,1fr); } #shRoot .sh_bbar .sh_btn { flex:1 1 40%; } }
+@media (max-width:420px) { #shRoot .sh_lanes { grid-template-columns:minmax(0,1fr); } }
+@media (pointer:coarse) { #shRoot input[type=range] { height:8px; } #shRoot input[type=range]::-webkit-slider-thumb { width:28px; height:28px; } #shRoot input[type=range]::-moz-range-thumb { width:26px; height:26px; } #shRoot .sh_a11ybtn, #shRoot .sh_btn, #shRoot select { min-height:44px; font-size:16px; } #shRoot input[type=checkbox] { width:22px; height:22px; } }
+</style>
+<!-- ════════ SIMULATION ════════
+m dv/dt = m g - 1/2 rho Cd A v^2 for each lane (down positive); RK4, dt = 2 ms. Same m and frontal A for all lanes.
+Each shape is drawn so that its frontal area equals A (cube: side sqrt(A); angled cube: side s with s * s sqrt2 = A;
+round shapes: diameter 2 sqrt(A/pi)). Drag coefficients: Hoerner, as on the Wikipedia "Drag coefficient" page.
+CFG: starting values (MOM variables in the MOM version). No dollar signs or backticks in the code.
+-->
+<script>
+(function(){
+var thisq = '';
+var CFG = { m:0.20, A:0.005, h:800, lanes:['sphere', 'cube', 'stream'] };
+function el(id){ return document.getElementById(id + thisq); }
+var ROOT = el('shRoot'), G = 9.81, RHO = 1.20, MMIN = 0.001, MMAX = 20, AMIN = 1e-4, AMAX = 1.0;
+var SH = [
+  ['stream', 'streamlined body', 0.04], ['half', 'half-sphere (round side first)', 0.42], ['sphere', 'sphere', 0.47], ['cone', 'cone (point first)', 0.50],
+  ['acube', 'angled cube (edge first)', 0.80], ['lcyl', 'long cylinder (end first)', 0.82], ['cube', 'cube (face first)', 1.05], ['scyl', 'short cylinder (end first)', 1.15],
+  ['disk', 'flat disk', 1.17], ['cup', 'open cup facing the air (parachute)', 1.42], ['none', '(empty lane)', 0]];
+function sh(k){ for (var i=0; i<SH.length; i++) if (SH[i][0] === k) return SH[i]; return SH[2]; }
+var QUICK = [['sphere', 'cube', 'stream', 'blunt vs streamlined'], ['cone', 'stream', 'none', 'same nose, different tail'], ['cube', 'acube', 'none', 'cube: face vs edge first'], ['disk', 'cup', 'sphere', 'parachute shapes'], ['half', 'sphere', 'cone', 'round fronts']];
+var P = { m:CFG.m, A:CFG.A, h:CFG.h }, LN = CFG.lanes.slice(), S, run = false, spd = 1, flow = true;
+var th = { hc:false, lm:false, cb:false, nr:true };
+function vt(k){ var c = sh(k)[2]; return c > 0 ? Math.sqrt(2*P.m*G/(RHO*c*P.A)) : 0; }
+function drag(k, v){ return 0.5*RHO*sh(k)[2]*P.A*v*v; }
+function act(){ return LN.map(function(k, i){ return k !== 'none' ? i : -1; }).filter(function(i){ return i >= 0; }); }
+function reset(){ S = { t:0, L:LN.map(function(){ return { y:P.h, v:0, landed:false, tl:null, vl:null, said:{} }; }), hist:[[0, [0, 0, 0]]], order:[] }; }
+function step(dt){
+  act().forEach(function(i){ var o = S.L[i], k = LN[i]; if (o.landed) return;
+    var c = 0.5*RHO*sh(k)[2]*P.A/P.m; function a(v){ return G - c*v*v; }
+    var v = o.v, k1 = a(v), k2 = a(v + k1*dt/2), k3 = a(v + k2*dt/2), k4 = a(v + k3*dt), dv = dt/6*(k1 + 2*k2 + 2*k3 + k4);
+    o.y -= dt*(v + dv/2); o.v += dv;
+    if (o.y <= 0){ o.y = 0; o.landed = true; o.tl = S.t + dt; o.vl = o.v; S.order.push(i); landNote(i); }
+    if (o.v >= 0.99*vt(k) && !o.said.t){ o.said.t = 1; narrate(nm(i) + ' has reached terminal velocity, ' + vt(k).toFixed(1) + ' m/s, at t = ' + S.t.toFixed(1) + ' s: its drag now balances its weight.'); } });
+  S.t += dt;
+  if (act().every(function(i){ return S.L[i].landed; })) setRun(false); }
+function nm(i){ return 'The ' + sh(LN[i])[1].replace(/ \(.*\)/, ''); }
+function landNote(i){ var n = S.order.length, o = S.L[i];
+  narrate(nm(i) + ' landed ' + ['first', 'second', 'third'][n - 1] + ', after ' + o.tl.toFixed(1) + ' s, at ' + o.vl.toFixed(1) + ' m/s.' + (n === act().length && n > 1 ? ' Race over: the order follows the drag coefficients, smallest first.' : '')); }
+/* ══════════ colours: one per lane ══════════ */
+function pal(){ var cb = th.cb, hc = th.hc, lm = th.lm;
+  return { sky1:hc ? '#000' : (lm ? '#cfe6ff' : '#0b1a2c'), sky2:hc ? '#000' : (lm ? '#eef6ff' : '#1a3150'), ground:hc ? '#fff' : (lm ? '#6a9a4a' : '#3a5a32'), txt:hc ? '#fff' : (lm ? '#111' : '#e6ecf2'), dim:hc ? '#ddd' : (lm ? '#556' : '#9aa6b4'),
+    grid:hc ? '#555' : (lm ? '#d6dde5' : 'rgba(150,170,195,0.22)'), lane:cb ? ['#E69F00', '#56B4E9', '#CC79A7'] : (hc ? ['#ffff00', '#00ffff', '#ff66ff'] : ['#ff8a5a', '#5ab4ff', '#7ee07e']), dash:[[], [8, 4], [2, 3]],
+    W:cb ? '#0072B2' : '#4a8cff', D:cb ? '#D55E00' : '#ff8a30', flow:hc ? 'rgba(255,255,255,0.45)' : (lm ? 'rgba(60,90,130,0.35)' : 'rgba(190,215,255,0.32)'), wake:hc ? 'rgba(255,255,255,0.5)' : (lm ? 'rgba(80,100,140,0.45)' : 'rgba(200,220,255,0.38)') }; }
+var DPR = window.devicePixelRatio || 1, CV = {};
+['shFull', 'shZoom', 'shGr'].forEach(function(k){ var c = el(k), w = c.width, h = c.height; c.width = w*DPR; c.height = h*DPR; c.style.aspectRatio = w + ' / ' + h; var g = c.getContext('2d'); g.scale(DPR, DPR); CV[k] = { c:c, g:g, W:w, H:h }; });
+/* ══════════ shapes: drawn front (bottom) first, w = frontal width in px ══════════ */
+function shapePath(g, k, x, y, w){
+  var r = w/2; g.beginPath();
+  if (k === 'sphere'){ g.arc(x, y, r, 0, 2*Math.PI); }
+  else if (k === 'half'){ g.moveTo(x - r, y - r*0.35); g.arc(x, y - r*0.35, r, 0, Math.PI, false); g.closePath(); }
+  else if (k === 'cone'){ g.moveTo(x, y + r*0.85); g.lineTo(x + r, y - r*0.85); g.lineTo(x - r, y - r*0.85); g.closePath(); }
+  else if (k === 'cube'){ g.rect(x - r, y - r, w, w); }
+  else if (k === 'acube'){ var s = w/Math.SQRT2; g.moveTo(x, y + s*0.72); g.lineTo(x + r, y); g.lineTo(x, y - s*0.72); g.lineTo(x - r, y); g.closePath(); }
+  else if (k === 'lcyl'){ g.rect(x - r, y - r*1.6, w, r*3.2); }
+  else if (k === 'scyl'){ g.rect(x - r, y - r*0.5, w, r); }
+  else if (k === 'disk'){ g.rect(x - r, y - 3, w, 6); }
+  else if (k === 'cup'){ g.moveTo(x - r, y + r*0.4); g.arc(x, y + r*0.4, r, Math.PI, 0, false); g.lineTo(x + r - 4, y + r*0.4); g.arc(x, y + r*0.4, r - 4, 0, Math.PI, true); g.closePath(); }
+  else if (k === 'stream'){ g.moveTo(x, y + r*1.1); g.bezierCurveTo(x + r*1.25, y + r*1.0, x + r*0.95, y - r*0.6, x, y - r*3.0); g.bezierCurveTo(x - r*0.95, y - r*0.6, x - r*1.25, y + r*1.0, x, y + r*1.1); }
+}
+function topOf(k, r){ return { sphere:r, half:r*0.35, cone:r*0.85, cube:r, acube:r*1.02, lcyl:r*1.6, scyl:r*0.5, disk:3, cup:r*0.6, stream:r*3.0 }[k] || r; }
+function botOf(k, r){ return { sphere:r, half:r*0.65, cone:r*0.85, cube:r, acube:r*1.02, lcyl:r*1.6, scyl:r*0.5, disk:3, cup:r*0.4, stream:r*1.1 }[k] || r; }
+function arrow(g, x, y1, y2, col, w){ var d = y2 - y1, L = Math.abs(d); if (L < 1.5) return; var s = d > 0 ? 1 : -1, hl = Math.min(11, L*0.5);
+  g.strokeStyle = col; g.fillStyle = col; g.lineWidth = w; g.beginPath(); g.moveTo(x, y1); g.lineTo(x, y2 - s*hl*0.8); g.stroke();
+  g.beginPath(); g.moveTo(x, y2); g.lineTo(x - hl*0.55, y2 - s*hl); g.lineTo(x + hl*0.55, y2 - s*hl); g.closePath(); g.fill(); }
+function fmtH(y){ return y >= 1000 ? (y/1000).toFixed(2) + ' km' : y.toFixed(0) + ' m'; }
+function sig(v){ var a = Math.abs(v); if (a < 1e-9) return '0'; return a < 0.01 ? String(+v.toPrecision(2)) : a >= 100 ? v.toFixed(0) : a >= 10 ? v.toFixed(1) : a >= 1 ? v.toFixed(2) : v.toFixed(3); }
+function drawFull(p){ var c = CV.shFull, g = c.g, W = c.W, H = c.H, top = 26, bot = H - 22, i;
+  var gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, p.sky1); gr.addColorStop(1, p.sky2); g.fillStyle = gr; g.fillRect(0, 0, W, H); g.fillStyle = p.ground; g.fillRect(0, bot, W, H - bot);
+  function Y(y){ return bot - y/P.h*(bot - top); }
+  g.strokeStyle = p.dim; g.fillStyle = p.dim; g.font = '10px monospace'; g.textAlign = 'right'; g.lineWidth = 1;
+  var stp = P.h > 1500 ? 500 : P.h > 600 ? 200 : P.h > 250 ? 100 : 50;
+  for (i=0; i<=P.h + 1e-6; i += stp){ var y = Y(i); g.beginPath(); g.moveTo(W - 34, y); g.lineTo(W - 26, y); g.stroke(); g.fillText(i >= 1000 ? (i/1000) + ' km' : i + ' m', W - 4, y + 3); }
+  g.beginPath(); g.moveTo(W - 30, top); g.lineTo(W - 30, bot); g.stroke();
+  LN.forEach(function(k, j){ if (k === 'none') return; var x = 22 + j*28, y2 = Y(S.L[j].y); g.fillStyle = p.lane[j]; shapePath(g, k, x, y2, 11); g.fill(); g.strokeStyle = th.hc ? '#fff' : '#111'; g.lineWidth = 0.8; g.stroke(); }); }
+var streaks = []; (function(){ var s = 5; function r(){ s = (s*16807) % 2147483647; return s/2147483647; } for (var i=0; i<60; i++) streaks.push([r(), r(), 0.4 + r()*0.6, r()]); })();
+function drawZoom(p, t){ var c = CV.shZoom, g = c.g, W = c.W, H = c.H, n = 3, lw = W/n, cy = 190;
+  var gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, p.sky1); gr.addColorStop(1, p.sky2); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+  var w = 30 + 26*Math.log(P.A/AMIN)/Math.log(AMAX/AMIN), Wt = P.m*G, kf = 110/Wt, r = w/2;
+  LN.forEach(function(k, j){ var x = lw*(j + 0.5), o = S.L[j]; if (j){ g.strokeStyle = p.grid; g.lineWidth = 1; g.beginPath(); g.moveTo(lw*j, 0); g.lineTo(lw*j, H); g.stroke(); }
+    if (k === 'none'){ g.fillStyle = p.dim; g.font = '12px Arial, sans-serif'; g.textAlign = 'center'; g.fillText('(empty lane)', x, cy); return; }
+    var cd = sh(k)[2], sp = Math.min(1, o.v/40);
+    if (flow){ g.save(); g.beginPath(); g.rect(lw*j + 1, 0, lw - 2, H); g.clip();
+      /* streaks rush up past the object; a swirling wake above it, as wide as the drag coefficient is large */
+      var ww = r*(0.35 + 1.25*cd/1.42), wt = cy - topOf(k, r);
+      g.strokeStyle = p.flow; g.lineWidth = 1.3;
+      streaks.forEach(function(q){ var sx = x + (q[0] - 0.5)*lw*0.95, sy = ((q[1]*H - t*0.02*(1 + 12*sp)*q[2]) % H + H) % H;
+        var inside = Math.abs(sx - x) < (sy < wt ? ww : r + 4) && sy > wt - H && sy < cy + botOf(k, r) + 6; if (inside) return;
+        var bend = Math.abs(sx - x) < r + 16 && sy > cy - topOf(k, r) - 10 && sy < cy + botOf(k, r) + 14 ? Math.sign(sx - x)*6 : 0;
+        g.beginPath(); g.moveTo(sx + bend, sy); g.lineTo(sx + bend, sy + 5 + 14*sp*q[2]); g.stroke(); });
+      if (o.v > 0.05){ g.strokeStyle = p.wake; g.lineWidth = 1.4; for (var i=0; i<7; i++){ var ph = (t*0.0015*(0.5 + sp) + i/7) % 1, wy = wt - 6 - ph*(H*0.45), wx = x + Math.sin(i*2.1 + t*0.003)*ww*0.6*(0.5 + ph*0.6), wr = 3 + ww*0.28*(0.3 + ph);
+        g.globalAlpha = (1 - ph)*Math.min(1, o.v/3); g.beginPath(); g.arc(wx, wy, wr, i, i + 4.2); g.stroke(); } g.globalAlpha = 1; }
+      g.restore(); }
+    g.fillStyle = p.lane[j]; shapePath(g, k, x, cy, w); g.fill(); g.strokeStyle = th.hc ? '#fff' : '#111'; g.lineWidth = 1.5; g.stroke();
+    var Dr = drag(k, o.v);
+    arrow(g, x - 8, cy + botOf(k, r) + 4, cy + botOf(k, r) + 4 + Wt*kf, p.W, 4);
+    if (Dr*kf > 1.5) arrow(g, x + 8, cy - topOf(k, r) - 4, cy - topOf(k, r) - 4 - Math.min(Dr, Wt*1.02)*kf, p.D, 4);
+    g.font = 'bold 11px Arial, sans-serif'; g.textAlign = 'center'; g.fillStyle = p.lane[j]; g.fillText('C\u2093 = '.replace('\u2093', 'd') + cd.toFixed(2), x, 16);
+    g.fillStyle = p.txt; g.font = '11px monospace'; g.fillText('v ' + o.v.toFixed(1) + ' m/s', x, H - 26); g.fillStyle = p.D; g.fillText('D ' + sig(Dr) + ' N', x, H - 12);
+    if (o.landed){ g.fillStyle = p.txt; g.font = 'bold 12px Arial, sans-serif'; g.fillText('landed ' + ['1st', '2nd', '3rd'][S.order.indexOf(j)], x, 32); } });
+  g.fillStyle = p.W; g.font = '10px Arial, sans-serif'; g.textAlign = 'left'; g.fillText('W = ' + sig(Wt) + ' N (all)', 4, H - 40); }
+function drawGr(p){ var c = CV.shGr, g = c.g, W = c.W, H = c.H, L = 46, R = W - 10, h1t = 22, h1b = 180, h2t = 222, h2b = H - 30, i;
+  g.fillStyle = th.hc ? '#000' : (th.lm ? '#fff' : '#121820'); g.fillRect(0, 0, W, H);
+  var a = act(), vmax = 1, tmax = 2; a.forEach(function(j){ vmax = Math.max(vmax, vt(LN[j])); tmax = Math.max(tmax, Math.min(4*vt(LN[j])/G, 60)); }); vmax *= 1.12; tmax = Math.max(tmax, S.t*1.05);
+  var F = P.m*G*1.25;
+  function X(t){ return L + t/tmax*(R - L); }
+  function panel(top, bot, max, ttl){ g.strokeStyle = p.grid; g.lineWidth = 1; g.fillStyle = p.dim; g.font = '10px monospace';
+    for (i=0; i<=4; i++){ var y = bot - (bot - top)*i/4; g.beginPath(); g.moveTo(L, y); g.lineTo(R, y); g.stroke(); g.textAlign = 'right'; g.fillText(sig(max*i/4), L - 4, y + 3); }
+    for (i=0; i<=5; i++){ var x = X(tmax*i/5); g.beginPath(); g.moveTo(x, top); g.lineTo(x, bot); g.stroke(); g.textAlign = 'center'; g.fillText((tmax*i/5).toFixed(tmax < 10 ? 1 : 0), x, bot + 12); }
+    g.strokeStyle = p.dim; g.strokeRect(L, top, R - L, bot - top); g.fillStyle = p.txt; g.font = 'bold 11px Arial, sans-serif'; g.textAlign = 'left'; g.fillText(ttl, L, top - 6); }
+  panel(h1t, h1b, vmax, 'speed v (m/s)'); panel(h2t, h2b, F, 'drag D (N); weight W solid blue'); g.fillStyle = p.dim; g.font = '11px Arial, sans-serif'; g.textAlign = 'right'; g.fillText('t (s)', R, H - 4);
+  function Yv(v){ return h1b - Math.min(v, vmax)/vmax*(h1b - h1t); } function Yf(f){ return h2b - Math.min(f, F)/F*(h2b - h2t); }
+  g.strokeStyle = p.W; g.lineWidth = 2; g.beginPath(); g.moveTo(L, Yf(P.m*G)); g.lineTo(R, Yf(P.m*G)); g.stroke();
+  a.forEach(function(j){ var k = LN[j]; g.strokeStyle = p.lane[j]; g.globalAlpha = 0.7; g.setLineDash([3, 4]); g.lineWidth = 1.2; g.beginPath(); g.moveTo(L, Yv(vt(k))); g.lineTo(R, Yv(vt(k))); g.stroke(); g.setLineDash([]); g.globalAlpha = 1;
+    g.setLineDash(p.dash[j]); g.lineWidth = 2.4;
+    g.beginPath(); S.hist.forEach(function(q, n){ var x = X(q[0]), y = Yv(q[1][j]); if (n) g.lineTo(x, y); else g.moveTo(x, y); }); g.stroke();
+    g.beginPath(); S.hist.forEach(function(q, n){ var x = X(q[0]), y = Yf(drag(k, q[1][j])); if (n) g.lineTo(x, y); else g.moveTo(x, y); }); g.stroke(); g.setLineDash([]); }); }
+function draw(t){ var p = pal(); drawFull(p); drawZoom(p, t || 0); drawGr(p); }
+/* ══════════ table, status ══════════ */
+function table(){ var a = act(), h = '<thead><tr><th scope="col">shape</th><th scope="col">C<sub>d</sub></th><th scope="col">v<sub>t</sub> (m/s)</th><th scope="col">v (m/s)</th><th scope="col">drag D (N)</th><th scope="col">height</th><th scope="col">landed</th></tr></thead><tbody>';
+  a.forEach(function(j){ var k = LN[j], o = S.L[j]; h += '<tr><th scope="row" style="color:' + pal().lane[j] + '">' + (j + 1) + '. ' + sh(k)[1] + '</th><td>' + sh(k)[2].toFixed(2) + '</td><td>' + vt(k).toFixed(2) + '</td><td>' + o.v.toFixed(2) + '</td><td>' + sig(drag(k, o.v)) + '</td><td>' + fmtH(o.y) + '</td><td>' + (o.landed ? o.tl.toFixed(1) + ' s' : '\u2014') + '</td></tr>'; });
+  el('shTbl').innerHTML = h + '</tbody>';
+  var Wt = P.m*G, fast = a.slice().sort(function(x, y){ return sh(LN[x])[2] - sh(LN[y])[2]; });
+  el('shStatus').textContent = S.t === 0 ? 'All released together from rest, ' + fmtH(P.h) + ' up. Same weight, same frontal area: which shape will land first?' : (a.every(function(j){ return S.L[j].landed; }) ? 'Finished. Landing order: ' + S.order.map(function(j){ return sh(LN[j])[1].replace(/ \(.*\)/, ''); }).join(', ') + '.' : 'At first the speeds are small and the drags are small: all fall together, at nearly g. As they speed up, the shape with the larger C\u2093 feels more drag and falls behind.'.replace('\u2093', 'd'));
+  el('shEq').innerHTML = 'Weight (all): W = m g = <b>' + sig(Wt) + ' N</b> &nbsp;\u00B7&nbsp; frontal area A = ' + fmtA(P.A) + '<br>' + a.map(function(j){ var k = LN[j]; return sh(k)[1].replace(/ \(.*\)/, '') + ': v\u209C = \u221A(2mg/\u03C1C<sub>d</sub>A) = \u221A(2\u00B7' + sig(Wt) + '/(1.20\u00B7' + sh(k)[2].toFixed(2) + '\u00B7' + P.A.toPrecision(3) + ')) = <b>' + vt(k).toFixed(2) + ' m/s</b>'; }).join('<br>'); }
+function narrate(m){ if (th.nr) el('shNar').textContent = m; }
+/* ══════════ controls ══════════ */
+function lg(v, a, b){ return Math.round(1000*Math.log(v/a)/Math.log(b/a)); } function ex(s, a, b){ return a*Math.pow(b/a, s/1000); }
+function fmtM(m){ return m < 1 ? String(+(m*1000).toPrecision(3)) + ' g' : String(+m.toPrecision(3)) + ' kg'; }
+function fmtA(A){ return A < 0.01 ? String(+(A*1e4).toPrecision(3)) + ' cm\u00B2' : String(+A.toPrecision(3)) + ' m\u00B2'; }
+function on(id, ev, fn){ var x = el(id); if (x) x.addEventListener(ev, fn); }
+el('shLanes').innerHTML = [0, 1, 2].map(function(j){ return '<div class="sh_lane' + thisq + '" id="shLW' + j + thisq + '"><label for="shL' + j + thisq + '">lane ' + (j + 1) + '</label><select id="shL' + j + thisq + '">' + SH.map(function(s){ return '<option value="' + s[0] + '">' + s[1] + (s[2] ? ' (C\u2093 = '.replace('\u2093', 'd') + s[2].toFixed(2) + ')' : '') + '</option>'; }).join('') + '</select></div>'; }).join('');
+el('shQuick').innerHTML = QUICK.map(function(q, i){ return '<button type="button" class="sh_btn' + thisq + '" data-q="' + i + '">' + q[3] + '</button>'; }).join('');
+function sync(){ var p = pal(); LN.forEach(function(k, j){ el('shL' + j).value = k; el('shLW' + j).style.borderColor = p.lane[j]; el('shLW' + j).querySelector('label').style.color = p.lane[j]; });
+  el('shM').value = lg(P.m, MMIN, MMAX); el('shA').value = lg(P.A, AMIN, AMAX); el('shH').value = P.h;
+  el('shMv').textContent = fmtM(P.m); el('shAv').textContent = fmtA(P.A); el('shHv').textContent = fmtH(P.h);
+  el('shM').setAttribute('aria-valuetext', fmtM(P.m).replace(' g', ' grams').replace(' kg', ' kilograms')); el('shA').setAttribute('aria-valuetext', fmtA(P.A).replace(' cm\u00B2', ' square centimeters').replace(' m\u00B2', ' square meters')); el('shH').setAttribute('aria-valuetext', fmtH(P.h).replace(' km', ' kilometers').replace(' m', ' meters')); }
+function changed(){ setRun(false); reset(); sync(); table(); draw(0); }
+function sayLanes(){ var a = act(); narrate(a.map(function(j){ return sh(LN[j])[1] + ', drag coefficient ' + sh(LN[j])[2].toFixed(2) + ', terminal velocity ' + vt(LN[j]).toFixed(1) + ' m/s'; }).join('; ') + '. Press Drop.'); }
+[0, 1, 2].forEach(function(j){ on('shL' + j, 'change', function(){ LN[j] = this.value; if (!act().length){ LN[j] = 'sphere'; } changed(); sayLanes(); }); });
+[].forEach.call(el('shQuick').querySelectorAll('button[data-q]'), function(b){ b.addEventListener('click', function(){ var q = QUICK[+b.getAttribute('data-q')]; LN = [q[0], q[1], q[2]]; changed(); narrate('Comparison: ' + q[3] + '. '); setTimeout(sayLanes, 50); }); });
+on('shM', 'input', function(){ P.m = ex(+this.value, MMIN, MMAX); changed(); }); on('shA', 'input', function(){ P.A = ex(+this.value, AMIN, AMAX); changed(); }); on('shH', 'input', function(){ P.h = +this.value; changed(); });
+['shM', 'shA', 'shH'].forEach(function(k){ on(k, 'change', sayLanes); });
+on('shSpd', 'change', function(){ spd = +this.value; }); on('shFlow', 'change', function(){ flow = this.checked; });
+function setRun(v){ run = v; el('shPlay').innerHTML = v ? '\u2759\u2759 Pause' : (S && S.t > 0 && !act().every(function(j){ return S.L[j].landed; }) ? '\u25B6 Resume' : '\u25B6 Drop them'); }
+on('shPlay', 'click', function(){ if (act().every(function(j){ return S.L[j].landed; })) reset(); setRun(!run); if (run && S.t === 0) narrate('Released together. At first the speeds are zero, so there is no drag: all start falling at g.'); });
+on('shRst', 'click', function(){ setRun(false); reset(); table(); draw(0); narrate('Back at the top, at rest.'); });
+on('shDsc', 'click', function(){ narrate('Three lanes. ' + act().map(function(j){ var o = S.L[j]; return 'Lane ' + (j + 1) + ': ' + sh(LN[j])[1] + ', at ' + fmtH(o.y) + ', ' + o.v.toFixed(1) + ' m/s, drag ' + sig(drag(LN[j], o.v)) + ' newtons'; }).join('. ') + '. Each has weight ' + sig(P.m*G) + ' newtons, drawn as a blue arrow down; the drag is an orange arrow up. Swirls above each object show its wake: the wider the wake, the larger the drag coefficient.'); });
+function theme(k){ th[k] = !th[k]; if (k === 'hc' && th.hc) th.lm = false; if (k === 'lm' && th.lm) th.hc = false;
+  ROOT.classList.toggle('sh_hc' + thisq, th.hc); ROOT.classList.toggle('sh_lm' + thisq, th.lm);
+  [['hc', 'shBtnHC'], ['lm', 'shBtnLM'], ['cb', 'shBtnCB'], ['nr', 'shBtnNR']].forEach(function(q){ var b = el(q[1]); b.classList.toggle('sh_a11yon' + thisq, th[q[0]]); b.setAttribute('aria-pressed', th[q[0]] ? 'true' : 'false'); });
+  el('shBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('shNar').style.display = th.nr ? '' : 'none'; sync(); table();
+  if (k === 'cb' && th.cb) narrate('Colour-blind safe colours: lane 1 orange with solid lines, lane 2 sky blue with long dashes, lane 3 pink with short dashes; weight blue, drag orange-red.'); }
+on('shBtnHC', 'click', function(){ theme('hc'); }); on('shBtnLM', 'click', function(){ theme('lm'); }); on('shBtnCB', 'click', function(){ theme('cb'); }); on('shBtnNR', 'click', function(){ theme('nr'); });
+on('shDescBtn', 'click', function(){ var d = el('shDesc'), o = d.hidden; d.hidden = !o; this.setAttribute('aria-expanded', o ? 'true' : 'false'); this.innerHTML = (o ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+  if (o && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } });
+/* ══════════ loop ══════════ */
+var last = 0, acc = 0, tk = 0;
+function loop(t){ var rdt = last ? Math.min(0.05, (t - last)/1000) : 0; last = t;
+  if (run && rdt > 0){ var T = rdt*spd, n = Math.ceil(T/0.002), i; for (i=0; i<n && run; i++) step(T/n);
+    acc += T; if (acc > 0.05 || !run){ acc = 0; S.hist.push([S.t, S.L.map(function(o){ return o.v; })]); if (S.hist.length > 3000) S.hist.splice(1, 1); } }
+  draw(t); if (++tk % 6 === 0) table(); requestAnimationFrame(loop); }
+reset(); sync(); table(); draw(0);
+narrate('Ready: three objects with the same mass, ' + fmtM(P.m) + ', and the same frontal area, ' + fmtA(P.A) + '. Only their shapes differ. Predict which lands first, then press Drop.');
+requestAnimationFrame(loop);
+window['shSim' + thisq] = { _P:P, _LN:function(){ return LN; }, _S:function(){ return S; }, _step:step, _vt:vt, _reset:reset };
+})();
+</script>
+
+</body>
+</html>

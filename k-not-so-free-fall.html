@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Kinematics: Not So Free Fall</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, light, optics, refraction, refraction, Snell's law, apparent depth, image, Fermat's principle, total internal reflection, critical angle, Snell's window, pool, distortion, lesson, scientific">
+<meta name="description" content="A ball moved down, moved up or held at rest at a constant velocity, then released: the acceleration jumps to g at once, but the velocity starts from the value it had.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<main class="page">
+<div style="max-width:900px;margin:0 auto 10px;padding:8px 12px;background:#eef6ff;border:1px solid #bcdcff;border-radius:4px;font-family:Arial,sans-serif;font-size:13px">Settings at the top of the script: <code>TAB</code>, <code>HOLD</code>, <code>VDOWN</code>, <code>VUP</code>, <code>G</code>, <code>TTOTAL</code>; in MOM, <code>$tab</code>, <code>$hold</code>, <code>$vdown</code>, <code>$vup</code>, <code>$g</code>. Presets: <a href="?tab=down">(a) moving down</a> &middot; <a href="?tab=up">(b) moving up</a> &middot; <a href="?tab=rest">(c) held at rest</a> &middot; <a href="?tab=up&amp;hold=1.5&amp;g=9.8">(b) held 1.5 s, g = 9.8</a>.</div><div id="nfRoot" class="nf_root" role="region" aria-label="Not So Free Fall: a ball moved at constant velocity, then released">
+<div class="nf_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="nf_a11ybtn" id="nfBtnHC" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="nf_a11ybtn" id="nfBtnLM" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="nf_a11ybtn" id="nfBtnCB" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="nf_a11ybtn" id="nfBtnFS" aria-pressed="false">FONT: NORMAL</button>
+<button type="button" class="nf_a11ybtn nf_a11yon" id="nfBtnNR" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div class="nf_header"><p class="nf_h1">Not So Free Fall</p><p class="nf_sub">held at a constant velocity, then released: what changes, and what does not?</p></div>
+<div class="nf_tabs" role="tablist" aria-label="Situations" id="nfTabs"></div>
+<div class="nf_situ" id="nfSitu" role="status" aria-live="polite"></div>
+<div class="nf_main">
+<div class="nf_left">
+<div class="nf_panel"><canvas id="nfCv" width="460" height="520" role="img" aria-label="The ball on a vertical axis, with the force, velocity and acceleration vectors. The readout and the narration describe the motion."></canvas>
+<div class="nf_bbar"><button type="button" class="nf_btn nf_btnon" id="nfPlay">&#9654; Play</button><button type="button" class="nf_btn" id="nfBack" aria-label="step back">&#9664;&#9664; Step</button><button type="button" class="nf_btn" id="nfFwd" aria-label="step forward">Step &#9654;&#9654;</button><button type="button" class="nf_btn" id="nfReset">Reset</button></div>
+<div class="nf_scrub"><label for="nfTime">time</label><input type="range" id="nfTime" min="0" max="10" step="0.05" value="0"><span id="nfTimeV">0.00 s</span></div></div>
+</div>
+<div class="nf_right">
+<div class="nf_panel"><div class="nf_ptitle">Readout</div><div class="nf_pbody" id="nfRead"></div></div>
+<div class="nf_panel"><div class="nf_ptitle">Settings</div><div class="nf_pbody">
+<div class="nf_ctrl"><label for="nfHold">held for</label><input type="range" id="nfHold" min="0.5" max="6" step="0.5"><span id="nfHoldV"></span></div>
+<div class="nf_ctrl" id="nfSpRow"><label for="nfSp">speed</label><input type="range" id="nfSp" min="1" max="25" step="1"><span id="nfSpV"></span></div>
+<div class="nf_note" id="nfNote"></div></div></div>
+<div class="nf_panel"><div class="nf_ptitle">Show</div><div class="nf_pbody">
+<label class="nf_chk"><input type="checkbox" id="nfShF" checked> forces (F and F<sub>g</sub>)</label>
+<label class="nf_chk"><input type="checkbox" id="nfShV" checked> velocity v</label>
+<label class="nf_chk"><input type="checkbox" id="nfShA" checked> acceleration a</label>
+<label class="nf_chk"><input type="checkbox" id="nfShG" checked> motion diagram (every 0.5 s)</label>
+</div></div>
+<div class="nf_panel"><div class="nf_ptitle">Graphs</div><canvas id="nfGr" width="300" height="330" role="img" aria-label="Graphs of the position, the velocity and the acceleration against time, with the release marked."></canvas></div>
+</div>
+</div>
+<div id="nfNar" class="nf_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="nf_descwrap"><button type="button" class="nf_descbtn" id="nfDescBtn" aria-expanded="false" aria-controls="nfDesc">&#9656; SIM DESCRIPTION</button>
+<div class="nf_desc" id="nfDesc" style="display:none" role="region" aria-labelledby="nfDescBtn">
+<p>A ball of mass `m` is first moved at a constant velocity (downward, upward, or held at rest) by a force `vec F` from whatever holds it: a hand, a rope, an engine. A constant velocity means no acceleration, so by Newton&rsquo;s second law the net force is zero: the holding force exactly balances gravity, `F = m g`, upward, whichever way the ball moves.</p>
+<p>When the ball is released, the holding force disappears and only gravity remains: the acceleration jumps at once to `g`, downward. The velocity, however, does not jump: the ball keeps the velocity it had and only then starts to change, `v = v_0 - g (t - t_r)`. Released while moving up, it keeps rising, slows down, stops for an instant at the top, and falls back; released while moving down, it falls faster and faster from the speed it already had.</p>
+<p>On the graphs, the position is a straight line while the ball is held (constant velocity) and a parabola after the release; the velocity is flat, then a straight line of slope `-g`; the acceleration is zero, then `-g`.</p>
+</div></div>
+</div><!-- #nfRoot -->
+<style>
+#nfRoot { --c-chassis:#1a1c1f; --c-panel:#22262b; --c-hi:#2c3138; --c-lo:#14161a; --c-bd:#3a4048; --c-bd2:#525c66; --c-text:#c8d0d8; --c-dim:#8a94a3; --c-accent:#e8a020; --c-green:#3ad08f; --c-val:#ffdd66; --c-nbg:#2a2410; --c-nbd:#e0b040; --c-ntx:#f0e2b8;
+  background:var(--c-chassis); background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
+  color:var(--c-text); font-family:Arial, sans-serif; padding:14px 10px 18px; border-radius:6px; box-sizing:border-box; width:100%; max-width:860px; margin:0 auto 10px; display:flex; flex-direction:column; gap:10px; }
+#nfRoot * { box-sizing:border-box; }
+#nfRoot.nf_lm { --c-chassis:#e9edf1; --c-panel:#ffffff; --c-hi:#f1f4f7; --c-lo:#f4f6f9; --c-bd:#c3cad3; --c-bd2:#9aa3ae; --c-text:#1d232a; --c-dim:#556070; --c-accent:#a8620a; --c-green:#12805a; --c-val:#8a4a00; --c-nbg:#ffefc0; --c-ntx:#333; background-image:none; }
+#nfRoot.nf_hc { --c-chassis:#000; --c-panel:#000; --c-hi:#111; --c-lo:#000; --c-bd:#fff; --c-bd2:#fff; --c-text:#fff; --c-dim:#e0e0e0; --c-accent:#ffd700; --c-green:#00ff88; --c-val:#ffff00; --c-nbg:#000; --c-nbd:#ffd700; --c-ntx:#fff; background-image:none; }
+#nfRoot .nf_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+#nfRoot .nf_a11ybtn { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-dim); min-height:30px; }
+#nfRoot .nf_a11yon { background:rgba(58,208,143,.14); border-color:var(--c-green); color:var(--c-green); font-weight:bold; }
+#nfRoot .nf_header { text-align:center; }
+#nfRoot .nf_h1 { margin:0; font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--c-accent); }
+#nfRoot .nf_sub { margin:3px 0 0; font-size:.7rem; color:var(--c-dim); letter-spacing:.08em; text-transform:uppercase; }
+#nfRoot .nf_tabs { display:flex; gap:4px; flex-wrap:wrap; }
+#nfRoot .nf_tab { flex:1 1 90px; padding:8px 6px; border:1px solid var(--c-bd2); background:var(--c-hi); color:var(--c-text); border-radius:4px; cursor:pointer; font-family:monospace; font-size:.76rem; letter-spacing:.06em; text-transform:uppercase; min-height:38px; }
+#nfRoot .nf_tab[aria-selected="true"] { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#nfRoot .nf_diag { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+#nfRoot .nf_dlabel { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--c-dim); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+#nfRoot .nf_dlabel b { color:var(--c-accent); }
+#nfRoot canvas { display:block; width:100%; height:auto; touch-action:none; }
+#nfRoot .nf_row2 { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#nfRoot .nf_bbar { display:flex; flex-wrap:wrap; gap:6px 12px; justify-content:center; align-items:center; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:6px; padding:8px 10px; font-size:.8rem; }
+#nfRoot .nf_bbar label { display:flex; align-items:center; gap:5px; color:var(--c-dim); font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; cursor:pointer; }
+#nfRoot .nf_btn { padding:7px 12px; font-family:monospace; font-size:.72rem; letter-spacing:.04em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-text); border-radius:3px; text-transform:uppercase; min-height:34px; }
+#nfRoot .nf_btn:hover { border-color:var(--c-accent); }
+#nfRoot .nf_btnon { border-color:var(--c-accent); color:var(--c-accent); font-weight:bold; }
+#nfRoot select { background:var(--c-hi); color:var(--c-text); border:1px solid var(--c-bd2); border-radius:3px; padding:4px 6px; font-size:.8rem; }
+#nfRoot .nf_panels { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#nfRoot .nf_panel { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; box-shadow:0 4px 20px rgba(0,0,0,.3); overflow:hidden; }
+#nfRoot .nf_ptitle { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--c-dim); }
+#nfRoot .nf_pbody { padding:9px 12px; display:flex; flex-direction:column; gap:8px; }
+#nfRoot .nf_ctrl { display:flex; flex-direction:column; gap:3px; }
+#nfRoot .nf_ctrlhdr { display:flex; justify-content:space-between; align-items:baseline; gap:6px; }
+#nfRoot .nf_ctrlname { font-size:.72rem; font-weight:600; color:var(--c-dim); text-transform:uppercase; letter-spacing:.04em; }
+#nfRoot .nf_sval { font-family:monospace; font-size:.76rem; color:var(--c-val); white-space:nowrap; }
+#nfRoot input[type=range] { width:100%; -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; cursor:pointer; background:var(--c-lo); border:1px solid var(--c-bd); }
+#nfRoot input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#nfRoot input[type=range]::-moz-range-thumb { width:12px; height:12px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#nfRoot input[type=checkbox] { accent-color:var(--c-accent); width:16px; height:16px; }
+#nfRoot .nf_rrow { display:flex; justify-content:space-between; gap:6px; padding:4px 7px; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:3px; font-family:monospace; font-size:.72rem; }
+#nfRoot .nf_rkey { color:var(--c-dim); }
+#nfRoot .nf_rval { color:var(--c-val); font-weight:bold; text-align:right; }
+#nfRoot .nf_eqs { background:var(--c-lo); border:1px solid var(--c-bd); border-left:4px solid var(--c-accent); border-radius:4px; padding:8px 14px; font-family:monospace; font-size:.74rem; color:var(--c-dim); line-height:1.7; }
+#nfRoot .nf_eqs b { color:var(--c-val); }
+#nfRoot .nf_narbar { min-height:30px; padding:6px 12px; background:var(--c-nbg); border-left:4px solid var(--c-nbd); color:var(--c-ntx); font-size:.84rem; font-style:italic; line-height:1.45; border-radius:3px; }
+#nfRoot .nf_descwrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+#nfRoot .nf_descbtn { padding:8px 18px; font-family:monospace; font-size:.74rem; letter-spacing:.08em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-accent); color:var(--c-accent); border-radius:3px; font-weight:bold; min-height:40px; }
+#nfRoot .nf_desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid var(--c-accent); border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; }
+#nfRoot .nf_desc p { margin:0 0 9px; }
+#nfRoot .nf_eq { text-align:center; font-size:1rem; }
+#nfRoot button:focus-visible, #nfRoot input:focus-visible, #nfRoot select:focus-visible, #nfRoot canvas:focus-visible { outline:2px solid var(--c-accent); outline-offset:2px; }
+@media (max-width:640px) { #nfRoot .nf_row2, #nfRoot .nf_panels { grid-template-columns:minmax(0,1fr); } #nfRoot .nf_tab { font-size:.68rem; padding:8px 3px; } }
+@media (pointer:coarse) { #nfRoot input[type=range] { height:8px; } #nfRoot input[type=range]::-webkit-slider-thumb { width:26px; height:26px; } #nfRoot input[type=range]::-moz-range-thumb { width:24px; height:24px; } #nfRoot .nf_a11ybtn { min-height:40px; } #nfRoot input[type=checkbox] { width:22px; height:22px; } }
+#nfRoot .nf_main { display:flex; flex-wrap:wrap; gap:12px; width:100%; align-items:flex-start; }
+#nfRoot .nf_left { flex:1 1 320px; min-width:0; display:flex; flex-direction:column; gap:10px; }
+#nfRoot .nf_right { flex:1 1 260px; min-width:0; display:flex; flex-direction:column; gap:10px; }
+#nfRoot canvas { width:100%; height:auto; display:block; }
+#nfRoot .nf_tabs { display:flex; gap:6px; flex-wrap:wrap; width:100%; }
+#nfRoot .nf_tab { flex:1 1 120px; padding:9px 10px; border:1px solid var(--c-bd); border-radius:6px 6px 0 0; background:transparent; color:var(--c-text); cursor:pointer; font-size:.86rem; }
+#nfRoot .nf_tab[aria-selected="true"] { background:#ffd166; color:#111; border-color:#ffd166; font-weight:bold; }
+#nfRoot .nf_situ { width:100%; padding:8px 12px; border-radius:0 0 6px 6px; background:var(--c-panel); border:1px solid var(--c-bd); border-left:5px solid #ffd166; color:var(--c-text); font-size:.88rem; }
+#nfRoot .nf_scrub { display:flex; gap:8px; align-items:center; padding:6px 10px; font-size:.8rem; color:var(--c-text); } #nfRoot .nf_scrub input { flex:1; }
+#nfRoot .nf_ctrl { display:grid; grid-template-columns:70px 1fr 56px; gap:6px; align-items:center; font-size:.8rem; color:var(--c-text); margin:5px 0; }
+#nfRoot .nf_chk { display:flex; gap:7px; align-items:center; font-size:.8rem; color:var(--c-text); margin:5px 0; cursor:pointer; }
+#nfRoot .nf_note { font-size:.76rem; color:var(--c-text); opacity:.85; margin-top:4px; }
+#nfRoot .nf_rrow { display:flex; justify-content:space-between; gap:8px; padding:3px 6px; border-bottom:1px solid var(--c-bd); font-size:.8rem; font-family:monospace; color:var(--c-text); }
+#nfRoot.nf_fs1 { zoom:1.12; } #nfRoot.nf_fs2 { zoom:1.25; }
+@media (pointer:coarse) { #nfRoot .nf_btn, #nfRoot .nf_tab { min-height:42px; } #nfRoot input[type=range] { height:26px; } #nfRoot input[type=checkbox] { width:20px; height:20px; } }
+</style>
+<script>
+var nfSim = (function(){
+/* ══════════ SETTINGS ══════════
+   TAB:    the situation shown first: 'down' (constant downward velocity), 'up' (constant upward velocity) or 'rest' (held at rest)
+   HOLD:   how long the ball is held (s), before it is released
+   VDOWN, VUP: the constant speeds of the 'down' and 'up' situations (m/s)
+   G:      the acceleration due to gravity (m/s^2): 10, as in the original, or 9.8
+   TTOTAL: the length of the run (s)
+   In MOM, the variables $tab, $hold, $vdown, $vup and $g, when set, replace these defaults.
+*/
+var TAB = 'down', HOLD = 3, VDOWN = 8, VUP = 20, G = 10, TTOTAL = 10;
+var MOM = { tab:'', hold:'', vdown:'', vup:'', g:'' };
+function num_(s){ return typeof s === 'string' && s.indexOf('$') < 0 && isFinite(parseFloat(s)) ? parseFloat(s) : null; }
+try { (location.search || '').slice(1).split('&').forEach(function(kv){ var q = kv.split('='); if (q[0] === 'tab') TAB = q[1]; if (q[0] === 'hold' && isFinite(+q[1])) HOLD = +q[1]; if (q[0] === 'g' && isFinite(+q[1])) G = +q[1]; }); } catch(e){}
+if (typeof MOM.tab === 'string' && MOM.tab.indexOf('$') < 0 && MOM.tab) TAB = MOM.tab;
+if (num_(MOM.hold) !== null) HOLD = num_(MOM.hold); if (num_(MOM.vdown) !== null) VDOWN = Math.abs(num_(MOM.vdown)); if (num_(MOM.vup) !== null) VUP = Math.abs(num_(MOM.vup)); if (num_(MOM.g) !== null) G = num_(MOM.g);
+var TABS = [['down', '(a) moving down'], ['up', '(b) moving up'], ['rest', '(c) held at rest']];
+if (!TABS.some(function(t){ return t[0] === TAB; })) TAB = 'down';
+var M = 1;   /* kg */
+var st = { tab:TAB, hold:HOLD, sp:{ down:VDOWN, up:VUP }, t:0, playing:false, shF:true, shV:true, shA:true, shG:true };
+function el(id){ return document.getElementById(id + ''); }
+/* ══════════ the motion, exact at any time ══════════ */
+function v0(){ return st.tab === 'down' ? -st.sp.down : st.tab === 'up' ? st.sp.up : 0; }
+function y0(){ return 0; }
+function at(t){ var T = st.hold, v = v0();
+  if (t <= T) return { y:y0() + v*t, v:v, a:0, F:M*G, held:true };
+  var d = t - T, y1 = y0() + v*T; return { y:y1 + v*d - 0.5*G*d*d, v:v - G*d, a:-G, F:0, held:false }; }
+function range(){ var lo = 0, hi = 0; for (var t=0; t<=TTOTAL; t+=0.05){ var y = at(t).y; lo = Math.min(lo, y); hi = Math.max(hi, y); } var pad = Math.max(5, (hi - lo)*0.06); return [lo - pad, hi + pad]; }
+/* ══════════ drawing ══════════ */
+var cv = el('nfCv'), g = cv.getContext('2d'), gc = el('nfGr'), gg = gc.getContext('2d'), DPR = window.devicePixelRatio || 1, W = 460, H = 520;
+cv.width = W*DPR; cv.height = H*DPR; g.scale(DPR, DPR); gc.width = 300*DPR; gc.height = 330*DPR; gg.scale(DPR, DPR);
+var th = { hc:false, lm:false, cb:false, nr:true, fs:0 };
+function pal(){ var p = { bg:'#0f1720', grid:'rgba(255,255,255,0.08)', axis:'#3ad08f', text:'#e6edf3', ball:'#ff4d5e', F:'#ff6b6b', Fg:'#5aa9ff', v:'#3ad08f', a:'#c792ea', ghost:'rgba(255,77,94,0.35)', hold:'rgba(255,209,102,0.18)' };
+  if (th.lm){ p.bg = '#ffffff'; p.grid = 'rgba(0,0,0,0.08)'; p.axis = '#1b7a3a'; p.text = '#1d2a36'; p.ball = '#e01020'; p.F = '#d01010'; p.Fg = '#1f4fd6'; p.v = '#12805a'; p.a = '#7d1fa0'; p.ghost = 'rgba(224,16,32,0.3)'; p.hold = 'rgba(255,200,0,0.25)'; }
+  if (th.cb){ p.F = '#d55e00'; p.Fg = '#0072b2'; p.v = '#009e73'; p.a = '#cc79a7'; p.ball = '#e69f00'; p.ghost = 'rgba(230,159,0,0.35)'; }
+  if (th.hc){ p.bg = '#000'; p.grid = 'rgba(255,255,255,0.2)'; p.axis = '#fff'; p.text = '#fff'; p.ball = '#ffd700'; p.F = '#ff5555'; p.Fg = '#66aaff'; p.v = '#00ff88'; p.a = '#ff66ff'; }
+  return p; }
+var R = [-200, 10], AX = 110, TOP = 30, BOT = H - 40;
+function Y(y){ return BOT - (y - R[0])/(R[1] - R[0])*(BOT - TOP); }
+function arrow(x, y0p, dy, col, lab, labLeft){ if (Math.abs(dy) < 2){ g.fillStyle = col; g.font = 'bold 12px Arial'; g.fillText(lab + ' = 0', x - 10, y0p + 4); return; } var y1 = y0p + dy, s = dy > 0 ? 1 : -1, h = 9;
+  g.strokeStyle = col; g.fillStyle = col; g.lineWidth = 3.5; g.beginPath(); g.moveTo(x, y0p); g.lineTo(x, y1 - s*h*0.6); g.stroke(); g.beginPath(); g.moveTo(x, y1); g.lineTo(x - 6, y1 - s*h); g.lineTo(x + 6, y1 - s*h); g.closePath(); g.fill();
+  g.font = 'bold 13px Arial'; g.fillText(lab, x + (labLeft ? -24 : 8), y1 + (s > 0 ? 12 : -2)); }
+function nice(span){ var s = Math.pow(10, Math.floor(Math.log(span/8)/Math.LN10)); if (span/s > 40) s *= 5; else if (span/s > 16) s *= 2; return s; }
+function draw(){ var p = pal(), s = at(st.t); g.fillStyle = p.bg; g.fillRect(0, 0, W, H);
+  /* the y axis, fitted to the whole motion */ var step = nice(R[1] - R[0]); g.font = '12px Arial'; g.textAlign = 'right';
+  for (var yy = Math.ceil(R[0]/step)*step; yy <= R[1]; yy += step){ g.strokeStyle = p.grid; g.lineWidth = 1; g.beginPath(); g.moveTo(AX, Y(yy)); g.lineTo(W - 10, Y(yy)); g.stroke(); g.fillStyle = p.text; g.fillText(String(+yy.toFixed(3)), AX - 8, Y(yy) + 4); }
+  g.textAlign = 'left'; g.strokeStyle = p.axis; g.lineWidth = 3; g.beginPath(); g.moveTo(AX, BOT + 10); g.lineTo(AX, TOP - 14); g.stroke(); g.fillStyle = p.axis; g.beginPath(); g.moveTo(AX, TOP - 20); g.lineTo(AX - 6, TOP - 8); g.lineTo(AX + 6, TOP - 8); g.closePath(); g.fill();
+  g.fillStyle = p.text; g.font = 'bold 13px Arial'; g.fillText('y (m)', AX + 10, TOP - 6);
+  /* the stretch of the axis travelled while held */ var yh0 = at(0).y, yh1 = at(st.hold).y; g.fillStyle = p.hold; g.fillRect(AX - 12, Math.min(Y(yh0), Y(yh1)), 24, Math.max(3, Math.abs(Y(yh1) - Y(yh0))));
+  /* the motion diagram */ if (st.shG){ g.fillStyle = p.ghost; for (var tg=0.5; tg<st.t - 1e-9; tg+=0.5){ g.beginPath(); g.arc(AX, Y(at(tg).y), 7, 0, 2*Math.PI); g.fill(); } }
+  /* the ball */ var by = Y(s.y); g.fillStyle = p.ball; g.beginPath(); g.arc(AX, by, 12, 0, 2*Math.PI); g.fill();
+  if (s.held){ g.strokeStyle = p.text; g.lineWidth = 2; g.setLineDash([3, 3]); g.beginPath(); g.moveTo(AX, by - 12); g.lineTo(AX, by - 40); g.stroke(); g.setLineDash([]); g.fillStyle = p.text; g.font = '11px Arial'; g.fillText('held', AX + 6, by - 30); }
+  /* the vectors, at the side, level with the ball (6 px per N, 3 px per m/s, 4 px per m/s^2) */
+  if (st.shF){ arrow(190, by, -s.F*6, p.F, 'F'); arrow(190, by, M*G*6, p.Fg, 'F\u1D4D'); }
+  if (st.shV) arrow(270, by, -s.v*3, p.v, 'v');
+  if (st.shA) arrow(340, by, -s.a*4, p.a, 'a');
+  g.fillStyle = p.text; g.font = '11px Arial'; g.fillText('scale: F 6 px/N, v 3 px/(m/s), a 4 px/(m/s\u00B2); m = ' + M + ' kg', 8, H - 10);
+  g.fillStyle = s.held ? '#ffd166' : '#ff6b6b'; g.font = 'bold 13px Arial'; g.fillText(s.held ? 'HELD: constant velocity' : 'RELEASED: free fall', W - 190, 20); }
+function graphs(){ var p = pal(), rows = [['y (m)', function(q){ return q.y; }, p.ball], ['v (m/s)', function(q){ return q.v; }, p.v], ['a (m/s\u00B2)', function(q){ return q.a; }, p.a]], GW = 300, GH = 330, L = 46, Rr = 8, hh = (GH - 20)/3;
+  gg.fillStyle = p.bg; gg.fillRect(0, 0, GW, GH);
+  rows.forEach(function(rw, i){ var y0p = 4 + i*hh, mn = 0, mx = 0; for (var t=0; t<=TTOTAL; t+=0.05){ var v = rw[1](at(t)); mn = Math.min(mn, v); mx = Math.max(mx, v); } if (mx - mn < 1e-6){ mx += 1; mn -= 1; }
+    function GX(t){ return L + (GW - L - Rr)*t/TTOTAL; } function GY(v){ return y0p + hh - 8 - (hh - 16)*(v - mn)/(mx - mn); }
+    gg.strokeStyle = p.grid.replace('0.08', '0.4').replace('0.2', '0.5'); gg.lineWidth = 1; gg.beginPath(); gg.moveTo(L, y0p + 4); gg.lineTo(L, y0p + hh - 8); gg.moveTo(L, GY(0)); gg.lineTo(GW - Rr, GY(0)); gg.stroke();
+    gg.fillStyle = p.text; gg.font = '10px Arial'; gg.fillText(rw[0], 2, y0p + 12); gg.fillText(String(+mx.toPrecision(3)), 2, y0p + 24); gg.fillText(String(+mn.toPrecision(3)), 2, y0p + hh - 8);
+    gg.fillStyle = p.hold; gg.fillRect(L, y0p + 4, GX(st.hold) - L, hh - 12);
+    gg.strokeStyle = rw[2]; gg.lineWidth = 2; gg.beginPath(); for (var t2=0; t2<=st.t + 1e-9; t2+=0.02){ var vv = rw[1](at(Math.min(t2, st.t))); if (t2 === 0) gg.moveTo(GX(t2), GY(vv)); else gg.lineTo(GX(t2), GY(vv)); } gg.stroke(); });
+  gg.fillStyle = p.text; gg.fillText('t (s) \u2192 ' + TTOTAL, GW - 62, GH - 3); gg.fillText('held', L + 3, GH - 3); }
+function f2(v){ return (Math.abs(v) < 0.005 ? 0 : v).toFixed(2); }
+function readout(){ var s = at(st.t), rows = [['t', st.t.toFixed(2) + ' s'], ['phase', s.held ? 'held (constant velocity)' : 'released (free fall)'], ['y', f2(s.y) + ' m'], ['v', f2(s.v) + ' m/s'], ['a', f2(s.a) + ' m/s\u00B2'], ['F (holding force)', f2(s.F) + ' N, up'], ['F\u1D4D = mg', f2(M*G) + ' N, down'], ['net force', f2(s.F - M*G) + ' N']];
+  el('nfRead').innerHTML = rows.map(function(r){ return '<div class="nf_rrow"><span class="nf_rkey">' + r[0] + '</span><span class="nf_rval">' + r[1] + '</span></div>'; }).join(''); }
+function render(){ el('nfTime').max = TTOTAL; el('nfTime').value = st.t; el('nfTimeV').textContent = st.t.toFixed(2) + ' s'; draw(); graphs(); readout(); }
+/* ══════════ the situations ══════════ */
+function situ(){ var v = v0(); el('nfSitu').innerHTML = '<b>' + { down:'(a) Moving down', up:'(b) Moving up', rest:'(c) Held at rest' }[st.tab] + ':</b> ' + (st.tab === 'rest' ? 'the ball is held still' : 'the ball is moved ' + (v < 0 ? 'down' : 'up') + ' at a constant ' + Math.abs(v) + ' m/s') + ' for ' + st.hold + ' s, then released. <i>Before you play: what will its velocity be just after the release?</i>'; }
+function buildTabs(){ el('nfTabs').innerHTML = TABS.map(function(t){ return '<button type="button" role="tab" class="nf_tab" data-t="' + t[0] + '" aria-selected="' + (st.tab === t[0]) + '">' + t[1] + '</button>'; }).join('');
+  [].forEach.call(el('nfTabs').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ st.tab = b.getAttribute('data-t'); changed(); narrate('Situation ' + b.textContent + '. ' + el('nfSitu').textContent); }); }); }
+function syncInputs(){ el('nfHold').value = st.hold; el('nfHoldV').textContent = st.hold.toFixed(1) + ' s'; el('nfSpRow').style.display = st.tab === 'rest' ? 'none' : '';
+  if (st.tab !== 'rest'){ el('nfSp').value = st.sp[st.tab]; el('nfSpV').textContent = st.sp[st.tab] + ' m/s'; }
+  el('nfNote').textContent = 'g = ' + G + ' m/s\u00B2, m = ' + M + ' kg. The run lasts ' + TTOTAL + ' s.'; ['F', 'V', 'A', 'G'].forEach(function(k){ el('nfSh' + k).checked = st['sh' + k]; }); }
+function changed(){ st.t = 0; st.playing = false; el('nfPlay').innerHTML = '\u25B6 Play'; R = range(); buildTabs(); syncInputs(); situ(); render(); save(); }
+function narrate(m){ if (th.nr) el('nfNar').textContent = m; }
+function tick(prev){ if (prev <= st.hold && st.t > st.hold){ var s = at(st.hold); narrate('Released at t = ' + st.hold.toFixed(2) + ' s. The holding force is gone: the acceleration is now ' + G + ' m/s squared downward, but the velocity starts from ' + f2(s.v) + ' m/s, the value it had.' + (s.v > 0 ? ' The ball keeps rising for ' + (s.v/G).toFixed(2) + ' s before it falls back.' : '')); }
+  if (st.tab === 'up'){ var tTop = st.hold + v0()/G; if (prev < tTop && st.t >= tTop) narrate('At the top: the velocity is zero for an instant, but the acceleration is still ' + G + ' m/s squared downward.'); } }
+el('nfHold').addEventListener('input', function(){ st.hold = +this.value; changed(); });
+el('nfSp').addEventListener('input', function(){ st.sp[st.tab] = +this.value; changed(); });
+['F', 'V', 'A', 'G'].forEach(function(k){ el('nfSh' + k).addEventListener('change', function(){ st['sh' + k] = this.checked; render(); save(); }); });
+el('nfPlay').addEventListener('click', function(){ if (st.t >= TTOTAL - 1e-6) st.t = 0; st.playing = !st.playing; this.innerHTML = st.playing ? '\u2759\u2759 Pause' : '\u25B6 Play'; });
+el('nfFwd').addEventListener('click', function(){ var p0 = st.t; st.playing = false; el('nfPlay').innerHTML = '\u25B6 Play'; st.t = Math.min(TTOTAL, Math.round((st.t + 0.05)*100)/100); tick(p0); render(); });
+el('nfBack').addEventListener('click', function(){ st.playing = false; el('nfPlay').innerHTML = '\u25B6 Play'; st.t = Math.max(0, Math.round((st.t - 0.05)*100)/100); render(); });
+el('nfReset').addEventListener('click', function(){ st.t = 0; st.playing = false; el('nfPlay').innerHTML = '\u25B6 Play'; render(); narrate('Reset.'); });
+el('nfTime').addEventListener('input', function(){ var p0 = st.t; st.playing = false; el('nfPlay').innerHTML = '\u25B6 Play'; st.t = +this.value; tick(p0); render(); });
+/* the toolbar and the description */
+var ROOT = el('nfRoot');
+function theme(k){ if (k === 'fs') th.fs = (th.fs + 1) % 3; else th[k] = !th[k]; if (k === 'hc' && th.hc) th.lm = false; if (k === 'lm' && th.lm) th.hc = false; applyTheme(); save(); }
+function applyTheme(){ ROOT.classList.toggle('nf_hc', th.hc); ROOT.classList.toggle('nf_lm', th.lm); ROOT.classList.toggle('nf_fs1', th.fs === 1); ROOT.classList.toggle('nf_fs2', th.fs === 2);
+  [['hc', 'nfBtnHC'], ['lm', 'nfBtnLM'], ['cb', 'nfBtnCB'], ['nr', 'nfBtnNR'], ['fs', 'nfBtnFS']].forEach(function(q){ var b = el(q[1]), on = q[0] === 'fs' ? th.fs > 0 : th[q[0]]; b.classList.toggle('nf_a11yon', !!on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+  el('nfBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('nfBtnFS').textContent = 'FONT: ' + ['NORMAL', 'LARGE', 'XL'][th.fs]; el('nfNar').style.display = th.nr ? '' : 'none'; render(); }
+[['hc', 'nfBtnHC'], ['lm', 'nfBtnLM'], ['cb', 'nfBtnCB'], ['nr', 'nfBtnNR'], ['fs', 'nfBtnFS']].forEach(function(q){ el(q[1]).addEventListener('click', function(){ theme(q[0]); }); });
+el('nfDescBtn').addEventListener('click', function(){ var d = el('nfDesc'), open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; this.setAttribute('aria-expanded', open ? 'true' : 'false'); this.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION'; if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } });
+/* saved between MOM submissions (MOM's settings win when they are set) */
+var KEY = 'nfSaved_';
+function save(){ try { localStorage.setItem(KEY, JSON.stringify({ tab:st.tab, hold:st.hold, sp:st.sp, shF:st.shF, shV:st.shV, shA:st.shA, shG:st.shG, th:th })); } catch(e){} }
+try { var sv = JSON.parse(localStorage.getItem(KEY) || 'null'); if (sv){ ['tab', 'shF', 'shV', 'shA', 'shG'].forEach(function(k){ if (sv[k] !== undefined) st[k] = sv[k]; }); if (num_(MOM.hold) === null && sv.hold) st.hold = sv.hold; if (sv.sp){ if (num_(MOM.vdown) === null) st.sp.down = sv.sp.down; if (num_(MOM.vup) === null) st.sp.up = sv.sp.up; } if (sv.th) th = sv.th; } } catch(e){}
+var last = 0; function loop(ts){ var dt = Math.min(0.05, (ts - (last || ts))/1000); last = ts; if (st.playing){ var p0 = st.t; st.t = Math.min(TTOTAL, st.t + dt); tick(p0); if (st.t >= TTOTAL){ st.playing = false; el('nfPlay').innerHTML = '\u25B6 Play'; } render(); } requestAnimationFrame(loop); }
+R = range(); buildTabs(); syncInputs(); situ(); applyTheme();
+narrate('Three situations: a ball moved down, moved up, or held at rest at a constant velocity, then released. Choose one, predict, then play.');
+requestAnimationFrame(loop);
+return { _at:at, _st:st, _setT:function(t){ var p0 = st.t; st.t = t; tick(p0); render(); }, _tab:function(t){ st.tab = t; changed(); } };
+})();
+</script>
+</main>
+</body>
+</html>

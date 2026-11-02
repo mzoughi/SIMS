@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Forces: What Shape Is a Raindrop?</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, raindrop, shape, surface tension, air resistance, pressure, terminal velocity, lesson, scientific">
+<meta name="description" content="Draw your prediction of the shape of a falling raindrop, then see the real shape for drops from 0.5 to 8 mm: spheres, buns, and bag breakup, with the forces that shape them and their falling speeds.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+@media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="rdRoot" class="rd_root" role="region" aria-label="Raindrop shape simulator: draw your prediction, then see the real shape of a falling raindrop and the forces that shape it">
+<div class="rd_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="rd_a11ybtn" id="rdBtnHC" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="rd_a11ybtn" id="rdBtnLM" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="rd_a11ybtn" id="rdBtnCB" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="rd_a11ybtn rd_a11yon" id="rdBtnNR" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div class="rd_header"><p class="rd_h1">What Shape Is a Raindrop?</p><p class="rd_sub">surface tension pulls it round &middot; the air pushing on it flattens it &middot; too big, and it breaks apart</p></div>
+<div class="rd_main">
+<div class="rd_panel"><div class="rd_ptitle">1. Draw your prediction first</div>
+<canvas id="rdPad" width="300" height="300" role="img" aria-label="Drawing pad for your prediction of the shape of a falling raindrop. Draw with a finger, a pen or the mouse."></canvas>
+<div class="rd_pbody"><div class="rd_bar">
+<button type="button" class="rd_btn rd_kick" id="rdReveal" aria-pressed="false">Reveal the real shape</button>
+<button type="button" class="rd_btn" id="rdClear">Clear my drawing</button>
+<button type="button" class="rd_btn" id="rdSave">Save (PNG)</button>
+</div>
+<p class="rd_note" id="rdPadNote">The drop falls downward. Draw it at the size of the gray circle (a sphere with the same volume). Can&rsquo;t draw? Describe your prediction in words instead.</p></div></div>
+<div class="rd_panel"><div class="rd_ptitle">2. The falling drop (seen from the side, magnified)</div>
+<canvas id="rdView" width="300" height="300" role="img" aria-label="The falling raindrop, with the air flowing past it" aria-describedby="rdStatus"></canvas>
+<div class="rd_pbody"><div class="rd_bar">
+<label><input type="checkbox" id="rdAir" checked> airflow</label>
+<label><input type="checkbox" id="rdFor" checked> what pushes and pulls</label>
+<label><input type="checkbox" id="rdMyth"> the &ldquo;teardrop&rdquo; myth</label>
+</div></div></div>
+</div>
+<div class="rd_status" id="rdStatus"></div>
+<div class="rd_panel"><div class="rd_pbody">
+<div class="rd_ctrl"><div class="rd_ctrlhdr"><label class="rd_ctrlname" for="rdD">size of the drop (diameter of a sphere with the same volume)</label><span class="rd_sval" id="rdDv"></span></div>
+<input type="range" id="rdD" min="0.5" max="8" step="0.1"></div>
+<div class="rd_bar">
+<button type="button" class="rd_btn" data-d="0.5">drizzle 0.5 mm</button><button type="button" class="rd_btn" data-d="1.5">1.5 mm</button><button type="button" class="rd_btn" data-d="3">3 mm</button><button type="button" class="rd_btn" data-d="4.5">4.5 mm</button><button type="button" class="rd_btn" data-d="6.5">too big: 6.5 mm</button>
+</div></div></div>
+<div class="rd_read" id="rdRead" aria-label="Readings"></div>
+<div class="rd_panel"><div class="rd_ptitle">3. Size, speed and shape</div><canvas id="rdGr" width="760" height="260" role="img" aria-label="Graphs of the falling speed and of the shape against the size of the drop"></canvas></div>
+<div class="rd_eqs" id="rdEq"></div>
+<div id="rdNar" class="rd_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="rd_descwrap">
+<button type="button" class="rd_descbtn" id="rdDescBtn" aria-expanded="false" aria-controls="rdDesc">&#9656; SIM DESCRIPTION</button>
+<div class="rd_desc" id="rdDesc" role="region" aria-labelledby="rdDescBtn" hidden>
+<p><b>The activity.</b> First draw the shape you think a falling raindrop has, on the drawing pad. Then reveal the real shape, for the size of drop chosen with the slider. Most people draw a teardrop, pointed at the top. Real raindrops never look like that.</p>
+<p><b>Two effects compete.</b> <i>Surface tension</i> pulls the surface of the water tight, like a stretched skin, and tries to make the drop a sphere, the shape with the least surface for its volume. It squeezes the water with a pressure of about `2 gamma / r` (`gamma` = 0.072 N/m for water): the smaller the drop, the stronger this squeeze. The <i>air</i> rushing past the falling drop pushes hardest on its bottom, where it stops the air, with a pressure of about `1/2 rho_"air" v^2`; on the sides, where the air flows fast, the pressure is lower, and the drop is pulled out sideways.</p>
+<p class="rd_eq">squash number `= (1/2 rho_"air" v^2)/(2 gamma // r)`</p>
+<p>compares the two. <b>Small drops</b> (less than about 2 mm) fall slowly and have a strong surface squeeze: the squash number is small and they stay <b>spheres</b>. <b>Medium drops</b> (2 to 5 mm) fall faster: they are flattened at the bottom, rounded on top, like a hamburger bun; the biggest ones have a dent in the bottom. <b>Drops larger than about 5 mm</b> are not stable: the air pushes the dent in until the drop blows up into an upside-down bag, like a parachute, with a thick rim; the bag bursts and the rim breaks into smaller drops. This is why raindrops are almost never larger than about 5 mm.</p>
+<p><b>Speed.</b> A drop falls at its terminal speed, where the drag of the air balances its weight. The graph compares the measured speeds of real raindrops (Gunn and Kinzer, 1949) with the model of a rigid sphere (drag coefficient 0.47, as in the air-resistance SIM). For small drops they agree; for large drops the flattened shape catches more air, so real drops fall slower, leveling off near 9 m/s.</p>
+<p><b>Layout.</b> Left: the drawing pad; after Reveal, the real outline is drawn over your drawing in orange. Middle: the drop, seen from the side and magnified (the scale bar is 1 mm), in the frame of the drop, so the air flows up past it; arrows show where the air pushes (bottom), where it pulls (sides) and the inward pull of surface tension. Drops larger than 5 mm are shown breaking up, in a repeating, simplified animation. The shapes follow the measured axis ratios of raindrops (Beard and Chuang, 1987); the details of the outline are simplified.</p>
+</div></div>
+</div><!-- #rdRoot -->
+<style>
+#rdRoot { --c-chassis:#1a1c1f; --c-panel:#22262b; --c-hi:#2c3138; --c-lo:#14161a; --c-bd:#3a4048; --c-bd2:#525c66; --c-text:#c8d0d8; --c-dim:#8a94a3; --c-accent:#e8a020; --c-green:#3ad08f; --c-val:#ffdd66; --c-nbg:#2a2410; --c-nbd:#e0b040; --c-ntx:#f0e2b8;
+  background:var(--c-chassis); color:var(--c-text); font-family:Arial, sans-serif; font-size:14px; padding:14px 10px 18px; border-radius:6px; box-sizing:border-box; width:100%; max-width:860px; margin:0 auto 10px; display:flex; flex-direction:column; gap:10px; }
+#rdRoot * { box-sizing:border-box; }
+#rdRoot.rd_lm { --c-chassis:#e9edf1; --c-panel:#ffffff; --c-hi:#f1f4f7; --c-lo:#f4f6f9; --c-bd:#c3cad3; --c-bd2:#9aa3ae; --c-text:#1d232a; --c-dim:#556070; --c-accent:#a8620a; --c-green:#12805a; --c-val:#8a4a00; --c-nbg:#ffefc0; --c-ntx:#333; }
+#rdRoot.rd_hc { --c-chassis:#000; --c-panel:#000; --c-hi:#111; --c-lo:#000; --c-bd:#fff; --c-bd2:#fff; --c-text:#fff; --c-dim:#e8e8e8; --c-accent:#ffd700; --c-green:#00ff88; --c-val:#ffff00; --c-nbg:#000; --c-nbd:#ffd700; --c-ntx:#fff; }
+#rdRoot .rd_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+#rdRoot .rd_a11ybtn { padding:4px 10px; font-size:.72em; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-dim); min-height:32px; }
+#rdRoot .rd_a11yon { background:rgba(58,208,143,.14); border-color:var(--c-green); color:var(--c-green); font-weight:bold; }
+#rdRoot .rd_header { text-align:center; }
+#rdRoot .rd_h1 { margin:0; font-size:1.05em; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--c-accent); }
+#rdRoot .rd_sub { margin:3px 0 0; font-size:.75em; color:var(--c-dim); letter-spacing:.05em; text-transform:uppercase; }
+#rdRoot .rd_main { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#rdRoot .rd_panel { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; overflow:hidden; min-width:0; }
+#rdRoot .rd_ptitle { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.68em; letter-spacing:.12em; text-transform:uppercase; color:var(--c-dim); }
+#rdRoot .rd_pbody { padding:9px 12px; display:flex; flex-direction:column; gap:8px; }
+#rdRoot canvas { display:block; width:100%; height:auto; }
+#rdRoot #rdPad { touch-action:none; cursor:crosshair; }
+#rdRoot .rd_bar { display:flex; flex-wrap:wrap; gap:6px 12px; align-items:center; }
+#rdRoot .rd_bar label { display:flex; align-items:center; gap:6px; font-size:.86em; cursor:pointer; }
+#rdRoot .rd_ctrl { display:flex; flex-direction:column; gap:3px; }
+#rdRoot .rd_ctrlhdr { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+#rdRoot .rd_ctrlname { font-size:.8em; font-weight:600; color:var(--c-dim); text-transform:uppercase; letter-spacing:.03em; }
+#rdRoot .rd_sval { font-family:monospace; font-size:.95em; color:var(--c-val); white-space:nowrap; }
+#rdRoot .rd_note { margin:0; font-size:.8em; color:var(--c-dim); line-height:1.4; }
+#rdRoot input[type=range] { width:100%; -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; cursor:pointer; background:var(--c-lo); border:1px solid var(--c-bd); margin:9px 0; }
+#rdRoot input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#rdRoot input[type=range]::-moz-range-thumb { width:16px; height:16px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#rdRoot input[type=checkbox] { accent-color:var(--c-accent); width:16px; height:16px; }
+#rdRoot .rd_btn { padding:7px 11px; font-family:monospace; font-size:.8em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-text); border-radius:3px; min-height:38px; }
+#rdRoot .rd_btn:hover { border-color:var(--c-accent); }
+#rdRoot .rd_kick { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#rdRoot .rd_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(130px,1fr)); gap:6px 10px; background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; padding:8px 12px; }
+#rdRoot .rd_flabel { font-family:monospace; font-size:.66em; color:var(--c-dim); letter-spacing:.06em; text-transform:uppercase; }
+#rdRoot .rd_fvalue { font-family:monospace; font-size:.98em; color:var(--c-val); }
+#rdRoot .rd_eqs { background:var(--c-lo); border:1px solid var(--c-bd); border-left:4px solid var(--c-accent); border-radius:4px; padding:8px 14px; font-family:monospace; font-size:.8em; color:var(--c-dim); line-height:1.7; }
+#rdRoot .rd_eqs b { color:var(--c-val); }
+#rdRoot .rd_status { padding:8px 12px; border-radius:4px; background:var(--c-panel); border:1px solid var(--c-bd); font-size:.92em; line-height:1.45; }
+#rdRoot .rd_narbar { min-height:30px; padding:6px 12px; background:var(--c-nbg); border-left:4px solid var(--c-nbd); color:var(--c-ntx); font-size:.92em; font-style:italic; line-height:1.45; border-radius:3px; }
+#rdRoot .rd_descwrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+#rdRoot .rd_descbtn { padding:8px 18px; font-family:monospace; font-size:.8em; letter-spacing:.08em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-accent); color:var(--c-accent); border-radius:3px; font-weight:bold; min-height:40px; }
+#rdRoot .rd_desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid var(--c-accent); border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.95em; line-height:1.55; }
+#rdRoot .rd_desc p { margin:0 0 9px; }
+#rdRoot .rd_eq { text-align:center; font-size:1rem; }
+#rdRoot [hidden] { display:none !important; }
+#rdRoot button:focus-visible, #rdRoot input:focus-visible { outline:2px solid var(--c-accent); outline-offset:2px; }
+@media (max-width:600px) { #rdRoot { padding:10px 6px 14px; } #rdRoot .rd_main { grid-template-columns:minmax(0,1fr); } #rdRoot .rd_btn { flex:1 1 30%; } }
+@media (pointer:coarse) { #rdRoot input[type=range] { height:8px; } #rdRoot input[type=range]::-webkit-slider-thumb { width:28px; height:28px; } #rdRoot input[type=range]::-moz-range-thumb { width:26px; height:26px; } #rdRoot .rd_a11ybtn, #rdRoot .rd_btn { min-height:44px; font-size:15px; } #rdRoot input[type=checkbox] { width:22px; height:22px; } }
+</style>
+<!-- ════════ SIMULATION ════════
+Shape: axis ratio alpha = b/a from Beard and Chuang (1987): alpha = 1.0048 + 0.0057 D - 2.628 D^2 + 3.682 D^3 - 1.677 D^4 (D in cm).
+Same volume as the sphere of diameter D: a = r alpha^(-1/3), b = r alpha^(2/3). Top rounder, bottom flatter, a dent above 3.5 mm.
+Measured terminal speed (Gunn and Kinzer fit, Atlas et al. 1973): v = 9.65 - 10.3 exp(-0.6 D), D in mm.
+Rigid-sphere model: v = sqrt(2 m g / (rho Cd A)), Cd = 0.47.  Above 5 mm: a stylized, repeating bag breakup.
+No dollar signs or backticks in the code.
+-->
+<script>
+(function(){
+var thisq = '';
+function el(id){ return document.getElementById(id + thisq); }
+var ROOT = el('rdRoot'), D = 3, RHOA = 1.20, RHOW = 1000, GAM = 0.072, G = 9.81, DMAX = 5.0;
+var th = { hc:false, lm:false, cb:false, nr:true }, reveal = false, air = true, forces = true, myth = false;
+function alpha(d){ var x = Math.min(d, 7)/10; return Math.max(0.45, 1.0048 + 0.0057*x - 2.628*x*x + 3.682*x*x*x - 1.677*x*x*x*x); }
+function vMeas(d){ return Math.max(0, 9.65 - 10.3*Math.exp(-0.6*d)); }
+function vSph(d){ var r = d/2000, m = RHOW*4/3*Math.PI*r*r*r; return Math.sqrt(2*m*G/(RHOA*0.47*Math.PI*r*r)); }
+function squash(d){ var r = d/2000, v = vMeas(Math.min(d, 6)); return 0.5*RHOA*v*v/(2*GAM/r); }
+function stage(d){ return d < 2 ? 'B' : d < 3.5 ? 'C' : d <= DMAX ? 'D' : 'E'; }
+/* ══════════ colours ══════════ */
+function pal(){ var cb = th.cb, hc = th.hc, lm = th.lm;
+  return { bg:hc ? '#000' : (lm ? '#f4f8fc' : '#0e1622'), grid:hc ? '#444' : (lm ? '#dde5ee' : 'rgba(140,165,195,0.18)'), txt:hc ? '#fff' : (lm ? '#1d232a' : '#e6ecf2'), dim:hc ? '#ddd' : (lm ? '#556070' : '#9aa6b4'),
+    water1:hc ? '#99ddff' : '#cfe6ff', water2:hc ? '#3399ff' : '#6fa3d8', edge:hc ? '#ffffff' : (lm ? '#2a4a70' : '#a9c8ec'), air:hc ? 'rgba(255,255,255,0.55)' : (lm ? 'rgba(60,100,150,0.45)' : 'rgba(170,200,240,0.45)'),
+    push:cb ? '#D55E00' : '#ff5a4a', pull:cb ? '#0072B2' : '#3aa0ff', tens:cb ? '#009E73' : '#3ad08f', real:cb ? '#E69F00' : '#ff8a00', ink:hc ? '#ffff00' : (lm ? '#1a2a44' : '#ffffff'), myth:'#e33', meas:cb ? '#0072B2' : '#3ad08f', sph:cb ? '#E69F00' : '#ffb347' }; }
+var DPR = window.devicePixelRatio || 1, CV = {};
+['rdPad', 'rdView', 'rdGr'].forEach(function(k){ var c = el(k), w = c.width, h = c.height; c.width = w*DPR; c.height = h*DPR; c.style.aspectRatio = w + ' / ' + h; var g = c.getContext('2d'); g.scale(DPR, DPR); CV[k] = { c:c, g:g, W:w, H:h }; });
+/* ══════════ the shape of a drop: a closed outline, in mm, centred at 0 (y downward) ══════════ */
+function outline(d){
+  var r = d/2, al = alpha(d), a = r*Math.pow(al, -1/3), b = r*Math.pow(al, 2/3), s = Math.max(0, Math.min(1, (d - 1)/4));
+  var ct = b*(1 + 0.22*s), cb = b*(1 - 0.22*s), dent = cb*0.55*Math.max(0, Math.min(1, (d - 3.5)/1.5)), pw = 2 + 5*s, P = [], i, n = 60;
+  for (i=0; i<=n; i++){ var ph = Math.PI*i/n; P.push([a*Math.cos(ph), -ct*Math.sin(ph)]); }
+  for (i=1; i<n; i++){ var u = -1 + 2*i/n, y = cb*Math.pow(Math.max(0, 1 - Math.pow(Math.abs(u), pw)), 0.5) - dent*Math.exp(-Math.pow(u/0.42, 2)); P.push([a*u, y]); }
+  return { P:P, a:a, ct:ct, cb:cb }; }
+function bag(d, p){   /* stylized bag breakup for drops above 5 mm; p from 0 to 1. Units: mm. Returns shapes to fill. */
+  var r = d/2, out = [], i, n = 60;
+  if (p < 0.7){ var q = p/0.7, w = r*(1.15 + 0.45*q), h = r*(0.85 + 0.65*q), t = r*Math.max(0.08, 0.85 - 0.95*q), rim = r*(0.22 + 0.1*q), P = [];
+    for (i=0; i<=n; i++){ var ph = Math.PI*i/n; P.push([w*Math.cos(ph), -h*Math.sin(ph)*(i === 0 || i === n ? 0 : 1)]); }
+    var wi = w - rim*1.6, hi = Math.max(0, h - t);   /* the air pushes the bottom up inside: a hollow under the dome */
+    for (i=0; i<=n; i++){ var ph2 = Math.PI*i/n; P.push([-wi*Math.cos(ph2), -hi*Math.sin(ph2)]); }
+    out.push({ P:P, x:0 }); [-1, 1].forEach(function(sg){ var R = []; for (i=0; i<24; i++){ var a = 2*Math.PI*i/24; R.push([sg*(w - rim*0.8) + rim*Math.cos(a), rim*0.9*Math.sin(a) - rim*0.2]); } out.push({ P:R, x:0 }); });
+    out.film = q; return out; }
+  var q2 = (p - 0.7)/0.3, d2 = d*0.6, sep = r*(0.9 + 0.9*q2), o = outline(d2);
+  return [{ P:o.P, x:-sep }, { P:o.P, x:sep }]; }
+function path(g, P, X, Y, k, ox){ g.beginPath(); P.forEach(function(q, i){ var x = X + (q[0] + (ox || 0))*k, y = Y + q[1]*k; if (i) g.lineTo(x, y); else g.moveTo(x, y); }); g.closePath(); }
+function fillDrop(g, P, X, Y, k, ox, pl){ path(g, P, X, Y, k, ox); var gr = g.createRadialGradient(X + (ox || 0)*k - 10, Y - 14, 4, X + (ox || 0)*k, Y, 70); gr.addColorStop(0, pl.water1); gr.addColorStop(1, pl.water2); g.fillStyle = gr; g.globalAlpha = 0.92; g.fill(); g.globalAlpha = 1; g.strokeStyle = pl.edge; g.lineWidth = 1.6; g.stroke(); }
+function scale(d){ return 82/Math.max(1, d*0.62); }   /* pixels per mm: drops are drawn large; the scale bar shows 1 mm */
+function arrow(g, x1, y1, x2, y2, col, w){ var dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy); if (L < 2) return; var ux = dx/L, uy = dy/L, hl = Math.min(9, L*0.5);
+  g.strokeStyle = col; g.fillStyle = col; g.lineWidth = w || 2.2; g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2 - ux*hl*0.8, y2 - uy*hl*0.8); g.stroke();
+  g.beginPath(); g.moveTo(x2, y2); g.lineTo(x2 - ux*hl - uy*hl*0.55, y2 - uy*hl + ux*hl*0.55); g.lineTo(x2 - ux*hl + uy*hl*0.55, y2 - uy*hl - ux*hl*0.55); g.closePath(); g.fill(); }
+function scalebar(g, k, W, H, pl){ g.strokeStyle = pl.txt; g.fillStyle = pl.txt; g.lineWidth = 2; g.beginPath(); g.moveTo(W - 14 - k, H - 16); g.lineTo(W - 14, H - 16); g.moveTo(W - 14 - k, H - 20); g.lineTo(W - 14 - k, H - 12); g.moveTo(W - 14, H - 20); g.lineTo(W - 14, H - 12); g.stroke();
+  g.font = '11px Arial, sans-serif'; g.textAlign = 'center'; g.fillText('1 mm', W - 14 - k/2, H - 24); }
+/* ══════════ the view ══════════ */
+var t0 = 0;
+function drawView(t){
+  var c = CV.rdView, g = c.g, W = c.W, H = c.H, pl = pal(), X = W/2, Y = H/2 + 16, k = scale(Math.min(D, DMAX)), big = D > DMAX, i;
+  g.fillStyle = pl.bg; g.fillRect(0, 0, W, H);
+  var o = outline(Math.min(D, DMAX)), A = o.a*k, B = (o.ct + o.cb)/2*k;
+  if (air){ g.strokeStyle = pl.air; g.lineWidth = 1.4; g.setLineDash([7, 7]); g.lineDashOffset = -(t*0.06*(2 + vMeas(Math.min(D, 6)))) % 14;
+    for (i=-6; i<=6; i++){ if (!i) continue; var x0 = i*21; g.beginPath(); for (var y=H; y>=0; y -= 6){ var dy = (y - Y)/(B*1.6 + 10), x = Math.sign(x0)*Math.sqrt(x0*x0 + A*A*1.25*Math.exp(-dy*dy)); if (y === H) g.moveTo(X + x, y); else g.lineTo(X + x, y); } g.stroke(); }
+    g.setLineDash([]); arrow(g, 18, H - 30, 18, H - 80, pl.air, 2); g.fillStyle = pl.dim; g.font = '10px Arial, sans-serif'; g.textAlign = 'left'; g.fillText('air', 26, H - 52); }
+  if (!big){ fillDrop(g, o.P, X, Y, k, 0, pl);
+    g.fillStyle = 'rgba(255,255,255,0.75)'; g.beginPath(); g.ellipse(X - A*0.35, Y - o.ct*k*0.55, A*0.16, o.ct*k*0.12, -0.5, 0, 2*Math.PI); g.fill(); }
+  else { var ph = ((t - t0)/3200) % 1.3, p = Math.min(1, ph), kb = 92/D; bag(D, p).forEach(function(b){ fillDrop(g, b.P, X, Y, kb, b.x, pl); });
+    g.fillStyle = pl.txt; g.font = 'bold 12px Arial, sans-serif'; g.textAlign = 'center'; g.fillText(p < 0.35 ? 'the dent is pushed in deeper\u2026' : p < 0.7 ? '\u2026 the drop is blown into a bag' : 'the bag bursts: smaller drops', X, 18);
+    g.fillStyle = pl.dim; g.font = '10px Arial, sans-serif'; g.fillText('(simplified, repeating)', X, 32); k = kb; }
+  if (forces && !big){ var s = Math.min(1, squash(D)/0.8), Lp = 14 + 30*s, yb = Y + o.cb*k;
+    [-0.45, 0, 0.45].forEach(function(u){ arrow(g, X + u*A, yb + 8 + Lp, X + u*A, yb + 6, pl.push, 2.6); });
+    [-1, 1].forEach(function(sg){ arrow(g, X + sg*(A + 4), Y - 2, X + sg*(A + 4 + 10 + 22*s), Y - 2, pl.pull, 2.6); });
+    for (i=0; i<7; i++){ var ang = Math.PI*(0.12 + 0.76*i/6), px = X + A*Math.cos(ang)*1.18, py = Y - o.ct*k*Math.sin(ang)*1.18 - 6, L2 = 10 + 6*(1 - s); arrow(g, px, py, px - Math.cos(ang)*L2, py + Math.sin(ang)*L2, pl.tens, 2); }
+    g.font = 'bold 11px Arial, sans-serif'; g.textAlign = 'center'; g.fillStyle = pl.push; g.fillText('air pushes', X, Math.min(H - 4, yb + 22 + Lp));
+    g.fillStyle = pl.pull; g.textAlign = 'left'; g.fillText('lower pressure', Math.min(W - 92, X + A + 8), Y - 12); g.fillStyle = pl.tens; g.textAlign = 'center'; g.fillText('surface tension', X, Math.max(12, Y - o.ct*k - 26)); }
+  if (myth){ var mx = 52, my = 64; g.save(); g.translate(mx, my); g.beginPath(); g.moveTo(0, -30); g.bezierCurveTo(6, -14, 20, 0, 20, 12); g.arc(0, 12, 20, 0, Math.PI, false); g.bezierCurveTo(-20, 0, -6, -14, 0, -30); g.fillStyle = pl.water2; g.fill();
+    g.strokeStyle = pl.myth; g.lineWidth = 4; g.beginPath(); g.arc(0, 4, 38, 0, 2*Math.PI); g.stroke(); g.beginPath(); g.moveTo(-27, -23); g.lineTo(27, 31); g.stroke(); g.restore();
+    g.fillStyle = pl.myth; g.font = 'bold 11px Arial, sans-serif'; g.textAlign = 'center'; g.fillText('not like this!', mx, my + 54); }
+  if (!reveal){ g.fillStyle = th.lm ? 'rgba(244,248,252,0.93)' : 'rgba(14,22,34,0.93)'; g.fillRect(0, 0, W, H); g.fillStyle = pl.txt; g.font = 'bold 54px Arial, sans-serif'; g.textAlign = 'center'; g.fillText('?', X, H/2 + 4);
+    g.font = '13px Arial, sans-serif'; g.fillText('Draw your prediction,', X, H/2 + 38); g.fillText('then press Reveal.', X, H/2 + 56); }
+  scalebar(g, k, W, H, pl);
+  g.fillStyle = pl.txt; g.font = 'bold 12px Arial, sans-serif'; g.textAlign = 'left'; g.fillText('D = ' + D.toFixed(1) + ' mm', 8, H - 10);
+  arrow(g, W - 20, 22, W - 20, 62, pl.dim, 2); g.fillStyle = pl.dim; g.font = '10px Arial, sans-serif'; g.textAlign = 'right'; g.fillText('falls', W - 28, 44); }
+/* ══════════ the drawing pad ══════════ */
+var strokes = [], cur = null;
+function drawPad(){
+  var c = CV.rdPad, g = c.g, W = c.W, H = c.H, pl = pal(), X = W/2, Y = H/2, k = scale(Math.min(D, DMAX)), i;
+  g.fillStyle = pl.bg; g.fillRect(0, 0, W, H); g.strokeStyle = pl.grid; g.lineWidth = 1;
+  for (i=0; i<=W; i += 20){ g.beginPath(); g.moveTo(i, 0); g.lineTo(i, H); g.stroke(); g.beginPath(); g.moveTo(0, i); g.lineTo(W, i); g.stroke(); }
+  g.setLineDash([4, 4]); g.strokeStyle = pl.dim; g.lineWidth = 1.3; g.beginPath(); g.arc(X, Y, Math.min(D, DMAX)/2*k, 0, 2*Math.PI); g.stroke(); g.setLineDash([]);
+  arrow(g, W - 20, 22, W - 20, 62, pl.dim, 2); g.fillStyle = pl.dim; g.font = '10px Arial, sans-serif'; g.textAlign = 'right'; g.fillText('falls', W - 28, 44);
+  g.strokeStyle = pl.ink; g.lineWidth = 3; g.lineCap = 'round'; g.lineJoin = 'round';
+  strokes.forEach(function(s){ g.beginPath(); s.forEach(function(q, j){ if (j) g.lineTo(q[0], q[1]); else g.moveTo(q[0], q[1]); }); g.stroke(); });
+  if (reveal){ var o = D > DMAX ? outline(DMAX) : outline(D); path(g, o.P, X, Y, k, 0); g.strokeStyle = pl.real; g.lineWidth = 3; g.setLineDash([8, 4]); g.stroke(); g.setLineDash([]);
+    g.fillStyle = pl.real; g.font = 'bold 12px Arial, sans-serif'; g.textAlign = 'left'; g.fillText('real shape' + (D > DMAX ? ' (largest stable, 5 mm)' : ''), 8, 16); }
+  scalebar(g, k, W, H, pl); }
+function pt(e){ var r = CV.rdPad.c.getBoundingClientRect(); return [(e.clientX - r.left)*CV.rdPad.W/r.width, (e.clientY - r.top)*CV.rdPad.H/r.height]; }
+CV.rdPad.c.addEventListener('pointerdown', function(e){ cur = [pt(e)]; strokes.push(cur); try { this.setPointerCapture(e.pointerId); } catch (x) {} e.preventDefault(); drawPad(); });
+CV.rdPad.c.addEventListener('pointermove', function(e){ if (!cur) return; cur.push(pt(e)); drawPad(); });
+function endS(){ if (cur){ cur = null; el('rdPadNote').textContent = 'Drawing saved on the pad (' + strokes.length + ' stroke' + (strokes.length === 1 ? '' : 's') + '). When you are happy with it, press Reveal.'; } }
+CV.rdPad.c.addEventListener('pointerup', endS); CV.rdPad.c.addEventListener('pointercancel', endS);
+/* ══════════ graphs ══════════ */
+function drawGr(){
+  var c = CV.rdGr, g = c.g, W = c.W, H = c.H, pl = pal(), i;
+  g.fillStyle = th.hc ? '#000' : (th.lm ? '#fff' : '#121820'); g.fillRect(0, 0, W, H);
+  function panel(x0, x1, y0, y1, ymax, ylab, ticks, f){ function X(d){ return x0 + (d - 0.5)/7.5*(x1 - x0); } function Y(v){ return y1 - v/ymax*(y1 - y0); }
+    g.strokeStyle = pl.grid; g.lineWidth = 1; g.fillStyle = pl.dim; g.font = '10px monospace';
+    for (i=1; i<=8; i++){ g.beginPath(); g.moveTo(X(i), y0); g.lineTo(X(i), y1); g.stroke(); g.textAlign = 'center'; g.fillText(String(i), X(i), y1 + 12); }
+    ticks.forEach(function(v){ g.beginPath(); g.moveTo(x0, Y(v)); g.lineTo(x1, Y(v)); g.stroke(); g.textAlign = 'right'; g.fillText(String(v), x0 - 4, Y(v) + 3); });
+    g.fillStyle = th.cb ? 'rgba(213,94,0,0.12)' : 'rgba(255,80,60,0.12)'; g.fillRect(X(DMAX), y0, x1 - X(DMAX), y1 - y0);
+    g.strokeStyle = pl.dim; g.strokeRect(x0, y0, x1 - x0, y1 - y0); g.fillStyle = pl.txt; g.font = 'bold 11px Arial, sans-serif'; g.textAlign = 'left'; g.fillText(ylab, x0, y0 - 6);
+    g.fillStyle = pl.dim; g.font = '10px Arial, sans-serif'; g.textAlign = 'center'; g.fillText('drop size D (mm)', (x0 + x1)/2, y1 + 25); g.fillText('breaks up', (X(DMAX) + x1)/2, y0 + 12);
+    f(X, Y); g.strokeStyle = pl.txt; g.setLineDash([3, 3]); g.beginPath(); g.moveTo(X(D), y0); g.lineTo(X(D), y1); g.stroke(); g.setLineDash([]); }
+  panel(40, 390, 22, H - 32, 14, 'falling speed (m/s)', [0, 2, 4, 6, 8, 10, 12, 14], function(X, Y){ var d;
+    g.strokeStyle = pl.sph; g.lineWidth = 2; g.setLineDash([6, 4]); g.beginPath(); for (d=0.5; d<=8.001; d += 0.05){ var y = Y(Math.min(14, vSph(d))); if (d === 0.5) g.moveTo(X(d), y); else g.lineTo(X(d), y); } g.stroke(); g.setLineDash([]);
+    g.strokeStyle = pl.meas; g.lineWidth = 2.6; g.beginPath(); for (d=0.5; d<=DMAX + 0.8; d += 0.05){ if (d === 0.5) g.moveTo(X(d), Y(vMeas(d))); else g.lineTo(X(d), Y(vMeas(d))); } g.stroke();
+    if (D <= DMAX + 0.8){ g.fillStyle = pl.meas; g.beginPath(); g.arc(X(D), Y(vMeas(D)), 5, 0, 2*Math.PI); g.fill(); }
+    g.font = 'bold 10px Arial, sans-serif'; g.textAlign = 'left'; g.fillStyle = pl.sph; g.fillText('rigid sphere model (dashed)', X(3.2), Y(12.6)); g.fillStyle = pl.meas; g.fillText('real raindrops', X(4.4), Y(vMeas(4.4)) + 16); });
+  panel(450, W - 14, 22, H - 32, 1, 'shape: height \u00F7 width', [0, 0.2, 0.4, 0.6, 0.8, 1], function(X, Y){ var d; if (!reveal){ g.fillStyle = pl.dim; g.font = '13px Arial, sans-serif'; g.textAlign = 'center'; g.fillText('hidden until you reveal the shape', (X(0.5) + X(8))/2, Y(0.5)); return; }
+    g.strokeStyle = pl.meas; g.lineWidth = 2.6; g.beginPath(); for (d=0.5; d<=DMAX + 0.01; d += 0.05){ if (d === 0.5) g.moveTo(X(d), Y(alpha(d))); else g.lineTo(X(d), Y(alpha(d))); } g.stroke();
+    if (D <= DMAX){ g.fillStyle = pl.meas; g.beginPath(); g.arc(X(D), Y(alpha(D)), 5, 0, 2*Math.PI); g.fill(); }
+    g.fillStyle = pl.dim; g.font = '10px Arial, sans-serif'; g.textAlign = 'left'; g.fillText('1 = sphere', X(0.6), Y(1) + 12); g.fillText('smaller = flatter', X(2.6), Y(0.45)); }); }
+/* ══════════ readout and narration ══════════ */
+var STG = { B:'a sphere (surface tension wins easily)', C:'flattened on the bottom, round on top (a hamburger bun)', D:'flattened, with a dent pushed into the bottom', E:'too big: it is blown into a bag and breaks into smaller drops' };
+function readout(){
+  var r = D/2000, m = RHOW*4/3*Math.PI*r*r*r, v = D > DMAX ? null : vMeas(D), sq = squash(Math.min(D, 6)), st = stage(D);
+  var c = [['DROP SIZE D', D.toFixed(1) + ' mm'], ['MASS', (m*1e6).toFixed(m*1e6 < 1 ? 3 : 1) + ' mg'], ['FALLING SPEED (REAL)', v === null ? 'breaks up' : v.toFixed(2) + ' m/s'], ['RIGID-SPHERE MODEL', vSph(D).toFixed(2) + ' m/s'],
+    ['SHAPE: HEIGHT \u00F7 WIDTH', !reveal ? 'hidden' : (D > DMAX ? '\u2014' : alpha(D).toFixed(2))], ['SQUASH NUMBER', sq.toFixed(2)], ['STAGE (AS IN THE PICTURE)', reveal ? st : 'hidden']];
+  el('rdRead').innerHTML = c.map(function(q){ return '<div><div class="rd_flabel' + thisq + '">' + q[0] + '</div><div class="rd_fvalue' + thisq + '">' + q[1] + '</div></div>'; }).join('');
+  el('rdStatus').textContent = reveal ? 'A ' + D.toFixed(1) + ' mm drop is ' + STG[st] + '.' : 'The shape is hidden until you press Reveal. Draw your prediction first.';
+  var vv = vMeas(Math.min(D, 6));
+  el('rdEq').innerHTML = 'Surface-tension squeeze: 2\u03B3/r = 2(0.072)/(' + (r*1000).toFixed(2) + '\u00D710\u207B\u00B3) = <b>' + (2*GAM/r).toFixed(0) + ' Pa</b> &nbsp;\u00B7&nbsp; air push: \u00BD\u03C1v\u00B2 = \u00BD(1.20)(' + vv.toFixed(2) + ')\u00B2 = <b>' + (0.5*RHOA*vv*vv).toFixed(1) + ' Pa</b>'
+    + '<br>Squash number = air push \u00F7 squeeze = <b>' + sq.toFixed(2) + '</b>: ' + (sq < 0.1 ? 'small, the drop stays round.' : sq < 0.5 ? 'the air begins to flatten the drop.' : sq < 0.8 ? 'large: strongly flattened, close to breaking.' : 'the air wins: the drop breaks up.'); }
+function narrate(m){ if (th.nr) el('rdNar').textContent = m; }
+function setD(v, say){ D = Math.max(0.5, Math.min(8, Math.round(v*10)/10)); el('rdD').value = D; el('rdDv').textContent = D.toFixed(1) + ' mm'; el('rdD').setAttribute('aria-valuetext', D.toFixed(1) + ' millimeters'); t0 = performance.now(); readout(); drawPad(); drawGr();
+  if (say) narrate('Drop of ' + D.toFixed(1) + ' mm. ' + (reveal ? 'Its shape is ' + STG[stage(D)] + '. ' : 'Press Reveal to see its shape. ') + (D > DMAX ? '' : 'It falls at ' + vMeas(D).toFixed(1) + ' m/s; the squash number is ' + squash(D).toFixed(2) + '.')); }
+function on(id, ev, fn){ var x = el(id); if (x) x.addEventListener(ev, fn); }
+on('rdD', 'input', function(){ setD(+this.value, false); }); on('rdD', 'change', function(){ setD(+this.value, true); });
+[].forEach.call(ROOT.querySelectorAll('button[data-d]'), function(b){ b.addEventListener('click', function(){ setD(+b.getAttribute('data-d'), true); }); });
+on('rdReveal', 'click', function(){ reveal = !reveal; this.setAttribute('aria-pressed', reveal ? 'true' : 'false'); this.textContent = reveal ? 'Hide the real shape' : 'Reveal the real shape'; drawPad(); drawGr(); readout();
+  if (reveal) narrate('The real shape of a ' + D.toFixed(1) + ' mm drop is ' + STG[stage(D)] + '. It is never a teardrop: there is no point on top. Compare the orange outline with your drawing.'); });
+on('rdClear', 'click', function(){ strokes = []; drawPad(); el('rdPadNote').textContent = 'Pad cleared. Draw the drop at the size of the gray circle; it falls downward.'; narrate('Drawing cleared.'); });
+on('rdSave', 'click', function(){ var a = document.createElement('a'); a.href = CV.rdPad.c.toDataURL('image/png'); a.download = 'my_raindrop_' + D.toFixed(1) + 'mm.png'; document.body.appendChild(a); a.click(); setTimeout(function(){ a.remove(); }, 500); narrate('Your drawing was saved as an image.'); });
+on('rdAir', 'change', function(){ air = this.checked; }); on('rdFor', 'change', function(){ forces = this.checked; });
+on('rdMyth', 'change', function(){ myth = this.checked; if (myth) narrate('The teardrop shape, pointed on top, is a myth: a falling drop has no point. The air pushes on its bottom, and surface tension keeps the top round.'); });
+function theme(k){ th[k] = !th[k]; if (k === 'hc' && th.hc) th.lm = false; if (k === 'lm' && th.lm) th.hc = false;
+  ROOT.classList.toggle('rd_hc' + thisq, th.hc); ROOT.classList.toggle('rd_lm' + thisq, th.lm);
+  [['hc', 'rdBtnHC'], ['lm', 'rdBtnLM'], ['cb', 'rdBtnCB'], ['nr', 'rdBtnNR']].forEach(function(q){ var b = el(q[1]); b.classList.toggle('rd_a11yon' + thisq, th[q[0]]); b.setAttribute('aria-pressed', th[q[0]] ? 'true' : 'false'); });
+  el('rdBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('rdNar').style.display = th.nr ? '' : 'none'; drawPad(); drawGr();
+  if (k === 'cb' && th.cb) narrate('Colour-blind safe colours: the push of the air is orange-red, the lower pressure on the sides blue, surface tension bluish green, the real outline orange.'); }
+on('rdBtnHC', 'click', function(){ theme('hc'); }); on('rdBtnLM', 'click', function(){ theme('lm'); }); on('rdBtnCB', 'click', function(){ theme('cb'); }); on('rdBtnNR', 'click', function(){ theme('nr'); });
+on('rdDescBtn', 'click', function(){ var d = el('rdDesc'), o = d.hidden; d.hidden = !o; this.setAttribute('aria-expanded', o ? 'true' : 'false'); this.innerHTML = (o ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+  if (o && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } });
+function loop(t){ drawView(t); requestAnimationFrame(loop); }
+setD(D, false);
+narrate('Before you look: draw the shape you think a falling ' + D.toFixed(1) + ' mm raindrop has on the drawing pad, then press Reveal. The drop on the right shows the air flowing past it.');
+requestAnimationFrame(loop);
+window['rdSim' + thisq] = { _setD:setD, _alpha:alpha, _v:vMeas, _sq:squash, _out:outline };
+})();
+</script>
+
+</body>
+</html>

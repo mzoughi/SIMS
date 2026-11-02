@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Forces: Air Resistance and Terminal Velocity</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, air resistance, drag, terminal velocity, free fall, Newton's second law, forces, lesson, scientific">
+<meta name="description" content="Interactive simulation of a sphere falling through air from a large height: weight and drag shown to scale as the ball approaches terminal velocity; change its mass and size.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+@media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="arRoot" class="ar_root" role="region" aria-label="Air resistance simulator: a sphere falls from a large height; its weight and the air drag on it are shown as it approaches terminal velocity">
+<div class="ar_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="ar_a11ybtn" id="arBtnHC" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="ar_a11ybtn" id="arBtnLM" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="ar_a11ybtn" id="arBtnCB" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="ar_a11ybtn ar_a11yon" id="arBtnNR" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div class="ar_header"><p class="ar_h1">Falling Through Air: Weight, Drag and Terminal Velocity</p><p class="ar_sub">drag grows with speed &middot; when drag = weight, the net force is zero and the speed stops changing</p></div>
+<div class="ar_main">
+<div class="ar_panel"><div class="ar_ptitle">The whole fall</div><canvas id="arFull" width="150" height="400" role="img" aria-label="The full height of the fall, with a marker at the ball's position"></canvas></div>
+<div class="ar_panel"><div class="ar_ptitle">Zoomed on the ball (forces to scale)</div><canvas id="arZoom" width="320" height="400" role="img" aria-label="Close-up of the falling ball with its weight and drag arrows" aria-describedby="arStatus"></canvas></div>
+<div class="ar_panel ar_graphs"><div class="ar_ptitle">Speed and forces against time</div><canvas id="arGr" width="340" height="400" role="img" aria-label="Graphs of speed and of the two forces against time"></canvas></div>
+</div>
+<div class="ar_status" id="arStatus"></div>
+<div class="ar_bbar">
+<button type="button" class="ar_btn ar_kick" id="arPlay">&#9654; Drop</button>
+<button type="button" class="ar_btn" id="arRst">&#8635; Back to the top</button>
+<label class="ar_lab">speed of the clock <select id="arSpd"><option value="0.25">&frac14;&times;</option><option value="0.5">&frac12;&times;</option><option value="1" selected>1&times; (real time)</option><option value="2">2&times;</option><option value="5">5&times;</option><option value="10">10&times;</option></select></label>
+<label class="ar_lab"><input type="checkbox" id="arNoAir"> compare: no air (ghost ball)</label>
+<button type="button" class="ar_btn" id="arDsc">Describe</button>
+</div>
+<div class="ar_read" id="arRead" aria-label="Readings"></div>
+<div class="ar_panels">
+<div class="ar_panel"><div class="ar_ptitle">The ball</div><div class="ar_pbody">
+<div class="ar_ctrl"><label class="ar_ctrlname" for="arPre">example</label><select id="arPre"></select></div>
+<div class="ar_ctrl"><div class="ar_ctrlhdr"><label class="ar_ctrlname" for="arM">mass m</label><span class="ar_sval" id="arMv"></span></div><input type="range" id="arM" min="0" max="1000" step="1"></div>
+<div class="ar_ctrl"><div class="ar_ctrlhdr"><label class="ar_ctrlname" for="arR">radius r</label><span class="ar_sval" id="arRv"></span></div><input type="range" id="arR" min="0" max="1000" step="1"></div>
+<p class="ar_note" id="arDens"></p>
+</div></div>
+<div class="ar_panel"><div class="ar_ptitle">The drop</div><div class="ar_pbody">
+<div class="ar_ctrl"><div class="ar_ctrlhdr"><label class="ar_ctrlname" for="arH">starting height</label><span class="ar_sval" id="arHv"></span></div><input type="range" id="arH" min="100" max="5000" step="50"></div>
+<p class="ar_note">Air density 1.20 kg/m&sup3;; drag coefficient of a sphere C<sub>d</sub> = 0.47; g = 9.81 m/s&sup2;. Changing the ball or the height brings it back to the top.</p>
+</div></div>
+</div>
+<div class="ar_eqs" id="arEq"></div>
+<div id="arNar" class="ar_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="ar_descwrap">
+<button type="button" class="ar_descbtn" id="arDescBtn" aria-expanded="false" aria-controls="arDesc">&#9656; SIM DESCRIPTION</button>
+<div class="ar_desc" id="arDesc" role="region" aria-labelledby="arDescBtn" hidden>
+<p>A ball of mass `m` and radius `r` is dropped from rest from a large height. Two forces act on it: its <b>weight</b> `W = m g`, downward and constant, and the <b>drag</b> of the air, upward, which grows with the speed:</p>
+<p class="ar_eq">`D = 1/2 rho C_d A v^2`,&nbsp;&nbsp; `A = pi r^2`.</p>
+<p>At the start `v = 0`, so `D = 0` and the ball falls with acceleration `g`. As it speeds up, the drag grows and the net force `W - D` gets smaller, so the ball speeds up less and less. Its speed approaches the <b>terminal velocity</b>, where drag equals weight and the net force is zero:</p>
+<p class="ar_eq">`v_t = sqrt((2 m g)/(rho C_d A))`.</p>
+<p>A heavier ball of the same size has a larger terminal velocity (it needs more drag to balance its weight); a larger ball of the same mass has a smaller one. The speed reaches about 76% of `v_t` after a time `v_t/g`, and about 96% after `2 v_t/g`.</p>
+<p><b>Layout.</b> On the left, the whole fall, with the height marked. In the middle, a close-up that follows the ball, with the weight (downward) and the drag (upward) arrows drawn to the same scale; streaks of air rush past it. On the right, two graphs against time: the speed, with the terminal velocity marked by a dashed line, and the two forces. The ghost ball (optional) shows the same ball falling without air. The readings are listed under the drawings and announced.</p>
+</div></div>
+</div><!-- #arRoot -->
+<style>
+#arRoot { --c-chassis:#1a1c1f; --c-panel:#22262b; --c-hi:#2c3138; --c-lo:#14161a; --c-bd:#3a4048; --c-bd2:#525c66; --c-text:#c8d0d8; --c-dim:#8a94a3; --c-accent:#e8a020; --c-green:#3ad08f; --c-val:#ffdd66; --c-nbg:#2a2410; --c-nbd:#e0b040; --c-ntx:#f0e2b8;
+  background:var(--c-chassis); color:var(--c-text); font-family:Arial, sans-serif; font-size:14px; padding:14px 10px 18px; border-radius:6px; box-sizing:border-box; width:100%; max-width:880px; margin:0 auto 10px; display:flex; flex-direction:column; gap:10px; }
+#arRoot * { box-sizing:border-box; }
+#arRoot.ar_lm { --c-chassis:#e9edf1; --c-panel:#ffffff; --c-hi:#f1f4f7; --c-lo:#f4f6f9; --c-bd:#c3cad3; --c-bd2:#9aa3ae; --c-text:#1d232a; --c-dim:#556070; --c-accent:#a8620a; --c-green:#12805a; --c-val:#8a4a00; --c-nbg:#ffefc0; --c-ntx:#333; }
+#arRoot.ar_hc { --c-chassis:#000; --c-panel:#000; --c-hi:#111; --c-lo:#000; --c-bd:#fff; --c-bd2:#fff; --c-text:#fff; --c-dim:#e8e8e8; --c-accent:#ffd700; --c-green:#00ff88; --c-val:#ffff00; --c-nbg:#000; --c-nbd:#ffd700; --c-ntx:#fff; }
+#arRoot .ar_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+#arRoot .ar_a11ybtn { padding:4px 10px; font-size:.72em; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-dim); min-height:32px; }
+#arRoot .ar_a11yon { background:rgba(58,208,143,.14); border-color:var(--c-green); color:var(--c-green); font-weight:bold; }
+#arRoot .ar_header { text-align:center; }
+#arRoot .ar_h1 { margin:0; font-size:1.05em; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--c-accent); }
+#arRoot .ar_sub { margin:3px 0 0; font-size:.75em; color:var(--c-dim); letter-spacing:.05em; text-transform:uppercase; }
+#arRoot .ar_main { display:grid; grid-template-columns:minmax(0,150fr) minmax(0,320fr) minmax(0,340fr); gap:8px; }
+#arRoot .ar_panels { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#arRoot .ar_panel { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; overflow:hidden; min-width:0; }
+#arRoot .ar_ptitle { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 10px; font-family:monospace; font-size:.66em; letter-spacing:.1em; text-transform:uppercase; color:var(--c-dim); }
+#arRoot .ar_pbody { padding:9px 12px; display:flex; flex-direction:column; gap:9px; }
+#arRoot canvas { display:block; width:100%; height:auto; }
+#arRoot .ar_ctrl { display:flex; flex-direction:column; gap:3px; min-width:0; }
+#arRoot .ar_ctrlhdr { display:flex; justify-content:space-between; align-items:baseline; gap:6px; }
+#arRoot .ar_ctrlname { font-size:.8em; font-weight:600; color:var(--c-dim); text-transform:uppercase; letter-spacing:.03em; }
+#arRoot .ar_sval { font-family:monospace; font-size:.9em; color:var(--c-val); white-space:nowrap; }
+#arRoot .ar_note { margin:0; font-size:.8em; color:var(--c-dim); line-height:1.4; }
+#arRoot select { background:var(--c-hi); color:var(--c-text); border:1px solid var(--c-bd2); border-radius:3px; padding:5px; font-size:.92em; min-height:36px; max-width:100%; }
+#arRoot .ar_ctrl select { width:100%; }
+#arRoot input[type=range] { width:100%; -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; cursor:pointer; background:var(--c-lo); border:1px solid var(--c-bd); margin:9px 0; }
+#arRoot input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#arRoot input[type=range]::-moz-range-thumb { width:16px; height:16px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#arRoot input[type=checkbox] { accent-color:var(--c-accent); width:16px; height:16px; }
+#arRoot .ar_bbar { display:flex; flex-wrap:wrap; gap:6px 12px; justify-content:center; align-items:center; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:6px; padding:8px 10px; }
+#arRoot .ar_lab { display:flex; align-items:center; gap:6px; font-size:.8em; color:var(--c-dim); text-transform:uppercase; cursor:pointer; }
+#arRoot .ar_btn { padding:7px 12px; font-family:monospace; font-size:.8em; letter-spacing:.03em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-text); border-radius:3px; min-height:38px; text-transform:uppercase; }
+#arRoot .ar_btn:hover { border-color:var(--c-accent); }
+#arRoot .ar_kick { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#arRoot .ar_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(125px,1fr)); gap:6px 10px; background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; padding:8px 12px; }
+#arRoot .ar_flabel { font-family:monospace; font-size:.66em; color:var(--c-dim); letter-spacing:.06em; text-transform:uppercase; }
+#arRoot .ar_fvalue { font-family:monospace; font-size:.98em; color:var(--c-val); font-variant-numeric:tabular-nums; }
+#arRoot .ar_eqs { background:var(--c-lo); border:1px solid var(--c-bd); border-left:4px solid var(--c-accent); border-radius:4px; padding:8px 14px; font-family:monospace; font-size:.8em; color:var(--c-dim); line-height:1.7; }
+#arRoot .ar_eqs b { color:var(--c-val); }
+#arRoot .ar_status { width:100%; padding:8px 12px; border-radius:4px; background:var(--c-panel); border:1px solid var(--c-bd); font-size:.9em; line-height:1.4; }
+#arRoot .ar_narbar { min-height:30px; padding:6px 12px; background:var(--c-nbg); border-left:4px solid var(--c-nbd); color:var(--c-ntx); font-size:.92em; font-style:italic; line-height:1.45; border-radius:3px; }
+#arRoot .ar_descwrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+#arRoot .ar_descbtn { padding:8px 18px; font-family:monospace; font-size:.8em; letter-spacing:.08em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-accent); color:var(--c-accent); border-radius:3px; font-weight:bold; min-height:40px; }
+#arRoot .ar_desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid var(--c-accent); border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.95em; line-height:1.55; }
+#arRoot .ar_desc p { margin:0 0 9px; }
+#arRoot .ar_eq { text-align:center; font-size:1rem; }
+#arRoot [hidden] { display:none !important; }
+#arRoot button:focus-visible, #arRoot input:focus-visible, #arRoot select:focus-visible { outline:2px solid var(--c-accent); outline-offset:2px; }
+@media (max-width:640px) { #arRoot { padding:10px 6px 14px; } #arRoot .ar_main { grid-template-columns:minmax(0,1fr) minmax(0,2.1fr); } #arRoot .ar_graphs { grid-column:1 / -1; } #arRoot .ar_panels { grid-template-columns:minmax(0,1fr); } #arRoot .ar_bbar .ar_btn { flex:1 1 40%; } }
+@media (pointer:coarse) { #arRoot input[type=range] { height:8px; } #arRoot input[type=range]::-webkit-slider-thumb { width:28px; height:28px; } #arRoot input[type=range]::-moz-range-thumb { width:26px; height:26px; } #arRoot .ar_a11ybtn, #arRoot .ar_btn, #arRoot select { min-height:44px; font-size:16px; } #arRoot input[type=checkbox] { width:22px; height:22px; } }
+</style>
+<!-- ════════ SIMULATION ════════
+Quadratic drag on a sphere: m dv/dt = m g - 1/2 rho Cd A v^2 (down positive). RK4, dt = 2 ms.
+Mass and radius sliders are logarithmic: m from 1 g to 20 kg, r from 1 cm to 40 cm.
+CFG holds the starting values (MOM variables in the MOM version). No dollar signs or backticks in the code.
+-->
+<script>
+(function(){
+var thisq = '';
+var CFG = { m:0.145, r:0.037, h:2000 };
+function el(id){ return document.getElementById(id + thisq); }
+var ROOT = el('arRoot');
+var G = 9.81, RHO = 1.20, CD = 0.47, MMIN = 0.001, MMAX = 20, RMIN = 0.01, RMAX = 0.40;
+var PRE = [['', 'choose an example\u2026'], ['0.0027|0.020', 'ping-pong ball (2.7 g, r = 2.0 cm)'], ['0.058|0.033', 'tennis ball (58 g, r = 3.3 cm)'], ['0.145|0.037', 'baseball (145 g, r = 3.7 cm)'],
+  ['0.43|0.11', 'soccer ball (430 g, r = 11 cm)'], ['0.62|0.12', 'basketball (620 g, r = 12 cm)'], ['7.26|0.060', 'shot put (7.26 kg, r = 6.0 cm)'], ['6.0|0.109', 'bowling ball (6 kg, r = 10.9 cm)'], ['0.0005|0.006', 'raindrop-sized ball (0.5 g, r = 0.6 cm)']];
+var P = { m:CFG.m, r:CFG.r, h:CFG.h }, S, run = false, spd = 1, ghost = false;
+var th = { hc:false, lm:false, cb:false, nr:true };
+function A(){ return Math.PI*P.r*P.r; }
+function vt(){ return Math.sqrt(2*P.m*G/(RHO*CD*A())); }
+function drag(v){ return 0.5*RHO*CD*A()*v*v; }
+function reset(){ S = { t:0, y:P.h, v:0, yg:P.h, vg:0, hist:[[0, 0, 0]], landed:false, said:{} }; }
+function acc(v){ return G - drag(v)/P.m; }
+function step(dt){
+  if (S.landed) return;
+  var v = S.v, k1 = acc(v), k2 = acc(v + k1*dt/2), k3 = acc(v + k2*dt/2), k4 = acc(v + k3*dt);
+  var dv = dt/6*(k1 + 2*k2 + 2*k3 + k4), dy = dt*(v + dv/2);
+  S.v += dv; S.y -= dy; S.t += dt;
+  if (S.yg > 0){ S.yg -= dt*(S.vg + G*dt/2); S.vg += G*dt; if (S.yg < 0) S.yg = 0; }
+  if (S.y <= 0){ S.y = 0; S.landed = true; setRun(false); narrate('The ball reached the ground after ' + S.t.toFixed(1) + ' s, at ' + S.v.toFixed(1) + ' m/s, that is ' + (100*S.v/vt()).toFixed(0) + '% of its terminal velocity.' + (ghost ? ' Without air it would have landed after ' + Math.sqrt(2*P.h/G).toFixed(1) + ' s at ' + Math.sqrt(2*G*P.h).toFixed(0) + ' m/s.' : '')); }
+  var fr = S.v/vt();
+  [[0.5, 'half'], [0.9, '90%'], [0.99, '99%']].forEach(function(q){ if (fr >= q[0] && !S.said[q[1]]){ S.said[q[1]] = 1;
+    narrate('t = ' + S.t.toFixed(1) + ' s: the speed is ' + S.v.toFixed(1) + ' m/s, ' + q[1] + ' of the terminal velocity. The drag is ' + sig(drag(S.v)) + ' N against a weight of ' + sig(P.m*G) + ' N' + (q[0] >= 0.99 ? ': they are now nearly equal, the net force is almost zero and the speed hardly changes.' : '.')); } }); }
+/* ══════════ colours ══════════ */
+function pal(){ var cb = th.cb, hc = th.hc, lm = th.lm;
+  return { sky1:hc ? '#000' : (lm ? '#cfe6ff' : '#0b1a2c'), sky2:hc ? '#000' : (lm ? '#eef6ff' : '#1a3150'), ground:hc ? '#fff' : (lm ? '#6a9a4a' : '#3a5a32'), txt:hc ? '#fff' : (lm ? '#111' : '#e6ecf2'), dim:hc ? '#ddd' : (lm ? '#556' : '#9aa6b4'),
+    grid:hc ? '#555' : (lm ? '#d6dde5' : 'rgba(150,170,195,0.22)'), ball:cb ? '#E69F00' : '#d9534f', ballE:hc ? '#fff' : '#3a1a1a', ghost:hc ? 'rgba(255,255,255,0.6)' : 'rgba(200,210,225,0.55)',
+    W:cb ? '#0072B2' : '#4a8cff', D:cb ? '#D55E00' : '#ff8a30', v:cb ? '#009E73' : '#3ad08f', vt:hc ? '#ffff00' : (lm ? '#8a4a00' : '#ffdd66'), streak:hc ? 'rgba(255,255,255,0.5)' : (lm ? 'rgba(60,90,130,0.35)' : 'rgba(190,215,255,0.35)') }; }
+/* ══════════ canvases ══════════ */
+var DPR = window.devicePixelRatio || 1, CV = {};
+['arFull', 'arZoom', 'arGr'].forEach(function(k){ var c = el(k), w = c.width, h = c.height; c.width = w*DPR; c.height = h*DPR; c.style.aspectRatio = w + ' / ' + h; var g = c.getContext('2d'); g.scale(DPR, DPR); CV[k] = { c:c, g:g, W:w, H:h }; });
+function arrow(g, x, y1, y2, col, w, lab, side){ var d = y2 - y1, L = Math.abs(d); if (L < 1.5) return; var s = d > 0 ? 1 : -1, hl = Math.min(14, L*0.5);
+  g.strokeStyle = col; g.fillStyle = col; g.lineWidth = w; g.beginPath(); g.moveTo(x, y1); g.lineTo(x, y2 - s*hl*0.8); g.stroke();
+  g.beginPath(); g.moveTo(x, y2); g.lineTo(x - hl*0.55, y2 - s*hl); g.lineTo(x + hl*0.55, y2 - s*hl); g.closePath(); g.fill();
+  if (lab){ g.font = 'bold 13px Arial, sans-serif'; g.textAlign = side > 0 ? 'left' : 'right'; g.textBaseline = 'middle'; g.fillText(lab, x + side*14, y1 + d*0.55); } }
+function fmtH(y){ return y >= 1000 ? (y/1000).toFixed(2) + ' km' : y.toFixed(0) + ' m'; }
+function drawFull(p){ var c = CV.arFull, g = c.g, W = c.W, H = c.H, top = 26, bot = H - 22, i;
+  var gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, p.sky1); gr.addColorStop(1, p.sky2); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+  g.fillStyle = p.ground; g.fillRect(0, bot, W, H - bot);
+  function Y(y){ return bot - y/P.h*(bot - top); }
+  g.strokeStyle = p.dim; g.fillStyle = p.dim; g.font = '10px monospace'; g.textAlign = 'right'; g.lineWidth = 1;
+  var stp = P.h > 2500 ? 1000 : P.h > 1000 ? 500 : P.h > 400 ? 100 : 50;
+  for (i=0; i<=P.h + 1e-6; i += stp){ var y = Y(i); g.beginPath(); g.moveTo(W - 34, y); g.lineTo(W - 26, y); g.stroke(); g.fillText(i >= 1000 ? (i/1000) + ' km' : i + ' m', W - 4, y + 3); }
+  g.beginPath(); g.moveTo(W - 30, top); g.lineTo(W - 30, bot); g.stroke();
+  var cx = 46;
+  if (ghost){ g.fillStyle = p.ghost; g.beginPath(); g.arc(cx + 22, Y(S.yg), 5, 0, 2*Math.PI); g.fill(); }
+  g.fillStyle = p.ball; g.strokeStyle = p.ballE; g.beginPath(); g.arc(cx, Y(S.y), 6, 0, 2*Math.PI); g.fill(); g.stroke();
+  g.strokeStyle = p.vt; g.setLineDash([3, 3]); g.beginPath(); g.moveTo(cx - 14, Y(S.y)); g.lineTo(W - 30, Y(S.y)); g.stroke(); g.setLineDash([]);
+  g.fillStyle = p.txt; g.font = 'bold 11px Arial, sans-serif'; g.textAlign = 'center'; g.fillText(fmtH(S.y), W/2 - 10, 14); }
+var streaks = []; (function(){ var s = 3; function r(){ s = (s*16807) % 2147483647; return s/2147483647; } for (var i=0; i<36; i++) streaks.push([r(), r(), 0.4 + r()*0.6]); })();
+function drawZoom(p){ var c = CV.arZoom, g = c.g, W = c.W, H = c.H, cx = W/2, cy = H/2 - 10;
+  var gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, p.sky1); gr.addColorStop(1, p.sky2); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+  /* the ball's size on screen: fixed for small balls, so the arrows stay readable; the true radius is labelled */
+  var rp = 16 + 34*Math.log(P.r/RMIN)/Math.log(RMAX/RMIN);
+  /* air streaks rush upward past the ball at its speed (scaled) */
+  var sh = 40*Math.log(1 + S.v)/Math.log(1 + 120), ofs = S.y*14;
+  g.strokeStyle = p.streak; g.lineWidth = 1.5;
+  streaks.forEach(function(q){ var x = q[0]*W, y = ((q[1]*H + ofs*q[2]) % H + H) % H; if (Math.abs(x - cx) < rp + 6 && Math.abs(y - cy) < rp + 30) return; g.beginPath(); g.moveTo(x, y); g.lineTo(x, y + 4 + sh*q[2]); g.stroke(); });
+  /* ground coming into view near the end */
+  var gy = cy + rp + S.y*8; if (gy < H){ g.fillStyle = p.ground; g.fillRect(0, gy, W, H - gy); }
+  var bg = g.createRadialGradient(cx - rp*0.35, cy - rp*0.35, rp*0.1, cx, cy, rp); bg.addColorStop(0, th.cb ? '#ffd27a' : '#ff9a90'); bg.addColorStop(1, p.ball);
+  g.fillStyle = bg; g.strokeStyle = p.ballE; g.lineWidth = 1.5; g.beginPath(); g.arc(cx, cy, rp, 0, 2*Math.PI); g.fill(); g.stroke();
+  /* forces to scale: the weight is always 120 px long */
+  var Wt = P.m*G, Dr = drag(S.v), k = 120/Wt;
+  arrow(g, cx, cy + rp + 2, cy + rp + 2 + Wt*k, p.W, 5, 'W = ' + sig(Wt) + ' N', 1);
+  if (Dr*k > 1.5) arrow(g, cx, cy - rp - 2, cy - rp - 2 - Dr*k, p.D, 5, 'D = ' + sig(Dr) + ' N', -1);
+  g.setLineDash([5, 4]); g.strokeStyle = p.D; g.globalAlpha = 0.45; g.lineWidth = 1.5; g.beginPath(); g.moveTo(cx - 40, cy - rp - 2 - Wt*k); g.lineTo(cx + 40, cy - rp - 2 - Wt*k); g.stroke(); g.globalAlpha = 1; g.setLineDash([]);
+  g.fillStyle = p.D; g.font = '10px Arial, sans-serif'; g.textAlign = 'left'; g.fillText('D = W here', cx + 44, cy - rp - 2 - Wt*k + 3);
+  var net = Wt - Dr; if (Math.abs(net) < 1e-6*Wt) net = 0; g.fillStyle = p.txt; g.font = 'bold 12px Arial, sans-serif'; g.textAlign = 'left';
+  g.fillText('v = ' + S.v.toFixed(2) + ' m/s', 8, 18); g.fillText('net force = ' + sig(net) + ' N \u2193', 8, 34); g.fillText('a = ' + (net/P.m).toFixed(2) + ' m/s\u00B2', 8, 50);
+  g.textAlign = 'right'; g.font = '11px Arial, sans-serif'; g.fillStyle = p.dim; g.fillText('r = ' + (P.r*100).toFixed(1) + ' cm (size not to scale)', W - 6, H - 8); }
+function sig(v){ var a = Math.abs(v); if (a < 1e-9) return '0'; return a < 0.01 ? String(+v.toPrecision(2)) : a >= 100 ? v.toFixed(0) : a >= 10 ? v.toFixed(1) : a >= 1 ? v.toFixed(2) : a >= 0.01 ? v.toFixed(3) : v.toExponential(2); }
+function drawGr(p){ var c = CV.arGr, g = c.g, W = c.W, H = c.H, L = 46, R = W - 10, h1t = 22, h1b = 180, h2t = 222, h2b = H - 30;
+  g.fillStyle = th.hc ? '#000' : (th.lm ? '#fff' : '#121820'); g.fillRect(0, 0, W, H);
+  var tEnd = Math.max(4*vt()/G, S.t*1.08, 2), V = Math.max(vt()*1.15, ghost ? Math.min(Math.sqrt(2*G*P.h), vt()*2.2) : 0), F = P.m*G*1.25, i;
+  function X(t){ return L + t/tEnd*(R - L); }
+  function panel(top, bot, max, unit, ttl){ g.strokeStyle = p.grid; g.lineWidth = 1; g.fillStyle = p.dim; g.font = '10px monospace';
+    for (i=0; i<=4; i++){ var y = bot - (bot - top)*i/4; g.beginPath(); g.moveTo(L, y); g.lineTo(R, y); g.stroke(); g.textAlign = 'right'; g.fillText(sig(max*i/4), L - 4, y + 3); }
+    for (i=0; i<=5; i++){ var x = X(tEnd*i/5); g.beginPath(); g.moveTo(x, top); g.lineTo(x, bot); g.stroke(); g.textAlign = 'center'; g.fillText((tEnd*i/5).toFixed(tEnd < 10 ? 1 : 0), x, bot + 12); }
+    g.strokeStyle = p.dim; g.strokeRect(L, top, R - L, bot - top); g.fillStyle = p.txt; g.font = 'bold 11px Arial, sans-serif'; g.textAlign = 'left'; g.fillText(ttl + ' (' + unit + ')', L, top - 6); }
+  panel(h1t, h1b, V, 'm/s', 'speed v'); panel(h2t, h2b, F, 'N', 'forces'); g.fillStyle = p.dim; g.font = '11px Arial, sans-serif'; g.textAlign = 'right'; g.fillText('t (s)', R, H - 4);
+  function Yv(v){ return h1b - Math.min(v, V)/V*(h1b - h1t); } function Yf(f){ return h2b - Math.min(f, F)/F*(h2b - h2t); }
+  g.setLineDash([6, 4]); g.strokeStyle = p.vt; g.lineWidth = 1.5; g.beginPath(); g.moveTo(L, Yv(vt())); g.lineTo(R, Yv(vt())); g.stroke(); g.setLineDash([]);
+  g.fillStyle = p.vt; g.font = 'bold 10px Arial, sans-serif'; g.textAlign = 'right'; g.fillText('v\u209C = ' + vt().toFixed(1) + ' m/s', R - 4, Yv(vt()) - 4);
+  if (ghost){ g.strokeStyle = p.ghost; g.lineWidth = 1.5; g.setLineDash([2, 3]); g.beginPath(); g.moveTo(X(0), Yv(0)); var tg = Math.min(S.t, Math.sqrt(2*P.h/G)); g.lineTo(X(tg), Yv(G*tg)); g.stroke(); g.setLineDash([]); }
+  function line(idx, Y, col, w){ g.strokeStyle = col; g.lineWidth = w; g.beginPath(); S.hist.forEach(function(q, j){ var x = X(q[0]), y = Y(q[idx]); if (j) g.lineTo(x, y); else g.moveTo(x, y); }); g.stroke(); }
+  line(1, Yv, p.v, 2.4);
+  g.strokeStyle = p.W; g.lineWidth = 2.4; g.beginPath(); g.moveTo(X(0), Yf(P.m*G)); g.lineTo(X(S.t), Yf(P.m*G)); g.stroke();
+  g.setLineDash(th.cb ? [7, 3] : []); line(2, Yf, p.D, 2.4); g.setLineDash([]);
+  g.font = 'bold 11px Arial, sans-serif'; g.textAlign = 'left'; g.fillStyle = p.W; g.fillText('weight W', L + 6, Yf(P.m*G) - 6); g.fillStyle = p.D; g.fillText('drag D' + (th.cb ? ' (dashed)' : ''), L + 6, h2b - 8); }
+function draw(){ var p = pal(); drawFull(p); drawZoom(p); drawGr(p); readout(); }
+/* ══════════ readout ══════════ */
+function readout(){
+  var Wt = P.m*G, Dr = drag(S.v), c = [['TIME t', S.t.toFixed(2) + ' s'], ['HEIGHT', fmtH(S.y)], ['SPEED v', S.v.toFixed(2) + ' m/s'], ['TERMINAL VELOCITY v\u209C', vt().toFixed(2) + ' m/s'], ['v / v\u209C', (100*S.v/vt()).toFixed(1) + ' %'],
+    ['WEIGHT W', sig(Wt) + ' N'], ['DRAG D', sig(Dr) + ' N'], ['NET FORCE', sig(Math.abs(Wt - Dr) < 1e-6*Wt ? 0 : Wt - Dr) + ' N'], ['ACCELERATION', Math.abs((Wt - Dr)/P.m).toFixed(2) + ' m/s\u00B2']];
+  el('arRead').innerHTML = c.map(function(q){ return '<div><div class="ar_flabel' + thisq + '">' + q[0] + '</div><div class="ar_fvalue' + thisq + '">' + q[1] + '</div></div>'; }).join('');
+  var fr = S.v/vt();
+  el('arStatus').textContent = S.landed ? 'Landed after ' + S.t.toFixed(1) + ' s.' : S.t === 0 ? 'At rest at the top. Press Drop: at first there is no drag, only the weight.' : fr < 0.5 ? 'Speeding up: the drag is still much smaller than the weight, so the ball accelerates at nearly g.' : fr < 0.97 ? 'The drag is catching up with the weight: the net force, and the acceleration, are getting smaller.' : 'Terminal velocity: the drag balances the weight, the net force is (nearly) zero, and the speed stays constant.';
+  el('arEq').innerHTML = 'W = m g = ' + P.m.toPrecision(3) + ' \u00D7 9.81 = <b>' + sig(Wt) + ' N</b> &nbsp;\u00B7&nbsp; D = \u00BD\u03C1C<sub>d</sub>A v\u00B2 = \u00BD(1.20)(0.47)(' + A().toPrecision(3) + ' m\u00B2)v\u00B2 = <b>' + sig(0.5*RHO*CD*A()) + ' \u00B7 v\u00B2 N</b><br>Terminal velocity, where D = W: <b>v\u209C = \u221A(2mg / \u03C1C<sub>d</sub>A) = ' + vt().toFixed(2) + ' m/s</b> &nbsp;\u00B7&nbsp; time scale v\u209C/g = ' + (vt()/G).toFixed(2) + ' s'; }
+function narrate(m){ if (th.nr) el('arNar').textContent = m; }
+/* ══════════ controls (mass and radius on log sliders) ══════════ */
+function lg(v, a, b){ return Math.round(1000*Math.log(v/a)/Math.log(b/a)); } function ex(s, a, b){ return a*Math.pow(b/a, s/1000); }
+function fmtM(m){ return m < 1 ? (m*1000).toPrecision(3).replace(/\.?0+$/, '') + ' g' : m.toPrecision(3) + ' kg'; }
+function sync(){ el('arM').value = lg(P.m, MMIN, MMAX); el('arR').value = lg(P.r, RMIN, RMAX); el('arH').value = P.h;
+  var mt = fmtM(P.m), rt = (P.r*100).toPrecision(3) + ' cm', ht = fmtH(P.h); el('arMv').textContent = mt; el('arRv').textContent = rt; el('arHv').textContent = ht;
+  el('arM').setAttribute('aria-valuetext', mt.replace(' g', ' grams').replace(' kg', ' kilograms')); el('arR').setAttribute('aria-valuetext', rt.replace(' cm', ' centimeters')); el('arH').setAttribute('aria-valuetext', ht.replace(' km', ' kilometers').replace(' m', ' meters'));
+  var rho = P.m/(4/3*Math.PI*Math.pow(P.r, 3)); el('arDens').textContent = 'Average density of this ball: ' + (rho < 10 ? rho.toFixed(2) : rho.toFixed(0)) + ' kg/m\u00B3' + (rho < 1.2 ? ' \u2014 lighter than air! (it would float: buoyancy is not included here)' : rho < 1000 ? ' (it would float on water)' : '') + '.'; }
+function changed(){ setRun(false); reset(); sync(); draw(); el('arPre').value = ''; }
+function on(id, ev, fn){ var x = el(id); if (x) x.addEventListener(ev, fn); }
+el('arPre').innerHTML = PRE.map(function(q){ return '<option value="' + q[0] + '">' + q[1] + '</option>'; }).join('');
+on('arPre', 'change', function(){ if (!this.value) return; var q = this.value.split('|'), v = this.value, t = this.options[this.selectedIndex].text; P.m = +q[0]; P.r = +q[1]; changed(); this.value = v;
+  narrate(t + ': terminal velocity ' + vt().toFixed(1) + ' m/s, about ' + (vt()*3.6).toFixed(0) + ' km/h. Press Drop.'); });
+on('arM', 'input', function(){ P.m = ex(+this.value, MMIN, MMAX); changed(); });
+on('arR', 'input', function(){ P.r = ex(+this.value, RMIN, RMAX); changed(); });
+on('arH', 'input', function(){ P.h = +this.value; changed(); });
+['arM', 'arR', 'arH'].forEach(function(k){ on(k, 'change', function(){ narrate('Mass ' + fmtM(P.m) + ', radius ' + (P.r*100).toPrecision(3) + ' centimeters: terminal velocity ' + vt().toFixed(1) + ' m/s. Starting height ' + fmtH(P.h) + '.'); }); });
+on('arSpd', 'change', function(){ spd = +this.value; });
+on('arNoAir', 'change', function(){ ghost = this.checked; draw(); narrate(ghost ? 'A ghost ball now falls alongside, with no air: it keeps speeding up at g.' : 'Ghost ball hidden.'); });
+function setRun(v){ run = v; el('arPlay').innerHTML = v ? '\u2759\u2759 Pause' : (S && S.t > 0 && !S.landed ? '\u25B6 Resume' : '\u25B6 Drop'); }
+on('arPlay', 'click', function(){ if (S.landed) reset(); setRun(!run); if (run && S.t === 0) narrate('Dropped from ' + fmtH(P.h) + '. At first the speed is zero, so there is no drag: the net force is the whole weight and the ball accelerates at g.'); });
+on('arRst', 'click', function(){ setRun(false); reset(); draw(); narrate('Back at the top, at rest.'); });
+on('arDsc', 'click', function(){ narrate('Left: the whole ' + fmtH(P.h) + ' fall, with the ball at ' + fmtH(S.y) + '. Middle: a close-up of the ball, with a blue weight arrow pointing down, ' + sig(P.m*G) + ' newtons, and an orange drag arrow pointing up, ' + sig(drag(S.v)) + ' newtons, drawn to the same scale. Right: the speed and the forces against time. ' + el('arStatus').textContent); });
+function theme(k){ th[k] = !th[k]; if (k === 'hc' && th.hc) th.lm = false; if (k === 'lm' && th.lm) th.hc = false;
+  ROOT.classList.toggle('ar_hc' + thisq, th.hc); ROOT.classList.toggle('ar_lm' + thisq, th.lm);
+  [['hc', 'arBtnHC'], ['lm', 'arBtnLM'], ['cb', 'arBtnCB'], ['nr', 'arBtnNR']].forEach(function(q){ var b = el(q[1]); b.classList.toggle('ar_a11yon' + thisq, th[q[0]]); b.setAttribute('aria-pressed', th[q[0]] ? 'true' : 'false'); });
+  el('arBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('arNar').style.display = th.nr ? '' : 'none'; draw();
+  if (k === 'cb' && th.cb) narrate('Colour-blind safe colours: the weight is blue, the drag orange and dashed on the graph, the speed bluish green, the ball orange.'); }
+on('arBtnHC', 'click', function(){ theme('hc'); }); on('arBtnLM', 'click', function(){ theme('lm'); }); on('arBtnCB', 'click', function(){ theme('cb'); }); on('arBtnNR', 'click', function(){ theme('nr'); });
+on('arDescBtn', 'click', function(){ var d = el('arDesc'), o = d.hidden; d.hidden = !o; this.setAttribute('aria-expanded', o ? 'true' : 'false'); this.innerHTML = (o ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+  if (o && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } });
+/* ══════════ loop ══════════ */
+var last = 0, acc2 = 0;
+function loop(t){ var rdt = last ? Math.min(0.05, (t - last)/1000) : 0; last = t;
+  if (run && rdt > 0){ var T = rdt*spd, n = Math.ceil(T/0.002), i; for (i=0; i<n && !S.landed; i++) step(T/n);
+    acc2 += T; if (acc2 > 0.05 || S.landed){ acc2 = 0; S.hist.push([S.t, S.v, drag(S.v)]); if (S.hist.length > 4000) S.hist.splice(1, 1); } }
+  draw(); requestAnimationFrame(loop); }
+reset(); sync(); draw();
+narrate('Ready: a ' + fmtM(P.m) + ' ball of radius ' + (P.r*100).toPrecision(3) + ' cm, ' + fmtH(P.h) + ' up. Its terminal velocity is ' + vt().toFixed(1) + ' m/s. Press Drop.');
+requestAnimationFrame(loop);
+window['arSim' + thisq] = { _P:P, _S:function(){ return S; }, _step:step, _vt:vt, _reset:reset };
+})();
+</script>
+
+</body>
+</html>
