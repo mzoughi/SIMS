@@ -53,6 +53,10 @@ verdict     : per-force marks from your question code (see the grading code), e.
 showMissing : true also tells the student how many required forces were missing
 size        : canvas size in px (default 500); smaller sizes allow diagrams side by side
 -->
+
+<!-- the diagram (in MOM, the question text supplies this host and the answer box) -->
+<div id="fbdA"></div>
+<div style="max-width:720px;margin:12px auto;padding:10px 14px;border:1px dashed #889;border-radius:6px;background:#fff;color:#1d2a36;font-family:Arial,sans-serif;font-size:13px"><b>Answer box (demonstration).</b> In MOM, the diagram writes its forces into the question&rsquo;s (hidden) answer box, as <code>key|angle|length|&hellip;</code>, for example <code>grav_1|270|1|norm_1|90|1</code>, and the question checks them. Here the same string appears below.<input id="qn000" readonly aria-label="the string sent to the answer box" style="display:block;width:100%;box-sizing:border-box;margin-top:6px;font-family:monospace;padding:6px"></div>
 <script>
   var fbdSetup = {
     palette: [

@@ -8,6 +8,7 @@
 <meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching,Newton's Second Law, Tutorial,teach, learn,friction,static,kinetic,coefficient,incline,tilt test,critical angle,materials,contact area,mass,acceleration,lesson,scientific">
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
+<div id="fbdWrap1008">
 <div id="fbdRoot1008">
 <!-- ── Accessibility toolbar ── -->
 <div class="fbd_a11y1008" id="fbdA11yBar1008" role="toolbar" aria-label="Display options">
@@ -576,5 +577,30 @@ var fbdSim1008 = new fbdGen();
 fbdA11y1008.init();
 fbdSim1008.redraw();
 </script>
+
+<div class="simdesc_fbdWrap1008" style="max-width:683px;margin:10px auto;text-align:center;font-family:Arial,sans-serif"><button type="button" aria-expanded="false" style="padding:7px 16px;font:bold 12px monospace;letter-spacing:.08em;cursor:pointer;background:#2a2e3a;border:1px solid #00a896;color:#00e8d0;border-radius:3px;min-height:36px" onclick="var d=this.nextElementSibling, o=d.style.display==='none'; d.style.display=o?'block':'none'; this.setAttribute('aria-expanded', o?'true':'false'); this.innerHTML=(o?'&#9662;':'&#9656;')+' SIM DESCRIPTION'; if (o && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }">&#9656; SIM DESCRIPTION</button><div role="region" aria-label="Description of the simulation" style="display:none;margin-top:8px;padding:10px 14px;background:#f6f8fb;border:1px solid #ccd;border-left:4px solid #00a896;border-radius:4px;font-size:.93rem;line-height:1.55;color:#222;text-align:left"><p style="margin:0 0 8px">A free-body diagram shows one object and every force acting on it, each drawn as an arrow starting at the object and pointing in the direction of the force. Only forces exerted <i>on</i> the object belong in it: not the forces the object exerts on other things.</p><p style="margin:0 0 8px">For each force, name the object that exerts it: the Earth pulls down (gravity, `F_g`); a surface pushes perpendicular to itself (the normal force, `F_N`) and along itself against sliding (friction, `F_f`); a rope pulls along itself (tension, `F_T`). The diagram is the starting point for Newton&rsquo;s second law, `sum vec F = m vec a`.</p></div></div>
+</div>
+<style>
+/* ── phones and narrow windows: the fixed widths become fluid, the canvases scale (pointer positions are already rescaled), rows wrap ── */
+@media (max-width: 720px) {
+  #fbdWrap1008 div { height:auto !important; }
+  body { margin:8px !important; }
+  #fbdWrap1008 { width:100% !important; max-width:100% !important; box-sizing:border-box; }
+  #fbdWrap1008 [style*="width:683px"], #fbdWrap1008 [style*="width: 683px"], #fbdWrap1008 [style*="width: 522px"], #fbdWrap1008 [style*="width:522px"], #fbdWrap1008 [style*="width:680px"], #fbdWrap1008 [style*="width:660px"] { width:100% !important; max-width:100% !important; box-sizing:border-box; }
+  #fbdWrap1008 * { max-width:100%; box-sizing:border-box; }   /* no element wider than its container (widths set by classes too) */
+  #fbdWrap1008 div { flex-wrap:wrap; }   /* rows may wrap */
+  #fbdWrap1008 input[type=range] { flex:1 1 110px; min-width:0; }
+  #fbdWrap1008 canvas { max-width:100% !important; height:auto !important; }
+  #fbdWrap1008 [style*="min-width"] { min-width:0 !important; }
+  #fbdWrap1008 [style*="display:flex"], #fbdWrap1008 [style*="display: flex"] { flex-wrap:wrap !important; }
+  #fbdWrap1008 table { display:block; overflow-x:auto; max-width:100%; }
+  #fbdWrap1008 input[type=number], #fbdWrap1008 input[type=text], #fbdWrap1008 select { max-width:100%; }
+}
+@media (pointer: coarse) {
+  #fbdWrap1008 button { min-height:36px; }
+  #fbdWrap1008 input[type=range] { height:28px; }
+  #fbdWrap1008 input[type=checkbox], #fbdWrap1008 input[type=radio] { width:20px; height:20px; }
+}
+</style>
 </body>
 </html>
