@@ -134,6 +134,8 @@ oninput="vgdSim0916.setToolTip('y2',this.value)" onchange="vgdSim0916.narrateToo
 </div>
 </div>
 </div>
+<div class="simdesc_vgdRoot" style="max-width:683px;margin:10px auto;text-align:center;font-family:Arial,sans-serif"><button type="button" aria-expanded="false" style="padding:7px 16px;font:bold 12px monospace;letter-spacing:.08em;cursor:pointer;background:#2a2e3a;border:1px solid #00a896;color:#00e8d0;border-radius:3px;min-height:36px" onclick="var d=this.nextElementSibling, o=d.style.display==='none'; d.style.display=o?'block':'none'; this.setAttribute('aria-expanded', o?'true':'false'); this.innerHTML=(o?'&#9662;':'&#9656;')+' SIM DESCRIPTION'; if (o && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }">&#9656; SIM DESCRIPTION</button><div role="region" aria-label="Description of the simulation" style="display:none;margin-top:8px;padding:10px 14px;background:#f6f8fb;border:1px solid #ccd;border-left:4px solid #00a896;border-radius:4px;font-size:.93rem;line-height:1.55;color:#222;text-align:left"><p style="margin:0 0 8px">Vectors add head to tail: draw the second vector starting at the head (the arrowhead) of the first; the sum, or resultant, goes from the tail of the first to the head of the last. Moving a vector without changing its length or direction does not change it, so the vectors can be dragged anywhere to line them up.</p><p style="margin:0 0 8px">The order does not matter: `vec A + vec B = vec B + vec A`, which the two ways of lining them up show as the two sides of a parallelogram. In components, the sum adds the x parts and the y parts separately: `R_x = A_x + B_x`, `R_y = A_y + B_y`, with magnitude `R = sqrt(R_x^2 + R_y^2)`.</p></div></div>
+
 <style>
 #vgdRoot0916, #vgdRoot0916 * { box-sizing: border-box; }
 #vgdRoot0916 { width: 522px; margin: 0; font-family: system-ui, sans-serif; }
@@ -614,4 +616,24 @@ var vgdSim0916 = new vgdGen();
 <script>
 vgdA11y0916.init();
 </script>
+<style>
+/* ── phones and narrow windows: the fixed widths become fluid, the canvases scale (pointer positions are already rescaled), rows wrap ── */
+@media (max-width: 720px) {
+  #vgdRoot0916 { width:100% !important; max-width:100% !important; box-sizing:border-box; }
+  #vgdRoot0916 [style*="width:683px"], #vgdRoot0916 [style*="width: 683px"], #vgdRoot0916 [style*="width: 522px"], #vgdRoot0916 [style*="width:522px"], #vgdRoot0916 [style*="width:680px"], #vgdRoot0916 [style*="width:660px"] { width:100% !important; max-width:100% !important; box-sizing:border-box; }
+  #vgdRoot0916 * { max-width:100%; box-sizing:border-box; }   /* no element wider than its container (widths set by classes too) */
+  #vgdRoot0916 div { flex-wrap:wrap; }   /* rows may wrap */
+  #vgdRoot0916 input[type=range] { flex:1 1 110px; min-width:0; }
+  #vgdRoot0916 canvas { max-width:100% !important; height:auto !important; }
+  #vgdRoot0916 [style*="min-width"] { min-width:0 !important; }
+  #vgdRoot0916 [style*="display:flex"], #vgdRoot0916 [style*="display: flex"] { flex-wrap:wrap !important; }
+  #vgdRoot0916 table { display:block; overflow-x:auto; max-width:100%; }
+  #vgdRoot0916 input[type=number], #vgdRoot0916 input[type=text], #vgdRoot0916 select { max-width:100%; }
+}
+@media (pointer: coarse) {
+  #vgdRoot0916 button { min-height:36px; }
+  #vgdRoot0916 input[type=range] { height:28px; }
+  #vgdRoot0916 input[type=checkbox], #vgdRoot0916 input[type=radio] { width:20px; height:20px; }
+}
+</style>
 </body></html>

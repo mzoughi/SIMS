@@ -156,7 +156,9 @@ $hintlink[10]
 <li>Which key combination do you need to execute to get Tracker to track?<br /></li>
 <li>Which data were we asked to export to Excel for part 1 of the lab?<br /></li>
 </ol>
-</div><!-- #slRoot0925 -->
+</div>
+<div class="simdesc_slRoot" style="max-width:683px;margin:10px auto;text-align:center;font-family:Arial,sans-serif"><button type="button" aria-expanded="false" style="padding:7px 16px;font:bold 12px monospace;letter-spacing:.08em;cursor:pointer;background:#2a2e3a;border:1px solid #00a896;color:#00e8d0;border-radius:3px;min-height:36px" onclick="var d=this.nextElementSibling, o=d.style.display==='none'; d.style.display=o?'block':'none'; this.setAttribute('aria-expanded', o?'true':'false'); this.innerHTML=(o?'&#9662;':'&#9656;')+' SIM DESCRIPTION'; if (o && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }">&#9656; SIM DESCRIPTION</button><div role="region" aria-label="Description of the simulation" style="display:none;margin-top:8px;padding:10px 14px;background:#f6f8fb;border:1px solid #ccd;border-left:4px solid #00a896;border-radius:4px;font-size:.93rem;line-height:1.55;color:#222;text-align:left"><p style="margin:0 0 8px">A spring launches a wheeled block up a frictionless incline. On the way up the block slows down, stops for an instant, then speeds up on the way back down. Along the incline, the only force is the component of gravity `m g sin theta` pointing down the slope, so the acceleration is the same throughout: `a = -g sin theta` (taking up the slope as positive), both going up and coming down.</p><p style="margin:0 0 8px">The velocity-time graph is therefore one straight line, crossing zero at the top of the trip; its slope is the acceleration. Record the velocity at several times, plot it, and compare the slope with `-g sin theta`.</p></div></div>
+<!-- #slRoot0925 -->
 <style>
 #slRoot0925 { width:683px; margin:0; font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f4f4f4; color:#111; }
 #slRoot0925 *, #slRoot0925 *::before, #slRoot0925 *::after { box-sizing:border-box; }
@@ -829,5 +831,25 @@ slA11y0925.init();
 slA11y0925.narrate('Spring-launcher sim ready. A compressed spring launches a wheeled block up a frictionless incline. Set the angle, press Play, then Record each run to build your v(t) data.');
 </script>
 
+<style>
+/* ── phones and narrow windows: the fixed widths become fluid, the canvases scale (pointer positions are already rescaled), rows wrap ── */
+@media (max-width: 720px) {
+  #slRoot0925 { width:100% !important; max-width:100% !important; box-sizing:border-box; }
+  #slRoot0925 [style*="width:683px"], #slRoot0925 [style*="width: 683px"], #slRoot0925 [style*="width: 522px"], #slRoot0925 [style*="width:522px"], #slRoot0925 [style*="width:680px"], #slRoot0925 [style*="width:660px"] { width:100% !important; max-width:100% !important; box-sizing:border-box; }
+  #slRoot0925 * { max-width:100%; box-sizing:border-box; }   /* no element wider than its container (widths set by classes too) */
+  #slRoot0925 div { flex-wrap:wrap; }   /* rows may wrap */
+  #slRoot0925 input[type=range] { flex:1 1 110px; min-width:0; }
+  #slRoot0925 canvas { max-width:100% !important; height:auto !important; }
+  #slRoot0925 [style*="min-width"] { min-width:0 !important; }
+  #slRoot0925 [style*="display:flex"], #slRoot0925 [style*="display: flex"] { flex-wrap:wrap !important; }
+  #slRoot0925 table { display:block; overflow-x:auto; max-width:100%; }
+  #slRoot0925 input[type=number], #slRoot0925 input[type=text], #slRoot0925 select { max-width:100%; }
+}
+@media (pointer: coarse) {
+  #slRoot0925 button { min-height:36px; }
+  #slRoot0925 input[type=range] { height:28px; }
+  #slRoot0925 input[type=checkbox], #slRoot0925 input[type=radio] { width:20px; height:20px; }
+}
+</style>
 </body>
 </html>

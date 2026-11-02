@@ -152,7 +152,9 @@ $hintlink[10]
 <li>What acceleration data for each of the runs should we use?<br />[AB5]</li>
 <li>When should you watch the video supporting the lab?<br />[AB6]</li>
 </ol>
-</div><!-- #slRoot0925 -->
+</div>
+<div class="simdesc_slRoot" style="max-width:683px;margin:10px auto;text-align:center;font-family:Arial,sans-serif"><button type="button" aria-expanded="false" style="padding:7px 16px;font:bold 12px monospace;letter-spacing:.08em;cursor:pointer;background:#2a2e3a;border:1px solid #00a896;color:#00e8d0;border-radius:3px;min-height:36px" onclick="var d=this.nextElementSibling, o=d.style.display==='none'; d.style.display=o?'block':'none'; this.setAttribute('aria-expanded', o?'true':'false'); this.innerHTML=(o?'&#9662;':'&#9656;')+' SIM DESCRIPTION'; if (o && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }">&#9656; SIM DESCRIPTION</button><div role="region" aria-label="Description of the simulation" style="display:none;margin-top:8px;padding:10px 14px;background:#f6f8fb;border:1px solid #ccd;border-left:4px solid #00a896;border-radius:4px;font-size:.93rem;line-height:1.55;color:#222;text-align:left"><p style="margin:0 0 8px">A spring launches a wheeled block up a frictionless incline. Along the incline, the only force is the component of gravity `m g sin theta`, so the size of the acceleration is `a = g sin theta`, the same going up and coming down.</p><p style="margin:0 0 8px">Measure the acceleration at several angles and plot its size against `sin theta`: the points fall on a straight line through the origin, and its slope is `g`. This is a way to measure the acceleration due to gravity with a track that is only slightly tilted.</p></div></div>
+<!-- #slRoot0925 -->
 <style>
 #slRoot0925 { width:683px; margin:0; font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f4f4f4; color:#111; }
 #slRoot0925 *, #slRoot0925 *::before, #slRoot0925 *::after { box-sizing:border-box; }
@@ -835,5 +837,25 @@ slA11y0925.init();
 slA11y0925.narrate('a vs. sin \u03B8 sim ready. Set an angle, press Play, then Record the measured acceleration. Repeat for five or more angles and fit the graph to estimate g.');
 </script>
 
+<style>
+/* ── phones and narrow windows: the fixed widths become fluid, the canvases scale (pointer positions are already rescaled), rows wrap ── */
+@media (max-width: 720px) {
+  #slRoot0925 { width:100% !important; max-width:100% !important; box-sizing:border-box; }
+  #slRoot0925 [style*="width:683px"], #slRoot0925 [style*="width: 683px"], #slRoot0925 [style*="width: 522px"], #slRoot0925 [style*="width:522px"], #slRoot0925 [style*="width:680px"], #slRoot0925 [style*="width:660px"] { width:100% !important; max-width:100% !important; box-sizing:border-box; }
+  #slRoot0925 * { max-width:100%; box-sizing:border-box; }   /* no element wider than its container (widths set by classes too) */
+  #slRoot0925 div { flex-wrap:wrap; }   /* rows may wrap */
+  #slRoot0925 input[type=range] { flex:1 1 110px; min-width:0; }
+  #slRoot0925 canvas { max-width:100% !important; height:auto !important; }
+  #slRoot0925 [style*="min-width"] { min-width:0 !important; }
+  #slRoot0925 [style*="display:flex"], #slRoot0925 [style*="display: flex"] { flex-wrap:wrap !important; }
+  #slRoot0925 table { display:block; overflow-x:auto; max-width:100%; }
+  #slRoot0925 input[type=number], #slRoot0925 input[type=text], #slRoot0925 select { max-width:100%; }
+}
+@media (pointer: coarse) {
+  #slRoot0925 button { min-height:36px; }
+  #slRoot0925 input[type=range] { height:28px; }
+  #slRoot0925 input[type=checkbox], #slRoot0925 input[type=radio] { width:20px; height:20px; }
+}
+</style>
 </body>
 </html>

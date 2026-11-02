@@ -610,6 +610,28 @@ setSpeed, setCompare, clearGraphs
 };
 })();
 </script>
-</div><!-- #km_root -->
+</div>
+<div class="simdesc_km_root" style="max-width:683px;margin:10px auto;text-align:center;font-family:Arial,sans-serif"><button type="button" aria-expanded="false" style="padding:7px 16px;font:bold 12px monospace;letter-spacing:.08em;cursor:pointer;background:#2a2e3a;border:1px solid #00a896;color:#00e8d0;border-radius:3px;min-height:36px" onclick="var d=this.nextElementSibling, o=d.style.display==='none'; d.style.display=o?'block':'none'; this.setAttribute('aria-expanded', o?'true':'false'); this.innerHTML=(o?'&#9662;':'&#9656;')+' SIM DESCRIPTION'; if (o && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }">&#9656; SIM DESCRIPTION</button><div role="region" aria-label="Description of the simulation" style="display:none;margin-top:8px;padding:10px 14px;background:#f6f8fb;border:1px solid #ccd;border-left:4px solid #00a896;border-radius:4px;font-size:.93rem;line-height:1.55;color:#222;text-align:left"><p style="margin:0 0 8px">A glider moves on a frictionless horizontal track, and the graphs record its position and its velocity against time. Drag the glider, or play an example, and watch how its motion appears on each graph.</p><p style="margin:0 0 8px">The slope of the position-time graph is the velocity: a flat line means the glider is at rest, a steeper line a faster motion, and a downward slope a motion in the negative direction. The slope of the velocity-time graph is the acceleration: a flat velocity line means a constant velocity, and a sloped one a speeding up or slowing down.</p></div></div>
+<!-- #km_root -->
+<style>
+/* ── phones and narrow windows: the fixed widths become fluid, the canvases scale (pointer positions are already rescaled), rows wrap ── */
+@media (max-width: 720px) {
+  #km_root { width:100% !important; max-width:100% !important; box-sizing:border-box; }
+  #km_root [style*="width:683px"], #km_root [style*="width: 683px"], #km_root [style*="width: 522px"], #km_root [style*="width:522px"], #km_root [style*="width:680px"], #km_root [style*="width:660px"] { width:100% !important; max-width:100% !important; box-sizing:border-box; }
+  #km_root * { max-width:100%; box-sizing:border-box; }   /* no element wider than its container (widths set by classes too) */
+  #km_root div { flex-wrap:wrap; }   /* rows may wrap */
+  #km_root input[type=range] { flex:1 1 110px; min-width:0; }
+  #km_root canvas { max-width:100% !important; height:auto !important; }
+  #km_root [style*="min-width"] { min-width:0 !important; }
+  #km_root [style*="display:flex"], #km_root [style*="display: flex"] { flex-wrap:wrap !important; }
+  #km_root table { display:block; overflow-x:auto; max-width:100%; }
+  #km_root input[type=number], #km_root input[type=text], #km_root select { max-width:100%; }
+}
+@media (pointer: coarse) {
+  #km_root button { min-height:36px; }
+  #km_root input[type=range] { height:28px; }
+  #km_root input[type=checkbox], #km_root input[type=radio] { width:20px; height:20px; }
+}
+</style>
 </body>
 </html>

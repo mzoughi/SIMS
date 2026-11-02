@@ -45,6 +45,8 @@ $bg    : LCD background ('#a8b89a' classic, '#1a1a1a' LED black)
 ============================================================
 -->
 <div id="dsS_root0916" style="display:inline-block"></div>
+<div class="simdesc_dsS_root" style="max-width:683px;margin:10px auto;text-align:center;font-family:Arial,sans-serif"><button type="button" aria-expanded="false" style="padding:7px 16px;font:bold 12px monospace;letter-spacing:.08em;cursor:pointer;background:#2a2e3a;border:1px solid #00a896;color:#00e8d0;border-radius:3px;min-height:36px" onclick="var d=this.nextElementSibling, o=d.style.display==='none'; d.style.display=o?'block':'none'; this.setAttribute('aria-expanded', o?'true':'false'); this.innerHTML=(o?'&#9662;':'&#9656;')+' SIM DESCRIPTION'; if (o && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }">&#9656; SIM DESCRIPTION</button><div role="region" aria-label="Description of the simulation" style="display:none;margin-top:8px;padding:10px 14px;background:#f6f8fb;border:1px solid #ccd;border-left:4px solid #00a896;border-radius:4px;font-size:.93rem;line-height:1.55;color:#222;text-align:left"><p style="margin:0 0 8px">A digital scale shows the mass on its pan, to the nearest 0.01 g. A real scale may not read exactly zero when it is empty (a zero error), and any container placed on it adds its own mass to the reading.</p><p style="margin:0 0 8px">The TARE (zero) button sets the current reading to zero: tare the empty scale to remove the zero error, then place the container and tare again, so that the reading shows only what is put in the container. The mass of an object is then read directly; without taring, it is the difference between two readings.</p></div></div>
+
 <script>
 (function(){
 var thisq  = '0916';
@@ -58,7 +60,7 @@ var mg = 0.01 + Math.random() * 0.49;
 window[stateKey] = {
 bias: sn * mg, samples: [], containerMass: 0, hasContainer: false,
 tareOffset: 0, precision: 0.01,
-a11y: { lightMode:false, narration:true, highContrast:false, fontSize:'normal' },
+a11y: { lightMode:false, narration:true, highContrast:false, fontSize:'normal', colorBlind:false },
 lastNarration: '',
 hasShownIntro: false
 };
@@ -253,6 +255,7 @@ html += '<button type="button" id="dsS_btnS_nrS_'+thisq+'" onclick="dsToggleA11y
 html += '<button type="button" id="dsS_btnS_hcS_'+thisq+'" onclick="dsToggleA11yS_'+thisq+'(\'highContrast\')" '+
 'aria-pressed="'+state.a11y.highContrast+'" style="'+a11yBtnStyle(state.a11y.highContrast)+'">'+
 'HIGH CONTRAST'+(state.a11y.highContrast?': ON':'')+'</button>';
+html += '<button type="button" id="dsS_btnS_cbS_'+thisq+'" onclick="dsToggleA11yS_'+thisq+'(\'colorBlind\')" aria-pressed="'+(!!state.a11y.colorBlind)+'" style="'+a11yBtnStyle(!!state.a11y.colorBlind)+'">COLOR-BLIND SAFE'+(state.a11y.colorBlind?': ON':'')+'</button>';
 var fsLabels = { 'normal':'NORMAL', 'large':'LARGE', 'xl':'XL' };
 html += '<button type="button" id="dsS_btnS_fsS_'+thisq+'" onclick="dsCycleFontS_'+thisq+'()" '+
 'aria-label="Font size: '+fsLabels[state.a11y.fontSize]+'. Click to cycle." '+
@@ -354,6 +357,8 @@ ctrl += '</fieldset>';
 ctrl += '</div>';
 html += ctrl;
 html += '</div>';
+if (state.a11y.colorBlind) { var CBMAP = { '#c33':'#d55e00', '#a33':'#a04000', '#0c5':'#56b4e9', '#9c9':'#9ecae1', '#e8c41a':'#f0e442', 'red':'#e69f00' };   /* colour-blind safe (Okabe-Ito): red and green become vermillion and blue */
+  html = html.replace(/#(?:c33|a33|0c5|9c9|e8c41a)(?![0-9a-fA-F])|"red"/g, function(c){ return c === '"red"' ? '"' + CBMAP.red + '"' : (CBMAP[c] || c); }); }
 document.getElementById(rootId).innerHTML = html;
 restoreFocus(focusId);
 };
@@ -481,7 +486,7 @@ var mg = 0.01 + Math.random() * 0.49;
 window[stateKey] = {
 bias: sn * mg, samples: [], containerMass: 0, hasContainer: false,
 tareOffset: 0, precision: 0.01,
-a11y: { lightMode:false, narration:true, highContrast:false, fontSize:'normal' },
+a11y: { lightMode:false, narration:true, highContrast:false, fontSize:'normal', colorBlind:false },
 lastNarration: '',
 hasShownIntro: false
 };
@@ -676,6 +681,7 @@ html += '<button type="button" id="ds_btn_nr_'+thisq+'" onclick="dsToggleA11y_'+
 html += '<button type="button" id="ds_btn_hc_'+thisq+'" onclick="dsToggleA11y_'+thisq+'(\'highContrast\')" '+
 'aria-pressed="'+state.a11y.highContrast+'" style="'+a11yBtnStyle(state.a11y.highContrast)+'">'+
 'HIGH CONTRAST'+(state.a11y.highContrast?': ON':'')+'</button>';
+html += '<button type="button" id="ds_btn_cb_'+thisq+'" onclick="dsToggleA11y_'+thisq+'(\'colorBlind\')" aria-pressed="'+(!!state.a11y.colorBlind)+'" style="'+a11yBtnStyle(!!state.a11y.colorBlind)+'">COLOR-BLIND SAFE'+(state.a11y.colorBlind?': ON':'')+'</button>';
 var fsLabels = { 'normal':'NORMAL', 'large':'LARGE', 'xl':'XL' };
 html += '<button type="button" id="ds_btn_fs_'+thisq+'" onclick="dsCycleFont_'+thisq+'()" '+
 'aria-label="Font size: '+fsLabels[state.a11y.fontSize]+'. Click to cycle." '+
@@ -777,6 +783,8 @@ ctrl += '</fieldset>';
 ctrl += '</div>';
 html += ctrl;
 html += '</div>';
+if (state.a11y.colorBlind) { var CBMAP = { '#c33':'#d55e00', '#a33':'#a04000', '#0c5':'#56b4e9', '#9c9':'#9ecae1', '#e8c41a':'#f0e442', 'red':'#e69f00' };   /* colour-blind safe (Okabe-Ito): red and green become vermillion and blue */
+  html = html.replace(/#(?:c33|a33|0c5|9c9|e8c41a)(?![0-9a-fA-F])|"red"/g, function(c){ return c === '"red"' ? '"' + CBMAP.red + '"' : (CBMAP[c] || c); }); }
 document.getElementById(rootId).innerHTML = html;
 restoreFocus(focusId);
 };
@@ -878,4 +886,15 @@ render();
 </script>
 <p>What is the second mass?</p>
 
+<style>
+/* ── phones: the scale's drawing and panels fit the width ── */
+@media (max-width: 720px) {
+  [id^="dsS_root"], [id^="ds_root"] { display:block !important; width:100% !important; max-width:100% !important; }
+  [id^="dsS_root"] *, [id^="ds_root"] * { max-width:100%; box-sizing:border-box; }
+  [id^="dsS_root"] svg, [id^="ds_root"] svg { width:100% !important; height:auto !important; }
+  [id^="dsS_root"] div, [id^="ds_root"] div { flex-wrap:wrap; }
+  body { margin:8px !important; }
+}
+@media (pointer: coarse) { [id^="dsS_root"] button, [id^="ds_root"] button { min-height:36px; } }
+</style>
 </body></html>

@@ -7,206 +7,12 @@
 <meta name="author" content="Taha Mzoughi">
 <meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,Resistor, Color, Code, Calculator, lesson, scientific">
 <link rel="shortcut icon" href=mzy.ico>   
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
-:root{
---bg:#0e1d17;
---panel:#16261f;
---panel-2:#1b2e26;
---border:#2c4136;
---text:#e9e4d8;
---muted:#8ea497;
---copper:#c67f42;
---copper-light:#e2a367;
---body-fill:#dccba4;
---body-fill-dark:#c3ae7f;
---wire:#9a9a92;
-}
-*{ box-sizing:border-box; }
-html,body{
-margin:0;
-padding:0;
-background:var(--bg);
-color:var(--text);
-font-family:'IBM Plex Mono', monospace;
-}
-.wrap{
-max-width:1000px;
-margin:0 auto;
-padding:40px 24px 64px;
-}
-h1{
-font-family:'Space Grotesk', sans-serif;
-font-weight:600;
-font-size:clamp(28px,4vw,38px);
-margin:0 0 6px;
-letter-spacing:-0.01em;
-}
-.sub{
-color:var(--muted);
-font-size:14px;
-margin:0 0 28px;
-line-height:1.5;
-max-width:56ch;
-}
-.top-row{
-display:flex;
-align-items:flex-start;
-justify-content:space-between;
-gap:20px;
-flex-wrap:wrap;
-}
-.toggle{
-display:inline-flex;
-background:var(--panel);
-border:1px solid var(--border);
-border-radius:999px;
-padding:4px;
-gap:4px;
-flex-shrink:0;
-}
-.toggle button{
-font-family:'IBM Plex Mono', monospace;
-font-size:13px;
-font-weight:500;
-border:none;
-background:transparent;
-color:var(--muted);
-padding:9px 18px;
-border-radius:999px;
-cursor:pointer;
-transition:background .18s ease, color .18s ease;
-}
-.toggle button.active{
-background:var(--copper);
-color:#161009;
-}
-.grid{
-display:grid;
-grid-template-columns:1.15fr 0.85fr;
-gap:20px;
-margin-top:28px;
-}
-@media(max-width:760px){
-.grid{ grid-template-columns:1fr; }
-}
-.card{
-background:var(--panel);
-border:1px solid var(--border);
-border-radius:14px;
-padding:24px;
-}
-.resistor-card{
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-gap:22px;
-}
-svg.resistor{ width:100%; height:auto; max-width:520px; }
-.readout{
-text-align:center;
-width:100%;
-}
-.readout .value{
-font-family:'Space Grotesk', sans-serif;
-font-weight:700;
-font-size:clamp(32px,6vw,44px);
-color:var(--copper-light);
-letter-spacing:-0.01em;
-}
-.readout .tol{
-font-size:13px;
-color:var(--muted);
-margin-top:4px;
-}
-.readout .range{
-font-size:12px;
-color:var(--muted);
-margin-top:10px;
-padding-top:10px;
-border-top:1px solid var(--border);
-}
-.band-controls{
-display:flex;
-flex-direction:column;
-gap:18px;
-}
-.band-group label.title{
-display:block;
-font-size:12px;
-color:var(--muted);
-margin-bottom:8px;
-}
-.band-group .current{
-color:var(--text);
-font-weight:500;
-}
-.swatches{
-display:flex;
-flex-wrap:wrap;
-gap:8px;
-}
-.swatch{
-width:28px;
-height:28px;
-border-radius:50%;
-border:2px solid rgba(255,255,255,0.08);
-cursor:pointer;
-position:relative;
-flex-shrink:0;
-}
-.swatch.selected{
-border-color:var(--copper);
-box-shadow:0 0 0 2px var(--panel), 0 0 0 4px var(--copper);
-}
-.swatch.none-swatch{
-background:repeating-linear-gradient(45deg, #3a3a3a, #3a3a3a 3px, #222 3px, #222 6px);
-}
-.legend{
-margin-top:24px;
-}
-.legend summary{
-cursor:pointer;
-font-size:13px;
-color:var(--muted);
-padding:10px 0;
-user-select:none;
-}
-table.ref{
-width:100%;
-border-collapse:collapse;
-font-size:12.5px;
-margin-top:8px;
-}
-table.ref th{
-text-align:left;
-color:var(--muted);
-font-weight:500;
-padding:8px 10px;
-border-bottom:1px solid var(--border);
-}
-table.ref td{
-padding:7px 10px;
-border-bottom:1px solid var(--border);
-}
-.dot{
-display:inline-block;
-width:12px;
-height:12px;
-border-radius:50%;
-margin-right:8px;
-vertical-align:middle;
-border:1px solid rgba(255,255,255,0.1);
-}
-.footnote{
-color:var(--muted);
-font-size:11.5px;
-margin-top:10px;
-line-height:1.5;
-}</style></head>
-<body>
-<div class="wrap">
+</head>
+<body style="margin:0;background:#0e1d17">
+<style>#rcRoot{min-height:100vh}</style>
+<div id="rcRoot" class="rc_root">
+
+<div class="wrap"><div class="a11ybarrc" role="toolbar" aria-label="Display options"><button type="button" data-a11y="hc" aria-pressed="false">HIGH CONTRAST</button><button type="button" data-a11y="theme" aria-pressed="false">LIGHT MODE</button><button type="button" data-a11y="cb" aria-pressed="false">COLOR-BLIND SAFE</button><button type="button" data-a11y="fs" aria-pressed="false">FONT: NORMAL</button><button type="button" data-a11y="nr" aria-pressed="true">NARRATION: ON</button></div><div class="narbarrc" role="status" aria-live="polite" aria-atomic="true"></div>
 <div class="top-row">
 <div>
 <h1>Resistor color code calculator</h1>
@@ -229,8 +35,229 @@ line-height:1.5;
 <thead>
 <tr><th>Color</th><th>Digit</th><th>Multiplier</th><th>Tolerance</th></tr></thead>
 <tbody id="refBody"></tbody></table>
-<p class="footnote">Digit and multiplier bands are read from left to right, starting with the band closest to one end. The tolerance band is usually gold or silver and sits by itself, separated slightly from the others — that gap tells you which end to start reading from.</p></details></div>
+<p class="footnote">Digit and multiplier bands are read from left to right, starting with the band closest to one end. The tolerance band is usually gold or silver and sits by itself, separated slightly from the others — that gap tells you which end to start reading from.</p></details><button type="button" class="descbtnrc" aria-expanded="false">&#9656; SIM DESCRIPTION</button><div class="descrc" style="display:none" role="region" aria-label="Description of the simulation"><p>A resistor&rsquo;s value is printed as coloured bands. On a 4-band resistor, the first two bands are digits, the third is a multiplier (a power of ten), and the fourth is the tolerance; a 5-band resistor has three digit bands. Each colour stands for a digit: black 0, brown 1, red 2, orange 3, yellow 4, green 5, blue 6, violet 7, grey 8, white 9. Gold and silver multiply by 0.1 and 0.01.</p><p>For example, yellow, violet, red, gold reads 4, 7, &times;100, &plusmn;5%: 4700 &Omega; = 4.7 k&Omega;, so the true resistance lies between 4.465 k&Omega; and 4.935 k&Omega;. The tolerance band usually stands slightly apart: that gap tells which end to start reading from.</p><p>Choose the colours of each band to read the value. With <b>COLOR-BLIND SAFE</b> on, every band is labelled with its colour name, on the resistor and on the choices, so the code can be read without telling the colours apart.</p></div></div>
+</div>
+<style>
+#rcRoot{
+--bg:#0e1d17;
+--panel:#16261f;
+--panel-2:#1b2e26;
+--border:#2c4136;
+--text:#e9e4d8;
+--muted:#8ea497;
+--copper:#c67f42;
+--copper-light:#e2a367;
+--body-fill:#dccba4;
+--body-fill-dark:#c3ae7f;
+--wire:#9a9a92;
+}
+#rcRoot, #rcRoot *{ box-sizing:border-box; }
+#rcRoot, #rcRoot{
+margin:0;
+padding:0;
+background:var(--bg);
+color:var(--text);
+font-family:'IBM Plex Mono', monospace;
+}
+#rcRoot .wrap{
+max-width:1000px;
+margin:0 auto;
+padding:40px 24px 64px;
+}
+#rcRoot h1{
+font-family:'Space Grotesk', sans-serif;
+font-weight:600;
+font-size:clamp(28px,4vw,38px);
+margin:0 0 6px;
+letter-spacing:-0.01em;
+}
+#rcRoot .sub{
+color:var(--muted);
+font-size:14px;
+margin:0 0 28px;
+line-height:1.5;
+max-width:56ch;
+}
+#rcRoot .top-row{
+display:flex;
+align-items:flex-start;
+justify-content:space-between;
+gap:20px;
+flex-wrap:wrap;
+}
+#rcRoot .toggle{
+display:inline-flex;
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:999px;
+padding:4px;
+gap:4px;
+flex-shrink:0;
+}
+#rcRoot .toggle button{
+font-family:'IBM Plex Mono', monospace;
+font-size:13px;
+font-weight:500;
+border:none;
+background:transparent;
+color:var(--muted);
+padding:9px 18px;
+border-radius:999px;
+cursor:pointer;
+transition:background .18s ease, color .18s ease;
+}
+#rcRoot .toggle button.active{
+background:var(--copper);
+color:#161009;
+}
+#rcRoot .grid{
+display:grid;
+grid-template-columns:1.15fr 0.85fr;
+gap:20px;
+margin-top:28px;
+}
+@media(max-width:760px){#rcRoot .grid{ grid-template-columns:1fr; }
+
+}
+#rcRoot .card{
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:14px;
+padding:24px;
+}
+#rcRoot .resistor-card{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+gap:22px;
+}
+#rcRoot svg.resistor{ width:100%; height:auto; max-width:520px; }
+#rcRoot .readout{
+text-align:center;
+width:100%;
+}
+#rcRoot .readout .value{
+font-family:'Space Grotesk', sans-serif;
+font-weight:700;
+font-size:clamp(32px,6vw,44px);
+color:var(--copper-light);
+letter-spacing:-0.01em;
+}
+#rcRoot .readout .tol{
+font-size:13px;
+color:var(--muted);
+margin-top:4px;
+}
+#rcRoot .readout .range{
+font-size:12px;
+color:var(--muted);
+margin-top:10px;
+padding-top:10px;
+border-top:1px solid var(--border);
+}
+#rcRoot .band-controls{
+display:flex;
+flex-direction:column;
+gap:18px;
+}
+#rcRoot .band-group label.title{
+display:block;
+font-size:12px;
+color:var(--muted);
+margin-bottom:8px;
+}
+#rcRoot .band-group .current{
+color:var(--text);
+font-weight:500;
+}
+#rcRoot .swatches{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+}
+#rcRoot .swatch{
+width:28px;
+height:28px;
+border-radius:50%;
+border:2px solid rgba(255,255,255,0.08);
+cursor:pointer;
+position:relative;
+flex-shrink:0;
+}
+#rcRoot .swatch.selected{
+border-color:var(--copper);
+box-shadow:0 0 0 2px var(--panel), 0 0 0 4px var(--copper);
+}
+#rcRoot .swatch.none-swatch{
+background:repeating-linear-gradient(45deg, #3a3a3a, #3a3a3a 3px, #222 3px, #222 6px);
+}
+#rcRoot .legend{
+margin-top:24px;
+}
+#rcRoot .legend summary{
+cursor:pointer;
+font-size:13px;
+color:var(--muted);
+padding:10px 0;
+user-select:none;
+}
+#rcRoot table.ref{
+width:100%;
+border-collapse:collapse;
+font-size:12.5px;
+margin-top:8px;
+}
+#rcRoot table.ref th{
+text-align:left;
+color:var(--muted);
+font-weight:500;
+padding:8px 10px;
+border-bottom:1px solid var(--border);
+}
+#rcRoot table.ref td{
+padding:7px 10px;
+border-bottom:1px solid var(--border);
+}
+#rcRoot .dot{
+display:inline-block;
+width:12px;
+height:12px;
+border-radius:50%;
+margin-right:8px;
+vertical-align:middle;
+border:1px solid rgba(255,255,255,0.1);
+}
+#rcRoot .footnote{
+color:var(--muted);
+font-size:11.5px;
+margin-top:10px;
+line-height:1.5;
+}
+#rcRoot.a11y-theme { --bg:#f4f1ea; --panel:#ffffff; --panel-2:#f3efe6; --border:#cfc6b5; --text:#1d2a36; --muted:#5b6876; --copper:#a8620a; --copper-light:#8a4a00; }
+#rcRoot.a11y-hc { --bg:#000000; --panel:#000000; --panel-2:#111111; --border:#ffffff; --text:#ffffff; --muted:#e0e0e0; --copper:#ffd700; --copper-light:#ffff00; }
+#rcRoot.a11y-hc .card { border-width:2px; }
+#rcRoot.a11y-fs1 { zoom:1.15; } .a11y-fs2 { zoom:1.3; }
+#rcRoot .swatch { padding:0; font:bold 10px/1 monospace; color:transparent; display:inline-flex; align-items:center; justify-content:center; }
+#rcRoot.a11y-cb .swatch { width:auto; min-width:44px; height:30px; border-radius:15px; padding:0 6px; color:#fff; text-shadow:0 0 2px #000, 0 0 2px #000; }
+@media (pointer: coarse) { .swatch { width:36px; height:36px; } }
+
+.a11ybarrc { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; padding:6px; margin:0 0 10px; background:#22262e; border-radius:6px; }
+.a11ybarrc button { padding:5px 10px; font:600 11px/1.2 monospace; letter-spacing:.05em; border-radius:4px; cursor:pointer; background:#2a2e3a; border:1px solid #525c66; color:#c8d0d8; }
+.a11ybarrc button[aria-pressed="true"] { background:rgba(58,208,143,.15); border-color:#3ad08f; color:#3ad08f; }
+.narbarrc { margin:0 0 10px; padding:7px 12px; background:#2a2410; border-left:4px solid #e0b040; color:#f0e2b8; font-style:italic; font-size:.9rem; line-height:1.4; border-radius:3px; }
+.descbtnrc { display:block; margin:12px auto 0; padding:7px 16px; font:bold 12px monospace; letter-spacing:.08em; cursor:pointer; background:#2a2e3a; border:1px solid #00a896; color:#00e8d0; border-radius:3px; }
+.descrc { margin-top:8px; padding:10px 14px; background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #00a896; border-radius:4px; font-size:.92rem; line-height:1.55; color:#222; text-align:left; }
+.descrc p { margin:0 0 8px; }
+@media (pointer: coarse) { .a11ybarrc button { min-height:38px; } }
+</style>
 <script>
+(function(){ if (!document.getElementById("rcFonts")){ var l = document.createElement("link"); l.id = "rcFonts"; l.rel = "stylesheet"; l.href = "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"; document.head.appendChild(l); } })();
+(function(){
+var NARR = function(t){ var f = window['narrate_rc']; if (f) f(t); };
+var CB = function(){ var f = window['a11yState_rc']; return f ? f().cb : false; };
+function spoken(){ var v = computeValue(), t = COLORS[state[mode].tol].tol; return 'The resistance is ' + formatOhms(v).replace('k\u03A9', 'kilohms').replace('M\u03A9', 'megohms').replace('G\u03A9', 'gigohms').replace('\u03A9', 'ohms') + ', plus or minus ' + t + ' percent.'; }
+
 const COLORS = {
 black:  { hex:'#141414', digit:0, mult:1,     tol:null, label:'Black'  },
 brown:  { hex:'#7b4a2d', digit:1, mult:10,     tol:1,    label:'Brown'  },
@@ -312,13 +339,14 @@ group.appendChild(title);
 const row = document.createElement('div');
 row.className = 'swatches';
 band.options.forEach(colorKey => {
-const sw = document.createElement('div');
+const sw = document.createElement('button'); sw.type = 'button'; sw.setAttribute('aria-label', band.label + ': ' + COLORS[colorKey].label); sw.setAttribute('aria-pressed', colorKey === currentColor ? 'true' : 'false'); sw.textContent = COLORS[colorKey].label;
 sw.className = 'swatch' + (colorKey === currentColor ? ' selected' : '') + (colorKey === 'none' ? ' none-swatch' : '');
 if (colorKey !== 'none') sw.style.background = COLORS[colorKey].hex;
 sw.title = COLORS[colorKey].label;
 sw.addEventListener('click', () => {
 state[mode][band.key] = colorKey;
 renderAll();
+NARR(band.label.split(' \u2014 ')[0] + ' set to ' + COLORS[colorKey].label.toLowerCase() + '. ' + spoken());
 });
 row.appendChild(sw);
 });
@@ -338,24 +366,12 @@ let bands = '';
 bandKeys.forEach((key, i) => {
 const colorKey = s[key];
 const hex = COLORS[colorKey].hex || 'none';
-if (hex === 'none') return;
 const x = positions[i];
-bands += `<rect x="${x}" y="58" width="${bandWidth}" height="104" fill="${hex}" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>`;
+if (CB()) bands += '<text x="' + (x + bandWidth/2) + '" y="' + (i % 2 ? 196 : 40) + '" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="15" style="fill:var(--text)">' + COLORS[colorKey].label + '</text>';
+if (hex === 'none') return;
+bands += ('<rect x="' + (x) + '" y="58" width="' + (bandWidth) + '" height="104" fill="' + (hex) + '" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>');
 });
-svg.innerHTML = `
-<line x1="0" y1="110" x2="150" y2="110" stroke="var(--wire)" stroke-width="6"/>
-<line x1="450" y1="110" x2="600" y2="110" stroke="var(--wire)" stroke-width="6"/>
-<rect x="150" y="50" width="300" height="120" rx="26" fill="var(--body-fill)" stroke="var(--body-fill-dark)" stroke-width="2"/>
-<rect x="150" y="50" width="300" height="120" rx="26" fill="url(#bodyShade)" opacity="0.35"/>
-${bands}
-<defs>
-<linearGradient id="bodyShade" x1="0" y1="0" x2="0" y2="1">
-<stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
-<stop offset="0.5" stop-color="#ffffff" stop-opacity="0"/>
-<stop offset="1" stop-color="#000000" stop-opacity="0.15"/>
-</linearGradient>
-</defs>
-`;
+svg.innerHTML = ('\n<line x1="0" y1="110" x2="150" y2="110" stroke="var(--wire)" stroke-width="6"/>\n<line x1="450" y1="110" x2="600" y2="110" stroke="var(--wire)" stroke-width="6"/>\n<rect x="150" y="50" width="300" height="120" rx="26" fill="var(--body-fill)" stroke="var(--body-fill-dark)" stroke-width="2"/>\n<rect x="150" y="50" width="300" height="120" rx="26" fill="url(#bodyShade)" opacity="0.35"/>\n' + (bands) + '\n<defs>\n<linearGradient id="bodyShade" x1="0" y1="0" x2="0" y2="1">\n<stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>\n<stop offset="0.5" stop-color="#ffffff" stop-opacity="0"/>\n<stop offset="1" stop-color="#000000" stop-opacity="0.15"/>\n</linearGradient>\n</defs>\n');
 }
 function renderReadout(){
 const value = computeValue();
@@ -375,13 +391,8 @@ body.innerHTML = '';
 DIGIT_COLORS.concat(['gold','silver','none']).forEach(key => {
 const c = COLORS[key];
 const tr = document.createElement('tr');
-const dot = c.hex ? `<span class="dot" style="background:${c.hex}"></span>` : `<span class="dot" style="background:repeating-linear-gradient(45deg,#3a3a3a,#3a3a3a 2px,#222 2px,#222 4px)"></span>`;
-tr.innerHTML = `
-<td>${dot}${c.label}</td>
-<td>${c.digit != null ? c.digit : '—'}</td>
-<td>${c.mult != null ? (c.mult >= 1 ? '×' + c.mult.toLocaleString() : '×' + c.mult) : '—'}</td>
-<td>${c.tol != null ? '± ' + c.tol + '%' : '—'}</td>
-`;
+const dot = c.hex ? ('<span class="dot" style="background:' + (c.hex) + '"></span>') : ('<span class="dot" style="background:repeating-linear-gradient(45deg,#3a3a3a,#3a3a3a 2px,#222 2px,#222 4px)"></span>');
+tr.innerHTML = ('\n<td>' + (dot) + (c.label) + '</td>\n<td>' + (c.digit != null ? c.digit : '—') + '</td>\n<td>' + (c.mult != null ? (c.mult >= 1 ? '×' + c.mult.toLocaleString() : '×' + c.mult) : '—') + '</td>\n<td>' + (c.tol != null ? '± ' + c.tol + '%' : '—') + '</td>\n');
 body.appendChild(tr);
 });
 }
@@ -396,9 +407,28 @@ if (!btn) return;
 mode = btn.dataset.mode;
 document.querySelectorAll('#modeToggle button').forEach(b => b.classList.toggle('active', b === btn));
 renderAll();
+NARR('Now a ' + mode + '-band resistor. ' + spoken());
 });
 renderReference();
 renderAll();
+NARR('A ' + mode + '-band resistor. ' + spoken());
+window['rcRender'] = renderAll;
+window['rcSpoken'] = function(){ return 'A ' + mode + '-band resistor. ' + spoken(); };
+
+})();
+(function(){ var R = document.querySelector('#rcRoot'); if (!R) return; var st = { hc:false, theme:false, cb:false, fs:0, nr:true }, bar = R.querySelector('.a11ybarrc'), nb = R.querySelector('.narbarrc');
+  try { var sv = JSON.parse(localStorage.getItem('a11yrc') || 'null'); if (sv) st = sv; } catch(e){}
+  function apply(){ R.classList.toggle('a11y-hc', st.hc); R.classList.toggle('a11y-theme', st.theme); R.classList.toggle('a11y-cb', st.cb); R.classList.toggle('a11y-fs1', st.fs === 1); R.classList.toggle('a11y-fs2', st.fs === 2);
+    [].forEach.call(bar.querySelectorAll('button'), function(b){ var k = b.getAttribute('data-a11y'); var on = k === 'fs' ? st.fs > 0 : !!st[k]; b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      if (k === 'fs') b.textContent = 'FONT: ' + ['NORMAL', 'LARGE', 'XL'][st.fs]; if (k === 'nr') b.textContent = 'NARRATION: ' + (st.nr ? 'ON' : 'OFF'); });
+    nb.style.display = st.nr ? '' : 'none'; try { localStorage.setItem('a11yrc', JSON.stringify(st)); } catch(e){} var f = window['rcRender']; if (f) f(); }
+  bar.addEventListener('click', function(e){ var b = e.target.closest('button'); if (!b) return; var k = b.getAttribute('data-a11y'); if (k === 'fs') st.fs = (st.fs + 1) % 3; else st[k] = !st[k];
+    if (k === 'hc' && st.hc) st.theme = false; if (k === 'theme' && st.theme) st.hc = false; apply(); });
+  window['narrate_rc'] = function(t){ if (st.nr) nb.textContent = t; };
+  window['a11yState_rc'] = function(){ return st; };
+  var db = R.querySelector('.descbtnrc'), dd = R.querySelector('.descrc'); if (db) db.addEventListener('click', function(){ var open = dd.style.display === 'none'; dd.style.display = open ? 'block' : 'none'; db.setAttribute('aria-expanded', open ? 'true' : 'false'); db.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION'; if (open && window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([dd]); });
+  apply(); })();
+(function(){ var n = window['narrate_rc'], s = window['rcSpoken']; if (n && s) n(s() + ' Choose the colour of each band.'); })();
 </script>
 </body>
 </html>

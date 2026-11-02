@@ -170,7 +170,9 @@ $hintlink[10]
 <li>Holding `theta` fixed, record runs at several release distances. Graph displacement vs. `T^2` and show the linear fit. How is the slope related to the acceleration?<br /></li>
 <li>Use the release height `h` to predict the final speed from `v_f = sqrt(2gh)`. How does your prediction compare with the recorded `v_f`?<br /></li>
 </ol>
-</div><!-- #rlRoot0925 -->
+</div>
+<div class="simdesc_rlRoot" style="max-width:683px;margin:10px auto;text-align:center;font-family:Arial,sans-serif"><button type="button" aria-expanded="false" style="padding:7px 16px;font:bold 12px monospace;letter-spacing:.08em;cursor:pointer;background:#2a2e3a;border:1px solid #00a896;color:#00e8d0;border-radius:3px;min-height:36px" onclick="var d=this.nextElementSibling, o=d.style.display==='none'; d.style.display=o?'block':'none'; this.setAttribute('aria-expanded', o?'true':'false'); this.innerHTML=(o?'&#9662;':'&#9656;')+' SIM DESCRIPTION'; if (o && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }">&#9656; SIM DESCRIPTION</button><div role="region" aria-label="Description of the simulation" style="display:none;margin-top:8px;padding:10px 14px;background:#f6f8fb;border:1px solid #ccd;border-left:4px solid #00a896;border-radius:4px;font-size:.93rem;line-height:1.55;color:#222;text-align:left"><p style="margin:0 0 8px">A wheeled block is released from rest on a frictionless incline. Along the incline, the component of gravity `m g sin theta` gives it a constant acceleration `a = g sin theta`.</p><p style="margin:0 0 8px">Starting from rest, the distance travelled grows with the square of the time: `d = 1/2 a t^2`. Release the block from several distances, time each trip, and plot the distance against `t^2`: the slope is `a/2`, from which `g = a / sin theta` follows.</p></div></div>
+<!-- #rlRoot0925 -->
 <style>
 #rlRoot0925 { width:683px; margin:0; font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f4f4f4; color:#111; }
 #rlRoot0925 *, #rlRoot0925 *::before, #rlRoot0925 *::after { box-sizing:border-box; }
@@ -894,5 +896,25 @@ refresh:refresh
 rlA11y0925.init();
 rlA11y0925.narrate('Incline sim ready. A wheeled block is released from rest on a frictionless track. Change d, \u03B8, or m, press Release, then Record each run to build your data set.');
 </script>
+<style>
+/* ── phones and narrow windows: the fixed widths become fluid, the canvases scale (pointer positions are already rescaled), rows wrap ── */
+@media (max-width: 720px) {
+  #rlRoot0925 { width:100% !important; max-width:100% !important; box-sizing:border-box; }
+  #rlRoot0925 [style*="width:683px"], #rlRoot0925 [style*="width: 683px"], #rlRoot0925 [style*="width: 522px"], #rlRoot0925 [style*="width:522px"], #rlRoot0925 [style*="width:680px"], #rlRoot0925 [style*="width:660px"] { width:100% !important; max-width:100% !important; box-sizing:border-box; }
+  #rlRoot0925 * { max-width:100%; box-sizing:border-box; }   /* no element wider than its container (widths set by classes too) */
+  #rlRoot0925 div { flex-wrap:wrap; }   /* rows may wrap */
+  #rlRoot0925 input[type=range] { flex:1 1 110px; min-width:0; }
+  #rlRoot0925 canvas { max-width:100% !important; height:auto !important; }
+  #rlRoot0925 [style*="min-width"] { min-width:0 !important; }
+  #rlRoot0925 [style*="display:flex"], #rlRoot0925 [style*="display: flex"] { flex-wrap:wrap !important; }
+  #rlRoot0925 table { display:block; overflow-x:auto; max-width:100%; }
+  #rlRoot0925 input[type=number], #rlRoot0925 input[type=text], #rlRoot0925 select { max-width:100%; }
+}
+@media (pointer: coarse) {
+  #rlRoot0925 button { min-height:36px; }
+  #rlRoot0925 input[type=range] { height:28px; }
+  #rlRoot0925 input[type=checkbox], #rlRoot0925 input[type=radio] { width:20px; height:20px; }
+}
+</style>
 </body>
 </html>

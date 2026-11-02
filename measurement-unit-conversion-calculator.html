@@ -8,232 +8,13 @@
 <meta name="description" content="HTML 5 app: Unit Conversion Calculator">
 <meta name="author" content="Taha Mzoughi">
 <meta name="keywords" content="physics, mechanics, position, time, waves, amplitude, frequency, period, wavelength, temperature, time, speed, acceleration, units, convert, conversion">
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
-:root{
---bg:#f5f7fa;
---card:#ffffff;
---border:#d7dce2;
---ink:#1c242c;
---muted:#5c6b78;
---accent:#005a9c;
---accent-dark:#00426f;
---brass:#b8862f;
---brass-dark:#93691f;
---brass-tint:#fbf1de;
---error:#a3241c;
---error-tint:#fdecea;
---radius:10px;
-}
-*{ box-sizing:border-box; }
-html,body{
-margin:0;
-padding:0;
-background:var(--bg);
-color:var(--ink);
-font-family:'Inter', 'Segoe UI', Arial, sans-serif;
-font-size:15px;
-}
-.page{
-max-width:640px;
-margin:0 auto;
-padding:28px 18px 56px;
-}
-.card{
-background:var(--card);
-border:1px solid var(--border);
-border-radius:var(--radius);
-overflow:hidden;
-}
-header.app-header{
-display:flex;
-align-items:flex-start;
-justify-content:space-between;
-gap:12px;
-padding:22px 24px 18px;
-border-bottom:3px solid var(--brass);
-}
-header.app-header h1{
-font-family:'Spectral', serif;
-font-weight:600;
-font-size:26px;
-color:var(--accent-dark);
-margin:0 0 6px;
-letter-spacing:-0.01em;
-}
-header.app-header p{
-margin:0;
-color:var(--muted);
-font-size:13.5px;
-line-height:1.5;
-max-width:44ch;
-}
-#fsBtn{
-flex-shrink:0;
-width:34px;
-height:34px;
-border-radius:8px;
-border:1px solid var(--border);
-background:var(--bg);
-color:var(--muted);
-font-size:16px;
-cursor:pointer;
-line-height:1;
-}
-#fsBtn:hover{ color:var(--accent); border-color:var(--accent); }
-.body{
-padding:22px 24px 26px;
-}
-.field{
-margin-bottom:16px;
-}
-.field label{
-display:block;
-font-size:12px;
-font-weight:600;
-color:var(--muted);
-text-transform:uppercase;
-letter-spacing:0.04em;
-margin-bottom:6px;
-}
-select, input[type="number"]{
-width:100%;
-font-family:'Inter', sans-serif;
-font-size:15px;
-padding:11px 12px;
-border:1px solid var(--border);
-border-radius:8px;
-background:#fff;
-color:var(--ink);
-}
-select:focus, input:focus{
-outline:2px solid var(--accent);
-outline-offset:1px;
-}
-.unit-row{
-display:grid;
-grid-template-columns:1fr auto 1fr;
-gap:10px;
-align-items:end;
-}
-.swap-btn{
-width:40px;
-height:40px;
-border-radius:50%;
-border:1px solid var(--border);
-background:var(--bg);
-color:var(--accent);
-font-size:16px;
-cursor:pointer;
-align-self:center;
-margin-top:20px;
-}
-.swap-btn:hover{ background:var(--accent); color:#fff; border-color:var(--accent); }
-@media (max-width:460px){
-.unit-row{ grid-template-columns:1fr; }
-.swap-btn{ justify-self:center; margin-top:0; transform:rotate(90deg); }
-}
-.calc-btn{
-width:100%;
-padding:13px;
-margin-top:4px;
-background:var(--brass);
-color:#231a08;
-font-family:'Inter', sans-serif;
-font-weight:600;
-font-size:15px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-}
-.calc-btn:hover{ background:var(--brass-dark); }
-.result{
-margin-top:20px;
-padding:18px 20px;
-background:var(--brass-tint);
-border:1px solid #ecd9ab;
-border-radius:8px;
-display:none;
-}
-.result.show{ display:block; }
-.result .eq{
-font-family:'IBM Plex Mono', monospace;
-font-size:20px;
-font-weight:600;
-color:var(--accent-dark);
-word-break:break-word;
-}
-.result .cat-note{
-margin-top:4px;
-font-size:12px;
-color:var(--muted);
-}
-.error-box{
-margin-top:20px;
-padding:14px 16px;
-background:var(--error-tint);
-border:1px solid #f2c6c1;
-border-radius:8px;
-color:var(--error);
-font-size:13.5px;
-display:none;
-}
-.error-box.show{ display:block; }
-.toggle-work{
-margin-top:14px;
-display:none;
-}
-.toggle-work.show{ display:block; }
-.toggle-work a{
-font-size:13px;
-color:var(--accent);
-text-decoration:none;
-cursor:pointer;
-font-weight:500;
-}
-.toggle-work a:hover{ text-decoration:underline; }
-.work-panel{
-margin-top:10px;
-padding:14px 16px 14px 18px;
-border-left:3px solid var(--brass);
-background:#fafbfc;
-border-radius:0 6px 6px 0;
-}
-.step{
-font-family:'IBM Plex Mono', monospace;
-font-size:13px;
-line-height:1.7;
-color:var(--ink);
-}
-.step + .step{ margin-top:8px; }
-.step-label{
-display:block;
-font-family:'Inter', sans-serif;
-font-size:11px;
-font-weight:600;
-color:var(--muted);
-text-transform:uppercase;
-letter-spacing:0.04em;
-margin-bottom:2px;
-}
-.step.result-step{
-padding-top:8px;
-margin-top:10px;
-border-top:1px dashed var(--border);
-color:var(--accent-dark);
-font-weight:600;
-}
-footer.app-footer{
-padding:14px 24px 18px;
-border-top:1px solid var(--border);
-font-size:12px;
-color:var(--muted);
-background:var(--bg);
-}
-</style>
+
 </head>
-<body>
-<div class="page">
+<body style="margin:0">
+<style>#ucRoot{min-height:100vh}</style>
+<div id="ucRoot" class="uc_root">
+
+<div class="page"><div class="a11ybaruc" role="toolbar" aria-label="Display options"><button type="button" data-a11y="hc" aria-pressed="false">HIGH CONTRAST</button><button type="button" data-a11y="theme" aria-pressed="false">DARK MODE</button><button type="button" data-a11y="cb" aria-pressed="false">COLOR-BLIND SAFE</button><button type="button" data-a11y="fs" aria-pressed="false">FONT: NORMAL</button><button type="button" data-a11y="nr" aria-pressed="true">NARRATION: ON</button></div><div class="narbaruc" role="status" aria-live="polite" aria-atomic="true"></div>
 <div class="card">
 <header class="app-header">
 <div>
@@ -277,8 +58,251 @@ background:var(--bg);
 </div>
 <footer class="app-footer">© Taha Mzoughi 2015</footer>
 </div>
+<button type="button" class="descbtnuc" aria-expanded="false">&#9656; SIM DESCRIPTION</button><div class="descuc" style="display:none" role="region" aria-label="Description of the simulation"><p>To convert a quantity, choose what it is (a length, a mass, a speed, a temperature&hellip;), type the value, and choose the units to convert from and to. The result shows the value in the new units, and <b>Show the math</b> explains each step.</p><p>Most conversions multiply by a conversion factor: 1 km = 1000 m, so 2.5 km &times; (1000 m / 1 km) = 2500 m. The factor equals 1, so the quantity itself does not change, only the units it is expressed in. Temperatures are different: the Celsius and Fahrenheit scales have different zeros, so a conversion also adds or subtracts an offset (&deg;F = 1.8 &times; &deg;C + 32).</p><p>The result keeps the number of significant figures of the value entered, since a conversion cannot make a measurement more precise.</p></div></div>
 </div>
+<style>
+#ucRoot{
+--bg:#f5f7fa;
+--card:#ffffff;
+--border:#d7dce2;
+--ink:#1c242c;
+--muted:#5c6b78;
+--accent:#005a9c;
+--accent-dark:#00426f;
+--brass:#b8862f;
+--brass-dark:#93691f;
+--brass-tint:#fbf1de;
+--error:#a3241c;
+--error-tint:#fdecea;
+--radius:10px;
+}
+#ucRoot, #ucRoot *{ box-sizing:border-box; }
+#ucRoot, #ucRoot{
+margin:0;
+padding:0;
+background:var(--bg);
+color:var(--ink);
+font-family:'Inter', 'Segoe UI', Arial, sans-serif;
+font-size:15px;
+}
+#ucRoot .page{
+max-width:640px;
+margin:0 auto;
+padding:28px 18px 56px;
+}
+#ucRoot .card{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:var(--radius);
+overflow:hidden;
+}
+#ucRoot header.app-header{
+display:flex;
+align-items:flex-start;
+justify-content:space-between;
+gap:12px;
+padding:22px 24px 18px;
+border-bottom:3px solid var(--brass);
+}
+#ucRoot header.app-header h1{
+font-family:'Spectral', serif;
+font-weight:600;
+font-size:26px;
+color:var(--accent-dark);
+margin:0 0 6px;
+letter-spacing:-0.01em;
+}
+#ucRoot header.app-header p{
+margin:0;
+color:var(--muted);
+font-size:13.5px;
+line-height:1.5;
+max-width:44ch;
+}
+#ucRoot #fsBtn{
+flex-shrink:0;
+width:34px;
+height:34px;
+border-radius:8px;
+border:1px solid var(--border);
+background:var(--bg);
+color:var(--muted);
+font-size:16px;
+cursor:pointer;
+line-height:1;
+}
+#ucRoot #fsBtn:hover{ color:var(--accent); border-color:var(--accent); }
+#ucRoot .body{
+padding:22px 24px 26px;
+}
+#ucRoot .field{
+margin-bottom:16px;
+}
+#ucRoot .field label{
+display:block;
+font-size:12px;
+font-weight:600;
+color:var(--muted);
+text-transform:uppercase;
+letter-spacing:0.04em;
+margin-bottom:6px;
+}
+#ucRoot select, #ucRoot input[type="number"]{
+width:100%;
+font-family:'Inter', sans-serif;
+font-size:15px;
+padding:11px 12px;
+border:1px solid var(--border);
+border-radius:8px;
+background:#fff;
+color:var(--ink);
+}
+#ucRoot select:focus, #ucRoot input:focus{
+outline:2px solid var(--accent);
+outline-offset:1px;
+}
+#ucRoot .unit-row{
+display:grid;
+grid-template-columns:1fr auto 1fr;
+gap:10px;
+align-items:end;
+}
+#ucRoot .swap-btn{
+width:40px;
+height:40px;
+border-radius:50%;
+border:1px solid var(--border);
+background:var(--bg);
+color:var(--accent);
+font-size:16px;
+cursor:pointer;
+align-self:center;
+margin-top:20px;
+}
+#ucRoot .swap-btn:hover{ background:var(--accent); color:#fff; border-color:var(--accent); }
+@media (max-width:460px){#ucRoot .unit-row{ grid-template-columns:1fr; }
+#ucRoot .swap-btn{ justify-self:center; margin-top:0; transform:rotate(90deg); }
+
+}
+#ucRoot .calc-btn{
+width:100%;
+padding:13px;
+margin-top:4px;
+background:var(--brass);
+color:#231a08;
+font-family:'Inter', sans-serif;
+font-weight:600;
+font-size:15px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+#ucRoot .calc-btn:hover{ background:var(--brass-dark); }
+#ucRoot .result{
+margin-top:20px;
+padding:18px 20px;
+background:var(--brass-tint);
+border:1px solid #ecd9ab;
+border-radius:8px;
+display:none;
+}
+#ucRoot .result.show{ display:block; }
+#ucRoot .result .eq{
+font-family:'IBM Plex Mono', monospace;
+font-size:20px;
+font-weight:600;
+color:var(--accent-dark);
+word-break:break-word;
+}
+#ucRoot .result .cat-note{
+margin-top:4px;
+font-size:12px;
+color:var(--muted);
+}
+#ucRoot .error-box{
+margin-top:20px;
+padding:14px 16px;
+background:var(--error-tint);
+border:1px solid #f2c6c1;
+border-radius:8px;
+color:var(--error);
+font-size:13.5px;
+display:none;
+}
+#ucRoot .error-box.show{ display:block; }
+#ucRoot .toggle-work{
+margin-top:14px;
+display:none;
+}
+#ucRoot .toggle-work.show{ display:block; }
+#ucRoot .toggle-work a{
+font-size:13px;
+color:var(--accent);
+text-decoration:none;
+cursor:pointer;
+font-weight:500;
+}
+#ucRoot .toggle-work a:hover{ text-decoration:underline; }
+#ucRoot .work-panel{
+margin-top:10px;
+padding:14px 16px 14px 18px;
+border-left:3px solid var(--brass);
+background:#fafbfc;
+border-radius:0 6px 6px 0;
+}
+#ucRoot .step{
+font-family:'IBM Plex Mono', monospace;
+font-size:13px;
+line-height:1.7;
+color:var(--ink);
+}
+#ucRoot .step + .step{ margin-top:8px; }
+#ucRoot .step-label{
+display:block;
+font-family:'Inter', sans-serif;
+font-size:11px;
+font-weight:600;
+color:var(--muted);
+text-transform:uppercase;
+letter-spacing:0.04em;
+margin-bottom:2px;
+}
+#ucRoot .step.result-step{
+padding-top:8px;
+margin-top:10px;
+border-top:1px dashed var(--border);
+color:var(--accent-dark);
+font-weight:600;
+}
+#ucRoot footer.app-footer{
+padding:14px 24px 18px;
+border-top:1px solid var(--border);
+font-size:12px;
+color:var(--muted);
+background:var(--bg);
+}
+
+#ucRoot.a11y-theme { --bg:#12161c; --card:#1b222b; --border:#2f3a46; --ink:#e6edf3; --muted:#9fb0bf; --accent:#5ab0ff; --accent-dark:#8cc8ff; --brass:#e0b060; --brass-dark:#f0c878; --brass-tint:#2a2414; --error:#ff8a80; --error-tint:#3a1a18; }
+#ucRoot.a11y-hc { --bg:#000000; --card:#000000; --border:#ffffff; --ink:#ffffff; --muted:#e0e0e0; --accent:#ffd700; --accent-dark:#ffff00; --brass:#ffd700; --brass-dark:#ffff00; --brass-tint:#111111; --error:#ff6b6b; --error-tint:#220000; }
+#ucRoot.a11y-hc .card { border-width:2px; }
+#ucRoot.a11y-cb { --accent:#0072b2; --accent-dark:#005080; --error:#d55e00; --error-tint:#fbe6d6; }
+#ucRoot.a11y-cb.a11y-theme { --accent:#56b4e9; --accent-dark:#8fd0f5; --error:#e69f00; --error-tint:#2e2408; }
+#ucRoot.a11y-fs1 { zoom:1.15; } .a11y-fs2 { zoom:1.3; }
+@media (pointer: coarse) { select, input, button { min-height:40px; font-size:16px; } }
+
+.a11ybaruc { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; padding:6px; margin:0 0 10px; background:#22262e; border-radius:6px; }
+.a11ybaruc button { padding:5px 10px; font:600 11px/1.2 monospace; letter-spacing:.05em; border-radius:4px; cursor:pointer; background:#2a2e3a; border:1px solid #525c66; color:#c8d0d8; }
+.a11ybaruc button[aria-pressed="true"] { background:rgba(58,208,143,.15); border-color:#3ad08f; color:#3ad08f; }
+.narbaruc { margin:0 0 10px; padding:7px 12px; background:#2a2410; border-left:4px solid #e0b040; color:#f0e2b8; font-style:italic; font-size:.9rem; line-height:1.4; border-radius:3px; }
+.descbtnuc { display:block; margin:12px auto 0; padding:7px 16px; font:bold 12px monospace; letter-spacing:.08em; cursor:pointer; background:#2a2e3a; border:1px solid #00a896; color:#00e8d0; border-radius:3px; }
+.descuc { margin-top:8px; padding:10px 14px; background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #00a896; border-radius:4px; font-size:.92rem; line-height:1.55; color:#222; text-align:left; }
+.descuc p { margin:0 0 8px; }
+@media (pointer: coarse) { .a11ybaruc button { min-height:38px; } }
+</style>
 <script>
+(function(){ if (!document.getElementById("ucFonts")){ var l = document.createElement("link"); l.id = "ucFonts"; l.rel = "stylesheet"; l.href = "https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap"; document.head.appendChild(l); } })();
+(function(){
+
 // ****************************************************************************
 // Unit Conversion Calculator
 // Original: 12.12.2015 — Taha Mzoughi
@@ -860,25 +884,20 @@ const result = cleanFloat(value * factor);
 const rounded = formatSigFigs(result, sig);
 const fShown = trimNumber(factor, 6);
 showResult(
-`${raw} ${inputUnit.text} = ${rounded} ${outputUnit.text}`,
-`Rounded to ${sig} significant figure${sig === 1 ? '' : 's'}, matching the precision of your input.`,
-`
-<div class="step"><span class="step-label">Conversion factor</span>1 ${inputUnit.text} = ${fShown} ${outputUnit.text}</div>
-<div class="step"><span class="step-label">Set up</span>${raw} ${inputUnit.text} \u00D7 (${fShown} ${outputUnit.text} / 1 ${inputUnit.text}) = ${trimNumber(result, 10)} ${outputUnit.text}</div>
-<div class="step"><span class="step-label">Significant figures</span>${raw} has ${sig} significant figure${sig === 1 ? '' : 's'}, so the answer is reported to ${sig}.</div>
-<div class="step result-step"><span class="step-label">Answer</span>${raw} ${inputUnit.text} = ${rounded} ${outputUnit.text}</div>
-`
+('' + (raw) + ' ' + (inputUnit.text) + ' = ' + (rounded) + ' ' + (outputUnit.text)),
+('Rounded to ' + (sig) + ' significant figure' + (sig === 1 ? '' : 's') + ', matching the precision of your input.'),
+('\n<div class="step"><span class="step-label">Conversion factor</span>1 ' + (inputUnit.text) + ' = ' + (fShown) + ' ' + (outputUnit.text) + '</div>\n<div class="step"><span class="step-label">Set up</span>' + (raw) + ' ' + (inputUnit.text) + ' \u00D7 (' + (fShown) + ' ' + (outputUnit.text) + ' / 1 ' + (inputUnit.text) + ') = ' + (trimNumber(result, 10)) + ' ' + (outputUnit.text) + '</div>\n<div class="step"><span class="step-label">Significant figures</span>' + (raw) + ' has ' + (sig) + ' significant figure' + (sig === 1 ? '' : 's') + ', so the answer is reported to ' + (sig) + '.</div>\n<div class="step result-step"><span class="step-label">Answer</span>' + (raw) + ' ' + (inputUnit.text) + ' = ' + (rounded) + ' ' + (outputUnit.text) + '</div>\n')
 );
 }
 function toKelvin(value, id){
-if (id === 'C') return { k: value + 273.15, formula:`K = ${value} + 273.15` };
-if (id === 'F') return { k: (value + 459.67) * 5 / 9, formula:`K = (${value} + 459.67) \u00D7 5/9` };
-return { k: value, formula:`K = ${value}` };
+if (id === 'C') return { k: value + 273.15, formula:('K = ' + (value) + ' + 273.15') };
+if (id === 'F') return { k: (value + 459.67) * 5 / 9, formula:('K = (' + (value) + ' + 459.67) \u00D7 5/9') };
+return { k: value, formula:('K = ' + (value)) };
 }
 function fromKelvin(k, id){
-if (id === 'C') return { v: k - 273.15, formula:`\u00B0C = K \u2212 273.15` };
-if (id === 'F') return { v: k * 9 / 5 - 459.67, formula:`\u00B0F = K \u00D7 9/5 \u2212 459.67` };
-return { v: k, formula:`K = K` };
+if (id === 'C') return { v: k - 273.15, formula:('\u00B0C = K \u2212 273.15') };
+if (id === 'F') return { v: k * 9 / 5 - 459.67, formula:('\u00B0F = K \u00D7 9/5 \u2212 459.67') };
+return { v: k, formula:('K = K') };
 }
 function convertTemperature(value, raw, inputUnit, outputUnit, sig){
 const step1 = toKelvin(value, inputUnit.id);
@@ -891,14 +910,9 @@ const step2 = fromKelvin(step1.k, outputUnit.id);
 step2.v = cleanFloat(step2.v);
 const rounded = formatSigFigs(step2.v, sig);
 showResult(
-`${raw} ${inputUnit.text} = ${rounded} ${outputUnit.text}`,
-`Rounded to ${sig} significant figure${sig === 1 ? '' : 's'}, matching the precision of your input.`,
-`
-<div class="step"><span class="step-label">Step 1 — convert to Kelvin</span>${step1.formula} = ${trimNumber(step1.k, 8)} K</div>
-<div class="step"><span class="step-label">Step 2 — convert to target unit</span>${step2.formula} = ${trimNumber(step2.v, 8)} ${outputUnit.text}</div>
-<div class="step"><span class="step-label">Significant figures</span>${raw} has ${sig} significant figure${sig === 1 ? '' : 's'}, so the answer is reported to ${sig}.</div>
-<div class="step result-step"><span class="step-label">Answer</span>${raw} ${inputUnit.text} = ${rounded} ${outputUnit.text}</div>
-`
+('' + (raw) + ' ' + (inputUnit.text) + ' = ' + (rounded) + ' ' + (outputUnit.text)),
+('Rounded to ' + (sig) + ' significant figure' + (sig === 1 ? '' : 's') + ', matching the precision of your input.'),
+('\n<div class="step"><span class="step-label">Step 1 — convert to Kelvin</span>' + (step1.formula) + ' = ' + (trimNumber(step1.k, 8)) + ' K</div>\n<div class="step"><span class="step-label">Step 2 — convert to target unit</span>' + (step2.formula) + ' = ' + (trimNumber(step2.v, 8)) + ' ' + (outputUnit.text) + '</div>\n<div class="step"><span class="step-label">Significant figures</span>' + (raw) + ' has ' + (sig) + ' significant figure' + (sig === 1 ? '' : 's') + ', so the answer is reported to ' + (sig) + '.</div>\n<div class="step result-step"><span class="step-label">Answer</span>' + (raw) + ' ' + (inputUnit.text) + ' = ' + (rounded) + ' ' + (outputUnit.text) + '</div>\n')
 );
 }
 // ---- Full screen ----------------------------------------------------------
@@ -914,6 +928,30 @@ document.getElementById('fsBtn').textContent = document.fullscreenElement ? '⤡
 });
 // ---- Init -------------------------------------------------------------------
 populateCategorySelect();
+
+var NARR = function(t){ var f = window['narrate_uc']; if (f) f(t); };
+var _showResult = showResult; showResult = function(eqText, noteText, workHtml){ _showResult(eqText, noteText, workHtml); NARR(eqText + (noteText ? '. ' + noteText : '')); };
+var _showError = showError; showError = function(msg){ _showError(msg); NARR('Error: ' + msg); };
+window['doConvert'] = doConvert;
+window['onCategoryChange'] = onCategoryChange;
+window['swapUnits'] = swapUnits;
+window['toggleFullscreen'] = toggleFullscreen;
+window['toggleWorkPanel'] = toggleWorkPanel;
+
+})();
+(function(){ var R = document.querySelector('#ucRoot'); if (!R) return; var st = { hc:false, theme:false, cb:false, fs:0, nr:true }, bar = R.querySelector('.a11ybaruc'), nb = R.querySelector('.narbaruc');
+  try { var sv = JSON.parse(localStorage.getItem('a11yuc') || 'null'); if (sv) st = sv; } catch(e){}
+  function apply(){ R.classList.toggle('a11y-hc', st.hc); R.classList.toggle('a11y-theme', st.theme); R.classList.toggle('a11y-cb', st.cb); R.classList.toggle('a11y-fs1', st.fs === 1); R.classList.toggle('a11y-fs2', st.fs === 2);
+    [].forEach.call(bar.querySelectorAll('button'), function(b){ var k = b.getAttribute('data-a11y'); var on = k === 'fs' ? st.fs > 0 : !!st[k]; b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      if (k === 'fs') b.textContent = 'FONT: ' + ['NORMAL', 'LARGE', 'XL'][st.fs]; if (k === 'nr') b.textContent = 'NARRATION: ' + (st.nr ? 'ON' : 'OFF'); });
+    nb.style.display = st.nr ? '' : 'none'; try { localStorage.setItem('a11yuc', JSON.stringify(st)); } catch(e){}  }
+  bar.addEventListener('click', function(e){ var b = e.target.closest('button'); if (!b) return; var k = b.getAttribute('data-a11y'); if (k === 'fs') st.fs = (st.fs + 1) % 3; else st[k] = !st[k];
+    if (k === 'hc' && st.hc) st.theme = false; if (k === 'theme' && st.theme) st.hc = false; apply(); });
+  window['narrate_uc'] = function(t){ if (st.nr) nb.textContent = t; };
+  window['a11yState_uc'] = function(){ return st; };
+  var db = R.querySelector('.descbtnuc'), dd = R.querySelector('.descuc'); if (db) db.addEventListener('click', function(){ var open = dd.style.display === 'none'; dd.style.display = open ? 'block' : 'none'; db.setAttribute('aria-expanded', open ? 'true' : 'false'); db.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION'; if (open && window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([dd]); });
+  apply(); })();
+(function(){ var n = window['narrate_uc']; if (n) n('Unit conversion: choose a quantity, type a value, and choose the units to convert from and to.'); })();
 </script>
 </body>
 </html>

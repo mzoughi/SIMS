@@ -92,6 +92,8 @@ oninput="vftSim0916.setSelForce('m',this.value)" onchange="vftSim0916.narrateSel
 </div>
 </div>
 </div>
+<div class="simdesc_vftRoot" style="max-width:683px;margin:10px auto;text-align:center;font-family:Arial,sans-serif"><button type="button" aria-expanded="false" style="padding:7px 16px;font:bold 12px monospace;letter-spacing:.08em;cursor:pointer;background:#2a2e3a;border:1px solid #00a896;color:#00e8d0;border-radius:3px;min-height:36px" onclick="var d=this.nextElementSibling, o=d.style.display==='none'; d.style.display=o?'block':'none'; this.setAttribute('aria-expanded', o?'true':'false'); this.innerHTML=(o?'&#9662;':'&#9656;')+' SIM DESCRIPTION'; if (o && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }">&#9656; SIM DESCRIPTION</button><div role="region" aria-label="Description of the simulation" style="display:none;margin-top:8px;padding:10px 14px;background:#f6f8fb;border:1px solid #ccd;border-left:4px solid #00a896;border-radius:4px;font-size:.93rem;line-height:1.55;color:#222;text-align:left"><p style="margin:0 0 8px">On a force table, strings tied to a ring at the centre pass over pulleys at chosen angles and pull with the weights hanging from them. The ring stays centred on the pin only when the forces balance: their vector sum is zero.</p><p style="margin:0 0 8px">To balance a set of forces, add a force equal in size and opposite in direction to their sum (the equilibrant): if the forces add up to `vec R`, the equilibrant is `-vec R`. Compare the angle and the weight that balance the table with the ones the vector sum predicts, by components or graphically.</p></div></div>
+
 <style>
 #vftRoot0916, #vftRoot0916 * { box-sizing: border-box; }
 #vftRoot0916 { width: 522px; margin: 0; font-family: system-ui, sans-serif; }
@@ -517,4 +519,24 @@ var vftSim0916 = new vftGen();
 <script>
 vftA11y0916.init();
 </script>
+<style>
+/* ── phones and narrow windows: the fixed widths become fluid, the canvases scale (pointer positions are already rescaled), rows wrap ── */
+@media (max-width: 720px) {
+  #vftRoot0916 { width:100% !important; max-width:100% !important; box-sizing:border-box; }
+  #vftRoot0916 [style*="width:683px"], #vftRoot0916 [style*="width: 683px"], #vftRoot0916 [style*="width: 522px"], #vftRoot0916 [style*="width:522px"], #vftRoot0916 [style*="width:680px"], #vftRoot0916 [style*="width:660px"] { width:100% !important; max-width:100% !important; box-sizing:border-box; }
+  #vftRoot0916 * { max-width:100%; box-sizing:border-box; }   /* no element wider than its container (widths set by classes too) */
+  #vftRoot0916 div { flex-wrap:wrap; }   /* rows may wrap */
+  #vftRoot0916 input[type=range] { flex:1 1 110px; min-width:0; }
+  #vftRoot0916 canvas { max-width:100% !important; height:auto !important; }
+  #vftRoot0916 [style*="min-width"] { min-width:0 !important; }
+  #vftRoot0916 [style*="display:flex"], #vftRoot0916 [style*="display: flex"] { flex-wrap:wrap !important; }
+  #vftRoot0916 table { display:block; overflow-x:auto; max-width:100%; }
+  #vftRoot0916 input[type=number], #vftRoot0916 input[type=text], #vftRoot0916 select { max-width:100%; }
+}
+@media (pointer: coarse) {
+  #vftRoot0916 button { min-height:36px; }
+  #vftRoot0916 input[type=range] { height:28px; }
+  #vftRoot0916 input[type=checkbox], #vftRoot0916 input[type=radio] { width:20px; height:20px; }
+}
+</style>
 </body></html>
