@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Forces: Deep Space Mission (a kick on a moving craft)</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, light, optics, refraction, refraction, Snell's law, apparent depth, image, Fermat's principle, total internal reflection, critical angle, Snell's window, pool, distortion, lesson, scientific">
+<meta name="description" content="Fire a spacecraft&#39;s thrusters to match a target craft in deep space: Newton&#39;s first and second laws, with motion diagrams and graphs of position, velocity and force.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<main class="page">
+<div style="max-width:900px;margin:0 auto 10px;padding:8px 12px;background:#eef6ff;border:1px solid #bcdcff;border-radius:4px;font-family:Arial,sans-serif;font-size:13px">One simulation for every scenario (<code>SCENARIO</code> at the top of its script; <code>$scenario</code> in MOM, where the question&rsquo;s variables also set the target and the timing). Presets: <a href="?scenario=push">push</a> &middot; <a href="?scenario=push-removed">push removed</a> &middot; <a href="?scenario=kick">kick</a> &middot; <a href="?scenario=kick-rest">kick from rest</a> &middot; <a href="?scenario=free">free play</a> &middot; <a href="?scenario=push-removed&amp;span2=1">two thrust spans</a>.</div><div id="dsRoot" class="ds_root" role="region" aria-label="Deep Space Mission: match the motion of the target spacecraft by firing your thrusters">
+<div class="ds_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="ds_a11ybtn" id="dsBtnHC" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="ds_a11ybtn" id="dsBtnLM" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="ds_a11ybtn" id="dsBtnCB" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="ds_a11ybtn" id="dsBtnFS" aria-pressed="false">FONT: NORMAL</button>
+<button type="button" class="ds_a11ybtn ds_a11yon" id="dsBtnNR" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div class="ds_header"><p class="ds_h1">Deep Space Mission</p><p class="ds_sub" id="dsSub"></p></div>
+<div class="ds_mission" id="dsMission" role="status" aria-live="polite"></div>
+<div class="ds_main">
+<div class="ds_left">
+<div class="ds_panel"><canvas id="dsCv" width="560" height="380" role="img" aria-label="Deep space: your spacecraft and the target spacecraft, their paths and motion diagrams. The readout and the narration describe the motion."></canvas>
+<div class="ds_bbar"><button type="button" class="ds_btn ds_btnon" id="dsPlay">&#9654; Launch</button><button type="button" class="ds_btn" id="dsBack" aria-label="step back">&#9664;&#9664;</button><button type="button" class="ds_btn" id="dsFwd" aria-label="step forward">&#9654;&#9654;</button><button type="button" class="ds_btn" id="dsReset">Reset</button>
+<label class="ds_chk"><input type="checkbox" id="dsShT" checked> target</label><label class="ds_chk"><input type="checkbox" id="dsShM" checked> mine</label><label class="ds_chk"><input type="checkbox" id="dsShV"> velocity arrows</label></div>
+<div class="ds_scrub"><label for="dsTime">time</label><input type="range" id="dsTime" min="0" max="14" step="0.01" value="0"><span id="dsTimeV">0.00 s</span></div></div>
+<div class="ds_panel"><div class="ds_ptitle">Graphs <span class="ds_comp">component: <label><input type="radio" name="dsComp" value="x" checked> x</label> <label><input type="radio" name="dsComp" value="y"> y</label></span></div><canvas id="dsGr" width="560" height="300" role="img" aria-label="Graphs against time of the position, the velocity and the force, for both spacecraft."></canvas></div>
+</div>
+<div class="ds_right">
+<div class="ds_panel"><div class="ds_ptitle">Mission plan (your craft)</div><div class="ds_pbody">
+<div class="ds_timeline" id="dsTL" aria-hidden="true"></div>
+<div class="ds_ctrl"><label for="dsVx">initial v<sub>x</sub></label><input type="range" id="dsVx" min="-12" max="12" step="1"><span id="dsVxV"></span></div>
+<div class="ds_ctrl"><label for="dsVy">initial v<sub>y</sub></label><input type="range" id="dsVy" min="-12" max="12" step="1"><span id="dsVyV"></span></div>
+<div class="ds_span"><div class="ds_spant" id="dsSp1T"></div><div class="ds_thr" id="dsThr1" role="group" aria-label="Thrust during the first span"></div>
+<div class="ds_ctrl"><label for="dsT1">thrust ends</label><input type="range" id="dsT1" step="0.5"><span id="dsT1V"></span></div></div>
+<div class="ds_span" id="dsSp2"><div class="ds_spant" id="dsSp2T"></div><div class="ds_thr" id="dsThr2" role="group" aria-label="Thrust during the second span"></div></div>
+<div class="ds_ctrl"><label for="dsM">mass m</label><input type="range" id="dsM" min="0.5" max="4" step="0.5"><span id="dsMV"></span></div>
+<div class="ds_note">Each thruster pushes with 10 N. The target&rsquo;s mass is 1 kg.</div></div></div>
+<div class="ds_panel"><div class="ds_ptitle">Readout</div><div class="ds_pbody" id="dsRead"></div></div>
+</div>
+</div>
+<div id="dsNar" class="ds_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="ds_descwrap"><button type="button" class="ds_descbtn" id="dsDescBtn" aria-expanded="false" aria-controls="dsDesc">&#9656; SIM DESCRIPTION</button>
+<div class="ds_desc" id="dsDesc" style="display:none" role="region" aria-labelledby="dsDescBtn">
+<p>Far from any planet, no force acts on a spacecraft unless it fires its thrusters. By Newton&rsquo;s first law, it then keeps moving in a straight line at a constant velocity: it needs no force to keep going. The motion diagram shows this as images equally spaced in time and in distance.</p>
+<p>While a thruster fires, the force changes the velocity: by Newton&rsquo;s second law, `vec a = vec F / m`. The same force gives a heavier craft a smaller acceleration. When the force stops, the acceleration stops at once, but the velocity keeps the value it has reached. On the graphs, the velocity changes only where the force graph is not zero, and the change in velocity equals the area under the force graph divided by the mass: `Delta v = (F Delta t) / m`. A short, strong push (a kick) and a longer push can change the velocity by the same amount.</p>
+<p>Your mission: plan your thrusters so that your craft (red) moves exactly like the target (cyan). Watch how the target moves, work out the force it must have felt and when, then match it.</p>
+</div></div>
+</div><!-- #dsRoot -->
+<style>
+#dsRoot { --c-chassis:#1a1c1f; --c-panel:#22262b; --c-hi:#2c3138; --c-lo:#14161a; --c-bd:#3a4048; --c-bd2:#525c66; --c-text:#c8d0d8; --c-dim:#8a94a3; --c-accent:#e8a020; --c-green:#3ad08f; --c-val:#ffdd66; --c-nbg:#2a2410; --c-nbd:#e0b040; --c-ntx:#f0e2b8;
+  background:var(--c-chassis); background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
+  color:var(--c-text); font-family:Arial, sans-serif; padding:14px 10px 18px; border-radius:6px; box-sizing:border-box; width:100%; max-width:860px; margin:0 auto 10px; display:flex; flex-direction:column; gap:10px; }
+#dsRoot * { box-sizing:border-box; }
+#dsRoot.ds_lm { --c-chassis:#e9edf1; --c-panel:#ffffff; --c-hi:#f1f4f7; --c-lo:#f4f6f9; --c-bd:#c3cad3; --c-bd2:#9aa3ae; --c-text:#1d232a; --c-dim:#556070; --c-accent:#a8620a; --c-green:#12805a; --c-val:#8a4a00; --c-nbg:#ffefc0; --c-ntx:#333; background-image:none; }
+#dsRoot.ds_hc { --c-chassis:#000; --c-panel:#000; --c-hi:#111; --c-lo:#000; --c-bd:#fff; --c-bd2:#fff; --c-text:#fff; --c-dim:#e0e0e0; --c-accent:#ffd700; --c-green:#00ff88; --c-val:#ffff00; --c-nbg:#000; --c-nbd:#ffd700; --c-ntx:#fff; background-image:none; }
+#dsRoot .ds_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+#dsRoot .ds_a11ybtn { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-dim); min-height:30px; }
+#dsRoot .ds_a11yon { background:rgba(58,208,143,.14); border-color:var(--c-green); color:var(--c-green); font-weight:bold; }
+#dsRoot .ds_header { text-align:center; }
+#dsRoot .ds_h1 { margin:0; font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--c-accent); }
+#dsRoot .ds_sub { margin:3px 0 0; font-size:.7rem; color:var(--c-dim); letter-spacing:.08em; text-transform:uppercase; }
+#dsRoot .ds_tabs { display:flex; gap:4px; flex-wrap:wrap; }
+#dsRoot .ds_tab { flex:1 1 90px; padding:8px 6px; border:1px solid var(--c-bd2); background:var(--c-hi); color:var(--c-text); border-radius:4px; cursor:pointer; font-family:monospace; font-size:.76rem; letter-spacing:.06em; text-transform:uppercase; min-height:38px; }
+#dsRoot .ds_tab[aria-selected="true"] { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#dsRoot .ds_diag { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+#dsRoot .ds_dlabel { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--c-dim); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+#dsRoot .ds_dlabel b { color:var(--c-accent); }
+#dsRoot canvas { display:block; width:100%; height:auto; touch-action:none; }
+#dsRoot .ds_row2 { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#dsRoot .ds_bbar { display:flex; flex-wrap:wrap; gap:6px 12px; justify-content:center; align-items:center; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:6px; padding:8px 10px; font-size:.8rem; }
+#dsRoot .ds_bbar label { display:flex; align-items:center; gap:5px; color:var(--c-dim); font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; cursor:pointer; }
+#dsRoot .ds_btn { padding:7px 12px; font-family:monospace; font-size:.72rem; letter-spacing:.04em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-text); border-radius:3px; text-transform:uppercase; min-height:34px; }
+#dsRoot .ds_btn:hover { border-color:var(--c-accent); }
+#dsRoot .ds_btnon { border-color:var(--c-accent); color:var(--c-accent); font-weight:bold; }
+#dsRoot select { background:var(--c-hi); color:var(--c-text); border:1px solid var(--c-bd2); border-radius:3px; padding:4px 6px; font-size:.8rem; }
+#dsRoot .ds_panels { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#dsRoot .ds_panel { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; box-shadow:0 4px 20px rgba(0,0,0,.3); overflow:hidden; }
+#dsRoot .ds_ptitle { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--c-dim); }
+#dsRoot .ds_pbody { padding:9px 12px; display:flex; flex-direction:column; gap:8px; }
+#dsRoot .ds_ctrl { display:flex; flex-direction:column; gap:3px; }
+#dsRoot .ds_ctrlhdr { display:flex; justify-content:space-between; align-items:baseline; gap:6px; }
+#dsRoot .ds_ctrlname { font-size:.72rem; font-weight:600; color:var(--c-dim); text-transform:uppercase; letter-spacing:.04em; }
+#dsRoot .ds_sval { font-family:monospace; font-size:.76rem; color:var(--c-val); white-space:nowrap; }
+#dsRoot input[type=range] { width:100%; -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; cursor:pointer; background:var(--c-lo); border:1px solid var(--c-bd); }
+#dsRoot input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#dsRoot input[type=range]::-moz-range-thumb { width:12px; height:12px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#dsRoot input[type=checkbox] { accent-color:var(--c-accent); width:16px; height:16px; }
+#dsRoot .ds_rrow { display:flex; justify-content:space-between; gap:6px; padding:4px 7px; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:3px; font-family:monospace; font-size:.72rem; }
+#dsRoot .ds_rkey { color:var(--c-dim); }
+#dsRoot .ds_rval { color:var(--c-val); font-weight:bold; text-align:right; }
+#dsRoot .ds_eqs { background:var(--c-lo); border:1px solid var(--c-bd); border-left:4px solid var(--c-accent); border-radius:4px; padding:8px 14px; font-family:monospace; font-size:.74rem; color:var(--c-dim); line-height:1.7; }
+#dsRoot .ds_eqs b { color:var(--c-val); }
+#dsRoot .ds_narbar { min-height:30px; padding:6px 12px; background:var(--c-nbg); border-left:4px solid var(--c-nbd); color:var(--c-ntx); font-size:.84rem; font-style:italic; line-height:1.45; border-radius:3px; }
+#dsRoot .ds_descwrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+#dsRoot .ds_descbtn { padding:8px 18px; font-family:monospace; font-size:.74rem; letter-spacing:.08em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-accent); color:var(--c-accent); border-radius:3px; font-weight:bold; min-height:40px; }
+#dsRoot .ds_desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid var(--c-accent); border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; }
+#dsRoot .ds_desc p { margin:0 0 9px; }
+#dsRoot .ds_eq { text-align:center; font-size:1rem; }
+#dsRoot button:focus-visible, #dsRoot input:focus-visible, #dsRoot select:focus-visible, #dsRoot canvas:focus-visible { outline:2px solid var(--c-accent); outline-offset:2px; }
+@media (max-width:640px) { #dsRoot .ds_row2, #dsRoot .ds_panels { grid-template-columns:minmax(0,1fr); } #dsRoot .ds_tab { font-size:.68rem; padding:8px 3px; } }
+@media (pointer:coarse) { #dsRoot input[type=range] { height:8px; } #dsRoot input[type=range]::-webkit-slider-thumb { width:26px; height:26px; } #dsRoot input[type=range]::-moz-range-thumb { width:24px; height:24px; } #dsRoot .ds_a11ybtn { min-height:40px; } #dsRoot input[type=checkbox] { width:22px; height:22px; } }
+#dsRoot .ds_main { display:flex; flex-wrap:wrap; gap:12px; width:100%; align-items:flex-start; }
+#dsRoot .ds_left { flex:1 1 360px; min-width:0; display:flex; flex-direction:column; gap:10px; }
+#dsRoot .ds_right { flex:1 1 250px; min-width:0; display:flex; flex-direction:column; gap:10px; }
+#dsRoot canvas { width:100%; height:auto; display:block; }
+#dsRoot .ds_mission { width:100%; padding:8px 12px; border-radius:6px; background:var(--c-panel); border:1px solid var(--c-bd); border-left:5px solid #2fd6e6; color:var(--c-text); font-size:.9rem; }
+#dsRoot .ds_ok { color:#3ad08f; } #dsRoot .ds_no { color:#ffb020; }
+#dsRoot .ds_scrub { display:flex; gap:8px; align-items:center; padding:6px 10px; font-size:.8rem; color:var(--c-text); } #dsRoot .ds_scrub input { flex:1; }
+#dsRoot .ds_ctrl { display:grid; grid-template-columns:84px 1fr 56px; gap:6px; align-items:center; font-size:.8rem; color:var(--c-text); margin:5px 0; }
+#dsRoot .ds_chk { display:inline-flex; gap:4px; align-items:center; font-size:.76rem; color:var(--c-text); margin-left:6px; cursor:pointer; }
+#dsRoot .ds_note { font-size:.76rem; color:var(--c-text); opacity:.85; margin-top:4px; }
+#dsRoot .ds_rrow { display:flex; justify-content:space-between; gap:8px; padding:3px 6px; border-bottom:1px solid var(--c-bd); font-size:.78rem; font-family:monospace; color:var(--c-text); }
+#dsRoot .ds_timeline { position:relative; display:flex; height:22px; border:1px solid var(--c-bd); border-radius:4px; overflow:hidden; margin-bottom:8px; }
+#dsRoot .ds_tseg { background:rgba(127,127,127,.18); color:var(--c-text); font-size:.68rem; display:flex; align-items:center; justify-content:center; border-right:1px solid var(--c-bd); }
+#dsRoot .ds_tthr { background:rgba(255,176,32,.45); font-weight:bold; }
+#dsRoot .ds_tnow { position:absolute; top:0; bottom:0; width:2px; background:#ff4d5e; }
+#dsRoot .ds_span { border-top:1px solid var(--c-bd); padding-top:6px; margin-top:6px; } #dsRoot .ds_spant { font-size:.8rem; color:var(--c-text); font-weight:bold; }
+#dsRoot .ds_thr { display:flex; gap:6px; margin:6px 0; }
+#dsRoot .ds_tbtn { width:44px; height:38px; font-size:1.2rem; border:1px solid var(--c-bd); border-radius:6px; background:transparent; color:var(--c-text); cursor:pointer; }
+#dsRoot .ds_tbtn[aria-pressed="true"] { background:#ffb020; color:#111; border-color:#ffb020; }
+#dsRoot .ds_comp { float:right; text-transform:none; letter-spacing:0; }
+#dsRoot.ds_fs1 { zoom:1.12; } #dsRoot.ds_fs2 { zoom:1.25; }
+@media (pointer:coarse) { #dsRoot .ds_btn { min-height:40px; } #dsRoot input[type=range] { height:26px; } #dsRoot input[type=checkbox], #dsRoot input[type=radio] { width:20px; height:20px; } }
+</style>
+<script>
+var dsSim = (function(){
+/* ══════════ SETTINGS ══════════
+   SCENARIO: 'push' (a constant push on a moving craft), 'push-removed' (a push, then removed), 'kick' (a short push on a moving craft),
+             'kick-rest' (a short push on a craft at rest), or 'free' (no target: explore)
+   SPAN2:    true to let students fire the thrusters in a second span as well (from the end of the first to 12)
+   In MOM, the target and the timing come from the question's variables ($vInitX2, $time20, $PosFX2, ...), when set;
+   otherwise from the scenario's defaults below. $scenario, when set, replaces SCENARIO.
+   SCENARIO = 'push';         //a push on a moving craft
+   SCENARIO = 'push-removed'; //a push, then removed
+   SCENARIO = 'kick';         //a kick on a moving craft
+   SCENARIO = 'kick-rest';    //a kick on a craft at rest
+   SCENARIO = 'free';         //free play
+*/
+var SCENARIO = 'kick';
+var SPAN2 = false;
+var MOM = { scenario:'', vInit:'', vInitY:'', ai:'', aiY:'', vInitX2:'', vInitY2:'', aiX2:'', aiY2:'',
+  time0:'', time1:'', time1min:'', time2:'', time20:'', time21:'', time22:'',
+  PosFX2:'', NegFX2:'', PosFY2:'', NegFY2:'', PosFX3:'', NegFX3:'', PosFY3:'', NegFY3:'' };
+function set_(s){ return typeof s === 'string' && s.length && s.indexOf('$') < 0 && isFinite(parseFloat(s)); }
+try { (location.search || '').slice(1).split('&').forEach(function(kv){ var q = kv.split('='); if (q[0] === 'scenario') SCENARIO = q[1]; if (q[0] === 'span2') SPAN2 = q[1] === '1'; }); } catch(e){}
+if (typeof MOM.scenario === 'string' && MOM.scenario.indexOf('$') < 0 && MOM.scenario) SCENARIO = MOM.scenario;
+var PRESET = { 'push':{ vInitX2:6, time20:1, time21:12, time22:12, PosFX2:1 }, 'push-removed':{ vInitX2:6, time20:1, time21:4, time22:4, PosFX2:1 },
+  'kick':{ vInitX2:6, time20:1, time21:1.5, time22:1.5, PosFX2:1 }, 'kick-rest':{ vInitX2:0, time20:1, time21:1.5, time22:1.5, PosFX2:1 }, 'free':{ vInitX2:0, time20:1, time21:1, time22:1 } };
+if (!PRESET[SCENARIO]) SCENARIO = 'push';
+var D = { vInit:6, vInitY:0, ai:0, aiY:0, vInitX2:6, vInitY2:0, aiX2:0, aiY2:0, time0:1, time1:6, time1min:1.5, time2:12, time20:1, time21:6, time22:6, PosFX2:0, NegFX2:0, PosFY2:0, NegFY2:0, PosFX3:0, NegFX3:0, PosFY3:0, NegFY3:0 };
+Object.keys(PRESET[SCENARIO]).forEach(function(k){ D[k] = PRESET[SCENARIO][k]; });
+if (SCENARIO === 'kick-rest') D.vInit = 0;
+Object.keys(D).forEach(function(k){ if (set_(MOM[k])) D[k] = parseFloat(MOM[k]); });
+var FU = 10, TEND = Math.max(D.time2, D.time22) + 3;
+/* ══════════ physics: constant acceleration in each span, exact at any time ══════════ */
+var st = { vx:D.vInit, vy:D.vInitY, t1:Math.min(D.time2, Math.max(D.time1min, D.time1)), f1:{ R:0, L:0, U:0, Dn:0 }, f2:{ R:0, L:0, U:0, Dn:0 }, m:1, t:0, playing:false, comp:'x', shT:true, shM:true, shV:false };
+function el(id){ return document.getElementById(id + ''); }
+function segsMine(){ var a1x = (st.f1.R - st.f1.L)*FU/st.m, a1y = (st.f1.U - st.f1.Dn)*FU/st.m, a2x = SPAN2 ? (st.f2.R - st.f2.L)*FU/st.m : 0, a2y = SPAN2 ? (st.f2.U - st.f2.Dn)*FU/st.m : 0;
+  return [[0, D.time0, D.ai, D.aiY], [D.time0, st.t1, a1x, a1y], [st.t1, SPAN2 ? D.time2 : st.t1, a2x, a2y], [SPAN2 ? D.time2 : st.t1, 1e9, 0, 0]]; }
+function segsTarget(){ return [[0, D.time20, D.aiX2, D.aiY2], [D.time20, D.time21, (D.PosFX2 - D.NegFX2)*FU, (D.PosFY2 - D.NegFY2)*FU], [D.time21, D.time22, (D.PosFX3 - D.NegFX3)*FU, (D.PosFY3 - D.NegFY3)*FU], [D.time22, 1e9, 0, 0]]; }
+function at(segs, v0x, v0y, t){ var x = 0, y = 0, vx = v0x, vy = v0y, ax = 0, ay = 0;
+  for (var i=0; i<segs.length; i++){ var s = segs[i], a = s[0], b = s[1]; if (b <= a) continue; if (t <= a) break; var d = Math.min(t, b) - a; ax = s[2]; ay = s[3];
+    x += vx*d + 0.5*ax*d*d; y += vy*d + 0.5*ay*d*d; vx += ax*d; vy += ay*d; if (t < b) break; if (i === segs.length - 1) break; ax = 0; ay = 0; }
+  return { x:x, y:y, vx:vx, vy:vy, ax:ax, ay:ay }; }
+function mine(t){ return at(segsMine(), st.vx, st.vy, t); }
+function target(t){ return at(segsTarget(), D.vInitX2, D.vInitY2, t); }
+var HAS_T = SCENARIO !== 'free';
+/* ══════════ drawing: the view fits both paths ══════════ */
+var cv = el('dsCv'), g = cv.getContext('2d'), gc = el('dsGr'), gg = gc.getContext('2d'), DPR = window.devicePixelRatio || 1, W = 560, H = 380;
+cv.width = W*DPR; cv.height = H*DPR; g.scale(DPR, DPR); gc.width = 560*DPR; gc.height = 300*DPR; gg.scale(DPR, DPR);
+var th = { hc:false, lm:false, cb:false, nr:true, fs:0 };
+function pal(){ var p = { bg:'#05070d', star:'rgba(255,255,255,0.55)', grid:'rgba(255,255,255,0.07)', text:'#e6edf3', mine:'#ff4d5e', tgt:'#2fd6e6', flame:'#ffb020', F:'#ffd166', v:'#3ad08f' };
+  if (th.lm){ p.bg = '#f4f7fb'; p.star = 'rgba(0,0,0,0.12)'; p.grid = 'rgba(0,0,0,0.07)'; p.text = '#1d2a36'; p.mine = '#d0103a'; p.tgt = '#0a8fa0'; p.F = '#a06a00'; p.v = '#12805a'; }
+  if (th.cb){ p.mine = '#d55e00'; p.tgt = '#0072b2'; p.flame = '#e69f00'; p.F = '#f0e442'; p.v = '#009e73'; if (th.lm){ p.F = '#8a6d00'; p.tgt = '#0072b2'; } }
+  if (th.hc){ p.bg = '#000'; p.star = 'rgba(255,255,255,0.3)'; p.grid = 'rgba(255,255,255,0.18)'; p.text = '#fff'; p.mine = '#ff5555'; p.tgt = '#00ffff'; p.F = '#ffff00'; p.v = '#00ff88'; }
+  return p; }
+var BOX = null;
+function fit(){ var x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9; for (var t=0; t<=TEND; t+=0.1){ [mine(t)].concat(HAS_T ? [target(t)] : []).forEach(function(q){ x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); y0 = Math.min(y0, q.y); y1 = Math.max(y1, q.y); }); }
+  var w = Math.max(x1 - x0, 20), h = Math.max(y1 - y0, 10), cx = (x0 + x1)/2, cy = (y0 + y1)/2, sc = Math.min((W - 60)/w, (H - 60)/h);
+  BOX = { cx:cx, cy:cy, sc:sc }; }
+function X(x){ return W/2 + (x - BOX.cx)*BOX.sc; } function Y(y){ return H/2 - (y - BOX.cy)*BOX.sc; }
+var STARS = []; (function(){ var s = 7; for (var i=0; i<140; i++){ s = (s*9301 + 49297) % 233280; var a = s/233280; s = (s*9301 + 49297) % 233280; var b = s/233280; STARS.push([a*W, b*H, (i % 3) ? 1 : 1.6]); } })();
+function arrow(x0, y0, dx, dy, col, lab){ var L = Math.hypot(dx, dy); if (L < 3) return; var x1 = x0 + dx, y1 = y0 + dy, an = Math.atan2(dy, dx), h = 8; g.strokeStyle = col; g.fillStyle = col; g.lineWidth = 2.5; g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1 - h*0.6*Math.cos(an), y1 - h*0.6*Math.sin(an)); g.stroke(); g.beginPath(); g.moveTo(x1, y1); g.lineTo(x1 - h*Math.cos(an - 0.4), y1 - h*Math.sin(an - 0.4)); g.lineTo(x1 - h*Math.cos(an + 0.4), y1 - h*Math.sin(an + 0.4)); g.closePath(); g.fill(); if (lab){ g.font = 'bold 12px Arial'; g.fillText(lab, x1 + 4, y1 - 4); } }
+function craft(q, col, label, ghost){ var x = X(q.x), y = Y(q.y); g.save(); g.translate(x, y); g.globalAlpha = ghost ? 0.35 : 1;
+  /* thruster flames, on the side opposite the force */ if (!ghost && (q.ax || q.ay)){ var an = Math.atan2(q.ay, q.ax); g.save(); g.rotate(-an + Math.PI); g.fillStyle = pal().flame; g.beginPath(); g.moveTo(10, -4); g.lineTo(22 + Math.random()*6, 0); g.lineTo(10, 4); g.closePath(); g.fill(); g.restore(); }
+  g.fillStyle = col; g.beginPath(); g.moveTo(12, 0); g.lineTo(-8, -7); g.lineTo(-4, 0); g.lineTo(-8, 7); g.closePath(); g.fill(); if (!ghost){ g.strokeStyle = '#000'; g.lineWidth = 0.8; g.stroke(); } g.restore();
+  if (label && !ghost){ g.fillStyle = col; g.font = 'bold 11px Arial'; g.fillText(label, x + 12, y + 18); } }
+function draw(){ var p = pal(); g.fillStyle = p.bg; g.fillRect(0, 0, W, H); g.fillStyle = p.star; STARS.forEach(function(s){ g.fillRect(s[0], s[1], s[2], s[2]); });
+  var step = Math.pow(10, Math.floor(Math.log(80/BOX.sc)/Math.LN10)); if (80/BOX.sc/step > 5) step *= 5; else if (80/BOX.sc/step > 2) step *= 2;
+  g.strokeStyle = p.grid; g.lineWidth = 1; for (var gx = Math.floor((BOX.cx - W/2/BOX.sc)/step)*step; X(gx) < W; gx += step){ g.beginPath(); g.moveTo(X(gx), 0); g.lineTo(X(gx), H); g.stroke(); } for (var gy = Math.floor((BOX.cy - H/2/BOX.sc)/step)*step; Y(gy) > 0; gy += step){ g.beginPath(); g.moveTo(0, Y(gy)); g.lineTo(W, Y(gy)); g.stroke(); }
+  g.fillStyle = p.text; g.font = '11px Arial'; g.fillText('grid: ' + step + ' m', 8, H - 8);
+  [[HAS_T && st.shT, target, p.tgt, 'target'], [st.shM, mine, p.mine, 'mine']].forEach(function(c){ if (!c[0]) return;
+    g.strokeStyle = c[2]; g.globalAlpha = 0.5; g.lineWidth = 1.5; g.beginPath(); for (var t=0; t<=st.t; t+=0.05){ var q = c[1](t); if (t === 0) g.moveTo(X(q.x), Y(q.y)); else g.lineTo(X(q.x), Y(q.y)); } g.stroke(); g.globalAlpha = 1;
+    for (var tg=1; tg<=st.t + 1e-9; tg+=1) craft(c[1](tg), c[2], '', true);
+    var q2 = c[1](st.t); craft(q2, c[2], c[3], false);
+    if (q2.ax || q2.ay) arrow(X(q2.x), Y(q2.y), q2.ax*3, -q2.ay*3, p.F, 'F');
+    if (st.shV) arrow(X(q2.x), Y(q2.y), q2.vx*4, -q2.vy*4, p.v, 'v'); }); }
+function graphs(){ var p = pal(), c = st.comp, rows = [[c + ' (m)', function(q){ return c === 'x' ? q.x : q.y; }], ['v' + c + ' (m/s)', function(q){ return c === 'x' ? q.vx : q.vy; }], ['F' + c + ' (N)', function(q, m){ return (c === 'x' ? q.ax : q.ay)*m; }]], GW = 560, GH = 300, L = 50, R = 10, hh = (GH - 22)/3;
+  gg.fillStyle = p.bg; gg.fillRect(0, 0, GW, GH);
+  rows.forEach(function(rw, i){ var y0 = 4 + i*hh, mn = 0, mx = 0; for (var t=0; t<=TEND; t+=0.05){ var a = rw[1](mine(t), st.m), b = HAS_T ? rw[1](target(t), 1) : 0; mn = Math.min(mn, a, b); mx = Math.max(mx, a, b); } if (mx - mn < 1e-6){ mx += 1; mn -= 1; }
+    function GX(t){ return L + (GW - L - R)*t/TEND; } function GY(v){ return y0 + hh - 8 - (hh - 16)*(v - mn)/(mx - mn); }
+    gg.strokeStyle = p.grid.replace('0.07', '0.35').replace('0.18', '0.5'); gg.lineWidth = 1; gg.beginPath(); gg.moveTo(L, y0 + 4); gg.lineTo(L, y0 + hh - 8); gg.moveTo(L, GY(0)); gg.lineTo(GW - R, GY(0)); gg.stroke();
+    gg.fillStyle = p.text; gg.font = '11px Arial'; gg.fillText(rw[0], 4, y0 + 14); gg.fillText(String(+mx.toPrecision(3)), 4, y0 + 28); gg.fillText(String(+mn.toPrecision(3)), 4, y0 + hh - 8);
+    [[HAS_T && st.shT, target, p.tgt, 1, [5, 4]], [st.shM, mine, p.mine, st.m, []]].forEach(function(cc){ if (!cc[0]) return; gg.strokeStyle = cc[2]; gg.lineWidth = 2; gg.setLineDash(cc[4]); gg.beginPath(); for (var t=0; t<=TEND; t+=0.02){ var v = rw[1](cc[1](t), cc[3]); if (t === 0) gg.moveTo(GX(t), GY(v)); else gg.lineTo(GX(t), GY(v)); } gg.stroke(); gg.setLineDash([]); });
+    gg.strokeStyle = p.text; gg.globalAlpha = 0.6; gg.beginPath(); gg.moveTo(GX(st.t), y0 + 4); gg.lineTo(GX(st.t), y0 + hh - 8); gg.stroke(); gg.globalAlpha = 1; });
+  gg.fillStyle = p.text; gg.fillText('t (s) \u2192 ' + TEND.toFixed(0), GW - 70, GH - 3); gg.fillStyle = p.mine; gg.fillText('\u2014 mine', L + 4, GH - 3); if (HAS_T){ gg.fillStyle = p.tgt; gg.fillText('- - target', L + 64, GH - 3); } }
+/* ══════════ the match ══════════ */
+function verdict(){ if (!HAS_T) return null; var a = mine(TEND), b = target(TEND), dv = Math.hypot(a.vx - b.vx, a.vy - b.vy), dx = Math.hypot(a.x - b.x, a.y - b.y), worst = 0;
+  for (var t=0; t<=TEND; t+=0.05){ var p = mine(t), q = target(t); worst = Math.max(worst, Math.hypot(p.x - q.x, p.y - q.y)); }
+  return { dv:dv, dx:dx, worst:worst, ok:dv < 0.26 && dx < 1.5 }; }
+function f2(v){ return (Math.abs(v) < 0.005 ? 0 : v).toFixed(2); }
+function readout(){ var a = mine(st.t), b = HAS_T ? target(st.t) : null, rows = [['t', st.t.toFixed(2) + ' s'], ['mine: v', '(' + f2(a.vx) + ', ' + f2(a.vy) + ') m/s'], ['mine: a', '(' + f2(a.ax) + ', ' + f2(a.ay) + ') m/s\u00B2'], ['mine: F', '(' + f2(a.ax*st.m) + ', ' + f2(a.ay*st.m) + ') N']];
+  if (b) rows.push(['target: v', '(' + f2(b.vx) + ', ' + f2(b.vy) + ') m/s'], ['separation', f2(Math.hypot(a.x - b.x, a.y - b.y)) + ' m']);
+  el('dsRead').innerHTML = rows.map(function(r){ return '<div class="ds_rrow"><span class="ds_rkey">' + r[0] + '</span><span class="ds_rval">' + r[1] + '</span></div>'; }).join(''); }
+function mission(){ var V = verdict(), m = el('dsMission');
+  if (!V){ m.innerHTML = '<b>Free play.</b> Fire the thrusters and watch how the force changes the velocity.'; return; }
+  m.innerHTML = '<b>Mission:</b> make your craft (red) move exactly like the target (cyan). ' + (st.t >= TEND - 1e-6 ? (V.ok ? '<b class="ds_ok">\u2713 Mission accomplished!</b> Same final velocity (difference ' + V.dv.toFixed(2) + ' m/s), ' + V.dx.toFixed(2) + ' m apart.' : (V.dv < 0.26 ? '<b class="ds_no">Almost:</b> the same final velocity, but ' + V.dx.toFixed(1) + ' m apart: the two motions differed while the thrusters fired. Same change in velocity (F\u0394t/m), but not the same path.' : '<b class="ds_no">Not yet:</b> final velocity difference ' + V.dv.toFixed(2) + ' m/s, final separation ' + V.dx.toFixed(1) + ' m. Adjust your plan and launch again.')) : 'Plan your thrusters, then launch.'); }
+/* ══════════ the controls ══════════ */
+function timeline(){ var tl = el('dsTL'), segs = [[0, D.time0, 'coast'], [D.time0, st.t1, 'thrust 1'], [st.t1, SPAN2 ? D.time2 : st.t1, 'thrust 2'], [SPAN2 ? D.time2 : st.t1, TEND, 'coast']];
+  tl.innerHTML = segs.filter(function(s){ return s[1] > s[0]; }).map(function(s){ return '<div class="ds_tseg' + (s[2] === 'coast' ? '' : ' ds_tthr') + '" style="width:' + (100*(s[1] - s[0])/TEND).toFixed(2) + '%">' + (s[1] - s[0] > TEND*0.12 ? s[2] : '') + '</div>'; }).join('') + '<div class="ds_tnow" style="left:' + (100*st.t/TEND).toFixed(2) + '%"></div>'; }
+function thrButtons(id, f, span){ el(id).innerHTML = [['L', '\u2190', 'left'], ['R', '\u2192', 'right'], ['U', '\u2191', 'up'], ['Dn', '\u2193', 'down']].map(function(k){ return '<button type="button" class="ds_tbtn" data-k="' + k[0] + '" aria-pressed="' + (!!f[k[0]]) + '" aria-label="thrust ' + k[2] + ', span ' + span + '">' + k[1] + '</button>'; }).join('');
+  [].forEach.call(el(id).querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ var k = b.getAttribute('data-k'); f[k] = f[k] ? 0 : 1; thrButtons(id, f, span); changed(); narrate('Span ' + span + ' thrust: ' + desc(f) + '.'); }); }); }
+function desc(f){ var a = []; if (f.R) a.push('right'); if (f.L) a.push('left'); if (f.U) a.push('up'); if (f.Dn) a.push('down'); return a.length ? a.join(' and ') : 'off'; }
+function syncInputs(){ el('dsVx').value = st.vx; el('dsVxV').textContent = st.vx + ' m/s'; el('dsVy').value = st.vy; el('dsVyV').textContent = st.vy + ' m/s'; el('dsT1').min = D.time1min; el('dsT1').max = D.time2; el('dsT1').value = st.t1; el('dsT1V').textContent = st.t1.toFixed(1) + ' s';
+  el('dsM').value = st.m; el('dsMV').textContent = st.m + ' kg'; el('dsSp1T').textContent = 'Thrust from ' + D.time0 + ' s to ' + st.t1.toFixed(1) + ' s:'; el('dsSp2').style.display = SPAN2 ? '' : 'none'; el('dsSp2T').textContent = 'Thrust from ' + st.t1.toFixed(1) + ' s to ' + D.time2 + ' s:';
+  el('dsShT').checked = st.shT; el('dsShM').checked = st.shM; el('dsShV').checked = st.shV; }
+function changed(){ st.t = 0; st.playing = false; el('dsPlay').innerHTML = '\u25B6 Launch'; fit(); syncInputs(); render(); save(); }
+function render(){ el('dsTime').max = TEND.toFixed(2); el('dsTime').value = st.t; el('dsTimeV').textContent = st.t.toFixed(2) + ' s'; timeline(); draw(); graphs(); readout(); mission(); }
+function narrate(m){ if (th.nr) el('dsNar').textContent = m; }
+var lastSpan = -1;
+function spanAt(t){ return t < D.time0 ? 0 : t < st.t1 ? 1 : (SPAN2 && t < D.time2) ? 2 : 3; }
+function tick(prev){ var sp = spanAt(st.t); if (sp !== spanAt(prev)){ var a = mine(st.t); narrate(['Coasting at a constant velocity: no force.', 'Thrust 1: ' + desc(st.f1) + '. The velocity is changing.', 'Thrust 2: ' + desc(st.f2) + '.', 'Thrusters off: the craft coasts at the velocity it reached, (' + f2(a.vx) + ', ' + f2(a.vy) + ') m/s.'][sp]); }
+  if (prev < TEND - 1e-6 && st.t >= TEND - 1e-6){ var V = verdict(); if (V) narrate(V.ok ? 'Mission accomplished: your craft moves like the target.' : 'Not matched: the final velocities differ by ' + V.dv.toFixed(2) + ' metres per second.'); } }
+el('dsVx').addEventListener('input', function(){ st.vx = +this.value; changed(); });
+el('dsVy').addEventListener('input', function(){ st.vy = +this.value; changed(); });
+el('dsT1').addEventListener('input', function(){ st.t1 = +this.value; changed(); });
+el('dsM').addEventListener('input', function(){ st.m = +this.value; changed(); narrate('Mass ' + st.m + ' kilograms: the same 10 newton thrust now gives an acceleration of ' + (10/st.m).toFixed(1) + ' metres per second squared.'); });
+el('dsShT').addEventListener('change', function(){ st.shT = this.checked; render(); save(); }); el('dsShM').addEventListener('change', function(){ st.shM = this.checked; render(); save(); }); el('dsShV').addEventListener('change', function(){ st.shV = this.checked; render(); save(); });
+[].forEach.call(document.querySelectorAll('input[name="dsComp"]'), function(r){ r.addEventListener('change', function(){ st.comp = this.value; render(); }); });
+el('dsPlay').addEventListener('click', function(){ if (st.t >= TEND - 1e-6) st.t = 0; st.playing = !st.playing; this.innerHTML = st.playing ? '\u2759\u2759 Pause' : '\u25B6 Launch'; });
+el('dsFwd').addEventListener('click', function(){ var p0 = st.t; st.playing = false; el('dsPlay').innerHTML = '\u25B6 Launch'; st.t = Math.min(TEND, st.t + 0.1); tick(p0); render(); });
+el('dsBack').addEventListener('click', function(){ st.playing = false; el('dsPlay').innerHTML = '\u25B6 Launch'; st.t = Math.max(0, st.t - 0.1); render(); });
+el('dsReset').addEventListener('click', function(){ st.t = 0; st.playing = false; el('dsPlay').innerHTML = '\u25B6 Launch'; render(); narrate('Reset: both craft at the start.'); });
+el('dsTime').addEventListener('input', function(){ var p0 = st.t; st.playing = false; el('dsPlay').innerHTML = '\u25B6 Launch'; st.t = +this.value; tick(p0); render(); });
+/* the toolbar and the description */
+var ROOT = el('dsRoot');
+function theme(k){ if (k === 'fs') th.fs = (th.fs + 1) % 3; else th[k] = !th[k]; if (k === 'hc' && th.hc) th.lm = false; if (k === 'lm' && th.lm) th.hc = false; applyTheme(); save(); }
+function applyTheme(){ ROOT.classList.toggle('ds_hc', th.hc); ROOT.classList.toggle('ds_lm', th.lm); ROOT.classList.toggle('ds_fs1', th.fs === 1); ROOT.classList.toggle('ds_fs2', th.fs === 2);
+  [['hc', 'dsBtnHC'], ['lm', 'dsBtnLM'], ['cb', 'dsBtnCB'], ['nr', 'dsBtnNR'], ['fs', 'dsBtnFS']].forEach(function(q){ var b = el(q[1]), on = q[0] === 'fs' ? th.fs > 0 : th[q[0]]; b.classList.toggle('ds_a11yon', !!on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+  el('dsBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('dsBtnFS').textContent = 'FONT: ' + ['NORMAL', 'LARGE', 'XL'][th.fs]; el('dsNar').style.display = th.nr ? '' : 'none'; render(); }
+[['hc', 'dsBtnHC'], ['lm', 'dsBtnLM'], ['cb', 'dsBtnCB'], ['nr', 'dsBtnNR'], ['fs', 'dsBtnFS']].forEach(function(q){ el(q[1]).addEventListener('click', function(){ theme(q[0]); }); });
+el('dsDescBtn').addEventListener('click', function(){ var d = el('dsDesc'), open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; this.setAttribute('aria-expanded', open ? 'true' : 'false'); this.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION'; if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } });
+/* saved between MOM submissions */
+var KEY = 'dsSaved_' + '_' + SCENARIO;
+function save(){ try { localStorage.setItem(KEY, JSON.stringify({ vx:st.vx, vy:st.vy, t1:st.t1, f1:st.f1, f2:st.f2, m:st.m, shT:st.shT, shM:st.shM, shV:st.shV, th:th })); } catch(e){} }
+try { var sv = JSON.parse(localStorage.getItem(KEY) || 'null'); if (sv){ ['vx', 'vy', 't1', 'f1', 'f2', 'm', 'shT', 'shM', 'shV'].forEach(function(k){ if (sv[k] !== undefined) st[k] = sv[k]; }); if (sv.th) th = sv.th; } } catch(e){}
+/* the animation */
+var last = 0; function loop(ts){ var dt = Math.min(0.05, (ts - (last || ts))/1000); last = ts; if (st.playing){ var p0 = st.t; st.t = Math.min(TEND, st.t + dt); tick(p0); if (st.t >= TEND){ st.playing = false; el('dsPlay').innerHTML = '\u25B6 Launch'; } render(); } requestAnimationFrame(loop); }
+el('dsSub').textContent = { 'push':'a steady push on a moving craft', 'push-removed':'a push, then the push removed', 'kick':'a short kick on a moving craft', 'kick-rest':'a kick on a craft at rest', 'free':'free play: forces and motion' }[SCENARIO];
+if (!HAS_T){ el('dsShT').parentNode.style.display = 'none'; }
+fit(); syncInputs(); thrButtons('dsThr1', st.f1, 1); thrButtons('dsThr2', st.f2, 2); applyTheme();
+narrate(HAS_T ? 'Watch the target: launch once with your thrusters off to see how it moves. Then plan your thrusters to match it.' : 'Free play: set the thrusters and launch.');
+requestAnimationFrame(loop);
+return { _D:D, _st:st, _mine:mine, _target:target, _verdict:verdict, _setT:function(t){ var p0 = st.t; st.t = t; tick(p0); render(); }, _plan:function(o){ Object.keys(o).forEach(function(k){ st[k] = o[k]; }); changed(); thrButtons('dsThr1', st.f1, 1); thrButtons('dsThr2', st.f2, 2); } };
+})();
+</script>
+<hr><h2>Giving an object moving at a constant velocity a Kick</h2><hr>
+<p>Let us start by focusing on the spaceship from `t = 0.0\ "s"` to `t = 1\ "s"`.<br>What are the forces acting on the spaceship then?<input id="qn000" size="10" aria-label="answer box 0"></p>
+<p>What are the forces acting on the spaceship when it is subject to the kick right after `t = 1\ "s"`.<input id="qn001" size="10" aria-label="answer box 1"></p>
+<p>What are the forces acting on the spaceship after the push was removed.<input id="qn002" size="10" aria-label="answer box 2"></p>
+<p>Which statement(s) best describes the motion of the Cyan spacecraft?<input id="qn003" size="10" aria-label="answer box 3"></p>
+<p>Provide justifications for the last few questions you have just answered:<input id="qn004" size="10" aria-label="answer box 4"></p>
+</main>
+</body>
+</html>

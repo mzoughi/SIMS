@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Forces: The Failing Rod (vertical circle)</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, light, optics, refraction, refraction, Snell's law, apparent depth, image, Fermat's principle, total internal reflection, critical angle, Snell's window, pool, distortion, lesson, scientific">
+<meta name="description" content="A puck on a rod spins faster until the rod breaks: predict its path, then see why it leaves along the tangent (a straight line on a table, a parabola on a vertical circle).">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<main class="page">
+<div style="max-width:900px;margin:0 auto 10px;padding:8px 12px;background:#eef6ff;border:1px solid #bcdcff;border-radius:4px;font-family:Arial,sans-serif;font-size:13px">One simulation, with settings at the top of its script: <code>PLANE</code> (horizontal or vertical) and <code>BREAK</code> (when the tension needed exceeds the rod&rsquo;s strength, or at a set time); in MOM, <code>$plane</code> and <code>$breakmode</code>. Presets: <a href="?plane=horizontal">horizontal</a> &middot; <a href="?plane=vertical">vertical</a> &middot; <a href="?plane=horizontal&amp;break=time">horizontal, timed break</a> &middot; <a href="?plane=vertical&amp;break=time">vertical, timed break</a>. The boxes in the questions below stand in for MOM&rsquo;s answer boxes.</div><div id="frRoot" class="fr_root" role="region" aria-label="The Failing Rod: a puck on a rod in circular motion until the rod breaks">
+<div class="fr_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="fr_a11ybtn" id="frBtnHC" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="fr_a11ybtn" id="frBtnLM" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="fr_a11ybtn" id="frBtnCB" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="fr_a11ybtn" id="frBtnFS" aria-pressed="false">FONT: NORMAL</button>
+<button type="button" class="fr_a11ybtn fr_a11yon" id="frBtnNR" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div class="fr_header"><p class="fr_h1">The Failing Rod</p><p class="fr_sub" id="frSub"></p></div>
+<div class="fr_predict" id="frPredict" role="group" aria-labelledby="frPredQ">
+<div id="frPredQ" class="fr_predq"><b>Predict first:</b> when the rod breaks, which path will the puck follow?</div>
+<div class="fr_predbtns" id="frPredBtns"></div>
+<div class="fr_predmsg" id="frPredMsg" role="status" aria-live="polite"></div>
+</div>
+<div class="fr_main">
+<div class="fr_left">
+<div class="fr_panel"><canvas id="frCv" width="520" height="520" role="img" aria-label="The puck, the rod and its pivot; after the break, the puck's path. The readout and the narration describe the motion."></canvas>
+<div class="fr_bbar"><button type="button" class="fr_btn fr_btnon" id="frPlay">&#9654; Play</button><button type="button" class="fr_btn" id="frBack" aria-label="step back">&#9664;&#9664;</button><button type="button" class="fr_btn" id="frFwd" aria-label="step forward">&#9654;&#9654;</button><button type="button" class="fr_btn" id="frReset">Restart</button></div>
+<div class="fr_scrub"><label for="frTime">time</label><input type="range" id="frTime" min="0" max="20" step="0.01" value="0"><span id="frTimeV">0.00 s</span></div></div>
+<div class="fr_panel"><div class="fr_ptitle">Graphs</div><canvas id="frGr" width="520" height="260" role="img" aria-label="Graphs of the angular speed, the speed and the tension in the rod against time, with the moment of the break marked."></canvas></div>
+</div>
+<div class="fr_right">
+<div class="fr_panel"><div class="fr_ptitle">Readout</div><div class="fr_pbody" id="frRead"></div></div>
+<div class="fr_panel"><div class="fr_ptitle">The rod</div><div class="fr_pbody">
+<div class="fr_ctrl"><label for="frR">Length r</label><input type="range" id="frR" min="0.5" max="2" step="0.1"><span id="frRV"></span></div>
+<div class="fr_ctrl" id="frSRow"><label for="frS">Strength</label><input type="range" id="frS" min="5" max="60" step="1"><span id="frSV"></span></div>
+<div class="fr_ctrl" id="frTbRow"><label for="frTb">Breaks at</label><input type="range" id="frTb" min="2" max="14" step="0.5"><span id="frTbV"></span></div>
+<div class="fr_note" id="frBreakNote"></div></div></div>
+<div class="fr_panel"><div class="fr_ptitle">Show</div><div class="fr_pbody">
+<label class="fr_chk"><input type="checkbox" id="frShV" checked> velocity v</label>
+<label class="fr_chk"><input type="checkbox" id="frShA" checked> acceleration (centripetal and tangential parts)</label>
+<label class="fr_chk"><input type="checkbox" id="frShT"> tension in the rod</label>
+<label class="fr_chk"><input type="checkbox" id="frShF"> net force</label>
+<label class="fr_chk"><input type="checkbox" id="frShG" checked> motion diagram (every 0.5 s)</label>
+</div></div>
+<div class="fr_panel"><div class="fr_ptitle">Answer box</div><div class="fr_pbody"><button type="button" class="fr_btn" id="frSend">Send my prediction to the answer box</button><div class="fr_note" id="frSendMsg" role="status" aria-live="polite"></div></div></div>
+</div>
+</div>
+<div id="frNar" class="fr_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="fr_descwrap"><button type="button" class="fr_descbtn" id="frDescBtn" aria-expanded="false" aria-controls="frDesc">&#9656; SIM DESCRIPTION</button>
+<div class="fr_desc" id="frDesc" style="display:none" role="region" aria-labelledby="frDescBtn">
+<p>A puck of mass `m` is held by a light rod and spun about a pivot with a constant angular acceleration `alpha`, so its angular speed grows steadily, `omega = alpha t`. Its speed is `v = omega r`, and its velocity is always tangent to the circle.</p>
+<p>The acceleration has two parts: a tangential part `a_t = alpha r` that makes the puck speed up, and a centripetal part `a_c = omega^2 r = v^2/r`, pointing toward the pivot, that keeps it on the circle. Only the rod can supply the inward force, its tension: on a horizontal table `T = m omega^2 r`; on a vertical circle gravity helps or hinders, `T = m omega^2 r - m g sin theta`, largest at the bottom.</p>
+<p>The rod breaks when the tension needed exceeds its strength (or at a set time). From then on, nothing pulls the puck toward the pivot. On the table no force acts at all: by Newton&rsquo;s first law the puck moves in a straight line along the tangent, at the speed it had. On the vertical circle only gravity acts: the puck follows a parabola, like any projectile. In neither case does it fly straight outward: there is no outward force.</p>
+</div></div>
+</div><!-- #frRoot -->
+<style>
+#frRoot { --c-chassis:#1a1c1f; --c-panel:#22262b; --c-hi:#2c3138; --c-lo:#14161a; --c-bd:#3a4048; --c-bd2:#525c66; --c-text:#c8d0d8; --c-dim:#8a94a3; --c-accent:#e8a020; --c-green:#3ad08f; --c-val:#ffdd66; --c-nbg:#2a2410; --c-nbd:#e0b040; --c-ntx:#f0e2b8;
+  background:var(--c-chassis); background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
+  color:var(--c-text); font-family:Arial, sans-serif; padding:14px 10px 18px; border-radius:6px; box-sizing:border-box; width:100%; max-width:860px; margin:0 auto 10px; display:flex; flex-direction:column; gap:10px; }
+#frRoot * { box-sizing:border-box; }
+#frRoot.fr_lm { --c-chassis:#e9edf1; --c-panel:#ffffff; --c-hi:#f1f4f7; --c-lo:#f4f6f9; --c-bd:#c3cad3; --c-bd2:#9aa3ae; --c-text:#1d232a; --c-dim:#556070; --c-accent:#a8620a; --c-green:#12805a; --c-val:#8a4a00; --c-nbg:#ffefc0; --c-ntx:#333; background-image:none; }
+#frRoot.fr_hc { --c-chassis:#000; --c-panel:#000; --c-hi:#111; --c-lo:#000; --c-bd:#fff; --c-bd2:#fff; --c-text:#fff; --c-dim:#e0e0e0; --c-accent:#ffd700; --c-green:#00ff88; --c-val:#ffff00; --c-nbg:#000; --c-nbd:#ffd700; --c-ntx:#fff; background-image:none; }
+#frRoot .fr_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+#frRoot .fr_a11ybtn { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-dim); min-height:30px; }
+#frRoot .fr_a11yon { background:rgba(58,208,143,.14); border-color:var(--c-green); color:var(--c-green); font-weight:bold; }
+#frRoot .fr_header { text-align:center; }
+#frRoot .fr_h1 { margin:0; font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--c-accent); }
+#frRoot .fr_sub { margin:3px 0 0; font-size:.7rem; color:var(--c-dim); letter-spacing:.08em; text-transform:uppercase; }
+#frRoot .fr_tabs { display:flex; gap:4px; flex-wrap:wrap; }
+#frRoot .fr_tab { flex:1 1 90px; padding:8px 6px; border:1px solid var(--c-bd2); background:var(--c-hi); color:var(--c-text); border-radius:4px; cursor:pointer; font-family:monospace; font-size:.76rem; letter-spacing:.06em; text-transform:uppercase; min-height:38px; }
+#frRoot .fr_tab[aria-selected="true"] { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#frRoot .fr_diag { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+#frRoot .fr_dlabel { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--c-dim); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+#frRoot .fr_dlabel b { color:var(--c-accent); }
+#frRoot canvas { display:block; width:100%; height:auto; touch-action:none; }
+#frRoot .fr_row2 { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#frRoot .fr_bbar { display:flex; flex-wrap:wrap; gap:6px 12px; justify-content:center; align-items:center; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:6px; padding:8px 10px; font-size:.8rem; }
+#frRoot .fr_bbar label { display:flex; align-items:center; gap:5px; color:var(--c-dim); font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; cursor:pointer; }
+#frRoot .fr_btn { padding:7px 12px; font-family:monospace; font-size:.72rem; letter-spacing:.04em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-text); border-radius:3px; text-transform:uppercase; min-height:34px; }
+#frRoot .fr_btn:hover { border-color:var(--c-accent); }
+#frRoot .fr_btnon { border-color:var(--c-accent); color:var(--c-accent); font-weight:bold; }
+#frRoot select { background:var(--c-hi); color:var(--c-text); border:1px solid var(--c-bd2); border-radius:3px; padding:4px 6px; font-size:.8rem; }
+#frRoot .fr_panels { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#frRoot .fr_panel { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; box-shadow:0 4px 20px rgba(0,0,0,.3); overflow:hidden; }
+#frRoot .fr_ptitle { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--c-dim); }
+#frRoot .fr_pbody { padding:9px 12px; display:flex; flex-direction:column; gap:8px; }
+#frRoot .fr_ctrl { display:flex; flex-direction:column; gap:3px; }
+#frRoot .fr_ctrlhdr { display:flex; justify-content:space-between; align-items:baseline; gap:6px; }
+#frRoot .fr_ctrlname { font-size:.72rem; font-weight:600; color:var(--c-dim); text-transform:uppercase; letter-spacing:.04em; }
+#frRoot .fr_sval { font-family:monospace; font-size:.76rem; color:var(--c-val); white-space:nowrap; }
+#frRoot input[type=range] { width:100%; -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; cursor:pointer; background:var(--c-lo); border:1px solid var(--c-bd); }
+#frRoot input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#frRoot input[type=range]::-moz-range-thumb { width:12px; height:12px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#frRoot input[type=checkbox] { accent-color:var(--c-accent); width:16px; height:16px; }
+#frRoot .fr_rrow { display:flex; justify-content:space-between; gap:6px; padding:4px 7px; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:3px; font-family:monospace; font-size:.72rem; }
+#frRoot .fr_rkey { color:var(--c-dim); }
+#frRoot .fr_rval { color:var(--c-val); font-weight:bold; text-align:right; }
+#frRoot .fr_eqs { background:var(--c-lo); border:1px solid var(--c-bd); border-left:4px solid var(--c-accent); border-radius:4px; padding:8px 14px; font-family:monospace; font-size:.74rem; color:var(--c-dim); line-height:1.7; }
+#frRoot .fr_eqs b { color:var(--c-val); }
+#frRoot .fr_narbar { min-height:30px; padding:6px 12px; background:var(--c-nbg); border-left:4px solid var(--c-nbd); color:var(--c-ntx); font-size:.84rem; font-style:italic; line-height:1.45; border-radius:3px; }
+#frRoot .fr_descwrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+#frRoot .fr_descbtn { padding:8px 18px; font-family:monospace; font-size:.74rem; letter-spacing:.08em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-accent); color:var(--c-accent); border-radius:3px; font-weight:bold; min-height:40px; }
+#frRoot .fr_desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid var(--c-accent); border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; }
+#frRoot .fr_desc p { margin:0 0 9px; }
+#frRoot .fr_eq { text-align:center; font-size:1rem; }
+#frRoot button:focus-visible, #frRoot input:focus-visible, #frRoot select:focus-visible, #frRoot canvas:focus-visible { outline:2px solid var(--c-accent); outline-offset:2px; }
+@media (max-width:640px) { #frRoot .fr_row2, #frRoot .fr_panels { grid-template-columns:minmax(0,1fr); } #frRoot .fr_tab { font-size:.68rem; padding:8px 3px; } }
+@media (pointer:coarse) { #frRoot input[type=range] { height:8px; } #frRoot input[type=range]::-webkit-slider-thumb { width:26px; height:26px; } #frRoot input[type=range]::-moz-range-thumb { width:24px; height:24px; } #frRoot .fr_a11ybtn { min-height:40px; } #frRoot input[type=checkbox] { width:22px; height:22px; } }
+#frRoot .fr_main { display:flex; flex-wrap:wrap; gap:12px; width:100%; align-items:flex-start; }
+#frRoot .fr_left { flex:1 1 340px; min-width:0; display:flex; flex-direction:column; gap:10px; }
+#frRoot .fr_right { flex:1 1 250px; min-width:0; display:flex; flex-direction:column; gap:10px; }
+#frRoot canvas { width:100%; height:auto; display:block; }
+#frRoot .fr_scrub { display:flex; gap:8px; align-items:center; padding:6px 10px; font-size:.8rem; color:var(--c-text); }
+#frRoot .fr_scrub input { flex:1; }
+#frRoot .fr_ctrl { display:grid; grid-template-columns:78px 1fr 58px; gap:6px; align-items:center; font-size:.8rem; color:var(--c-text); margin:4px 0; }
+#frRoot .fr_chk { display:flex; gap:7px; align-items:center; font-size:.8rem; color:var(--c-text); margin:5px 0; cursor:pointer; }
+#frRoot .fr_note { font-size:.78rem; color:var(--c-text); margin-top:6px; line-height:1.35; }
+#frRoot .fr_rrow { display:flex; justify-content:space-between; gap:8px; padding:3px 6px; border-bottom:1px solid var(--c-bd); font-size:.8rem; font-family:monospace; color:var(--c-text); }
+#frRoot .fr_predict { width:100%; padding:10px 12px; border-radius:6px; background:var(--c-panel); border:1px solid var(--c-bd); border-left:5px solid #c792ea; color:var(--c-text); font-size:.9rem; }
+#frRoot .fr_predbtns { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+#frRoot .fr_predbtn { padding:7px 11px; border:1px solid var(--c-bd); border-radius:16px; background:transparent; color:var(--c-text); cursor:pointer; font-size:.82rem; }
+#frRoot .fr_predbtn[aria-pressed="true"] { background:#c792ea; color:#111; border-color:#c792ea; font-weight:bold; }
+#frRoot .fr_predmsg { margin-top:6px; font-size:.82rem; min-height:18px; }
+#frRoot.fr_fs1 { zoom:1.12; } #frRoot.fr_fs2 { zoom:1.25; }
+@media (pointer:coarse) { #frRoot .fr_predbtn, #frRoot .fr_btn { min-height:40px; } #frRoot input[type=range] { height:26px; } #frRoot input[type=checkbox] { width:20px; height:20px; } }
+</style>
+<script>
+var frSim = (function(){
+/* ══════════ SETTINGS ══════════
+   PLANE:  'horizontal' (a frictionless table, seen from above) or 'vertical' (a vertical circle, with gravity)
+   BREAK:  'strength' (the rod breaks when the tension needed exceeds its strength) or 'time' (it breaks at a set time)
+   PREDICTION_ANSWER_NUM: the answer box that receives the prediction ('010' is <input id="qn010" size="10" aria-label="answer box 10">); '' hides the button
+   In MOM, $plane and $breakmode, when set, replace PLANE and BREAK.
+   PLANE = 'horizontal'; BREAK = 'strength';   //horizontal, physical break
+   PLANE = 'vertical';   BREAK = 'strength';   //vertical, physical break
+   PLANE = 'horizontal'; BREAK = 'time';       //horizontal, timed break (the original sims)
+*/
+var PLANE = 'vertical';
+var BREAK = 'strength';
+var PREDICTION_ANSWER_NUM = '010';
+var MOM = { plane:'', brk:'' };
+function set_(s){ return typeof s === 'string' && s.length && s.indexOf('$') < 0; }
+try { (location.search || '').slice(1).split('&').forEach(function(kv){ var q = kv.split('='); if (q[0] === 'plane' && !set_(MOM.plane)) PLANE = q[1]; if (q[0] === 'break' && !set_(MOM.brk)) BREAK = q[1]; }); } catch(e){}
+if (set_(MOM.plane)) PLANE = MOM.plane; if (set_(MOM.brk)) BREAK = MOM.brk;
+if (PLANE !== 'vertical') PLANE = 'horizontal'; if (BREAK !== 'time') BREAK = 'strength';
+var VERT = PLANE === 'vertical';
+/* ══════════ physics (SI units), exact at any time ══════════ */
+var M = 0.5, ALPHA = 0.6, G = 9.8, TH0 = VERT ? -Math.PI/2 : 0;   /* the puck starts at the bottom (vertical) or on the +x axis */
+var st = { r:1.0, S:20, tb:8, t:0, playing:false, pred:'', shV:true, shA:true, shT:false, shF:false, shG:true };
+function el(id){ return document.getElementById(id + ''); }
+function tension(t){ var w = ALPHA*t, th = TH0 + 0.5*ALPHA*t*t; return M*w*w*st.r - (VERT ? M*G*Math.sin(th) : 0); }
+function tBreak(){ if (BREAK === 'time') return st.tb; for (var t=0; t<40; t+=0.002) if (tension(t) >= st.S) return t; return 40; }
+var TB = 8;
+function stateAt(t){ var r = st.r;
+  if (t <= TB){ var th = TH0 + 0.5*ALPHA*t*t, w = ALPHA*t; return { broken:false, x:r*Math.cos(th), y:r*Math.sin(th), th:th, w:w, vx:-w*r*Math.sin(th), vy:w*r*Math.cos(th), ax:-w*w*r*Math.cos(th) - ALPHA*r*Math.sin(th), ay:-w*w*r*Math.sin(th) + ALPHA*r*Math.cos(th) - 0, T:tension(t) }; }
+  var b = stateAt(TB), d = t - TB, gy = VERT ? -G : 0;
+  return { broken:true, x:b.x + b.vx*d, y:b.y + b.vy*d + 0.5*gy*d*d, th:b.th, w:0, vx:b.vx, vy:b.vy + gy*d, ax:0, ay:gy, T:0 }; }
+function tMax(){ return TB + 4; }
+/* ══════════ the predictions ══════════ */
+var PREDS = [['tangent', 'Straight, along the tangent'], ['outward', 'Straight outward, away from the pivot'], ['spiral', 'Spiralling outward'], ['parabola', 'A parabola, curving downward'], ['circle', 'It keeps going around the circle']];
+if (!VERT) PREDS = PREDS.filter(function(p){ return p[0] !== 'parabola'; });
+function predPath(kind, b){ /* points (x, y) of the predicted path from the break state b, over 4 s */ var pts = [], k;
+  for (k=0; k<=80; k++){ var d = k*0.05, v = Math.hypot(b.vx, b.vy), ux = b.x/st.r, uy = b.y/st.r;
+    if (kind === 'tangent') pts.push([b.x + b.vx*d, b.y + b.vy*d]);
+    else if (kind === 'outward') pts.push([b.x + ux*v*d, b.y + uy*v*d]);
+    else if (kind === 'spiral'){ var rr = st.r*(1 + 0.6*d), a = b.th + (b.w > 0 ? b.w : 1)*d*0.6; pts.push([rr*Math.cos(a), rr*Math.sin(a)]); }
+    else if (kind === 'parabola') pts.push([b.x + b.vx*d, b.y + b.vy*d - 0.5*G*d*d]);
+    else if (kind === 'circle'){ var a2 = b.th + b.w*d; pts.push([st.r*Math.cos(a2), st.r*Math.sin(a2)]); } }
+  return pts; }
+function actualKind(){ return VERT ? 'parabola' : 'tangent'; }
+/* ══════════ drawing ══════════ */
+var cv = el('frCv'), g = cv.getContext('2d'), gc = el('frGr'), gg = gc.getContext('2d'), DPR = window.devicePixelRatio || 1;
+cv.width = 520*DPR; cv.height = 520*DPR; g.scale(DPR, DPR); gc.width = 520*DPR; gc.height = 260*DPR; gg.scale(DPR, DPR);
+var th = { hc:false, lm:false, cb:false, nr:true, fs:0 };
+function pal(){ var p = { bg:'#0f1720', grid:'rgba(255,255,255,0.06)', text:'#e6edf3', table:'#16212c', rod:'#c9d1d9', puck:'#ff9f1c', pivot:'#9aa4ae', v:'#3ad08f', ac:'#ff5c8a', at:'#ffd166', T:'#8ab4ff', F:'#ffffff', ghost:'rgba(255,159,28,0.45)', path:'#ff9f1c', pred:'#c792ea', g:'#8ab4ff' };
+  if (th.lm){ p.bg = '#f7f9fb'; p.grid = 'rgba(0,0,0,0.06)'; p.text = '#1d2a36'; p.table = '#e9eef3'; p.rod = '#44505c'; p.pivot = '#55606b'; p.F = '#111'; p.ghost = 'rgba(214,120,0,0.45)'; p.path = '#d67800'; p.v = '#12805a'; p.ac = '#c2185b'; p.at = '#a67c00'; p.T = '#1f5fd6'; p.pred = '#7d3cc8'; }
+  if (th.cb){ p.v = '#009e73'; p.ac = '#d55e00'; p.at = '#e69f00'; p.T = '#0072b2'; p.pred = '#cc79a7'; p.puck = '#e69f00'; p.path = '#e69f00'; }
+  if (th.hc){ p.bg = '#000'; p.grid = 'rgba(255,255,255,0.15)'; p.text = '#fff'; p.table = '#000'; p.rod = '#fff'; p.puck = '#ffd700'; p.v = '#00ff88'; p.ac = '#ff5555'; p.at = '#ffff00'; p.T = '#66aaff'; p.pred = '#ff66ff'; p.path = '#ffd700'; }
+  return p; }
+var VIEW = 2.6;   /* metres from the centre to the edge of the view; it grows to follow the puck after the break */
+function setView(){ var s = stateAt(st.t); VIEW = Math.max(st.r*1.6 + 0.6, 2.6, Math.max(Math.abs(s.x), Math.abs(s.y))*1.35 + 0.5); }
+function S(){ return 260/VIEW; }
+function K(){ return S()/100; }   /* arrows scale with the view */ function X(x){ return 260 + x*S(); } function Y(y){ return 260 - y*S(); }
+function arrow(x0, y0, dx, dy, col, label, w){ var L = Math.hypot(dx, dy); if (L < 2) return; var x1 = x0 + dx, y1 = y0 + dy, an = Math.atan2(dy, dx), h = 9;
+  g.strokeStyle = col; g.fillStyle = col; g.lineWidth = w || 3; g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1 - h*0.6*Math.cos(an), y1 - h*0.6*Math.sin(an)); g.stroke();
+  g.beginPath(); g.moveTo(x1, y1); g.lineTo(x1 - h*Math.cos(an - 0.4), y1 - h*Math.sin(an - 0.4)); g.lineTo(x1 - h*Math.cos(an + 0.4), y1 - h*Math.sin(an + 0.4)); g.closePath(); g.fill();
+  if (label){ g.font = 'bold 13px Arial'; g.fillText(label, x1 + 6*Math.cos(an) + 3, y1 + 6*Math.sin(an) + 4); } }
+function draw(){ setView(); var p = pal(), s = stateAt(st.t), B = stateAt(TB), k = K();
+  g.fillStyle = p.bg; g.fillRect(0, 0, 520, 520); g.strokeStyle = p.grid; g.lineWidth = 1;
+  var gs = VIEW > 6 ? 2 : 0.5; for (var gk=-Math.ceil(VIEW/gs); gk<=Math.ceil(VIEW/gs); gk++){ g.beginPath(); g.moveTo(X(gk*gs), 0); g.lineTo(X(gk*gs), 520); g.moveTo(0, Y(gk*gs)); g.lineTo(520, Y(gk*gs)); g.stroke(); }
+  g.fillStyle = p.text; g.font = '11px Arial'; g.fillText('grid: ' + gs + ' m', 10, 510);
+  g.fillStyle = p.text; g.font = '12px Arial'; g.fillText(VERT ? 'vertical plane (side view): gravity acts downward' : 'horizontal frictionless table (seen from above)', 10, 18);
+  if (VERT){ arrow(490, 40, 0, 40, p.g, 'g', 2); }
+  /* the circle */ g.strokeStyle = p.grid.replace('0.06', '0.25').replace('0.15', '0.4'); g.setLineDash([4, 5]); g.beginPath(); g.arc(X(0), Y(0), st.r*S(), 0, 2*Math.PI); g.stroke(); g.setLineDash([]);
+  /* the motion diagram */ if (st.shG){ g.fillStyle = p.ghost; for (var tg=0.5; tg<st.t - 1e-9; tg+=0.5){ var q = stateAt(tg); g.beginPath(); g.arc(X(q.x), Y(q.y), 6, 0, 2*Math.PI); g.fill(); } }
+  /* the real path after the break (as far as now) */ if (s.broken){ g.strokeStyle = p.path; g.lineWidth = 2; g.beginPath(); for (var tt=TB; tt<=st.t; tt+=0.02){ var q2 = stateAt(tt); if (tt === TB) g.moveTo(X(q2.x), Y(q2.y)); else g.lineTo(X(q2.x), Y(q2.y)); } g.stroke(); }
+  /* the prediction, drawn from the break point once the rod has broken */ if (st.pred && s.broken){ var pp = predPath(st.pred, B); g.strokeStyle = p.pred; g.lineWidth = 2.5; g.setLineDash([7, 5]); g.beginPath(); pp.forEach(function(q, i){ if (i) g.lineTo(X(q[0]), Y(q[1])); else g.moveTo(X(q[0]), Y(q[1])); }); g.stroke(); g.setLineDash([]); var e = pp[Math.min(pp.length - 1, 30)]; g.fillStyle = p.pred; g.font = 'bold 12px Arial'; g.fillText('your prediction', X(e[0]) + 6, Y(e[1]) - 6); }
+  /* the rod (whole until the break, then two stubs) and the pivot */ g.strokeStyle = p.rod; g.lineWidth = 4;
+  if (!s.broken){ g.beginPath(); g.moveTo(X(0), Y(0)); g.lineTo(X(s.x), Y(s.y)); g.stroke(); }
+  else { g.beginPath(); g.moveTo(X(0), Y(0)); g.lineTo(X(B.x*0.55), Y(B.y*0.55)); g.stroke(); g.fillStyle = '#ff5555'; g.font = 'bold 13px Arial'; g.fillText('\u2715 broke', X(B.x*0.6) + 4, Y(B.y*0.6) - 4); }
+  g.fillStyle = p.pivot; g.beginPath(); g.arc(X(0), Y(0), 6, 0, 2*Math.PI); g.fill();
+  /* the puck */ g.fillStyle = p.puck; g.beginPath(); g.arc(X(s.x), Y(s.y), 11, 0, 2*Math.PI); g.fill(); g.strokeStyle = '#000'; g.lineWidth = 1; g.stroke();
+  /* the vectors (pixels: 18 px per m/s, 9 px per m/s^2, 6 px per N) */ var px = X(s.x), py = Y(s.y);
+  if (st.shV) arrow(px, py, s.vx*18*k, -s.vy*18*k, p.v, 'v');
+  if (st.shA){ if (!s.broken){ var w = s.w, rr = st.r, ux = s.x/rr, uy = s.y/rr; arrow(px, py, -ux*w*w*rr*9*k, uy*w*w*rr*9*k, p.ac, 'a\u1D9C'); arrow(px, py, -uy*ALPHA*rr*36*k, -ux*ALPHA*rr*36*k, p.at, 'a\u209C'); }
+    else if (VERT) arrow(px, py, 0, G*9*k, p.ac, 'a = g'); }
+  if (st.shT && !s.broken){ var u2x = s.x/st.r, u2y = s.y/st.r; arrow(px, py, -u2x*s.T*6*k, u2y*s.T*6*k, p.T, 'T'); }
+  if (st.shF){ arrow(px, py, M*s.ax*12*k, -M*s.ay*12*k, p.F, 'F\u2099\u2091\u209C'); }
+  if (s.broken && !VERT && st.shA){ g.fillStyle = p.text; g.font = '12px Arial'; g.fillText('a = 0: no force acts', px + 14, py + 22); } }
+function graphs(){ var p = pal(), T1 = tMax(), W = 520, H = 260, L = 44, R = 10, rows = [['\u03C9 (rad/s)', function(t){ return t <= TB ? ALPHA*t : 0; }, p.at], ['v (m/s)', function(t){ var q = stateAt(t); return Math.hypot(q.vx, q.vy); }, p.v], ['T (N)', function(t){ return t <= TB ? tension(t) : 0; }, p.T]];
+  gg.fillStyle = p.bg; gg.fillRect(0, 0, W, H); var hh = (H - 24)/3;
+  rows.forEach(function(rw, i){ var y0 = 6 + i*hh, mx = 0.001; for (var t=0; t<=T1; t+=T1/200) mx = Math.max(mx, Math.abs(rw[1](t))); if (i === 2 && BREAK === 'strength') mx = Math.max(mx, st.S);
+    function GX(t){ return L + (W - L - R)*t/T1; } function GY(v){ return y0 + hh - 6 - (hh - 12)*v/mx; }
+    gg.strokeStyle = p.grid.replace('0.06', '0.3').replace('0.15', '0.5'); gg.lineWidth = 1; gg.beginPath(); gg.moveTo(L, y0 + 4); gg.lineTo(L, y0 + hh - 6); gg.lineTo(W - R, y0 + hh - 6); gg.stroke();
+    gg.fillStyle = p.text; gg.font = '11px Arial'; gg.fillText(rw[0], 4, y0 + 14); gg.fillText(String(+mx.toPrecision(2)), 4, y0 + 28);
+    if (i === 2 && BREAK === 'strength'){ gg.strokeStyle = '#ff5555'; gg.setLineDash([4, 4]); gg.beginPath(); gg.moveTo(L, GY(st.S)); gg.lineTo(W - R, GY(st.S)); gg.stroke(); gg.setLineDash([]); gg.fillStyle = '#ff5555'; gg.fillText('strength', W - R - 52, GY(st.S) - 3); }
+    gg.strokeStyle = rw[2]; gg.lineWidth = 2; gg.beginPath(); var first = true; for (var t2=0; t2<=Math.min(st.t, T1); t2+=T1/300){ var vv = rw[1](t2); if (first){ gg.moveTo(GX(t2), GY(vv)); first = false; } else gg.lineTo(GX(t2), GY(vv)); } gg.stroke();
+    gg.strokeStyle = '#ff5555'; gg.beginPath(); gg.moveTo(GX(TB), y0 + 4); gg.lineTo(GX(TB), y0 + hh - 6); gg.stroke(); });
+  gg.fillStyle = p.text; gg.fillText('t (s) \u2192 ' + T1.toFixed(0), W - 70, H - 4); gg.fillStyle = '#ff5555'; gg.fillText('break', L + (W - L - R)*TB/T1 + 3, H - 4); }
+function f2(v){ return (Math.abs(v) < 0.005 ? 0 : v).toFixed(2); }
+function readout(){ var s = stateAt(st.t), v = Math.hypot(s.vx, s.vy), rows = [['t', st.t.toFixed(2) + ' s'], ['state', s.broken ? '<b style="color:#ff5555">rod broken</b>' : 'held by the rod'], ['\u03B8', s.broken ? '\u2014' : ((s.th - TH0)*180/Math.PI % 360).toFixed(0) + '\u00B0 from the start'], ['\u03C9', s.broken ? '\u2014' : f2(s.w) + ' rad/s'], ['\u03B1', s.broken ? '\u2014' : ALPHA + ' rad/s\u00B2'], ['v', f2(v) + ' m/s'], ['a\u1D9C = \u03C9\u00B2r', s.broken ? '0' : f2(s.w*s.w*st.r) + ' m/s\u00B2'], ['a\u209C = \u03B1r', s.broken ? '0' : f2(ALPHA*st.r) + ' m/s\u00B2'], ['a (net)', f2(Math.hypot(s.ax, s.ay)) + ' m/s\u00B2' + (s.broken ? (VERT ? ' (g, down)' : '') : '')], ['T', s.broken ? '0 (broken)' : f2(s.T) + ' N'], ['m', M + ' kg']];
+  el('frRead').innerHTML = rows.map(function(r){ return '<div class="fr_rrow"><span class="fr_rkey">' + r[0] + '</span><span class="fr_rval">' + r[1] + '</span></div>'; }).join(''); }
+function render(){ el('frTime').max = tMax().toFixed(2); el('frTime').value = st.t; el('frTimeV').textContent = st.t.toFixed(2) + ' s'; draw(); graphs(); readout(); }
+/* ══════════ narration and prediction ══════════ */
+function narrate(m){ if (th.nr) el('frNar').textContent = m; }
+var said = false;
+function checkBreak(prev){ if (prev <= TB && st.t > TB && !said){ said = true; var B = stateAt(TB), v = Math.hypot(B.vx, B.vy);
+  narrate('The rod broke at t = ' + TB.toFixed(2) + ' s' + (BREAK === 'strength' ? ', when the tension needed reached ' + st.S + ' N' : '') + ', with the puck moving at ' + v.toFixed(2) + ' m/s along the tangent. ' + (VERT ? 'Only gravity acts now: the puck follows a parabola.' : 'No force acts now: the puck moves in a straight line along the tangent.') + (st.pred ? ' Your prediction: ' + label(st.pred).toLowerCase() + (st.pred === actualKind() ? ', correct.' : '. Compare it with the real path.') : ''));
+  if (st.pred) el('frPredMsg').innerHTML = st.pred === actualKind() ? '<b>\u2713 Your prediction matches the real path.</b>' : 'The real path (solid) differs from your prediction (dashed): what force would be needed to follow yours?'; } }
+function label(k){ for (var i=0; i<PREDS.length; i++) if (PREDS[i][0] === k) return PREDS[i][1]; return k; }
+function buildPreds(){ el('frPredBtns').innerHTML = PREDS.map(function(p){ return '<button type="button" class="fr_predbtn" data-k="' + p[0] + '" aria-pressed="' + (st.pred === p[0]) + '">' + p[1] + '</button>'; }).join('');
+  [].forEach.call(el('frPredBtns').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ if (st.t > TB){ el('frPredMsg').textContent = 'The rod has already broken: restart to predict again.'; return; } st.pred = b.getAttribute('data-k'); buildPreds(); el('frPredMsg').textContent = 'Prediction recorded: ' + label(st.pred).toLowerCase() + '. Now press Play and watch.'; save(); render(); }); }); }
+/* ══════════ the answer box ══════════ */
+function getAnswerBox(num) {
+  // '' is kept as its own isolated string literal so MOM's substitution can't merge it with the digits.
+  var id = 'qn' + num;
+  return document.getElementById(id);
+}
+/* ══════════ controls ══════════ */
+function recompute(){ TB = tBreak(); el('frBreakNote').innerHTML = BREAK === 'strength' ? 'The rod breaks when the tension needed exceeds its strength: here at t = <b>' + (TB >= 40 ? 'never (too strong)' : TB.toFixed(2) + ' s') + '</b>.' : 'The rod breaks at the set time.'; }
+function syncInputs(){ el('frR').value = st.r; el('frRV').textContent = st.r.toFixed(1) + ' m'; el('frS').value = st.S; el('frSV').textContent = st.S + ' N'; el('frTb').value = st.tb; el('frTbV').textContent = st.tb.toFixed(1) + ' s';
+  el('frSRow').style.display = BREAK === 'strength' ? '' : 'none'; el('frTbRow').style.display = BREAK === 'time' ? '' : 'none';
+  ['V', 'A', 'T', 'F', 'G'].forEach(function(k){ el('frSh' + k).checked = st['sh' + k]; }); }
+function restart(){ st.t = 0; st.playing = false; said = false; el('frPlay').innerHTML = '\u25B6 Play'; el('frPredMsg').textContent = st.pred ? 'Prediction: ' + label(st.pred).toLowerCase() + '. Press Play.' : ''; render(); }
+el('frR').addEventListener('input', function(){ st.r = +this.value; recompute(); syncInputs(); restart(); save(); });
+el('frS').addEventListener('input', function(){ st.S = +this.value; recompute(); syncInputs(); restart(); save(); });
+el('frTb').addEventListener('input', function(){ st.tb = +this.value; recompute(); syncInputs(); restart(); save(); });
+['V', 'A', 'T', 'F', 'G'].forEach(function(k){ el('frSh' + k).addEventListener('change', function(){ st['sh' + k] = this.checked; save(); render(); }); });
+el('frPlay').addEventListener('click', function(){ if (st.t >= tMax() - 1e-6) restart(); st.playing = !st.playing; this.innerHTML = st.playing ? '\u2759\u2759 Pause' : '\u25B6 Play'; if (st.playing && !st.pred && st.t < TB) narrate('Tip: choose a prediction first, then watch.'); });
+el('frFwd').addEventListener('click', function(){ var p0 = st.t; st.playing = false; el('frPlay').innerHTML = '\u25B6 Play'; st.t = Math.min(tMax(), st.t + 0.1); checkBreak(p0); render(); });
+el('frBack').addEventListener('click', function(){ st.playing = false; el('frPlay').innerHTML = '\u25B6 Play'; st.t = Math.max(0, st.t - 0.1); if (st.t <= TB) said = false; render(); });
+el('frReset').addEventListener('click', function(){ restart(); narrate('Restarted: the puck is at rest, held by the rod.'); });
+el('frTime').addEventListener('input', function(){ var p0 = st.t; st.playing = false; el('frPlay').innerHTML = '\u25B6 Play'; st.t = +this.value; if (st.t <= TB) said = false; checkBreak(p0); render(); });
+el('frSend').addEventListener('click', function(){ var box = getAnswerBox(PREDICTION_ANSWER_NUM); if (!st.pred){ el('frSendMsg').textContent = 'Choose a prediction first.'; return; } if (!box){ el('frSendMsg').textContent = 'Could not find answer box ' + PREDICTION_ANSWER_NUM + ' on this page.'; return; }
+  box.value = st.pred; try { box.dispatchEvent(new Event('input', { bubbles:true })); box.dispatchEvent(new Event('change', { bubbles:true })); } catch(e){} el('frSendMsg').textContent = 'Sent: ' + st.pred + ' (' + label(st.pred).toLowerCase() + ').'; });
+if (!PREDICTION_ANSWER_NUM) el('frSend').parentNode.parentNode.style.display = 'none';
+/* the toolbar */
+var ROOT = el('frRoot');
+function theme(k){ if (k === 'fs') th.fs = (th.fs + 1) % 3; else th[k] = !th[k]; if (k === 'hc' && th.hc) th.lm = false; if (k === 'lm' && th.lm) th.hc = false; applyTheme(); save(); }
+function applyTheme(){ ROOT.classList.toggle('fr_hc', th.hc); ROOT.classList.toggle('fr_lm', th.lm); ROOT.classList.toggle('fr_fs1', th.fs === 1); ROOT.classList.toggle('fr_fs2', th.fs === 2);
+  [['hc', 'frBtnHC'], ['lm', 'frBtnLM'], ['cb', 'frBtnCB'], ['nr', 'frBtnNR'], ['fs', 'frBtnFS']].forEach(function(q){ var b = el(q[1]), on = q[0] === 'fs' ? th.fs > 0 : th[q[0]]; b.classList.toggle('fr_a11yon', !!on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+  el('frBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('frBtnFS').textContent = 'FONT: ' + ['NORMAL', 'LARGE', 'XL'][th.fs]; el('frNar').style.display = th.nr ? '' : 'none'; render(); }
+[['hc', 'frBtnHC'], ['lm', 'frBtnLM'], ['cb', 'frBtnCB'], ['nr', 'frBtnNR'], ['fs', 'frBtnFS']].forEach(function(q){ el(q[1]).addEventListener('click', function(){ theme(q[0]); }); });
+el('frDescBtn').addEventListener('click', function(){ var d = el('frDesc'), open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; this.setAttribute('aria-expanded', open ? 'true' : 'false'); this.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION'; if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } });
+/* saved between MOM submissions */
+var KEY = 'frSaved_' + '_' + PLANE + '_' + BREAK;
+function save(){ try { localStorage.setItem(KEY, JSON.stringify({ r:st.r, S:st.S, tb:st.tb, pred:st.pred, shV:st.shV, shA:st.shA, shT:st.shT, shF:st.shF, shG:st.shG, th:th })); } catch(e){} }
+try { var sv = JSON.parse(localStorage.getItem(KEY) || 'null'); if (sv){ ['r', 'S', 'tb', 'pred', 'shV', 'shA', 'shT', 'shF', 'shG'].forEach(function(k){ if (sv[k] !== undefined) st[k] = sv[k]; }); if (sv.th) th = sv.th; } } catch(e){}
+/* the animation */
+var last = 0; function loop(ts){ var dt = Math.min(0.05, (ts - (last || ts))/1000); last = ts; if (st.playing){ var p0 = st.t; st.t = Math.min(tMax(), st.t + dt); checkBreak(p0); if (st.t >= tMax()){ st.playing = false; el('frPlay').innerHTML = '\u25B6 Play'; } render(); } requestAnimationFrame(loop); }
+el('frSub').textContent = (VERT ? 'a puck on a vertical circle' : 'a puck on a horizontal frictionless table') + ', spun faster and faster until the rod ' + (BREAK === 'strength' ? 'can no longer hold it' : 'breaks');
+recompute(); syncInputs(); buildPreds(); applyTheme(); restart();
+narrate('A ' + M + ' kg puck on a ' + st.r.toFixed(1) + ' m rod, ' + (VERT ? 'on a vertical circle' : 'on a horizontal table') + '. It speeds up with a constant angular acceleration of ' + ALPHA + ' rad/s squared. Predict the path after the rod breaks, then press Play.');
+requestAnimationFrame(loop);
+return { _state:function(){ var s = stateAt(st.t); return { t:st.t, TB:TB, s:s, pred:st.pred, PLANE:PLANE, BREAK:BREAK }; }, _setT:function(t){ var p0 = st.t; st.t = t; checkBreak(p0); render(); }, _stateAt:stateAt, _tension:tension };
+})();
+</script>
+<hr><h2>Your Prediction</h2><hr>
+<p>The path you predicted, before watching the rod break (sent by the button in the simulation):<br><input id="qn010" size="10" aria-label="answer box 10"></p>
+<hr><h2>Before the Rod Breaks</h2><hr>
+<p>Let us start by focusing on the motion of the puck before the rod breaks.<br>What are the forces acting on the puck then?<input id="qn000" size="10" aria-label="answer box 0"></p>
+<p>Using the conventional CCW (counterclockwise) direction, select the rotational kinematic quantities that govern the motion of the puck while it is still held by the rod:<input id="qn001" size="10" aria-label="answer box 1"></p>
+<p>Select now the linear kinematic quantities that govern the motion of the puck while it is still held by the rod:<input id="qn002" size="10" aria-label="answer box 2"></p>
+<p>Provide justifications for all three questions you have just answered:
+<br><input id="qn003" size="10" aria-label="answer box 3"></p>
+<hr><h2>Once the Rod Breaks</h2><hr>
+<p>Focusing now on the motion of the puck after the rod breaks.<br>What are the forces acting on the puck then?<input id="qn004" size="10" aria-label="answer box 4"></p>
+<p>Using the conventional CCW (counterclockwise) direction, select the rotational kinematic quantities that govern the motion of the puck after the rod breaks:<input id="qn005" size="10" aria-label="answer box 5"></p>
+<p>Select now the linear kinematic quantities that govern the motion of the puck after the rod breaks:<input id="qn006" size="10" aria-label="answer box 6"></p>
+<p>What path does the puck follow after it is released from the grip of the rod:
+<br><input id="qn007" size="10" aria-label="answer box 7"></p>
+<p>What can you say about its acceleration then:
+<br><input id="qn008" size="10" aria-label="answer box 8"></p>
+<p>Provide justifications for the last five questions you have just answered:
+<br><input id="qn009" size="10" aria-label="answer box 9"></p>
+</main>
+</body>
+</html>
