@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Forces: Lift and Drag on a Wing</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, lift, drag, airfoil, wing, angle of attack, stall, Bernoulli, Newton's third law, airplane, lesson, scientific">
+<meta name="description" content="Interactive wing in an airflow: change the angle of attack, airspeed, wing area, plane mass and altitude, and compare lift, drag and weight; see the stall.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+@media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="lfRoot" class="lf_root" role="region" aria-label="Lift and drag simulator: a wing in a stream of air; change the angle of attack and the airspeed and compare the lift, the drag and the weight of the plane">
+<div class="lf_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="lf_a11ybtn" id="lfBtnHC" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="lf_a11ybtn" id="lfBtnLM" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="lf_a11ybtn" id="lfBtnCB" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="lf_a11ybtn lf_a11yon" id="lfBtnNR" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div class="lf_header"><p class="lf_h1">Lift and Drag on a Wing</p><p class="lf_sub">lift is across the airflow, drag is along it &middot; both grow as &frac12; &rho; v&sup2; &middot; too steep, and the wing stalls</p></div>
+<div class="lf_panel"><div class="lf_ptitle">The wing, seen from the side (the air flows from left to right, as the plane flies to the left)</div>
+<canvas id="lfCv" width="720" height="340" role="img" aria-label="Cross-section of a wing in a stream of air, with streamlines, moving air particles and the lift, drag and weight arrows" aria-describedby="lfStatus"></canvas>
+<div class="lf_pbody"><div class="lf_bar">
+<label><input type="checkbox" id="lfFlow" checked> airflow</label>
+<label><input type="checkbox" id="lfPres"> pressure (low above, high below)</label>
+<label><input type="checkbox" id="lfMag"> magnify the drag arrow &times;5</label>
+<button type="button" class="lf_btn" id="lfDsc">Describe</button>
+</div></div></div>
+<div class="lf_status" id="lfStatus"></div>
+<div class="lf_read" id="lfRead" aria-label="Readings"></div>
+<div class="lf_panels">
+<div class="lf_panel"><div class="lf_ptitle">The wing</div><div class="lf_pbody">
+<div class="lf_ctrl"><div class="lf_ctrlhdr"><label class="lf_ctrlname" for="lfAoa">angle of attack &alpha; (tilt of the wing into the air)</label><span class="lf_sval" id="lfAoav"></span></div><input type="range" id="lfAoa" min="-5" max="20" step="0.5"></div>
+<div class="lf_ctrl"><div class="lf_ctrlhdr"><label class="lf_ctrlname" for="lfV">airspeed v</label><span class="lf_sval" id="lfVv"></span></div><input type="range" id="lfV" min="0" max="90" step="0.5"></div>
+<div class="lf_ctrl"><div class="lf_ctrlhdr"><label class="lf_ctrlname" for="lfS">wing area S</label><span class="lf_sval" id="lfSv"></span></div><input type="range" id="lfS" min="5" max="60" step="0.5"></div>
+</div></div>
+<div class="lf_panel"><div class="lf_ptitle">The plane and the air</div><div class="lf_pbody">
+<div class="lf_ctrl"><div class="lf_ctrlhdr"><label class="lf_ctrlname" for="lfM">mass of the plane m</label><span class="lf_sval" id="lfMv"></span></div><input type="range" id="lfM" min="300" max="5000" step="50"></div>
+<div class="lf_ctrl"><div class="lf_ctrlhdr"><label class="lf_ctrlname" for="lfH">altitude (thinner air higher up)</label><span class="lf_sval" id="lfHv"></span></div><input type="range" id="lfH" min="0" max="10000" step="100"></div>
+<div class="lf_bar">
+<button type="button" class="lf_btn lf_kick" id="lfLevel">Speed for level flight</button>
+<button type="button" class="lf_btn" data-p="takeoff">take-off</button><button type="button" class="lf_btn" data-p="cruise">cruise</button><button type="button" class="lf_btn" data-p="stall">stall</button>
+</div>
+<p class="lf_note">The wing is modelled on a typical light-plane wing (like a Cessna 172: 16 m&sup2;, about 1100 kg).</p>
+</div></div>
+</div>
+<div class="lf_panel"><div class="lf_ptitle">How the shape of the flow depends on the angle of attack</div><canvas id="lfGr" width="760" height="250" role="img" aria-label="Graphs of the lift coefficient and of the drag coefficient against the angle of attack"></canvas></div>
+<div class="lf_eqs" id="lfEq"></div>
+<div id="lfNar" class="lf_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="lf_descwrap">
+<button type="button" class="lf_descbtn" id="lfDescBtn" aria-expanded="false" aria-controls="lfDesc">&#9656; SIM DESCRIPTION</button>
+<div class="lf_desc" id="lfDesc" role="region" aria-labelledby="lfDescBtn" hidden>
+<p>The cross-section of a wing (an <b>airfoil</b>) is shown in a stream of air, as seen by someone riding with the plane: the plane flies to the left, so the air flows past the wing from left to right at the <b>airspeed</b> `v`. The <b>angle of attack</b> `alpha` is the tilt of the wing into the oncoming air.</p>
+<p>The air exerts a force on the wing. Its part <b>across</b> the airflow is the <b>lift</b> `L`; its part <b>along</b> the airflow is the <b>drag</b> `D`. Both have the same form as the drag on a falling ball:</p>
+<p class="lf_eq">`L = 1/2 rho v^2 S C_L`,&nbsp;&nbsp; `D = 1/2 rho v^2 S C_D`,</p>
+<p>where `rho` is the density of the air, `S` the area of the wing seen from above, and `C_L` and `C_D` the <b>lift</b> and <b>drag coefficients</b>, which depend on the shape of the wing and on the angle of attack. Doubling the speed makes both forces four times larger.</p>
+<p><b>Where lift comes from.</b> The tilted, curved wing turns the air flowing past it <b>downward</b> (the downwash behind the wing). By Newton&rsquo;s third law, if the wing pushes the air down, the air pushes the wing up. Equivalently, the air flows faster over the top of the wing than under it, so the pressure is lower above than below (Bernoulli), and the pressure difference pushes the wing up. Both descriptions are correct; they are two views of the same flow.</p>
+<p><b>Angle of attack and stall.</b> Tilting the wing more turns more air downward: `C_L` grows almost in proportion to `alpha`. But beyond about 15&deg;, the air can no longer follow the curved top surface: it breaks away into swirls, the lift drops and the drag rises sharply. The wing has <b>stalled</b>. The drag also grows with the lift (turning the air down has a cost): `C_D` is smallest near zero lift and grows like `C_L^2`.</p>
+<p><b>Level flight.</b> The plane flies level when the lift balances its weight, `L = m g`. At a given angle of attack this needs a certain speed, `v = sqrt((2 m g)/(rho S C_L))`. The slowest speed at which it can stay up is the <b>stall speed</b>, at the largest `C_L`. Higher up the air is thinner, so the plane must fly faster for the same lift. (The drag must be balanced by the thrust of the engine, not shown here.)</p>
+<p><b>Model.</b> A light-plane wing (an airfoil like the NACA 2412, aspect ratio 8): `C_L` = 0.11 per degree times (`alpha` + 2&deg;) up to 15&deg;, then falling; `C_D` = 0.008 + 0.05 `C_L^2`, rising sharply after the stall. Air density 1.225 kg/m&sup3; at sea level, decreasing with altitude. The streamlines are drawn to show the main features of the flow (bending over the wing, downwash, separation at the stall); they are not a computed flow.</p>
+</div></div>
+</div><!-- #lfRoot -->
+<style>
+#lfRoot { --c-chassis:#1a1c1f; --c-panel:#22262b; --c-hi:#2c3138; --c-lo:#14161a; --c-bd:#3a4048; --c-bd2:#525c66; --c-text:#c8d0d8; --c-dim:#8a94a3; --c-accent:#e8a020; --c-green:#3ad08f; --c-val:#ffdd66; --c-nbg:#2a2410; --c-nbd:#e0b040; --c-ntx:#f0e2b8;
+  background:var(--c-chassis); color:var(--c-text); font-family:Arial, sans-serif; font-size:14px; padding:14px 10px 18px; border-radius:6px; box-sizing:border-box; width:100%; max-width:860px; margin:0 auto 10px; display:flex; flex-direction:column; gap:10px; }
+#lfRoot * { box-sizing:border-box; }
+#lfRoot.lf_lm { --c-chassis:#e9edf1; --c-panel:#ffffff; --c-hi:#f1f4f7; --c-lo:#f4f6f9; --c-bd:#c3cad3; --c-bd2:#9aa3ae; --c-text:#1d232a; --c-dim:#556070; --c-accent:#a8620a; --c-green:#12805a; --c-val:#8a4a00; --c-nbg:#ffefc0; --c-ntx:#333; }
+#lfRoot.lf_hc { --c-chassis:#000; --c-panel:#000; --c-hi:#111; --c-lo:#000; --c-bd:#fff; --c-bd2:#fff; --c-text:#fff; --c-dim:#e8e8e8; --c-accent:#ffd700; --c-green:#00ff88; --c-val:#ffff00; --c-nbg:#000; --c-nbd:#ffd700; --c-ntx:#fff; }
+#lfRoot .lf_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+#lfRoot .lf_a11ybtn { padding:4px 10px; font-size:.72em; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-dim); min-height:32px; }
+#lfRoot .lf_a11yon { background:rgba(58,208,143,.14); border-color:var(--c-green); color:var(--c-green); font-weight:bold; }
+#lfRoot .lf_header { text-align:center; }
+#lfRoot .lf_h1 { margin:0; font-size:1.05em; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--c-accent); }
+#lfRoot .lf_sub { margin:3px 0 0; font-size:.75em; color:var(--c-dim); letter-spacing:.05em; text-transform:uppercase; }
+#lfRoot .lf_panels { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#lfRoot .lf_panel { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; overflow:hidden; min-width:0; }
+#lfRoot .lf_ptitle { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.66em; letter-spacing:.1em; text-transform:uppercase; color:var(--c-dim); }
+#lfRoot .lf_pbody { padding:9px 12px; display:flex; flex-direction:column; gap:9px; }
+#lfRoot canvas { display:block; width:100%; height:auto; }
+#lfRoot .lf_bar { display:flex; flex-wrap:wrap; gap:6px 12px; align-items:center; }
+#lfRoot .lf_bar label { display:flex; align-items:center; gap:6px; font-size:.86em; cursor:pointer; }
+#lfRoot .lf_ctrl { display:flex; flex-direction:column; gap:3px; min-width:0; }
+#lfRoot .lf_ctrlhdr { display:flex; justify-content:space-between; align-items:baseline; gap:6px; }
+#lfRoot .lf_ctrlname { font-size:.8em; font-weight:600; color:var(--c-dim); text-transform:uppercase; letter-spacing:.03em; }
+#lfRoot .lf_sval { font-family:monospace; font-size:.9em; color:var(--c-val); white-space:nowrap; }
+#lfRoot .lf_note { margin:0; font-size:.8em; color:var(--c-dim); line-height:1.4; }
+#lfRoot input[type=range] { width:100%; -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; cursor:pointer; background:var(--c-lo); border:1px solid var(--c-bd); margin:9px 0; }
+#lfRoot input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#lfRoot input[type=range]::-moz-range-thumb { width:16px; height:16px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#lfRoot input[type=checkbox] { accent-color:var(--c-accent); width:16px; height:16px; }
+#lfRoot .lf_btn { padding:7px 11px; font-family:monospace; font-size:.78em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-text); border-radius:3px; min-height:36px; }
+#lfRoot .lf_btn:hover { border-color:var(--c-accent); }
+#lfRoot .lf_kick { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#lfRoot .lf_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(125px,1fr)); gap:6px 10px; background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; padding:8px 12px; }
+#lfRoot .lf_flabel { font-family:monospace; font-size:.66em; color:var(--c-dim); letter-spacing:.06em; text-transform:uppercase; }
+#lfRoot .lf_fvalue { font-family:monospace; font-size:.98em; color:var(--c-val); }
+#lfRoot .lf_eqs { background:var(--c-lo); border:1px solid var(--c-bd); border-left:4px solid var(--c-accent); border-radius:4px; padding:8px 14px; font-family:monospace; font-size:.8em; color:var(--c-dim); line-height:1.7; }
+#lfRoot .lf_eqs b { color:var(--c-val); }
+#lfRoot .lf_status { padding:8px 12px; border-radius:4px; background:var(--c-panel); border:1px solid var(--c-bd); font-size:.92em; line-height:1.45; }
+#lfRoot .lf_narbar { min-height:30px; padding:6px 12px; background:var(--c-nbg); border-left:4px solid var(--c-nbd); color:var(--c-ntx); font-size:.92em; font-style:italic; line-height:1.45; border-radius:3px; }
+#lfRoot .lf_descwrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+#lfRoot .lf_descbtn { padding:8px 18px; font-family:monospace; font-size:.8em; letter-spacing:.08em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-accent); color:var(--c-accent); border-radius:3px; font-weight:bold; min-height:40px; }
+#lfRoot .lf_desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid var(--c-accent); border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.95em; line-height:1.55; }
+#lfRoot .lf_desc p { margin:0 0 9px; }
+#lfRoot .lf_eq { text-align:center; font-size:1rem; }
+#lfRoot [hidden] { display:none !important; }
+#lfRoot button:focus-visible, #lfRoot input:focus-visible { outline:2px solid var(--c-accent); outline-offset:2px; }
+@media (max-width:640px) { #lfRoot { padding:10px 6px 14px; } #lfRoot .lf_panels { grid-template-columns:minmax(0,1fr); } #lfRoot .lf_btn { flex:1 1 28%; } }
+@media (pointer:coarse) { #lfRoot input[type=range] { height:8px; } #lfRoot input[type=range]::-webkit-slider-thumb { width:28px; height:28px; } #lfRoot input[type=range]::-moz-range-thumb { width:26px; height:26px; } #lfRoot .lf_a11ybtn, #lfRoot .lf_btn { min-height:44px; font-size:15px; } #lfRoot input[type=checkbox] { width:22px; height:22px; } }
+</style>
+<!-- ════════ SIMULATION ════════
+Lift and drag of a light-plane wing (NACA 2412-like airfoil, aspect ratio 8):
+CL = 0.11 (alpha + 2) for alpha <= 15 deg, then decreasing; CD = 0.008 + 0.05 CL^2 + a stall term.
+L = 1/2 rho v^2 S CL (across the airflow), D = 1/2 rho v^2 S CD (along it); rho = 1.225 exp(-h/8500).
+The streamlines are a drawing of the flow (bending over the airfoil, downwash, separation), not a computed flow.
+No dollar signs or backticks in the code.
+-->
+<script>
+(function(){
+var thisq = '';
+var CFG = { a:4, v:45, m:1100 };
+function el(id){ return document.getElementById(id + thisq); }
+var ROOT = el('lfRoot'), G = 9.81, ASTALL = 15, CLMAX = 0.11*(ASTALL + 2);
+var P = { a:CFG.a, v:CFG.v, S:16.2, m:CFG.m, h:0 }, flow = true, pres = false, mag = false;
+var th = { hc:false, lm:false, cb:false, nr:true };
+function CL(a){ return a <= ASTALL ? 0.11*(a + 2) : CLMAX*Math.max(0.55, 1 - 0.09*(a - ASTALL)); }
+function CD(a){ var c = CL(a); return 0.008 + 0.05*c*c + (a > ASTALL ? 0.035*Math.pow(a - ASTALL, 1.4) : 0); }
+function rho(){ return 1.225*Math.exp(-P.h/8500); }
+function q(){ return 0.5*rho()*P.v*P.v; }
+function lift(){ return q()*P.S*CL(P.a); } function drag(){ return q()*P.S*CD(P.a); }
+function vLevel(a){ var c = CL(a); return c > 0.01 ? Math.sqrt(2*P.m*G/(rho()*P.S*c)) : Infinity; }
+function vStall(){ return Math.sqrt(2*P.m*G/(rho()*P.S*CLMAX)); }
+function stalled(){ return P.a > ASTALL; }
+/* ══════════ colours ══════════ */
+function pal(){ var cb = th.cb, hc = th.hc, lm = th.lm;
+  return { bg1:hc ? '#000' : (lm ? '#d8ecff' : '#0c1a2e'), bg2:hc ? '#000' : (lm ? '#f2f8ff' : '#18304e'), txt:hc ? '#fff' : (lm ? '#111' : '#e6ecf2'), dim:hc ? '#ddd' : (lm ? '#556' : '#9aa6b4'), grid:hc ? '#555' : (lm ? '#d6dde5' : 'rgba(150,170,195,0.22)'),
+    wing:hc ? '#ffffff' : (lm ? '#7a8594' : '#c2ccd8'), wingE:hc ? '#000' : '#2a3340', line:hc ? 'rgba(255,255,255,0.55)' : (lm ? 'rgba(40,70,110,0.45)' : 'rgba(180,210,255,0.45)'), dot:hc ? '#ffff00' : (lm ? '#1a4a8a' : '#e6f0ff'),
+    L:cb ? '#009E73' : '#3ad08f', D:cb ? '#D55E00' : '#ff7a3a', W:cb ? '#0072B2' : '#4a8cff', low:cb ? '0,114,178' : '60,140,255', high:cb ? '230,159,0' : '255,90,60', swirl:hc ? '#ffff00' : (lm ? '#7a3a1a' : '#ffb07a'), cl:cb ? '#009E73' : '#3ad08f', cd:cb ? '#D55E00' : '#ff7a3a' }; }
+var DPR = window.devicePixelRatio || 1, CV = {};
+['lfCv', 'lfGr'].forEach(function(k){ var c = el(k), w = c.width, h = c.height; c.width = w*DPR; c.height = h*DPR; c.style.aspectRatio = w + ' / ' + h; var g = c.getContext('2d'); g.scale(DPR, DPR); CV[k] = { c:c, g:g, W:w, H:h }; });
+/* ══════════ the airfoil (NACA 2412), in chord units, quarter chord at the origin, then rotated by alpha ══════════ */
+var AF = (function(){ var up = [], lo = [], n = 60, i, m = 0.02, p = 0.4, t = 0.12;
+  for (i=0; i<=n; i++){ var x = 0.5*(1 - Math.cos(Math.PI*i/n)), yt = 5*t*(0.2969*Math.sqrt(x) - 0.1260*x - 0.3516*x*x + 0.2843*x*x*x - 0.1015*x*x*x*x), yc = x < p ? m/(p*p)*(2*p*x - x*x) : m/((1 - p)*(1 - p))*((1 - 2*p) + 2*p*x - x*x);
+    up.push([x - 0.25, yc + yt]); lo.push([x - 0.25, yc - yt]); }
+  return { up:up, lo:lo }; })();
+function rot(pt, a){ var c = Math.cos(a), s = Math.sin(a); return [pt[0]*c + pt[1]*s, -pt[0]*s + pt[1]*c]; }
+function surfaces(a){   /* rotated outline, and the top and bottom of the wing at each x (screen-aligned, chord units, y up) */
+  var U = AF.up.map(function(q){ return rot(q, a); }), Lw = AF.lo.map(function(q){ return rot(q, a); });
+  function at(arr, x){ for (var i=1; i<arr.length; i++){ var a0 = arr[i - 1], a1 = arr[i]; if ((a0[0] - x)*(a1[0] - x) <= 0 && a1[0] !== a0[0]){ var f = (x - a0[0])/(a1[0] - a0[0]); return a0[1] + f*(a1[1] - a0[1]); } } return null; }
+  var all = U.concat(Lw), xmin = Math.min.apply(null, all.map(function(q){ return q[0]; })), xmax = Math.max.apply(null, all.map(function(q){ return q[0]; }));
+  return { U:U, L:Lw, xmin:xmin, xmax:xmax, top:function(x){ var a1 = at(U, x), a2 = at(Lw, x); return a1 === null && a2 === null ? null : Math.max(a1 === null ? -9 : a1, a2 === null ? -9 : a2); }, bot:function(x){ var a1 = at(U, x), a2 = at(Lw, x); return a1 === null && a2 === null ? null : Math.min(a1 === null ? 9 : a1, a2 === null ? 9 : a2); }, te:U[U.length - 1], le:U[0] }; }
+/* the streamlines, as heights on a grid of x: they hug the wing, then turn down behind it (downwash); smoothed, kept clear of the wing */
+var LINES = [-0.9, -0.66, -0.46, -0.3, -0.16, -0.06, 0.06, 0.16, 0.3, 0.46, 0.66, 0.9];
+var XS = []; (function(){ for (var x=-2.2; x<=1.901; x += 0.02) XS.push(+x.toFixed(3)); })();
+var LCache = { key:'' , Y:null };
+function lines(sf, cl, st){
+  var key = P.a + '|' + st; if (LCache.key === key) return LCache.Y;
+  var xl = sf.xmin, xt = sf.xmax, yLE = sf.le[1], yTE = sf.te[1], w = 0.16*cl, xs0 = xl + 0.25*(xt - xl), sep0 = st ? sf.top(xs0) : 0;
+  function sepAt(x){ return sep0 + (x - xs0)*0.1; }
+  function raw(x, above){ var b;
+    if (x < xl) b = yLE*Math.exp((x - xl)/0.35);
+    else if (x > xt) b = yTE - w*1.6*(1 - Math.exp(-(x - xt)/0.5));
+    else { b = above ? sf.top(x) : sf.bot(x); if (b === null) b = yLE; }
+    if (above && st && x > xs0){ b = Math.max(b, sepAt(Math.min(x, xt)) - (x > xt ? (x - xt)*0.05 : 0)); }
+    return b; }
+  function smooth(arr){ var out = [], r = 4; for (var i=0; i<arr.length; i++){ var s = 0, n = 0; for (var k=-r; k<=r; k++){ var j = i + k; if (j < 0 || j >= arr.length) continue; var wt = r + 1 - Math.abs(k); s += arr[j]*wt; n += wt; } out.push(s/n); } return out; }
+  var bu = smooth(XS.map(function(x){ return raw(x, true); })), bl = smooth(XS.map(function(x){ return raw(x, false); }));
+  var Y = LINES.map(function(y0){ var above = y0 > 0, f = Math.exp(-Math.abs(y0)/(above ? 0.42 : 0.32));
+    return XS.map(function(x, i){ var y = y0 + (above ? bu[i] : bl[i])*f - (x > xt ? 1.4*(1 - Math.exp(-(x - xt)/0.5)) : 0)*w*(1 - f)*Math.exp(-Math.abs(y0)/0.9);
+      if (x >= xl && x <= xt){ var tp = sf.top(x), bt = sf.bot(x); if (above && tp !== null) y = Math.max(y, (st && x > xs0 ? Math.max(tp, sepAt(x)) : tp) + 0.014); if (!above && bt !== null) y = Math.min(y, bt - 0.014); }
+      return y; }); });
+  LCache = { key:key, Y:Y }; return Y; }
+function yAt(Y, x){ var f = (x - XS[0])/0.02, i = Math.max(0, Math.min(XS.length - 2, Math.floor(f))), u = f - i; return Y[i]*(1 - u) + Y[i + 1]*u; }
+/* ══════════ the main view ══════════ */
+var dots = []; (function(){ var s = 11; function r(){ s = (s*16807) % 2147483647; return s/2147483647; } for (var i=0; i<160; i++) dots.push([r(), r()]); })();
+function arrowXY(g, x1, y1, x2, y2, col, w, lab, lx, ly){ var dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy); if (L < 2) return; var ux = dx/L, uy = dy/L, hl = Math.min(14, L*0.45);
+  g.strokeStyle = col; g.fillStyle = col; g.lineWidth = w; g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2 - ux*hl*0.8, y2 - uy*hl*0.8); g.stroke();
+  g.beginPath(); g.moveTo(x2, y2); g.lineTo(x2 - ux*hl - uy*hl*0.55, y2 - uy*hl + ux*hl*0.55); g.lineTo(x2 - ux*hl + uy*hl*0.55, y2 - uy*hl - ux*hl*0.55); g.closePath(); g.fill();
+  if (lab){ g.font = 'bold 13px Arial, sans-serif'; g.textAlign = 'left'; g.textBaseline = 'middle'; g.lineWidth = 3.5; g.lineJoin = 'round'; g.strokeStyle = th.lm ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.8)'; g.strokeText(lab, lx, ly); g.fillText(lab, lx, ly); g.textBaseline = 'alphabetic'; } }
+function drawMain(t){
+  var c = CV.lfCv, g = c.g, W = c.W, H = c.H, p = pal(), CX = W*0.44, CY = H*0.5, C = 210, a = P.a*Math.PI/180, sf = surfaces(a), cl = CL(P.a), st = stalled(), i;
+  function X(x){ return CX + x*C; } function Y(y){ return CY - y*C; }
+  var gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, p.bg1); gr.addColorStop(1, p.bg2); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+  if (pres && P.v > 0.5){ var s = Math.max(0, Math.min(1, Math.abs(cl)/1.6))*Math.min(1, P.v/25), sgn = cl >= 0 ? 1 : -1;
+    [[sgn > 0 ? p.low : p.high, -0.12], [sgn > 0 ? p.high : p.low, 0.1]].forEach(function(q, k){ var gx = X(0.12), gy = Y(k ? -0.12 : 0.18), rg = g.createRadialGradient(gx, gy, 5, gx, gy, C*0.62);
+      rg.addColorStop(0, 'rgba(' + q[0] + ',' + (0.55*s).toFixed(2) + ')'); rg.addColorStop(1, 'rgba(' + q[0] + ',0)'); g.fillStyle = rg; g.fillRect(0, 0, W, H); });
+    g.font = 'bold 12px Arial, sans-serif'; g.textAlign = 'center'; g.fillStyle = p.txt; if (s > 0.08){ g.fillText(sgn > 0 ? 'lower pressure' : 'higher pressure', X(0.66), Y(0.36)); g.fillText(sgn > 0 ? 'higher pressure' : 'lower pressure', X(0.66), Y(-0.36)); } }
+  if (flow){ var spd = 0.00012*(4 + P.v);
+    var LY = lines(sf, cl, st);
+    LY.forEach(function(arr){ g.strokeStyle = p.line; g.lineWidth = 1.3; g.beginPath(); arr.forEach(function(y, i){ if (i) g.lineTo(X(XS[i]), Y(y)); else g.moveTo(X(XS[i]), Y(y)); }); g.stroke(); });
+    if (P.v > 0.2){ g.fillStyle = p.dot;
+      dots.forEach(function(d, k){ var y0 = LINES[k % LINES.length], above = y0 > 0, f = Math.exp(-Math.abs(y0)/0.4), boost = 1 + (above ? 0.45 : -0.25)*Math.max(-0.5, cl)*f*(st && above ? 0.2 : 1);
+        var x = -2.2 + ((d[0] + t*spd*boost) % 1)*4.1, y = yAt(LY[k % LINES.length], x); g.beginPath(); g.arc(X(x), Y(y), 2.2, 0, 2*Math.PI); g.fill(); }); }
+    if (st){ var n = 7, s0 = sf.xmin + 0.3*(sf.xmax - sf.xmin); g.strokeStyle = p.swirl; g.lineWidth = 1.8;
+      for (i=0; i<n; i++){ var ph = ((t*0.0004*(1 + P.v/30)) + i/n) % 1, sx = s0 + ph*1.5, top = sf.top(Math.min(sx, sf.xmax - 0.01)), sy = (top === null || sx > sf.xmax ? sf.te[1] + 0.05 : top) + 0.05 + 0.1*ph + 0.05*Math.sin(i*2.3), r = 6 + 16*ph;
+        g.globalAlpha = 1 - ph*0.7; g.beginPath(); g.arc(X(sx), Y(sy), r, t*0.004 + i, t*0.004 + i + 4.5); g.stroke(); } g.globalAlpha = 1;
+      g.fillStyle = p.swirl; g.font = 'bold 13px Arial, sans-serif'; g.textAlign = 'center'; g.fillText('STALL: the air breaks away from the top', X(0.4), 22); } }
+  /* the wing */
+  g.beginPath(); sf.U.forEach(function(q, k){ if (k) g.lineTo(X(q[0]), Y(q[1])); else g.moveTo(X(q[0]), Y(q[1])); }); for (i=sf.L.length - 1; i>=0; i--) g.lineTo(X(sf.L[i][0]), Y(sf.L[i][1])); g.closePath();
+  var wg = g.createLinearGradient(0, Y(0.1), 0, Y(-0.1)); wg.addColorStop(0, p.wing); wg.addColorStop(1, th.hc ? '#bbb' : '#6c7684'); g.fillStyle = wg; g.fill(); g.strokeStyle = p.wingE; g.lineWidth = 1.5; g.stroke();
+  /* the angle of attack: chord line and oncoming-air direction */
+  g.setLineDash([5, 4]); g.strokeStyle = p.dim; g.lineWidth = 1.2; var le = rot([-0.25, 0], a), te2 = rot([0.75, 0], a); g.beginPath(); g.moveTo(X(le[0]) - 30*Math.cos(a), Y(le[1]) - 30*Math.sin(a)); g.lineTo(X(te2[0]), Y(te2[1])); g.stroke();
+  g.beginPath(); g.moveTo(X(le[0]) - 60, Y(le[1])); g.lineTo(X(le[0]) + 10, Y(le[1])); g.stroke(); g.setLineDash([]);
+  if (Math.abs(P.a) >= 1){ g.beginPath(); g.arc(X(le[0]), Y(le[1]), 46, Math.PI, Math.PI + a*(1), P.a < 0); g.strokeStyle = p.txt; g.stroke(); }
+  g.fillStyle = p.txt; g.font = 'bold 13px Arial, sans-serif'; g.textAlign = 'right'; g.fillText('\u03B1 = ' + P.a.toFixed(1) + '\u00B0', X(le[0]) - 52, Y(le[1]) - (P.a >= 0 ? 10 : -18));
+  /* forces, from the quarter-chord point, all to one scale */
+  var Lf = lift(), Df = drag(), Wf = P.m*G, mx = Math.max(Wf, Math.abs(Lf), 1), k = 120/mx, ox = X(0), oy = Y(0.02);
+  arrowXY(g, ox, oy, ox, oy + Wf*k, p.W, 5, 'W = ' + kN(Wf), ox + 10, oy + Wf*k*0.75);
+  if (Math.abs(Lf)*k > 2) arrowXY(g, ox, oy, ox, oy - Lf*k, p.L, 5, 'L = ' + kN(Lf), ox + 10, oy - Lf*k*0.8);
+  var dl = Df*k*(mag ? 5 : 1); if (dl > 2) arrowXY(g, ox, oy, ox + dl, oy, p.D, 5, 'D = ' + kN(Df) + (mag ? ' (\u00D75)' : ''), ox + dl + 6, oy - 12);
+  g.fillStyle = p.txt; g.beginPath(); g.arc(ox, oy, 3.5, 0, 2*Math.PI); g.fill();
+  /* the oncoming air */
+  arrowXY(g, 14, H - 18, 74, H - 18, p.dim, 2.5); g.fillStyle = p.dim; g.font = '11px Arial, sans-serif'; g.textAlign = 'left'; g.fillText('air, v = ' + P.v.toFixed(1) + ' m/s', 82, H - 14);
+  g.textAlign = 'right'; g.fillText('plane flies \u2190', W - 10, H - 14); }
+function kN(f){ var a = Math.abs(f); return a >= 1000 ? (f/1000).toFixed(a >= 1e4 ? 1 : 2) + ' kN' : f.toFixed(0) + ' N'; }
+/* ══════════ graphs: CL and CD against alpha ══════════ */
+function drawGr(){
+  var c = CV.lfGr, g = c.g, W = c.W, H = c.H, p = pal(), i;
+  g.fillStyle = th.hc ? '#000' : (th.lm ? '#fff' : '#121820'); g.fillRect(0, 0, W, H);
+  function panel(x0, x1, y0, y1, ymin, ymax, ttl, f, ticks){ function X(a){ return x0 + (a + 5)/25*(x1 - x0); } function Y(v){ return y1 - (v - ymin)/(ymax - ymin)*(y1 - y0); }
+    g.fillStyle = th.cb ? 'rgba(213,94,0,0.12)' : 'rgba(255,90,60,0.12)'; g.fillRect(X(ASTALL), y0, x1 - X(ASTALL), y1 - y0);
+    g.strokeStyle = p.grid; g.lineWidth = 1; g.fillStyle = p.dim; g.font = '10px monospace';
+    for (i=-5; i<=20; i += 5){ g.beginPath(); g.moveTo(X(i), y0); g.lineTo(X(i), y1); g.stroke(); g.textAlign = 'center'; g.fillText(i + '\u00B0', X(i), y1 + 12); }
+    ticks.forEach(function(v){ g.beginPath(); g.moveTo(x0, Y(v)); g.lineTo(x1, Y(v)); g.stroke(); g.textAlign = 'right'; g.fillText(String(v), x0 - 4, Y(v) + 3); });
+    g.strokeStyle = p.dim; g.strokeRect(x0, y0, x1 - x0, y1 - y0); g.fillStyle = p.txt; g.font = 'bold 11px Arial, sans-serif'; g.textAlign = 'left'; g.fillText(ttl, x0, y0 - 6);
+    g.fillStyle = p.dim; g.font = '10px Arial, sans-serif'; g.textAlign = 'center'; g.fillText('angle of attack \u03B1', (x0 + x1)/2, y1 + 25); g.fillText('stall', (X(ASTALL) + x1)/2, y0 + 12);
+    f(X, Y); g.strokeStyle = p.txt; g.setLineDash([3, 3]); g.beginPath(); g.moveTo(X(P.a), y0); g.lineTo(X(P.a), y1); g.stroke(); g.setLineDash([]); }
+  function curve(X, Y, fn, col, dash){ g.strokeStyle = col; g.lineWidth = 2.6; g.setLineDash(dash || []); g.beginPath(); for (var a=-5; a<=20.001; a += 0.1){ if (a === -5) g.moveTo(X(a), Y(fn(a))); else g.lineTo(X(a), Y(fn(a))); } g.stroke(); g.setLineDash([]);
+    g.fillStyle = col; g.beginPath(); g.arc(X(P.a), Y(fn(P.a)), 5, 0, 2*Math.PI); g.fill(); }
+  panel(44, 380, 22, H - 32, -0.4, 2, 'lift coefficient C\u2097'.replace('\u2097', 'L'), function(X, Y){ g.strokeStyle = p.dim; g.beginPath(); g.moveTo(X(-5), Y(0)); g.lineTo(X(20), Y(0)); g.stroke(); curve(X, Y, CL, p.cl); }, [-0.4, 0, 0.4, 0.8, 1.2, 1.6, 2]);
+  panel(424, W - 12, 22, H - 32, 0, 0.5, 'drag coefficient C\u2091'.replace('\u2091', 'D') + (th.cb ? ' (dashed)' : ''), function(X, Y){ curve(X, Y, CD, p.cd, th.cb ? [7, 3] : []); }, [0, 0.1, 0.2, 0.3, 0.4, 0.5]); }
+/* ══════════ readout ══════════ */
+function readout(){
+  var Lf = lift(), Df = drag(), Wf = P.m*G, net = Lf - Wf, vl = vLevel(P.a);
+  var c = [['ANGLE OF ATTACK \u03B1', P.a.toFixed(1) + '\u00B0'], ['AIRSPEED v', P.v.toFixed(1) + ' m/s (' + (P.v*3.6).toFixed(0) + ' km/h)'], ['AIR DENSITY \u03C1', rho().toFixed(3) + ' kg/m\u00B3'], ['C\u2097 \u00B7 C\u2091'.replace('\u2097', 'L').replace('\u2091', 'D'), CL(P.a).toFixed(3) + ' \u00B7 ' + CD(P.a).toFixed(4)],
+    ['LIFT L', kN(Lf)], ['DRAG D', kN(Df)], ['WEIGHT W', kN(Wf)], ['L / D', Df > 1e-9 ? (Lf/Df).toFixed(1) : '\u2014'], ['LIFT \u2212 WEIGHT', kN(net)], ['STALL SPEED', vStall().toFixed(1) + ' m/s']];
+  el('lfRead').innerHTML = c.map(function(qq){ return '<div><div class="lf_flabel' + thisq + '">' + qq[0] + '</div><div class="lf_fvalue' + thisq + '">' + qq[1] + '</div></div>'; }).join('');
+  var st = stalled() ? 'Stalled: the angle of attack is above about 15\u00B0, the air breaks away from the top of the wing, the lift drops and the drag shoots up. Lower the nose!'
+    : P.v < 0.5 ? 'No airspeed, no lift and no drag: a wing needs air flowing past it.'
+    : CL(P.a) <= 0 ? 'The wing pushes the air up, so the air pushes it down: negative lift.'
+    : Math.abs(net) < 0.02*Wf ? 'Level flight: the lift balances the weight.' : net > 0 ? 'The lift is larger than the weight: the plane would climb (speed up upward).' : 'The lift is smaller than the weight: the plane would sink.' + (isFinite(vl) ? ' At this angle it needs ' + vl.toFixed(1) + ' m/s to fly level.' : '');
+  el('lfStatus').textContent = st;
+  el('lfEq').innerHTML = '\u00BD\u03C1v\u00B2 = \u00BD(' + rho().toFixed(3) + ')(' + P.v.toFixed(1) + ')\u00B2 = <b>' + q().toFixed(0) + ' Pa</b>'
+    + '<br>L = \u00BD\u03C1v\u00B2 S C<sub>L</sub> = ' + q().toFixed(0) + ' \u00D7 ' + P.S.toFixed(1) + ' \u00D7 ' + CL(P.a).toFixed(3) + ' = <b>' + kN(Lf) + '</b> &nbsp;\u00B7&nbsp; D = \u00BD\u03C1v\u00B2 S C<sub>D</sub> = ' + q().toFixed(0) + ' \u00D7 ' + P.S.toFixed(1) + ' \u00D7 ' + CD(P.a).toFixed(4) + ' = <b>' + kN(Df) + '</b>'
+    + '<br>Level flight needs L = W: v = \u221A(2mg / \u03C1SC<sub>L</sub>) = <b>' + (isFinite(vl) ? vl.toFixed(1) + ' m/s' : 'impossible at this angle') + '</b> &nbsp;\u00B7&nbsp; stall speed (C<sub>L</sub> = ' + CLMAX.toFixed(2) + '): <b>' + vStall().toFixed(1) + ' m/s</b>';
+  return st; }
+function narrate(m){ if (th.nr) el('lfNar').textContent = m; }
+/* ══════════ controls ══════════ */
+var SL = [['lfAoa', 'a', function(v){ return v.toFixed(1) + '\u00B0'; }, ' degrees'], ['lfV', 'v', function(v){ return v.toFixed(1) + ' m/s (' + (v*3.6).toFixed(0) + ' km/h)'; }, ''], ['lfS', 'S', function(v){ return v.toFixed(1) + ' m\u00B2'; }, ''],
+  ['lfM', 'm', function(v){ return v.toFixed(0) + ' kg'; }, ''], ['lfH', 'h', function(v){ return v.toFixed(0) + ' m'; }, '']];
+function sync(){ SL.forEach(function(s){ var e = el(s[0]), t = s[2](P[s[1]]); e.value = P[s[1]]; el(s[0] + 'v').textContent = t; e.setAttribute('aria-valuetext', t.replace('m/s', 'meters per second').replace('m\u00B2', 'square meters').replace('\u00B0', ' degrees')); }); readout(); drawGr(); }
+function on(id, ev, fn){ var x = el(id); if (x) x.addEventListener(ev, fn); }
+SL.forEach(function(s){ on(s[0], 'input', function(){ P[s[1]] = +this.value; sync(); }); on(s[0], 'change', function(){ narrate(readout() + ' Lift ' + kN(lift()) + ', drag ' + kN(drag()) + ', weight ' + kN(P.m*G) + '.'); }); });
+on('lfLevel', 'click', function(){ var vl = vLevel(P.a); if (!isFinite(vl) || vl > 90){ narrate('At ' + P.a.toFixed(1) + '\u00B0 the wing cannot hold the plane up at any speed up to 90 m/s: increase the angle of attack.'); return; }
+  P.v = Math.round(vl*2)/2; sync(); narrate('Level flight at ' + P.a.toFixed(1) + '\u00B0 needs ' + vl.toFixed(1) + ' m/s (' + (vl*3.6).toFixed(0) + ' km/h): there the lift, ' + kN(lift()) + ', balances the weight. The drag, ' + kN(drag()) + ', must be balanced by the engine\u2019s thrust.'); });
+var PRE = { takeoff:{ a:10, v:30, h:0, say:'Take-off: a large angle of attack and a low speed. The wing turns a lot of air downward.' }, cruise:{ a:1.5, v:62, h:2500, say:'Cruise: a small angle of attack at higher speed, in thinner air. Lift balances weight with little drag: L/D is large.' },
+  stall:{ a:17, v:30, h:0, say:'Stall: the nose is too high. The air breaks away from the top of the wing; the lift drops and the drag shoots up.' } };
+[].forEach.call(ROOT.querySelectorAll('button[data-p]'), function(b){ b.addEventListener('click', function(){ var pr = PRE[b.getAttribute('data-p')]; P.a = pr.a; P.v = pr.v; P.h = pr.h; P.S = 16.2; P.m = 1100; sync(); narrate(pr.say + ' ' + readout()); }); });
+on('lfFlow', 'change', function(){ flow = this.checked; }); on('lfPres', 'change', function(){ pres = this.checked; if (pres) narrate('The air flows faster over the top of the wing than under it: the pressure is lower above (blue) than below. The difference pushes the wing up.'); });
+on('lfMag', 'change', function(){ mag = this.checked; });
+on('lfDsc', 'click', function(){ narrate('A wing cross-section, nose on the left, tilted ' + P.a.toFixed(1) + ' degrees into air flowing from left to right at ' + P.v.toFixed(1) + ' m/s. ' + (flow ? 'Streamlines bend over the wing and are turned downward behind it' + (stalled() ? '; above the wing they break away into swirls' : '') + '. ' : '') + 'A green lift arrow points up, ' + kN(lift()) + '; an orange drag arrow points downstream, ' + kN(drag()) + '; a blue weight arrow points down, ' + kN(P.m*G) + '. ' + readout()); });
+function theme(k){ th[k] = !th[k]; if (k === 'hc' && th.hc) th.lm = false; if (k === 'lm' && th.lm) th.hc = false;
+  ROOT.classList.toggle('lf_hc' + thisq, th.hc); ROOT.classList.toggle('lf_lm' + thisq, th.lm);
+  [['hc', 'lfBtnHC'], ['lm', 'lfBtnLM'], ['cb', 'lfBtnCB'], ['nr', 'lfBtnNR']].forEach(function(q2){ var b = el(q2[1]); b.classList.toggle('lf_a11yon' + thisq, th[q2[0]]); b.setAttribute('aria-pressed', th[q2[0]] ? 'true' : 'false'); });
+  el('lfBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('lfNar').style.display = th.nr ? '' : 'none'; drawGr();
+  if (k === 'cb' && th.cb) narrate('Colour-blind safe colours: lift bluish green, drag orange-red (dashed on the graph), weight blue; low pressure blue, high pressure orange.'); }
+on('lfBtnHC', 'click', function(){ theme('hc'); }); on('lfBtnLM', 'click', function(){ theme('lm'); }); on('lfBtnCB', 'click', function(){ theme('cb'); }); on('lfBtnNR', 'click', function(){ theme('nr'); });
+on('lfDescBtn', 'click', function(){ var d = el('lfDesc'), o = d.hidden; d.hidden = !o; this.setAttribute('aria-expanded', o ? 'true' : 'false'); this.innerHTML = (o ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+  if (o && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } });
+function loop(t){ drawMain(t); requestAnimationFrame(loop); }
+sync();
+narrate('A light-plane wing at ' + P.a.toFixed(1) + '\u00B0, in air flowing at ' + P.v.toFixed(1) + ' m/s. ' + readout() + ' Change the angle of attack and the airspeed, and watch the lift, the drag and the flow.');
+requestAnimationFrame(loop);
+window['lfSim' + thisq] = { _P:P, _CL:CL, _CD:CD, _L:lift, _D:drag, _vl:vLevel, _vs:vStall, _sync:sync };
+})();
+</script>
+
+</body>
+</html>

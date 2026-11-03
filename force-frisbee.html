@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Forces: The Flight of a Frisbee</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, frisbee, flying disc, lift, drag, angular momentum, gyroscopic stability, precession, torque, Newton's third law, Bernoulli, lesson, scientific">
+<meta name="description" content="Interactive frisbee: throw a flying disc and compare with measured paths, see why it must spin (torque, angular momentum, precession), and where its lift comes from.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+@media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="fzRoot" class="fz_root" role="region" aria-label="Frisbee simulator: the flight of a flying disc, why it must spin, and where its lift comes from">
+<div class="fz_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="fz_a11ybtn" id="fzBtnHC" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="fz_a11ybtn" id="fzBtnLM" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="fz_a11ybtn" id="fzBtnCB" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="fz_a11ybtn fz_a11yon" id="fzBtnNR" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div class="fz_header"><p class="fz_h1">The Flight of a Frisbee</p><p class="fz_sub">a spinning wing &middot; lift and drag keep it up &middot; spin keeps it from flipping over</p></div>
+<div class="fz_tabs" role="tablist" aria-label="Topics">
+<button type="button" role="tab" class="fz_tab" id="fzT0" aria-selected="true">1. Throw it</button>
+<button type="button" role="tab" class="fz_tab" id="fzT1" aria-selected="false">2. Why it must spin</button>
+<button type="button" role="tab" class="fz_tab" id="fzT2" aria-selected="false">3. Where the lift comes from</button>
+</div>
+<div class="fz_panel"><div class="fz_ptitle" id="fzLab"></div>
+<canvas id="fzCv" width="760" height="420" role="img" aria-describedby="fzStatus"></canvas></div>
+<div class="fz_status" id="fzStatus"></div>
+<div class="fz_bbar" id="fzBar"></div>
+<div class="fz_read" id="fzRead" aria-label="Readings"></div>
+<div class="fz_panels"><div class="fz_panel"><div class="fz_ptitle">Controls</div><div class="fz_pbody" id="fzCtlA"></div></div>
+<div class="fz_panel"><div class="fz_ptitle" id="fzCtlBT">Throws</div><div class="fz_pbody" id="fzCtlB"></div></div></div>
+<div class="fz_panel"><div class="fz_ptitle" id="fzGrT"></div><canvas id="fzGr" width="760" height="220" role="img" aria-label="Graph"></canvas></div>
+<div class="fz_eqs" id="fzEq"></div>
+<div id="fzNar" class="fz_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="fz_descwrap">
+<button type="button" class="fz_descbtn" id="fzDescBtn" aria-expanded="false" aria-controls="fzDesc">&#9656; SIM DESCRIPTION</button>
+<div class="fz_desc" id="fzDesc" role="region" aria-labelledby="fzDescBtn" hidden>
+<p>A frisbee is a wing: a thin disc, slightly curved on top, that flies at a small <b>angle of attack</b> `alpha` (the tilt of the disc relative to its direction of motion). Three forces act on it: its <b>weight</b> `mg`, the <b>lift</b> `L` at right angles to its motion, and the <b>drag</b> `D` against its motion,</p>
+<p class="fz_eq">`L = 1/2 rho v^2 A C_L`,&nbsp;&nbsp; `D = 1/2 rho v^2 A C_D`,</p>
+<p>with `A` the area of the disc. The model is the one fitted to wind-tunnel and flight measurements of a 175 g Ultimate disc (Hummel, 2003; Potts and Crowther, 2002): `C_L ~~ 0.15 + 1.4 alpha`, `C_D ~~ 0.08 + 2.72 (alpha + 4&deg;)^2` (`alpha` in radians), and a pitching moment `C_M ~~ -0.015 + 0.16 alpha` (from the wind-tunnel data of Potts and Crowther; it is small, and changes sign near 5&deg;). The disc is 27 cm across.</p>
+<p><b>1. Throw it.</b> Choose a throw, or set the launch yourself: speed, launch angle, the tilt of the disc (nose up or down), its bank (left or right side down) and its spin. The disc&rsquo;s path is shown from the side and from above. A flat, fast throw at a small angle of attack goes farthest: little drag, and enough lift to stay up. A throw aimed high climbs, stalls, and comes down steeply. An upside-down throw gets almost no lift from its curved shape: it falls much like a thrown ball. A throw with no spin pitches up, stalls and flips. The dots are the measured paths of three gentle backyard throws filmed by John Leeman (regular, upside-down and no-spin &ldquo;stall&rdquo; throws, about 5 m/s).</p>
+<p><b>2. Why it must spin.</b> The lift does not act at the centre of the disc but a little ahead of it, so it exerts a <b>torque</b> `tau` that tries to tip the front up. Without spin, the disc tips over (pitches up), stalls and falls, as in Leeman&rsquo;s no-spin throw. A spinning disc has an <b>angular momentum</b> `vec L_s = I omega`, along its axis. The torque changes it, `Delta vec L_s = vec tau Delta t`, but `vec tau` is sideways to `vec L_s`, so the axis turns sideways slowly instead of tipping: the disc slowly <b>banks</b>, like a gyroscope precessing, at the rate</p>
+<p class="fz_eq">`Omega = tau/(I omega)`.</p>
+<p>The faster the spin, the slower it banks; the banked disc then curves to one side (a right-handed backhand throw, spinning clockwise seen from above, fades to the left at the end of its flight).</p>
+<p><b>3. Where the lift comes from.</b> As in the airplane-wing SIM, the disc turns the air flowing past it <b>downward</b>; by Newton&rsquo;s third law the air pushes it up. Each second it meets a mass of air `Delta m/Delta t ~~ rho v D h` (`D` the disc&rsquo;s width, `h` the thickness of the layer of air it affects, above and below) and gives it a downward speed `Delta v`; the force is `L = (Delta m/Delta t) Delta v` (Landell-Mills, 2020). Equivalently, the air flows faster over the curved top than under the bottom, so the pressure is lower above (Bernoulli). In level flight the lift must equal the disc&rsquo;s weight, `mg` &asymp; 1.7 N. The spin itself adds little lift; its job is to keep the disc stable.</p>
+<p>Air density 1.225 kg/m&sup3;. The model is a simplification: it ignores the wobble of the disc and treats the effect of spin on the aerodynamic forces as negligible.</p>
+</div></div>
+</div><!-- #fzRoot -->
+<style>
+#fzRoot { --c-chassis:#1a1c1f; --c-panel:#22262b; --c-hi:#2c3138; --c-lo:#14161a; --c-bd:#3a4048; --c-bd2:#525c66; --c-text:#c8d0d8; --c-dim:#8a94a3; --c-accent:#e8a020; --c-green:#3ad08f; --c-val:#ffdd66; --c-nbg:#2a2410; --c-nbd:#e0b040; --c-ntx:#f0e2b8;
+  background:var(--c-chassis); color:var(--c-text); font-family:Arial, sans-serif; font-size:14px; padding:14px 10px 18px; border-radius:6px; box-sizing:border-box; width:100%; max-width:860px; margin:0 auto 10px; display:flex; flex-direction:column; gap:10px; }
+#fzRoot * { box-sizing:border-box; }
+#fzRoot.fz_lm { --c-chassis:#e9edf1; --c-panel:#ffffff; --c-hi:#f1f4f7; --c-lo:#f4f6f9; --c-bd:#c3cad3; --c-bd2:#9aa3ae; --c-text:#1d232a; --c-dim:#556070; --c-accent:#a8620a; --c-green:#12805a; --c-val:#8a4a00; --c-nbg:#ffefc0; --c-ntx:#333; }
+#fzRoot.fz_hc { --c-chassis:#000; --c-panel:#000; --c-hi:#111; --c-lo:#000; --c-bd:#fff; --c-bd2:#fff; --c-text:#fff; --c-dim:#e8e8e8; --c-accent:#ffd700; --c-green:#00ff88; --c-val:#ffff00; --c-nbg:#000; --c-nbd:#ffd700; --c-ntx:#fff; }
+#fzRoot .fz_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+#fzRoot .fz_a11ybtn { padding:4px 10px; font-size:.72em; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-dim); min-height:32px; }
+#fzRoot .fz_a11yon { background:rgba(58,208,143,.14); border-color:var(--c-green); color:var(--c-green); font-weight:bold; }
+#fzRoot .fz_header { text-align:center; }
+#fzRoot .fz_h1 { margin:0; font-size:1.05em; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--c-accent); }
+#fzRoot .fz_sub { margin:3px 0 0; font-size:.75em; color:var(--c-dim); letter-spacing:.05em; text-transform:uppercase; }
+#fzRoot .fz_tabs { display:flex; gap:4px; flex-wrap:wrap; }
+#fzRoot .fz_tab { flex:1 1 180px; padding:8px 6px; border:1px solid var(--c-bd2); background:var(--c-hi); color:var(--c-text); border-radius:4px; cursor:pointer; font-family:monospace; font-size:.76em; letter-spacing:.05em; text-transform:uppercase; min-height:40px; }
+#fzRoot .fz_tab[aria-selected="true"] { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#fzRoot .fz_panels { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#fzRoot .fz_panel { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; overflow:hidden; min-width:0; }
+#fzRoot .fz_ptitle { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.66em; letter-spacing:.1em; text-transform:uppercase; color:var(--c-dim); }
+#fzRoot .fz_pbody { padding:9px 12px; display:flex; flex-direction:column; gap:9px; }
+#fzRoot canvas { display:block; width:100%; height:auto; }
+#fzRoot .fz_bbar { display:flex; flex-wrap:wrap; gap:6px 12px; justify-content:center; align-items:center; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:6px; padding:8px 10px; }
+#fzRoot .fz_bbar label { display:flex; align-items:center; gap:6px; font-size:.84em; cursor:pointer; }
+#fzRoot .fz_ctrl { display:flex; flex-direction:column; gap:3px; min-width:0; }
+#fzRoot .fz_ctrlhdr { display:flex; justify-content:space-between; align-items:baseline; gap:6px; }
+#fzRoot .fz_ctrlname { font-size:.8em; font-weight:600; color:var(--c-dim); text-transform:uppercase; letter-spacing:.03em; }
+#fzRoot .fz_sval { font-family:monospace; font-size:.9em; color:var(--c-val); white-space:nowrap; }
+#fzRoot .fz_note { margin:0; font-size:.8em; color:var(--c-dim); line-height:1.4; }
+#fzRoot .fz_try { margin:0; padding-left:18px; font-size:.84em; line-height:1.45; }
+#fzRoot .fz_try li { margin-bottom:5px; }
+#fzRoot .fz_brow { display:flex; flex-wrap:wrap; gap:6px; }
+#fzRoot select { background:var(--c-hi); color:var(--c-text); border:1px solid var(--c-bd2); border-radius:3px; padding:5px; font-size:.9em; min-height:36px; }
+#fzRoot input[type=range] { width:100%; -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; cursor:pointer; background:var(--c-lo); border:1px solid var(--c-bd); margin:9px 0; }
+#fzRoot input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#fzRoot input[type=range]::-moz-range-thumb { width:16px; height:16px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#fzRoot input[type=checkbox] { accent-color:var(--c-accent); width:16px; height:16px; }
+#fzRoot .fz_btn { padding:7px 11px; font-family:monospace; font-size:.78em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-text); border-radius:3px; min-height:36px; }
+#fzRoot .fz_btn:hover { border-color:var(--c-accent); }
+#fzRoot .fz_kick { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#fzRoot .fz_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(125px,1fr)); gap:6px 10px; background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; padding:8px 12px; }
+#fzRoot .fz_flabel { font-family:monospace; font-size:.66em; color:var(--c-dim); letter-spacing:.06em; text-transform:uppercase; }
+#fzRoot .fz_fvalue { font-family:monospace; font-size:.98em; color:var(--c-val); }
+#fzRoot .fz_eqs { background:var(--c-lo); border:1px solid var(--c-bd); border-left:4px solid var(--c-accent); border-radius:4px; padding:8px 14px; font-family:monospace; font-size:.8em; color:var(--c-dim); line-height:1.7; }
+#fzRoot .fz_eqs b { color:var(--c-val); }
+#fzRoot .fz_status { padding:8px 12px; border-radius:4px; background:var(--c-panel); border:1px solid var(--c-bd); font-size:.92em; line-height:1.45; }
+#fzRoot .fz_narbar { min-height:30px; padding:6px 12px; background:var(--c-nbg); border-left:4px solid var(--c-nbd); color:var(--c-ntx); font-size:.92em; font-style:italic; line-height:1.45; border-radius:3px; }
+#fzRoot .fz_descwrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+#fzRoot .fz_descbtn { padding:8px 18px; font-family:monospace; font-size:.8em; letter-spacing:.08em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-accent); color:var(--c-accent); border-radius:3px; font-weight:bold; min-height:40px; }
+#fzRoot .fz_desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid var(--c-accent); border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.95em; line-height:1.55; }
+#fzRoot .fz_desc p { margin:0 0 9px; }
+#fzRoot .fz_eq { text-align:center; font-size:1rem; }
+#fzRoot [hidden] { display:none !important; }
+#fzRoot button:focus-visible, #fzRoot input:focus-visible, #fzRoot select:focus-visible { outline:2px solid var(--c-accent); outline-offset:2px; }
+@media (max-width:640px) { #fzRoot { padding:10px 6px 14px; } #fzRoot .fz_panels { grid-template-columns:minmax(0,1fr); } #fzRoot .fz_tab { font-size:.68em; padding:8px 3px; } #fzRoot .fz_btn { flex:1 1 40%; } }
+@media (pointer:coarse) { #fzRoot input[type=range] { height:8px; } #fzRoot input[type=range]::-webkit-slider-thumb { width:28px; height:28px; } #fzRoot input[type=range]::-moz-range-thumb { width:26px; height:26px; } #fzRoot .fz_a11ybtn, #fzRoot .fz_btn, #fzRoot select { min-height:44px; font-size:15px; } #fzRoot input[type=checkbox] { width:22px; height:22px; } }
+</style>
+<!-- ════════ SIMULATION ════════
+Hummel (2003) disc model: CL = 0.15 + 1.4 a, CD = 0.08 + 2.72 (a + 4 deg)^2, CM = -0.015 + 0.16 a (Potts and Crowther, a in radians), smoothly saturated
+for large a (stall). x forward, y left, z up; n = unit normal of the disc (up for a right-side-up disc).
+a = asin(-n.v^); lift along the part of n perpendicular to v; pitching moment about v^ x l (nose-up positive).
+Spinning: gyroscopic precession, dn/dt = M_perp/(Iz w). Not spinning: rigid rotation, It dW/dt = M - c W, dn/dt = W x n.
+Inverted disc: the camber terms (CL0, CM0) change sign. m = 0.175 kg, d = 0.27 m, Iz = 0.00235, It = 0.00122 kg m^2.
+No dollar signs or backticks in the code.
+-->
+<script>
+(function(){
+var thisq = '';
+var CFG = { tab:0 };
+function el(id){ return document.getElementById(id + thisq); }
+var ROOT = el('fzRoot'), RHO = 1.225, G = 9.81, TAU = 2*Math.PI, DEG = Math.PI/180;
+var M = 0.175, DD = 0.27, AR = Math.PI*DD*DD/4, IZ = 0.00235, IT = 0.00122, W = M*G;
+var th = { hc:false, lm:false, cb:false, nr:true }, TAB = 0;
+function CL(a, inv){ return (inv ? -0.15 : 0.15)*Math.cos(a) + 0.7*Math.sin(2*a); }
+function CD(a, inv){ var s = Math.sin(a + 4*DEG), s2 = s*s; return (inv ? 0.10 : 0.08) + 2.72*s2/(1 + 1.6*s2); }
+function CMf(a, inv){ return (inv ? 0.015 : -0.015)*Math.cos(a) + 0.16*Math.sin(a)*Math.cos(a); }
+function f(v, k){ return (Math.abs(v) < 0.5*Math.pow(10, -k) ? 0 : v).toFixed(k); }
+function add(a, b){ return [a[0] + b[0], a[1] + b[1], a[2] + b[2]]; } function mul(a, k){ return [a[0]*k, a[1]*k, a[2]*k]; }
+function dot(a, b){ return a[0]*b[0] + a[1]*b[1] + a[2]*b[2]; } function cross(a, b){ return [a[1]*b[2] - a[2]*b[1], a[2]*b[0] - a[0]*b[2], a[0]*b[1] - a[1]*b[0]]; }
+function len(a){ return Math.sqrt(dot(a, a)); } function nrm(a){ var l = len(a) || 1; return [a[0]/l, a[1]/l, a[2]/l]; }
+/* ══════════ tab 1: the flight ══════════ */
+var T1 = { v:16, gam:2, pitch:6, bank:0, spin:8, cw:true, inv:false, h0:1.0, play:false, t:0, clock:1, P:null, data:null, name:'flat, fast backhand' };
+var LEEMAN = { regular:[[0,1.37],[0.2,1.36],[0.4,1.33],[0.6,1.30],[0.8,1.27],[1.0,1.21],[1.2,1.15],[1.4,1.09],[1.6,1.02],[1.8,0.93],[2.0,0.83],[2.2,0.75],[2.45,0.67],[2.65,0.57],[2.85,0.48],[3.1,0.39],[3.3,0.30],[3.5,0.20],[3.65,0.04]],
+  stall:[[0,1.48],[0.2,1.48],[0.35,1.44],[0.55,1.43],[0.7,1.38],[0.8,1.32],[0.95,1.24],[1.1,1.14],[1.25,1.04],[1.4,0.93],[1.45,0.72],[1.6,0.58],[1.75,0.46],[1.8,0.40],[1.95,0.19],[2.05,0.02]],
+  inv:[[0,1.25],[0.2,1.27],[0.4,1.27],[0.75,1.25],[1.0,1.24],[1.2,1.21],[1.45,1.15],[1.7,1.08],[1.95,1.03],[2.15,0.95],[2.45,0.84],[2.65,0.70],[2.85,0.55],[3.0,0.46],[3.3,0.41],[3.45,0.24],[3.65,0.16],[3.75,0.08]] };
+var THROWS = [['flat, fast backhand', { v:16, gam:2, pitch:6, bank:0, spin:8, cw:true, inv:false, h0:1.0 }, null],
+  ['thrown high', { v:14, gam:30, pitch:32, bank:0, spin:8, cw:true, inv:false, h0:1.0 }, null],
+  ['upside-down (hammer-like)', { v:14, gam:30, pitch:-28, bank:0, spin:8, cw:true, inv:true, h0:1.6 }, null],
+  ['no spin (it stalls and flips)', { v:12, gam:4, pitch:8, bank:0, spin:0, cw:true, inv:false, h0:1.0 }, null],
+  ['banked to the right (hyzer-like)', { v:14, gam:6, pitch:8, bank:-20, spin:8, cw:true, inv:false, h0:1.0 }, null],
+  ['Leeman: regular throw', { v:6.2, gam:-3, pitch:-2, bank:0, spin:3.2, cw:true, inv:false, h0:1.37 }, 'regular'],
+  ['Leeman: upside-down throw', { v:6.2, gam:10, pitch:-1, bank:0, spin:3.2, cw:true, inv:true, h0:1.25 }, 'inv'],
+  ['Leeman: no-spin stall throw', { v:4.0, gam:1, pitch:36, bank:0, spin:0, cw:true, inv:false, h0:1.48 }, 'stall']];
+function forces(x, v, n, inv){ var s = len(v) || 1e-9, vh = mul(v, 1/s), nn = inv ? mul(n, -1) : n, sa = Math.max(-1, Math.min(1, -dot(nn, vh))), a = Math.asin(sa);
+  var lp = add(nn, mul(vh, -dot(nn, vh))), ll = len(lp); var l = ll > 1e-6 ? mul(lp, 1/ll) : [0, 0, 1];
+  var q = 0.5*RHO*s*s*AR, Lf = q*CL(a, inv), Df = q*CD(a, inv), Mm = q*DD*CMf(a, inv);
+  return { a:a, l:l, vh:vh, L:mul(l, Lf), D:mul(vh, -Df), Lm:Lf, Dm:Df, Mv:mul(cross(vh, l), Mm), Mm:Mm, nn:nn }; }
+function fly(o){ var g = o.gam*DEG, p = o.pitch*DEG, b = o.bank*DEG, x = [0, 0, o.h0], v = [o.v*Math.cos(g), 0, o.v*Math.sin(g)];
+  /* the disc's normal: tilted nose-up by the pitch, then banked (positive = left side up) */
+  var n = nrm([-Math.sin(p)*Math.cos(b), Math.sin(b), Math.cos(p)*Math.cos(b)]); if (o.inv) n = mul(n, -1);
+  var w = (o.cw ? -1 : 1)*o.spin*TAU, Wt = [0, 0, 0], t = 0, dt = 0.002, P = [], k, flipped = false;
+  for (k=0; k<12000; k++){ var F = forces(x, v, n, o.inv);
+    if (k % 10 === 0) P.push({ t:t, x:x.slice(), v:v.slice(), n:n.slice(), a:F.a, L:F.Lm, D:F.Dm, Mm:F.Mm });
+    var acc = add(mul(add(F.L, F.D), 1/M), [0, 0, -G]); v = add(v, mul(acc, dt)); x = add(x, mul(v, dt));
+    if (Math.abs(w) > 0.5){ var Mp = add(F.Mv, mul(n, -dot(F.Mv, n))); n = nrm(add(n, mul(Mp, dt/(IZ*w))));   /* precession */ }
+    else { Wt = add(Wt, mul(add(F.Mv, mul(Wt, -IT*2.5)), dt/IT)); n = nrm(add(n, mul(cross(Wt, n), dt))); }
+    if (!flipped && Math.abs(F.a) > 60*DEG) flipped = true;
+    t += dt; if (x[2] <= 0){ P.push({ t:t, x:x.slice(), v:v.slice(), n:n.slice(), a:F.a, L:F.Lm, D:F.Dm, Mm:F.Mm }); break; } }
+  P.flipped = flipped; return P; }
+function bankOf(q, inv){ var nn = inv ? mul(q.n, -1) : q.n; return Math.asin(Math.max(-1, Math.min(1, nn[1])))/DEG; }
+function rec1(){ T1.P = fly(T1); T1.t = 0; }
+/* ══════════ tab 2: why spin ══════════ */
+var T2 = { v:12, a:12, rpm:480, t:0 };
+function t2calc(){ var a = T2.a*DEG, q = 0.5*RHO*T2.v*T2.v*AR, tau = Math.abs(q*DD*CMf(a, false)), w = T2.rpm/60*TAU, Ls = IZ*w;
+  return { q:q, tau:tau, w:w, Ls:Ls, Om:w > 0.5 ? tau/Ls : Infinity, tflip:Math.sqrt(2*(Math.PI/2)*IT/Math.max(tau, 1e-9)), t30:w > 0.5 ? (30*DEG)/(tau/Ls) : 0, cp:Math.abs(CMf(a, false)/Math.max(CL(a, false), 0.05))*DD, sign:CMf(a, false) >= 0 ? 1 : -1 }; }
+/* ══════════ tab 3: lift ══════════ */
+var T3 = { v:11, a:5, h:0.25, press:false, newton:true };
+function t3calc(){ var a = T3.a*DEG, q = 0.5*RHO*T3.v*T3.v*AR, L = q*CL(a, false), mdot = RHO*T3.v*DD*T3.h, dv = L/Math.max(mdot, 1e-9), dvN = W/Math.max(mdot, 1e-9), vlev = Math.sqrt(W/(0.5*RHO*AR*Math.max(CL(a, false), 0.01)));
+  return { q:q, L:L, mdot:mdot, dv:dv, dvN:dvN, vlev:CL(a, false) > 0.01 ? vlev : Infinity, D:q*CD(a, false) }; }
+/* ══════════ colours ══════════ */
+function pal(){ var cb = th.cb, hc = th.hc, lm = th.lm;
+  return { bg1:hc ? '#000' : (lm ? '#d8ecff' : '#0c1a2e'), bg2:hc ? '#000' : (lm ? '#f2f8ff' : '#18304e'), txt:hc ? '#fff' : (lm ? '#111' : '#e6ecf2'), dim:hc ? '#ddd' : (lm ? '#556' : '#9aa6b4'), grid:hc ? '#555' : (lm ? '#d6dde5' : 'rgba(150,170,195,0.22)'),
+    ground:hc ? '#fff' : (lm ? '#6a9a4a' : '#2f4f2a'), disc:cb ? '#E69F00' : '#ff7a2a', disc2:cb ? '#a86c00' : '#b84a10', path:cb ? '#E69F00' : '#ffb347', data:cb ? '#56B4E9' : '#7fd0ff',
+    L:cb ? '#009E73' : '#3ad08f', D:cb ? '#D55E00' : '#ff5a4a', W:cb ? '#0072B2' : '#4a8cff', tau:cb ? '#CC79A7' : '#ff6fd8', mom:hc ? '#ffff00' : (cb ? '#F0E442' : '#ffd23f'),
+    line:hc ? 'rgba(255,255,255,0.55)' : (lm ? 'rgba(40,70,110,0.45)' : 'rgba(180,210,255,0.45)'), dot:hc ? '#ffff00' : (lm ? '#1a4a8a' : '#e6f0ff'), low:cb ? '0,114,178' : '60,140,255', high:cb ? '230,159,0' : '255,90,60', box:hc ? 'rgba(255,255,0,0.25)' : 'rgba(120,200,255,0.16)' }; }
+var DPR = window.devicePixelRatio || 1, CV = {};
+['fzCv', 'fzGr'].forEach(function(k){ var c = el(k), w = c.width, h = c.height; c.width = w*DPR; c.height = h*DPR; c.style.aspectRatio = w + ' / ' + h; var g = c.getContext('2d'); g.scale(DPR, DPR); CV[k] = { c:c, g:g, W:w, H:h }; });
+function arrow(g, x1, y1, x2, y2, col, w, lab, lx, ly, al){ var dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy); if (L < 2) return; var ux = dx/L, uy = dy/L, hl = Math.min(12, L*0.45);
+  g.strokeStyle = col; g.fillStyle = col; g.lineWidth = w || 3; g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2 - ux*hl*0.8, y2 - uy*hl*0.8); g.stroke();
+  g.beginPath(); g.moveTo(x2, y2); g.lineTo(x2 - ux*hl - uy*hl*0.55, y2 - uy*hl + ux*hl*0.55); g.lineTo(x2 - ux*hl + uy*hl*0.55, y2 - uy*hl - ux*hl*0.55); g.closePath(); g.fill();
+  if (lab) label(g, lab, lx === undefined ? x2 + ux*12 : lx, ly === undefined ? y2 + uy*12 : ly, col, 12, al); }
+function label(g, t, x, y, col, size, al){ g.font = 'bold ' + (size || 12) + 'px Arial, sans-serif'; g.textAlign = al || 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 3.5; g.strokeStyle = th.lm ? 'rgba(255,255,255,0.92)' : 'rgba(0,0,0,0.85)'; g.strokeText(t, x, y); g.fillStyle = col; g.fillText(t, x, y); g.textBaseline = 'alphabetic'; }
+function sky(g, W2, H, p){ var gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, p.bg1); gr.addColorStop(1, p.bg2); g.fillStyle = gr; g.fillRect(0, 0, W2, H); }
+/* a disc drawn in 3D: centre, normal n (world), radius r in px; projection: side (x right, z up) or top (x right, y up) or back (y left?, z up) */
+function disc3(g, cx, cy, n, r, view, col, col2, spin){
+  var u = nrm(Math.abs(n[2]) < 0.9 ? cross(n, [0, 0, 1]) : cross(n, [1, 0, 0])), w = cross(n, u), pts = [], k;
+  function P(v){ return view === 'side' ? [v[0] - 0.25*v[1], -(v[2] - 0.32*v[1])] : view === 'top' ? [v[0], -v[1]] : [-v[1] + 0.2*v[0], -(v[2] + 0.32*v[0])]; }   /* side and back views are seen slightly from above */
+  for (k=0; k<=36; k++){ var a = TAU*k/36, v = add(mul(u, Math.cos(a)), mul(w, Math.sin(a))), q = P(v); pts.push([cx + q[0]*r, cy + q[1]*r]); }
+  var nn = P(n);
+  g.fillStyle = col2; g.beginPath(); pts.forEach(function(q, i){ if (i) g.lineTo(q[0] - nn[0]*3, q[1] - nn[1]*3); else g.moveTo(q[0] - nn[0]*3, q[1] - nn[1]*3); }); g.closePath(); g.fill();
+  g.fillStyle = col; g.beginPath(); pts.forEach(function(q, i){ if (i) g.lineTo(q[0], q[1]); else g.moveTo(q[0], q[1]); }); g.closePath(); g.fill();
+  g.strokeStyle = th.hc ? '#fff' : '#3a1a00'; g.lineWidth = 1.2; g.stroke();
+  if (spin !== undefined){ g.strokeStyle = th.hc ? '#000' : 'rgba(255,255,255,0.8)'; g.lineWidth = 2; for (var j=0; j<2; j++){ var a2 = spin + j*Math.PI, v2 = add(mul(u, Math.cos(a2)*0.75), mul(w, Math.sin(a2)*0.75)), q2 = P(v2); g.beginPath(); g.moveTo(cx, cy); g.lineTo(cx + q2[0]*r, cy + q2[1]*r); g.stroke(); } } }
+/* ══════════ tab 1 drawing ══════════ */
+var spinPh = 0;
+function draw1(t, dt){ var c = CV.fzCv, g = c.g, W2 = c.W, H = c.H, p = pal(), P = T1.P, last = P[P.length - 1];
+  if (T1.play){ T1.t += dt/1000*T1.clock; if (T1.t >= last.t){ T1.t = last.t; T1.play = false; setPlay1(); landed1(); } }
+  sky(g, W2, H, p);
+  var xmax = 2, zmax = 1, ymax = 0.5; P.forEach(function(q){ xmax = Math.max(xmax, q.x[0]); zmax = Math.max(zmax, q.x[2]); ymax = Math.max(ymax, Math.abs(q.x[1])); });
+  if (T1.data){ LEEMAN[T1.data].forEach(function(q){ xmax = Math.max(xmax, q[0]); zmax = Math.max(zmax, q[1]); }); }
+  var L0 = 44, R0 = W2 - 16, sx = (R0 - L0)/(xmax*1.06), side = { t:24, b:236 }, top = { t:262, b:H - 12 }, sz = Math.min(sx*4, (side.b - side.t - 12)/(zmax*1.12)), sy = Math.min(sx*4, (top.b - top.t)/2/(ymax*1.2)), my = (top.t + top.b)/2;
+  function X(x){ return L0 + x*sx; } function Z(z){ return side.b - z*sz; } function Y(y){ return my - y*sy; }
+  g.fillStyle = p.ground; g.fillRect(0, side.b, W2, 4);
+  g.strokeStyle = p.grid; g.lineWidth = 1; g.fillStyle = p.dim; g.font = '10px monospace'; g.textAlign = 'center';
+  var st = xmax > 40 ? 10 : xmax > 15 ? 5 : xmax > 6 ? 2 : 0.5, i; for (i=0; i<=xmax*1.05; i += st){ g.beginPath(); g.moveTo(X(i), side.t); g.lineTo(X(i), side.b); g.stroke(); g.fillText(i + ' m', X(i), side.b + 14); }
+  label(g, 'SIDE VIEW' + (sz > sx*1.02 ? ' (height stretched \u00D7' + (sz/sx).toFixed(1) + ')' : ''), L0, side.t - 10, p.dim, 11, 'left');
+  label(g, 'TOP VIEW (up = to the thrower\u2019s left)' + (sy > sx*1.02 ? ' (sideways stretched \u00D7' + (sy/sx).toFixed(1) + ')' : ''), L0, top.t - 6, p.dim, 11, 'left');
+  g.setLineDash([4, 4]); g.strokeStyle = p.grid; g.beginPath(); g.moveTo(L0, my); g.lineTo(R0, my); g.stroke(); g.setLineDash([]);
+  if (T1.data){ g.fillStyle = p.data; LEEMAN[T1.data].forEach(function(q){ g.beginPath(); g.arc(X(q[0]), Z(q[1]), 4, 0, TAU); g.fill(); }); label(g, '\u25CF Leeman\u2019s measured path', R0, side.t + 4, p.data, 11, 'right'); }
+  g.strokeStyle = p.path; g.lineWidth = 2.2; g.beginPath(); P.forEach(function(q, k){ if (k) g.lineTo(X(q.x[0]), Z(q.x[2])); else g.moveTo(X(q.x[0]), Z(q.x[2])); }); g.stroke();
+  g.beginPath(); P.forEach(function(q, k){ if (k) g.lineTo(X(q.x[0]), Y(q.x[1])); else g.moveTo(X(q.x[0]), Y(q.x[1])); }); g.stroke();
+  var q = P[Math.min(P.length - 1, Math.floor(T1.t/0.02))]; spinPh += (T1.cw ? -1 : 1)*Math.min(0.5, T1.spin*TAU*dt/1000*0.15);
+  var rr = 14; disc3(g, X(q.x[0]), Z(q.x[2]), q.n, rr, 'side', p.disc, p.disc2); disc3(g, X(q.x[0]), Y(q.x[1]), q.n, rr, 'top', p.disc, p.disc2, T1.spin ? spinPh : undefined);
+  /* forces on the disc, side view, to scale (weight = 40 px) */
+  var k2 = 40/W, F = forces(q.x, q.v, q.n, T1.inv), cx = X(q.x[0]), cz = Z(q.x[2]);
+  arrow(g, cx, cz, cx, cz + 40, p.W, 2.5); arrow(g, cx, cz, cx + F.L[0]*k2, cz - F.L[2]*k2, p.L, 2.5); arrow(g, cx, cz, cx + F.D[0]*k2, cz - F.D[2]*k2, p.D, 2.5);
+  label(g, 'green: lift \u00B7 red: drag \u00B7 blue: weight (to scale)', R0, side.t + (T1.data ? 22 : 4), p.txt, 11, 'right');
+  label(g, 't = ' + T1.t.toFixed(2) + ' s', R0, side.t + (T1.data ? 40 : 22), p.txt, 12, 'right'); }
+function stats1(){ var P = T1.P, last = P[P.length - 1], hmax = 0, bmax = 0; P.forEach(function(q){ hmax = Math.max(hmax, q.x[2]); }); return { range:last.x[0], lat:last.x[1], T:last.t, hmax:hmax, bank:bankOf(last, T1.inv), flipped:P.flipped }; }
+function info1(){ var s = stats1(), q = T1.P[Math.min(T1.P.length - 1, Math.floor(T1.t/0.02))];
+  cells([['THROW', T1.name], ['SPEED \u00B7 SPIN', T1.v.toFixed(1) + ' m/s \u00B7 ' + (T1.spin ? T1.spin.toFixed(1) + ' rev/s ' + (T1.cw ? 'clockwise' : 'counterclockwise') : 'none')], ['NOW: ANGLE OF ATTACK', f(q.a/DEG, 1) + '\u00B0'], ['NOW: LIFT \u00B7 WEIGHT', f(q.L, 2) + ' \u00B7 ' + W.toFixed(2) + ' N'],
+    ['DISTANCE', s.range.toFixed(1) + ' m'], ['SIDEWAYS AT LANDING', f(Math.abs(s.lat), 1) + ' m ' + (s.lat > 0.1 ? 'left' : s.lat < -0.1 ? 'right' : '')], ['FLIGHT TIME', s.T.toFixed(2) + ' s'], ['HIGHEST', s.hmax.toFixed(2) + ' m']]);
+  var msg = T1.inv ? 'Upside-down, the curved top faces down: the disc gets little or no lift and falls much like a thrown ball.' : (!T1.spin ? 'No spin: the lift acts ahead of the centre and tips the front up. The disc pitches up, stalls and falls' + (s.flipped ? ', flipping over' : '') + '.' : (T1.gam > 20 ? 'Thrown high, the disc climbs at a large angle of attack: lots of drag, it slows down, stalls and drops steeply.' : 'A spinning disc keeps its tilt: it glides on its lift, slowly banking as the lift\u2019s torque makes its axis precess' + (Math.abs(s.lat) > 0.3 ? ', and curves ' + (s.lat > 0 ? 'left' : 'right') : '') + '.'));
+  status(msg + (T1.data ? ' Compare with the measured dots.' : ''));
+  eq('L = \u00BD\u03C1v\u00B2AC<sub>L</sub>, D = \u00BD\u03C1v\u00B2AC<sub>D</sub>, A = ' + AR.toFixed(4) + ' m\u00B2 &nbsp;\u00B7&nbsp; C<sub>L</sub> \u2248 0.15 + 1.4\u03B1, C<sub>D</sub> \u2248 0.08 + 2.72(\u03B1 + 4\u00B0)\u00B2 (\u03B1 in rad)<br>Now: v = ' + len(q.v).toFixed(2) + ' m/s, \u03B1 = ' + f(q.a/DEG, 1) + '\u00B0, L = <b>' + f(q.L, 2) + ' N</b>, D = <b>' + f(q.D, 2) + ' N</b>, weight mg = <b>' + W.toFixed(2) + ' N</b>'); }
+function graph1(){ var P = T1.P, Tm = P[P.length - 1].t, mx = 0.5; P.forEach(function(q){ mx = Math.max(mx, q.L/W, q.D/W); }); mx = Math.min(mx*1.1, 6);
+  graphAxes('lift and drag during the flight, as multiples of the weight; angle of attack (dotted, right scale \u00B1 90\u00B0)', 0, Tm, -0.5, mx, 'time t (s)', ticks(-0.5, mx), function(X, Y, g, p){
+    g.strokeStyle = p.W; g.lineWidth = 2; g.beginPath(); g.moveTo(X(0), Y(1)); g.lineTo(X(Tm), Y(1)); g.stroke(); g.strokeStyle = p.grid; g.beginPath(); g.moveTo(X(0), Y(0)); g.lineTo(X(Tm), Y(0)); g.stroke();
+    [[function(q){ return q.L/W; }, p.L, []], [function(q){ return q.D/W; }, p.D, th.cb ? [7, 3] : []]].forEach(function(z){ g.strokeStyle = z[1]; g.lineWidth = 2.4; g.setLineDash(z[2]); g.beginPath(); P.forEach(function(q, i){ var y = Y(Math.max(-0.5, Math.min(mx, z[0](q)))); if (i) g.lineTo(X(q.t), y); else g.moveTo(X(q.t), y); }); g.stroke(); g.setLineDash([]); });
+    g.strokeStyle = p.dim; g.lineWidth = 1.6; g.setLineDash([2, 3]); g.beginPath(); P.forEach(function(q, i){ var y = Y(-0.5 + (q.a/DEG + 90)/180*(mx + 0.5)); if (i) g.lineTo(X(q.t), y); else g.moveTo(X(q.t), y); }); g.stroke(); g.setLineDash([]);
+    g.strokeStyle = p.txt; g.setLineDash([3, 3]); g.beginPath(); g.moveTo(X(Math.min(T1.t, Tm)), Y(-0.5)); g.lineTo(X(Math.min(T1.t, Tm)), Y(mx)); g.stroke(); g.setLineDash([]);
+    label(g, 'weight', X(Tm*0.01), Y(1) - 9, p.W, 11, 'left'); label(g, 'lift', X(Tm*0.12), Y(Math.min(mx, P[Math.floor(P.length*0.12)].L/W)) - 10, p.L, 11, 'left'); label(g, 'drag' + (th.cb ? ' (dashed)' : ''), X(Tm*0.25), Y(Math.min(mx, P[Math.floor(P.length*0.25)].D/W)) + 12, p.D, 11, 'left'); }); }
+function landed1(){ var s = stats1(); narrate('Landed after ' + s.T.toFixed(2) + ' s, ' + s.range.toFixed(1) + ' m away' + (Math.abs(s.lat) > 0.3 ? ', ' + Math.abs(s.lat).toFixed(1) + ' m to the ' + (s.lat > 0 ? 'left' : 'right') : '') + '. ' + lastS); }
+/* ══════════ tab 2 drawing ══════════ */
+function draw2(t, dt){ var c = CV.fzCv, g = c.g, W2 = c.W, H = c.H, p = pal(), C = t2calc(); T2.t += dt/1000;
+  sky(g, W2, H, p); g.strokeStyle = p.grid; g.lineWidth = 1; g.beginPath(); g.moveTo(W2/2, 10); g.lineTo(W2/2, H - 10); g.stroke();
+  label(g, 'NO SPIN (seen from the side, flying \u2192)', W2/4, 18, p.txt, 12); label(g, 'SPINNING (seen from behind)', 3*W2/4, 18, p.txt, 12);
+  /* left: pitching up under the torque, until it flips; repeats */
+  var tf = C.tflip, per = tf*2.2, tl = T2.t % per, th0 = T2.a*DEG, ang = th0 + C.sign*Math.min(Math.PI - th0, 0.5*(C.tau/IT)*tl*tl), cx = W2/4, cy = 210, r = 70;
+  var n = [-Math.sin(ang), 0, Math.cos(ang)]; disc3(g, cx, cy, n, r, 'side', p.disc, p.disc2);
+  arrow(g, cx - 150, cy + 70, cx - 90, cy + 70, p.dim, 2, 'air', cx - 160, cy + 70, 'right');
+  var cpx = cx + C.cp*260*Math.cos(ang), cpy = cy - C.cp*260*Math.sin(ang);
+  arrow(g, cpx, cpy, cpx, cpy - 70, p.L, 4, 'lift', cpx + 10, cpy - 60, 'left'); g.fillStyle = p.txt; g.beginPath(); g.arc(cx, cy, 4, 0, TAU); g.fill();
+  label(g, 'centre', cx - 8, cy + 18, p.dim, 10, 'right'); label(g, 'lift acts ' + (C.cp*100).toFixed(1) + ' cm ' + (C.sign > 0 ? 'ahead' : 'behind'), cx, cy + 105, p.L, 11);
+  g.strokeStyle = p.tau; g.lineWidth = 3; g.beginPath(); g.arc(cx, cy, r + 22, -1.9, -1.0, C.sign < 0); g.stroke(); label(g, C.sign > 0 ? 'torque tips the front up' : 'torque tips the front down', cx, cy - r - 44, p.tau, 11);
+  label(g, 'tilt: ' + f(ang/DEG, 0) + '\u00B0', cx, H - 40, p.txt, 13); label(g, Math.abs(ang) > 1.4 ? 'STALL: it flips over' : '', cx, H - 20, p.D, 13);
+  /* right: spinning, seen from behind; banks slowly at Omega */
+  var cx2 = 3*W2/4, ph = C.w > 0.5 ? C.sign*Math.min(Math.PI/3, (C.tau/C.Ls)*(T2.t % 6)) : 0, n2 = [0, Math.sin(ph), Math.cos(ph)];
+  spinPh -= Math.min(0.5, C.w*dt/1000*0.15); disc3(g, cx2, cy, n2, r, 'back', p.disc, p.disc2, C.w > 0.5 ? spinPh : undefined);
+  var Lk = Math.min(110, 30 + C.Ls*400); arrow(g, cx2, cy, cx2 - n2[1]*Lk, cy - n2[2]*Lk, p.mom, 4, 'L = I\u03C9', cx2 - n2[1]*Lk + 12, cy - n2[2]*Lk, 'left');
+  arrow(g, cx2, cy + 6, cx2 - C.sign*70, cy + 6, p.tau, 4, '\u03C4', cx2 - C.sign*80, cy + 22);
+  label(g, C.w > 0.5 ? 'bank: ' + f(Math.abs(ph)/DEG, 0) + '\u00B0 after ' + (T2.t % 6).toFixed(1) + ' s' : 'no spin: no angular momentum to resist', cx2, H - 40, p.txt, 13);
+  label(g, 'the torque turns L sideways: the disc banks instead of flipping', cx2, H - 20, p.dim, 11); }
+function info2(){ var C = t2calc();
+  cells([['SPEED \u00B7 ANGLE OF ATTACK', T2.v.toFixed(1) + ' m/s \u00B7 ' + T2.a.toFixed(1) + '\u00B0'], ['TORQUE \u03C4', (C.tau*1000).toFixed(1) + ' mN\u00B7m'], ['SPIN', T2.rpm + ' rpm = ' + (T2.rpm/60).toFixed(1) + ' rev/s'], ['ANGULAR MOMENTUM I\u03C9', C.Ls.toFixed(4) + ' kg\u00B7m\u00B2/s'],
+    ['NO SPIN: TIPS 90\u00B0 IN', C.tflip.toFixed(2) + ' s'], ['SPINNING: BANK RATE \u03C4/(I\u03C9)', C.w > 0.5 ? (C.Om/DEG).toFixed(1) + ' \u00B0/s' : '\u2014'], ['SPINNING: BANKS 30\u00B0 IN', C.w > 0.5 ? C.t30.toFixed(1) + ' s' : '\u2014'], ['RIM SPEED \u00B7 RIM ACCELERATION', (C.w*DD/2).toFixed(1) + ' m/s \u00B7 ' + (C.w*C.w*DD/2).toFixed(0) + ' m/s\u00B2']]);
+  status(T2.rpm < 30 ? 'Without spin nothing resists the torque: in ' + C.tflip.toFixed(2) + ' s the disc tips over by 90\u00B0 and stalls, like Leeman\u2019s no-spin throw.' : 'With spin, the same torque only turns the axis sideways, slowly: ' + (C.Om/DEG).toFixed(1) + '\u00B0 per second. The disc stays nearly level for the whole flight instead of flipping in ' + C.tflip.toFixed(2) + ' s.');
+  eq('Torque of the lift about the centre: \u03C4 = \u00BD\u03C1v\u00B2A d C<sub>M</sub> = ' + C.q.toFixed(2) + ' \u00D7 0.27 \u00D7 ' + Math.abs(CMf(T2.a*DEG, false)).toFixed(3) + ' = <b>' + (C.tau*1000).toFixed(1) + ' mN\u00B7m</b><br>No spin: \u03B8 = \u00BD(\u03C4/I)t\u00B2, I = 0.00122 kg\u00B7m\u00B2 &nbsp;\u00B7&nbsp; spinning: \u0394L = \u03C4\u0394t sideways, so the axis turns at \u03A9 = \u03C4/(I<sub>z</sub>\u03C9), I<sub>z</sub> = 0.00235 kg\u00B7m\u00B2'
+    + '<br>Leeman measured about 47 m/s\u00B2 at the rim of his disc: \u03C9 = \u221A(a/r) \u2248 20 rad/s \u2248 3 rev/s.'); }
+function graph2(){ var C = t2calc(), Tm = 3, mxd = 90;
+  graphAxes('tilt of the disc against time: without spin (pitches up) and with spin (banks slowly)', 0, Tm, 0, mxd, 'time t (s)', [0, 15, 30, 45, 60, 75, 90], function(X, Y, g, p){ var t;
+    g.strokeStyle = p.D; g.lineWidth = 2.6; g.beginPath(); for (t=0; t<=Tm; t += 0.01){ var a = Math.min(mxd, 0.5*(C.tau/IT)*t*t/DEG); if (!t) g.moveTo(X(t), Y(a)); else g.lineTo(X(t), Y(a)); } g.stroke();
+    g.strokeStyle = p.L; g.setLineDash(th.cb ? [7, 3] : []); g.beginPath(); for (t=0; t<=Tm; t += 0.01){ var b = C.w > 0.5 ? Math.min(mxd, C.Om*t/DEG) : Math.min(mxd, 0.5*(C.tau/IT)*t*t/DEG); if (!t) g.moveTo(X(t), Y(b)); else g.lineTo(X(t), Y(b)); } g.stroke(); g.setLineDash([]);
+    label(g, 'no spin: pitch', X(Math.min(Tm*0.8, C.tflip*0.9)), Y(70), p.D, 11, 'right'); label(g, 'spinning: bank' + (th.cb ? ' (dashed)' : ''), X(Tm*0.7), Y(Math.min(80, (C.w > 0.5 ? C.Om*Tm*0.7 : 0)/DEG)) - 12, p.L, 11);
+    label(g, '\u00B0', X(0.03), Y(85), p.dim, 11, 'left'); }); }
+/* ══════════ tab 3 drawing ══════════ */
+var LINES3 = [-0.9, -0.62, -0.4, -0.22, -0.1, 0.1, 0.22, 0.4, 0.62, 0.9];
+function profile(x){ /* disc cross-section, chord from -0.5 to 0.5: domed top, open rim */ var u = Math.max(0, 1 - Math.pow(2*x, 2)); return { top:0.07*Math.pow(u, 0.6), bot:0.07*Math.pow(u, 0.6) - 0.025 - 0.07*Math.pow(Math.max(0, 1 - Math.pow((Math.abs(x) - 0.47)/0.04, 2)), 0.5)*0 }; }
+function draw3(t, dt){ var c = CV.fzCv, g = c.g, W2 = c.W, H = c.H, p = pal(), C = t3calc(), cx = 330, cy = 200, S = 330, a = T3.a*DEG, cl = CL(a, false), i, k;
+  sky(g, W2, H, p);
+  function rot(x, y){ return [x*Math.cos(a) + y*Math.sin(a), -x*Math.sin(a) + y*Math.cos(a)]; }
+  function TX(x, y){ var r = rot(x, y); return [cx + r[0]*S, cy - r[1]*S]; }
+  if (T3.press){ var s = Math.max(0, Math.min(1, cl/1.0))*Math.min(1, T3.v/12); [[p.low, -0.16], [p.high, 0.13]].forEach(function(q, j){ var rg = g.createRadialGradient(cx, cy + (j ? 40 : -40), 5, cx, cy + (j ? 40 : -40), S*0.55); rg.addColorStop(0, 'rgba(' + q[0] + ',' + (0.6*s).toFixed(2) + ')'); rg.addColorStop(1, 'rgba(' + q[0] + ',0)'); g.fillStyle = rg; g.fillRect(0, 0, W2, H); });
+    label(g, 'lower pressure', cx + 150, cy - 90, p.txt, 12); label(g, 'higher pressure', cx + 150, cy + 95, p.txt, 12); }
+  /* the layer of air the disc affects (Newton view) */
+  if (T3.newton){ var hp = T3.h*S/2; g.fillStyle = p.box; g.fillRect(40, cy - hp, W2 - 80, 2*hp); g.strokeStyle = p.dim; g.setLineDash([5, 4]); g.strokeRect(40, cy - hp, W2 - 80, 2*hp); g.setLineDash([]);
+    label(g, 'air affected: a layer ' + (T3.h*100).toFixed(0) + ' cm thick', 48, cy - hp - 10, p.dim, 11, 'left'); }
+  /* streamlines: follow the top (Coanda) and the bottom, then turn down behind (downwash) */
+  var w = 0.35*cl;
+  LINES3.forEach(function(y0){ var above = y0 > 0, fct = Math.exp(-Math.abs(y0)/0.35), P2 = []; for (var x=-1.0; x<=1.15; x += 0.01){ var pr = profile(x), base = Math.abs(x) <= 0.5 ? (above ? pr.top + 0.015 : pr.bot - 0.015) : 0, dw = x > 0.5 ? -w*(1 - Math.exp(-(x - 0.5)/0.35)) : (x < -0.5 ? 0.15*w*Math.exp((x + 0.5)/0.3) : 0);
+      var yy = y0 + base*fct + dw*(0.4 + 0.6*fct), xr = x; if (Math.abs(x) <= 0.5){ var rr = rot(x, yy); } P2.push(TX(xr, yy - (x > -0.5 && x < 0.5 ? 0 : 0))); }
+    g.strokeStyle = p.line; g.lineWidth = 1.3; g.beginPath(); P2.forEach(function(q, j){ if (j) g.lineTo(q[0], q[1]); else g.moveTo(q[0], q[1]); }); g.stroke();
+    g.fillStyle = p.dot; for (k=0; k<4; k++){ var idx = Math.floor((t*0.0006*(4 + T3.v)*(above ? 1.25 : 0.85) + k*P2.length/4 + y0*40) % P2.length); if (idx < 0) idx += P2.length; var q = P2[idx]; g.beginPath(); g.arc(q[0], q[1], 2.3, 0, TAU); g.fill(); } });
+  /* the disc */
+  g.beginPath(); for (i=0; i<=40; i++){ var x = -0.5 + i/40, q = TX(x, profile(x).top); if (i) g.lineTo(q[0], q[1]); else g.moveTo(q[0], q[1]); }
+  var e1 = TX(0.5, -0.04), e2 = TX(0.47, -0.04), e3 = TX(0.47, 0.035); g.lineTo(e1[0], e1[1]); g.lineTo(e2[0], e2[1]); g.lineTo(e3[0], e3[1]);
+  for (i=40; i>=0; i--){ var x2 = -0.47 + 0.94*i/40, q2 = TX(x2, profile(x2/0.94).top - 0.012); g.lineTo(q2[0], q2[1]); }
+  var e4 = TX(-0.47, -0.04), e5 = TX(-0.5, -0.04); g.lineTo(e4[0], e4[1]); g.lineTo(e5[0], e5[1]); g.closePath(); g.fillStyle = p.disc; g.fill(); g.strokeStyle = th.hc ? '#fff' : '#3a1a00'; g.lineWidth = 1.4; g.stroke();
+  /* downwash arrows behind, and forces */
+  if (T3.newton && C.dv > 0.01){ var dl = Math.min(70, 8 + C.dv*8); for (k=0; k<4; k++){ var bx = cx + S*0.62 + k*24; arrow(g, bx, cy - 30 + k*14, bx + 6, cy - 30 + k*14 + dl, p.tau, 2.5); } label(g, 'air turned down: \u0394v \u2248 ' + C.dv.toFixed(1) + ' m/s', cx + S*0.62 + 40, cy + 70, p.tau, 11); }
+  var kF = 90/W; arrow(g, cx, cy - 10, cx, cy - 10 - C.L*kF, p.L, 5, 'lift ' + C.L.toFixed(2) + ' N', cx + 10, cy - 10 - C.L*kF*0.8, 'left');
+  arrow(g, cx, cy + 10, cx, cy + 10 + W*kF, p.W, 5, 'weight ' + W.toFixed(2) + ' N', cx + 10, cy + 10 + W*kF*0.8, 'left');
+  arrow(g, 20, H - 20, 80, H - 20, p.dim, 2); label(g, 'air, ' + T3.v.toFixed(1) + ' m/s \u00B7 disc flies \u2190 \u00B7 \u03B1 = ' + T3.a.toFixed(1) + '\u00B0', 210, H - 20, p.dim, 11); }
+function info3(){ var C = t3calc();
+  cells([['SPEED \u00B7 ANGLE OF ATTACK', T3.v.toFixed(1) + ' m/s \u00B7 ' + T3.a.toFixed(1) + '\u00B0'], ['C\u2097'.replace('\u2097', 'L'), CL(T3.a*DEG, false).toFixed(3)], ['LIFT \u00B7 WEIGHT', C.L.toFixed(2) + ' \u00B7 ' + W.toFixed(2) + ' N'], ['DRAG', C.D.toFixed(2) + ' N'],
+    ['AIR MET EACH SECOND \u03C1vDh', C.mdot.toFixed(3) + ' kg/s'], ['DOWNWARD SPEED GIVEN \u0394v = L/(\u0394m/\u0394t)', C.dv.toFixed(2) + ' m/s'], ['\u0394v NEEDED FOR L = mg', C.dvN.toFixed(2) + ' m/s'], ['SPEED FOR LEVEL FLIGHT HERE', isFinite(C.vlev) ? C.vlev.toFixed(1) + ' m/s' : '\u2014']]);
+  var r = C.L/W; status((r > 1.03 ? 'The lift is larger than the weight: the disc would rise.' : r < 0.97 ? 'The lift is smaller than the weight: the disc sinks.' : 'The lift balances the weight: level flight.') + ' The disc turns the air down by about ' + C.dv.toFixed(1) + ' m/s; the air pushes it up (Newton\u2019s third law). The air also flows faster over the curved top: lower pressure above (Bernoulli).');
+  eq('Lift: L = \u00BD\u03C1v\u00B2AC<sub>L</sub> = ' + C.q.toFixed(2) + ' \u00D7 ' + CL(T3.a*DEG, false).toFixed(3) + ' = <b>' + C.L.toFixed(2) + ' N</b> &nbsp;\u00B7&nbsp; weight mg = 0.175 \u00D7 9.81 = <b>1.72 N</b>'
+    + '<br>Newton: \u0394m/\u0394t = \u03C1vDh = 1.225 \u00D7 ' + T3.v.toFixed(1) + ' \u00D7 0.27 \u00D7 ' + T3.h.toFixed(2) + ' = <b>' + C.mdot.toFixed(3) + ' kg/s</b>; L = (\u0394m/\u0394t)\u0394v gives \u0394v = <b>' + C.dv.toFixed(2) + ' m/s</b>'); }
+function graph3(){ var a = T3.a*DEG, vmax = 25, mx = Math.max(4, 0.5*RHO*vmax*vmax*AR*CL(a, false)*1.05); mx = Math.min(mx, 12);
+  graphAxes('lift against speed at this angle of attack (lift grows as v\u00B2); the weight to hold up is 1.72 N', 0, vmax, 0, mx, 'speed v (m/s)', ticks(0, mx), function(X, Y, g, p){ var v;
+    g.strokeStyle = p.W; g.lineWidth = 2; g.beginPath(); g.moveTo(X(0), Y(W)); g.lineTo(X(vmax), Y(W)); g.stroke(); label(g, 'weight', X(0.3), Y(W) - 10, p.W, 11, 'left');
+    g.strokeStyle = p.L; g.lineWidth = 2.6; g.beginPath(); for (v=0; v<=vmax; v += 0.2){ var L = Math.min(mx, 0.5*RHO*v*v*AR*CL(a, false)); if (!v) g.moveTo(X(v), Y(L)); else g.lineTo(X(v), Y(Math.max(0, L))); } g.stroke();
+    g.fillStyle = p.L; g.beginPath(); g.arc(X(T3.v), Y(Math.max(0, Math.min(mx, t3calc().L))), 5, 0, TAU); g.fill(); label(g, 'N', X(0.3), Y(mx*0.95), p.dim, 10, 'left'); }); }
+/* ══════════ graph frame ══════════ */
+function ticks(lo, hi){ var raw = (hi - lo)/5, p10 = Math.pow(10, Math.floor(Math.log(raw)/Math.LN10)), fr = raw/p10, st = (fr < 1.5 ? 1 : fr < 3.5 ? 2 : fr < 7.5 ? 5 : 10)*p10, out = []; for (var v = Math.ceil(lo/st)*st; v <= hi + 1e-9; v += st) out.push(+v.toPrecision(6)); return out; }
+function graphAxes(ttl, x0, x1, y0, y1, xl, yt, fn){ var c = CV.fzGr, g = c.g, W2 = c.W, H = c.H, p = pal(), L = 50, R = W2 - 14, T = 14, B = H - 36, i;
+  g.fillStyle = th.hc ? '#000' : (th.lm ? '#fff' : '#121820'); g.fillRect(0, 0, W2, H); el('fzGrT').textContent = ttl;
+  function X(x){ return L + (x - x0)/(x1 - x0)*(R - L); } function Y(y){ return B - (y - y0)/(y1 - y0)*(B - T); }
+  g.strokeStyle = p.grid; g.lineWidth = 1; g.fillStyle = p.dim; g.font = '10px monospace';
+  for (i=0; i<=6; i++){ var xv = x0 + (x1 - x0)*i/6; g.beginPath(); g.moveTo(X(xv), T); g.lineTo(X(xv), B); g.stroke(); g.textAlign = 'center'; g.fillText(+xv.toFixed(x1 - x0 < 6 ? 2 : 0), X(xv), B + 12); }
+  yt.forEach(function(v){ g.beginPath(); g.moveTo(L, Y(v)); g.lineTo(R, Y(v)); g.stroke(); g.textAlign = 'right'; g.fillText(String(v), L - 4, Y(v) + 3); });
+  g.strokeStyle = p.dim; g.strokeRect(L, T, R - L, B - T); g.fillStyle = p.dim; g.font = '11px Arial, sans-serif'; g.textAlign = 'center'; g.fillText(xl, (L + R)/2, H - 6); fn(X, Y, g, p); }
+/* ══════════ shared UI ══════════ */
+function cells(c){ el('fzRead').innerHTML = c.map(function(q){ return '<div><div class="fz_flabel">' + q[0] + '</div><div class="fz_fvalue">' + q[1] + '</div></div>'; }).join(''); }
+var lastS = ''; function status(s){ lastS = s; el('fzStatus').textContent = s; }
+function eq(s){ el('fzEq').innerHTML = s; }
+function narrate(m){ if (th.nr) el('fzNar').textContent = m; }
+function row(id, lab, min, max, step, val){ return '<div class="fz_ctrl"><div class="fz_ctrlhdr"><label class="fz_ctrlname" for="' + id + '">' + lab + '</label><span class="fz_sval" id="' + id + 'v"></span></div><input type="range" id="' + id + '" min="' + min + '" max="' + max + '" step="' + step + '" value="' + val + '"></div>'; }
+function btn(id, t, cls){ return '<button type="button" class="fz_btn' + (cls ? ' ' + cls : '') + '" id="' + id + '">' + t + '</button>'; }
+function on(id, ev, fn){ var x = el(id); if (x) x.addEventListener(ev, fn); }
+function tries(a){ return '<ol class="fz_try">' + a.map(function(s){ return '<li>' + s + '</li>'; }).join('') + '</ol>'; }
+function slide(id, obj, key, fmt, after){ var e = el(id); function u(){ var t = fmt(obj[key]); el(id + 'v').textContent = t; e.setAttribute('aria-valuetext', t); } u();
+  e.addEventListener('input', function(){ obj[key] = +this.value; u(); if (after) after(); refresh(); }); e.addEventListener('change', function(){ narrate(lastS); }); return u; }
+function setPlay1(){ var b = el('fzPlay'); if (b) b.innerHTML = T1.play ? '\u2759\u2759 Pause' : '\u25B6 ' + (T1.t > 0 && T1.t < T1.P[T1.P.length - 1].t ? 'Resume' : 'Throw'); }
+var LABS = ['THE FLIGHT OF THE DISC: SIDE VIEW AND TOP VIEW', 'THE TORQUE OF THE LIFT: WITHOUT SPIN THE DISC FLIPS, WITH SPIN IT ONLY BANKS SLOWLY', 'A CROSS-SECTION OF THE DISC IN THE AIRFLOW (THE DISC IS STILL, THE AIR FLOWS PAST)'];
+var ARIA = ['Side view and top view of the flight path of a flying disc, with the disc and its lift, drag and weight arrows', 'Left: a non-spinning disc seen from the side, tipping up under the torque of the lift. Right: a spinning disc seen from behind, with its angular momentum and torque arrows, banking slowly', 'Cross-section of a disc in a stream of air, with streamlines turned downward behind it, the layer of air it affects, and the lift and weight arrows'];
+function build(i){ var A = '', B = '', bar = '';
+  if (i === 0){ A = row('fzV', 'launch speed', 2, 25, 0.1, T1.v) + row('fzG', 'launch angle (direction of motion)', -10, 45, 0.5, T1.gam) + row('fzP', 'tilt of the disc, nose up (+) or down (\u2212)', -45, 45, 0.5, T1.pitch) + row('fzB', 'bank, left side up (+) or down (\u2212)', -45, 45, 1, T1.bank) + row('fzS', 'spin (rev/s)', 0, 15, 0.1, T1.spin)
+      + '<div class="fz_brow"><label class="fz_ctrlname"><input type="checkbox" id="fzCW"' + (T1.cw ? ' checked' : '') + '> clockwise from above (right-hand backhand)</label><label class="fz_ctrlname"><input type="checkbox" id="fzInv"' + (T1.inv ? ' checked' : '') + '> upside-down</label></div>';
+    bar = btn('fzPlay', '\u25B6 Throw', 'fz_kick') + btn('fzRst', '\u21BA Restart') + '<label>speed of the clock <select id="fzClk"><option value="0.25">\u00BC\u00D7</option><option value="0.5">\u00BD\u00D7</option><option value="1" selected>1\u00D7</option></select></label>' + btn('fzDsc', 'Describe');
+    B = '<div class="fz_brow">' + THROWS.map(function(q, k){ return '<button type="button" class="fz_btn" data-th="' + k + '">' + q[0] + '</button>'; }).join('') + '</div><p class="fz_note">The last three are John Leeman\u2019s backyard throws (about 5 m/s); his measured paths are shown as dots. The launch values (about 4 to 6 m/s) were chosen so that the model fits his dots.</p>'; }
+  else if (i === 1){ A = row('fzV2', 'speed', 3, 25, 0.5, T2.v) + row('fzA2', 'angle of attack', -4, 20, 0.5, T2.a) + row('fzR2', 'spin', 0, 900, 10, T2.rpm); bar = btn('fzNo2', 'No spin') + btn('fzLee2', 'Leeman\u2019s spin (3 rev/s)') + btn('fzDsc', 'Describe');
+    B = tries(['Set the spin to zero: how long does the disc take to tip over? Compare with a typical flight time (1 to 3 s).', 'Spin it: how many degrees does it bank in one second? Double the spin: what happens to the bank rate?', 'At a small angle of attack the lift acts slightly behind the centre; at a larger angle, ahead of it. Which way does the torque turn the disc in each case?', 'Why does the torque make the spinning disc bank sideways, rather than pitch up? (Hint: \u0394L = \u03C4\u0394t, and \u03C4 is sideways to L.)']); }
+  else { A = row('fzV3', 'speed', 1, 25, 0.1, T3.v) + row('fzA3', 'angle of attack', -4, 20, 0.5, T3.a) + row('fzH3', 'thickness of the layer of air affected, h', 0.04, 0.5, 0.01, T3.h);
+    bar = '<label><input type="checkbox" id="fzNw3"' + (T3.newton ? ' checked' : '') + '> Newton: air turned down</label><label><input type="checkbox" id="fzPr3"' + (T3.press ? ' checked' : '') + '> Bernoulli: pressure</label>' + btn('fzLv3', 'Speed for level flight', 'fz_kick') + btn('fzDsc', 'Describe');
+    B = tries(['Find the speed at which the lift equals the weight (1.72 N) at 5\u00B0. Double the speed: by how much does the lift change?', 'With h = 4 cm (the layer used by Landell-Mills), how fast must the air be turned down to hold the disc up? Is that realistic?', 'A wing affects the air over a layer about as thick as its span. Try h \u2248 25 cm: what downward speed is needed now?', 'Tilt the disc more: lift and drag both grow. Why does a flat throw (small angle) go farther?']); }
+  el('fzCtlA').innerHTML = A; el('fzCtlB').innerHTML = B; el('fzBar').innerHTML = bar; el('fzCtlBT').textContent = i === 0 ? 'Throws' : 'Try this';
+  on('fzDsc', 'click', describe);
+  if (i === 0){ var re = function(){ T1.data = null; T1.name = 'your own throw'; rec1(); T1.play = false; setPlay1(); };
+    slide('fzV', T1, 'v', function(v){ return v.toFixed(1) + ' m/s'; }, re); slide('fzG', T1, 'gam', function(v){ return v.toFixed(1) + '\u00B0'; }, re); slide('fzP', T1, 'pitch', function(v){ return v.toFixed(1) + '\u00B0'; }, re); slide('fzB', T1, 'bank', function(v){ return v + '\u00B0'; }, re); slide('fzS', T1, 'spin', function(v){ return v.toFixed(1) + ' rev/s'; }, re);
+    on('fzCW', 'change', function(){ T1.cw = this.checked; re(); refresh(); }); on('fzInv', 'change', function(){ T1.inv = this.checked; re(); refresh(); });
+    on('fzPlay', 'click', function(){ if (T1.t >= T1.P[T1.P.length - 1].t) T1.t = 0; T1.play = !T1.play; setPlay1(); }); on('fzRst', 'click', function(){ T1.t = 0; T1.play = false; setPlay1(); }); on('fzClk', 'change', function(){ T1.clock = +this.value; });
+    [].forEach.call(el('fzCtlB').querySelectorAll('button[data-th]'), function(b){ b.addEventListener('click', function(){ var q = THROWS[+b.getAttribute('data-th')]; Object.keys(q[1]).forEach(function(k){ T1[k] = q[1][k]; }); T1.name = q[0]; T1.data = q[2]; rec1(); build(0); refresh(); T1.play = true; setPlay1(); narrate(q[0] + '. ' + lastS); }); });
+    setPlay1(); }
+  else if (i === 1){ slide('fzV2', T2, 'v', function(v){ return v.toFixed(1) + ' m/s'; }); slide('fzA2', T2, 'a', function(v){ return v.toFixed(1) + '\u00B0'; }); var u2 = slide('fzR2', T2, 'rpm', function(v){ return v + ' rpm (' + (v/60).toFixed(1) + ' rev/s)'; });
+    on('fzNo2', 'click', function(){ T2.rpm = 0; el('fzR2').value = 0; u2(); T2.t = 0; refresh(); narrate(lastS); }); on('fzLee2', 'click', function(){ T2.rpm = 190; el('fzR2').value = 190; u2(); T2.t = 0; refresh(); narrate(lastS); }); }
+  else { slide('fzV3', T3, 'v', function(v){ return v.toFixed(1) + ' m/s'; }); slide('fzA3', T3, 'a', function(v){ return v.toFixed(1) + '\u00B0'; }); slide('fzH3', T3, 'h', function(v){ return (v*100).toFixed(0) + ' cm'; });
+    on('fzNw3', 'change', function(){ T3.newton = this.checked; }); on('fzPr3', 'change', function(){ T3.press = this.checked; if (T3.press) narrate('Blue: lower pressure above the curved top, where the air flows faster. Orange: higher pressure underneath.'); });
+    on('fzLv3', 'click', function(){ var C = t3calc(); if (!isFinite(C.vlev) || C.vlev > 25){ narrate('At this angle the disc cannot be held up below 25 m/s: tilt it more.'); return; } T3.v = Math.round(C.vlev*10)/10; el('fzV3').value = T3.v; build(2); refresh(); narrate('Level flight at ' + T3.v.toFixed(1) + ' m/s: the lift equals the weight, 1.72 N. ' + lastS); }); } }
+function refresh(){ [info1, info2, info3][TAB](); [graph1, graph2, graph3][TAB](); }
+function describe(){ var d = ['Two views of the throw. Top: from the side, the path of the disc over the ground, with the disc drawn at its current tilt and arrows for its lift (green), drag (red) and weight (blue). Bottom: from above, showing whether it curves left or right. ' + (T1.data ? 'Light blue dots show the path measured by Leeman. ' : ''),
+  'Two discs. Left: a disc without spin, seen from the side; the lift acts off-centre and tips it up, until it flips over. Right: a spinning disc seen from behind, with a yellow arrow for its angular momentum, pointing up along its axis, and a pink arrow for the torque, pointing sideways; the disc banks slowly instead of flipping. ',
+  'A cross-section of the disc, curved on top, tilted ' + T3.a.toFixed(1) + ' degrees into air flowing from left to right. The streamlines follow the curved top and are turned downward behind the disc. ' + (T3.newton ? 'A shaded band shows the layer of air the disc affects, and pink arrows the air turned downward. ' : '') + 'A green arrow shows the lift, a blue arrow the weight. '][TAB];
+  narrate(d + lastS); }
+function tab(i){ TAB = i; for (var k=0; k<3; k++){ var t = el('fzT' + k); t.setAttribute('aria-selected', k === i ? 'true' : 'false'); t.tabIndex = k === i ? 0 : -1; }
+  el('fzLab').textContent = LABS[i]; el('fzCv').setAttribute('aria-label', ARIA[i]); build(i); refresh();
+  narrate(['Throw it. Choose a throw or set your own, then press Throw. ' + lastS, 'Why it must spin. ' + lastS, 'Where the lift comes from. ' + lastS][i]); }
+[0, 1, 2].forEach(function(k){ on('fzT' + k, 'click', function(){ tab(k); }); on('fzT' + k, 'keydown', function(e){ if (e.key === 'ArrowRight'){ tab((k + 1) % 3); el('fzT' + TAB).focus(); e.preventDefault(); } else if (e.key === 'ArrowLeft'){ tab((k + 2) % 3); el('fzT' + TAB).focus(); e.preventDefault(); } }); });
+function theme(k){ th[k] = !th[k]; if (k === 'hc' && th.hc) th.lm = false; if (k === 'lm' && th.lm) th.hc = false;
+  ROOT.classList.toggle('fz_hc', th.hc); ROOT.classList.toggle('fz_lm', th.lm);
+  [['hc', 'fzBtnHC'], ['lm', 'fzBtnLM'], ['cb', 'fzBtnCB'], ['nr', 'fzBtnNR']].forEach(function(q){ var b = el(q[1]); b.classList.toggle('fz_a11yon', th[q[0]]); b.setAttribute('aria-pressed', th[q[0]] ? 'true' : 'false'); });
+  el('fzBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('fzNar').style.display = th.nr ? '' : 'none'; refresh();
+  if (k === 'cb' && th.cb) narrate('Colour-blind safe colours: lift bluish green, drag orange-red (dashed on graphs), weight blue, torque pink, angular momentum yellow, the measured path sky blue.'); }
+on('fzBtnHC', 'click', function(){ theme('hc'); }); on('fzBtnLM', 'click', function(){ theme('lm'); }); on('fzBtnCB', 'click', function(){ theme('cb'); }); on('fzBtnNR', 'click', function(){ theme('nr'); });
+on('fzDescBtn', 'click', function(){ var d = el('fzDesc'), o = d.hidden; d.hidden = !o; this.setAttribute('aria-expanded', o ? 'true' : 'false'); this.innerHTML = (o ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+  if (o && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } });
+var last = 0, tk = 0;
+function loop(t){ var dt = last ? Math.min(50, t - last) : 0; last = t; [draw1, draw2, draw3][TAB](t, dt); if (TAB === 0 && T1.play && ++tk % 6 === 0){ info1(); graph1(); } requestAnimationFrame(loop); }
+rec1(); tab(Math.max(0, Math.min(2, CFG.tab | 0)));
+requestAnimationFrame(loop);
+window['fzSim' + thisq] = { tab:tab, _T:[T1, T2, T3], _fly:fly, _rec:rec1, _stats:stats1, _t2:t2calc, _t3:t3calc, THROWS:THROWS };
+})();
+</script>
+
+</body>
+</html>

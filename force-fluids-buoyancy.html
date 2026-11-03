@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Fluids: Buoyancy, Float, Sink, Dive</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, buoyancy, Archimedes, density, floating, sinking, apparent weight, submarine, ballast, pressure, lesson, scientific">
+<meta name="description" content="Interactive buoyancy: change the mass and size of a cube and the liquid, see it float or sink, weigh it in a liquid with an overflow cup, and dive a submarine with its ballast tanks.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+@media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="byRoot" class="by_root" role="region" aria-label="Buoyancy simulator: floating and sinking objects, weighing an object in a liquid, and a submarine">
+<div class="by_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="by_a11ybtn" id="byBtnHC" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="by_a11ybtn" id="byBtnLM" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="by_a11ybtn" id="byBtnCB" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="by_a11ybtn by_a11yon" id="byBtnNR" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div class="by_header"><p class="by_h1">Buoyancy: Float, Sink, Dive</p><p class="by_sub">the liquid pushes up with the weight of the liquid displaced &middot; B = &rho;<sub>liquid</sub> g V<sub>submerged</sub></p></div>
+<div class="by_tabs" role="tablist" aria-label="Topics">
+<button type="button" role="tab" class="by_tab" id="byT0" aria-selected="true">1. Float or sink</button>
+<button type="button" role="tab" class="by_tab" id="byT1" aria-selected="false">2. Weighing it in a liquid</button>
+<button type="button" role="tab" class="by_tab" id="byT2" aria-selected="false">3. Submarine</button>
+</div>
+<div class="by_panel"><div class="by_ptitle" id="byLab"></div>
+<canvas id="byCv" width="760" height="420" role="img" aria-describedby="byStatus"></canvas></div>
+<div class="by_status" id="byStatus"></div>
+<div class="by_bbar" id="byBar"></div>
+<div class="by_read" id="byRead" aria-label="Readings"></div>
+<div class="by_panels"><div class="by_panel"><div class="by_ptitle">Controls</div><div class="by_pbody" id="byCtlA"></div></div>
+<div class="by_panel"><div class="by_ptitle">Try this</div><div class="by_pbody" id="byCtlB"></div></div></div>
+<div class="by_panel"><div class="by_ptitle" id="byGrT"></div><canvas id="byGr" width="760" height="220" role="img" aria-label="Graph"></canvas></div>
+<div class="by_eqs" id="byEq"></div>
+<div id="byNar" class="by_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="by_descwrap">
+<button type="button" class="by_descbtn" id="byDescBtn" aria-expanded="false" aria-controls="byDesc">&#9656; SIM DESCRIPTION</button>
+<div class="by_desc" id="byDesc" role="region" aria-labelledby="byDescBtn" hidden>
+<p>A liquid pushes on every surface it touches, and its pressure grows with depth, `p = p_0 + rho g h`. So it pushes harder on the bottom of an object than on its top. The difference is an upward force, the <b>buoyant force</b>. <b>Archimedes&rsquo; principle</b>: the buoyant force equals the weight of the liquid the object pushes aside (displaces),</p>
+<p class="by_eq">`B = rho_"liquid" g V_"submerged"`.</p>
+<p>For a cube of side `a` with its bottom at depth `s`, the pressure difference between bottom and top is `rho g a`, acting on the area `a^2`: `B = rho g a^3`, the weight of a cube of liquid.</p>
+<p><b>1. Float or sink.</b> A cube of mass `m` and side `a` is placed in a tank. Its weight is `W = m g`; its average density is `rho_"obj" = m/a^3`. If `rho_"obj" &lt; rho_"liquid"`, it floats: it sinks until the buoyant force equals its weight, with a fraction `rho_"obj"/rho_"liquid"` of its height below the surface. If `rho_"obj" &gt; rho_"liquid"`, even fully under, `B &lt; W`: it sinks, and the bottom of the tank pushes up with the rest, `N = W - B`. Pushed under and let go, a floating cube bobs up and down before settling (the liquid&rsquo;s resistance damps the motion).</p>
+<p><b>2. Weighing it in a liquid.</b> The cube hangs from a spring scale and is lowered into a container filled to its spout. The scale reads `T = W - B`: the object seems to weigh less. The liquid pushed out runs into a cup on a second scale: it weighs exactly `B`. So the two readings always add up to the weight of the object, as long as the string is tight.</p>
+<p><b>3. Submarine.</b> A submarine controls its weight, not its volume. Its <b>ballast tanks</b> are flooded with sea water to dive (weight larger than the buoyant force), and emptied with compressed air to rise (weight smaller). With exactly the right amount of water it is <b>neutrally buoyant</b>: `W = B`, and it stays at any depth. The pressure outside grows by about 1 atmosphere every 10 m; below its crush depth the hull would fail. Model (simplified, a mid-sized submarine): hull volume 2000 m&sup3;, 10 m high; mass without ballast 1750 t; ballast tanks 400 m&sup3;. The water&rsquo;s resistance grows as the square of the speed. Moving from salt water to fresh water (less dense), the buoyant force drops: the submarine must pump out some ballast.</p>
+<p>g = 9.81 m/s&sup2;. Drawings are not to scale where noted.</p>
+</div></div>
+</div><!-- #byRoot -->
+<style>
+#byRoot { --c-chassis:#1a1c1f; --c-panel:#22262b; --c-hi:#2c3138; --c-lo:#14161a; --c-bd:#3a4048; --c-bd2:#525c66; --c-text:#c8d0d8; --c-dim:#8a94a3; --c-accent:#e8a020; --c-green:#3ad08f; --c-val:#ffdd66; --c-nbg:#2a2410; --c-nbd:#e0b040; --c-ntx:#f0e2b8;
+  background:var(--c-chassis); color:var(--c-text); font-family:Arial, sans-serif; font-size:14px; padding:14px 10px 18px; border-radius:6px; box-sizing:border-box; width:100%; max-width:860px; margin:0 auto 10px; display:flex; flex-direction:column; gap:10px; }
+#byRoot * { box-sizing:border-box; }
+#byRoot.by_lm { --c-chassis:#e9edf1; --c-panel:#ffffff; --c-hi:#f1f4f7; --c-lo:#f4f6f9; --c-bd:#c3cad3; --c-bd2:#9aa3ae; --c-text:#1d232a; --c-dim:#556070; --c-accent:#a8620a; --c-green:#12805a; --c-val:#8a4a00; --c-nbg:#ffefc0; --c-ntx:#333; }
+#byRoot.by_hc { --c-chassis:#000; --c-panel:#000; --c-hi:#111; --c-lo:#000; --c-bd:#fff; --c-bd2:#fff; --c-text:#fff; --c-dim:#e8e8e8; --c-accent:#ffd700; --c-green:#00ff88; --c-val:#ffff00; --c-nbg:#000; --c-nbd:#ffd700; --c-ntx:#fff; }
+#byRoot .by_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+#byRoot .by_a11ybtn { padding:4px 10px; font-size:.72em; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-dim); min-height:32px; }
+#byRoot .by_a11yon { background:rgba(58,208,143,.14); border-color:var(--c-green); color:var(--c-green); font-weight:bold; }
+#byRoot .by_header { text-align:center; }
+#byRoot .by_h1 { margin:0; font-size:1.05em; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--c-accent); }
+#byRoot .by_sub { margin:3px 0 0; font-size:.75em; color:var(--c-dim); letter-spacing:.05em; text-transform:uppercase; }
+#byRoot .by_tabs { display:flex; gap:4px; flex-wrap:wrap; }
+#byRoot .by_tab { flex:1 1 180px; padding:8px 6px; border:1px solid var(--c-bd2); background:var(--c-hi); color:var(--c-text); border-radius:4px; cursor:pointer; font-family:monospace; font-size:.76em; letter-spacing:.05em; text-transform:uppercase; min-height:40px; }
+#byRoot .by_tab[aria-selected="true"] { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#byRoot .by_panels { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#byRoot .by_panel { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; overflow:hidden; min-width:0; }
+#byRoot .by_ptitle { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.66em; letter-spacing:.1em; text-transform:uppercase; color:var(--c-dim); }
+#byRoot .by_pbody { padding:9px 12px; display:flex; flex-direction:column; gap:9px; }
+#byRoot canvas { display:block; width:100%; height:auto; }
+#byRoot .by_bbar { display:flex; flex-wrap:wrap; gap:6px 12px; justify-content:center; align-items:center; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:6px; padding:8px 10px; }
+#byRoot .by_bbar label { display:flex; align-items:center; gap:6px; font-size:.84em; cursor:pointer; }
+#byRoot .by_ctrl { display:flex; flex-direction:column; gap:3px; min-width:0; }
+#byRoot .by_ctrlhdr { display:flex; justify-content:space-between; align-items:baseline; gap:6px; }
+#byRoot .by_ctrlname { font-size:.8em; font-weight:600; color:var(--c-dim); text-transform:uppercase; letter-spacing:.03em; }
+#byRoot .by_sval { font-family:monospace; font-size:.9em; color:var(--c-val); white-space:nowrap; }
+#byRoot .by_note { margin:0; font-size:.8em; color:var(--c-dim); line-height:1.4; }
+#byRoot .by_try { margin:0; padding-left:18px; font-size:.84em; line-height:1.45; }
+#byRoot .by_try li { margin-bottom:5px; }
+#byRoot .by_brow { display:flex; flex-wrap:wrap; gap:6px; }
+#byRoot select { background:var(--c-hi); color:var(--c-text); border:1px solid var(--c-bd2); border-radius:3px; padding:5px; font-size:.9em; min-height:36px; width:100%; }
+#byRoot input[type=range] { width:100%; -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; cursor:pointer; background:var(--c-lo); border:1px solid var(--c-bd); margin:9px 0; }
+#byRoot input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#byRoot input[type=range]::-moz-range-thumb { width:16px; height:16px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#byRoot input[type=checkbox] { accent-color:var(--c-accent); width:16px; height:16px; }
+#byRoot .by_btn { padding:7px 11px; font-family:monospace; font-size:.78em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-text); border-radius:3px; min-height:36px; }
+#byRoot .by_btn:hover { border-color:var(--c-accent); }
+#byRoot .by_btn[aria-pressed="true"] { border-color:var(--c-accent); color:var(--c-accent); font-weight:bold; }
+#byRoot .by_kick { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#byRoot .by_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(125px,1fr)); gap:6px 10px; background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; padding:8px 12px; }
+#byRoot .by_flabel { font-family:monospace; font-size:.66em; color:var(--c-dim); letter-spacing:.06em; text-transform:uppercase; }
+#byRoot .by_fvalue { font-family:monospace; font-size:.98em; color:var(--c-val); }
+#byRoot .by_eqs { background:var(--c-lo); border:1px solid var(--c-bd); border-left:4px solid var(--c-accent); border-radius:4px; padding:8px 14px; font-family:monospace; font-size:.8em; color:var(--c-dim); line-height:1.7; }
+#byRoot .by_eqs b { color:var(--c-val); }
+#byRoot .by_status { padding:8px 12px; border-radius:4px; background:var(--c-panel); border:1px solid var(--c-bd); font-size:.92em; line-height:1.45; }
+#byRoot .by_narbar { min-height:30px; padding:6px 12px; background:var(--c-nbg); border-left:4px solid var(--c-nbd); color:var(--c-ntx); font-size:.92em; font-style:italic; line-height:1.45; border-radius:3px; }
+#byRoot .by_descwrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+#byRoot .by_descbtn { padding:8px 18px; font-family:monospace; font-size:.8em; letter-spacing:.08em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-accent); color:var(--c-accent); border-radius:3px; font-weight:bold; min-height:40px; }
+#byRoot .by_desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid var(--c-accent); border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.95em; line-height:1.55; }
+#byRoot .by_desc p { margin:0 0 9px; }
+#byRoot .by_eq { text-align:center; font-size:1rem; }
+#byRoot [hidden] { display:none !important; }
+#byRoot button:focus-visible, #byRoot input:focus-visible, #byRoot select:focus-visible { outline:2px solid var(--c-accent); outline-offset:2px; }
+@media (max-width:640px) { #byRoot { padding:10px 6px 14px; } #byRoot .by_panels { grid-template-columns:minmax(0,1fr); } #byRoot .by_tab { font-size:.68em; padding:8px 3px; } #byRoot .by_btn { flex:1 1 40%; } }
+@media (pointer:coarse) { #byRoot input[type=range] { height:8px; } #byRoot input[type=range]::-webkit-slider-thumb { width:28px; height:28px; } #byRoot input[type=range]::-moz-range-thumb { width:26px; height:26px; } #byRoot .by_a11ybtn, #byRoot .by_btn, #byRoot select { min-height:44px; font-size:15px; } #byRoot input[type=checkbox] { width:22px; height:22px; } }
+</style>
+<!-- ════════ SIMULATION ════════
+Tab 1: cube (side a, mass m), bottom at height z (z < 0 below the surface), V_sub = a^2 clamp(-z, 0, a). m z'' = rho g V_sub - m g - c z' - quadratic drag;
+       floor at z = -D (tank depth); there the normal force N = W - B. Damping ratio about 0.25 of the floating oscillation.
+Tab 2: static; T = W - B (string slack if negative); overflow cup collects V_sub.
+Tab 3: submarine, depth d of its centre; V_sub = V clamp((d + H/2)/H, 0, 1); mass M0 + rho Vb f; (M) d'' = W - B - k d'|d'| - c d'.
+No dollar signs or backticks in the code.
+-->
+<script>
+(function(){
+var thisq = '';
+var CFG = { tab:0, rho:1000 };
+function el(id){ return document.getElementById(id + thisq); }
+var ROOT = el('byRoot'), G = 9.81, TAU = 2*Math.PI;
+var th = { hc:false, lm:false, cb:false, nr:true }, TAB = 0;
+var LIQ = [['gasoline', 740], ['ethyl alcohol', 789], ['vegetable oil', 920], ['fresh water', 1000], ['sea water', 1025], ['Dead Sea water', 1240], ['glycerin', 1260], ['mercury', 13534]];
+var MATS = [['cork', 240], ['pine wood', 500], ['ice', 917], ['plastic (polyethylene)', 950], ['oak', 750], ['aluminum', 2700], ['steel', 7850], ['gold', 19300]];
+function f(v, k){ return (Math.abs(v) < 0.5*Math.pow(10, -k) ? 0 : v).toFixed(k); }
+function N(v){ var a = Math.abs(v); return a >= 1e6 ? (v/1e6).toFixed(2) + ' MN' : a >= 1e3 ? (v/1e3).toFixed(a >= 1e5 ? 0 : 2) + ' kN' : a >= 10 ? v.toFixed(1) + ' N' : a >= 0.01 ? v.toFixed(3) + ' N' : (v*1000).toFixed(2) + ' mN'; }
+function kg(m){ return m >= 1 ? (m >= 100 ? m.toFixed(0) : m.toPrecision(3)) + ' kg' : String(+(m*1000).toPrecision(3)) + ' g'; }
+/* ══════════ state ══════════ */
+var T1 = { m:0.6, a:0.10, rho:CFG.rho, z:0.08, v:0, hist:[], t:0, D:0.5 };
+var T2 = { m:2.7, a:0.10, rho:CFG.rho, s:0.0 };
+var SUB = { V:2000, H:10, M0:1.75e6, Vb:400, rhoSea:1025, fill:0, d:-3.9, v:0, mode:'hold', crush:300, t:0, hist:[], speed:1 };
+function rhoObj1(){ return T1.m/Math.pow(T1.a, 3); }
+function floatDepth1(){ return Math.min(T1.a, T1.m/(T1.rho*T1.a*T1.a)); }
+function B1(z){ return T1.rho*G*T1.a*T1.a*Math.max(0, Math.min(T1.a, -z)); }
+/* ══════════ tab 1 physics ══════════ */
+var N1 = 0;
+function step1(dt){ var m = T1.m, k = T1.rho*G*T1.a*T1.a, c = 2*0.25*Math.sqrt(k*m), sf = Math.max(0, Math.min(1, -T1.z/T1.a)), Fd = 0.5*T1.rho*1.0*T1.a*T1.a*T1.v*Math.abs(T1.v)*sf;
+  var F = B1(T1.z) - m*G - c*T1.v*(sf > 0 ? 1 : 0) - Fd; T1.v += F/m*dt; T1.z += T1.v*dt; N1 = 0;
+  if (T1.z <= -T1.D){ T1.z = -T1.D; if (T1.v < 0) T1.v = 0; N1 = Math.max(0, m*G - B1(T1.z)); }
+  T1.t += dt; }
+/* ══════════ tab 3 physics ══════════ */
+function subVsub(d){ return SUB.V*Math.max(0, Math.min(1, (d + SUB.H/2)/SUB.H)); }
+function subMass(){ return SUB.M0 + SUB.rhoSea*SUB.Vb*SUB.fill; }
+function subF(){ var W = subMass()*G, B = SUB.rhoSea*G*subVsub(SUB.d); return { W:W, B:B, net:B - W }; }
+function fNeutral(){ return (SUB.rhoSea*SUB.V - SUB.M0)/(SUB.rhoSea*SUB.Vb); }
+var FILLRATE = 0.02;
+function step3(dt){ if (SUB.mode === 'flood') SUB.fill = Math.min(1, SUB.fill + FILLRATE*dt); else if (SUB.mode === 'blow') SUB.fill = Math.max(0, SUB.fill - FILLRATE*dt);
+  if (SUB.mode !== 'hold' && (SUB.fill === 1 || SUB.fill === 0)) { SUB.mode = 'hold'; syncSubBtns(); }
+  var F = subF(), Mt = subMass(), sf = Math.max(0, Math.min(1, (SUB.d + SUB.H/2)/SUB.H));
+  var drag = 2.5e5*SUB.v*Math.abs(SUB.v) + 1.2e5*SUB.v + (sf < 1 ? 8e5*SUB.v : 0);
+  var a = (F.W - F.B - drag)/(Mt*1.5);   /* down positive; the 1.5 accounts for the water that moves with the hull */
+  SUB.v += a*dt; SUB.d += SUB.v*dt; if (SUB.d > 400){ SUB.d = 400; SUB.v = 0; } SUB.t += dt; }
+/* ══════════ colours ══════════ */
+function pal(){ var cb = th.cb, hc = th.hc, lm = th.lm;
+  return { bg:hc ? '#000' : (lm ? '#eef4fa' : '#101722'), air:hc ? '#000' : (lm ? '#dfeefc' : '#152238'), txt:hc ? '#fff' : (lm ? '#111' : '#e6ecf2'), dim:hc ? '#ddd' : (lm ? '#556' : '#9aa6b4'), grid:hc ? '#555' : (lm ? '#d6dde5' : 'rgba(150,170,195,0.22)'),
+    liq:function(rho){ if (hc) return 'rgba(0,160,255,0.45)'; if (rho > 5000) return 'rgba(180,185,195,0.75)'; if (rho < 800) return 'rgba(200,190,90,0.35)'; if (rho < 960) return 'rgba(220,190,60,0.45)'; if (rho > 1200) return 'rgba(120,170,200,0.55)'; return lm ? 'rgba(60,140,220,0.40)' : 'rgba(40,120,220,0.45)'; },
+    sea1:hc ? '#002244' : (lm ? '#7fb8e6' : '#14507e'), sea2:hc ? '#000' : (lm ? '#1c4f86' : '#04101e'), glass:hc ? '#fff' : (lm ? '#556' : '#aab6c4'), obj:cb ? '#E69F00' : '#d98c3a', objE:hc ? '#fff' : '#3a2410',
+    W:cb ? '#0072B2' : '#4a8cff', B:cb ? '#009E73' : '#3ad08f', N:cb ? '#CC79A7' : '#ff6fd8', T:cb ? '#D55E00' : '#ff7a3a', hull:hc ? '#ddd' : (lm ? '#3c4450' : '#59636f'), tank:cb ? '#56B4E9' : '#5ab4ff', bad:cb ? '#D55E00' : '#ff5a4a' }; }
+var DPR = window.devicePixelRatio || 1, CV = {};
+['byCv', 'byGr'].forEach(function(k){ var c = el(k), w = c.width, h = c.height; c.width = w*DPR; c.height = h*DPR; c.style.aspectRatio = w + ' / ' + h; var g = c.getContext('2d'); g.scale(DPR, DPR); CV[k] = { c:c, g:g, W:w, H:h }; });
+function arrow(g, x1, y1, x2, y2, col, w, lab, lx, ly, al){ var dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy); if (L < 2) return; var ux = dx/L, uy = dy/L, hl = Math.min(13, L*0.45);
+  g.strokeStyle = col; g.fillStyle = col; g.lineWidth = w || 3; g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2 - ux*hl*0.8, y2 - uy*hl*0.8); g.stroke();
+  g.beginPath(); g.moveTo(x2, y2); g.lineTo(x2 - ux*hl - uy*hl*0.55, y2 - uy*hl + ux*hl*0.55); g.lineTo(x2 - ux*hl + uy*hl*0.55, y2 - uy*hl - ux*hl*0.55); g.closePath(); g.fill();
+  if (lab) label(g, lab, lx === undefined ? x2 + ux*12 : lx, ly === undefined ? y2 + uy*12 : ly, col, 12, al); }
+function label(g, t, x, y, col, size, al){ g.font = 'bold ' + (size || 12) + 'px Arial, sans-serif'; g.textAlign = al || 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 3.5; g.strokeStyle = th.lm ? 'rgba(255,255,255,0.92)' : 'rgba(0,0,0,0.85)'; g.strokeText(t, x, y); g.fillStyle = col; g.fillText(t, x, y); g.textBaseline = 'alphabetic'; }
+function cube(g, x, y, s, p){ g.fillStyle = p.obj; g.fillRect(x - s/2, y - s, s, s); var d = Math.min(14, s*0.18); g.fillStyle = th.cb ? '#ffc04d' : '#eba45a'; g.beginPath(); g.moveTo(x - s/2, y - s); g.lineTo(x - s/2 + d, y - s - d); g.lineTo(x + s/2 + d, y - s - d); g.lineTo(x + s/2, y - s); g.closePath(); g.fill();
+  g.fillStyle = th.cb ? '#a86c00' : '#a8642a'; g.beginPath(); g.moveTo(x + s/2, y - s); g.lineTo(x + s/2 + d, y - s - d); g.lineTo(x + s/2 + d, y - d); g.lineTo(x + s/2, y); g.closePath(); g.fill(); g.strokeStyle = p.objE; g.lineWidth = 1.2; g.strokeRect(x - s/2, y - s, s, s); }
+/* ══════════ tab 1 drawing ══════════ */
+function draw1(t, dt){ var c = CV.byCv, g = c.g, W2 = c.W, H = c.H, p = pal(), S = 470, sx = 300, sy = 150, tw = 420, D = T1.D, i;
+  var n = Math.max(1, Math.ceil(dt/1000/0.001)); for (i=0; i<n; i++) step1(dt/1000/n);
+  T1.hist.push([T1.t, B1(T1.z), N1]); if (T1.hist.length > 900) T1.hist.shift();
+  g.fillStyle = p.air; g.fillRect(0, 0, W2, H);
+  var x0 = sx - tw/2, ybot = sy + D*S; g.fillStyle = p.liq(T1.rho); g.fillRect(x0, sy, tw, D*S);
+  g.strokeStyle = p.glass; g.lineWidth = 3; g.beginPath(); g.moveTo(x0, sy - 90); g.lineTo(x0, ybot); g.lineTo(x0 + tw, ybot); g.lineTo(x0 + tw, sy - 90); g.stroke();
+  g.strokeStyle = th.hc ? '#fff' : 'rgba(255,255,255,0.5)'; g.lineWidth = 1.5; g.beginPath(); g.moveTo(x0, sy); g.lineTo(x0 + tw, sy); g.stroke();
+  label(g, LIQ.filter(function(q){ return q[1] === T1.rho; }).map(function(q){ return q[0]; })[0] || ('liquid ' + T1.rho + ' kg/m\u00B3'), x0 + 8, ybot - 14, p.txt, 11, 'left');
+  /* depth scale */
+  g.fillStyle = p.dim; g.font = '10px monospace'; g.textAlign = 'right'; for (i=0; i<=50; i += 10){ var yy = sy + i/100*S; g.fillText(i + ' cm', x0 - 6, yy + 3); g.fillRect(x0 - 4, yy, 4, 1); }
+  var s = T1.a*S, yb = sy - T1.z*S; cube(g, sx, yb, s, p);
+  /* pressure arrows on top and bottom faces when submerged */
+  var sub = Math.max(0, Math.min(T1.a, -T1.z));
+  /* forces: weight from centre down, B from centre of submerged part up, N from bottom */
+  var Wt = T1.m*G, Bt = B1(T1.z), k = 120/Math.max(Wt, Bt, 1e-9), cx = sx + s*0.62 + 30;
+  arrow(g, cx, yb - s/2, cx, yb - s/2 + Wt*k, p.W, 4, 'W = ' + N(Wt), cx + 10, yb - s/2 + Wt*k*0.8, 'left');
+  if (Bt*k > 2) arrow(g, cx - 18, yb - s/2, cx - 18, yb - s/2 - Bt*k, p.B, 4, 'B = ' + N(Bt), cx - 8, yb - s/2 - Bt*k*0.8, 'left');
+  if (N1*k > 2) arrow(g, sx, ybot + 40, sx, ybot - 2 > yb ? yb + 0 : ybot, p.N, 4);
+  if (N1 > 0) label(g, 'N = ' + N(N1) + ' (from the bottom)', sx, ybot + 30, p.N, 11);
+  /* readout of object density on the right */
+  var ro = rhoObj1(); label(g, '\u03C1 object = ' + ro.toFixed(0) + ' kg/m\u00B3', W2 - 12, 30, p.txt, 13, 'right'); label(g, '\u03C1 liquid = ' + T1.rho + ' kg/m\u00B3', W2 - 12, 50, p.txt, 13, 'right');
+  label(g, ro < T1.rho ? 'lighter than the liquid: floats' : ro > T1.rho ? 'denser than the liquid: sinks' : 'same density: stays wherever it is', W2 - 12, 72, ro < T1.rho ? p.B : p.W, 12, 'right');
+  if (sub > 0 && sub < T1.a) label(g, f(100*sub/T1.a, 0) + '% under', sx - s/2 - 10, sy + 14, p.txt, 11, 'right'); }
+function info1(){ var ro = rhoObj1(), Wt = T1.m*G, Bt = B1(T1.z), Bmax = T1.rho*G*Math.pow(T1.a, 3), sub = Math.max(0, Math.min(T1.a, -T1.z));
+  cells([['MASS \u00B7 SIDE', kg(T1.m) + ' \u00B7 ' + (T1.a*100).toFixed(1) + ' cm'], ['DENSITY OF THE OBJECT', ro.toFixed(0) + ' kg/m\u00B3'], ['WEIGHT W = mg', N(Wt)], ['BUOYANT FORCE NOW', N(Bt)], ['B IF FULLY UNDER', N(Bmax)], ['PART UNDER THE SURFACE', f(100*sub/T1.a, 0) + ' %'], ['NORMAL FORCE FROM THE BOTTOM', N(N1)]]);
+  var settled = Math.abs(T1.v) < 0.003;
+  status(ro < T1.rho ? (settled && T1.z > -T1.a ? 'Floating: it sank until the buoyant force equals its weight. ' + f(100*floatDepth1()/T1.a, 0) + '% of it is under the surface: the ratio of the densities, ' + ro.toFixed(0) + '/' + T1.rho + '.' : 'It moves until the liquid it displaces weighs as much as it does.') : ro > T1.rho ? 'It sinks: even fully under, the liquid it displaces (' + N(Bmax) + ') weighs less than it does (' + N(Wt) + ').' + (N1 > 0 ? ' On the bottom, the tank pushes up with the difference.' : '') : 'Same density as the liquid: fully under, B = W wherever it is.');
+  eq('W = mg = ' + T1.m.toPrecision(3) + ' \u00D7 9.81 = <b>' + N(Wt) + '</b> &nbsp;\u00B7&nbsp; B = \u03C1<sub>liquid</sub> g V<sub>sub</sub> = ' + T1.rho + ' \u00D7 9.81 \u00D7 ' + (T1.a*T1.a*sub*1e6).toFixed(0) + ' cm\u00B3 = <b>' + N(Bt) + '</b>'
+    + '<br>Floats if \u03C1<sub>object</sub> &lt; \u03C1<sub>liquid</sub>; then the fraction under = \u03C1<sub>object</sub>/\u03C1<sub>liquid</sub> = <b>' + (ro < T1.rho ? (ro/T1.rho).toFixed(3) : '\u2014 (sinks)') + '</b>'); }
+function graph1(){ var H0 = T1.hist, t1 = H0.length ? H0[H0.length - 1][0] : 1, t0 = Math.max(0, t1 - 6), mx = Math.max(T1.m*G, T1.rho*G*Math.pow(T1.a, 3))*1.2;
+  graphAxes('forces against time (last 6 s): weight, buoyant force and normal force', t0, Math.max(t0 + 6, t1), 0, mx, 'time t (s)', ticks(0, mx), function(X, Y, g, p){
+    g.strokeStyle = p.W; g.lineWidth = 2; g.beginPath(); g.moveTo(X(t0), Y(T1.m*G)); g.lineTo(X(Math.max(t0 + 6, t1)), Y(T1.m*G)); g.stroke();
+    [[1, p.B, []], [2, p.N, th.cb ? [7, 3] : []]].forEach(function(z){ g.strokeStyle = z[1]; g.lineWidth = 2.4; g.setLineDash(z[2]); g.beginPath(); var st = false; H0.forEach(function(q){ if (q[0] < t0) return; if (st) g.lineTo(X(q[0]), Y(Math.min(mx, q[z[0]]))); else { g.moveTo(X(q[0]), Y(Math.min(mx, q[z[0]]))); st = true; } }); g.stroke(); g.setLineDash([]); });
+    label(g, 'weight', X(t0) + 6, Y(T1.m*G) - 10, p.W, 11, 'left'); label(g, 'buoyant force', X(t0) + 70, Y(Math.min(mx, H0.length ? H0[H0.length - 1][1] : 0)) - 10, p.B, 11, 'left'); label(g, 'N', X(t0) + 6, Y(mx*0.95), p.dim, 10, 'left'); }); }
+/* ══════════ tab 2 drawing ══════════ */
+function T2calc(){ var W = T2.m*G, sub = Math.max(0, Math.min(T2.a, T2.s)), B = T2.rho*G*T2.a*T2.a*sub, T = W - B, slack = T < 0;
+  var sFl = Math.min(T2.a, T2.m/(T2.rho*T2.a*T2.a)); if (slack){ sub = sFl; B = W; T = 0; }
+  return { W:W, B:B, T:T, sub:sub, slack:slack, Vsub:T2.a*T2.a*sub }; }
+function draw2(){ var c = CV.byCv, g = c.g, W2 = c.W, H = c.H, p = pal(), C = T2calc(), S = 600, sx = 300, sy = 210, bw = 300, D = 0.3, i;
+  g.fillStyle = p.air; g.fillRect(0, 0, W2, H);
+  var x0 = sx - bw/2, ybot = sy + D*S*0.6;   /* the container is drawn shallower: 0.3 m deep */
+  var Sc = 0.6*S; ybot = sy + D*Sc;
+  g.fillStyle = p.liq(T2.rho); g.fillRect(x0, sy, bw, D*Sc);
+  g.strokeStyle = p.glass; g.lineWidth = 3; g.beginPath(); g.moveTo(x0, sy - 120); g.lineTo(x0, ybot); g.lineTo(x0 + bw, ybot); g.lineTo(x0 + bw, sy); g.lineTo(x0 + bw + 60, sy + 22); g.moveTo(x0 + bw, sy - 6); g.lineTo(x0 + bw, sy - 120); g.stroke();
+  label(g, 'filled to the spout', x0 + bw + 6, sy - 16, p.dim, 10, 'left');
+  /* overflow stream and catch cup on a scale */
+  var cupX = x0 + bw + 120, cupTop = 300, cupW = 110, cupH = 70, Vmax = Math.pow(0.15, 3), fillH = Math.min(cupH - 4, C.Vsub/Vmax*cupH*0.95);
+  if (C.Vsub > 1e-7){ g.strokeStyle = p.liq(T2.rho); g.lineWidth = 4; g.beginPath(); g.moveTo(x0 + bw + 60, sy + 22); g.quadraticCurveTo(cupX - 10, sy + 40, cupX, cupTop + cupH - fillH); g.stroke(); }
+  g.fillStyle = p.liq(T2.rho); g.fillRect(cupX - cupW/2 + 3, cupTop + cupH - fillH, cupW - 6, fillH);
+  g.strokeStyle = p.glass; g.lineWidth = 2.5; g.beginPath(); g.moveTo(cupX - cupW/2, cupTop); g.lineTo(cupX - cupW/2, cupTop + cupH); g.lineTo(cupX + cupW/2, cupTop + cupH); g.lineTo(cupX + cupW/2, cupTop); g.stroke();
+  g.fillStyle = th.hc ? '#222' : '#3a4250'; g.fillRect(cupX - 70, cupTop + cupH + 2, 140, 34); label(g, (C.B).toFixed(2) + ' N', cupX, cupTop + cupH + 19, p.B, 15);
+  label(g, 'liquid pushed out (weight)', cupX, cupTop - 14, p.B, 11);
+  /* spring scale */
+  var hookY = 40, scH = 70, scX = sx, s = T2.a*Sc, yb = sy + T2.s*Sc; if (C.slack) yb = sy + C.sub*Sc;
+  g.fillStyle = th.hc ? '#222' : '#c8ccd2'; g.fillRect(scX - 22, hookY, 44, scH); g.strokeStyle = '#333'; g.lineWidth = 1.5; g.strokeRect(scX - 22, hookY, 44, scH);
+  var ext = Math.min(1, C.T/Math.max(T2.m*G, 1e-9)); g.fillStyle = p.T; g.fillRect(scX - 14, hookY + 6 + ext*(scH - 16), 28, 4);
+  g.fillStyle = th.hc ? '#222' : '#3a4250'; g.fillRect(scX + 30, hookY + 16, 110, 34); label(g, C.T.toFixed(2) + ' N', scX + 85, hookY + 33, p.T, 15); label(g, 'spring scale', scX + 85, hookY + 6, p.dim, 10);
+  g.strokeStyle = th.hc ? '#fff' : '#ccc'; g.lineWidth = 1.5; g.setLineDash(C.slack ? [4, 4] : []); g.beginPath(); g.moveTo(scX, hookY + scH); g.lineTo(scX, yb - s - 2); g.stroke(); g.setLineDash([]);
+  cube(g, sx, yb, s, p);
+  var k = 90/Math.max(C.W, 1e-9), ax = sx + s/2 + 40;
+  arrow(g, ax, yb - s/2, ax, yb - s/2 + C.W*k, p.W, 4, 'W = ' + C.W.toFixed(2) + ' N', ax + 8, yb - s/2 + C.W*k*0.85, 'left');
+  if (C.B*k > 2) arrow(g, ax - 18, yb - s/2, ax - 18, yb - s/2 - C.B*k, p.B, 4, 'B', ax - 30, yb - s/2 - C.B*k*0.8, 'right');
+  if (C.T*k > 2) arrow(g, sx - s/2 - 20, yb - s, sx - s/2 - 20, yb - s - C.T*k, p.T, 4, 'T', sx - s/2 - 32, yb - s - C.T*k*0.8, 'right');
+  if (C.slack) label(g, 'it floats: the string goes slack', sx, yb + 40, p.T, 12);
+  label(g, 'scale + cup = ' + (C.T + C.B).toFixed(2) + ' N = weight ' + C.W.toFixed(2) + ' N', 12, H - 16, p.txt, 13, 'left'); }
+function info2(){ var C = T2calc(), ro = T2.m/Math.pow(T2.a, 3);
+  cells([['MASS \u00B7 SIDE', kg(T2.m) + ' \u00B7 ' + (T2.a*100).toFixed(1) + ' cm'], ['DENSITY OF THE OBJECT', ro.toFixed(0) + ' kg/m\u00B3'], ['WEIGHT W', C.W.toFixed(3) + ' N'], ['PART UNDER', f(100*C.sub/T2.a, 0) + ' %'], ['VOLUME DISPLACED', (C.Vsub*1e6).toFixed(0) + ' cm\u00B3'],
+    ['SPRING SCALE T', C.T.toFixed(3) + ' N'], ['LIQUID PUSHED OUT (WEIGHT)', C.B.toFixed(3) + ' N'], ['APPARENT LOSS OF WEIGHT', f(100*C.B/C.W, 1) + ' %']]);
+  status(C.slack ? 'The object is less dense than the liquid: it floats, the string is slack and the scale reads zero. The liquid pushed out weighs as much as the object.' : C.sub <= 0 ? 'Above the liquid, the scale reads the full weight.' : 'The scale reads less: the liquid pushes up with B = ' + C.B.toFixed(3) + ' N. The liquid pushed into the cup weighs the same ' + C.B.toFixed(3) + ' N.' + (C.sub >= T2.a ? ' Fully under, going deeper does not change B.' : ''));
+  eq('T = W \u2212 B = ' + C.W.toFixed(3) + ' \u2212 ' + C.B.toFixed(3) + ' = <b>' + C.T.toFixed(3) + ' N</b> &nbsp;\u00B7&nbsp; B = \u03C1gV<sub>sub</sub> = ' + T2.rho + ' \u00D7 9.81 \u00D7 ' + (C.Vsub*1e6).toFixed(0) + '\u00D710\u207B\u2076 m\u00B3 = <b>' + C.B.toFixed(3) + ' N</b>'
+    + '<br>Density from two weighings (fully under): \u03C1<sub>object</sub> = \u03C1<sub>liquid</sub> \u00D7 W/(W \u2212 T) &nbsp;(Archimedes and the king\u2019s crown)'); }
+function graph2(){ var a = T2.a, mx = T2.m*G*1.15;
+  graphAxes('scale reading T and buoyant force B as the object is lowered', -0.05, 0.25, 0, mx, 'depth of the bottom of the object below the surface (m)', ticks(0, mx), function(X, Y, g, p){ var s, save = T2.s;
+    [[function(C){ return C.T; }, p.T, []], [function(C){ return C.B; }, p.B, th.cb ? [7, 3] : []]].forEach(function(z){ g.strokeStyle = z[1]; g.lineWidth = 2.4; g.setLineDash(z[2]); g.beginPath(); for (s=-0.05; s<=0.25; s += 0.002){ T2.s = s; var y = Y(z[0](T2calc())); if (s === -0.05) g.moveTo(X(s), y); else g.lineTo(X(s), y); } g.stroke(); g.setLineDash([]); });
+    T2.s = save; g.strokeStyle = p.W; g.lineWidth = 1.5; g.beginPath(); g.moveTo(X(-0.05), Y(T2.m*G)); g.lineTo(X(0.25), Y(T2.m*G)); g.stroke();
+    var C = T2calc(); g.fillStyle = p.T; g.beginPath(); g.arc(X(T2.s), Y(C.T), 5, 0, TAU); g.fill();
+    label(g, 'scale T', X(-0.045), Y(T2.m*G) + 12, p.T, 11, 'left'); label(g, 'B', X(0.2), Y(Math.min(mx*0.9, T2.rho*G*a*a*Math.min(a, 0.2)) ) - 10, p.B, 11); label(g, 'weight', X(0.2), Y(T2.m*G) - 10, p.W, 11); }); }
+/* ══════════ tab 3 drawing ══════════ */
+var bubbles = [];
+function draw3(t, dt){ var c = CV.byCv, g = c.g, W2 = c.W, H = c.H, p = pal(), i, n = Math.max(1, Math.ceil(dt/1000*SUB.speed/0.01));
+  for (i=0; i<n; i++) step3(dt/1000*SUB.speed/n);
+  if (SUB.hist.length === 0 || SUB.t - SUB.hist[SUB.hist.length - 1][0] > 0.5){ SUB.hist.push([SUB.t, SUB.d, SUB.fill]); if (SUB.hist.length > 1200) SUB.hist.shift(); }
+  var top = 50, dmax = Math.max(60, Math.min(400, Math.ceil((Math.max(SUB.d, 0) + 60)/50)*50)), ys = (H - top - 20)/dmax;
+  function Y(d){ return top + d*ys; }
+  g.fillStyle = th.hc ? '#000' : (th.lm ? '#cfe6ff' : '#0b1a2c'); g.fillRect(0, 0, W2, top);
+  var gr = g.createLinearGradient(0, top, 0, H); gr.addColorStop(0, p.sea1); gr.addColorStop(1, p.sea2); g.fillStyle = gr; g.fillRect(0, top, W2, H - top);
+  g.strokeStyle = th.hc ? '#fff' : 'rgba(255,255,255,0.5)'; g.lineWidth = 1.5; g.beginPath(); for (var x=0; x<=W2; x += 8){ var yy = top + 2*Math.sin(x/30 + t/600); if (!x) g.moveTo(x, yy); else g.lineTo(x, yy); } g.stroke();
+  /* depth scale */
+  g.fillStyle = p.dim; g.font = '10px monospace'; g.textAlign = 'left'; var stp = dmax > 200 ? 50 : dmax > 100 ? 25 : 10;
+  for (var d=0; d<=dmax; d += stp){ g.fillRect(0, Y(d), 8, 1); g.fillText(d + ' m', 10, Y(d) + 3); }
+  if (SUB.crush <= dmax){ g.strokeStyle = p.bad; g.setLineDash([8, 5]); g.beginPath(); g.moveTo(60, Y(SUB.crush)); g.lineTo(W2, Y(SUB.crush)); g.stroke(); g.setLineDash([]); label(g, 'crush depth ' + SUB.crush + ' m', W2 - 10, Y(SUB.crush) - 10, p.bad, 11, 'right'); }
+  /* submarine (not to scale vertically: drawn 3x taller than the depth scale near the surface) */
+  var cx = 360, L = 300, h = 46, cy = SUB.d <= 20 ? top + (SUB.d/SUB.H)*h : Y(SUB.d);
+  if (SUB.d > 20 && Y(SUB.d) < top + (20/SUB.H)*h) cy = top + (20/SUB.H)*h;
+  g.fillStyle = p.hull; g.beginPath(); g.ellipse(cx, cy, L/2, h/2, 0, 0, TAU); g.fill(); g.fillRect(cx - 40, cy - h/2 - 26, 70, 28); g.beginPath(); g.moveTo(cx + L/2 - 10, cy); g.lineTo(cx + L/2 + 18, cy - 18); g.lineTo(cx + L/2 + 18, cy + 18); g.closePath(); g.fill();
+  /* ballast tanks cut away: two at the ends, filled to SUB.fill */
+  [[cx - L/2 + 26, 70], [cx + L/2 - 96, 70]].forEach(function(q){ var x1 = q[0], w = q[1], th2 = h - 14, y1 = cy - th2/2; g.fillStyle = th.hc ? '#111' : 'rgba(255,255,255,0.85)'; g.fillRect(x1, y1, w, th2);
+    g.fillStyle = p.tank; g.fillRect(x1, y1 + th2*(1 - SUB.fill), w, th2*SUB.fill); g.strokeStyle = '#222'; g.lineWidth = 1; g.strokeRect(x1, y1, w, th2); });
+  label(g, 'ballast tanks ' + (SUB.fill*100).toFixed(0) + '% full', cx, cy + h/2 + 16, p.txt, 11);
+  if (SUB.mode !== 'hold' && Math.random() < 0.6) bubbles.push([cx + (Math.random() - 0.5)*L*0.8, cy - h/2, 0]);
+  g.fillStyle = 'rgba(255,255,255,0.6)'; bubbles = bubbles.filter(function(b){ b[1] -= dt*0.06; b[2] += dt; g.beginPath(); g.arc(b[0] + Math.sin(b[2]/200)*3, b[1], 2.5, 0, TAU); g.fill(); return b[1] > top && b[2] < 3000; });
+  var F = subF(), k = 70/Math.max(F.W, 1);
+  arrow(g, cx + 60, cy, cx + 60, cy + F.W*k, p.W, 4, 'W ' + N(F.W), cx + 70, cy + F.W*k*0.8, 'left');
+  arrow(g, cx + 30, cy, cx + 30, cy - F.B*k, p.B, 4, 'B ' + N(F.B), cx + 40, cy - F.B*k*0.85, 'left');
+  label(g, (SUB.d < SUB.H/2 - 0.05 ? 'surfaced' : 'depth ' + SUB.d.toFixed(1) + ' m') + ' \u00B7 ' + (SUB.v > 0.02 ? 'sinking' : SUB.v < -0.02 ? 'rising' : 'steady') + ' ' + Math.abs(SUB.v).toFixed(2) + ' m/s', W2 - 10, 22, p.txt, 13, 'right');
+  label(g, 'not to scale', 70, 22, p.dim, 10, 'left'); }
+function syncSubBtns(){ ['Fl', 'Bl', 'Ho'].forEach(function(k, i){ var b = el('by' + k + '3'); if (b) b.setAttribute('aria-pressed', SUB.mode === ['flood', 'blow', 'hold'][i] ? 'true' : 'false'); }); }
+function info3(){ var F = subF(), fn = fNeutral(), p = 101.3 + SUB.rhoSea*G*Math.max(0, SUB.d)/1000;
+  cells([['DEPTH (CENTRE OF THE HULL)', SUB.d < SUB.H/2 - 0.05 ? 'surfaced' : SUB.d.toFixed(1) + ' m'], ['VERTICAL SPEED', f(-SUB.v, 2) + ' m/s ' + (SUB.v < -0.02 ? '(up)' : SUB.v > 0.02 ? '(down)' : '')], ['BALLAST TANKS', (SUB.fill*100).toFixed(1) + ' % full'], ['TOTAL MASS', (subMass()/1000).toFixed(0) + ' t'],
+    ['WEIGHT W', N(F.W)], ['BUOYANT FORCE B', N(F.B)], ['W \u2212 B', N(F.W - F.B)], ['WATER PRESSURE', p.toFixed(0) + ' kPa = ' + (p/101.3).toFixed(1) + ' atm'], ['NEUTRAL WHEN TANKS ARE', fn >= 0 && fn <= 1 ? (fn*100).toFixed(1) + ' % full' : 'impossible here']]);
+  var st = SUB.d < SUB.H/2 - 0.05 && Math.abs(SUB.v) < 0.03 ? 'Surfaced: floating, with part of the hull above the water. The buoyant force equals the weight.' : F.W > F.B + 1000 ? 'Heavier than the water it displaces: the submarine sinks.' : F.W < F.B - 1000 ? 'Lighter than the water it displaces: it rises.' : 'Neutrally buoyant: W = B, it hovers at this depth.';
+  if (SUB.d > SUB.crush) st = 'Below its crush depth! The water pressure, ' + p.toFixed(0) + ' kPa, is more than the hull can take. Blow the tanks!';
+  status(st);
+  eq('B = \u03C1<sub>sea</sub> g V<sub>sub</sub> = ' + SUB.rhoSea + ' \u00D7 9.81 \u00D7 ' + subVsub(SUB.d).toFixed(0) + ' m\u00B3 = <b>' + N(F.B) + '</b> &nbsp;\u00B7&nbsp; W = (1750 t + ' + SUB.rhoSea + ' \u00D7 400 m\u00B3 \u00D7 ' + SUB.fill.toFixed(3) + ') g = <b>' + N(F.W) + '</b>'
+    + '<br>Neutral: 1750 t + \u03C1 \u00D7 400 \u00D7 f = \u03C1 \u00D7 2000 \u2192 f = <b>' + (fn*100).toFixed(1) + '%</b> &nbsp;\u00B7&nbsp; pressure p = p\u2080 + \u03C1gd = <b>' + p.toFixed(0) + ' kPa</b>'); }
+function graph3(){ var Hh = SUB.hist, t1 = Hh.length ? Hh[Hh.length - 1][0] : 1, t0 = Math.max(0, t1 - 300), dm = 50; Hh.forEach(function(q){ if (q[0] >= t0) dm = Math.max(dm, q[1]); }); dm = Math.ceil(dm/50)*50;
+  graphAxes('depth (blue, left scale) and ballast tank filling (orange, 0 to 100%) against time, last 5 min', t0, Math.max(t0 + 60, t1), -10, dm, 'time t (s)', ticks(0, dm), function(X, Y, g, p){
+    g.strokeStyle = p.W; g.lineWidth = 2.4; g.beginPath(); var st = false; Hh.forEach(function(q){ if (q[0] < t0) return; var y = Y(dm - Math.max(-10, q[1]) - 10 + 0); y = Y(dm - Math.max(0, q[1])); if (st) g.lineTo(X(q[0]), y); else { g.moveTo(X(q[0]), y); st = true; } }); g.stroke();
+    g.strokeStyle = p.T; g.lineWidth = 2; g.setLineDash(th.cb ? [7, 3] : []); g.beginPath(); st = false; Hh.forEach(function(q){ if (q[0] < t0) return; var y = Y(-10 + q[2]*(dm + 10)); if (st) g.lineTo(X(q[0]), y); else { g.moveTo(X(q[0]), y); st = true; } }); g.stroke(); g.setLineDash([]);
+    label(g, 'surface at the top; deeper is lower', X(t0) + 6, Y(dm) + 10, p.dim, 10, 'left'); }, function(v){ return (dm - v).toFixed(0) + ' m'; }); }
+/* ══════════ graph frame ══════════ */
+function ticks(lo, hi){ var raw = (hi - lo)/5, p10 = Math.pow(10, Math.floor(Math.log(raw)/Math.LN10)), fr = raw/p10, st = (fr < 1.5 ? 1 : fr < 3.5 ? 2 : fr < 7.5 ? 5 : 10)*p10, out = []; for (var v = Math.ceil(lo/st)*st; v <= hi + 1e-9; v += st) out.push(+v.toPrecision(6)); return out; }
+function graphAxes(ttl, x0, x1, y0, y1, xl, yt, fn, yfmt){ var c = CV.byGr, g = c.g, W2 = c.W, H = c.H, p = pal(), L = 56, R = W2 - 14, T = 14, B = H - 36, i;
+  g.fillStyle = th.hc ? '#000' : (th.lm ? '#fff' : '#121820'); g.fillRect(0, 0, W2, H); el('byGrT').textContent = ttl;
+  function X(x){ return L + (x - x0)/(x1 - x0)*(R - L); } function Y(y){ return B - (y - y0)/(y1 - y0)*(B - T); }
+  g.strokeStyle = p.grid; g.lineWidth = 1; g.fillStyle = p.dim; g.font = '10px monospace';
+  for (i=0; i<=6; i++){ var xv = x0 + (x1 - x0)*i/6; g.beginPath(); g.moveTo(X(xv), T); g.lineTo(X(xv), B); g.stroke(); g.textAlign = 'center'; g.fillText(+xv.toFixed(x1 - x0 < 3 ? 2 : 0), X(xv), B + 12); }
+  yt.forEach(function(v){ g.beginPath(); g.moveTo(L, Y(v)); g.lineTo(R, Y(v)); g.stroke(); g.textAlign = 'right'; g.fillText(yfmt ? yfmt(v) : (Math.abs(v) >= 1e4 ? (v/1000).toFixed(0) + 'k' : String(v)), L - 4, Y(v) + 3); });
+  g.strokeStyle = p.dim; g.strokeRect(L, T, R - L, B - T); g.fillStyle = p.dim; g.font = '11px Arial, sans-serif'; g.textAlign = 'center'; g.fillText(xl, (L + R)/2, H - 6); fn(X, Y, g, p); }
+/* ══════════ shared UI ══════════ */
+function cells(c){ el('byRead').innerHTML = c.map(function(q){ return '<div><div class="by_flabel">' + q[0] + '</div><div class="by_fvalue">' + q[1] + '</div></div>'; }).join(''); }
+var lastS = ''; function status(s){ lastS = s; el('byStatus').textContent = s; }
+function eq(s){ el('byEq').innerHTML = s; }
+function narrate(m){ if (th.nr) el('byNar').textContent = m; }
+function row(id, lab, min, max, step, val){ return '<div class="by_ctrl"><div class="by_ctrlhdr"><label class="by_ctrlname" for="' + id + '">' + lab + '</label><span class="by_sval" id="' + id + 'v"></span></div><input type="range" id="' + id + '" min="' + min + '" max="' + max + '" step="' + step + '" value="' + val + '"></div>'; }
+function btn(id, t, cls){ return '<button type="button" class="by_btn' + (cls ? ' ' + cls : '') + '" id="' + id + '">' + t + '</button>'; }
+function on(id, ev, fn){ var x = el(id); if (x) x.addEventListener(ev, fn); }
+function tries(a){ return '<ol class="by_try">' + a.map(function(s){ return '<li>' + s + '</li>'; }).join('') + '</ol>'; }
+function sel(id, lab, list, val, unit){ return '<div class="by_ctrl"><label class="by_ctrlname" for="' + id + '">' + lab + '</label><select id="' + id + '">' + list.map(function(q){ return '<option value="' + q[1] + '"' + (q[1] === val ? ' selected' : '') + '>' + q[0] + ' (' + q[1] + ' ' + unit + ')</option>'; }).join('') + '</select></div>'; }
+function lg(v, a, b){ return Math.round(1000*Math.log(v/a)/Math.log(b/a)); } function ex(s, a, b){ return a*Math.pow(b/a, s/1000); }
+var MMIN = 0.001, MMAX = 60;
+function objUI(O, pre){ return '<div class="by_ctrl"><label class="by_ctrlname" for="' + pre + 'Mat">make it of\u2026 (sets the mass for this size)</label><select id="' + pre + 'Mat"><option value="">choose a material\u2026</option>' + MATS.map(function(q){ return '<option value="' + q[1] + '">' + q[0] + ' (' + q[1] + ' kg/m\u00B3)</option>'; }).join('') + '</select></div>'
+  + row(pre + 'M', 'mass m', 0, 1000, 1, lg(O.m, MMIN, MMAX)) + row(pre + 'A', 'side of the cube a', 2, 15, 0.5, O.a*100) + sel(pre + 'L', 'liquid', LIQ, O.rho, 'kg/m\u00B3'); }
+function objWire(O, pre, after){ var uM, uA;
+  function sm(){ var t = kg(O.m); el(pre + 'Mv').textContent = t; el(pre + 'M').setAttribute('aria-valuetext', t.replace(' g', ' grams').replace(' kg', ' kilograms')); el(pre + 'M').value = lg(O.m, MMIN, MMAX); }
+  function sa(){ var t = (O.a*100).toFixed(1) + ' cm'; el(pre + 'Av').textContent = t; el(pre + 'A').setAttribute('aria-valuetext', t.replace('cm', 'centimeters')); el(pre + 'A').value = O.a*100; }
+  sm(); sa();
+  on(pre + 'M', 'input', function(){ O.m = ex(+this.value, MMIN, MMAX); sm(); el(pre + 'Mat').value = ''; after(); refresh(); });
+  on(pre + 'A', 'input', function(){ O.a = +this.value/100; sa(); el(pre + 'Mat').value = ''; after(); refresh(); });
+  on(pre + 'Mat', 'change', function(){ if (!this.value) return; O.m = Math.min(MMAX, Math.max(MMIN, +this.value*Math.pow(O.a, 3))); sm(); after(); refresh(); narrate('A ' + (O.a*100).toFixed(1) + ' cm cube of ' + this.options[this.selectedIndex].text.split(' (')[0] + ': mass ' + kg(O.m) + '. ' + lastS); });
+  on(pre + 'L', 'change', function(){ O.rho = +this.value; after(); refresh(); narrate(this.options[this.selectedIndex].text + '. ' + lastS); });
+  ['M', 'A'].forEach(function(k){ on(pre + k, 'change', function(){ narrate(lastS); }); }); }
+var LABS = ['A CUBE IN A TANK OF LIQUID (DEPTH SCALE IN CM)', 'A CUBE HANGING FROM A SPRING SCALE, LOWERED INTO A FULL CONTAINER; THE LIQUID PUSHED OUT IS WEIGHED', 'A SUBMARINE: FLOOD THE BALLAST TANKS TO DIVE, BLOW THEM TO RISE'];
+var ARIA = ['A glass tank of liquid with a cube in it, and arrows for its weight, the buoyant force and, when it rests on the bottom, the normal force', 'A cube hanging from a spring scale, partly in a container filled to its spout; the liquid pushed out runs into a cup on a second scale', 'A submarine in the sea, seen from the side, with its ballast tanks cut away, a depth scale, and arrows for its weight and buoyant force'];
+function build(i){ var A = '', B = '', bar = '';
+  if (i === 0){ A = objUI(T1, 'by1'); bar = btn('byDrop1', 'Drop it from above', 'by_kick') + btn('byPush1', 'Push it to the bottom and let go') + btn('bySurf1', 'Place it at the surface') + btn('byDsc', 'Describe');
+    B = tries(['Pine wood in water: what fraction is under the surface? Compare with 500/1000.', 'Ice in fresh water, then in sea water: which floats higher? (Icebergs: about 90% hidden.)', 'Steel sinks in water. Try mercury!', 'Keep the mass the same and make the cube bigger: at what size does it start to float? Why?', 'A sunk cube rests on the bottom: why is the normal force less than its weight?']); }
+  else if (i === 1){ A = objUI(T2, 'by2') + row('byS2', 'lower it: depth of the bottom of the cube', -0.05, 0.22, 0.002, T2.s);
+    bar = btn('byIn2', 'Lower it all the way') + btn('byOut2', 'Lift it out') + btn('byDsc', 'Describe');
+    B = tries(['Lower the cube slowly: how does the scale reading change? And the cup?', 'Add the two readings: what do you always get?', 'Once it is fully under, lower it more: does the reading change? Why not?', 'An aluminum and a steel cube of the same mass: which seems to lose more weight in water? Why?', 'Use the two readings (in air and fully under) to find the density of the cube, as Archimedes did with the crown.']); }
+  else { A = '<div class="by_ctrl"><label class="by_ctrlname" for="bySea3">water</label><select id="bySea3"><option value="1025"' + (SUB.rhoSea === 1025 ? ' selected' : '') + '>sea water (1025 kg/m\u00B3)</option><option value="1000"' + (SUB.rhoSea === 1000 ? ' selected' : '') + '>fresh water, a river mouth (1000 kg/m\u00B3)</option><option value="1028"' + (SUB.rhoSea === 1028 ? ' selected' : '') + '>cold deep sea water (1028 kg/m\u00B3)</option></select></div>'
+      + row('byF3', 'ballast tanks: fill', 0, 100, 0.1, SUB.fill*100) + '<div class="by_ctrl"><label class="by_ctrlname" for="bySp3">speed of the clock</label><select id="bySp3"><option value="1">1\u00D7</option><option value="5">5\u00D7</option><option value="20" selected>20\u00D7</option></select></div>';
+    bar = btn('byFl3', 'Flood the tanks (dive)') + btn('byBl3', 'Blow the tanks (rise)') + btn('byHo3', 'Close the valves') + btn('byNe3', 'Trim to neutral', 'by_kick') + btn('byRs3', 'Back to the surface') + btn('byDsc', 'Describe');
+    B = tries(['From the surface, flood the tanks: when does the submarine start to go under? Read the % full.', 'Trim to neutral at 100 m: does it stay put? Now flood a little more.', 'Read the water pressure every 10 m deeper. How much does it grow?', 'Hovering neutrally in sea water, switch to fresh water: what happens, and how much must the tanks be emptied?', 'Why can the submarine hover at any depth when neutral, while a cube in tab 1 cannot hover at mid-depth if it floats?']); SUB.speed = 20; }
+  el('byCtlA').innerHTML = A; el('byCtlB').innerHTML = B; el('byBar').innerHTML = bar; on('byDsc', 'click', describe);
+  if (i === 0){ objWire(T1, 'by1', function(){ T1.v = 0; if (T1.z > 0.2) T1.z = 0.2; });
+    on('byDrop1', 'click', function(){ T1.z = 0.15; T1.v = 0; narrate('Dropped from just above the surface.'); });
+    on('byPush1', 'click', function(){ T1.z = -T1.D; T1.v = 0; narrate('Pushed to the bottom and released. ' + (rhoObj1() < T1.rho ? 'The buoyant force is larger than its weight: it shoots up, overshoots and bobs before settling.' : 'It stays there: the buoyant force is smaller than its weight.')); });
+    on('bySurf1', 'click', function(){ T1.z = -0.001; T1.v = 0; narrate('Placed at the surface and released.'); }); }
+  else if (i === 1){ objWire(T2, 'by2', function(){}); var u2 = function(){ var t = (T2.s*100).toFixed(1) + ' cm'; el('byS2v').textContent = T2.s < 0 ? 'above the liquid' : t; el('byS2').setAttribute('aria-valuetext', T2.s < 0 ? 'above the liquid' : t.replace('cm', 'centimeters')); el('byS2').value = T2.s; }; u2();
+    on('byS2', 'input', function(){ T2.s = +this.value; u2(); refresh(); }); on('byS2', 'change', function(){ narrate('Scale: ' + T2calc().T.toFixed(3) + ' N; cup: ' + T2calc().B.toFixed(3) + ' N. ' + lastS); });
+    on('byIn2', 'click', function(){ T2.s = 0.22; u2(); refresh(); narrate(lastS); }); on('byOut2', 'click', function(){ T2.s = -0.05; u2(); refresh(); narrate(lastS); }); }
+  else { var u3 = function(){ var t = (SUB.fill*100).toFixed(1) + ' %'; el('byF3v').textContent = t; el('byF3').setAttribute('aria-valuetext', t.replace('%', 'percent')); };
+    u3(); on('byF3', 'input', function(){ SUB.fill = +this.value/100; SUB.mode = 'hold'; syncSubBtns(); u3(); }); on('byF3', 'change', function(){ narrate(lastS); });
+    on('bySea3', 'change', function(){ SUB.rhoSea = +this.value; narrate('Now in ' + this.options[this.selectedIndex].text + '. Neutral now needs the tanks ' + (fNeutral()*100).toFixed(1) + '% full.'); });
+    on('bySp3', 'change', function(){ SUB.speed = +this.value; });
+    on('byFl3', 'click', function(){ SUB.mode = 'flood'; syncSubBtns(); narrate('Vents open: sea water floods the ballast tanks. The submarine gets heavier.'); });
+    on('byBl3', 'click', function(){ SUB.mode = 'blow'; syncSubBtns(); narrate('Compressed air blows the water out of the tanks. The submarine gets lighter.'); });
+    on('byHo3', 'click', function(){ SUB.mode = 'hold'; syncSubBtns(); narrate('Valves closed: the amount of water in the tanks stays the same.'); });
+    on('byNe3', 'click', function(){ SUB.mode = 'hold'; SUB.fill = Math.max(0, Math.min(1, fNeutral())); el('byF3').value = SUB.fill*100; u3(); syncSubBtns(); narrate('Trimmed to neutral: tanks ' + (SUB.fill*100).toFixed(1) + '% full, weight equals buoyant force when fully under. It drifts to a stop and hovers.'); });
+    on('byRs3', 'click', function(){ SUB.fill = 0; SUB.d = -SUB.H/2 + subVsubInv(); SUB.v = 0; SUB.mode = 'hold'; SUB.hist = []; SUB.t = 0; el('byF3').value = 0; u3(); syncSubBtns(); narrate('Back at the surface, tanks empty.'); });
+    syncSubBtns(); setInterval(function(){ if (TAB === 2){ var e = el('byF3'); if (e && document.activeElement !== e){ e.value = SUB.fill*100; u3(); } } }, 300); } }
+function subVsubInv(){ return SUB.M0/(SUB.rhoSea*SUB.V)*SUB.H; }
+function refresh(){ [info1, info2, info3][TAB](); [graph1, graph2, graph3][TAB](); }
+function describe(){ var d = ['A glass tank of liquid, seen from the side, with a depth scale. An orange cube ' + (T1.z > 0 ? 'is above the liquid' : -T1.z >= T1.a ? 'is fully under the surface' : 'floats with ' + f(100*Math.min(T1.a, -T1.z)/T1.a, 0) + '% of its height under the surface') + '. A blue arrow shows its weight, pointing down; a green arrow the buoyant force, pointing up' + (N1 > 0 ? '; a pink arrow the push of the bottom of the tank' : '') + '. ',
+  'A cube hangs from a spring scale above a container filled to its spout. As the cube goes in, liquid spills from the spout into a cup on a second scale. The spring scale reads ' + T2calc().T.toFixed(2) + ' newtons, the cup ' + T2calc().B.toFixed(2) + ' newtons. ',
+  'A submarine in the sea, seen from the side, at ' + Math.max(0, SUB.d).toFixed(0) + ' metres. Its two ballast tanks are cut away, showing them ' + (SUB.fill*100).toFixed(0) + '% full of water. A blue arrow shows its weight, a green arrow the buoyant force. '][TAB];
+  narrate(d + lastS); }
+function tab(i){ TAB = i; for (var k=0; k<3; k++){ var t = el('byT' + k); t.setAttribute('aria-selected', k === i ? 'true' : 'false'); t.tabIndex = k === i ? 0 : -1; }
+  el('byLab').textContent = LABS[i]; el('byCv').setAttribute('aria-label', ARIA[i]); build(i); refresh(); narrate(['Float or sink. ', 'Weighing it in a liquid. ', 'Submarine. '][i] + lastS); }
+[0, 1, 2].forEach(function(k){ on('byT' + k, 'click', function(){ tab(k); }); on('byT' + k, 'keydown', function(e){ if (e.key === 'ArrowRight'){ tab((k + 1) % 3); el('byT' + TAB).focus(); e.preventDefault(); } else if (e.key === 'ArrowLeft'){ tab((k + 2) % 3); el('byT' + TAB).focus(); e.preventDefault(); } }); });
+function theme(k){ th[k] = !th[k]; if (k === 'hc' && th.hc) th.lm = false; if (k === 'lm' && th.lm) th.hc = false;
+  ROOT.classList.toggle('by_hc', th.hc); ROOT.classList.toggle('by_lm', th.lm);
+  [['hc', 'byBtnHC'], ['lm', 'byBtnLM'], ['cb', 'byBtnCB'], ['nr', 'byBtnNR']].forEach(function(q){ var b = el(q[1]); b.classList.toggle('by_a11yon', th[q[0]]); b.setAttribute('aria-pressed', th[q[0]] ? 'true' : 'false'); });
+  el('byBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('byNar').style.display = th.nr ? '' : 'none'; refresh();
+  if (k === 'cb' && th.cb) narrate('Colour-blind safe colours: weight blue, buoyant force bluish green, normal force pink, string tension orange-red, ballast water sky blue.'); }
+on('byBtnHC', 'click', function(){ theme('hc'); }); on('byBtnLM', 'click', function(){ theme('lm'); }); on('byBtnCB', 'click', function(){ theme('cb'); }); on('byBtnNR', 'click', function(){ theme('nr'); });
+on('byDescBtn', 'click', function(){ var d = el('byDesc'), o = d.hidden; d.hidden = !o; this.setAttribute('aria-expanded', o ? 'true' : 'false'); this.innerHTML = (o ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+  if (o && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } });
+var last = 0, tk = 0;
+function loop(t){ var dt = last ? Math.min(50, t - last) : 0; last = t; [draw1, draw2, draw3][TAB](t, dt); if (++tk % 8 === 0 && TAB !== 1) refresh(); requestAnimationFrame(loop); }
+SUB.d = -SUB.H/2 + subVsubInv();
+tab(Math.max(0, Math.min(2, CFG.tab | 0)));
+requestAnimationFrame(loop);
+window['bySim' + thisq] = { tab:tab, _T1:T1, _T2:T2, _SUB:SUB, _step1:step1, _step3:step3, _T2c:T2calc, _subF:subF, _fN:fNeutral, _rho1:rhoObj1 };
+})();
+</script>
+
+</body>
+</html>
