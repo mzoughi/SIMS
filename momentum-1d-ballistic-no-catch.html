@@ -36,9 +36,10 @@ A11y: High Contrast | Color-Blind | Narration
 ═══════════════════════════════════════════════════════ -->
 <div id="bp_root">
 <div class="mob_a11ytop" role="toolbar" aria-label="Display options">
-<input type="button" id="btnHC"   value="High Contrast: OFF" onclick="sim1.toggleHC()">
-<input type="button" id="btnCB"   value="Color-Blind: OFF"   onclick="sim1.toggleCB()">
-<input type="button" id="btnNarr" value="Narration: ON"      onclick="sim1.toggleNarr()">
+<button type="button" id="btnHC" onclick="sim1.toggleHC()" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" id="btnDM" onclick="sim1.toggleDM()" aria-pressed="false">DARK MODE</button>
+<button type="button" id="btnCB" onclick="sim1.toggleCB()" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" id="btnNarr" onclick="sim1.toggleNarr()" aria-pressed="true">NARRATION: ON</button>
 </div>
 
 <div class="sl_tbar"><h3>Ballistic Pendulum -- Spring Gun Lab</h3></div>
@@ -155,10 +156,14 @@ h = ½gt² &nbsp; x = v₀t &nbsp; → v₀ = x/t<br>
 <label class="hl_fitlabel">
 <input id="showFit" type="checkbox" onchange="sim1.redrawGraph()"> Show linear fit
 </label>
+<label class="hl_fitlabel">
+<input id="showAvg" type="checkbox" onchange="sim1.redrawGraph()"> Show average &amp; std dev (of y)
+</label>
 <input type="button" value="Clear graph" onclick="sim1.clearGraph()" style="font-size:0.75rem;padding:3px 8px;cursor:pointer;background:#ffe0a0;border:1px solid #cc9900;border-radius:3px;">
 <input type="button" value="Clear all data" onclick="sim1.clearData()" style="font-size:0.75rem;padding:3px 8px;cursor:pointer;background:#f0b8b8;border:1px solid #cc6655;border-radius:3px;">
 </div>
 <div id="fitResult" role="status" aria-live="polite" class="hl_fitresult"></div>
+<div id="avgResult" role="status" aria-live="polite" class="hl_fitresult"></div>
 </div>
 <div id="datatableBox" class="hl_tblbox" style="flex:1;min-width:220px;">
 <div class="sl_boxhd">Recorded Runs</div>
@@ -218,23 +223,61 @@ h = ½gt² &nbsp; x = v₀t &nbsp; → v₀ = x/t<br>
 :where(#mobbpnc) .hl_axislbl { font-size:0.78rem; font-weight:bold; color:#333; display:flex; align-items:center; gap:5px; }
 :where(#mobbpnc) .hl_axislbl select { font-size:0.78rem; padding:2px 4px; }
 /* ── HIGH CONTRAST overrides ── */
-:where(#mobbpnc) body.hc-mode { background:#111; }
-body.hc-mode #bp_root .sl_tbar { background:#cc7700; }
-body.hc-mode #bp_root .sl_bbar { background:#1a2a1a; }
-body.hc-mode #bp_root .sl_fbar { background:#1a1a2a; }
-body.hc-mode #bp_root .sl_params, body.hc-mode #bp_root .sl_readout, body.hc-mode #bp_root .hl_tblbox, body.hc-mode #bp_root .hl_axisbar { background:#111; border-color:#aaa; color:#eee; }
-body.hc-mode #bp_root .sl_narr { background:#0a0a22; border-color:#6699ff; }
-body.hc-mode #bp_root .sl_info { background:#111100; border-color:#aa8800; color:#ddd; }
-body.hc-mode #bp_root .sl_boxhd { color:#fff; border-bottom-color:#aaa; }
-body.hc-mode #bp_root .sl_pval { color:#88aaff; }
-body.hc-mode #bp_root .sl_rv { color:#ff8888; }
-body.hc-mode #bp_root .sl_badge { background:#003300; color:#88ff88; }
-body.hc-mode #bp_root .sl_narrtext { color:#aaccff; }
-body.hc-mode #bp_root .sl_plbl, body.hc-mode #bp_root .sl_rrow { color:#ddd; }
-body.hc-mode #bp_root .hl_hint { color:#aaa; }
-body.hc-mode #bp_root .hl_fitresult { color:#88ff88; }
-body.hc-mode #bp_root .hl_axislbl { color:#eee; }
-body.hc-mode #vtCanvas { background:#111; border-color:#555; }</style>
+#mobbpnc.hc-mode { background:#000; }
+#mobbpnc.hc-mode #bp_root .sl_tbar { background:#cc7700; }
+#mobbpnc.hc-mode #bp_root .sl_bbar { background:#1a2a1a; }
+#mobbpnc.hc-mode #bp_root .sl_fbar { background:#1a1a2a; }
+#mobbpnc.hc-mode #bp_root .sl_params, #mobbpnc.hc-mode #bp_root .sl_readout, #mobbpnc.hc-mode #bp_root .hl_tblbox, #mobbpnc.hc-mode #bp_root .hl_axisbar { background:#111; border-color:#aaa; color:#eee; }
+#mobbpnc.hc-mode #bp_root .sl_narr { background:#0a0a22; border-color:#6699ff; }
+#mobbpnc.hc-mode #bp_root .sl_info { background:#111100; border-color:#aa8800; color:#ddd; }
+#mobbpnc.hc-mode #bp_root .sl_boxhd { color:#fff; border-bottom-color:#aaa; }
+#mobbpnc.hc-mode #bp_root .sl_pval { color:#88aaff; }
+#mobbpnc.hc-mode #bp_root .sl_rv { color:#ff8888; }
+#mobbpnc.hc-mode #bp_root .sl_badge { background:#003300; color:#88ff88; }
+#mobbpnc.hc-mode #bp_root .sl_narrtext { color:#aaccff; }
+#mobbpnc.hc-mode #bp_root .sl_plbl, #mobbpnc.hc-mode #bp_root .sl_rrow { color:#ddd; }
+#mobbpnc.hc-mode #bp_root .hl_hint { color:#aaa; }
+#mobbpnc.hc-mode #bp_root .hl_fitresult { color:#88ff88; }
+#mobbpnc.hc-mode #bp_root .hl_axislbl { color:#eee; }
+#mobbpnc.hc-mode #vtCanvas { background:#111; border-color:#555; }
+/* ── display-options toolbar: the same look as the other sims ── */
+#mobbpnc .mob_a11ytop[role=toolbar] { background:#222; padding:6px 8px; }
+#mobbpnc .mob_a11ytop[role=toolbar] button { font-family:monospace; font-size:.72rem; letter-spacing:.06em; padding:4px 10px; background:#2a2e3a; border:1px solid #404a60; color:#9aa6bd; border-radius:3px; cursor:pointer; }
+#mobbpnc .mob_a11ytop[role=toolbar] button:hover { border-color:#00e8d0; color:#00e8d0; }
+#mobbpnc .mob_a11ytop[role=toolbar] button[aria-pressed="true"] { background:rgba(0,232,208,.14); border-color:#00e8d0; color:#00e8d0; font-weight:bold; }
+/* ── DARK MODE (the canvases follow through the colour engine) ── */
+#mobbpnc.dm-mode { background:#16191e; }
+#mobbpnc.dm-mode #bp_root { color:#e6e9ee; }
+#mobbpnc.dm-mode .sl_tbar { background:#8a4a00; }
+#mobbpnc.dm-mode .sl_tbar h3 { color:#fff; }
+#mobbpnc.dm-mode .sl_mcontent { background:#1a1d22; }
+#mobbpnc.dm-mode .sl_bbar { background:#26301c; }
+#mobbpnc.dm-mode .sl_fbar { background:#2a2618; }
+#mobbpnc.dm-mode .sl_params, #mobbpnc.dm-mode .sl_readout, #mobbpnc.dm-mode .hl_tblbox, #mobbpnc.dm-mode .hl_axisbar { background:#22262b; border-color:#5a6470; color:#e6e9ee; }
+#mobbpnc.dm-mode .sl_narr { background:#1b2233; border-color:#4f74a8; }
+#mobbpnc.dm-mode .sl_info { background:#2a2614; border-color:#8a7420; color:#d8d2bc; }
+#mobbpnc.dm-mode .sl_boxhd { color:#e6e9ee; border-bottom-color:#5a6470; }
+#mobbpnc.dm-mode .sl_narrboxhd, #mobbpnc.dm-mode .sl_narrtext { color:#bcd0f0; }
+#mobbpnc.dm-mode .sl_pval { color:#9dbaff; }
+#mobbpnc.dm-mode .sl_rv { color:#ff9a8a; }
+#mobbpnc.dm-mode .sl_badge { background:#16361e; color:#8fe0a0; }
+#mobbpnc.dm-mode .sl_plbl, #mobbpnc.dm-mode .sl_rrow, #mobbpnc.dm-mode .hl_axislbl { color:#d8dce2; }
+#mobbpnc.dm-mode .hl_hint, #mobbpnc.dm-mode .hl_nodatamsg { color:#a8b0bb; }
+#mobbpnc.dm-mode .hl_fitresult { color:#8fe0a0; }
+#mobbpnc.dm-mode .hl_table th { background:#2c3138; border-color:#5a6470; }
+#mobbpnc.dm-mode .hl_table td { border-color:#3a4048; }
+#mobbpnc.dm-mode #vtCanvas { background:#1a1d22; border-color:#5a6470; }
+#mobbpnc.dm-mode input[type=button]:not(.sl_active) { background:#2c3138 !important; color:#e6e9ee !important; border-color:#5a6470 !important; }
+#mobbpnc.dm-mode select { background:#22262b; color:#e6e9ee; border:1px solid #5a6470; }
+#mobbpnc.dm-mode .mob_desc { background:#22262b; color:#e6e9ee; border-color:#3a4048; }
+/* ── HIGH CONTRAST: black, white and yellow ── */
+#mobbpnc.hc-mode #bp_root .sl_tbar { background:#000; box-shadow:inset 0 0 0 1px #fff; }
+#mobbpnc.hc-mode #bp_root .sl_tbar h3 { color:#ffd700; }
+#mobbpnc.hc-mode #bp_root .sl_mcontent { background:#000; }
+#mobbpnc.hc-mode input[type=button]:not(.sl_active) { background:#000 !important; color:#fff !important; border:2px solid #fff !important; }
+#mobbpnc.hc-mode select { background:#000; color:#fff; border:1px solid #fff; }
+#mobbpnc.hc-mode .mob_desc { background:#000; color:#fff; border-color:#fff; border-left-color:#ffd700; }
+</style>
 <!-- ═══════ JAVASCRIPT ═══════ -->
 <script>
 var sim1 = (function(){
@@ -288,9 +331,140 @@ var yAxis='thetamax', xAxis='t';
 var srTimer=null;
 function srAnnounce(msg){ var el=document.getElementById('srAnnounce'); if(!el)return; el.textContent=''; clearTimeout(srTimer); srTimer=setTimeout(function(){el.textContent=msg;},50); }
 function setBtnActive(id,on){ var b=document.getElementById(id); if(!b)return; if(on) b.className=(b.className+' sl_active').trim(); else b.className=b.className.replace('sl_active','').trim(); }
-function toggleHC(){ hcMode=!hcMode; if(hcMode){cbMode=false; setBtnActive('btnCB',false); document.getElementById('btnCB').value='Color-Blind: OFF';} pal=hcMode?PAL.hc:(cbMode?PAL.cb:PAL.def); document.body.className=hcMode?'hc-mode':''; setBtnActive('btnHC',hcMode); document.getElementById('btnHC').value=hcMode?'High Contrast: ON':'High Contrast: OFF'; draw(); redrawGraph(); }
-function toggleCB(){ cbMode=!cbMode; if(cbMode&&hcMode){hcMode=false; setBtnActive('btnHC',false); document.getElementById('btnHC').value='High Contrast: OFF';} pal=hcMode?PAL.hc:(cbMode?PAL.cb:PAL.def); document.body.className=''; setBtnActive('btnCB',cbMode); document.getElementById('btnCB').value=cbMode?'Color-Blind: ON':'Color-Blind: OFF'; draw(); redrawGraph(); }
-function toggleNarr(){ showNarration=!showNarration; var box=document.getElementById('narrationBox'); if(box) box.style.display=showNarration?'':'none'; setBtnActive('btnNarr',showNarration); document.getElementById('btnNarr').value=showNarration?'Narration: ON':'Narration: OFF'; }
+/* ── canvas themes: every colour the sim draws passes through map(); the last frame is recorded,
+      so switching dark mode, high contrast or colour-blind safe colours redraws it at once,
+      even while the sim is paused. No page-wide names: this lives inside the controller. ── */
+function makeCT(){
+  var mode = { dark:false, hc:false, cb:false }, key = '', cache = {}, cvs = [];
+  var probe = document.createElement('canvas').getContext('2d');
+  var P = CanvasRenderingContext2D.prototype;
+  function parse(c){
+    probe.fillStyle = '#000'; probe.fillStyle = c; var s = String(probe.fillStyle), m;
+    if (s.charAt(0) === '#') return [parseInt(s.substr(1,2),16), parseInt(s.substr(3,2),16), parseInt(s.substr(5,2),16), 1];
+    m = s.match(/rgba?\(([^)]+)\)/); if (!m) return null;
+    var p = m[1].split(',').map(parseFloat); return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1];
+  }
+  function lin(v){ v /= 255; return v <= 0.04045 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); }
+  function lum(r,g,b){ return 0.2126*lin(r) + 0.7152*lin(g) + 0.0722*lin(b); }
+  function hsl(r,g,b){
+    r/=255; g/=255; b/=255; var mx = Math.max(r,g,b), mn = Math.min(r,g,b), h = 0, s = 0, l = (mx+mn)/2, d = mx-mn;
+    if (d > 1e-6){ s = d/(1 - Math.abs(2*l - 1));
+      h = mx === r ? ((g-b)/d) % 6 : (mx === g ? (b-r)/d + 2 : (r-g)/d + 4); h *= 60; if (h < 0) h += 360; }
+    return [h, s, l];
+  }
+  function rgb(h,s,l){
+    var c = (1 - Math.abs(2*l - 1))*s, x = c*(1 - Math.abs((h/60) % 2 - 1)), m = l - c/2, t;
+    t = h < 60 ? [c,x,0] : h < 120 ? [x,c,0] : h < 180 ? [0,c,x] : h < 240 ? [0,x,c] : h < 300 ? [x,0,c] : [c,0,x];
+    return [Math.round((t[0]+m)*255), Math.round((t[1]+m)*255), Math.round((t[2]+m)*255)];
+  }
+  /* raise the lightness until the colour stands out on a dark background */
+  function lift(h,s,l,target){ var c = rgb(h,s,l); while (lum(c[0],c[1],c[2]) < target && l < 0.95){ l += 0.03; c = rgb(h,s,l); } return c; }
+  /* Okabe-Ito colours, chosen by hue */
+  function oi(h){
+    return h < 15 || h >= 330 ? [213,94,0] : h < 40 ? [230,159,0] : h < 75 ? [240,228,66] : h < 170 ? [0,158,115]
+         : h < 200 ? [86,180,233] : h < 260 ? [0,114,178] : [204,121,167];
+  }
+  function conv(c){
+    if (!mode.dark && !mode.hc && !mode.cb) return c;
+    var k = key + c; if (cache[k] !== undefined) return cache[k];
+    var v = parse(c); if (!v){ cache[k] = c; return c; }
+    var r = v[0], g = v[1], b = v[2], a = v[3], q = hsl(r,g,b), Y = lum(r,g,b), neutral = q[1] < 0.18, o;
+    if (mode.cb && !neutral && Y <= 0.6){ o = oi(q[0]); r = o[0]; g = o[1]; b = o[2]; q = hsl(r,g,b); Y = lum(r,g,b); }
+    if (mode.hc){
+      if (neutral) o = Y > 0.8 ? [0,0,0] : (Y < 0.25 ? [255,255,255] : [205,205,205]);
+      else if (Y > 0.6) o = [0,0,0];
+      else o = lift(q[0], 1, Math.max(q[2], 0.5), 0.4);
+    } else if (mode.dark){
+      if (neutral) o = rgb(q[0], q[1], 0.1 + 0.82*(1 - q[2]));
+      else if (Y > 0.55) o = rgb(q[0], Math.min(q[1], 0.6), 0.22);
+      else o = lift(q[0], q[1], q[2], 0.3);
+    } else o = [r,g,b];
+    var out = a < 1 ? 'rgba(' + o[0] + ',' + o[1] + ',' + o[2] + ',' + a + ')' : 'rgb(' + o[0] + ',' + o[1] + ',' + o[2] + ')';
+    cache[k] = out; return out;
+  }
+  /* gradients remember their colour stops, so they can be rebuilt in another theme */
+  function style(v, ctx){
+    if (typeof v === 'string') return conv(v);
+    if (v && v.__spec){
+      var sp = v.__spec; if (sp.key === key) return sp.made;
+      var g = P[sp.kind].apply(ctx, sp.args); sp.stops.forEach(function(s){ g.addColorStop(s[0], conv(s[1])); });
+      sp.key = key; sp.made = g; return g;
+    }
+    return v;
+  }
+  function attach(cv){
+    var ctx = cv.getContext('2d'); if (!ctx || ctx.__ct) return; ctx.__ct = true;
+    var log = [], replaying = false, vals = {};
+    function full(a){ return a[0] <= 0 && a[1] <= 0 && a[0] + a[2] >= cv.width && a[1] + a[3] >= cv.height; }
+    ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); vals[p] = d.get.call(ctx);
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return vals[p]; },
+        set:function(v){ vals[p] = v; if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, style(v, ctx)); } });
+    });
+    var plain = ['lineWidth','font','textAlign','textBaseline','globalAlpha','lineCap','lineJoin','miterLimit','shadowBlur',
+                 'shadowOffsetX','shadowOffsetY','globalCompositeOperation','lineDashOffset','direction','imageSmoothingEnabled'];
+    plain.forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); if (!d || !d.set) return;
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return d.get.call(ctx); },
+        set:function(v){ if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, v); } });
+    });
+    ['createLinearGradient','createRadialGradient','createConicGradient'].forEach(function(n){
+      if (!P[n]) return;
+      ctx[n] = function(){
+        var args = Array.prototype.slice.call(arguments), g = P[n].apply(ctx, args), add = g.addColorStop;
+        var sp = { kind:n, args:args, stops:[], key:key, made:g }; g.__spec = sp;
+        g.addColorStop = function(o, c){ sp.stops.push([o, c]); add.call(g, o, conv(c)); };
+        return g;
+      };
+    });
+    var skip = /^(constructor|get[A-Z]\w*|isPointIn\w*|measureText|create\w*)$/;
+    Object.getOwnPropertyNames(P).forEach(function(n){
+      if (skip.test(n)) return; var d = Object.getOwnPropertyDescriptor(P, n); if (!d || typeof d.value !== 'function') return;
+      var f = d.value;
+      ctx[n] = function(){
+        if (!replaying){
+          if ((n === 'fillRect' || n === 'clearRect') && full(arguments)){
+            /* a new frame: start the record from the drawing state of this moment */
+            var t = ctx.getTransform();
+            log = [['c','setTransform',[t.a,t.b,t.c,t.d,t.e,t.f]]];
+            ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){ log.push(['s', p, vals[p]]); });
+            plain.forEach(function(p){ var dd = Object.getOwnPropertyDescriptor(P, p); if (dd && dd.get) log.push(['s', p, dd.get.call(ctx)]); });
+            log.push(['c','setLineDash',[ctx.getLineDash()]]);
+          }
+          if (log){ log.push(['c', n, Array.prototype.slice.call(arguments)]); if (log.length > 60000) log = null; }
+        }
+        return f.apply(ctx, arguments);
+      };
+    });
+    cvs.push({ redraw:function(){
+      if (!log || log.length < 3) return;
+      replaying = true;
+      try { log.forEach(function(e){ if (e[0] === 's') ctx[e[1]] = e[2]; else P[e[1]].apply(ctx, e[2]); }); }
+      finally { replaying = false; }
+    }});
+  }
+  return {
+    attach: attach,
+    map: conv,
+    set: function(m){ mode = { dark:!!m.dark, hc:!!m.hc, cb:!!m.cb }; key = (mode.dark?'d':'') + (mode.hc?'h':'') + (mode.cb?'c':'') + '|'; cvs.forEach(function(c){ c.redraw(); }); }
+  };
+}
+var ct=makeCT(); [mCanvas,lzCanvas,vtC].forEach(ct.attach);
+var dmMode=false;
+function a11yBtn(id,on,label){ var b=document.getElementById(id); if(!b)return; b.setAttribute('aria-pressed',on?'true':'false'); setBtnActive(id,on); if(label) b.textContent=label; }
+function applyThemes(){
+var p, base=cbMode?PAL.cb:PAL.def, mix={}; for(p in base) mix[p]=base[p];
+if(hcMode){ for(p in PAL.hc) mix[p]=PAL.hc[p]; if(cbMode){ mix.ball='#e69f00'; mix.bob='#56b4e9'; mix.ke='#56b4e9'; mix.pe='#2fc79a'; mix.indicator='#e69f00'; } }
+pal=mix;
+var W=document.getElementById('mobbpnc'); if(W){ W.classList.toggle('hc-mode',hcMode); W.classList.toggle('dm-mode',dmMode); W.classList.toggle('cb-mode',cbMode); }
+ct.set({dark:dmMode});   /* high contrast has its own palette; dark mode re-colours the standard one */
+a11yBtn('btnHC',hcMode); a11yBtn('btnDM',dmMode); a11yBtn('btnCB',cbMode);
+draw(); redrawGraph();
+}
+function toggleHC(){ hcMode=!hcMode; if(hcMode) dmMode=false; applyThemes(); }
+function toggleDM(){ dmMode=!dmMode; if(dmMode) hcMode=false; applyThemes(); }
+function toggleCB(){ cbMode=!cbMode; applyThemes(); }
+function toggleNarr(){ showNarration=!showNarration; var box=document.getElementById('narrationBox'); if(box) box.style.display=showNarration?'':'none'; a11yBtn('btnNarr',showNarration,showNarration?'NARRATION: ON':'NARRATION: OFF'); }
 /* ── slider setters ── */
 function setCock(v){ cockLevel=parseInt(v); document.getElementById('cockVal').textContent=cockLevel+' (nominal '+COCK_V[cockLevel-1].toFixed(1)+' m/s)'; if(!running)resetSim(); }
 function setMBall(v){ mBall=parseFloat(v); document.getElementById('mBallVal').textContent=mBall.toFixed(2); if(!running)resetSim(); }
@@ -618,7 +792,7 @@ mBall:mBall, Lrod:Lrod, boxH:boxH,
 dropHeight:dropHeightM, rangeMeasured:rangeMeasured, hMeasured:hMeasured, tFlight:tFlightCalc, vCalc:vCalcProj };
 nocatchRuns.push(run2);
 }
-updateRunSelector(); updateDataTable(); redrawGraph();
+saveData(); updateRunSelector(); updateDataTable(); redrawGraph();
 srAnnounce('Run recorded.');
 }
 function currentRuns(){ return catchMode?catchRuns:nocatchRuns; }
@@ -726,7 +900,17 @@ vtx.beginPath(); vtx.moveTo(px(xMin),py(fit.slope*xMin+fit.intercept)); vtx.line
 if(frEl) frEl.textContent='slope = '+fit.slope.toFixed(3)+' ± '+fit.se.toFixed(3)+'  (n='+pts.length+')';
 } else if(frEl) frEl.textContent='Need more spread in x to fit.';
 } else if(frEl) frEl.textContent='';
+var saEl=document.getElementById('showAvg'), arEl=document.getElementById('avgResult');
+var av=avgStdY(pts);
+if(saEl&&saEl.checked&&av){
+vtx.save(); vtx.strokeStyle=hcMode?'#00ffff':'#8856a7'; vtx.lineWidth=hcMode?3:2; vtx.setLineDash([2,3]);
+vtx.beginPath(); vtx.moveTo(px(xMin),py(av.mean)); vtx.lineTo(px(xMax),py(av.mean)); vtx.stroke(); vtx.restore();
+if(arEl) arEl.textContent='average = '+av.mean.toPrecision(4)+' ± '+av.std.toPrecision(3)+'  (sample std dev, n='+av.n+')';
+} else if(arEl) arEl.textContent=(saEl&&saEl.checked)?'Need at least 2 shots for an average and standard deviation.':'';
 }
+/* average and sample standard deviation of the plotted y values */
+function avgStdY(pts){ var n=pts.length; if(n<2) return null; var m=0,i; for(i=0;i<n;i++) m+=pts[i].y; m/=n;
+var ss=0; for(i=0;i<n;i++) ss+=(pts[i].y-m)*(pts[i].y-m); return {mean:m, std:Math.sqrt(ss/(n-1)), n:n}; }
 /* ── data table ── */
 function updateDataTable(){
 var tb=document.getElementById('dataTableBody'), tbl=document.getElementById('dataTable'), nm=document.getElementById('noDataMsg'), thead=document.getElementById('dataTableHead');
@@ -742,13 +926,19 @@ tb.innerHTML=runs.map(function(r2,i){ return '<tr><td>'+(i+1)+'</td><td>'+r2.v0n
 }
 }
 function clearGraph(){ vtx.clearRect(0,0,VW,VH); vtx.fillStyle=hcMode?'#111':'#fafafa'; vtx.fillRect(0,0,VW,VH); document.getElementById('fitResult').textContent=''; document.getElementById('showFit').checked=false; }
-function clearData(){ catchRuns=[]; nocatchRuns=[]; updateRunSelector(); document.getElementById('fitResult').textContent=''; redrawGraph(); updateDataTable(); }
+function clearData(){ catchRuns=[]; nocatchRuns=[]; saveData(); updateRunSelector(); document.getElementById('fitResult').textContent=''; redrawGraph(); updateDataTable(); }
+/* ── saved data: the recorded shots are kept in this browser, so they survive a reload ── */
+var STORE_KEY='bpnc_data_standalone';
+function saveData(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify({v:1, catchRuns:catchRuns, nocatchRuns:nocatchRuns})); }catch(e){} }
+function loadData(){ try{ var d=JSON.parse(localStorage.getItem(STORE_KEY)||'null'); if(!d||d.v!==1) return false;
+catchRuns=d.catchRuns||[]; nocatchRuns=d.nocatchRuns||[]; return catchRuns.length+nocatchRuns.length>0; }catch(e){ return false; } }
 /* ── boot ── */
 rebuildAxisSelectors();
 toggleReadoutRows();
 resetSim();
+if(loadData()){ updateRunSelector(); updateDataTable(); srAnnounce('Your recorded shots were restored from this browser.'); }
 redrawGraph();
-return { playSim,pauseSim,stepSim,resetSim,toggleHC,toggleCB,toggleNarr,toggleCatch,
+return { playSim,pauseSim,stepSim,resetSim,toggleHC,toggleDM,toggleCB,toggleNarr,toggleCatch,
 setCock,setMBall,setMRod,setLRod,setMBox,setBoxW,setBoxH,
 setYAxis,setXAxis,recordRun,clearData,clearGraph,redrawGraph };
 })();

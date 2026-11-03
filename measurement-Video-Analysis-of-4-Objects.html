@@ -2,21 +2,27 @@
 <html lang="en">
 <head>
 <script>
-  // Configure MathJax to load the AsciiMath input component
-  window.MathJax = {
-    loader: { load: ['input/asciimath', 'output/chtml'] }
-  };
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
 </script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Physics Simulations - Video Analysis - of 4 Point Objects</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,video, analysis,motion,momentum,center,mass, collision, inelastic,elastic,lesson, scientific">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, video, analysis, motion, momentum, center, mass, collision, inelastic, elastic, lesson, scientific">
+<meta name="description" content="Video analysis of up to four objects: load your own video, calibrate, track points frame by frame, and get position, velocity, center of mass, graphs and fits.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:920px; max-width:100%; margin:0 auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
-</head>
 <body style=margin:25px>
-<hr><div class="vidtrack-wrap">
+<main class="page">
+<div class="vidtrack-wrap">
 <style>
 .vidtrack-wrap {
 font-family: Arial, Helvetica, sans-serif;
@@ -77,14 +83,61 @@ padding: 3px 5px; border: 1px solid #bbb; border-radius: 3px;
 .vidtrack-wrap.vt-hc table.vt-table td { border-color: #555; color: #fff; }
 .vidtrack-wrap.vt-hc .vt-table-wrap { border-color: #7fdcff; }
 .vidtrack-wrap.vt-hc .vt-fitstats { background: #000; color: #fff; border-color: #7fdcff; }
+/* ---- Mobile / touch ---- */
+@media (pointer: coarse) {
+.vidtrack-wrap .vt-btn { min-height: 40px; padding: 9px 12px; }
+.vidtrack-wrap input[type=checkbox] { width: 20px; height: 20px; }
+.vidtrack-wrap input[type=number], .vidtrack-wrap input[type=text], .vidtrack-wrap select {
+min-height: 36px; font-size: 15px;
+}
+.vidtrack-wrap .vt-canvas { cursor: default; }
+}
+@media (max-width: 640px) {
+.vidtrack-wrap { padding: 10px; font-size: 13px; }
+.vidtrack-wrap .vt-row { gap: 6px; margin: 6px 0; }
+.vidtrack-wrap .vt-toolbar { flex-direction: column; align-items: stretch; }
+.vidtrack-wrap .vt-toolbar .vt-btn { width: 100%; }
+.vidtrack-wrap table.vt-table { font-size: 11px; }
+.vidtrack-wrap table.vt-table th, .vidtrack-wrap table.vt-table td { padding: 3px 5px; }
+}
+
+/* ---- display options: toolbar look shared with the other sims; dark mode; graph in high contrast ---- */
+.vidtrack-wrap .vt-toolbar { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; }
+.vidtrack-wrap .vt-toolbar .vt-btn { font-family:monospace; letter-spacing:.06em; background:#2a2e3a; border:1px solid #404a60; color:#9aa6bd; }
+.vidtrack-wrap .vt-toolbar .vt-btn:hover { border-color:#00e8d0; color:#00e8d0; background:#2a2e3a; }
+.vidtrack-wrap .vt-toolbar .vt-btn[aria-pressed="true"] { background:rgba(0,232,208,.14); border-color:#00e8d0; color:#00e8d0; font-weight:bold; }
+.vidtrack-wrap.vt-dm { background:#16191e; color:#e6e9ee; border-color:#3a4048; }
+.vidtrack-wrap.vt-dm .vt-note { background:#1b2233; color:#bcd0f0; border-color:#4f74a8; }
+.vidtrack-wrap.vt-dm .vt-status { background:#2a2410; color:#f0e2b8; border-color:#8a7420; }
+.vidtrack-wrap.vt-dm .vt-btn:disabled { background:#3a4048; color:#8a94a3; }
+.vidtrack-wrap.vt-dm .vt-table-wrap { border-color:#3a4048; }
+.vidtrack-wrap.vt-dm table.vt-table td { border-color:#3a4048; color:#e6e9ee; }
+.vidtrack-wrap.vt-dm .vt-chartwrap { background:#1a1d22; border-color:#3a4048; }
+.vidtrack-wrap.vt-dm .vt-fitstats, .vidtrack-wrap.vt-dm .vt-avgstats { background:#22262b; color:#e6e9ee; border-color:#3a4048; }
+.vidtrack-wrap.vt-dm input[type=number], .vidtrack-wrap.vt-dm input[type=text], .vidtrack-wrap.vt-dm select { background:#22262b; color:#e6e9ee; border-color:#5a6470; }
+.vidtrack-wrap.vt-hc .vt-chartwrap { background:#000; border-color:#fff; }
+.vidtrack-wrap.vt-hc .vt-avgstats { background:#000; color:#fff; }
+.vidtrack-wrap.vt-hc input[type=number], .vidtrack-wrap.vt-hc input[type=text], .vidtrack-wrap.vt-hc select { background:#000; color:#fff; border-color:#fff; }
+.vidtrack-wrap.vt-hc .vt-toolbar .vt-btn { background:#000; color:#fff; border:2px solid #fff; }
+.vidtrack-wrap.vt-hc .vt-toolbar .vt-btn[aria-pressed="true"] { background:#ffd700; color:#000; border-color:#ffd700; }
+/* SIM description */
+.vidtrack-wrap .vt-descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:16px 0 4px; }
+.vidtrack-wrap .vt-descbtn { padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
+.vidtrack-wrap .vt-desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; line-height:1.55; text-align:left; }
+.vidtrack-wrap .vt-desc p { margin:0 0 9px 0; }
+.vidtrack-wrap .vt-desc .vt-eq { text-align:center; }
+.vidtrack-wrap.vt-dm .vt-desc { background:#22262b; color:#e6e9ee; border-color:#3a4048; border-left-color:#e8a020; }
+.vidtrack-wrap.vt-hc .vt-desc { background:#000; color:#fff; border-color:#fff; border-left-color:#ffd700; }
 </style>
 <div class="vt-toolbar" role="toolbar" aria-label="Display options">
-<button type="button" class="vt-btn vt-cbtoggle" aria-pressed="false">Colorblind-friendly colors: Off</button>
-<button type="button" class="vt-btn vt-hctoggle" aria-pressed="false">High contrast: Off</button>
-<button type="button" class="vt-btn vt-fonttoggle">Font size: Normal</button>
+<button type="button" class="vt-btn vt-hctoggle" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="vt-btn vt-dmtoggle" aria-pressed="false">DARK MODE</button>
+<button type="button" class="vt-btn vt-cbtoggle" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="vt-btn vt-nrtoggle" aria-pressed="true">NARRATION: ON</button>
+<button type="button" class="vt-btn vt-fonttoggle">FONT SIZE: NORMAL</button>
 </div>
 <h3>Video Motion Tracker</h3>
-<div class="vt-note">Your video file is loaded and processed entirely in your browser — nothing is uploaded to any server. Workflow: (1) load your video, (2) set the scale, (3) set the origin and axis direction, (4) click on the object frame-by-frame to mark its position.</div>
+<div class="vt-note">Your video file is loaded and processed entirely in your browser — nothing is uploaded to any server. Workflow: (1) load your video, (2) set the scale, (3) set the origin and axis direction, (4) click on the object frame-by-frame to mark its position. Your tracked data is saved automatically in this browser as you work, so it's still here if you reload or come back later — the video itself isn't saved, so just re-select it to pick up where you left off.</div>
 <div class="vt-row">
 <label class="vt-file-btn" style="background:rgb(102,0,102);color:white;padding:7px 12px;border-radius:4px;cursor:pointer;display:inline-block">Choose Video<input type="file" accept="video/*" class="vt-file-input" style="display:none"></label>
 <span class="vt-filename">No file selected</span>
@@ -189,24 +242,21 @@ padding: 3px 5px; border: 1px solid #bbb; border-radius: 3px;
 <div class="vt-chartwrap"></div>
 <div class="vt-fitstats"></div>
 <div class="vt-avgstats"></div>
-<!-- ============================================================
- Send-to-answer-box buttons (MOM grading hookup).
- Each block below is self-contained: to disable one for a
- given question, just delete its whole <div class="vt-row">.
- All three respect the "Point" selector above.
- ============================================================ -->
-<!-- Sends the currently graphed (x,y) points as "x1,y1" per line -->
-<div class="vt-row vt-send-data-row">
-<button type="button" class="vt-btn vt-senddata">Send graphed data to answer box</button>
+<div class="vt-descwrap">
+<button type="button" class="vt-descbtn" aria-expanded="false">&#9656; SIM DESCRIPTION</button>
+<div class="vt-desc" role="region" aria-label="Simulation description" style="display:none">
+<p>This tool turns a video into motion data, the way video analysis is done in the lab. Here students load their own video, which never leaves their browser. Up to four objects can be tracked in each frame, for example two carts before and after a collision.</p>
+<p>First a known length in the video sets the scale, in metres per pixel. Then an origin and the direction of the x axis are set; the axis can be tilted to follow a ramp or a track. Each click on an object then gives its position `(x, y)` at the time of that frame, `t = n Delta t`, where `n` is the frame number and `Delta t` the frame step.</p>
+<p>Velocities are found from the positions in neighbouring frames (central differences):</p>
+<p class="vt-eq">`v_x(t_i) ~~ (x_(i+1) - x_(i-1))/(t_(i+1) - t_(i-1))`.</p>
+<p>When masses are entered, the table also gives the centre of mass of the tracked objects,</p>
+<p class="vt-eq">`x_"cm" = (sum m_k x_k)/(sum m_k)`,</p>
+<p>and its velocity; for a collision, the total momentum `p = sum m_k v_k` before and after can then be compared.</p>
+<p>Any two quantities can be graphed against each other. A linear fit gives the slope and its uncertainty (the slope of `x` against `t` is the velocity), and the average and standard deviation of the plotted values can be shown. The data are saved in this browser, so they survive a reload.</p>
+<p>This tool is useful for studying kinematics, velocity, the centre of mass, momentum and collisions, and for practising measurement and uncertainty.</p>
 </div>
-<!-- Sends the current linear fit as two values: slope, then its uncertainty -->
-<div class="vt-row vt-send-slope-row">
-<button type="button" class="vt-btn vt-sendslope">Send slope &amp; uncertainty to answer boxes</button>
 </div>
-<!-- Sends the average and standard deviation of the plotted Y-values -->
-<div class="vt-row vt-send-avg-row">
-<button type="button" class="vt-btn vt-sendavg">Send average &amp; std dev to answer boxes</button>
-</div>
+
 <script>
 (function() {
 var root = document.querySelector(".vidtrack-wrap:not([data-vt-init])");
@@ -266,10 +316,8 @@ var avgStatsDiv  = byClass('vt-avgstats');
 var cbBtn        = byClass('vt-cbtoggle');
 var hcBtn        = byClass('vt-hctoggle');
 var fontBtn      = byClass('vt-fonttoggle');
-var sendDataBtn  = byClass('vt-senddata');
-var sendSlopeBtn = byClass('vt-sendslope');
-var sendAvgBtn   = byClass('vt-sendavg');
 var fileInput    = byClass('vt-file-input');
+var STORAGE_KEY = 'vt_data_standalone_upload';
 var state = {
 scale: null, origin: null, axisAngle: 0,
 scaleP1: null, scaleP2: null,
@@ -279,7 +327,133 @@ pending: [],      // points marked so far for the current (not-yet-committed) fr
 pendingRawT: null,
 mode: 'idle'
 };
-var a11y = { colorblind: false, highContrast: false, fontSize: 'normal' };
+var a11y = { colorblind: false, highContrast: false, dark: false, narration: true, fontSize: 'normal' };
+/* the graph is drawn as SVG: its colours go through the same colour engine as the other sims' canvases */
+/* ── canvas themes: every colour the sim draws passes through map(); the last frame is recorded,
+      so switching dark mode, high contrast or colour-blind safe colours redraws it at once,
+      even while the sim is paused. No page-wide names: this lives inside the controller. ── */
+function makeCT(){
+  var mode = { dark:false, hc:false, cb:false }, key = '', cache = {}, cvs = [];
+  var probe = document.createElement('canvas').getContext('2d');
+  var P = CanvasRenderingContext2D.prototype;
+  function parse(c){
+    probe.fillStyle = '#000'; probe.fillStyle = c; var s = String(probe.fillStyle), m;
+    if (s.charAt(0) === '#') return [parseInt(s.substr(1,2),16), parseInt(s.substr(3,2),16), parseInt(s.substr(5,2),16), 1];
+    m = s.match(/rgba?\(([^)]+)\)/); if (!m) return null;
+    var p = m[1].split(',').map(parseFloat); return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1];
+  }
+  function lin(v){ v /= 255; return v <= 0.04045 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); }
+  function lum(r,g,b){ return 0.2126*lin(r) + 0.7152*lin(g) + 0.0722*lin(b); }
+  function hsl(r,g,b){
+    r/=255; g/=255; b/=255; var mx = Math.max(r,g,b), mn = Math.min(r,g,b), h = 0, s = 0, l = (mx+mn)/2, d = mx-mn;
+    if (d > 1e-6){ s = d/(1 - Math.abs(2*l - 1));
+      h = mx === r ? ((g-b)/d) % 6 : (mx === g ? (b-r)/d + 2 : (r-g)/d + 4); h *= 60; if (h < 0) h += 360; }
+    return [h, s, l];
+  }
+  function rgb(h,s,l){
+    var c = (1 - Math.abs(2*l - 1))*s, x = c*(1 - Math.abs((h/60) % 2 - 1)), m = l - c/2, t;
+    t = h < 60 ? [c,x,0] : h < 120 ? [x,c,0] : h < 180 ? [0,c,x] : h < 240 ? [0,x,c] : h < 300 ? [x,0,c] : [c,0,x];
+    return [Math.round((t[0]+m)*255), Math.round((t[1]+m)*255), Math.round((t[2]+m)*255)];
+  }
+  /* raise the lightness until the colour stands out on a dark background */
+  function lift(h,s,l,target){ var c = rgb(h,s,l); while (lum(c[0],c[1],c[2]) < target && l < 0.95){ l += 0.03; c = rgb(h,s,l); } return c; }
+  /* Okabe-Ito colours, chosen by hue */
+  function oi(h){
+    return h < 15 || h >= 330 ? [213,94,0] : h < 40 ? [230,159,0] : h < 75 ? [240,228,66] : h < 170 ? [0,158,115]
+         : h < 200 ? [86,180,233] : h < 260 ? [0,114,178] : [204,121,167];
+  }
+  function conv(c){
+    if (!mode.dark && !mode.hc && !mode.cb) return c;
+    var k = key + c; if (cache[k] !== undefined) return cache[k];
+    var v = parse(c); if (!v){ cache[k] = c; return c; }
+    var r = v[0], g = v[1], b = v[2], a = v[3], q = hsl(r,g,b), Y = lum(r,g,b), neutral = q[1] < 0.18, o;
+    if (mode.cb && !neutral && Y <= 0.6){ o = oi(q[0]); r = o[0]; g = o[1]; b = o[2]; q = hsl(r,g,b); Y = lum(r,g,b); }
+    if (mode.hc){
+      if (neutral) o = Y > 0.8 ? [0,0,0] : (Y < 0.25 ? [255,255,255] : [205,205,205]);
+      else if (Y > 0.6) o = [0,0,0];
+      else o = lift(q[0], 1, Math.max(q[2], 0.5), 0.4);
+    } else if (mode.dark){
+      if (neutral) o = rgb(q[0], q[1], 0.1 + 0.82*(1 - q[2]));
+      else if (Y > 0.55) o = rgb(q[0], Math.min(q[1], 0.6), 0.22);
+      else o = lift(q[0], q[1], q[2], 0.3);
+    } else o = [r,g,b];
+    var out = a < 1 ? 'rgba(' + o[0] + ',' + o[1] + ',' + o[2] + ',' + a + ')' : 'rgb(' + o[0] + ',' + o[1] + ',' + o[2] + ')';
+    cache[k] = out; return out;
+  }
+  /* gradients remember their colour stops, so they can be rebuilt in another theme */
+  function style(v, ctx){
+    if (typeof v === 'string') return conv(v);
+    if (v && v.__spec){
+      var sp = v.__spec; if (sp.key === key) return sp.made;
+      var g = P[sp.kind].apply(ctx, sp.args); sp.stops.forEach(function(s){ g.addColorStop(s[0], conv(s[1])); });
+      sp.key = key; sp.made = g; return g;
+    }
+    return v;
+  }
+  function attach(cv){
+    var ctx = cv.getContext('2d'); if (!ctx || ctx.__ct) return; ctx.__ct = true;
+    var log = [], replaying = false, vals = {};
+    function full(a){ return a[0] <= 0 && a[1] <= 0 && a[0] + a[2] >= cv.width && a[1] + a[3] >= cv.height; }
+    ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); vals[p] = d.get.call(ctx);
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return vals[p]; },
+        set:function(v){ vals[p] = v; if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, style(v, ctx)); } });
+    });
+    var plain = ['lineWidth','font','textAlign','textBaseline','globalAlpha','lineCap','lineJoin','miterLimit','shadowBlur',
+                 'shadowOffsetX','shadowOffsetY','globalCompositeOperation','lineDashOffset','direction','imageSmoothingEnabled'];
+    plain.forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); if (!d || !d.set) return;
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return d.get.call(ctx); },
+        set:function(v){ if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, v); } });
+    });
+    ['createLinearGradient','createRadialGradient','createConicGradient'].forEach(function(n){
+      if (!P[n]) return;
+      ctx[n] = function(){
+        var args = Array.prototype.slice.call(arguments), g = P[n].apply(ctx, args), add = g.addColorStop;
+        var sp = { kind:n, args:args, stops:[], key:key, made:g }; g.__spec = sp;
+        g.addColorStop = function(o, c){ sp.stops.push([o, c]); add.call(g, o, conv(c)); };
+        return g;
+      };
+    });
+    var skip = /^(constructor|get[A-Z]\w*|isPointIn\w*|measureText|create\w*)$/;
+    Object.getOwnPropertyNames(P).forEach(function(n){
+      if (skip.test(n)) return; var d = Object.getOwnPropertyDescriptor(P, n); if (!d || typeof d.value !== 'function') return;
+      var f = d.value;
+      ctx[n] = function(){
+        if (!replaying){
+          if ((n === 'fillRect' || n === 'clearRect') && full(arguments)){
+            /* a new frame: start the record from the drawing state of this moment */
+            var t = ctx.getTransform();
+            log = [['c','setTransform',[t.a,t.b,t.c,t.d,t.e,t.f]]];
+            ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){ log.push(['s', p, vals[p]]); });
+            plain.forEach(function(p){ var dd = Object.getOwnPropertyDescriptor(P, p); if (dd && dd.get) log.push(['s', p, dd.get.call(ctx)]); });
+            log.push(['c','setLineDash',[ctx.getLineDash()]]);
+          }
+          if (log){ log.push(['c', n, Array.prototype.slice.call(arguments)]); if (log.length > 60000) log = null; }
+        }
+        return f.apply(ctx, arguments);
+      };
+    });
+    cvs.push({ redraw:function(){
+      if (!log || log.length < 3) return;
+      replaying = true;
+      try { log.forEach(function(e){ if (e[0] === 's') ctx[e[1]] = e[2]; else P[e[1]].apply(ctx, e[2]); }); }
+      finally { replaying = false; }
+    }});
+  }
+  return {
+    attach: attach,
+    map: conv,
+    set: function(m){ mode = { dark:!!m.dark, hc:!!m.hc, cb:!!m.cb }; key = (mode.dark?'d':'') + (mode.hc?'h':'') + (mode.cb?'c':'') + '|'; cvs.forEach(function(c){ c.redraw(); }); }
+  };
+}
+
+var ct = makeCT();
+function themeSVG(svg) {
+  if (!a11y.dark && !a11y.highContrast) return svg;
+  return svg.replace(/(fill|stroke)="(#[0-9a-fA-F]{3,6})"/g, function(m, a, c) { return a + '="' + ct.map(c) + '"'; })
+            .replace(/background:#fff/g, 'background:' + ct.map('#fff'));
+}
 function palette() {
 return a11y.colorblind ? {
 axisX: '#0072B2', axisY: '#E69F00', scale: '#CC79A7',
@@ -292,20 +466,27 @@ trackColors: ['#00e5ff', '#ff8c00', '#ff2fd0', '#aaff00']
 };
 }
 function setStatus(msg) { statusDiv.textContent = msg; }
-// ---------- Accessibility toolbar ----------
-cbBtn.addEventListener('click', function() {
-a11y.colorblind = !a11y.colorblind;
-cbBtn.textContent = 'Colorblind-friendly colors: ' + (a11y.colorblind ? 'On' : 'Off');
+// ---------- Display options ----------
+var dmBtn = byClass('vt-dmtoggle'), nrBtn = byClass('vt-nrtoggle');
+function applyA11y() {
+root.classList.toggle('vt-hc', a11y.highContrast);
+root.classList.toggle('vt-dm', a11y.dark);
+ct.set({ dark: a11y.dark, hc: a11y.highContrast });
+hcBtn.setAttribute('aria-pressed', String(a11y.highContrast));
+dmBtn.setAttribute('aria-pressed', String(a11y.dark));
 cbBtn.setAttribute('aria-pressed', String(a11y.colorblind));
+nrBtn.setAttribute('aria-pressed', String(a11y.narration));
+nrBtn.textContent = 'NARRATION: ' + (a11y.narration ? 'ON' : 'OFF');
+/* narration is the running status line: shown and announced, or hidden and silent */
+statusDiv.style.display = a11y.narration ? '' : 'none';
+statusDiv.setAttribute('aria-live', a11y.narration ? 'polite' : 'off');
 drawFrame();
 renderGraph();
-});
-hcBtn.addEventListener('click', function() {
-a11y.highContrast = !a11y.highContrast;
-root.classList.toggle('vt-hc', a11y.highContrast);
-hcBtn.textContent = 'High contrast: ' + (a11y.highContrast ? 'On' : 'Off');
-hcBtn.setAttribute('aria-pressed', String(a11y.highContrast));
-});
+}
+cbBtn.addEventListener('click', function() { a11y.colorblind = !a11y.colorblind; applyA11y(); });
+hcBtn.addEventListener('click', function() { a11y.highContrast = !a11y.highContrast; if (a11y.highContrast) a11y.dark = false; applyA11y(); });
+dmBtn.addEventListener('click', function() { a11y.dark = !a11y.dark; if (a11y.dark) a11y.highContrast = false; applyA11y(); });
+nrBtn.addEventListener('click', function() { a11y.narration = !a11y.narration; applyA11y(); });
 fontBtn.addEventListener('click', function() {
 var order = ['normal', 'large', 'xl'];
 var idx = order.indexOf(a11y.fontSize);
@@ -313,9 +494,20 @@ a11y.fontSize = order[(idx + 1) % order.length];
 root.classList.remove('vt-fs-large', 'vt-fs-xl');
 if (a11y.fontSize === 'large') root.classList.add('vt-fs-large');
 if (a11y.fontSize === 'xl') root.classList.add('vt-fs-xl');
-var labels = { normal: 'Normal', large: 'Large', xl: 'XL' };
-fontBtn.textContent = 'Font size: ' + labels[a11y.fontSize];
+var labels = { normal: 'NORMAL', large: 'LARGE', xl: 'XL' };
+fontBtn.textContent = 'FONT SIZE: ' + labels[a11y.fontSize];
 });
+// ---------- SIM description ----------
+(function() {
+var b = byClass('vt-descbtn'), d = byClass('vt-desc'); if (!b || !d) return;
+b.addEventListener('click', function() {
+var open = d.style.display === 'none';
+d.style.display = open ? 'block' : 'none';
+b.setAttribute('aria-expanded', open ? 'true' : 'false');
+b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+if (open && window.MathJax) { if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }
+});
+})();
 function enableControls() {
 playBtn.disabled = prevBtn.disabled = nextBtn.disabled = rewindBtn.disabled = false;
 prev10Btn.disabled = next10Btn.disabled = jumpBtn.disabled = false;
@@ -393,20 +585,16 @@ var VIDEO_ERROR_MESSAGE_SUFFIX = ' This usually means an unsupported format/code
 function loadFile(file) {
 if (!file) return;
 try {
+// Loading/re-loading a video no longer clears tracked data - that's what
+// "Reset Data" is for. This matters because after a reload, the student
+// needs to re-select their video file (it isn't saved), and that
+// re-selection should NOT wipe the data that was just restored.
 filenameSpan.textContent = file.name;
 video.src = URL.createObjectURL(file);
-state.frames = [];
-state.pending = [];
-state.pendingRawT = null;
-state.scale = null;
-state.origin = null;
-state.axisAngle = 0;
-state.scaleP1 = state.scaleP2 = null;
-scaleStatus.textContent = 'not set';
-axesStatus.textContent = 'not set';
-markBtn.disabled = true;
-exportBtn.disabled = true;
-setStatus('Video loading (' + file.name + ', ' + (file.size/1e6).toFixed(1) + ' MB)...');
+markBtn.disabled = !(state.scale && state.origin);
+var haveData = state.frames.length > 0 || state.pending.length > 0;
+setStatus('Video loading (' + file.name + ', ' + (file.size/1e6).toFixed(1) + ' MB)...' +
+(haveData ? ' Your previously tracked data was kept - click Reset Data if this is a different video.' : ''));
 } catch (loadErr) {
 setStatus('Error while loading the video file: ' + (loadErr && loadErr.message ? loadErr.message : loadErr));
 if (window.console && console.error) console.error('Video Tracker loadFile error:', loadErr);
@@ -718,6 +906,58 @@ recompute(); render(); drawFrame();
 setStatus('Data reset.');
 });
 // ---------- Derived quantities ----------
+// ---------- Persistence: keep tracked data across reloads/submits ----------
+// The video itself is never saved here (too large, and for the upload
+// variant a File object can't be serialized) - only the tracked data,
+// calibration, and masses. Re-select/reload the video to see it again;
+// the data will already be waiting once the video's dimensions match.
+function saveState() {
+try {
+var masses = [];
+for (var k = 0; k < 4; k++) masses.push(massInputs[k] ? massInputs[k].value : '1');
+var payload = {
+v: 1,
+scale: state.scale, origin: state.origin, axisAngle: state.axisAngle,
+scaleP1: state.scaleP1, scaleP2: state.scaleP2,
+numPoints: state.numPoints,
+frames: state.frames,
+pending: state.pending, pendingRawT: state.pendingRawT,
+unit: unitInput.value, massUnit: massUnitInput.value, masses: masses,
+frameStep: frameStepIn.value
+};
+localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+} catch (e) { /* storage unavailable/full - tracking still works for this session */ }
+}
+function restoreState() {
+try {
+var raw = localStorage.getItem(STORAGE_KEY);
+if (!raw) return false;
+var data = JSON.parse(raw);
+if (!data || data.v !== 1) return false;
+state.scale = data.scale || null;
+state.origin = data.origin || null;
+state.axisAngle = data.axisAngle || 0;
+state.scaleP1 = data.scaleP1 || null;
+state.scaleP2 = data.scaleP2 || null;
+state.numPoints = data.numPoints || 1;
+state.frames = data.frames || [];
+state.pending = data.pending || [];
+state.pendingRawT = (typeof data.pendingRawT === 'number') ? data.pendingRawT : null;
+if (data.unit) unitInput.value = data.unit;
+if (data.massUnit) massUnitInput.value = data.massUnit;
+if (data.masses) { for (var k = 0; k < 4; k++) if (massInputs[k] && data.masses[k] !== undefined) massInputs[k].value = data.masses[k]; }
+if (data.frameStep) frameStepIn.value = data.frameStep;
+numPointsSel.value = String(state.numPoints);
+if (state.scale) scaleStatus.textContent = state.scale.toFixed(5) + ' ' + unitInput.value + '/px';
+if (state.origin) axesStatus.textContent = 'set (angle ' + (state.axisAngle * 180 / Math.PI).toFixed(2) + '\u00B0)';
+angleInput.value = (state.axisAngle * 180 / Math.PI).toFixed(2);
+rebuildPointSelector();
+rebuildTableHeader();
+updateMassVisibility();
+updateMarkAvailability();
+return state.frames.length > 0 || state.pending.length > 0;
+} catch (e) { return false; }
+}
 function recompute() {
 state.frames.sort(function(a, b) { return a.rawT - b.rawT; });
 var n = state.frames.length;
@@ -761,6 +1001,7 @@ prevComT = f.t; prevComX = f.com.X; prevComY = f.com.Y; havePrevCom = true;
 } else {
 state.frames.forEach(function(f) { f.com = null; });
 }
+saveState();
 }
 // ---------- Rendering: table, graph, export ----------
 function fmt(v) { return (v === null || v === undefined || isNaN(v)) ? '\u2014' : v.toFixed(4); }
@@ -927,7 +1168,7 @@ var fit = null;
 if (fitChk.checked) fit = linearFit(xs, ys);
 var avg = null;
 if (avgStdChk.checked) avg = avgStd(ys);
-chartWrap.innerHTML = renderScatterSVG(points, xLabel, yLabel, fit, avg, pal);
+chartWrap.innerHTML = themeSVG(renderScatterSVG(points, xLabel, yLabel, fit, avg, pal));
 if (!fitChk.checked) {
 fitStatsDiv.textContent = '';
 } else if (!fit) {
@@ -980,74 +1221,12 @@ a.href = url; a.download = 'video_tracker_data.csv';
 document.body.appendChild(a); a.click(); document.body.removeChild(a);
 URL.revokeObjectURL(url);
 });
-// ---------- Send data to MOM answer boxes ----------
-// MOM answer box ids follow the pattern 'qn' + <this question's instance id> + <3-digit answer number>.
-// EDIT THESE per question to point at the blanks you want filled. All three buttons act on
-// whichever point is currently selected in the "Point" dropdown above the graph.
-var DATA_ANSWER_NUM  = '001'; // receives the graphed (x,y) points
-var SLOPE_ANSWER_NUM = '002'; // receives the slope
-var SLOPE_UNC_ANSWER_NUM = '003'; // receives the slope's uncertainty
-var AVG_ANSWER_NUM     = '004'; // receives the average of the plotted Y-values
-var AVG_UNC_ANSWER_NUM = '005'; // receives its standard deviation
-function getAnswerBox(num) {
-// '$thisq' is kept as its own isolated string literal (ending right at the closing quote)
-// so MOM's server-side substitution can't merge it with the following digits into an
-// unrecognized longer variable name.
-var id = 'qn$thisq' + num;
-return document.getElementById(id);
+// Restore any previously saved tracking data for this question/page.
+var restoredData = restoreState();
+if (restoredData) {
+recompute(); // derive t, velocities and COM for the restored frames before rendering
+setStatus('Restored previously tracked data from this browser (' + state.frames.length + ' frame(s)). Load the video to continue.');
 }
-sendDataBtn.addEventListener('click', function() {
-try {
-var k = resolvePointIndex(currentPointSel());
-var xy = collectXY(xVarSel.value, yVarSel.value, k);
-var lines = [];
-for (var i = 0; i < xy.xs.length; i++) lines.push(xy.xs[i].toPrecision(6) + ',' + xy.ys[i].toPrecision(6));
-if (lines.length === 0) { setStatus('No graphed data to send yet.'); return; }
-var box = getAnswerBox(DATA_ANSWER_NUM);
-if (!box) { setStatus('Could not find answer box ' + DATA_ANSWER_NUM + ' on this page.'); return; }
-box.value = lines.join('\n');
-setStatus('Sent ' + lines.length + ' data point(s) for ' + pointLabel(k) + ' to answer box ' + DATA_ANSWER_NUM + '.');
-} catch (sendErr) {
-setStatus('Error sending data: ' + (sendErr && sendErr.message ? sendErr.message : sendErr));
-}
-});
-sendSlopeBtn.addEventListener('click', function() {
-try {
-if (!fitChk.checked) { setStatus('Turn on "Show linear fit" first.'); return; }
-var k = resolvePointIndex(currentPointSel());
-var xy = collectXY(xVarSel.value, yVarSel.value, k);
-var fit = linearFit(xy.xs, xy.ys);
-if (!fit) { setStatus('Not enough data for a fit yet.'); return; }
-if (fit.seSlope === null) { setStatus('Need at least 3 points to get a slope uncertainty.'); return; }
-var box = getAnswerBox(SLOPE_ANSWER_NUM);
-var uncBox = getAnswerBox(SLOPE_UNC_ANSWER_NUM);
-if (!box) { setStatus('Could not find answer box ' + SLOPE_ANSWER_NUM + ' on this page.'); return; }
-if (!uncBox) { setStatus('Could not find answer box ' + SLOPE_UNC_ANSWER_NUM + ' on this page.'); return; }
-box.value = fit.slope.toPrecision(6);
-uncBox.value = fit.seSlope.toPrecision(6);
-setStatus('Sent slope (' + pointLabel(k) + ') to answer box ' + SLOPE_ANSWER_NUM + ' and its uncertainty to answer box ' + SLOPE_UNC_ANSWER_NUM + '.');
-} catch (sendErr) {
-setStatus('Error sending slope: ' + (sendErr && sendErr.message ? sendErr.message : sendErr));
-}
-});
-sendAvgBtn.addEventListener('click', function() {
-try {
-if (!avgStdChk.checked) { setStatus('Turn on "Show average & std dev" first.'); return; }
-var k = resolvePointIndex(currentPointSel());
-var xy = collectXY(xVarSel.value, yVarSel.value, k);
-var avg = avgStd(xy.ys);
-if (!avg) { setStatus('Need at least 2 points for an average and standard deviation.'); return; }
-var box = getAnswerBox(AVG_ANSWER_NUM);
-var uncBox = getAnswerBox(AVG_UNC_ANSWER_NUM);
-if (!box) { setStatus('Could not find answer box ' + AVG_ANSWER_NUM + ' on this page.'); return; }
-if (!uncBox) { setStatus('Could not find answer box ' + AVG_UNC_ANSWER_NUM + ' on this page.'); return; }
-box.value = avg.mean.toPrecision(6);
-uncBox.value = avg.std.toPrecision(6);
-setStatus('Sent average (' + pointLabel(k) + ') to answer box ' + AVG_ANSWER_NUM + ' and its std dev to answer box ' + AVG_UNC_ANSWER_NUM + '.');
-} catch (sendErr) {
-setStatus('Error sending average: ' + (sendErr && sendErr.message ? sendErr.message : sendErr));
-}
-});
 render();
 } catch (setupErr) {
 var setupMsg = 'Video Tracker failed to start: ' + (setupErr && setupErr.message ? setupErr.message : setupErr);
@@ -1060,8 +1239,6 @@ if (window.console && console.error) console.error('Video Tracker setup error:',
 })();
 </script>
 </div>
-
-<hr>
-
+</main>
 </body>
 </html>

@@ -27,7 +27,7 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <!-- ── Accessibility toolbar ── -->
 <div class="bpn_a11y" id="bpnA11yBar" role="toolbar" aria-label="Display options">
 <button type="button" class="bpn_a11ybtn" id="bpnBtnHC" onclick="bpnA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="bpn_a11ybtn" id="bpnBtnLM" onclick="bpnA11y.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="bpn_a11ybtn" id="bpnBtnDM" onclick="bpnA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
 <button type="button" class="bpn_a11ybtn" id="bpnBtnCB" onclick="bpnA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
 <button type="button" class="bpn_a11ybtn bpn_a11yon" id="bpnBtnNR" onclick="bpnA11y.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
 </div>
@@ -177,14 +177,18 @@ padding:1px 0; line-height:1.35;
 <script>
 var bpnA11y = (function(){
 var ROOT = null;
-var states = { hc:false, lm:false, cb:false, nr:true };
+var states = { hc:false, dm:false, cb:false, nr:true };
 var THEMES = {
 hc:{'--bpn-bg':'#000','--bpn-rod':'#fff','--bpn-bob':'#ffff00','--bpn-ball':'#ff8800','--bpn-text':'#fff','--bpn-arc':'#fff','--bpn-indicator':'#ff4400','--bpn-ke':'#66aaff','--bpn-pe':'#66ff99','--bpn-etot':'#ffffff','--bpn-panel-bg':'#111','--bpn-toolbar-bg':'#000'},
-lm:{'--bpn-bg':'#f0f0f0','--bpn-rod':'#222','--bpn-bob':'#5a3d26','--bpn-ball':'#aa1100','--bpn-text':'#000','--bpn-arc':'#666','--bpn-indicator':'#aa5500','--bpn-ke':'#1a4d99','--bpn-pe':'#1f7a37','--bpn-etot':'#666666','--bpn-panel-bg':'#e6e6e9','--bpn-toolbar-bg':'#444'},
-cb:{'--bpn-bg':'#fff','--bpn-rod':'#333','--bpn-bob':'#0072b2','--bpn-ball':'#0072b2','--bpn-text':'#000','--bpn-arc':'#666','--bpn-indicator':'#d55e00','--bpn-ke':'#0072b2','--bpn-pe':'#009e73','--bpn-etot':'#555555','--bpn-panel-bg':'#f7f7f9','--bpn-toolbar-bg':'#222'}
+dm:{'--bpn-bg':'#1a1d22','--bpn-rod':'#d0d4da','--bpn-bob':'#c99a6e','--bpn-ball':'#ff6a4d','--bpn-text':'#e8eaee','--bpn-arc':'#8a8f98','--bpn-indicator':'#ffb340','--bpn-ke':'#6aa6ff','--bpn-pe':'#5fd38a','--bpn-etot':'#aab0b8','--bpn-panel-bg':'#23272e','--bpn-toolbar-bg':'#111'},
+cbdm:{'--bpn-bob':'#56b4e9','--bpn-ball':'#e69f00','--bpn-indicator':'#e69f00','--bpn-ke':'#56b4e9','--bpn-pe':'#2fc79a'},
+cb:{'--bpn-bg':'#fff','--bpn-rod':'#333','--bpn-bob':'#0072b2','--bpn-ball':'#d55e00','--bpn-text':'#000','--bpn-arc':'#666','--bpn-indicator':'#d55e00','--bpn-ke':'#0072b2','--bpn-pe':'#009e73','--bpn-etot':'#555555','--bpn-panel-bg':'#f7f7f9','--bpn-toolbar-bg':'#222'}
 };
 var DEFS = {'--bpn-bg':'#fff','--bpn-rod':'#333','--bpn-bob':'#6b4a2f','--bpn-ball':'#cc2200','--bpn-text':'#111','--bpn-arc':'#999','--bpn-indicator':'#dd8800','--bpn-ke':'#2266cc','--bpn-pe':'#2c9a4a','--bpn-etot':'#888888','--bpn-panel-bg':'#f7f7f9','--bpn-toolbar-bg':'#222'};
-function applyVars(k,on){ if(!ROOT)return; var v=THEMES[k]; for(var p in v) ROOT.style.setProperty(p,on?v[p]:DEFS[p]); }
+function applyVars(){ if(!ROOT)return; var v={}, p, i, L=['dm','cb','hc'];
+for(p in DEFS) v[p]=DEFS[p];
+for(i=0;i<L.length;i++){ if(!states[L[i]]) continue; var t=(L[i]==='cb'&&states.dm)?THEMES.cbdm:THEMES[L[i]]; for(p in t) v[p]=t[p]; }
+for(p in v) ROOT.style.setProperty(p,v[p]); }
 function styleBtn(id,on){
 var b=document.getElementById(id); if(!b)return;
 b.style.background=on?'rgba(0,232,208,.12)':'#2a2e3a';
@@ -200,19 +204,21 @@ if(btn){ btn.textContent='NARRATION: '+(states.nr?'ON':'OFF'); styleBtn('bpnBtnN
 }
 function apply(){
 if(!ROOT)return;
-applyVars('hc',states.hc); applyVars('lm',states.lm); applyVars('cb',states.cb);
+applyVars();
+var W=document.getElementById('mobbpn')||ROOT; W.classList.toggle('a11y_dm',states.dm); W.classList.toggle('a11y_hc',states.hc); W.classList.toggle('a11y_cb',states.cb);
 applyNarBar();
 styleBtn('bpnBtnHC',states.hc);
-styleBtn('bpnBtnLM',states.lm);
+styleBtn('bpnBtnDM',states.dm);
 styleBtn('bpnBtnCB',states.cb);
 }
 return {
 init:function(){ ROOT=document.getElementById('bpnRoot'); apply(); },
 toggle:function(k){
 states[k]=!states[k];
-if(k==='hc'&&states.hc) states.lm=false;
-if(k==='lm'&&states.lm) states.hc=false;
+if(k==='hc'&&states.hc) states.dm=false;   /* high contrast and dark mode switch each other off */
+if(k==='dm'&&states.dm) states.hc=false;
 apply();
+if(typeof bpnSim!=='undefined'&&bpnSim.redraw) bpnSim.redraw();   /* repaint at once, even when paused */
 },
 narrate:function(msg){
 if(!states.nr)return;
@@ -227,6 +233,27 @@ return (v&&v.trim())?v.trim():def;
 };
 })();
 </script>
+<style>
+/* ════════ display options: dark mode and high contrast for the page around the canvas ════════ */
+#mobbpn.a11y_dm { background:#16191e; color:#e6e9ee; }
+#mobbpn.a11y_dm .tbar { background-color:#8a4a00; color:#fff; }
+#mobbpn.a11y_dm .bbar { background-color:#26301c; }
+#mobbpn.a11y_dm .footer { background-color:#33242a; color:#e6e9ee; }
+#mobbpn.a11y_dm .bpn_narbar { background:#2a2410; color:#f0e2b8; }
+#mobbpn.a11y_dm input[type=button] { background:#2c3138; color:#e6e9ee; border:1px solid #5a6470; border-radius:3px; }
+#mobbpn.a11y_dm input[type=range] { accent-color:#e8a020; }
+#mobbpn.a11y_dm canvas { border-color:#5a6470 !important; }
+#mobbpn.a11y_dm .mob_desc { background:#22262b; color:#e6e9ee; border-color:#3a4048; }
+#mobbpn.a11y_hc { background:#000; color:#fff; }
+#mobbpn.a11y_hc .tbar, #mobbpn.a11y_hc .bbar, #mobbpn.a11y_hc .footer { background-color:#000; color:#fff; box-shadow:inset 0 0 0 1px #fff; }
+#mobbpn.a11y_hc .tbar h3 { color:#ffd700; }
+#mobbpn.a11y_hc .bpn_narbar { background:#000; color:#fff; border-left-color:#ffd700; box-shadow:inset 0 0 0 1px #fff; }
+#mobbpn.a11y_hc input[type=button] { background:#000; color:#fff; border:2px solid #fff; border-radius:3px; font-weight:bold; }
+#mobbpn.a11y_hc input[type=range] { accent-color:#ffd700; }
+#mobbpn.a11y_hc canvas { border-color:#fff !important; }
+#mobbpn.a11y_hc .bpn_panel { border-color:#fff; }
+#mobbpn.a11y_hc .mob_desc { background:#000; color:#fff; border-color:#fff; border-left-color:#ffd700; }
+</style>
 <!-- ════════ SIMULATION ════════
 Physics: ball (mass m) moving left at speed v strikes a rectangular
 catcher box (mass M_box, width w, height h) mounted at the bottom end
@@ -513,7 +540,7 @@ drawFrame();
 narrateApproach();
 }
 rst();
-return { pl:pl, ps:ps, step:step, rst:rst };
+return { pl:pl, ps:ps, step:step, rst:rst, redraw:drawFrame };
 };
 var bpnSim = new bpnGen();
 </script>
