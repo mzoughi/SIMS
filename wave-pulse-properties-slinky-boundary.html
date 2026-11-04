@@ -10,59 +10,66 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations-Waves: A Single Pulse on Two Joined Slinkies: Reflection &amp;amp; Transmission</title>
+<title>Physics Simulations-Waves: Pulse Motion in a Two Slinky Setup</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,Transverse, Longitudinal,Frequency, Amplitude, Tension, Mass,Length,Wave,string, Properties,Rope, lesson, scientific">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, waves, pulse, rope, slinky, speed, wavelength, frequency, amplitude, reflection, transmission, boundary, interference, standing waves, resonance, lesson, scientific">
+<meta name="description" content="This simulation sends a single pulse along two slinkies joined end to end.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:920px; max-width:100%; margin:0 auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
-<div id="mobw97700916" class="mob_wrap0916">
-<div id="slinkyPulseRoot0916">
+<main class="page">
+<div id="mobw9770" class="mob_wrap">
+<div id="slinkyPulseRoot">
 <!-- ── Accessibility toolbar ── -->
-<div class="sn_a11y0916" id="snBar0916" role="toolbar" aria-label="Display options">
-<button type="button" class="sn_a11ybtn0916" id="snBtnHC0916" onclick="slinkyPulseA11y0916.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="sn_a11ybtn0916" id="snBtnLM0916" onclick="slinkyPulseA11y0916.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
-<button type="button" class="sn_a11ybtn0916" id="snBtnCB0916" onclick="slinkyPulseA11y0916.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
-<button type="button" class="sn_a11ybtn0916 sn_a11yon0916" id="snBtnNR0916" onclick="slinkyPulseA11y0916.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+<div class="sn_a11y" id="snBar" role="toolbar" aria-label="Display options">
+<button type="button" class="sn_a11ybtn" id="snBtnHC" onclick="slinkyPulseA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="sn_a11ybtn" id="snBtnDM" onclick="slinkyPulseA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="sn_a11ybtn" id="snBtnCB" onclick="slinkyPulseA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="sn_a11ybtn sn_a11yon" id="snBtnNR" onclick="slinkyPulseA11y.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
 </div>
-<div class="tbar0916"><h3>A Single Pulse on Two Joined Slinkies: Reflection &amp; Transmission</h3></div>
-<div class="mcontent0916"><canvas id="slinkyPulseCanvas0916" style="margin:auto;border:1px solid" width="660" height="320"></canvas></div>
-<div id="slinkyPulseNarBar0916" class="sn_narbar0916" role="status" aria-live="polite" aria-atomic="true"></div>
-<div class="playbar0916" role="group" aria-label="Animation playback controls">
-<button type="button" class="wv_btn0916 wv_btnmain0916" onclick="slinkyPulsePol0916.sendPulse()">&#128276; Send Pulse</button>
-<button type="button" class="wv_btn0916" id="slinkyPulsePlayBtn0916" onclick="slinkyPulsePol0916.togglePlay()" aria-pressed="false">&#9654; Resume</button>
-<button type="button" class="wv_btn0916" onclick="slinkyPulsePol0916.stepBack()">&#10073;&#9664; Step back</button>
-<button type="button" class="wv_btn0916" onclick="slinkyPulsePol0916.stepForward()">&#9654;&#10073; Step forward</button>
-<button type="button" class="wv_btn0916" onclick="slinkyPulsePol0916.reset()">&#8635; Reset (clear slinky)</button>
+<div class="tbar"><h3>A Single Pulse on Two Joined Slinkies: Reflection &amp; Transmission</h3></div>
+<div class="mcontent"><canvas id="slinkyPulseCanvas" style="margin:auto;border:1px solid" width="660" height="320"></canvas></div>
+<div id="slinkyPulseNarBar" class="sn_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="playbar" role="group" aria-label="Animation playback controls">
+<button type="button" class="wv_btn wv_btnmain" onclick="slinkyPulsePol.sendPulse()">&#128276; Send Pulse</button>
+<button type="button" class="wv_btn" id="slinkyPulsePlayBtn" onclick="slinkyPulsePol.togglePlay()" aria-pressed="false">&#9654; Resume</button>
+<button type="button" class="wv_btn" onclick="slinkyPulsePol.stepBack()">&#10073;&#9664; Step back</button>
+<button type="button" class="wv_btn" onclick="slinkyPulsePol.stepForward()">&#9654;&#10073; Step forward</button>
+<button type="button" class="wv_btn" onclick="slinkyPulsePol.reset()">&#8635; Reset (clear slinky)</button>
 </div>
-<div class="bbar0916" role="group" aria-label="Show or hide measurement tools and overlays">
-<label class="chk0916"><input type="checkbox" id="showMarker0916" onchange="slinkyPulsePol0916.toggleMarker(this)"> <span id="markerLbl0916">Show tracked-coil markers</span></label>
-<label class="chk0916"><input type="checkbox" id="showDX0916" onchange="slinkyPulsePol0916.toggleDeltaX(this)"> <span id="dxLbl0916">Show horizontal caliper (&#916;x)</span></label>
-<label class="chk0916"><input type="checkbox" id="showLabels0916" checked onchange="slinkyPulsePol0916.toggleLabels(this)"> <span id="labelsLbl0916">Hide pulse labels</span></label>
-<label class="chk0916"><input type="checkbox" id="showWaveData0916" checked onchange="slinkyPulsePol0916.toggleWaveData(this)"> <span id="waveDataLbl0916">Hide wave-data panel</span></label>
+<div class="bbar" role="group" aria-label="Show or hide measurement tools and overlays">
+<label class="chk"><input type="checkbox" id="showMarker" onchange="slinkyPulsePol.toggleMarker(this)"> <span id="markerLbl">Show tracked-coil markers</span></label>
+<label class="chk"><input type="checkbox" id="showDX" onchange="slinkyPulsePol.toggleDeltaX(this)"> <span id="dxLbl">Show horizontal caliper (&#916;x)</span></label>
+<label class="chk"><input type="checkbox" id="showLabels" checked onchange="slinkyPulsePol.toggleLabels(this)"> <span id="labelsLbl">Hide pulse labels</span></label>
+<label class="chk"><input type="checkbox" id="showWaveData" checked onchange="slinkyPulsePol.toggleWaveData(this)"> <span id="waveDataLbl">Hide wave-data panel</span></label>
 </div>
-<div class="footer0916">
-<div class="left0916">Pulse direction:</div>
-<div class="center0916" role="radiogroup" aria-label="Pulse direction">
-<label><input type="radio" name="dir0916" value="push" id="dirPush0916" checked onchange="slinkyPulsePol0916.setDirection('push')"> Push &#9654;</label>
+<div class="footer">
+<div class="left">Pulse direction:</div>
+<div class="center" role="radiogroup" aria-label="Pulse direction">
+<label><input type="radio" name="dir" value="push" id="dirPush" checked onchange="slinkyPulsePol.setDirection('push')"> Push &#9654;</label>
 &nbsp;&nbsp;
-<label><input type="radio" name="dir0916" value="pull" id="dirPull0916" onchange="slinkyPulsePol0916.setDirection('pull')"> Pull &#9664;</label>
+<label><input type="radio" name="dir" value="pull" id="dirPull" onchange="slinkyPulsePol.setDirection('pull')"> Pull &#9664;</label>
 </div>
 </div>
-<div class="footer0916">
-<div class="left0916">Displacement amp.:</div>
-<div class="center0916">`A:\ ` <input class=islide0916 type="range" id="ampSlider0916" min="4" max="20" value="20" step="2" oninput="slinkyPulsePol0916.setAmp(this.value)" onchange="slinkyPulsePol0916.setAmp(this.value)"> <span id="ampValue0916">20</span> cm</div>
+<div class="footer">
+<div class="left">Displacement amp.:</div>
+<div class="center">`A:\ ` <input class=islide type="range" id="ampSlider" min="4" max="20" value="20" step="2" oninput="slinkyPulsePol.setAmp(this.value)" onchange="slinkyPulsePol.setAmp(this.value)"> <span id="ampValue">20</span> cm</div>
 </div>
-<div class="footer0916">
-<div class="left0916">Spring const., slinky 1:</div>
-<div class="center0916">`K_1:\ ` <input class=islide0916 type="range" id="k1Slider0916" min="0.1" max="0.7" value="0.4" step="0.05" oninput="slinkyPulsePol0916.setK1(this.value)" onchange="slinkyPulsePol0916.setK1(this.value)"> <span id="k1Value0916">0.4</span> N/m</div>
+<div class="footer">
+<div class="left">Spring const., slinky 1:</div>
+<div class="center">`K_1:\ ` <input class=islide type="range" id="k1Slider" min="0.1" max="0.7" value="0.4" step="0.05" oninput="slinkyPulsePol.setK1(this.value)" onchange="slinkyPulsePol.setK1(this.value)"> <span id="k1Value">0.4</span> N/m</div>
 </div>
-<div class="footer0916">
-<div class="left0916">Mass, slinky 1:</div>
-<div class="center0916">`M_1:\ ` <input class=islide0916 type="range" id="m1Slider0916" min="0.3" max="1.6" value="0.5" step="0.1" oninput="slinkyPulsePol0916.setM1(this.value)" onchange="slinkyPulsePol0916.setM1(this.value)"> <span id="m1Value0916">0.5</span> kg</div>
+<div class="footer">
+<div class="left">Mass, slinky 1:</div>
+<div class="center">`M_1:\ ` <input class=islide type="range" id="m1Slider" min="0.3" max="1.6" value="0.5" step="0.1" oninput="slinkyPulsePol.setM1(this.value)" onchange="slinkyPulsePol.setM1(this.value)"> <span id="m1Value">0.5</span> kg</div>
 </div>
-<div class="footer0916">
-<div class="left0916">Slinky 2 (linked):</div>
-<div class="center0916">`n_2:\ ` <input class=islide0916 type="range" id="n2Slider0916" min="1" max="3" value="2" step="0.5" oninput="slinkyPulsePol0916.setN2(this.value)" onchange="slinkyPulsePol0916.setN2(this.value)" style=width:120px> <span id="n2Value0916">2</span>&times; slinky 1 (`K_2=` <span id="k2Derived0916">--</span> N/m, `M_2=` <span id="m2Derived0916">--</span> kg)</div>
+<div class="footer">
+<div class="left">Slinky 2 (linked):</div>
+<div class="center">`n_2:\ ` <input class=islide type="range" id="n2Slider" min="1" max="3" value="2" step="0.5" oninput="slinkyPulsePol.setN2(this.value)" onchange="slinkyPulsePol.setN2(this.value)" style=width:120px> <span id="n2Value">2</span>&times; slinky 1 (`K_2=` <span id="k2Derived">--</span> N/m, `M_2=` <span id="m2Derived">--</span> kg)</div>
 </div>
 <hr>
 <ol type="a">
@@ -75,10 +82,10 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <li>Turn on the tracked-coil markers. Does a marked coil travel along with the pulse, or return to its starting spot after the pulse passes?<br /></li>
 <li>Compare this to the two-rope pulse demo: what physical quantity sets the reflection amplitude for a transverse pulse, versus for this longitudinal one?<br /></li>
 </ol>
-</div><!-- #slinkyPulseRoot0916 -->
-<style>:where(#mobw97700916) * { margin: 0; box-sizing: border-box; }
-:where(#mobw97700916) div { width: 663px; margin: 0; }
-#slinkyPulseRoot0916 {
+</div><!-- #slinkyPulseRoot -->
+<style>:where(#mobw9770) * { margin: 0; box-sizing: border-box; }
+:where(#mobw9770) div { width: 663px; margin: 0; }
+#slinkyPulseRoot {
 --sn-toolbar-bg: #222;
 --sn-rope:     #2e8b57;
 --sn-compress: #d1495b;
@@ -89,116 +96,270 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 --sn-marker:   #1a1a2e;
 --sn-boundary: #555555;
 }
-#slinkyPulseRoot0916 .sn_a11y0916 {
+#slinkyPulseRoot .sn_a11y {
 display: flex; gap: 6px; padding: 6px 8px;
 background: var(--sn-toolbar-bg); flex-wrap: wrap; width: 663px;
 }
-#slinkyPulseRoot0916 .sn_a11ybtn0916 {
+#slinkyPulseRoot .sn_a11ybtn {
 padding: 4px 10px; font-size: .72rem; font-family: monospace;
 letter-spacing: .06em; border-radius: 3px; cursor: pointer;
 background: #2a2e3a; border: 1px solid #404a60; color: #7a8aaa;
 transition: border-color .15s, color .15s;
 }
-#slinkyPulseRoot0916 .sn_a11ybtn0916:hover { border-color: #00e8d0; color: #00e8d0; }
-#slinkyPulseRoot0916 .sn_a11yon0916 { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
-#slinkyPulseRoot0916 .sn_narbar0916 {
+#slinkyPulseRoot .sn_a11ybtn:hover { border-color: #00e8d0; color: #00e8d0; }
+#slinkyPulseRoot .sn_a11yon { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
+#slinkyPulseRoot .sn_narbar {
 width: 663px; min-height: 28px; padding: 5px 10px;
 background: #ffefc0; border-left: 4px solid #e0b040;
 font-size: .88rem; color: #333; font-style: italic;
 }
-.tbar0916 { padding: 2px; height: 30px; background-color: #f90; text-align: center; }
-.mcontent0916 { height: 322px; }
-.islide0916 { width: 220px; }
-.playbar0916 {
+.tbar { padding: 2px; height: 30px; background-color: #f90; text-align: center; }
+.mcontent { height: 322px; }
+.islide { width: 220px; }
+.playbar {
 height: auto; min-height: 35px; background-color: #cfe8ff; padding: 3px;
 text-align: center; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
 }
-.wv_btn0916 {
+.wv_btn {
 padding: 6px 10px; font-size: .82rem; border-radius: 4px; cursor: pointer;
 background: #fff; border: 1px solid #557; color: #223;
 }
-.wv_btn0916:hover { background: #eef4ff; }
-.wv_btnmain0916 { background: #ffd94a; border-color: #a8850a; font-weight: bold; }
-.wv_btnmain0916:hover { background: #ffe97a; }
-.bbar0916 {
+.wv_btn:hover { background: #eef4ff; }
+.wv_btnmain { background: #ffd94a; border-color: #a8850a; font-weight: bold; }
+.wv_btnmain:hover { background: #ffe97a; }
+.bbar {
 background-color: #df9; padding: 8px; text-align: left;
 display: flex; flex-wrap: wrap; gap: 4px 16px;
 }
-.bbar0916 .chk0916 { width: auto; font-size: .84rem; white-space: nowrap; }
-.footer0916 { height: 40px; text-align: center; font-size: normal; display: flex; }
-.footer0916 .left0916 { width: 160px; padding: 2px; }
-.footer0916 .center0916 { width: 503px; padding: 4px; }
-.footer0916:nth-of-type(odd) { background-color: #fce4ec; }
-.footer0916:nth-of-type(even) { background-color: #e8f5e9; }</style>
+.bbar .chk { width: auto; font-size: .84rem; white-space: nowrap; }
+.footer { height: 40px; text-align: center; font-size: normal; display: flex; }
+.footer .left { width: 160px; padding: 2px; }
+.footer .center { width: 503px; padding: 4px; }
+.footer:nth-of-type(odd) { background-color: #fce4ec; }
+.footer:nth-of-type(even) { background-color: #e8f5e9; }</style>
 <!-- ════════════════ ACCESSIBILITY CONTROLLER ════════════════ -->
 <script>
-var slinkyPulseA11y0916 = (function(){
-var ROOT = null;
-var states = { hc: false, lm: false, cb: false, nr: true };
-var THEMES = {
-hc: { '--sn-rope':'#00ff88','--sn-compress':'#ffaa00','--sn-stretch':'#00ffff','--sn-axis':'#ffffff','--sn-vrule':'#ffaa00',
-'--sn-hand':'#ffcc88','--sn-marker':'#ffffff','--sn-boundary':'#ffffff','--sn-toolbar-bg':'#000' },
-lm: { '--sn-rope':'#226622','--sn-compress':'#aa3311','--sn-stretch':'#0077aa','--sn-axis':'#222222','--sn-vrule':'#996622',
-'--sn-hand':'#8a6440','--sn-marker':'#000000','--sn-boundary':'#333333','--sn-toolbar-bg':'#333' },
-cb: { '--sn-rope':'#009e73','--sn-compress':'#d55e00','--sn-stretch':'#0072b2','--sn-axis':'#000000','--sn-vrule':'#e69f00',
-'--sn-hand':'#e69f00','--sn-marker':'#000000','--sn-boundary':'#000000' }
-};
-var DEFAULTS = { '--sn-rope':'#2e8b57','--sn-compress':'#d1495b','--sn-stretch':'#1b998b','--sn-axis':'#000000','--sn-vrule':'#cd853f',
-'--sn-hand':'#9b7550','--sn-marker':'#1a1a2e','--sn-boundary':'#555555','--sn-toolbar-bg':'#222' };
-function applyVars(theme, on) {
-if (!ROOT) return;
-var vars = THEMES[theme];
-for (var p in vars) ROOT.style.setProperty(p, on ? vars[p] : DEFAULTS[p]);
+var slinkyPulseA11y = (function(){
+var ROOT = null, WRAP = null, states = { hc:false, dm:false, cb:false, nr:true };
+/* ── canvas themes: every colour the sim draws passes through map(); the last frame is recorded,
+      so switching dark mode, high contrast or colour-blind safe colours redraws it at once,
+      even while the sim is paused. No page-wide names: this lives inside the controller. ── */
+function makeCT(){
+  var mode = { dark:false, hc:false, cb:false }, key = '', cache = {}, cvs = [];
+  var probe = document.createElement('canvas').getContext('2d');
+  var P = CanvasRenderingContext2D.prototype;
+  function parse(c){
+    probe.fillStyle = '#000'; probe.fillStyle = c; var s = String(probe.fillStyle), m;
+    if (s.charAt(0) === '#') return [parseInt(s.substr(1,2),16), parseInt(s.substr(3,2),16), parseInt(s.substr(5,2),16), 1];
+    m = s.match(/rgba?\(([^)]+)\)/); if (!m) return null;
+    var p = m[1].split(',').map(parseFloat); return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1];
+  }
+  function lin(v){ v /= 255; return v <= 0.04045 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); }
+  function lum(r,g,b){ return 0.2126*lin(r) + 0.7152*lin(g) + 0.0722*lin(b); }
+  function hsl(r,g,b){
+    r/=255; g/=255; b/=255; var mx = Math.max(r,g,b), mn = Math.min(r,g,b), h = 0, s = 0, l = (mx+mn)/2, d = mx-mn;
+    if (d > 1e-6){ s = d/(1 - Math.abs(2*l - 1));
+      h = mx === r ? ((g-b)/d) % 6 : (mx === g ? (b-r)/d + 2 : (r-g)/d + 4); h *= 60; if (h < 0) h += 360; }
+    return [h, s, l];
+  }
+  function rgb(h,s,l){
+    var c = (1 - Math.abs(2*l - 1))*s, x = c*(1 - Math.abs((h/60) % 2 - 1)), m = l - c/2, t;
+    t = h < 60 ? [c,x,0] : h < 120 ? [x,c,0] : h < 180 ? [0,c,x] : h < 240 ? [0,x,c] : h < 300 ? [x,0,c] : [c,0,x];
+    return [Math.round((t[0]+m)*255), Math.round((t[1]+m)*255), Math.round((t[2]+m)*255)];
+  }
+  /* raise the lightness until the colour stands out on a dark background */
+  function lift(h,s,l,target){ var c = rgb(h,s,l); while (lum(c[0],c[1],c[2]) < target && l < 0.95){ l += 0.03; c = rgb(h,s,l); } return c; }
+  /* Okabe-Ito colours, chosen by hue */
+  function oi(h){
+    return h < 15 || h >= 330 ? [213,94,0] : h < 40 ? [230,159,0] : h < 75 ? [240,228,66] : h < 170 ? [0,158,115]
+         : h < 200 ? [86,180,233] : h < 260 ? [0,114,178] : [204,121,167];
+  }
+  function conv(c){
+    if (!mode.dark && !mode.hc && !mode.cb) return c;
+    var k = key + c; if (cache[k] !== undefined) return cache[k];
+    var v = parse(c); if (!v){ cache[k] = c; return c; }
+    var r = v[0], g = v[1], b = v[2], a = v[3], q = hsl(r,g,b), Y = lum(r,g,b), neutral = q[1] < 0.18, o;
+    if (mode.cb && !neutral && Y <= 0.6 && !(q[2] > 0.6 && q[1] < 0.6)){ o = oi(q[0]); r = o[0]; g = o[1]; b = o[2]; q = hsl(r,g,b); Y = lum(r,g,b); }
+    if (mode.hc){
+      if (neutral) o = Y > 0.8 ? [0,0,0] : (Y < 0.25 ? [255,255,255] : [205,205,205]);
+      else if (Y > 0.6 || (q[2] > 0.6 && q[1] < 0.6)) o = [0,0,0];   /* light or pastel fills are surfaces */
+      else o = lift(q[0], 1, Math.max(q[2], 0.5), 0.4);
+    } else if (mode.dark){
+      if (neutral) o = rgb(q[0], q[1], 0.1 + 0.82*(1 - q[2]));
+      else if (Y > 0.55 || (q[2] > 0.6 && q[1] < 0.6)) o = rgb(q[0], Math.min(q[1], 0.3), 0.18);   /* light or pastel fills are surfaces */
+      else o = lift(q[0], q[1], q[2], 0.3);
+    } else o = [r,g,b];
+    var out = a < 1 ? 'rgba(' + o[0] + ',' + o[1] + ',' + o[2] + ',' + a + ')' : 'rgb(' + o[0] + ',' + o[1] + ',' + o[2] + ')';
+    cache[k] = out; return out;
+  }
+  /* gradients remember their colour stops, so they can be rebuilt in another theme */
+  function style(v, ctx){
+    if (typeof v === 'string') return conv(v);
+    if (v && v.__spec){
+      var sp = v.__spec; if (sp.key === key) return sp.made;
+      var g = P[sp.kind].apply(ctx, sp.args); sp.stops.forEach(function(s){ g.addColorStop(s[0], conv(s[1])); });
+      sp.key = key; sp.made = g; return g;
+    }
+    return v;
+  }
+  function attach(cv){
+    var ctx = cv.getContext('2d'); if (!ctx || ctx.__ct) return; ctx.__ct = true;
+    var log = [], replaying = false, vals = {};
+    /* a fill or clear covering the whole canvas starts a new frame (in device pixels, whatever the transform) */
+    function full(a){ var t = ctx.getTransform(), x0 = t.a*a[0] + t.e, y0 = t.d*a[1] + t.f, x1 = t.a*(a[0] + a[2]) + t.e, y1 = t.d*(a[1] + a[3]) + t.f;
+      return t.b === 0 && t.c === 0 && Math.min(x0, x1) <= 0.5 && Math.min(y0, y1) <= 0.5 && Math.max(x0, x1) >= cv.width - 0.5 && Math.max(y0, y1) >= cv.height - 0.5; }
+    /* a canvas attached after its first drawing: keep that picture, to re-colour pixel by pixel until the next frame */
+    var snap = null, framed = false; try { snap = ctx.getImageData(0, 0, cv.width, cv.height); } catch (e) {}
+    ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); vals[p] = d.get.call(ctx);
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return vals[p]; },
+        set:function(v){ vals[p] = v; if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, style(v, ctx)); } });
+    });
+    var plain = ['lineWidth','font','textAlign','textBaseline','globalAlpha','lineCap','lineJoin','miterLimit','shadowBlur',
+                 'shadowOffsetX','shadowOffsetY','globalCompositeOperation','lineDashOffset','direction','imageSmoothingEnabled'];
+    plain.forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); if (!d || !d.set) return;
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return d.get.call(ctx); },
+        set:function(v){ if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, v); } });
+    });
+    ['createLinearGradient','createRadialGradient','createConicGradient'].forEach(function(n){
+      if (!P[n]) return;
+      ctx[n] = function(){
+        var args = Array.prototype.slice.call(arguments), g = P[n].apply(ctx, args), add = g.addColorStop;
+        var sp = { kind:n, args:args, stops:[], key:key, made:g }; g.__spec = sp;
+        g.addColorStop = function(o, c){ sp.stops.push([o, c]); add.call(g, o, conv(c)); };
+        return g;
+      };
+    });
+    var skip = /^(constructor|get[A-Z]\w*|isPointIn\w*|measureText|create\w*)$/;
+    Object.getOwnPropertyNames(P).forEach(function(n){
+      if (skip.test(n)) return; var d = Object.getOwnPropertyDescriptor(P, n); if (!d || typeof d.value !== 'function') return;
+      var f = d.value;
+      ctx[n] = function(){
+        if (!replaying){
+          if ((n === 'fillRect' || n === 'clearRect') && full(arguments)){ snap = null; framed = true;
+            /* a new frame: start the record from the drawing state of this moment */
+            var t = ctx.getTransform();
+            log = [['c','setTransform',[t.a,t.b,t.c,t.d,t.e,t.f]]];
+            ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){ log.push(['s', p, vals[p]]); });
+            plain.forEach(function(p){ var dd = Object.getOwnPropertyDescriptor(P, p); if (dd && dd.get) log.push(['s', p, dd.get.call(ctx)]); });
+            log.push(['c','setLineDash',[ctx.getLineDash()]]);
+          }
+          if (log){ log.push(['c', n, Array.prototype.slice.call(arguments)]); if (log.length > 60000) log = null; }
+        }
+        return f.apply(ctx, arguments);
+      };
+    });
+    cvs.push({ redraw:function(){
+      if (!framed && snap){
+        var img = new ImageData(new Uint8ClampedArray(snap.data), snap.width, snap.height), d = img.data, memo = {};
+        for (var i = 0; i < d.length; i += 4){ if (!d[i+3]) continue; var k = d[i] + ',' + d[i+1] + ',' + d[i+2], c = memo[k];
+          if (!c){ var v = parse(conv('rgb(' + k + ')')); c = memo[k] = v || [d[i], d[i+1], d[i+2]]; } d[i] = c[0]; d[i+1] = c[1]; d[i+2] = c[2]; }
+        var t0 = ctx.getTransform(); P.setTransform.call(ctx, 1, 0, 0, 1, 0, 0); P.putImageData.call(ctx, img, 0, 0); P.setTransform.call(ctx, t0); return;
+      }
+      if (!framed || !log || log.length < 3) return;
+      replaying = true;
+      try { log.forEach(function(e){ if (e[0] === 's') ctx[e[1]] = e[2]; else P[e[1]].apply(ctx, e[2]); }); }
+      finally { replaying = false; }
+    }});
+  }
+  return {
+    attach: attach,
+    map: conv,
+    set: function(m){ mode = { dark:!!m.dark, hc:!!m.hc, cb:!!m.cb }; key = (mode.dark?'d':'') + (mode.hc?'h':'') + (mode.cb?'c':'') + '|'; cvs.forEach(function(c){ c.redraw(); }); }
+  };
 }
+
+var ct = makeCT();
+function attachAll(){ var w = document.getElementById('mobw9770') || document.getElementById('slinkyPulseRoot'); if (w) [].forEach.call(w.querySelectorAll('canvas'), ct.attach); }
+attachAll();
 function styleBtn(id, active) {
 var b = document.getElementById(id); if (!b) return;
 if (active) { b.style.background='rgba(0,232,208,.12)'; b.style.borderColor='#00e8d0'; b.style.color='#00e8d0'; }
 else        { b.style.background='#2a2e3a'; b.style.borderColor='#404a60'; b.style.color='#7a8aaa'; }
 b.setAttribute('aria-pressed', active ? 'true' : 'false');
 }
-function applyCanvas() {
-var cv = document.getElementById('slinkyPulseCanvas0916');
-if (cv) cv.style.filter = states.lm ? 'invert(1) hue-rotate(180deg) brightness(0.9)' : '';
+function apply(){
+ROOT = ROOT || document.getElementById('slinkyPulseRoot'); if (!ROOT) return;
+WRAP = document.getElementById('mobw9770') || ROOT; attachAll();
+WRAP.classList.toggle('a11y_dm', states.dm); WRAP.classList.toggle('a11y_hc', states.hc); WRAP.classList.toggle('a11y_cb', states.cb);
+ct.set({ dark:states.dm, hc:states.hc, cb:states.cb });
+var nb = document.getElementById('slinkyPulseNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var nr = document.getElementById('snBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('snBtnHC', states.hc); styleBtn('snBtnDM', states.dm); styleBtn('snBtnCB', states.cb); styleBtn('snBtnNR', states.nr);
 }
-function applyNarBar() {
-var nb = document.getElementById('slinkyPulseNarBar0916');
-if (nb) nb.style.display = states.nr ? 'block' : 'none';
-var btn = document.getElementById('snBtnNR0916');
-if (btn) { btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF'); styleBtn('snBtnNR0916', states.nr); }
-}
-function apply() {
-if (!ROOT) return;
-applyVars('hc', states.hc); applyVars('lm', states.lm); applyVars('cb', states.cb);
-applyCanvas(); applyNarBar();
-styleBtn('snBtnHC0916', states.hc);
-styleBtn('snBtnLM0916', states.lm);
-styleBtn('snBtnCB0916', states.cb);
-}
-function getCol(prop) {
-if (!ROOT) return DEFAULTS[prop];
-return getComputedStyle(ROOT).getPropertyValue(prop).trim() || DEFAULTS[prop];
-}
+var DEFAULTS = { '--sn-rope':'#2e8b57','--sn-compress':'#d1495b','--sn-stretch':'#1b998b','--sn-axis':'#000000','--sn-vrule':'#cd853f',
+'--sn-hand':'#9b7550','--sn-marker':'#1a1a2e','--sn-boundary':'#555555','--sn-toolbar-bg':'#222' };
 return {
-init: function() { ROOT = document.getElementById('slinkyPulseRoot0916'); apply(); },
-toggle: function(k) {
+init: function(){ apply(); },
+toggle: function(k){
 states[k] = !states[k];
-if (k === 'hc' && states.hc) states.lm = false;
-if (k === 'lm' && states.lm) states.hc = false;
+if (k === 'hc' && states.hc) states.dm = false;   /* high contrast and dark mode switch each other off; colour-blind combines with either */
+if (k === 'dm' && states.dm) states.hc = false;
 apply();
 },
+/* the colour engine themes every colour on the canvas, so the drawing code keeps its standard colours */
+isHC: function(){ return false; },
+isCB: function(){ return false; },
+col: function(role){ return DEFAULTS['--sn-' + role]; },
 narrate: function(msg) {
 if (!states.nr) return;
-var nb = document.getElementById('slinkyPulseNarBar0916');
+var nb = document.getElementById('slinkyPulseNarBar');
 if (nb) nb.textContent = msg;
-},
-col: function(role) { return getCol('--sn-' + role); }
+}
 };
 })();
 </script>
+<style>
+/* ════════ display options: dark mode, high contrast, colour-blind safe (the canvas follows through its colour engine) ════════ */
+#mobw9770.a11y_dm { background:#16191e; color:#e6e9ee; }
+#mobw9770.a11y_dm .tbar { background:#8a4a00; color:#fff; }
+#mobw9770.a11y_dm .tbar h3, #mobw9770.a11y_dm .tbar H3 { color:#fff; }
+#mobw9770.a11y_dm .bbar, #mobw9770.a11y_dm .playbar { background:#26301c; }
+#mobw9770.a11y_dm .mcontent { background:#16191e; }
+#mobw9770.a11y_dm .footer, #mobw9770.a11y_dm .footer-pink, #mobw9770.a11y_dm .footer-green, #mobw9770.a11y_dm .footer-blue, #mobw9770.a11y_dm .footer-meas, #mobw9770.a11y_dm .footer-measT { background:#22262b; color:#e6e9ee; }
+#mobw9770.a11y_dm .footer:nth-of-type(odd), #mobw9770.a11y_dm .footer-pink { background:#2e2228; }
+#mobw9770.a11y_dm .footer:nth-of-type(even), #mobw9770.a11y_dm .footer-green { background:#1f2a22; }
+#mobw9770.a11y_dm .footer-blue { background:#1c2633; }
+#mobw9770.a11y_dm .footer-meas, #mobw9770.a11y_dm .footer-measT { background:#2a2614; }
+#mobw9770.a11y_dm .txtDPL { background-color:#1b3a8c; color:#ffe680; }
+#mobw9770.a11y_dm .shm_measlbl, #mobw9770.a11y_dm .shm_smlbl, #mobw9770.a11y_dm .chk { color:#d8dce2; }
+#mobw9770.a11y_dm .wv_btn, #mobw9770.a11y_dm .butt, #mobw9770.a11y_dm input[type=button] { background:#2c3138; color:#e6e9ee; border:1px solid #5a6470; }
+#mobw9770.a11y_dm .wv_btnmain { background:#6a5410; color:#fff; border-color:#a8850a; }
+#mobw9770.a11y_dm .shm_narbar, #mobw9770.a11y_dm .sn_narbar, #mobw9770.a11y_dm .rw_narbar { background:#2a2410; color:#f0e2b8; }
+#mobw9770.a11y_dm .mob_desc, #mobw9770.a11y_dm .rw_desc { background:#22262b; color:#e6e9ee; border-color:#3a4048; }
+#mobw9770.a11y_dm .dm_box { background:#1c2026; color:#e6e9ee; border-color:#3a4048; border-top-color:#5599cc; }
+#mobw9770.a11y_dm .dm_hint, #mobw9770.a11y_dm .dm_small { color:#a8b0bb; }
+#mobw9770.a11y_dm .dm_res { background:#2a2614; color:#f0e2b8; border-color:#8a7420; }
+#mobw9770.a11y_dm .dm_btn { background:#2c3138; color:#e6e9ee; border-color:#5a6470; }
+#mobw9770.a11y_dm .dm_rec { background:#1f4a6e; color:#fff; border-color:#5599cc; }
+#mobw9770.a11y_dm .dm_warn { background:#6a2a2a; color:#fff; border-color:#cc6655; }
+#mobw9770.a11y_dm .dm_tbl th { background:#2c3138; border-color:#5a6470; }
+#mobw9770.a11y_dm .dm_tbl td { background:#1c2026; border-color:#3a4048; }
+#mobw9770.a11y_dm select, #mobw9770.a11y_dm input[type=number], #mobw9770.a11y_dm input[type=text] { background:#22262b; color:#e6e9ee; border:1px solid #5a6470; }
+#mobw9770.a11y_dm input[type=range], #mobw9770.a11y_dm input[type=checkbox] { accent-color:#e8a020; }
+#mobw9770.a11y_dm canvas { border-color:#5a6470 !important; }
+#mobw9770.a11y_hc { background:#000; color:#fff; }
+#mobw9770.a11y_hc .tbar, #mobw9770.a11y_hc .bbar, #mobw9770.a11y_hc .playbar, #mobw9770.a11y_hc .mcontent, #mobw9770.a11y_hc .footer, #mobw9770.a11y_hc .footer-pink, #mobw9770.a11y_hc .footer-green, #mobw9770.a11y_hc .footer-blue, #mobw9770.a11y_hc .footer-meas, #mobw9770.a11y_hc .footer-measT, #mobw9770.a11y_hc .footer:nth-of-type(odd), #mobw9770.a11y_hc .footer:nth-of-type(even) { background:#000; color:#fff; box-shadow:inset 0 0 0 1px #fff; }
+#mobw9770.a11y_hc .tbar h3, #mobw9770.a11y_hc .tbar H3, #mobw9770.a11y_hc .tbar { color:#ffd700; }
+#mobw9770.a11y_hc .txtDPL { background-color:#000; color:#ffff00; box-shadow:inset 0 0 0 1px #fff; }
+#mobw9770.a11y_hc .shm_measlbl, #mobw9770.a11y_hc .shm_smlbl, #mobw9770.a11y_hc .chk { color:#fff; }
+#mobw9770.a11y_hc .wv_btn, #mobw9770.a11y_hc .wv_btnmain, #mobw9770.a11y_hc .butt, #mobw9770.a11y_hc input[type=button], #mobw9770.a11y_hc .dm_btn, #mobw9770.a11y_hc .dm_rec, #mobw9770.a11y_hc .dm_warn { background:#000; color:#fff; border:2px solid #fff; font-weight:bold; }
+#mobw9770.a11y_hc .shm_narbar, #mobw9770.a11y_hc .sn_narbar, #mobw9770.a11y_hc .rw_narbar { background:#000; color:#fff; border-left-color:#ffd700; box-shadow:inset 0 0 0 1px #fff; }
+#mobw9770.a11y_hc .mob_desc, #mobw9770.a11y_hc .rw_desc { background:#000; color:#fff; border-color:#fff; border-left-color:#ffd700; }
+#mobw9770.a11y_hc .dm_box { background:#000; color:#fff; border-color:#fff; border-top-color:#ffd700; }
+#mobw9770.a11y_hc .dm_hint, #mobw9770.a11y_hc .dm_small { color:#fff; }
+#mobw9770.a11y_hc .dm_res { background:#000; color:#ffff00; border-color:#fff; }
+#mobw9770.a11y_hc .dm_tbl th { background:#000; color:#ffd700; border-color:#fff; }
+#mobw9770.a11y_hc .dm_tbl td { background:#000; color:#fff; border-color:#888; }
+#mobw9770.a11y_hc select, #mobw9770.a11y_hc input[type=number], #mobw9770.a11y_hc input[type=text] { background:#000; color:#fff; border:1px solid #fff; }
+#mobw9770.a11y_hc input[type=range], #mobw9770.a11y_hc input[type=checkbox] { accent-color:#ffd700; }
+#mobw9770.a11y_hc canvas { border-color:#fff !important; }
+</style>
 <!-- ════════════════ SIMULATION ════════════════ -->
 <script>
-var slinkyPulsePol0916 = (function(){
-var canvas  = document.getElementById('slinkyPulseCanvas0916');
+var slinkyPulsePol = (function(){
+var canvas  = document.getElementById('slinkyPulseCanvas');
 var ctx     = canvas.getContext('2d');
 var CW = canvas.width, CH = canvas.height;
 var xBase = 80, yBase = 75, centerY = yBase + 90;
@@ -220,8 +381,8 @@ var v1, v2, r, tau, tb;
 function boundaryPx() { return xBase + ib * coilSpacing; }
 function deriveK2M2() {
 K2 = n2 * K1; M2 = n2 * M1;
-var k2El = document.getElementById('k2Derived0916'); if (k2El) k2El.textContent = K2.toFixed(2);
-var m2El = document.getElementById('m2Derived0916'); if (m2El) m2El.textContent = M2.toFixed(1);
+var k2El = document.getElementById('k2Derived'); if (k2El) k2El.textContent = K2.toFixed(2);
+var m2El = document.getElementById('m2Derived'); if (m2El) m2El.textContent = M2.toFixed(1);
 }
 function recompute() {
 v1 = L * Math.sqrt(K1 / M1);
@@ -343,10 +504,10 @@ compression (compressed = warm, stretched = cool). A single pulse
 naturally shows both, since it carries a compression on its leading
 edge and a rarefaction on its trailing edge. ── */
 function drawSlinky() {
-var compressCol = slinkyPulseA11y0916.col('compress');
-var stretchCol  = slinkyPulseA11y0916.col('stretch');
-var neutralCol  = slinkyPulseA11y0916.col('rope');
-var markerCol   = slinkyPulseA11y0916.col('marker');
+var compressCol = slinkyPulseA11y.col('compress');
+var stretchCol  = slinkyPulseA11y.col('stretch');
+var neutralCol  = slinkyPulseA11y.col('rope');
+var markerCol   = slinkyPulseA11y.col('marker');
 var lineW1 = clamp(Math.round(M1 * 4), 1, 6), lineW2 = clamp(Math.round(M2 * 4), 1, 6);
 for (var i = 0; i < nCoils; i++) {
 var ratio = coilRatios[i], col;
@@ -378,18 +539,18 @@ var b = boundaryPx();
 if (t < tb) {
 var xi = xBase + v1 * t;
 if (xi >= xBase && xi <= b) {
-ctx.fillStyle = slinkyPulseA11y0916.col('rope');
+ctx.fillStyle = slinkyPulseA11y.col('rope');
 ctx.fillText('incident', xi, centerY - 70);
 }
 } else {
 var xr = b - v1 * (t - tb);
 if (xr >= xBase && xr <= b) {
-ctx.fillStyle = slinkyPulseA11y0916.col('compress');
+ctx.fillStyle = slinkyPulseA11y.col('compress');
 ctx.fillText('reflected', xr, centerY - 70);
 }
 var xtm = b + v2 * (t - tb);
 if (xtm >= b && xtm <= xBase + (nCoils - 1) * coilSpacing) {
-ctx.fillStyle = slinkyPulseA11y0916.col('stretch');
+ctx.fillStyle = slinkyPulseA11y.col('stretch');
 ctx.fillText('transmitted', xtm, centerY - 70);
 }
 }
@@ -508,7 +669,7 @@ function draw() {
 if (index >= stopIndex) { runFlag = 0; setPlayLabel(false); }
 ctx.clearRect(0, 0, CW, CH);
 if (runFlag === 1) index = index + 1;
-var axisCol = slinkyPulseA11y0916.col('axis');
+var axisCol = slinkyPulseA11y.col('axis');
 ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, CW, CH);
 var b = boundaryPx();
 ctx.fillStyle = '#eef6ff'; ctx.fillRect(xBase - 20, yBase - 40, b - (xBase - 20), 240);
@@ -517,23 +678,23 @@ addGrid(2 * CH, CW, 10, 10, 0, 0, '#dddddd');
 addXYaxis(CH, CW, CH / 4, CW / 4, axisCol);
 t = index / tactual;
 computeCoilGeometry();
-drawBoundary(slinkyPulseA11y0916.col('boundary'));
+drawBoundary(slinkyPulseA11y.col('boundary'));
 drawSlinky();
 drawLabels();
 if (showWaveDataFlag) displayWaveData(0.03 * mx, 0, 1.55 * mx, 56);
 if (runFlag === 0 && index >= stopIndex) displayEnd(1.6 * mx, my + 45, 0.4 * mx, 64);
-handR(coilPos(0).x - 2, centerY - 2, hw, hh, slinkyPulseA11y0916.col('hand'));
-if (addXCalFlag) drawXCaliper(slinkyPulseA11y0916.col('vrule'));
+handR(coilPos(0).x - 2, centerY - 2, hw, hh, slinkyPulseA11y.col('hand'));
+if (addXCalFlag) drawXCaliper(slinkyPulseA11y.col('vrule'));
 }
 function narrate() {
 var rNote = (r < -0.02) ? 'reflected pulse flips' : (r > 0.02 ? 'reflected pulse upright' : 'no reflection');
 var msg = 'Slinky 1: K=' + K1.toFixed(2) + ' N/m, M=' + M1.toFixed(1) + ' kg, v=' + v1.toFixed(2) + ' m/s. ';
 msg += 'Slinky 2: K=' + K2.toFixed(2) + ' N/m, M=' + M2.toFixed(1) + ' kg, v=' + v2.toFixed(2) + ' m/s. ';
 msg += 'Reflection coefficient r=' + r.toFixed(2) + ' (' + rNote + '), transmission \u03C4=' + tau.toFixed(2) + '.';
-slinkyPulseA11y0916.narrate(msg);
+slinkyPulseA11y.narrate(msg);
 }
 function setPlayLabel(isPlaying) {
-var b = document.getElementById('slinkyPulsePlayBtn0916'); if (!b) return;
+var b = document.getElementById('slinkyPulsePlayBtn'); if (!b) return;
 b.innerHTML = isPlaying ? '\u23F8 Pause' : '\u25B6 Resume';
 b.setAttribute('aria-pressed', isPlaying ? 'true' : 'false');
 }
@@ -546,7 +707,7 @@ runSim();
 function pause() {
 window.clearTimeout(timer);
 runFlag = 0; setPlayLabel(false);
-slinkyPulseA11y0916.narrate('Paused.');
+slinkyPulseA11y.narrate('Paused.');
 }
 function togglePlay() { if (runFlag === 1) pause(); else play(); }
 function stepForward() { window.clearTimeout(timer); runFlag = 1; draw(); runFlag = 0; setPlayLabel(false); }
@@ -560,37 +721,37 @@ window.clearTimeout(timer);
 index = -1; t = 0;
 recompute(); runFlag = 0; setPlayLabel(false);
 draw();
-slinkyPulseA11y0916.narrate('Slinky cleared. Press Send Pulse when ready.');
+slinkyPulseA11y.narrate('Slinky cleared. Press Send Pulse when ready.');
 }
 function sendPulse() {
 window.clearTimeout(timer);
 index = -1; t = 0;
 recompute();
 runFlag = 1; setPlayLabel(true);
-slinkyPulseA11y0916.narrate('Pulse sent.');
+slinkyPulseA11y.narrate('Pulse sent.');
 runSim();
 }
 function setDirection(d) { direction = d; draw(); narrate(); }
-function setAmp(val) { Amag = parseFloat(val); document.getElementById('ampValue0916').innerHTML = Amag.toFixed(0); draw(); narrate(); }
-function setK1(val)  { K1 = parseFloat(val); document.getElementById('k1Value0916').innerHTML = K1.toFixed(2); deriveK2M2(); recompute(); reset(); narrate(); }
-function setM1(val)  { M1 = parseFloat(val); document.getElementById('m1Value0916').innerHTML = M1.toFixed(1); deriveK2M2(); recompute(); reset(); narrate(); }
-function setN2(val)  { n2 = parseFloat(val); document.getElementById('n2Value0916').innerHTML = n2.toFixed(1); deriveK2M2(); recompute(); reset(); narrate(); }
+function setAmp(val) { Amag = parseFloat(val); document.getElementById('ampValue').innerHTML = Amag.toFixed(0); draw(); narrate(); }
+function setK1(val)  { K1 = parseFloat(val); document.getElementById('k1Value').innerHTML = K1.toFixed(2); deriveK2M2(); recompute(); reset(); narrate(); }
+function setM1(val)  { M1 = parseFloat(val); document.getElementById('m1Value').innerHTML = M1.toFixed(1); deriveK2M2(); recompute(); reset(); narrate(); }
+function setN2(val)  { n2 = parseFloat(val); document.getElementById('n2Value').innerHTML = n2.toFixed(1); deriveK2M2(); recompute(); reset(); narrate(); }
 function setLabel(spanId, checked, baseText) {
 var el = document.getElementById(spanId);
 if (el) el.textContent = (checked ? 'Hide ' : 'Show ') + baseText;
 }
 function toggleMarker(cb) {
 showMarkerFlag = cb.checked ? 1 : 0; draw();
-setLabel('markerLbl0916', cb.checked, 'tracked-coil markers');
-slinkyPulseA11y0916.narrate('Tracked-coil markers ' + (cb.checked ? 'shown. Watch them \u2014 they shift briefly as the pulse passes, then settle back; they never travel with the pulse.' : 'hidden.'));
+setLabel('markerLbl', cb.checked, 'tracked-coil markers');
+slinkyPulseA11y.narrate('Tracked-coil markers ' + (cb.checked ? 'shown. Watch them \u2014 they shift briefly as the pulse passes, then settle back; they never travel with the pulse.' : 'hidden.'));
 }
 function toggleDeltaX(cb) {
 addXCalFlag = cb.checked ? 1 : 0; draw();
-setLabel('dxLbl0916', cb.checked, 'horizontal caliper (\u0394x)');
-slinkyPulseA11y0916.narrate('Horizontal-distance caliper ' + (cb.checked ? 'shown, with a live reading.' : 'hidden.'));
+setLabel('dxLbl', cb.checked, 'horizontal caliper (\u0394x)');
+slinkyPulseA11y.narrate('Horizontal-distance caliper ' + (cb.checked ? 'shown, with a live reading.' : 'hidden.'));
 }
-function toggleLabels(cb) { showLabelsFlag = cb.checked ? 1 : 0; draw(); setLabel('labelsLbl0916', cb.checked, 'pulse labels'); }
-function toggleWaveData(cb) { showWaveDataFlag = cb.checked ? 1 : 0; draw(); setLabel('waveDataLbl0916', cb.checked, 'wave-data panel'); }
+function toggleLabels(cb) { showLabelsFlag = cb.checked ? 1 : 0; draw(); setLabel('labelsLbl', cb.checked, 'pulse labels'); }
+function toggleWaveData(cb) { showWaveDataFlag = cb.checked ? 1 : 0; draw(); setLabel('waveDataLbl', cb.checked, 'wave-data panel'); }
 function reactionDown(x, y) {
 var r0 = canvas.getBoundingClientRect(); x = (x - r0.left)*canvas.width/r0.width; y = (y - r0.top)*canvas.height/r0.height;   /* canvas units, whatever its displayed size */
 canvas.style.cursor = 'pointer';
@@ -609,7 +770,7 @@ function reactionUp() {
 var msg = dragging ? ('Horizontal distance: \u0394x = ' + mWLength + ' m.') : null;
 dragging = null;
 canvas.style.cursor = 'default';
-if (msg) slinkyPulseA11y0916.narrate(msg);
+if (msg) slinkyPulseA11y.narrate(msg);
 }
 function init() {
 canvas.onmousedown = function (e) { reactionDown(e.clientX, e.clientY); };
@@ -634,23 +795,23 @@ toggleMarker: toggleMarker, toggleDeltaX: toggleDeltaX, toggleLabels: toggleLabe
 })();
 </script>
 <script>
-slinkyPulseA11y0916.init();
-slinkyPulseA11y0916.narrate('Pulse sim ready. Set the direction, amplitude, and each slinky\u2019s spring properties, then press Send Pulse to watch it split at the junction.');
+slinkyPulseA11y.init();
+slinkyPulseA11y.narrate('Pulse sim ready. Set the direction, amplitude, and each slinky\u2019s spring properties, then press Send Pulse to watch it split at the junction.');
 </script>
 <!-- SIM description: a button below the sim toggles the description into view (math in AsciiMath, typeset when opened) -->
-<div class="mob_descwrap0916">
-<button type="button" class="mob_descbtn0916" id="mobDescBtn0916" aria-expanded="false" aria-controls="mobDesc0916" onclick="mobDesc0916()">&#9656; SIM DESCRIPTION</button>
-<div class="mob_desc0916" id="mobDesc0916" role="region" aria-labelledby="mobDescBtn0916" style="display:none">
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc" onclick="mobDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
 <p>This simulation sends a single pulse along two slinkies joined end to end. The pulse is longitudinal: the coils are pushed together (a compression) or pulled apart, along the direction the pulse travels. The spring constants and masses of the slinkies can be changed.</p>
 <p>The speed of a pulse on a slinky depends on its stiffness and its mass. For a slinky of length `L`, spring constant `K` and mass `M`,</p>
-<p class="mob_eq0916">`v = L sqrt(K/M)`.</p>
+<p class="mob_eq">`v = L sqrt(K/M)`.</p>
 <p>At the joint, part of the pulse is reflected and part is transmitted into the second slinky, just as for two ropes. Going into a slower slinky, the reflected pulse comes back inverted (a push returns as a pull).</p>
 <p>The tracked coils and the caliper help measure how far and how fast the pulse travels in each slinky.</p>
 </div>
 </div>
 <script>
-function mobDesc0916(){
-var b = document.getElementById('mobDescBtn0916'), d = document.getElementById('mobDesc0916'); if (!b || !d) return;
+function mobDesc(){
+var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
 var open = (d.style.display === 'none');
 d.style.display = open ? 'block' : 'none';
 b.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -660,46 +821,48 @@ if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise(
 </script>
 <style>
 /* ════════ mobile layer: the sim adapts to the width it gets (a phone, or a column in MOM) ════════ */
-#mobw97700916 { container-type:inline-size; width:100%; max-width:100%; box-sizing:border-box; }
+#mobw9770 { container-type:inline-size; width:100%; max-width:100%; box-sizing:border-box; }
 /* only when the sim is narrower than its design (663 px): nothing is wider than the sim, canvases scale down,
    rows wrap, fixed heights relax, wide tables scroll inside the sim -- on a wide screen nothing changes */
 @container (max-width:703px) {
-#mobw97700916 div, #mobw97700916 p, #mobw97700916 fieldset, #mobw97700916 form, #mobw97700916 section, #mobw97700916 ol, #mobw97700916 ul, #mobw97700916 table { max-width:100%; box-sizing:border-box; }
-#mobw97700916 canvas, #mobw97700916 img, #mobw97700916 svg { max-width:100%; height:auto !important; }
-#mobw97700916 input[type=range], #mobw97700916 select { max-width:100%; min-width:0; }
-#mobw97700916 #slinkyPulseRoot0916 .sn_a11y0916, #mobw97700916 .playbar0916, #mobw97700916 .bbar0916, #mobw97700916 .footer0916 { flex-wrap:wrap; }
-#mobw97700916 #slinkyPulseRoot0916 .sn_a11y0916 > div, #mobw97700916 .playbar0916 > div, #mobw97700916 .bbar0916 > div, #mobw97700916 .footer0916 > div { min-width:min(100%, 260px); }
-#mobw97700916 div[style*="height"] { height:auto !important; }
-#mobw97700916 .tbar0916, #mobw97700916 .mcontent0916, #mobw97700916 .footer0916 { height:auto; min-height:0; }
-#mobw97700916 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+#mobw9770 div, #mobw9770 p, #mobw9770 fieldset, #mobw9770 form, #mobw9770 section, #mobw9770 ol, #mobw9770 ul, #mobw9770 table { max-width:100%; box-sizing:border-box; }
+#mobw9770 canvas, #mobw9770 img, #mobw9770 svg { max-width:100%; height:auto !important; }
+#mobw9770 input[type=range], #mobw9770 select { max-width:100%; min-width:0; }
+#mobw9770 #slinkyPulseRoot .sn_a11y, #mobw9770 .playbar, #mobw9770 .bbar, #mobw9770 .footer { flex-wrap:wrap; }
+#mobw9770 #slinkyPulseRoot .sn_a11y > div, #mobw9770 .playbar > div, #mobw9770 .bbar > div, #mobw9770 .footer > div { min-width:min(100%, 260px); }
+#mobw9770 div[style*="height"] { height:auto !important; }
+#mobw9770 .tbar, #mobw9770 .mcontent, #mobw9770 .footer { height:auto; min-height:0; }
+#mobw9770 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
 }
 @media (max-width:723px) {
-#mobw97700916 div, #mobw97700916 p, #mobw97700916 fieldset, #mobw97700916 form, #mobw97700916 section, #mobw97700916 ol, #mobw97700916 ul, #mobw97700916 table { max-width:100%; box-sizing:border-box; }
-#mobw97700916 canvas, #mobw97700916 img, #mobw97700916 svg { max-width:100%; height:auto !important; }
-#mobw97700916 input[type=range], #mobw97700916 select { max-width:100%; min-width:0; }
-#mobw97700916 #slinkyPulseRoot0916 .sn_a11y0916, #mobw97700916 .playbar0916, #mobw97700916 .bbar0916, #mobw97700916 .footer0916 { flex-wrap:wrap; }
-#mobw97700916 #slinkyPulseRoot0916 .sn_a11y0916 > div, #mobw97700916 .playbar0916 > div, #mobw97700916 .bbar0916 > div, #mobw97700916 .footer0916 > div { min-width:min(100%, 260px); }
-#mobw97700916 div[style*="height"] { height:auto !important; }
-#mobw97700916 .tbar0916, #mobw97700916 .mcontent0916, #mobw97700916 .footer0916 { height:auto; min-height:0; }
-#mobw97700916 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+#mobw9770 div, #mobw9770 p, #mobw9770 fieldset, #mobw9770 form, #mobw9770 section, #mobw9770 ol, #mobw9770 ul, #mobw9770 table { max-width:100%; box-sizing:border-box; }
+#mobw9770 canvas, #mobw9770 img, #mobw9770 svg { max-width:100%; height:auto !important; }
+#mobw9770 input[type=range], #mobw9770 select { max-width:100%; min-width:0; }
+#mobw9770 #slinkyPulseRoot .sn_a11y, #mobw9770 .playbar, #mobw9770 .bbar, #mobw9770 .footer { flex-wrap:wrap; }
+#mobw9770 #slinkyPulseRoot .sn_a11y > div, #mobw9770 .playbar > div, #mobw9770 .bbar > div, #mobw9770 .footer > div { min-width:min(100%, 260px); }
+#mobw9770 div[style*="height"] { height:auto !important; }
+#mobw9770 .tbar, #mobw9770 .mcontent, #mobw9770 .footer { height:auto; min-height:0; }
+#mobw9770 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
 }
 /* touch screens: larger targets */
 @media (pointer:coarse) {
-#mobw97700916 button, #mobw97700916 input[type=button], #mobw97700916 input[type=submit], #mobw97700916 input[type=reset] { min-height:40px; }
-#mobw97700916 input[type=range] { height:28px; }
-#mobw97700916 input[type=checkbox], #mobw97700916 input[type=radio] { width:22px; height:22px; }
-#mobw97700916 select { min-height:36px; font-size:16px; }
+#mobw9770 button, #mobw9770 input[type=button], #mobw9770 input[type=submit], #mobw9770 input[type=reset] { min-height:40px; }
+#mobw9770 input[type=range] { height:28px; }
+#mobw9770 input[type=checkbox], #mobw9770 input[type=radio] { width:22px; height:22px; }
+#mobw9770 select { min-height:36px; font-size:16px; }
 }
 /* display options moved to the top */
-#mobw97700916 .mob_a11ytop0916 { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:6px 4px 8px; width:auto; max-width:100%; height:auto; }
-#mobw97700916 .mob_a11ytop0916 input[type=button], #mobw97700916 .mob_a11ytop0916 button { padding:5px 12px; font-size:13px; border:1px solid #8a94a3; border-radius:4px; background:#f4f6f8; color:#1d232a; cursor:pointer; width:auto; height:auto; margin:0; }
+#mobw9770 .mob_a11ytop { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:6px 4px 8px; width:auto; max-width:100%; height:auto; }
+#mobw9770 .mob_a11ytop input[type=button], #mobw9770 .mob_a11ytop button { padding:5px 12px; font-size:13px; border:1px solid #8a94a3; border-radius:4px; background:#f4f6f8; color:#1d232a; cursor:pointer; width:auto; height:auto; margin:0; }
 /* SIM description */
-#mobw97700916 .mob_descwrap0916 { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
-#mobw97700916 .mob_descbtn0916 { padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
-#mobw97700916 .mob_descbtn0916[aria-expanded="true"] { background:#3a3220; }
-#mobw97700916 .mob_desc0916 { width:100%; max-width:860px; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; text-align:left; }
-#mobw97700916 .mob_desc0916 p { margin:0 0 9px 0; }
-#mobw97700916 .mob_eq0916 { text-align:center; font-size:1rem; }
+#mobw9770 .mob_descwrap { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
+#mobw9770 .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
+#mobw9770 .mob_descbtn[aria-expanded="true"] { background:#3a3220; }
+#mobw9770 .mob_desc { width:100%; max-width:860px; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; text-align:left; }
+#mobw9770 .mob_desc p { margin:0 0 9px 0; }
+#mobw9770 .mob_eq { text-align:center; font-size:1rem; }
 </style>
-</div><!-- #mobw97700916 -->
-</body></html>
+</div><!-- #mobw9770 -->
+</main>
+</body>
+</html>

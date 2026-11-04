@@ -10,80 +10,87 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations-Waves: Two Pulses, Three Views: Pulse A, Pulse B, and Sum</title>
+<title>Physics Simulations-Waves: Pulse Interference/Addition V2</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,Transverse, Longitudinal,Frequency, Amplitude, Tension, Mass,Length,Wave,interference,damping,string, Properties,Rope, lesson, scientific">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, waves, pulse, rope, slinky, speed, wavelength, frequency, amplitude, reflection, transmission, boundary, interference, standing waves, resonance, lesson, scientific">
+<meta name="description" content="This simulation shows two pulses, A and B, travelling toward each other, in three views: pulse A alone, pulse B alone, and the rope, which shows their sum.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:920px; max-width:100%; margin:0 auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
-<div id="mobw47660920" class="mob_wrap0920">
-<div id="pulseViewsRoot0920">
+<main class="page">
+<div id="mobw4766" class="mob_wrap">
+<div id="pulseViewsRoot">
 <!-- ── Accessibility toolbar ── -->
-<div class="sn_a11y0920" id="snBar0920" role="toolbar" aria-label="Display options">
-<button type="button" class="sn_a11ybtn0920" id="snBtnHC0920" onclick="pulseViewsA11y0920.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="sn_a11ybtn0920" id="snBtnLM0920" onclick="pulseViewsA11y0920.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
-<button type="button" class="sn_a11ybtn0920" id="snBtnCB0920" onclick="pulseViewsA11y0920.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
-<button type="button" class="sn_a11ybtn0920 sn_a11yon0920" id="snBtnNR0920" onclick="pulseViewsA11y0920.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+<div class="sn_a11y" id="snBar" role="toolbar" aria-label="Display options">
+<button type="button" class="sn_a11ybtn" id="snBtnHC" onclick="pulseViewsA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="sn_a11ybtn" id="snBtnDM" onclick="pulseViewsA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="sn_a11ybtn" id="snBtnCB" onclick="pulseViewsA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="sn_a11ybtn sn_a11yon" id="snBtnNR" onclick="pulseViewsA11y.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
 </div>
-<div class="tbar0920"><h3>Two Pulses, Three Views: Pulse A, Pulse B, and Sum</h3></div>
-<div class="mcontent0920"><canvas id="pulseViewsCanvas0920" style="margin:auto;border:1px solid" width="660" height="765"></canvas></div>
-<div id="pulseViewsNarBar0920" class="sn_narbar0920" role="status" aria-live="polite" aria-atomic="true"></div>
-<div class="playbar0920" role="group" aria-label="Animation playback controls">
-<button type="button" class="wv_btn0920 wv_btnmain0920" onclick="pulseViewsPol0920.launchA()">&#128276; Launch A</button>
-<button type="button" class="wv_btn0920 wv_btnmain0920" onclick="pulseViewsPol0920.launchB()">&#128276; Launch B</button>
-<button type="button" class="wv_btn0920" id="pulseViewsPlayBtn0920" onclick="pulseViewsPol0920.togglePlay()" aria-pressed="false">&#9654; Resume</button>
-<button type="button" class="wv_btn0920" onclick="pulseViewsPol0920.stepBack()">&#10073;&#9664; Step back</button>
-<button type="button" class="wv_btn0920" onclick="pulseViewsPol0920.stepForward()">&#9654;&#10073; Step forward</button>
-<button type="button" class="wv_btn0920" onclick="pulseViewsPol0920.reset()">&#8635; Reset (clear rope)</button>
+<div class="tbar"><h3>Two Pulses, Three Views: Pulse A, Pulse B, and Sum</h3></div>
+<div class="mcontent"><canvas id="pulseViewsCanvas" style="margin:auto;border:1px solid" width="660" height="765"></canvas></div>
+<div id="pulseViewsNarBar" class="sn_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="playbar" role="group" aria-label="Animation playback controls">
+<button type="button" class="wv_btn wv_btnmain" onclick="pulseViewsPol.launchA()">&#128276; Launch A</button>
+<button type="button" class="wv_btn wv_btnmain" onclick="pulseViewsPol.launchB()">&#128276; Launch B</button>
+<button type="button" class="wv_btn" id="pulseViewsPlayBtn" onclick="pulseViewsPol.togglePlay()" aria-pressed="false">&#9654; Resume</button>
+<button type="button" class="wv_btn" onclick="pulseViewsPol.stepBack()">&#10073;&#9664; Step back</button>
+<button type="button" class="wv_btn" onclick="pulseViewsPol.stepForward()">&#9654;&#10073; Step forward</button>
+<button type="button" class="wv_btn" onclick="pulseViewsPol.reset()">&#8635; Reset (clear rope)</button>
 </div>
-<div class="bbar0920" role="group" aria-label="Show or hide measurement tools and overlays">
-<label class="chk0920"><input type="checkbox" id="showMarker0920" onchange="pulseViewsPol0920.toggleMarker(this)"> <span id="markerLbl0920">Show tracked-point markers</span></label>
-<label class="chk0920"><input type="checkbox" id="showDX0920" onchange="pulseViewsPol0920.toggleDeltaX(this)"> <span id="dxLbl0920">Show horizontal caliper (&#916;x)</span></label>
-<label class="chk0920"><input type="checkbox" id="showDY0920" onchange="pulseViewsPol0920.toggleDeltaY(this)"> <span id="dyLbl0920">Show vertical caliper (&#916;y)</span></label>
-<label class="chk0920"><input type="checkbox" id="showWaveData0920" checked onchange="pulseViewsPol0920.toggleWaveData(this)"> <span id="waveDataLbl0920">Hide wave-data panel</span></label>
+<div class="bbar" role="group" aria-label="Show or hide measurement tools and overlays">
+<label class="chk"><input type="checkbox" id="showMarker" onchange="pulseViewsPol.toggleMarker(this)"> <span id="markerLbl">Show tracked-point markers</span></label>
+<label class="chk"><input type="checkbox" id="showDX" onchange="pulseViewsPol.toggleDeltaX(this)"> <span id="dxLbl">Show horizontal caliper (&#916;x)</span></label>
+<label class="chk"><input type="checkbox" id="showDY" onchange="pulseViewsPol.toggleDeltaY(this)"> <span id="dyLbl">Show vertical caliper (&#916;y)</span></label>
+<label class="chk"><input type="checkbox" id="showWaveData" checked onchange="pulseViewsPol.toggleWaveData(this)"> <span id="waveDataLbl">Hide wave-data panel</span></label>
 </div>
-<div class="footer0920">
-<div class="left0920">Pulse A:</div>
-<div class="center0920" role="group" aria-label="Pulse A direction and shape">
-<label><input type="radio" name="dirA0920" value="up" id="dirAUp0920" checked onchange="pulseViewsPol0920.setDirA('up')"> Up</label>
-<label><input type="radio" name="dirA0920" value="down" id="dirADown0920" onchange="pulseViewsPol0920.setDirA('down')"> Down</label>
+<div class="footer">
+<div class="left">Pulse A:</div>
+<div class="center" role="group" aria-label="Pulse A direction and shape">
+<label><input type="radio" name="dirA" value="up" id="dirAUp" checked onchange="pulseViewsPol.setDirA('up')"> Up</label>
+<label><input type="radio" name="dirA" value="down" id="dirADown" onchange="pulseViewsPol.setDirA('down')"> Down</label>
 &nbsp; Shape:
-<select id="shapeASelect0920" onchange="pulseViewsPol0920.setShapeA(this.value)">
+<select id="shapeASelect" onchange="pulseViewsPol.setShapeA(this.value)">
 <option value="cos" selected>Smooth</option>
 <option value="tri">Triangular</option>
 <option value="rect">Rectangular</option>
 </select>
 </div>
 </div>
-<div class="footer0920">
-<div class="left0920">Pulse A amp. / width:</div>
-<div class="center0920">`A_A:\ ` <input class=islide0920 style="width:110px" type="range" id="ampASlider0920" min="5" max="25" value="20" step="5" oninput="pulseViewsPol0920.setAmpA(this.value)" onchange="pulseViewsPol0920.setAmpA(this.value)"> <span id="ampAValue0920">20</span> cm
-&nbsp; `w_A:\ ` <input class=islide0920 style="width:110px" type="range" id="widthASlider0920" min="0.15" max="0.7" value="0.4" step="0.05" oninput="pulseViewsPol0920.setWidthA(this.value)" onchange="pulseViewsPol0920.setWidthA(this.value)"> <span id="widthAValue0920">0.4</span> m</div>
+<div class="footer">
+<div class="left">Pulse A amp. / width:</div>
+<div class="center">`A_A:\ ` <input class=islide style="width:110px" type="range" id="ampASlider" min="5" max="25" value="20" step="5" oninput="pulseViewsPol.setAmpA(this.value)" onchange="pulseViewsPol.setAmpA(this.value)"> <span id="ampAValue">20</span> cm
+&nbsp; `w_A:\ ` <input class=islide style="width:110px" type="range" id="widthASlider" min="0.15" max="0.7" value="0.4" step="0.05" oninput="pulseViewsPol.setWidthA(this.value)" onchange="pulseViewsPol.setWidthA(this.value)"> <span id="widthAValue">0.4</span> m</div>
 </div>
-<div class="footer0920">
-<div class="left0920">Pulse B:</div>
-<div class="center0920" role="group" aria-label="Pulse B direction and shape">
-<label><input type="radio" name="dirB0920" value="up" id="dirBUp0920" checked onchange="pulseViewsPol0920.setDirB('up')"> Up</label>
-<label><input type="radio" name="dirB0920" value="down" id="dirBDown0920" onchange="pulseViewsPol0920.setDirB('down')"> Down</label>
+<div class="footer">
+<div class="left">Pulse B:</div>
+<div class="center" role="group" aria-label="Pulse B direction and shape">
+<label><input type="radio" name="dirB" value="up" id="dirBUp" checked onchange="pulseViewsPol.setDirB('up')"> Up</label>
+<label><input type="radio" name="dirB" value="down" id="dirBDown" onchange="pulseViewsPol.setDirB('down')"> Down</label>
 &nbsp; Shape:
-<select id="shapeBSelect0920" onchange="pulseViewsPol0920.setShapeB(this.value)">
+<select id="shapeBSelect" onchange="pulseViewsPol.setShapeB(this.value)">
 <option value="cos">Smooth</option>
 <option value="tri">Triangular</option>
 <option value="rect" selected>Rectangular</option>
 </select>
 </div>
 </div>
-<div class="footer0920">
-<div class="left0920">Pulse B amp. / width:</div>
-<div class="center0920">`A_B:\ ` <input class=islide0920 style="width:110px" type="range" id="ampBSlider0920" min="5" max="25" value="20" step="5" oninput="pulseViewsPol0920.setAmpB(this.value)" onchange="pulseViewsPol0920.setAmpB(this.value)"> <span id="ampBValue0920">20</span> cm
-&nbsp; `w_B:\ ` <input class=islide0920 style="width:110px" type="range" id="widthBSlider0920" min="0.15" max="0.7" value="0.4" step="0.05" oninput="pulseViewsPol0920.setWidthB(this.value)" onchange="pulseViewsPol0920.setWidthB(this.value)"> <span id="widthBValue0920">0.4</span> m</div>
+<div class="footer">
+<div class="left">Pulse B amp. / width:</div>
+<div class="center">`A_B:\ ` <input class=islide style="width:110px" type="range" id="ampBSlider" min="5" max="25" value="20" step="5" oninput="pulseViewsPol.setAmpB(this.value)" onchange="pulseViewsPol.setAmpB(this.value)"> <span id="ampBValue">20</span> cm
+&nbsp; `w_B:\ ` <input class=islide style="width:110px" type="range" id="widthBSlider" min="0.15" max="0.7" value="0.4" step="0.05" oninput="pulseViewsPol.setWidthB(this.value)" onchange="pulseViewsPol.setWidthB(this.value)"> <span id="widthBValue">0.4</span> m</div>
 </div>
-<div class="footer0920">
-<div class="left0920">Tension:</div>
-<div class="center0920">`T:\ ` <input class=islide0920 type="range" id="tensionSlider0920" min="50" max="250" value="100" step="25" oninput="pulseViewsPol0920.setTension(this.value)" onchange="pulseViewsPol0920.setTension(this.value)"> <span id="tensionValue0920">100D</span> N</div>
+<div class="footer">
+<div class="left">Tension:</div>
+<div class="center">`T:\ ` <input class=islide type="range" id="tensionSlider" min="50" max="250" value="100" step="25" oninput="pulseViewsPol.setTension(this.value)" onchange="pulseViewsPol.setTension(this.value)"> <span id="tensionValue">100D</span> N</div>
 </div>
-<div class="footer0920">
-<div class="left0920">Mass/length:</div>
-<div class="center0920">`mu:\ ` <input class=islide0920 type="range" id="muSlider0920" min="10" max="40" value="20" step="5" oninput="pulseViewsPol0920.setMu(this.value)" onchange="pulseViewsPol0920.setMu(this.value)"> <span id="muValue0920">20</span> g/m</div>
+<div class="footer">
+<div class="left">Mass/length:</div>
+<div class="center">`mu:\ ` <input class=islide type="range" id="muSlider" min="10" max="40" value="20" step="5" oninput="pulseViewsPol.setMu(this.value)" onchange="pulseViewsPol.setMu(this.value)"> <span id="muValue">20</span> g/m</div>
 </div>
 <hr>
 <ol type="a">
@@ -96,10 +103,10 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <li>Turn on the tracked-point markers. Do the Pulse A and Pulse B readings ever change while the two pulses are passing through each other, compared to when they're apart?<br /></li>
 <li>With no damping in this version, do the pulses ever lose height on their own? What eventually stops the animation?<br /></li>
 </ol>
-</div><!-- #pulseViewsRoot0920 -->
-<style>:where(#mobw47660920) * { margin: 0; box-sizing: border-box; }
-:where(#mobw47660920) div { width: 663px; margin: 0; }
-#pulseViewsRoot0920 {
+</div><!-- #pulseViewsRoot -->
+<style>:where(#mobw4766) * { margin: 0; box-sizing: border-box; }
+:where(#mobw4766) div { width: 663px; margin: 0; }
+#pulseViewsRoot {
 --sn-toolbar-bg: #222;
 --sn-pulseA: #1565c0;
 --sn-pulseB: #c62828;
@@ -110,116 +117,270 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 --sn-marker:   #1a1a2e;
 --sn-end:      #888888;
 }
-#pulseViewsRoot0920 .sn_a11y0920 {
+#pulseViewsRoot .sn_a11y {
 display: flex; gap: 6px; padding: 6px 8px;
 background: var(--sn-toolbar-bg); flex-wrap: wrap; width: 663px;
 }
-#pulseViewsRoot0920 .sn_a11ybtn0920 {
+#pulseViewsRoot .sn_a11ybtn {
 padding: 4px 10px; font-size: .72rem; font-family: monospace;
 letter-spacing: .06em; border-radius: 3px; cursor: pointer;
 background: #2a2e3a; border: 1px solid #404a60; color: #7a8aaa;
 transition: border-color .15s, color .15s;
 }
-#pulseViewsRoot0920 .sn_a11ybtn0920:hover { border-color: #00e8d0; color: #00e8d0; }
-#pulseViewsRoot0920 .sn_a11yon0920 { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
-#pulseViewsRoot0920 .sn_narbar0920 {
+#pulseViewsRoot .sn_a11ybtn:hover { border-color: #00e8d0; color: #00e8d0; }
+#pulseViewsRoot .sn_a11yon { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
+#pulseViewsRoot .sn_narbar {
 width: 663px; min-height: 28px; padding: 5px 10px;
 background: #ffefc0; border-left: 4px solid #e0b040;
 font-size: .88rem; color: #333; font-style: italic;
 }
-.tbar0920 { padding: 4px; height: 50px; background-color: #f90; text-align: center; }
-.mcontent0920 { height: 767px; }
-.islide0920 { width: 220px; }
-.playbar0920 {
+.tbar { padding: 4px; height: 50px; background-color: #f90; text-align: center; }
+.mcontent { height: 767px; }
+.islide { width: 220px; }
+.playbar {
 height: auto; min-height: 40px; background-color: #cfe8ff; padding: 6px;
 text-align: center; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
 }
-.wv_btn0920 {
+.wv_btn {
 padding: 6px 10px; font-size: .82rem; border-radius: 4px; cursor: pointer;
 background: #fff; border: 1px solid #557; color: #223;
 }
-.wv_btn0920:hover { background: #eef4ff; }
-.wv_btnmain0920 { background: #ffd94a; border-color: #a8850a; font-weight: bold; }
-.wv_btnmain0920:hover { background: #ffe97a; }
-.bbar0920 {
+.wv_btn:hover { background: #eef4ff; }
+.wv_btnmain { background: #ffd94a; border-color: #a8850a; font-weight: bold; }
+.wv_btnmain:hover { background: #ffe97a; }
+.bbar {
 background-color: #df9; padding: 8px; text-align: left;
 display: flex; flex-wrap: wrap; gap: 4px 16px;
 }
-.bbar0920 .chk0920 { width: auto; font-size: .84rem; white-space: nowrap; }
-.footer0920 { height: 60px; text-align: center; font-size: normal; display: flex; }
-.footer0920 .left0920 { width: 150px; padding: 2px; }
-.footer0920 .center0920 { width: 513px; padding: 4px; font-size: .92rem; }
-.footer0920:nth-of-type(odd) { background-color: #fce4ec; }
-.footer0920:nth-of-type(even) { background-color: #e8f5e9; }</style>
+.bbar .chk { width: auto; font-size: .84rem; white-space: nowrap; }
+.footer { height: 60px; text-align: center; font-size: normal; display: flex; }
+.footer .left { width: 150px; padding: 2px; }
+.footer .center { width: 513px; padding: 4px; font-size: .92rem; }
+.footer:nth-of-type(odd) { background-color: #fce4ec; }
+.footer:nth-of-type(even) { background-color: #e8f5e9; }</style>
 <!-- ════════════════ ACCESSIBILITY CONTROLLER ════════════════ -->
 <script>
-var pulseViewsA11y0920 = (function(){
-var ROOT = null;
-var states = { hc: false, lm: false, cb: false, nr: true };
-var THEMES = {
-hc: { '--sn-pulseA':'#66b2ff','--sn-pulseB':'#ff8866','--sn-sum':'#ff88ff','--sn-axis':'#ffffff',
-'--sn-vrule':'#ffaa00','--sn-hrule':'#00ff88','--sn-marker':'#ffffff','--sn-end':'#cccccc','--sn-toolbar-bg':'#000' },
-lm: { '--sn-pulseA':'#0d47a1','--sn-pulseB':'#8e0000','--sn-sum':'#4a0072','--sn-axis':'#222222',
-'--sn-vrule':'#996622','--sn-hrule':'#226622','--sn-marker':'#000000','--sn-end':'#555555','--sn-toolbar-bg':'#333' },
-cb: { '--sn-pulseA':'#0072b2','--sn-pulseB':'#d55e00','--sn-sum':'#cc79a7','--sn-axis':'#000000',
-'--sn-vrule':'#e69f00','--sn-hrule':'#009e73','--sn-marker':'#000000','--sn-end':'#888888' }
-};
-var DEFAULTS = { '--sn-pulseA':'#1565c0','--sn-pulseB':'#c62828','--sn-sum':'#6a1b9a','--sn-axis':'#000000',
-'--sn-vrule':'#cd853f','--sn-hrule':'#2e8b57','--sn-marker':'#1a1a2e','--sn-end':'#888888','--sn-toolbar-bg':'#222' };
-function applyVars(theme, on) {
-if (!ROOT) return;
-var vars = THEMES[theme];
-for (var p in vars) ROOT.style.setProperty(p, on ? vars[p] : DEFAULTS[p]);
+var pulseViewsA11y = (function(){
+var ROOT = null, WRAP = null, states = { hc:false, dm:false, cb:false, nr:true };
+/* ── canvas themes: every colour the sim draws passes through map(); the last frame is recorded,
+      so switching dark mode, high contrast or colour-blind safe colours redraws it at once,
+      even while the sim is paused. No page-wide names: this lives inside the controller. ── */
+function makeCT(){
+  var mode = { dark:false, hc:false, cb:false }, key = '', cache = {}, cvs = [];
+  var probe = document.createElement('canvas').getContext('2d');
+  var P = CanvasRenderingContext2D.prototype;
+  function parse(c){
+    probe.fillStyle = '#000'; probe.fillStyle = c; var s = String(probe.fillStyle), m;
+    if (s.charAt(0) === '#') return [parseInt(s.substr(1,2),16), parseInt(s.substr(3,2),16), parseInt(s.substr(5,2),16), 1];
+    m = s.match(/rgba?\(([^)]+)\)/); if (!m) return null;
+    var p = m[1].split(',').map(parseFloat); return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1];
+  }
+  function lin(v){ v /= 255; return v <= 0.04045 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); }
+  function lum(r,g,b){ return 0.2126*lin(r) + 0.7152*lin(g) + 0.0722*lin(b); }
+  function hsl(r,g,b){
+    r/=255; g/=255; b/=255; var mx = Math.max(r,g,b), mn = Math.min(r,g,b), h = 0, s = 0, l = (mx+mn)/2, d = mx-mn;
+    if (d > 1e-6){ s = d/(1 - Math.abs(2*l - 1));
+      h = mx === r ? ((g-b)/d) % 6 : (mx === g ? (b-r)/d + 2 : (r-g)/d + 4); h *= 60; if (h < 0) h += 360; }
+    return [h, s, l];
+  }
+  function rgb(h,s,l){
+    var c = (1 - Math.abs(2*l - 1))*s, x = c*(1 - Math.abs((h/60) % 2 - 1)), m = l - c/2, t;
+    t = h < 60 ? [c,x,0] : h < 120 ? [x,c,0] : h < 180 ? [0,c,x] : h < 240 ? [0,x,c] : h < 300 ? [x,0,c] : [c,0,x];
+    return [Math.round((t[0]+m)*255), Math.round((t[1]+m)*255), Math.round((t[2]+m)*255)];
+  }
+  /* raise the lightness until the colour stands out on a dark background */
+  function lift(h,s,l,target){ var c = rgb(h,s,l); while (lum(c[0],c[1],c[2]) < target && l < 0.95){ l += 0.03; c = rgb(h,s,l); } return c; }
+  /* Okabe-Ito colours, chosen by hue */
+  function oi(h){
+    return h < 15 || h >= 330 ? [213,94,0] : h < 40 ? [230,159,0] : h < 75 ? [240,228,66] : h < 170 ? [0,158,115]
+         : h < 200 ? [86,180,233] : h < 260 ? [0,114,178] : [204,121,167];
+  }
+  function conv(c){
+    if (!mode.dark && !mode.hc && !mode.cb) return c;
+    var k = key + c; if (cache[k] !== undefined) return cache[k];
+    var v = parse(c); if (!v){ cache[k] = c; return c; }
+    var r = v[0], g = v[1], b = v[2], a = v[3], q = hsl(r,g,b), Y = lum(r,g,b), neutral = q[1] < 0.18, o;
+    if (mode.cb && !neutral && Y <= 0.6 && !(q[2] > 0.6 && q[1] < 0.6)){ o = oi(q[0]); r = o[0]; g = o[1]; b = o[2]; q = hsl(r,g,b); Y = lum(r,g,b); }
+    if (mode.hc){
+      if (neutral) o = Y > 0.8 ? [0,0,0] : (Y < 0.25 ? [255,255,255] : [205,205,205]);
+      else if (Y > 0.6 || (q[2] > 0.6 && q[1] < 0.6)) o = [0,0,0];   /* light or pastel fills are surfaces */
+      else o = lift(q[0], 1, Math.max(q[2], 0.5), 0.4);
+    } else if (mode.dark){
+      if (neutral) o = rgb(q[0], q[1], 0.1 + 0.82*(1 - q[2]));
+      else if (Y > 0.55 || (q[2] > 0.6 && q[1] < 0.6)) o = rgb(q[0], Math.min(q[1], 0.3), 0.18);   /* light or pastel fills are surfaces */
+      else o = lift(q[0], q[1], q[2], 0.3);
+    } else o = [r,g,b];
+    var out = a < 1 ? 'rgba(' + o[0] + ',' + o[1] + ',' + o[2] + ',' + a + ')' : 'rgb(' + o[0] + ',' + o[1] + ',' + o[2] + ')';
+    cache[k] = out; return out;
+  }
+  /* gradients remember their colour stops, so they can be rebuilt in another theme */
+  function style(v, ctx){
+    if (typeof v === 'string') return conv(v);
+    if (v && v.__spec){
+      var sp = v.__spec; if (sp.key === key) return sp.made;
+      var g = P[sp.kind].apply(ctx, sp.args); sp.stops.forEach(function(s){ g.addColorStop(s[0], conv(s[1])); });
+      sp.key = key; sp.made = g; return g;
+    }
+    return v;
+  }
+  function attach(cv){
+    var ctx = cv.getContext('2d'); if (!ctx || ctx.__ct) return; ctx.__ct = true;
+    var log = [], replaying = false, vals = {};
+    /* a fill or clear covering the whole canvas starts a new frame (in device pixels, whatever the transform) */
+    function full(a){ var t = ctx.getTransform(), x0 = t.a*a[0] + t.e, y0 = t.d*a[1] + t.f, x1 = t.a*(a[0] + a[2]) + t.e, y1 = t.d*(a[1] + a[3]) + t.f;
+      return t.b === 0 && t.c === 0 && Math.min(x0, x1) <= 0.5 && Math.min(y0, y1) <= 0.5 && Math.max(x0, x1) >= cv.width - 0.5 && Math.max(y0, y1) >= cv.height - 0.5; }
+    /* a canvas attached after its first drawing: keep that picture, to re-colour pixel by pixel until the next frame */
+    var snap = null, framed = false; try { snap = ctx.getImageData(0, 0, cv.width, cv.height); } catch (e) {}
+    ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); vals[p] = d.get.call(ctx);
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return vals[p]; },
+        set:function(v){ vals[p] = v; if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, style(v, ctx)); } });
+    });
+    var plain = ['lineWidth','font','textAlign','textBaseline','globalAlpha','lineCap','lineJoin','miterLimit','shadowBlur',
+                 'shadowOffsetX','shadowOffsetY','globalCompositeOperation','lineDashOffset','direction','imageSmoothingEnabled'];
+    plain.forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); if (!d || !d.set) return;
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return d.get.call(ctx); },
+        set:function(v){ if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, v); } });
+    });
+    ['createLinearGradient','createRadialGradient','createConicGradient'].forEach(function(n){
+      if (!P[n]) return;
+      ctx[n] = function(){
+        var args = Array.prototype.slice.call(arguments), g = P[n].apply(ctx, args), add = g.addColorStop;
+        var sp = { kind:n, args:args, stops:[], key:key, made:g }; g.__spec = sp;
+        g.addColorStop = function(o, c){ sp.stops.push([o, c]); add.call(g, o, conv(c)); };
+        return g;
+      };
+    });
+    var skip = /^(constructor|get[A-Z]\w*|isPointIn\w*|measureText|create\w*)$/;
+    Object.getOwnPropertyNames(P).forEach(function(n){
+      if (skip.test(n)) return; var d = Object.getOwnPropertyDescriptor(P, n); if (!d || typeof d.value !== 'function') return;
+      var f = d.value;
+      ctx[n] = function(){
+        if (!replaying){
+          if ((n === 'fillRect' || n === 'clearRect') && full(arguments)){ snap = null; framed = true;
+            /* a new frame: start the record from the drawing state of this moment */
+            var t = ctx.getTransform();
+            log = [['c','setTransform',[t.a,t.b,t.c,t.d,t.e,t.f]]];
+            ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){ log.push(['s', p, vals[p]]); });
+            plain.forEach(function(p){ var dd = Object.getOwnPropertyDescriptor(P, p); if (dd && dd.get) log.push(['s', p, dd.get.call(ctx)]); });
+            log.push(['c','setLineDash',[ctx.getLineDash()]]);
+          }
+          if (log){ log.push(['c', n, Array.prototype.slice.call(arguments)]); if (log.length > 60000) log = null; }
+        }
+        return f.apply(ctx, arguments);
+      };
+    });
+    cvs.push({ redraw:function(){
+      if (!framed && snap){
+        var img = new ImageData(new Uint8ClampedArray(snap.data), snap.width, snap.height), d = img.data, memo = {};
+        for (var i = 0; i < d.length; i += 4){ if (!d[i+3]) continue; var k = d[i] + ',' + d[i+1] + ',' + d[i+2], c = memo[k];
+          if (!c){ var v = parse(conv('rgb(' + k + ')')); c = memo[k] = v || [d[i], d[i+1], d[i+2]]; } d[i] = c[0]; d[i+1] = c[1]; d[i+2] = c[2]; }
+        var t0 = ctx.getTransform(); P.setTransform.call(ctx, 1, 0, 0, 1, 0, 0); P.putImageData.call(ctx, img, 0, 0); P.setTransform.call(ctx, t0); return;
+      }
+      if (!framed || !log || log.length < 3) return;
+      replaying = true;
+      try { log.forEach(function(e){ if (e[0] === 's') ctx[e[1]] = e[2]; else P[e[1]].apply(ctx, e[2]); }); }
+      finally { replaying = false; }
+    }});
+  }
+  return {
+    attach: attach,
+    map: conv,
+    set: function(m){ mode = { dark:!!m.dark, hc:!!m.hc, cb:!!m.cb }; key = (mode.dark?'d':'') + (mode.hc?'h':'') + (mode.cb?'c':'') + '|'; cvs.forEach(function(c){ c.redraw(); }); }
+  };
 }
+
+var ct = makeCT();
+function attachAll(){ var w = document.getElementById('mobw4766') || document.getElementById('pulseViewsRoot'); if (w) [].forEach.call(w.querySelectorAll('canvas'), ct.attach); }
+attachAll();
 function styleBtn(id, active) {
 var b = document.getElementById(id); if (!b) return;
 if (active) { b.style.background='rgba(0,232,208,.12)'; b.style.borderColor='#00e8d0'; b.style.color='#00e8d0'; }
 else        { b.style.background='#2a2e3a'; b.style.borderColor='#404a60'; b.style.color='#7a8aaa'; }
 b.setAttribute('aria-pressed', active ? 'true' : 'false');
 }
-function applyCanvas() {
-var cv = document.getElementById('pulseViewsCanvas0920');
-if (cv) cv.style.filter = states.lm ? 'invert(1) hue-rotate(180deg) brightness(0.9)' : '';
+function apply(){
+ROOT = ROOT || document.getElementById('pulseViewsRoot'); if (!ROOT) return;
+WRAP = document.getElementById('mobw4766') || ROOT; attachAll();
+WRAP.classList.toggle('a11y_dm', states.dm); WRAP.classList.toggle('a11y_hc', states.hc); WRAP.classList.toggle('a11y_cb', states.cb);
+ct.set({ dark:states.dm, hc:states.hc, cb:states.cb });
+var nb = document.getElementById('pulseViewsNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var nr = document.getElementById('snBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('snBtnHC', states.hc); styleBtn('snBtnDM', states.dm); styleBtn('snBtnCB', states.cb); styleBtn('snBtnNR', states.nr);
 }
-function applyNarBar() {
-var nb = document.getElementById('pulseViewsNarBar0920');
-if (nb) nb.style.display = states.nr ? 'block' : 'none';
-var btn = document.getElementById('snBtnNR0920');
-if (btn) { btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF'); styleBtn('snBtnNR0920', states.nr); }
-}
-function apply() {
-if (!ROOT) return;
-applyVars('hc', states.hc); applyVars('lm', states.lm); applyVars('cb', states.cb);
-applyCanvas(); applyNarBar();
-styleBtn('snBtnHC0920', states.hc);
-styleBtn('snBtnLM0920', states.lm);
-styleBtn('snBtnCB0920', states.cb);
-}
-function getCol(prop) {
-if (!ROOT) return DEFAULTS[prop];
-return getComputedStyle(ROOT).getPropertyValue(prop).trim() || DEFAULTS[prop];
-}
+var DEFAULTS = { '--sn-pulseA':'#1565c0','--sn-pulseB':'#c62828','--sn-sum':'#6a1b9a','--sn-axis':'#000000',
+'--sn-vrule':'#cd853f','--sn-hrule':'#2e8b57','--sn-marker':'#1a1a2e','--sn-end':'#888888','--sn-toolbar-bg':'#222' };
 return {
-init: function() { ROOT = document.getElementById('pulseViewsRoot0920'); apply(); },
-toggle: function(k) {
+init: function(){ apply(); },
+toggle: function(k){
 states[k] = !states[k];
-if (k === 'hc' && states.hc) states.lm = false;
-if (k === 'lm' && states.lm) states.hc = false;
+if (k === 'hc' && states.hc) states.dm = false;   /* high contrast and dark mode switch each other off; colour-blind combines with either */
+if (k === 'dm' && states.dm) states.hc = false;
 apply();
 },
+/* the colour engine themes every colour on the canvas, so the drawing code keeps its standard colours */
+isHC: function(){ return false; },
+isCB: function(){ return false; },
+col: function(role){ return DEFAULTS['--sn-' + role]; },
 narrate: function(msg) {
 if (!states.nr) return;
-var nb = document.getElementById('pulseViewsNarBar0920');
+var nb = document.getElementById('pulseViewsNarBar');
 if (nb) nb.textContent = msg;
-},
-col: function(role) { return getCol('--sn-' + role); }
+}
 };
 })();
 </script>
+<style>
+/* ════════ display options: dark mode, high contrast, colour-blind safe (the canvas follows through its colour engine) ════════ */
+#mobw4766.a11y_dm { background:#16191e; color:#e6e9ee; }
+#mobw4766.a11y_dm .tbar { background:#8a4a00; color:#fff; }
+#mobw4766.a11y_dm .tbar h3, #mobw4766.a11y_dm .tbar H3 { color:#fff; }
+#mobw4766.a11y_dm .bbar, #mobw4766.a11y_dm .playbar { background:#26301c; }
+#mobw4766.a11y_dm .mcontent { background:#16191e; }
+#mobw4766.a11y_dm .footer, #mobw4766.a11y_dm .footer-pink, #mobw4766.a11y_dm .footer-green, #mobw4766.a11y_dm .footer-blue, #mobw4766.a11y_dm .footer-meas, #mobw4766.a11y_dm .footer-measT { background:#22262b; color:#e6e9ee; }
+#mobw4766.a11y_dm .footer:nth-of-type(odd), #mobw4766.a11y_dm .footer-pink { background:#2e2228; }
+#mobw4766.a11y_dm .footer:nth-of-type(even), #mobw4766.a11y_dm .footer-green { background:#1f2a22; }
+#mobw4766.a11y_dm .footer-blue { background:#1c2633; }
+#mobw4766.a11y_dm .footer-meas, #mobw4766.a11y_dm .footer-measT { background:#2a2614; }
+#mobw4766.a11y_dm .txtDPL { background-color:#1b3a8c; color:#ffe680; }
+#mobw4766.a11y_dm .shm_measlbl, #mobw4766.a11y_dm .shm_smlbl, #mobw4766.a11y_dm .chk { color:#d8dce2; }
+#mobw4766.a11y_dm .wv_btn, #mobw4766.a11y_dm .butt, #mobw4766.a11y_dm input[type=button] { background:#2c3138; color:#e6e9ee; border:1px solid #5a6470; }
+#mobw4766.a11y_dm .wv_btnmain { background:#6a5410; color:#fff; border-color:#a8850a; }
+#mobw4766.a11y_dm .shm_narbar, #mobw4766.a11y_dm .sn_narbar, #mobw4766.a11y_dm .rw_narbar { background:#2a2410; color:#f0e2b8; }
+#mobw4766.a11y_dm .mob_desc, #mobw4766.a11y_dm .rw_desc { background:#22262b; color:#e6e9ee; border-color:#3a4048; }
+#mobw4766.a11y_dm .dm_box { background:#1c2026; color:#e6e9ee; border-color:#3a4048; border-top-color:#5599cc; }
+#mobw4766.a11y_dm .dm_hint, #mobw4766.a11y_dm .dm_small { color:#a8b0bb; }
+#mobw4766.a11y_dm .dm_res { background:#2a2614; color:#f0e2b8; border-color:#8a7420; }
+#mobw4766.a11y_dm .dm_btn { background:#2c3138; color:#e6e9ee; border-color:#5a6470; }
+#mobw4766.a11y_dm .dm_rec { background:#1f4a6e; color:#fff; border-color:#5599cc; }
+#mobw4766.a11y_dm .dm_warn { background:#6a2a2a; color:#fff; border-color:#cc6655; }
+#mobw4766.a11y_dm .dm_tbl th { background:#2c3138; border-color:#5a6470; }
+#mobw4766.a11y_dm .dm_tbl td { background:#1c2026; border-color:#3a4048; }
+#mobw4766.a11y_dm select, #mobw4766.a11y_dm input[type=number], #mobw4766.a11y_dm input[type=text] { background:#22262b; color:#e6e9ee; border:1px solid #5a6470; }
+#mobw4766.a11y_dm input[type=range], #mobw4766.a11y_dm input[type=checkbox] { accent-color:#e8a020; }
+#mobw4766.a11y_dm canvas { border-color:#5a6470 !important; }
+#mobw4766.a11y_hc { background:#000; color:#fff; }
+#mobw4766.a11y_hc .tbar, #mobw4766.a11y_hc .bbar, #mobw4766.a11y_hc .playbar, #mobw4766.a11y_hc .mcontent, #mobw4766.a11y_hc .footer, #mobw4766.a11y_hc .footer-pink, #mobw4766.a11y_hc .footer-green, #mobw4766.a11y_hc .footer-blue, #mobw4766.a11y_hc .footer-meas, #mobw4766.a11y_hc .footer-measT, #mobw4766.a11y_hc .footer:nth-of-type(odd), #mobw4766.a11y_hc .footer:nth-of-type(even) { background:#000; color:#fff; box-shadow:inset 0 0 0 1px #fff; }
+#mobw4766.a11y_hc .tbar h3, #mobw4766.a11y_hc .tbar H3, #mobw4766.a11y_hc .tbar { color:#ffd700; }
+#mobw4766.a11y_hc .txtDPL { background-color:#000; color:#ffff00; box-shadow:inset 0 0 0 1px #fff; }
+#mobw4766.a11y_hc .shm_measlbl, #mobw4766.a11y_hc .shm_smlbl, #mobw4766.a11y_hc .chk { color:#fff; }
+#mobw4766.a11y_hc .wv_btn, #mobw4766.a11y_hc .wv_btnmain, #mobw4766.a11y_hc .butt, #mobw4766.a11y_hc input[type=button], #mobw4766.a11y_hc .dm_btn, #mobw4766.a11y_hc .dm_rec, #mobw4766.a11y_hc .dm_warn { background:#000; color:#fff; border:2px solid #fff; font-weight:bold; }
+#mobw4766.a11y_hc .shm_narbar, #mobw4766.a11y_hc .sn_narbar, #mobw4766.a11y_hc .rw_narbar { background:#000; color:#fff; border-left-color:#ffd700; box-shadow:inset 0 0 0 1px #fff; }
+#mobw4766.a11y_hc .mob_desc, #mobw4766.a11y_hc .rw_desc { background:#000; color:#fff; border-color:#fff; border-left-color:#ffd700; }
+#mobw4766.a11y_hc .dm_box { background:#000; color:#fff; border-color:#fff; border-top-color:#ffd700; }
+#mobw4766.a11y_hc .dm_hint, #mobw4766.a11y_hc .dm_small { color:#fff; }
+#mobw4766.a11y_hc .dm_res { background:#000; color:#ffff00; border-color:#fff; }
+#mobw4766.a11y_hc .dm_tbl th { background:#000; color:#ffd700; border-color:#fff; }
+#mobw4766.a11y_hc .dm_tbl td { background:#000; color:#fff; border-color:#888; }
+#mobw4766.a11y_hc select, #mobw4766.a11y_hc input[type=number], #mobw4766.a11y_hc input[type=text] { background:#000; color:#fff; border:1px solid #fff; }
+#mobw4766.a11y_hc input[type=range], #mobw4766.a11y_hc input[type=checkbox] { accent-color:#ffd700; }
+#mobw4766.a11y_hc canvas { border-color:#fff !important; }
+</style>
 <!-- ════════════════ SIMULATION ════════════════ -->
 <script>
-var pulseViewsPol0920 = (function(){
-var canvas  = document.getElementById('pulseViewsCanvas0920');
+var pulseViewsPol = (function(){
+var canvas  = document.getElementById('pulseViewsCanvas');
 var ctx     = canvas.getContext('2d');
 var CW = canvas.width, CH = canvas.height;
 var xBase = 40, xFar = CW - 40, Lrope = xFar - xBase;
@@ -395,12 +556,12 @@ if (runFlag === 1) index = index + 1;
 ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, CW, CH);
 t = index / tactual;
 if (showWaveDataFlag) displayWaveData(6, 4, CW - 12, 52);
-var endCol = pulseViewsA11y0920.col('end');
-drawLane(lanePulseAY, pulseAAt, pulseViewsA11y0920.col('pulseA'), 'Pulse A', endCol);
-drawLane(lanePulseBY, pulseBAt, pulseViewsA11y0920.col('pulseB'), 'Pulse B', endCol);
-drawLane(laneSumY, sumAt, pulseViewsA11y0920.col('sum'), 'Sum (actual rope shape)', endCol);
+var endCol = pulseViewsA11y.col('end');
+drawLane(lanePulseAY, pulseAAt, pulseViewsA11y.col('pulseA'), 'Pulse A', endCol);
+drawLane(lanePulseBY, pulseBAt, pulseViewsA11y.col('pulseB'), 'Pulse B', endCol);
+drawLane(laneSumY, sumAt, pulseViewsA11y.col('sum'), 'Sum (actual rope shape)', endCol);
 if (showMarkerFlag) {
-var markerCol = pulseViewsA11y0920.col('marker');
+var markerCol = pulseViewsA11y.col('marker');
 for (var m = 0; m < markedXs.length; m++) {
 var xm = markedXs[m];
 [[lanePulseAY, pulseAAt], [lanePulseBY, pulseBAt], [laneSumY, sumAt]].forEach(function (pair) {
@@ -410,16 +571,16 @@ ctx.lineWidth = 2; ctx.strokeStyle = markerCol; ctx.stroke();
 });
 }
 }
-if (addXCalFlag) drawXCaliper(pulseViewsA11y0920.col('vrule'));
-if (addYCalFlag) drawYCaliper(pulseViewsA11y0920.col('hrule'));
+if (addXCalFlag) drawXCaliper(pulseViewsA11y.col('vrule'));
+if (addYCalFlag) drawYCaliper(pulseViewsA11y.col('hrule'));
 }
 function narrate() {
 var msg = 'T=' + Tension.toFixed(0) + ' N, \u03BC=' + mu.toFixed(0) + ' g/m, v=' + v.toFixed(0) + ' m/s. ';
 msg += 'Pulse A: ' + shapeA + ' shape. Pulse B: ' + shapeB + ' shape. Both ends fixed, tracking 2 bounces at each end. No damping in this version.';
-pulseViewsA11y0920.narrate(msg);
+pulseViewsA11y.narrate(msg);
 }
 function setPlayLabel(isPlaying) {
-var b = document.getElementById('pulseViewsPlayBtn0920'); if (!b) return;
+var b = document.getElementById('pulseViewsPlayBtn'); if (!b) return;
 b.innerHTML = isPlaying ? '\u23F8 Pause' : '\u25B6 Resume';
 b.setAttribute('aria-pressed', isPlaying ? 'true' : 'false');
 }
@@ -432,7 +593,7 @@ runSim();
 function pause() {
 window.clearTimeout(timer);
 runFlag = 0; setPlayLabel(false);
-pulseViewsA11y0920.narrate('Paused.');
+pulseViewsA11y.narrate('Paused.');
 }
 function togglePlay() { if (runFlag === 1) pause(); else play(); }
 function stepForward() { window.clearTimeout(timer); runFlag = 1; draw(); runFlag = 0; setPlayLabel(false); }
@@ -447,37 +608,37 @@ index = -1; t = 0;
 launchedA = false; launchedB = false; segmentsA = []; segmentsB = [];
 recompute(); runFlag = 0; setPlayLabel(false);
 draw();
-pulseViewsA11y0920.narrate('Rope cleared. Press Launch A or Launch B when ready.');
+pulseViewsA11y.narrate('Rope cleared. Press Launch A or Launch B when ready.');
 }
 function launchA() {
 tLaunchA = t; launchedA = true;
 segmentsA = buildSegments(xBase, 1, tLaunchA);
-pulseViewsA11y0920.narrate('Pulse A launched.');
+pulseViewsA11y.narrate('Pulse A launched.');
 if (runFlag !== 1) play();
 }
 function launchB() {
 tLaunchB = t; launchedB = true;
 segmentsB = buildSegments(xFar, -1, tLaunchB);
-pulseViewsA11y0920.narrate('Pulse B launched.');
+pulseViewsA11y.narrate('Pulse B launched.');
 if (runFlag !== 1) play();
 }
 function setDirA(d) { dirA = d; draw(); narrate(); }
 function setDirB(d) { dirB = d; draw(); narrate(); }
 function setShapeA(s) { shapeA = s; draw(); narrate(); }
 function setShapeB(s) { shapeB = s; draw(); narrate(); }
-function setAmpA(val) { AmagA = parseFloat(val); document.getElementById('ampAValue0920').innerHTML = AmagA.toFixed(0); draw(); narrate(); }
-function setAmpB(val) { AmagB = parseFloat(val); document.getElementById('ampBValue0920').innerHTML = AmagB.toFixed(0); draw(); narrate(); }
-function setWidthA(val) { widthA = parseFloat(val); document.getElementById('widthAValue0920').innerHTML = widthA.toFixed(1); recompute(); draw(); narrate(); }
-function setWidthB(val) { widthB = parseFloat(val); document.getElementById('widthBValue0920').innerHTML = widthB.toFixed(1); recompute(); draw(); narrate(); }
+function setAmpA(val) { AmagA = parseFloat(val); document.getElementById('ampAValue').innerHTML = AmagA.toFixed(0); draw(); narrate(); }
+function setAmpB(val) { AmagB = parseFloat(val); document.getElementById('ampBValue').innerHTML = AmagB.toFixed(0); draw(); narrate(); }
+function setWidthA(val) { widthA = parseFloat(val); document.getElementById('widthAValue').innerHTML = widthA.toFixed(1); recompute(); draw(); narrate(); }
+function setWidthB(val) { widthB = parseFloat(val); document.getElementById('widthBValue').innerHTML = widthB.toFixed(1); recompute(); draw(); narrate(); }
 function setTension(val) {
-Tension = parseFloat(val); document.getElementById('tensionValue0920').innerHTML = Tension.toFixed(0);
+Tension = parseFloat(val); document.getElementById('tensionValue').innerHTML = Tension.toFixed(0);
 recompute();
 if (launchedA) segmentsA = buildSegments(xBase, 1, tLaunchA);
 if (launchedB) segmentsB = buildSegments(xFar, -1, tLaunchB);
 draw(); narrate();
 }
 function setMu(val) {
-mu = parseFloat(val); document.getElementById('muValue0920').innerHTML = mu.toFixed(0);
+mu = parseFloat(val); document.getElementById('muValue').innerHTML = mu.toFixed(0);
 recompute();
 if (launchedA) segmentsA = buildSegments(xBase, 1, tLaunchA);
 if (launchedB) segmentsB = buildSegments(xFar, -1, tLaunchB);
@@ -489,20 +650,20 @@ if (el) el.textContent = (checked ? 'Hide ' : 'Show ') + baseText;
 }
 function toggleMarker(cb) {
 showMarkerFlag = cb.checked ? 1 : 0; draw();
-setLabel('markerLbl0920', cb.checked, 'tracked-point markers');
-pulseViewsA11y0920.narrate('Tracked-point markers ' + (cb.checked ? 'shown, on all three views at the same x-positions.' : 'hidden.'));
+setLabel('markerLbl', cb.checked, 'tracked-point markers');
+pulseViewsA11y.narrate('Tracked-point markers ' + (cb.checked ? 'shown, on all three views at the same x-positions.' : 'hidden.'));
 }
 function toggleDeltaX(cb) {
 addXCalFlag = cb.checked ? 1 : 0; draw();
-setLabel('dxLbl0920', cb.checked, 'horizontal caliper (\u0394x)');
-pulseViewsA11y0920.narrate('Horizontal-distance caliper ' + (cb.checked ? 'shown on the Sum view, with a live reading.' : 'hidden.'));
+setLabel('dxLbl', cb.checked, 'horizontal caliper (\u0394x)');
+pulseViewsA11y.narrate('Horizontal-distance caliper ' + (cb.checked ? 'shown on the Sum view, with a live reading.' : 'hidden.'));
 }
 function toggleDeltaY(cb) {
 addYCalFlag = cb.checked ? 1 : 0; draw();
-setLabel('dyLbl0920', cb.checked, 'vertical caliper (\u0394y)');
-pulseViewsA11y0920.narrate('Vertical-distance caliper ' + (cb.checked ? 'shown on the Sum view, with a live reading.' : 'hidden.'));
+setLabel('dyLbl', cb.checked, 'vertical caliper (\u0394y)');
+pulseViewsA11y.narrate('Vertical-distance caliper ' + (cb.checked ? 'shown on the Sum view, with a live reading.' : 'hidden.'));
 }
-function toggleWaveData(cb) { showWaveDataFlag = cb.checked ? 1 : 0; draw(); setLabel('waveDataLbl0920', cb.checked, 'wave-data panel'); }
+function toggleWaveData(cb) { showWaveDataFlag = cb.checked ? 1 : 0; draw(); setLabel('waveDataLbl', cb.checked, 'wave-data panel'); }
 function reactionDown(x, y) {
 var r0 = canvas.getBoundingClientRect(); x = (x - r0.left)*canvas.width/r0.width; y = (y - r0.top)*canvas.height/r0.height;   /* canvas units, whatever its displayed size */
 canvas.style.cursor = 'pointer';
@@ -529,7 +690,7 @@ if (dragging && dragging.tool === 'x') msg = 'Horizontal distance: \u0394x = ' +
 if (dragging && dragging.tool === 'y') msg = 'Vertical distance: \u0394y = ' + m2Amp + ' cm.';
 dragging = null;
 canvas.style.cursor = 'default';
-if (msg) pulseViewsA11y0920.narrate(msg);
+if (msg) pulseViewsA11y.narrate(msg);
 }
 function init() {
 canvas.onmousedown = function (e) { reactionDown(e.clientX, e.clientY); };
@@ -556,22 +717,22 @@ toggleMarker: toggleMarker, toggleDeltaX: toggleDeltaX, toggleDeltaY: toggleDelt
 })();
 </script>
 <script>
-pulseViewsA11y0920.init();
-pulseViewsA11y0920.narrate('Three-view pulse sim ready. Set each pulse\u2019s direction, shape, amplitude, and width, then press Launch A and/or Launch B. Watch how the Pulse A and Pulse B views add up to the Sum.');
+pulseViewsA11y.init();
+pulseViewsA11y.narrate('Three-view pulse sim ready. Set each pulse\u2019s direction, shape, amplitude, and width, then press Launch A and/or Launch B. Watch how the Pulse A and Pulse B views add up to the Sum.');
 </script>
 <!-- SIM description: a button below the sim toggles the description into view (math in AsciiMath, typeset when opened) -->
-<div class="mob_descwrap0920">
-<button type="button" class="mob_descbtn0920" id="mobDescBtn0920" aria-expanded="false" aria-controls="mobDesc0920" onclick="mobDesc0920()">&#9656; SIM DESCRIPTION</button>
-<div class="mob_desc0920" id="mobDesc0920" role="region" aria-labelledby="mobDescBtn0920" style="display:none">
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc" onclick="mobDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
 <p>This simulation shows two pulses, A and B, travelling toward each other, in three views: pulse A alone, pulse B alone, and the rope, which shows their sum. Each pulse can be upward or downward, smooth, triangular or rectangular, with its own amplitude and width.</p>
 <p>At every point and every moment, the displacement of the rope is the sum of the displacements of the two pulses (the principle of superposition):</p>
-<p class="mob_eq0920">`y(x,t) = y_A(x,t) + y_B(x,t)`.</p>
+<p class="mob_eq">`y(x,t) = y_A(x,t) + y_B(x,t)`.</p>
 <p>Comparing the three views point by point shows how the sum is built. Pulses on the same side add up (constructive interference); pulses on opposite sides subtract (destructive interference). When they have passed each other, each pulse goes on unchanged.</p>
 </div>
 </div>
 <script>
-function mobDesc0920(){
-var b = document.getElementById('mobDescBtn0920'), d = document.getElementById('mobDesc0920'); if (!b || !d) return;
+function mobDesc(){
+var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
 var open = (d.style.display === 'none');
 d.style.display = open ? 'block' : 'none';
 b.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -581,46 +742,48 @@ if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise(
 </script>
 <style>
 /* ════════ mobile layer: the sim adapts to the width it gets (a phone, or a column in MOM) ════════ */
-#mobw47660920 { container-type:inline-size; width:100%; max-width:100%; box-sizing:border-box; }
+#mobw4766 { container-type:inline-size; width:100%; max-width:100%; box-sizing:border-box; }
 /* only when the sim is narrower than its design (663 px): nothing is wider than the sim, canvases scale down,
    rows wrap, fixed heights relax, wide tables scroll inside the sim -- on a wide screen nothing changes */
 @container (max-width:703px) {
-#mobw47660920 div, #mobw47660920 p, #mobw47660920 fieldset, #mobw47660920 form, #mobw47660920 section, #mobw47660920 ol, #mobw47660920 ul, #mobw47660920 table { max-width:100%; box-sizing:border-box; }
-#mobw47660920 canvas, #mobw47660920 img, #mobw47660920 svg { max-width:100%; height:auto !important; }
-#mobw47660920 input[type=range], #mobw47660920 select { max-width:100%; min-width:0; }
-#mobw47660920 #pulseViewsRoot0920 .sn_a11y0920, #mobw47660920 .playbar0920, #mobw47660920 .bbar0920, #mobw47660920 .footer0920 { flex-wrap:wrap; }
-#mobw47660920 #pulseViewsRoot0920 .sn_a11y0920 > div, #mobw47660920 .playbar0920 > div, #mobw47660920 .bbar0920 > div, #mobw47660920 .footer0920 > div { min-width:min(100%, 260px); }
-#mobw47660920 div[style*="height"] { height:auto !important; }
-#mobw47660920 .tbar0920, #mobw47660920 .mcontent0920, #mobw47660920 .footer0920 { height:auto; min-height:0; }
-#mobw47660920 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+#mobw4766 div, #mobw4766 p, #mobw4766 fieldset, #mobw4766 form, #mobw4766 section, #mobw4766 ol, #mobw4766 ul, #mobw4766 table { max-width:100%; box-sizing:border-box; }
+#mobw4766 canvas, #mobw4766 img, #mobw4766 svg { max-width:100%; height:auto !important; }
+#mobw4766 input[type=range], #mobw4766 select { max-width:100%; min-width:0; }
+#mobw4766 #pulseViewsRoot .sn_a11y, #mobw4766 .playbar, #mobw4766 .bbar, #mobw4766 .footer { flex-wrap:wrap; }
+#mobw4766 #pulseViewsRoot .sn_a11y > div, #mobw4766 .playbar > div, #mobw4766 .bbar > div, #mobw4766 .footer > div { min-width:min(100%, 260px); }
+#mobw4766 div[style*="height"] { height:auto !important; }
+#mobw4766 .tbar, #mobw4766 .mcontent, #mobw4766 .footer { height:auto; min-height:0; }
+#mobw4766 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
 }
 @media (max-width:723px) {
-#mobw47660920 div, #mobw47660920 p, #mobw47660920 fieldset, #mobw47660920 form, #mobw47660920 section, #mobw47660920 ol, #mobw47660920 ul, #mobw47660920 table { max-width:100%; box-sizing:border-box; }
-#mobw47660920 canvas, #mobw47660920 img, #mobw47660920 svg { max-width:100%; height:auto !important; }
-#mobw47660920 input[type=range], #mobw47660920 select { max-width:100%; min-width:0; }
-#mobw47660920 #pulseViewsRoot0920 .sn_a11y0920, #mobw47660920 .playbar0920, #mobw47660920 .bbar0920, #mobw47660920 .footer0920 { flex-wrap:wrap; }
-#mobw47660920 #pulseViewsRoot0920 .sn_a11y0920 > div, #mobw47660920 .playbar0920 > div, #mobw47660920 .bbar0920 > div, #mobw47660920 .footer0920 > div { min-width:min(100%, 260px); }
-#mobw47660920 div[style*="height"] { height:auto !important; }
-#mobw47660920 .tbar0920, #mobw47660920 .mcontent0920, #mobw47660920 .footer0920 { height:auto; min-height:0; }
-#mobw47660920 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+#mobw4766 div, #mobw4766 p, #mobw4766 fieldset, #mobw4766 form, #mobw4766 section, #mobw4766 ol, #mobw4766 ul, #mobw4766 table { max-width:100%; box-sizing:border-box; }
+#mobw4766 canvas, #mobw4766 img, #mobw4766 svg { max-width:100%; height:auto !important; }
+#mobw4766 input[type=range], #mobw4766 select { max-width:100%; min-width:0; }
+#mobw4766 #pulseViewsRoot .sn_a11y, #mobw4766 .playbar, #mobw4766 .bbar, #mobw4766 .footer { flex-wrap:wrap; }
+#mobw4766 #pulseViewsRoot .sn_a11y > div, #mobw4766 .playbar > div, #mobw4766 .bbar > div, #mobw4766 .footer > div { min-width:min(100%, 260px); }
+#mobw4766 div[style*="height"] { height:auto !important; }
+#mobw4766 .tbar, #mobw4766 .mcontent, #mobw4766 .footer { height:auto; min-height:0; }
+#mobw4766 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
 }
 /* touch screens: larger targets */
 @media (pointer:coarse) {
-#mobw47660920 button, #mobw47660920 input[type=button], #mobw47660920 input[type=submit], #mobw47660920 input[type=reset] { min-height:40px; }
-#mobw47660920 input[type=range] { height:28px; }
-#mobw47660920 input[type=checkbox], #mobw47660920 input[type=radio] { width:22px; height:22px; }
-#mobw47660920 select { min-height:36px; font-size:16px; }
+#mobw4766 button, #mobw4766 input[type=button], #mobw4766 input[type=submit], #mobw4766 input[type=reset] { min-height:40px; }
+#mobw4766 input[type=range] { height:28px; }
+#mobw4766 input[type=checkbox], #mobw4766 input[type=radio] { width:22px; height:22px; }
+#mobw4766 select { min-height:36px; font-size:16px; }
 }
 /* display options moved to the top */
-#mobw47660920 .mob_a11ytop0920 { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:6px 4px 8px; width:auto; max-width:100%; height:auto; }
-#mobw47660920 .mob_a11ytop0920 input[type=button], #mobw47660920 .mob_a11ytop0920 button { padding:5px 12px; font-size:13px; border:1px solid #8a94a3; border-radius:4px; background:#f4f6f8; color:#1d232a; cursor:pointer; width:auto; height:auto; margin:0; }
+#mobw4766 .mob_a11ytop { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:6px 4px 8px; width:auto; max-width:100%; height:auto; }
+#mobw4766 .mob_a11ytop input[type=button], #mobw4766 .mob_a11ytop button { padding:5px 12px; font-size:13px; border:1px solid #8a94a3; border-radius:4px; background:#f4f6f8; color:#1d232a; cursor:pointer; width:auto; height:auto; margin:0; }
 /* SIM description */
-#mobw47660920 .mob_descwrap0920 { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
-#mobw47660920 .mob_descbtn0920 { padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
-#mobw47660920 .mob_descbtn0920[aria-expanded="true"] { background:#3a3220; }
-#mobw47660920 .mob_desc0920 { width:100%; max-width:860px; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; text-align:left; }
-#mobw47660920 .mob_desc0920 p { margin:0 0 9px 0; }
-#mobw47660920 .mob_eq0920 { text-align:center; font-size:1rem; }
+#mobw4766 .mob_descwrap { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
+#mobw4766 .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
+#mobw4766 .mob_descbtn[aria-expanded="true"] { background:#3a3220; }
+#mobw4766 .mob_desc { width:100%; max-width:860px; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; text-align:left; }
+#mobw4766 .mob_desc p { margin:0 0 9px 0; }
+#mobw4766 .mob_eq { text-align:center; font-size:1rem; }
 </style>
-</div><!-- #mobw47660920 -->
-</body></html>
+</div><!-- #mobw4766 -->
+</main>
+</body>
+</html>

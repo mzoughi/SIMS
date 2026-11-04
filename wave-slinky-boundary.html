@@ -12,88 +12,107 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Physics Simulations- Waves: Two Slinkies</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,Transverse, Longitudinal,Frequency, Amplitude, Tension, Mass,Length,Wave,string, Properties,Rope, lesson, scientific">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, waves, pulse, rope, slinky, speed, wavelength, frequency, amplitude, reflection, transmission, boundary, interference, standing waves, resonance, lesson, scientific">
+<meta name="description" content="This simulation sends a wave along two slinkies joined end to end, with different spring constants (K_1, K_2) and masses (M_1, M_2).">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:920px; max-width:100%; margin:0 auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
-<div id="slinkyBoundaryRoot0915">
+<main class="page">
+<div id="mobslk2" class="mob_wrap">
+<div id="slinkyBoundaryRoot">
 <!-- ── Accessibility toolbar ── -->
-<div class="sn_a11y0915" id="snBar0915" role="toolbar" aria-label="Display options">
-<button type="button" class="sn_a11ybtn0915" id="snBtnHC0915" onclick="slinkyBoundaryA11y0915.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="sn_a11ybtn0915" id="snBtnLM0915" onclick="slinkyBoundaryA11y0915.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
-<button type="button" class="sn_a11ybtn0915" id="snBtnCB0915" onclick="slinkyBoundaryA11y0915.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
-<button type="button" class="sn_a11ybtn0915 sn_a11yon0915" id="snBtnNR0915" onclick="slinkyBoundaryA11y0915.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+<div class="sn_a11y" id="snBar" role="toolbar" aria-label="Display options">
+<button type="button" class="sn_a11ybtn" id="snBtnHC" onclick="slinkyBoundaryA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="sn_a11ybtn" id="snBtnDM" onclick="slinkyBoundaryA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="sn_a11ybtn" id="snBtnCB" onclick="slinkyBoundaryA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="sn_a11ybtn sn_a11yon" id="snBtnNR" onclick="slinkyBoundaryA11y.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
 </div>
-<div class="tbar0915"><h3>Wave on a Slinky: Longitudinal vs. Transverse, Crossing a Boundary</h3></div>
-<div class="modebar0915" role="radiogroup" aria-label="Wave type">
-<label class="moderadio0915"><input type="radio" name="mode0915" value="long" id="modeLong0915" checked onchange="slinkyBoundaryPol0915.setMode('long')"> Longitudinal (push/pull)</label>
-<label class="moderadio0915"><input type="radio" name="mode0915" value="trans" id="modeTrans0915" onchange="slinkyBoundaryPol0915.setMode('trans')"> Transverse (side to side)</label>
+<div class="tbar"><h3>Wave on a Slinky: Longitudinal vs. Transverse, Crossing a Boundary</h3></div>
+<div class="modebar" role="radiogroup" aria-label="Wave type">
+<label class="moderadio"><input type="radio" name="mode" value="long" id="modeLong" checked onchange="slinkyBoundaryPol.setMode('long')"> Longitudinal (push/pull)</label>
+<label class="moderadio"><input type="radio" name="mode" value="trans" id="modeTrans" onchange="slinkyBoundaryPol.setMode('trans')"> Transverse (side to side)</label>
 </div>
-<div class="mcontent0915"><canvas id="slinkyBoundaryCanvas0915" style="margin:auto;border:1px solid" width="660" height="320"></canvas></div>
-<div id="slinkyBoundaryNarBar0915" class="sn_narbar0915" role="status" aria-live="polite" aria-atomic="true"></div>
-<div class="playbar0915" role="group" aria-label="Animation playback controls">
-<button type="button" class="wv_btn0915" id="slinkyBoundaryPlayBtn0915" onclick="slinkyBoundaryPol0915.togglePlay()" aria-pressed="false">&#9654; Play</button>
-<button type="button" class="wv_btn0915" onclick="slinkyBoundaryPol0915.stepBack()">&#10073;&#9664; Step back</button>
-<button type="button" class="wv_btn0915" onclick="slinkyBoundaryPol0915.stepForward()">&#9654;&#10073; Step forward</button>
-<button type="button" class="wv_btn0915" onclick="slinkyBoundaryPol0915.reset()">&#8635; Reset</button>
-<button type="button" class="wv_btn0915" onclick="slinkyBoundaryPol0915.startTimer()">&#9201; Start timer here</button>
+<div class="mcontent"><canvas id="slinkyBoundaryCanvas" style="margin:auto;border:1px solid" width="660" height="320"></canvas></div>
+<div id="slinkyBoundaryNarBar" class="sn_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="playbar" role="group" aria-label="Animation playback controls">
+<button type="button" class="wv_btn" id="slinkyBoundaryPlayBtn" onclick="slinkyBoundaryPol.togglePlay()" aria-pressed="false">&#9654; Play</button>
+<button type="button" class="wv_btn" onclick="slinkyBoundaryPol.stepBack()">&#10073;&#9664; Step back</button>
+<button type="button" class="wv_btn" onclick="slinkyBoundaryPol.stepForward()">&#9654;&#10073; Step forward</button>
+<button type="button" class="wv_btn" onclick="slinkyBoundaryPol.reset()">&#8635; Reset</button>
+<button type="button" class="wv_btn" onclick="slinkyBoundaryPol.startTimer()">&#9201; Start timer here</button>
 </div>
-<div class="bbar0915" role="group" aria-label="Show or hide measurement tools and overlays">
-<label class="chk0915"><input type="checkbox" id="showWlen0915" onchange="slinkyBoundaryPol0915.toggleWlen(this)"> <span id="wlenLbl0915">Show wavelength guide</span></label>
-<label class="chk0915"><input type="checkbox" id="showVibDir0915" onchange="slinkyBoundaryPol0915.toggleVibDir(this)"> <span id="vibDirLbl0915">Show vibration-direction arrow</span></label>
-<label class="chk0915"><input type="checkbox" id="showMarker0915" onchange="slinkyBoundaryPol0915.toggleMarker(this)"> <span id="markerLbl0915">Show tracked-coil markers</span></label>
-<label class="chk0915" id="compressRow0915"><input type="checkbox" id="showCompress0915" onchange="slinkyBoundaryPol0915.toggleCompress(this)"> <span id="compressLbl0915">Show compression points (when paused)</span></label>
-<label class="chk0915" id="rarefactionRow0915"><input type="checkbox" id="showRarefaction0915" onchange="slinkyBoundaryPol0915.toggleRarefaction(this)"> <span id="rarefactionLbl0915">Show rarefaction points (when paused)</span></label>
-<label class="chk0915"><input type="checkbox" id="showDX0915" onchange="slinkyBoundaryPol0915.toggleDeltaX(this)"> <span id="dxLbl0915">Show horizontal caliper (&#916;x)</span></label>
-<label class="chk0915" id="dyRow0915" style="display:none;"><input type="checkbox" id="showDY0915" onchange="slinkyBoundaryPol0915.toggleDeltaY(this)"> <span id="dyLbl0915">Show vertical caliper (&#916;y)</span></label>
-<label class="chk0915"><input type="checkbox" id="showWaveData0915" checked onchange="slinkyBoundaryPol0915.toggleWaveData(this)"> <span id="waveDataLbl0915">Hide wave-data panel</span></label>
-<label class="chk0915"><input type="checkbox" id="showAnimData0915" checked onchange="slinkyBoundaryPol0915.toggleAnimData(this)"> <span id="animDataLbl0915">Hide animation-time panel</span></label>
+<div class="bbar" role="group" aria-label="Show or hide measurement tools and overlays">
+<label class="chk"><input type="checkbox" id="showWlen" onchange="slinkyBoundaryPol.toggleWlen(this)"> <span id="wlenLbl">Show wavelength guide</span></label>
+<label class="chk"><input type="checkbox" id="showVibDir" onchange="slinkyBoundaryPol.toggleVibDir(this)"> <span id="vibDirLbl">Show vibration-direction arrow</span></label>
+<label class="chk"><input type="checkbox" id="showMarker" onchange="slinkyBoundaryPol.toggleMarker(this)"> <span id="markerLbl">Show tracked-coil markers</span></label>
+<label class="chk" id="compressRow"><input type="checkbox" id="showCompress" onchange="slinkyBoundaryPol.toggleCompress(this)"> <span id="compressLbl">Show compression points (when paused)</span></label>
+<label class="chk" id="rarefactionRow"><input type="checkbox" id="showRarefaction" onchange="slinkyBoundaryPol.toggleRarefaction(this)"> <span id="rarefactionLbl">Show rarefaction points (when paused)</span></label>
+<label class="chk"><input type="checkbox" id="showDX" onchange="slinkyBoundaryPol.toggleDeltaX(this)"> <span id="dxLbl">Show horizontal caliper (&#916;x)</span></label>
+<label class="chk" id="dyRow" style="display:none;"><input type="checkbox" id="showDY" onchange="slinkyBoundaryPol.toggleDeltaY(this)"> <span id="dyLbl">Show vertical caliper (&#916;y)</span></label>
+<label class="chk"><input type="checkbox" id="showWaveData" checked onchange="slinkyBoundaryPol.toggleWaveData(this)"> <span id="waveDataLbl">Hide wave-data panel</span></label>
+<label class="chk"><input type="checkbox" id="showAnimData" checked onchange="slinkyBoundaryPol.toggleAnimData(this)"> <span id="animDataLbl">Hide animation-time panel</span></label>
 </div>
-<div class="footer0915">
-<div class="left0915">Frequency:</div>
-<div class="center0915">`f:\ ` <input class=islide0915 type="range" id="freqSlider0915" min="0.5" max="4.0" value="3" step="0.5" oninput="slinkyBoundaryPol0915.setFreq(this.value)" onchange="slinkyBoundaryPol0915.setFreq(this.value)"> <span id="freqValue0915">3</span> Hz</div>
+<div class="footer">
+<div class="left">Frequency:</div>
+<div class="center">`f:\ ` <input class=islide type="range" id="freqSlider" min="0.5" max="4.0" value="3" step="0.5" oninput="slinkyBoundaryPol.setFreq(this.value)" onchange="slinkyBoundaryPol.setFreq(this.value)"> <span id="freqValue">3</span> Hz</div>
 </div>
-<div class="footer0915">
-<div class="left0915">Amplitude:</div>
-<div class="center0915">`A:\ ` <input class=islide0915 type="range" id="ampSlider0915" min="4" max="20" value="20" step="2" oninput="slinkyBoundaryPol0915.setAmp(this.value)" onchange="slinkyBoundaryPol0915.setAmp(this.value)"> <span id="ampValue0915">20</span> cm</div>
+<div class="footer">
+<div class="left">Amplitude:</div>
+<div class="center">`A:\ ` <input class=islide type="range" id="ampSlider" min="4" max="20" value="20" step="2" oninput="slinkyBoundaryPol.setAmp(this.value)" onchange="slinkyBoundaryPol.setAmp(this.value)"> <span id="ampValue">20</span> cm</div>
 </div>
-<div class="footer0915" id="tensionRow0915" style="display:none;">
-<div class="left0915">Tension (transverse):</div>
-<div class="center0915">`T:\ ` <input class=islide0915 type="range" id="tensionSlider0915" min="1" max="20" value="100" step="1" oninput="slinkyBoundaryPol0915.setTension(this.value)" onchange="slinkyBoundaryPol0915.setTension(this.value)"> <span id="tensionValue0915">100</span> N</div>
+<div class="footer" id="tensionRow" style="display:none;">
+<div class="left">Tension (transverse):</div>
+<div class="center">`T:\ ` <input class=islide type="range" id="tensionSlider" min="1" max="20" value="100" step="1" oninput="slinkyBoundaryPol.setTension(this.value)" onchange="slinkyBoundaryPol.setTension(this.value)"> <span id="tensionValue">100</span> N</div>
 </div>
-<div class="footer0915">
-<div class="left0915">Spring const., slinky 1:</div>
-<div class="center0915">`K_1:\ ` <input class=islide0915 type="range" id="k1Slider0915" min="0.1" max="0.7" value="0.25" step="0.005" oninput="slinkyBoundaryPol0915.setK1(this.value)" onchange="slinkyBoundaryPol0915.setK1(this.value)"> <span id="k1Value0915">0.25</span> N/m</div>
+<div class="footer">
+<div class="left">Spring const., slinky 1:</div>
+<div class="center">`K_1:\ ` <input class=islide type="range" id="k1Slider" min="0.1" max="0.7" value="0.25" step="0.005" oninput="slinkyBoundaryPol.setK1(this.value)" onchange="slinkyBoundaryPol.setK1(this.value)"> <span id="k1Value">0.25</span> N/m</div>
 </div>
-<div class="footer0915">
-<div class="left0915">Mass, slinky 1:</div>
-<div class="center0915">`M_1:\ ` <input class=islide0915 type="range" id="m1Slider0915" min="0.3" max="1.6" value="0.6" step="0.1" oninput="slinkyBoundaryPol0915.setM1(this.value)" onchange="slinkyBoundaryPol0915.setM1(this.value)"> <span id="m1Value0915">0.6</span> kg</div>
+<div class="footer">
+<div class="left">Mass, slinky 1:</div>
+<div class="center">`M_1:\ ` <input class=islide type="range" id="m1Slider" min="0.3" max="1.6" value="0.6" step="0.1" oninput="slinkyBoundaryPol.setM1(this.value)" onchange="slinkyBoundaryPol.setM1(this.value)"> <span id="m1Value">0.6</span> kg</div>
 </div>
-<div class="footer0915">
-<div class="left0915">Spring const., slinky 2:</div>
-<div class="center0915">`K_2:\ ` <input class=islide0915 type="range" id="k2Slider0915" min="0.1" max="0.7" value="0.125" step="0.005" oninput="slinkyBoundaryPol0915.setK2(this.value)" onchange="slinkyBoundaryPol0915.setK2(this.value)"> <span id="k2Value0915">0.125</span> N/m</div>
+<div class="footer">
+<div class="left">Spring const., slinky 2:</div>
+<div class="center">`K_2:\ ` <input class=islide type="range" id="k2Slider" min="0.1" max="0.7" value="0.125" step="0.005" oninput="slinkyBoundaryPol.setK2(this.value)" onchange="slinkyBoundaryPol.setK2(this.value)"> <span id="k2Value">0.125</span> N/m</div>
 </div>
-<div class="footer0915">
-<div class="left0915">Mass, slinky 2:</div>
-<div class="center0915">`M_2:\ ` <input class=islide0915 type="range" id="m2Slider0915" min="0.3" max="1.6" value="1.2" step="0.1" oninput="slinkyBoundaryPol0915.setM2(this.value)" onchange="slinkyBoundaryPol0915.setM2(this.value)"> <span id="m2Value0915">1.2</span> kg</div>
+<div class="footer">
+<div class="left">Mass, slinky 2:</div>
+<div class="center">`M_2:\ ` <input class=islide type="range" id="m2Slider" min="0.3" max="1.6" value="1.2" step="0.1" oninput="slinkyBoundaryPol.setM2(this.value)" onchange="slinkyBoundaryPol.setM2(this.value)"> <span id="m2Value">1.2</span> kg</div>
 </div>
 <hr>
 <ol type="a">
-<li>Without changing `K_1, M_1, K_2, M_2`, switch between Longitudinal and Transverse mode. Does the speed ratio `v_2\/v_1` stay the same? Explain, using the two different speed formulas.<br /></li>
-<li>In Transverse mode, how does the wavelength change crossing into slinky 2 when `M_2 &gt; M_1`? Turn on the caliper and check `v=f lambda` on each side.<br /></li>
-<li>Longitudinal impedance is `Z=sqrt(K M)`; transverse impedance is `Z=mu v` with `mu=M\/L`. In each mode, how does the `Z_1`/`Z_2` mismatch affect the transmitted amplitude?<br /></li>
-<li>In Longitudinal mode, set `K_2=2K_1` and `M_2=2M_1` (taping two identical slinkies together). The speed doesn't change &mdash; so why does the amplitude still drop at the junction?<br /></li>
-<li>Switch to Transverse mode with the same `K_2=2K_1, M_2=2M_1` settings. Does the speed change this time? Why is tension the deciding factor here but not in Longitudinal mode?<br /></li>
-<li>Set `K_1=K_2` and `M_1=M_2`. What happens to the wave crossing the (now invisible) boundary, in either mode?<br /></li>
-<li>Turn on the tracked-coil markers in Transverse mode and let the animation run. Do the marked coils travel sideways with the wave, or only up and down?<br /></li>
-<li>Compression and rarefaction markers are only offered in Longitudinal mode. Why doesn't a transverse wave on a slinky have compressions and rarefactions?<br /></li>
+<li>Without changing `K_1, M_1, K_2, M_2`, switch between Longitudinal and Transverse mode. Does the speed ratio `v_2\/v_1` stay the same? Explain, using the two different speed formulas.<br /> _____ </li>
+<li>In Transverse mode, how does the wavelength change crossing into slinky 2 when `M_2 &gt; M_1`? Turn on the caliper and check `v=f lambda` on each side.<br /> _____ </li>
+<li>Longitudinal impedance is `Z=sqrt(K M)`; transverse impedance is `Z=mu v` with `mu=M\/L`. In each mode, how does the `Z_1`/`Z_2` mismatch affect the transmitted amplitude?<br /> _____ </li>
+<li>In Longitudinal mode, set `K_2=2K_1` and `M_2=2M_1` (taping two identical slinkies together). The speed doesn't change &mdash; so why does the amplitude still drop at the junction?<br /> _____ </li>
+<li>Switch to Transverse mode with the same `K_2=2K_1, M_2=2M_1` settings. Does the speed change this time? Why is tension the deciding factor here but not in Longitudinal mode?<br /> _____ </li>
+<li>Set `K_1=K_2` and `M_1=M_2`. What happens to the wave crossing the (now invisible) boundary, in either mode?<br /> _____ </li>
+<li>Turn on the tracked-coil markers in Transverse mode and let the animation run. Do the marked coils travel sideways with the wave, or only up and down?<br /> _____ </li>
+<li>Compression and rarefaction markers are only offered in Longitudinal mode. Why doesn't a transverse wave on a slinky have compressions and rarefactions?<br /> _____ </li>
 </ol>
-</div><!-- #slinkyBoundaryRoot0915 -->
+</div><!-- #slinkyBoundaryRoot -->
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>This simulation sends a wave along two slinkies joined end to end, with different spring constants (`K_1`, `K_2`) and masses (`M_1`, `M_2`). The wave can be longitudinal (the hand pushes and pulls, and the coils move along the slinky) or transverse (the hand shakes up and down, and the coils move sideways).</p>
+<p>The two kinds of wave travel at speeds set by different things. For a slinky segment of length `L`:</p>
+<p class="mob_eq">longitudinal: `v = L sqrt(K/M)`,&nbsp;&nbsp; transverse: `v = sqrt(T/mu)`, with `mu = M/L`,</p>
+<p>where `T` is the tension. The frequency is the same on both sides of the junction, so the wavelength changes with the speed: `lambda = v/f`. At the junction part of the wave is transmitted into slinky 2. The amplitude it carries depends on how well the two slinkies match, measured by their impedances (`Z = sqrt(K M)` for a longitudinal wave, `Z = mu v` for a transverse one):</p>
+<p class="mob_eq">`A_2 = A (2 Z_1)/(Z_1 + Z_2)`.</p>
+<p>The calipers, the wavelength guide and the tracked-coil markers help measure wavelengths, amplitudes and speeds on each side; the &#9201; button times the wave.</p>
+</div>
+</div>
 <style>
-* { margin: 0; box-sizing: border-box; }
-div { width: 663px; margin: 0; }
-#slinkyRoot0915 {
+:where(#mobslk2) * { margin: 0; box-sizing: border-box; }
+:where(#mobslk2) div { width: 100%; margin: 0; }
+#slinkyBoundaryRoot {
 --sn-toolbar-bg: #222;
---sn-rope:     #2e8b57;
+--sn-rope:     #3a4046;
 --sn-compress: #d1495b;
 --sn-stretch:  #1b998b;
 --sn-axis:     #000000;
@@ -103,128 +122,306 @@ div { width: 663px; margin: 0; }
 --sn-hand:     #9b7550;
 --sn-marker:   #1a1a2e;
 }
-#slinkyRoot0915 .sn_a11y0915 {
+#slinkyRoot .sn_a11y {
 display: flex; gap: 6px; padding: 6px 8px;
-background: var(--sn-toolbar-bg); flex-wrap: wrap; width: 663px;
+background: var(--sn-toolbar-bg); flex-wrap: wrap; width: 100%;
 }
-#slinkyRoot0915 .sn_a11ybtn0915 {
+#slinkyRoot .sn_a11ybtn {
 padding: 4px 10px; font-size: .72rem; font-family: monospace;
 letter-spacing: .06em; border-radius: 3px; cursor: pointer;
 background: #2a2e3a; border: 1px solid #404a60; color: #7a8aaa;
 transition: border-color .15s, color .15s;
 }
-#slinkyRoot0915 .sn_a11ybtn0915:hover { border-color: #00e8d0; color: #00e8d0; }
-#slinkyRoot0915 .sn_a11yon0915 { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
-#slinkyRoot0915 .sn_narbar0915 {
-width: 663px; min-height: 28px; padding: 5px 10px;
+#slinkyRoot .sn_a11ybtn:hover { border-color: #00e8d0; color: #00e8d0; }
+#slinkyRoot .sn_a11yon { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
+#slinkyRoot .sn_narbar {
+width: 100%; min-height: 28px; padding: 5px 10px;
 background: #ffefc0; border-left: 4px solid #e0b040;
 font-size: .88rem; color: #333; font-style: italic;
 }
-.tbar0915    { padding: 2px; height: 30px; background-color: #f90; text-align: center; }
-.mcontent0915 { height: 322px; }
-.islide0915 { width: 220px; }
-.playbar0915 {
+.tbar    { padding: 2px; height: 30px; background-color: #f90; text-align: center; }
+.mcontent { height: 322px; }
+.islide { width: 220px; }
+.playbar {
 height: auto; min-height: 40px; background-color: #cfe8ff; padding: 3px;
 text-align: center; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
 }
-.wv_btn0915 {
+.wv_btn {
 padding: 6px 10px; font-size: .82rem; border-radius: 4px; cursor: pointer;
 background: #fff; border: 1px solid #557; color: #223;
 }
-.wv_btn0915:hover { background: #eef4ff; }
-.bbar0915 {
+.wv_btn:hover { background: #eef4ff; }
+.bbar {
 background-color: #df9; padding: 4px; text-align: left;
 display: flex; flex-wrap: wrap; gap: 4px 16px;
 }
-.bbar0915 .chk0915 { width: auto; font-size: .84rem; white-space: nowrap; }
-.footer0915  { height: 40px; text-align: center; font-size: normal; display: flex; }
-.footer0915 .left0915   { width: 136px; padding: 2px; }
-.footer0915 .center0915 { width: 527px; padding: 4px; }
-.footer0915:nth-of-type(odd)  { background-color: #fce4ec; }
-.footer0915:nth-of-type(even) { background-color: #e8f5e9; }
+.bbar .chk { width: auto; font-size: .84rem; white-space: nowrap; }
+.footer  { height: 40px; text-align: center; font-size: normal; display: flex; }
+.footer .left   { width: 136px; padding: 2px; }
+.footer .center { width: 527px; padding: 4px; }
+.footer:nth-of-type(odd)  { background-color: #fce4ec; }
+.footer:nth-of-type(even) { background-color: #e8f5e9; }
+/* ── mobile layer: the sim fills its column up to its design width, and the controls wrap ── */
+#mobslk2 { width:100%; max-width:663px; margin:0 auto; }
+#mobslk2 canvas { width:100%; height:auto; display:block; }
+#mobslk2 .mcontent { height:auto; }
+#mobslk2 .footer { height:auto; min-height:40px; flex-wrap:wrap; align-items:center; }
+#mobslk2 .footer .left { width:136px; flex:0 0 136px; }
+#mobslk2 .footer .center { width:auto; flex:1 1 300px; }
+#mobslk2 .islide { width:220px; max-width:55%; vertical-align:middle; }
+#mobslk2 .bbar .chk { white-space:normal; }
+#mobslk2 ol { padding-left:24px; }
+#mobslk2 li { margin-bottom:8px; }
+@media (max-width:560px) {
+#mobslk2 .footer .left { flex-basis:100%; width:100%; padding-bottom:0; }
+#mobslk2 .playbar .wv_btn { flex:1 1 40%; }
+}
+@media (pointer:coarse) {
+#mobslk2 .wv_btn { min-height:40px; }
+#mobslk2 input[type=checkbox] { width:20px; height:20px; }
+#mobslk2 input[type=range] { height:28px; }
+}
+/* ── SIM description ── */
+#mobslk2 .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:14px 0 6px; }
+#mobslk2 .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobslk2 .mob_desc { width:100%; background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; }
+#mobslk2 .mob_desc p { margin:0 0 8px 0; }
+#mobslk2 .mob_eq { text-align:center; }
+
 </style>
 <!-- ════════════════ ACCESSIBILITY CONTROLLER ════════════════ -->
 <script>
-var slinkyBoundaryA11y0915 = (function(){
-var ROOT = null;
-var states = { hc: false, lm: false, cb: false, nr: true };
-var THEMES = {
-hc: { '--sn-rope':'#00ff88','--sn-rope1':'#ffaa00','--sn-rope2':'#00ffff','--sn-compress':'#ffaa00','--sn-stretch':'#00ffff',
-'--sn-axis':'#ffffff','--sn-wrule':'#ff88ff','--sn-vibdir':'#ff4444','--sn-vrule':'#ffaa00','--sn-hrule':'#00ff88',
-'--sn-hand':'#ffcc88','--sn-marker':'#ffffff','--sn-boundary':'#ffffff','--sn-toolbar-bg':'#000' },
-lm: { '--sn-rope':'#226622','--sn-rope1':'#aa3311','--sn-rope2':'#0077aa','--sn-compress':'#aa3311','--sn-stretch':'#0077aa',
-'--sn-axis':'#222222','--sn-wrule':'#6600cc','--sn-vibdir':'#cc0000','--sn-vrule':'#996622','--sn-hrule':'#226622',
-'--sn-hand':'#8a6440','--sn-marker':'#000000','--sn-boundary':'#333333','--sn-toolbar-bg':'#333' },
-cb: { '--sn-rope':'#009e73','--sn-rope1':'#d55e00','--sn-rope2':'#0072b2','--sn-compress':'#d55e00','--sn-stretch':'#0072b2',
-'--sn-axis':'#000000','--sn-wrule':'#0072b2','--sn-vibdir':'#d55e00','--sn-vrule':'#e69f00','--sn-hrule':'#009e73',
-'--sn-hand':'#e69f00','--sn-marker':'#000000','--sn-boundary':'#000000' }
-};
-var DEFAULTS = { '--sn-rope':'#2e8b57','--sn-rope1':'#cc0000','--sn-rope2':'#0066cc','--sn-compress':'#d1495b','--sn-stretch':'#1b998b',
-'--sn-axis':'#000000','--sn-wrule':'#800080','--sn-vibdir':'#ff0000','--sn-vrule':'#cd853f','--sn-hrule':'#2e8b57',
-'--sn-hand':'#9b7550','--sn-marker':'#1a1a2e','--sn-boundary':'#555555','--sn-toolbar-bg':'#222' };
-function applyVars(theme, on) {
-if (!ROOT) return;
-var vars = THEMES[theme];
-for (var p in vars) ROOT.style.setProperty(p, on ? vars[p] : DEFAULTS[p]);
+var slinkyBoundaryA11y = (function(){
+var ROOT = null, WRAP = null, states = { hc:false, dm:false, cb:false, nr:true };
+/* ── canvas themes: every colour the sim draws passes through map(); the last frame is recorded,
+      so switching dark mode, high contrast or colour-blind safe colours redraws it at once,
+      even while the sim is paused. No page-wide names: this lives inside the controller. ── */
+function makeCT(){
+  var mode = { dark:false, hc:false, cb:false }, key = '', cache = {}, cvs = [];
+  var probe = document.createElement('canvas').getContext('2d');
+  var P = CanvasRenderingContext2D.prototype;
+  function parse(c){
+    probe.fillStyle = '#000'; probe.fillStyle = c; var s = String(probe.fillStyle), m;
+    if (s.charAt(0) === '#') return [parseInt(s.substr(1,2),16), parseInt(s.substr(3,2),16), parseInt(s.substr(5,2),16), 1];
+    m = s.match(/rgba?\(([^)]+)\)/); if (!m) return null;
+    var p = m[1].split(',').map(parseFloat); return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1];
+  }
+  function lin(v){ v /= 255; return v <= 0.04045 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); }
+  function lum(r,g,b){ return 0.2126*lin(r) + 0.7152*lin(g) + 0.0722*lin(b); }
+  function hsl(r,g,b){
+    r/=255; g/=255; b/=255; var mx = Math.max(r,g,b), mn = Math.min(r,g,b), h = 0, s = 0, l = (mx+mn)/2, d = mx-mn;
+    if (d > 1e-6){ s = d/(1 - Math.abs(2*l - 1));
+      h = mx === r ? ((g-b)/d) % 6 : (mx === g ? (b-r)/d + 2 : (r-g)/d + 4); h *= 60; if (h < 0) h += 360; }
+    return [h, s, l];
+  }
+  function rgb(h,s,l){
+    var c = (1 - Math.abs(2*l - 1))*s, x = c*(1 - Math.abs((h/60) % 2 - 1)), m = l - c/2, t;
+    t = h < 60 ? [c,x,0] : h < 120 ? [x,c,0] : h < 180 ? [0,c,x] : h < 240 ? [0,x,c] : h < 300 ? [x,0,c] : [c,0,x];
+    return [Math.round((t[0]+m)*255), Math.round((t[1]+m)*255), Math.round((t[2]+m)*255)];
+  }
+  /* raise the lightness until the colour stands out on a dark background */
+  function lift(h,s,l,target){ var c = rgb(h,s,l); while (lum(c[0],c[1],c[2]) < target && l < 0.95){ l += 0.03; c = rgb(h,s,l); } return c; }
+  /* Okabe-Ito colours, chosen by hue */
+  function oi(h){
+    return h < 15 || h >= 330 ? [213,94,0] : h < 40 ? [230,159,0] : h < 75 ? [240,228,66] : h < 170 ? [0,158,115]
+         : h < 200 ? [86,180,233] : h < 260 ? [0,114,178] : [204,121,167];
+  }
+  function conv(c){
+    if (!mode.dark && !mode.hc && !mode.cb) return c;
+    var k = key + c; if (cache[k] !== undefined) return cache[k];
+    var v = parse(c); if (!v){ cache[k] = c; return c; }
+    var r = v[0], g = v[1], b = v[2], a = v[3], q = hsl(r,g,b), Y = lum(r,g,b), neutral = q[1] < 0.18, o;
+    if (mode.cb && !neutral && Y <= 0.6 && !(q[2] > 0.6 && q[1] < 0.6)){ o = oi(q[0]); r = o[0]; g = o[1]; b = o[2]; q = hsl(r,g,b); Y = lum(r,g,b); }
+    if (mode.hc){
+      if (neutral) o = Y > 0.8 ? [0,0,0] : (Y < 0.25 ? [255,255,255] : [205,205,205]);
+      else if (Y > 0.6 || (q[2] > 0.6 && q[1] < 0.6)) o = [0,0,0];   /* light or pastel fills are surfaces */
+      else o = lift(q[0], 1, Math.max(q[2], 0.5), 0.4);
+    } else if (mode.dark){
+      if (neutral) o = rgb(q[0], q[1], 0.1 + 0.82*(1 - q[2]));
+      else if (Y > 0.55 || (q[2] > 0.6 && q[1] < 0.6)) o = rgb(q[0], Math.min(q[1], 0.3), 0.18);   /* light or pastel fills are surfaces */
+      else o = lift(q[0], q[1], q[2], 0.3);
+    } else o = [r,g,b];
+    var out = a < 1 ? 'rgba(' + o[0] + ',' + o[1] + ',' + o[2] + ',' + a + ')' : 'rgb(' + o[0] + ',' + o[1] + ',' + o[2] + ')';
+    cache[k] = out; return out;
+  }
+  /* gradients remember their colour stops, so they can be rebuilt in another theme */
+  function style(v, ctx){
+    if (typeof v === 'string') return conv(v);
+    if (v && v.__spec){
+      var sp = v.__spec; if (sp.key === key) return sp.made;
+      var g = P[sp.kind].apply(ctx, sp.args); sp.stops.forEach(function(s){ g.addColorStop(s[0], conv(s[1])); });
+      sp.key = key; sp.made = g; return g;
+    }
+    return v;
+  }
+  function attach(cv){
+    var ctx = cv.getContext('2d'); if (!ctx || ctx.__ct) return; ctx.__ct = true;
+    var log = [], replaying = false, vals = {};
+    /* a fill or clear covering the whole canvas starts a new frame (in device pixels, whatever the transform) */
+    function full(a){ var t = ctx.getTransform(), x0 = t.a*a[0] + t.e, y0 = t.d*a[1] + t.f, x1 = t.a*(a[0] + a[2]) + t.e, y1 = t.d*(a[1] + a[3]) + t.f;
+      return t.b === 0 && t.c === 0 && Math.min(x0, x1) <= 0.5 && Math.min(y0, y1) <= 0.5 && Math.max(x0, x1) >= cv.width - 0.5 && Math.max(y0, y1) >= cv.height - 0.5; }
+    /* a canvas attached after its first drawing: keep that picture, to re-colour pixel by pixel until the next frame */
+    var snap = null, framed = false; try { snap = ctx.getImageData(0, 0, cv.width, cv.height); } catch (e) {}
+    ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); vals[p] = d.get.call(ctx);
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return vals[p]; },
+        set:function(v){ vals[p] = v; if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, style(v, ctx)); } });
+    });
+    var plain = ['lineWidth','font','textAlign','textBaseline','globalAlpha','lineCap','lineJoin','miterLimit','shadowBlur',
+                 'shadowOffsetX','shadowOffsetY','globalCompositeOperation','lineDashOffset','direction','imageSmoothingEnabled'];
+    plain.forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); if (!d || !d.set) return;
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return d.get.call(ctx); },
+        set:function(v){ if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, v); } });
+    });
+    ['createLinearGradient','createRadialGradient','createConicGradient'].forEach(function(n){
+      if (!P[n]) return;
+      ctx[n] = function(){
+        var args = Array.prototype.slice.call(arguments), g = P[n].apply(ctx, args), add = g.addColorStop;
+        var sp = { kind:n, args:args, stops:[], key:key, made:g }; g.__spec = sp;
+        g.addColorStop = function(o, c){ sp.stops.push([o, c]); add.call(g, o, conv(c)); };
+        return g;
+      };
+    });
+    var skip = /^(constructor|get[A-Z]\w*|isPointIn\w*|measureText|create\w*)$/;
+    Object.getOwnPropertyNames(P).forEach(function(n){
+      if (skip.test(n)) return; var d = Object.getOwnPropertyDescriptor(P, n); if (!d || typeof d.value !== 'function') return;
+      var f = d.value;
+      ctx[n] = function(){
+        if (!replaying){
+          if ((n === 'fillRect' || n === 'clearRect') && full(arguments)){ snap = null; framed = true;
+            /* a new frame: start the record from the drawing state of this moment */
+            var t = ctx.getTransform();
+            log = [['c','setTransform',[t.a,t.b,t.c,t.d,t.e,t.f]]];
+            ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){ log.push(['s', p, vals[p]]); });
+            plain.forEach(function(p){ var dd = Object.getOwnPropertyDescriptor(P, p); if (dd && dd.get) log.push(['s', p, dd.get.call(ctx)]); });
+            log.push(['c','setLineDash',[ctx.getLineDash()]]);
+          }
+          if (log){ log.push(['c', n, Array.prototype.slice.call(arguments)]); if (log.length > 60000) log = null; }
+        }
+        return f.apply(ctx, arguments);
+      };
+    });
+    cvs.push({ redraw:function(){
+      if (!framed && snap){
+        var img = new ImageData(new Uint8ClampedArray(snap.data), snap.width, snap.height), d = img.data, memo = {};
+        for (var i = 0; i < d.length; i += 4){ if (!d[i+3]) continue; var k = d[i] + ',' + d[i+1] + ',' + d[i+2], c = memo[k];
+          if (!c){ var v = parse(conv('rgb(' + k + ')')); c = memo[k] = v || [d[i], d[i+1], d[i+2]]; } d[i] = c[0]; d[i+1] = c[1]; d[i+2] = c[2]; }
+        var t0 = ctx.getTransform(); P.setTransform.call(ctx, 1, 0, 0, 1, 0, 0); P.putImageData.call(ctx, img, 0, 0); P.setTransform.call(ctx, t0); return;
+      }
+      if (!framed || !log || log.length < 3) return;
+      replaying = true;
+      try { log.forEach(function(e){ if (e[0] === 's') ctx[e[1]] = e[2]; else P[e[1]].apply(ctx, e[2]); }); }
+      finally { replaying = false; }
+    }});
+  }
+  return {
+    attach: attach,
+    map: conv,
+    set: function(m){ mode = { dark:!!m.dark, hc:!!m.hc, cb:!!m.cb }; key = (mode.dark?'d':'') + (mode.hc?'h':'') + (mode.cb?'c':'') + '|'; cvs.forEach(function(c){ c.redraw(); }); }
+  };
 }
+
+var ct = makeCT();
+function attachAll(){ var w = document.getElementById('mobslk2') || document.getElementById('slinkyBoundaryRoot'); if (w) [].forEach.call(w.querySelectorAll('canvas'), ct.attach); }
+attachAll();
 function styleBtn(id, active) {
 var b = document.getElementById(id); if (!b) return;
 if (active) { b.style.background='rgba(0,232,208,.12)'; b.style.borderColor='#00e8d0'; b.style.color='#00e8d0'; }
 else        { b.style.background='#2a2e3a'; b.style.borderColor='#404a60'; b.style.color='#7a8aaa'; }
 b.setAttribute('aria-pressed', active ? 'true' : 'false');
 }
-function applyCanvas() {
-var cv = document.getElementById('slinkyBoundaryCanvas0915');
-if (cv) cv.style.filter = states.lm ? 'invert(1) hue-rotate(180deg) brightness(0.9)' : '';
+function apply(){
+ROOT = ROOT || document.getElementById('slinkyBoundaryRoot'); if (!ROOT) return;
+WRAP = document.getElementById('mobslk2') || ROOT; attachAll();
+WRAP.classList.toggle('a11y_dm', states.dm); WRAP.classList.toggle('a11y_hc', states.hc); WRAP.classList.toggle('a11y_cb', states.cb);
+ct.set({ dark:states.dm, hc:states.hc, cb:states.cb });
+var nb = document.getElementById('slinkyBoundaryNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var nr = document.getElementById('snBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('snBtnHC', states.hc); styleBtn('snBtnDM', states.dm); styleBtn('snBtnCB', states.cb); styleBtn('snBtnNR', states.nr);
 }
-function applyNarBar() {
-var nb = document.getElementById('slinkyBoundaryNarBar0915');
-if (nb) nb.style.display = states.nr ? 'block' : 'none';
-var btn = document.getElementById('snBtnNR0915');
-if (btn) { btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF'); styleBtn('snBtnNR0915', states.nr); }
-}
-function apply() {
-if (!ROOT) return;
-applyVars('hc', states.hc); applyVars('lm', states.lm); applyVars('cb', states.cb);
-applyCanvas(); applyNarBar();
-styleBtn('snBtnHC0915', states.hc);
-styleBtn('snBtnLM0915', states.lm);
-styleBtn('snBtnCB0915', states.cb);
-}
-function getCol(prop) {
-if (!ROOT) return DEFAULTS[prop];
-return getComputedStyle(ROOT).getPropertyValue(prop).trim() || DEFAULTS[prop];
-}
+var DEFAULTS = { '--sn-rope':'#3a4046','--sn-rope1':'#cc0000','--sn-rope2':'#0066cc','--sn-compress':'#d1495b','--sn-stretch':'#1b998b',
+'--sn-axis':'#000000','--sn-wrule':'#800080','--sn-vibdir':'#ff0000','--sn-vrule':'#cd853f','--sn-hrule':'#2e8b57',
+'--sn-hand':'#9b7550','--sn-marker':'#1a1a2e','--sn-boundary':'#555555','--sn-toolbar-bg':'#222' };
 return {
-init: function() { ROOT = document.getElementById('slinkyBoundaryRoot0915'); apply(); },
-toggle: function(k) {
+init: function(){ apply(); },
+toggle: function(k){
 states[k] = !states[k];
-if (k === 'hc' && states.hc) states.lm = false;
-if (k === 'lm' && states.lm) states.hc = false;
+if (k === 'hc' && states.hc) states.dm = false;   /* high contrast and dark mode switch each other off; colour-blind combines with either */
+if (k === 'dm' && states.dm) states.hc = false;
 apply();
 },
+/* the colour engine themes every colour on the canvas, so the drawing code keeps its standard colours */
+isHC: function(){ return false; },
+isCB: function(){ return false; },
+col: function(role){ return DEFAULTS['--sn-' + role]; },
 narrate: function(msg) {
 if (!states.nr) return;
-var nb = document.getElementById('slinkyBoundaryNarBar0915');
+var nb = document.getElementById('slinkyBoundaryNarBar');
 if (nb) nb.textContent = msg;
-},
-col: function(role) { return getCol('--sn-' + role); }
+}
 };
 })();
 </script>
+<style>
+/* ════════ display options: dark mode, high contrast, colour-blind safe (the canvas follows through its colour engine) ════════ */
+#mobslk2.a11y_dm { background:#16191e; color:#e6e9ee; }
+#mobslk2.a11y_dm .tbar { background:#8a4a00; color:#fff; }
+#mobslk2.a11y_dm .tbar h3, #mobslk2.a11y_dm .tbar H3 { color:#fff; }
+#mobslk2.a11y_dm .bbar, #mobslk2.a11y_dm .playbar { background:#26301c; }
+#mobslk2.a11y_dm .mcontent { background:#16191e; }
+#mobslk2.a11y_dm .footer, #mobslk2.a11y_dm .footer-pink, #mobslk2.a11y_dm .footer-green, #mobslk2.a11y_dm .footer-blue, #mobslk2.a11y_dm .footer-meas, #mobslk2.a11y_dm .footer-measT { background:#22262b; color:#e6e9ee; }
+#mobslk2.a11y_dm .footer:nth-of-type(odd), #mobslk2.a11y_dm .footer-pink { background:#2e2228; }
+#mobslk2.a11y_dm .footer:nth-of-type(even), #mobslk2.a11y_dm .footer-green { background:#1f2a22; }
+#mobslk2.a11y_dm .footer-blue { background:#1c2633; }
+#mobslk2.a11y_dm .footer-meas, #mobslk2.a11y_dm .footer-measT { background:#2a2614; }
+#mobslk2.a11y_dm .txtDPL { background-color:#1b3a8c; color:#ffe680; }
+#mobslk2.a11y_dm .shm_measlbl, #mobslk2.a11y_dm .shm_smlbl, #mobslk2.a11y_dm .chk { color:#d8dce2; }
+#mobslk2.a11y_dm .wv_btn, #mobslk2.a11y_dm .butt, #mobslk2.a11y_dm input[type=button] { background:#2c3138; color:#e6e9ee; border:1px solid #5a6470; }
+#mobslk2.a11y_dm .wv_btnmain { background:#6a5410; color:#fff; border-color:#a8850a; }
+#mobslk2.a11y_dm .shm_narbar, #mobslk2.a11y_dm .sn_narbar, #mobslk2.a11y_dm .rw_narbar { background:#2a2410; color:#f0e2b8; }
+#mobslk2.a11y_dm .mob_desc, #mobslk2.a11y_dm .rw_desc { background:#22262b; color:#e6e9ee; border-color:#3a4048; }
+#mobslk2.a11y_dm .dm_box { background:#1c2026; color:#e6e9ee; border-color:#3a4048; border-top-color:#5599cc; }
+#mobslk2.a11y_dm .dm_hint, #mobslk2.a11y_dm .dm_small { color:#a8b0bb; }
+#mobslk2.a11y_dm .dm_res { background:#2a2614; color:#f0e2b8; border-color:#8a7420; }
+#mobslk2.a11y_dm .dm_btn { background:#2c3138; color:#e6e9ee; border-color:#5a6470; }
+#mobslk2.a11y_dm .dm_rec { background:#1f4a6e; color:#fff; border-color:#5599cc; }
+#mobslk2.a11y_dm .dm_warn { background:#6a2a2a; color:#fff; border-color:#cc6655; }
+#mobslk2.a11y_dm .dm_tbl th { background:#2c3138; border-color:#5a6470; }
+#mobslk2.a11y_dm .dm_tbl td { background:#1c2026; border-color:#3a4048; }
+#mobslk2.a11y_dm select, #mobslk2.a11y_dm input[type=number], #mobslk2.a11y_dm input[type=text] { background:#22262b; color:#e6e9ee; border:1px solid #5a6470; }
+#mobslk2.a11y_dm input[type=range], #mobslk2.a11y_dm input[type=checkbox] { accent-color:#e8a020; }
+#mobslk2.a11y_dm canvas { border-color:#5a6470 !important; }
+#mobslk2.a11y_hc { background:#000; color:#fff; }
+#mobslk2.a11y_hc .tbar, #mobslk2.a11y_hc .bbar, #mobslk2.a11y_hc .playbar, #mobslk2.a11y_hc .mcontent, #mobslk2.a11y_hc .footer, #mobslk2.a11y_hc .footer-pink, #mobslk2.a11y_hc .footer-green, #mobslk2.a11y_hc .footer-blue, #mobslk2.a11y_hc .footer-meas, #mobslk2.a11y_hc .footer-measT, #mobslk2.a11y_hc .footer:nth-of-type(odd), #mobslk2.a11y_hc .footer:nth-of-type(even) { background:#000; color:#fff; box-shadow:inset 0 0 0 1px #fff; }
+#mobslk2.a11y_hc .tbar h3, #mobslk2.a11y_hc .tbar H3, #mobslk2.a11y_hc .tbar { color:#ffd700; }
+#mobslk2.a11y_hc .txtDPL { background-color:#000; color:#ffff00; box-shadow:inset 0 0 0 1px #fff; }
+#mobslk2.a11y_hc .shm_measlbl, #mobslk2.a11y_hc .shm_smlbl, #mobslk2.a11y_hc .chk { color:#fff; }
+#mobslk2.a11y_hc .wv_btn, #mobslk2.a11y_hc .wv_btnmain, #mobslk2.a11y_hc .butt, #mobslk2.a11y_hc input[type=button], #mobslk2.a11y_hc .dm_btn, #mobslk2.a11y_hc .dm_rec, #mobslk2.a11y_hc .dm_warn { background:#000; color:#fff; border:2px solid #fff; font-weight:bold; }
+#mobslk2.a11y_hc .shm_narbar, #mobslk2.a11y_hc .sn_narbar, #mobslk2.a11y_hc .rw_narbar { background:#000; color:#fff; border-left-color:#ffd700; box-shadow:inset 0 0 0 1px #fff; }
+#mobslk2.a11y_hc .mob_desc, #mobslk2.a11y_hc .rw_desc { background:#000; color:#fff; border-color:#fff; border-left-color:#ffd700; }
+#mobslk2.a11y_hc .dm_box { background:#000; color:#fff; border-color:#fff; border-top-color:#ffd700; }
+#mobslk2.a11y_hc .dm_hint, #mobslk2.a11y_hc .dm_small { color:#fff; }
+#mobslk2.a11y_hc .dm_res { background:#000; color:#ffff00; border-color:#fff; }
+#mobslk2.a11y_hc .dm_tbl th { background:#000; color:#ffd700; border-color:#fff; }
+#mobslk2.a11y_hc .dm_tbl td { background:#000; color:#fff; border-color:#888; }
+#mobslk2.a11y_hc select, #mobslk2.a11y_hc input[type=number], #mobslk2.a11y_hc input[type=text] { background:#000; color:#fff; border:1px solid #fff; }
+#mobslk2.a11y_hc input[type=range], #mobslk2.a11y_hc input[type=checkbox] { accent-color:#ffd700; }
+#mobslk2.a11y_hc canvas { border-color:#fff !important; }
+</style>
 <!-- ════════════════ SIMULATION ════════════════ -->
 <script>
-var slinkyBoundaryPol0915 = (function(){
-var canvas  = document.getElementById('slinkyBoundaryCanvas0915');
+var slinkyBoundaryPol = (function(){
+var canvas  = document.getElementById('slinkyBoundaryCanvas');
 var ctx     = canvas.getContext('2d');
 var CW = canvas.width, CH = canvas.height;
 var xBase = 80, yBase = 75, centerY = yBase + 90;
 var varFont = '12pt Calibri';
 var yScale = 4;                                 /* px per cm, transverse displacement only */
-//TM var freq = $freq, A = $amp;
-//TM var K1 = $k1, M1 = $m1, K2 = $k2, M2 = $m2;
-//TM var Tension = $tension;                          /* used only in transverse mode */
-//TM var freq = $freq, A = $amp, Tension = $tension, mu1 = $mu1, mu2 = $mu2;
+//TM var freq = freq, A = amp;
+//TM var K1 = k1, M1 = m1, K2 = k2, M2 = m2;
+//TM var Tension = tension;                          /* used only in transverse mode */
+//TM var freq = freq, A = amp, Tension = tension, mu1 = mu1, mu2 = mu2;
 //TM var freq = 3, A = 20, Tension = 100, mu1 = 10, mu2 = 30;
 var freq = 3, A = 20;
 var K1 = 0.25, M1 = 0.6, K2 = 0.125, M2 = 1.2;
@@ -386,44 +583,47 @@ ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
 /* Longitudinal: coils rendered as ellipses colored by their own local
 compression (compressed = warm, stretched = cool), same as the
 single-medium sim. */
+/* ── The coils, drawn as a metal helix: each loop runs from one coil's position to the next. The back
+half of every loop is drawn first, darker; then the front halves, and a thin highlight along them, so the
+slinky reads as a wire coil seen slightly from the side. Compression still tints the wire. ── */
+function helixLoop(x0, y0, x1, y1, rx, ry, front){
+var a0 = front ? 0 : Math.PI, n = 14;
+ctx.beginPath();
+for (var k = 0; k <= n; k++){ var th = a0 + Math.PI*k/n, f = th/(2*Math.PI);
+var x = x0 + (x1 - x0)*f + rx*Math.sin(th), y = y0 + (y1 - y0)*f - ry*Math.cos(th);
+if (k) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
+ctx.stroke();
+}
+function shade(rgb, k){ var m = /rgb\((\d+),(\d+),(\d+)\)/.exec(rgb) || /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(rgb); if (!m) return rgb;
+var c = m[0].charAt(0) === 'r' ? [+m[1], +m[2], +m[3]] : [parseInt(m[1],16), parseInt(m[2],16), parseInt(m[3],16)];
+return 'rgb(' + Math.round(c[0]*k) + ',' + Math.round(c[1]*k) + ',' + Math.round(c[2]*k) + ')'; }
+function drawHelix(pts, cols, widths, marked, markerCol){
+var n = pts.length, RX = 6, k, nx, W = widths.map(function(w){ return 1.4 + 0.6*w; });   /* the wire thickens with the mass */
+ctx.lineCap = 'round';
+for (k = 0; k < n; k++){ nx = k < n - 1 ? pts[k + 1] : { x:pts[k].x + coilSpacing, y:pts[k].y }; ctx.strokeStyle = shade(cols[k], 0.55); ctx.lineWidth = Math.max(1, W[k]*0.8); helixLoop(pts[k].x, pts[k].y, nx.x, nx.y, RX, coilRY, false); }
+for (k = 0; k < n; k++){ nx = k < n - 1 ? pts[k + 1] : { x:pts[k].x + coilSpacing, y:pts[k].y }; ctx.strokeStyle = cols[k]; ctx.lineWidth = W[k]; helixLoop(pts[k].x, pts[k].y, nx.x, nx.y, RX, coilRY, true); }
+ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+for (k = 0; k < n; k++){ nx = k < n - 1 ? pts[k + 1] : { x:pts[k].x + coilSpacing, y:pts[k].y }; ctx.lineWidth = Math.max(0.6, W[k]*0.3); helixLoop(pts[k].x - 0.8, pts[k].y - 0.8, nx.x - 0.8, nx.y - 0.8, RX, coilRY - 1, true); }
+ctx.lineCap = 'butt';
+for (k = 0; k < n; k++){ if (marked && marked.indexOf(k) !== -1){ ctx.beginPath(); ctx.ellipse(pts[k].x + coilSpacing/2, pts[k].y, RX + 5, coilRY + 5, 0, 0, 2*Math.PI); ctx.lineWidth = 2.5; ctx.strokeStyle = markerCol; ctx.stroke(); } }
+}
+function wireCol(ratio, compressCol, neutralCol, stretchCol){
+return ratio < 1 ? lerpColor(compressCol, neutralCol, clamp((ratio - 0.6)/0.4, 0, 1)) : lerpColor(neutralCol, stretchCol, clamp((ratio - 1)/0.4, 0, 1)); }
 function drawSlinkyLongitudinal() {
-var compressCol = slinkyBoundaryA11y0915.col('compress');
-var stretchCol  = slinkyBoundaryA11y0915.col('stretch');
-var neutralCol  = slinkyBoundaryA11y0915.col('rope');
-var markerCol   = slinkyBoundaryA11y0915.col('marker');
-var lineW1 = clamp(Math.round(M1 * 4), 1, 6), lineW2 = clamp(Math.round(M2 * 4), 1, 6);
-for (var i = 0; i < nCoils; i++) {
-var ratio = coilRatios[i], col;
-if (ratio < 1) col = lerpColor(compressCol, neutralCol, clamp((ratio - 0.6) / 0.4, 0, 1));
-else col = lerpColor(neutralCol, stretchCol, clamp((ratio - 1) / 0.4, 0, 1));
-var p = coilPositions[i];
-ctx.beginPath();
-ctx.ellipse(p.x, p.y, coilRX, coilRY, 0, 0, 2 * Math.PI);
-ctx.lineWidth = (i < ib) ? lineW1 : lineW2; ctx.strokeStyle = col; ctx.stroke();
-if (showMarkerFlag && markedCoils.indexOf(i) !== -1) {
-ctx.beginPath();
-ctx.ellipse(p.x, p.y, coilRX + 3, coilRY + 3, 0, 0, 2 * Math.PI);
-ctx.lineWidth = 2; ctx.strokeStyle = markerCol; ctx.stroke();
+var A11 = slinkyBoundaryA11y;
+var compressCol = A11.col('compress'), stretchCol = A11.col('stretch'), neutralCol = A11.col('rope'), markerCol = A11.col('marker');
+var lineW1 = clamp(Math.round(M1 * 4), 1, 6), lineW2 = clamp(Math.round(M2 * 4), 1, 6), cols = [], ws = [];
+for (var i = 0; i < nCoils; i++){ cols.push(wireCol(coilRatios[i], compressCol, neutralCol, stretchCol)); ws.push(i < ib ? lineW1 : lineW2); }
+drawHelix(coilPositions, cols, ws, showMarkerFlag ? markedCoils : null, markerCol);
 }
-}
-}
-/* Transverse: plain dots, colored by which slinky they belong to (no
-compression concept applies to a sideways wiggle). */
+/* Transverse: the same helix, each loop shifted sideways with its coil; the wire colour tells the two
+slinkies apart (no compression applies to a sideways wiggle). */
 function drawSlinkyTransverse() {
-var col1 = slinkyBoundaryA11y0915.col('rope1');
-var col2 = slinkyBoundaryA11y0915.col('rope2');
-var markerCol = slinkyBoundaryA11y0915.col('marker');
-var r1 = clamp(M1 * 3, 2, 6), r2 = clamp(M2 * 3, 2, 6);
-for (var i = 0; i < nCoils; i++) {
-var p = coilPositions[i];
-var col = (i < ib) ? col1 : col2;
-var r = (i < ib) ? r1 : r2;
-drawDotSimple(p.x, p.y, r, col);
-if (showMarkerFlag && markedCoils.indexOf(i) !== -1) {
-ctx.beginPath(); ctx.arc(p.x, p.y, r + 4, 0, 2 * Math.PI);
-ctx.lineWidth = 2; ctx.strokeStyle = markerCol; ctx.stroke();
-}
-}
+var A11 = slinkyBoundaryA11y;
+var col1 = shade(A11.col('rope1'), 0.85), col2 = shade(A11.col('rope2'), 0.85), markerCol = A11.col('marker');
+var lineW1 = clamp(Math.round(M1 * 4), 1, 6), lineW2 = clamp(Math.round(M2 * 4), 1, 6), cols = [], ws = [];
+for (var i = 0; i < nCoils; i++){ cols.push(i < ib ? col1 : col2); ws.push(i < ib ? lineW1 : lineW2); }
+drawHelix(coilPositions, cols, ws, showMarkerFlag ? markedCoils : null, markerCol);
 }
 function drawSlinky() { if (mode === 'long') drawSlinkyLongitudinal(); else drawSlinkyTransverse(); }
 function drawBoundary(col) {
@@ -632,7 +832,7 @@ function draw() {
 if (index >= stopIndex) { runFlag = 0; setPlayLabel(false); }
 ctx.clearRect(0, 0, CW, CH);
 if (runFlag === 1) index = index + 1;
-var axisCol = slinkyBoundaryA11y0915.col('axis');
+var axisCol = slinkyBoundaryA11y.col('axis');
 ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, CW, CH);
 var b = boundaryPx();
 ctx.fillStyle = '#eef6ff'; ctx.fillRect(xBase - 20, yBase - 40, b - (xBase - 20), 240);
@@ -643,17 +843,17 @@ t = index / tactual;
 computeCoilGeometry();
 if (t > 0 && showAnimDataFlag) displayData(1.4 * mx, 0, 0.6 * mx, 90);
 if (runFlag === 0 && t > 0) displayEnd(1.6 * mx, my + 45, 0.4 * mx, 64);
-drawBoundary(slinkyBoundaryA11y0915.col('boundary'));
+drawBoundary(slinkyBoundaryA11y.col('boundary'));
 drawSlinky();
 if (showWaveDataFlag) displayWaveData(0.1 * mx, 0, 1.0 * mx, 56);
 var p0 = coilPositions[0] || coilPos(0);
-handR(mode === 'long' ? p0.x - 2 : xBase + 2, mode === 'long' ? centerY - 2 : p0.y - 4, hw, hh, slinkyBoundaryA11y0915.col('hand'));
-if (addWlenFlag) drawWlenGuide(slinkyBoundaryA11y0915.col('wrule'));
-if (addVibDirFlag) drawVibDir(slinkyBoundaryA11y0915.col('vibdir'));
-if (mode === 'long' && showCompressFlag && runFlag === 0 && t > 0) drawCompression(slinkyBoundaryA11y0915.col('compress'));
-if (mode === 'long' && showRarefactionFlag && runFlag === 0 && t > 0) drawRarefaction(slinkyBoundaryA11y0915.col('stretch'));
-if (addXCalFlag) drawXCaliper(slinkyBoundaryA11y0915.col('vrule'));
-if (mode === 'trans' && addYCalFlag) drawYCaliper(slinkyBoundaryA11y0915.col('hrule'));
+handR(mode === 'long' ? p0.x - 2 : xBase + 2, mode === 'long' ? centerY - 2 : p0.y - 4, hw, hh, slinkyBoundaryA11y.col('hand'));
+if (addWlenFlag) drawWlenGuide(slinkyBoundaryA11y.col('wrule'));
+if (addVibDirFlag) drawVibDir(slinkyBoundaryA11y.col('vibdir'));
+if (mode === 'long' && showCompressFlag && runFlag === 0 && t > 0) drawCompression(slinkyBoundaryA11y.col('compress'));
+if (mode === 'long' && showRarefactionFlag && runFlag === 0 && t > 0) drawRarefaction(slinkyBoundaryA11y.col('stretch'));
+if (addXCalFlag) drawXCaliper(slinkyBoundaryA11y.col('vrule'));
+if (mode === 'trans' && addYCalFlag) drawYCaliper(slinkyBoundaryA11y.col('hrule'));
 }
 function narrate() {
 var msg = (mode === 'long' ? 'Longitudinal mode. ' : 'Transverse mode (tension T = ' + Tension.toFixed(1) + ' N). ');
@@ -661,10 +861,10 @@ msg += 'Frequency f = ' + freq.toFixed(1) + ' Hz, common to both slinkies. ';
 msg += 'Slinky 1: K=' + K1.toFixed(2) + ' N/m, M=' + M1.toFixed(1) + ' kg, v=' + v1.toFixed(2) + ' m/s. ';
 msg += 'Slinky 2: K=' + K2.toFixed(2) + ' N/m, M=' + M2.toFixed(1) + ' kg, v=' + v2.toFixed(2) + ' m/s. ';
 msg += 'Transmitted amplitude \u2248 ' + A2.toFixed(1) + ' cm from an incident ' + A.toFixed(0) + ' cm.';
-slinkyBoundaryA11y0915.narrate(msg);
+slinkyBoundaryA11y.narrate(msg);
 }
 function setPlayLabel(isPlaying) {
-var b = document.getElementById('slinkyBoundaryPlayBtn0915'); if (!b) return;
+var b = document.getElementById('slinkyBoundaryPlayBtn'); if (!b) return;
 b.innerHTML = isPlaying ? '\u23F8 Pause' : '\u25B6 Play';
 b.setAttribute('aria-pressed', isPlaying ? 'true' : 'false');
 }
@@ -672,13 +872,13 @@ function runSim() { draw(); if (runFlag === 1) timer = window.setTimeout(runSim,
 function play() {
 window.clearTimeout(timer);
 runFlag = 1; setPlayLabel(true);
-slinkyBoundaryA11y0915.narrate('Animation playing.');
+slinkyBoundaryA11y.narrate('Animation playing.');
 runSim();
 }
 function pause() {
 window.clearTimeout(timer);
 runFlag = 0; setPlayLabel(false);
-slinkyBoundaryA11y0915.narrate('Animation paused.');
+slinkyBoundaryA11y.narrate('Animation paused.');
 }
 function togglePlay() { if (runFlag === 1) pause(); else play(); }
 function stepForward() { window.clearTimeout(timer); runFlag = 1; draw(); runFlag = 0; setPlayLabel(false); }
@@ -692,39 +892,39 @@ window.clearTimeout(timer);
 index = -1; t = 0; t0 = 0;
 recompute(); runFlag = 0; setPlayLabel(false);
 draw();
-slinkyBoundaryA11y0915.narrate('Animation reset.');
+slinkyBoundaryA11y.narrate('Animation reset.');
 }
 function startTimer() {
 t0 = t;
-slinkyBoundaryA11y0915.narrate('Timer started at the current position.');
+slinkyBoundaryA11y.narrate('Timer started at the current position.');
 if (runFlag !== 1) play(); else draw();
 }
 /* Every setter recomputes BOTH slinkies together, in whichever mode is
 currently active. */
-function setFreq(val)    { freq = parseFloat(val); document.getElementById('freqValue0915').innerHTML = freq.toFixed(1); recompute(); reset(); narrate(); }
-function setAmp(val)     { A = parseFloat(val); document.getElementById('ampValue0915').innerHTML = A.toFixed(0); recompute(); reset(); narrate(); }
-function setTension(val) { Tension = parseFloat(val); document.getElementById('tensionValue0915').innerHTML = Tension.toFixed(0); recompute(); reset(); narrate(); }
-function setK1(val)      { K1 = parseFloat(val); document.getElementById('k1Value0915').innerHTML = K1.toFixed(2); recompute(); reset(); narrate(); }
-function setM1(val)      { M1 = parseFloat(val); document.getElementById('m1Value0915').innerHTML = M1.toFixed(1); recompute(); reset(); narrate(); }
-function setK2(val)      { K2 = parseFloat(val); document.getElementById('k2Value0915').innerHTML = K2.toFixed(2); recompute(); reset(); narrate(); }
-function setM2(val)      { M2 = parseFloat(val); document.getElementById('m2Value0915').innerHTML = M2.toFixed(1); recompute(); reset(); narrate(); }
+function setFreq(val)    { freq = parseFloat(val); document.getElementById('freqValue').innerHTML = freq.toFixed(1); recompute(); reset(); narrate(); }
+function setAmp(val)     { A = parseFloat(val); document.getElementById('ampValue').innerHTML = A.toFixed(0); recompute(); reset(); narrate(); }
+function setTension(val) { Tension = parseFloat(val); document.getElementById('tensionValue').innerHTML = Tension.toFixed(0); recompute(); reset(); narrate(); }
+function setK1(val)      { K1 = parseFloat(val); document.getElementById('k1Value').innerHTML = K1.toFixed(2); recompute(); reset(); narrate(); }
+function setM1(val)      { M1 = parseFloat(val); document.getElementById('m1Value').innerHTML = M1.toFixed(1); recompute(); reset(); narrate(); }
+function setK2(val)      { K2 = parseFloat(val); document.getElementById('k2Value').innerHTML = K2.toFixed(2); recompute(); reset(); narrate(); }
+function setM2(val)      { M2 = parseFloat(val); document.getElementById('m2Value').innerHTML = M2.toFixed(1); recompute(); reset(); narrate(); }
 function setMode(m) {
 mode = m;
-var tRow = document.getElementById('tensionRow0915');
-var cRow = document.getElementById('compressRow0915');
-var rRow = document.getElementById('rarefactionRow0915');
-var yRow = document.getElementById('dyRow0915');
+var tRow = document.getElementById('tensionRow');
+var cRow = document.getElementById('compressRow');
+var rRow = document.getElementById('rarefactionRow');
+var yRow = document.getElementById('dyRow');
 if (tRow) tRow.style.display = (m === 'trans') ? 'flex' : 'none';
 if (cRow) cRow.style.display = (m === 'long') ? '' : 'none';
 if (rRow) rRow.style.display = (m === 'long') ? '' : 'none';
 if (yRow) yRow.style.display = (m === 'trans') ? '' : 'none';
 if (m === 'trans') {
 showCompressFlag = 0; showRarefactionFlag = 0;
-var cb1 = document.getElementById('showCompress0915'); if (cb1) cb1.checked = false;
-var cb2 = document.getElementById('showRarefaction0915'); if (cb2) cb2.checked = false;
+var cb1 = document.getElementById('showCompress'); if (cb1) cb1.checked = false;
+var cb2 = document.getElementById('showRarefaction'); if (cb2) cb2.checked = false;
 } else {
 addYCalFlag = 0;
-var cb3 = document.getElementById('showDY0915'); if (cb3) cb3.checked = false;
+var cb3 = document.getElementById('showDY'); if (cb3) cb3.checked = false;
 }
 recompute(); reset(); narrate();
 }
@@ -734,49 +934,49 @@ if (el) el.textContent = (checked ? 'Hide ' : 'Show ') + baseText;
 }
 function toggleWlen(cb) {
 addWlenFlag = cb.checked ? 1 : 0; draw();
-setLabel('wlenLbl0915', cb.checked, 'wavelength guide');
-slinkyBoundaryA11y0915.narrate('Wavelength guide ' + (cb.checked ? 'shown \u2014 it reads whichever slinky it sits over.' : 'hidden.'));
+setLabel('wlenLbl', cb.checked, 'wavelength guide');
+slinkyBoundaryA11y.narrate('Wavelength guide ' + (cb.checked ? 'shown \u2014 it reads whichever slinky it sits over.' : 'hidden.'));
 }
 function toggleVibDir(cb) {
 addVibDirFlag = cb.checked ? 1 : 0; draw();
-setLabel('vibDirLbl0915', cb.checked, 'vibration-direction arrow');
-slinkyBoundaryA11y0915.narrate('Vibration-direction arrow ' + (cb.checked ? 'shown.' : 'hidden.'));
+setLabel('vibDirLbl', cb.checked, 'vibration-direction arrow');
+slinkyBoundaryA11y.narrate('Vibration-direction arrow ' + (cb.checked ? 'shown.' : 'hidden.'));
 }
 function toggleMarker(cb) {
 showMarkerFlag = cb.checked ? 1 : 0; draw();
-setLabel('markerLbl0915', cb.checked, 'tracked-coil markers');
-slinkyBoundaryA11y0915.narrate('Tracked-coil markers ' + (cb.checked ? 'shown. Watch them \u2014 they oscillate near a fixed spot and never travel with the wave.' : 'hidden.'));
+setLabel('markerLbl', cb.checked, 'tracked-coil markers');
+slinkyBoundaryA11y.narrate('Tracked-coil markers ' + (cb.checked ? 'shown. Watch them \u2014 they oscillate near a fixed spot and never travel with the wave.' : 'hidden.'));
 }
 function toggleCompress(cb) {
 showCompressFlag = cb.checked ? 1 : 0; draw();
-setLabel('compressLbl0915', cb.checked, 'compression points (when paused)');
-slinkyBoundaryA11y0915.narrate('Compression markers ' + (cb.checked ? 'will appear once the animation is paused.' : 'hidden.'));
+setLabel('compressLbl', cb.checked, 'compression points (when paused)');
+slinkyBoundaryA11y.narrate('Compression markers ' + (cb.checked ? 'will appear once the animation is paused.' : 'hidden.'));
 }
 function toggleRarefaction(cb) {
 showRarefactionFlag = cb.checked ? 1 : 0; draw();
-setLabel('rarefactionLbl0915', cb.checked, 'rarefaction points (when paused)');
-slinkyBoundaryA11y0915.narrate('Rarefaction markers ' + (cb.checked ? 'will appear once the animation is paused.' : 'hidden.'));
+setLabel('rarefactionLbl', cb.checked, 'rarefaction points (when paused)');
+slinkyBoundaryA11y.narrate('Rarefaction markers ' + (cb.checked ? 'will appear once the animation is paused.' : 'hidden.'));
 }
 function toggleDeltaX(cb) {
 addXCalFlag = cb.checked ? 1 : 0; draw();
-setLabel('dxLbl0915', cb.checked, 'horizontal caliper (\u0394x)');
-slinkyBoundaryA11y0915.narrate('Horizontal-distance caliper ' + (cb.checked ? 'shown, with a live reading. Drag either jaw to change the gap, or drag the reading to move the whole caliper.' : 'hidden.'));
+setLabel('dxLbl', cb.checked, 'horizontal caliper (\u0394x)');
+slinkyBoundaryA11y.narrate('Horizontal-distance caliper ' + (cb.checked ? 'shown, with a live reading. Drag either jaw to change the gap, or drag the reading to move the whole caliper.' : 'hidden.'));
 }
 function toggleDeltaY(cb) {
 addYCalFlag = cb.checked ? 1 : 0; draw();
-setLabel('dyLbl0915', cb.checked, 'vertical caliper (\u0394y)');
-slinkyBoundaryA11y0915.narrate('Vertical-distance caliper ' + (cb.checked ? 'shown, with a live reading. Drag either jaw to change the gap, or drag the reading to move the whole caliper.' : 'hidden.'));
+setLabel('dyLbl', cb.checked, 'vertical caliper (\u0394y)');
+slinkyBoundaryA11y.narrate('Vertical-distance caliper ' + (cb.checked ? 'shown, with a live reading. Drag either jaw to change the gap, or drag the reading to move the whole caliper.' : 'hidden.'));
 }
-function toggleWaveData(cb) { showWaveDataFlag = cb.checked ? 1 : 0; draw(); setLabel('waveDataLbl0915', cb.checked, 'wave-data panel'); }
-function toggleAnimData(cb) { showAnimDataFlag = cb.checked ? 1 : 0; draw(); setLabel('animDataLbl0915', cb.checked, 'animation-time panel'); }
+function toggleWaveData(cb) { showWaveDataFlag = cb.checked ? 1 : 0; draw(); setLabel('waveDataLbl', cb.checked, 'wave-data panel'); }
+function toggleAnimData(cb) { showAnimDataFlag = cb.checked ? 1 : 0; draw(); setLabel('animDataLbl', cb.checked, 'animation-time panel'); }
 function reactionDown(x, y) {
-var r = canvas.getBoundingClientRect(); x -= r.left; y -= r.top;
+var r = canvas.getBoundingClientRect(); x = (x - r.left)*canvas.width/r.width; y = (y - r.top)*canvas.height/r.height;
 canvas.style.cursor = 'pointer';
 checkIfCalipers(x, y);
 if (!dragging) checkIfWlen(x, y);
 }
 function reactionMove(x, y) {
-var r = canvas.getBoundingClientRect(); x -= r.left; y -= r.top;
+var r = canvas.getBoundingClientRect(); x = (x - r.left)*canvas.width/r.width; y = (y - r.top)*canvas.height/r.height;
 if (!dragging) return;
 canvas.style.cursor = 'pointer';
 if (dragging.tool === 'x') {
@@ -796,7 +996,7 @@ if (dragging && dragging.tool === 'x') msg = 'Horizontal distance: \u0394x = ' +
 if (dragging && dragging.tool === 'y') msg = 'Vertical distance: \u0394y = ' + m2Amp + ' cm.';
 dragging = null;
 canvas.style.cursor = 'default';
-if (msg) slinkyBoundaryA11y0915.narrate(msg);
+if (msg) slinkyBoundaryA11y.narrate(msg);
 }
 function init() {
 canvas.onmousedown = function (e) { reactionDown(e.clientX, e.clientY); };
@@ -821,8 +1021,22 @@ toggleWaveData: toggleWaveData, toggleAnimData: toggleAnimData
 })();
 </script>
 <script>
-slinkyBoundaryA11y0915.init();
-slinkyBoundaryA11y0915.narrate('Two-slinky sim ready, in Longitudinal mode. Switch to Transverse to compare how the same slinkies respond to a sideways wiggle instead of a push/pull.');
+slinkyBoundaryA11y.init();
+slinkyBoundaryA11y.narrate('Two-slinky sim ready, in Longitudinal mode. Switch to Transverse to compare how the same slinkies respond to a sideways wiggle instead of a push/pull.');
 </script>
-
-</body></html>
+<script>
+(function(){
+var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+b.addEventListener('click', function(){
+var open = d.style.display === 'none';
+d.style.display = open ? 'block' : 'none';
+b.setAttribute('aria-expanded', open ? 'true' : 'false');
+b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }
+});
+})();
+</script>
+</div><!-- #mobslk2 -->
+</main>
+</body>
+</html>

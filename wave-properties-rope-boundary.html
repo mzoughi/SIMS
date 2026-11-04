@@ -10,57 +10,64 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations-Waves: Wave on a String: Crossing a Boundary Between Two Media</title>
+<title>Physics Simulations-Waves: Transverse Wave Properties for a Two Rope Setup</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,Transverse, Longitudinal,Frequency, Amplitude, Tension, Mass,Length,Wave,string, Properties,Rope, lesson, scientific">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, waves, pulse, rope, slinky, speed, wavelength, frequency, amplitude, reflection, transmission, boundary, interference, standing waves, resonance, lesson, scientific">
+<meta name="description" content="This simulation sends a continuous wave along a rope made of two parts joined together, rope 1 and rope 2, with different masses per unit length.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:920px; max-width:100%; margin:0 auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
-<div id="mobw27200915" class="mob_wrap0915">
-<div id="boundaryRoot0915">
+<main class="page">
+<div id="mobw2720" class="mob_wrap">
+<div id="boundaryRoot">
 <!-- ── Accessibility toolbar ── -->
-<div class="sn_a11y0915" id="snBar0915" role="toolbar" aria-label="Display options">
-<button type="button" class="sn_a11ybtn0915" id="snBtnHC0915" onclick="boundaryA11y0915.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="sn_a11ybtn0915" id="snBtnLM0915" onclick="boundaryA11y0915.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
-<button type="button" class="sn_a11ybtn0915" id="snBtnCB0915" onclick="boundaryA11y0915.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
-<button type="button" class="sn_a11ybtn0915 sn_a11yon0915" id="snBtnNR0915" onclick="boundaryA11y0915.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+<div class="sn_a11y" id="snBar" role="toolbar" aria-label="Display options">
+<button type="button" class="sn_a11ybtn" id="snBtnHC" onclick="boundaryA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="sn_a11ybtn" id="snBtnDM" onclick="boundaryA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="sn_a11ybtn" id="snBtnCB" onclick="boundaryA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="sn_a11ybtn sn_a11yon" id="snBtnNR" onclick="boundaryA11y.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
 </div>
-<div class="tbar0915"><h3>Wave on a String: Crossing a Boundary Between Two Media</h3></div>
-<div class="mcontent0915"><canvas id="boundaryCanvas0915" style="margin:auto;border:1px solid" width="660" height="320"></canvas></div>
-<div id="boundaryNarBar0915" class="sn_narbar0915" role="status" aria-live="polite" aria-atomic="true"></div>
-<div class="playbar0915" role="group" aria-label="Animation playback controls">
-<button type="button" class="wv_btn0915" id="boundaryPlayBtn0915" onclick="boundaryPol0915.togglePlay()" aria-pressed="false">&#9654; Play</button>
-<button type="button" class="wv_btn0915" onclick="boundaryPol0915.stepBack()">&#10073;&#9664; Step back</button>
-<button type="button" class="wv_btn0915" onclick="boundaryPol0915.stepForward()">&#9654;&#10073; Step forward</button>
-<button type="button" class="wv_btn0915" onclick="boundaryPol0915.reset()">&#8635; Reset</button>
-<button type="button" class="wv_btn0915" onclick="boundaryPol0915.startTimer()">&#9201; Start timer here</button>
+<div class="tbar"><h3>Wave on a String: Crossing a Boundary Between Two Media</h3></div>
+<div class="mcontent"><canvas id="boundaryCanvas" style="margin:auto;border:1px solid" width="660" height="320"></canvas></div>
+<div id="boundaryNarBar" class="sn_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="playbar" role="group" aria-label="Animation playback controls">
+<button type="button" class="wv_btn" id="boundaryPlayBtn" onclick="boundaryPol.togglePlay()" aria-pressed="false">&#9654; Play</button>
+<button type="button" class="wv_btn" onclick="boundaryPol.stepBack()">&#10073;&#9664; Step back</button>
+<button type="button" class="wv_btn" onclick="boundaryPol.stepForward()">&#9654;&#10073; Step forward</button>
+<button type="button" class="wv_btn" onclick="boundaryPol.reset()">&#8635; Reset</button>
+<button type="button" class="wv_btn" onclick="boundaryPol.startTimer()">&#9201; Start timer here</button>
 </div>
-<div class="bbar0915" role="group" aria-label="Show or hide measurement tools and overlays">
-<label class="chk0915"><input type="checkbox" id="showWlen0915" onchange="boundaryPol0915.toggleWlen(this)"> <span id="wlenLbl0915">Show wavelength guide</span></label>
-<label class="chk0915"><input type="checkbox" id="showMarker0915" onchange="boundaryPol0915.toggleMarker(this)"> <span id="markerLbl0915">Show tracked-point markers</span></label>
-<label class="chk0915"><input type="checkbox" id="showDX0915" onchange="boundaryPol0915.toggleDeltaX(this)"> <span id="dxLbl0915">Show horizontal caliper (&#916;x)</span></label>
-<label class="chk0915"><input type="checkbox" id="showDY0915" onchange="boundaryPol0915.toggleDeltaY(this)"> <span id="dyLbl0915">Show vertical caliper (&#916;y)</span></label>
-<label class="chk0915"><input type="checkbox" id="showWaveData0915" checked onchange="boundaryPol0915.toggleWaveData(this)"> <span id="waveDataLbl0915">Hide wave-data panel</span></label>
-<label class="chk0915"><input type="checkbox" id="showAnimData0915" checked onchange="boundaryPol0915.toggleAnimData(this)"> <span id="animDataLbl0915">Hide animation-time panel</span></label>
+<div class="bbar" role="group" aria-label="Show or hide measurement tools and overlays">
+<label class="chk"><input type="checkbox" id="showWlen" onchange="boundaryPol.toggleWlen(this)"> <span id="wlenLbl">Show wavelength guide</span></label>
+<label class="chk"><input type="checkbox" id="showMarker" onchange="boundaryPol.toggleMarker(this)"> <span id="markerLbl">Show tracked-point markers</span></label>
+<label class="chk"><input type="checkbox" id="showDX" onchange="boundaryPol.toggleDeltaX(this)"> <span id="dxLbl">Show horizontal caliper (&#916;x)</span></label>
+<label class="chk"><input type="checkbox" id="showDY" onchange="boundaryPol.toggleDeltaY(this)"> <span id="dyLbl">Show vertical caliper (&#916;y)</span></label>
+<label class="chk"><input type="checkbox" id="showWaveData" checked onchange="boundaryPol.toggleWaveData(this)"> <span id="waveDataLbl">Hide wave-data panel</span></label>
+<label class="chk"><input type="checkbox" id="showAnimData" checked onchange="boundaryPol.toggleAnimData(this)"> <span id="animDataLbl">Hide animation-time panel</span></label>
 </div>
-<div class="footer0915">
-<div class="left0915">Frequency:</div>
-<div class="center0915">`f:\ ` <input class=islide0915 type="range" id="freqSlider0915" min="100" max="500" value="400" step="10" oninput="boundaryPol0915.setFreq(this.value)" onchange="boundaryPol0915.setFreq(this.value)"> <span id="freqValue0915">400</span> Hz</div>
+<div class="footer">
+<div class="left">Frequency:</div>
+<div class="center">`f:\ ` <input class=islide type="range" id="freqSlider" min="100" max="500" value="400" step="10" oninput="boundaryPol.setFreq(this.value)" onchange="boundaryPol.setFreq(this.value)"> <span id="freqValue">400</span> Hz</div>
 </div>
-<div class="footer0915">
-<div class="left0915">Amplitude:</div>
-<div class="center0915">`A:\ ` <input class=islide0915 type="range" id="ampSlider0915" min="5" max="25" value="20" step="5" oninput="boundaryPol0915.setAmp(this.value)" onchange="boundaryPol0915.setAmp(this.value)"> <span id="ampValue0915">20</span> cm</div>
+<div class="footer">
+<div class="left">Amplitude:</div>
+<div class="center">`A:\ ` <input class=islide type="range" id="ampSlider" min="5" max="25" value="20" step="5" oninput="boundaryPol.setAmp(this.value)" onchange="boundaryPol.setAmp(this.value)"> <span id="ampValue">20</span> cm</div>
 </div>
-<div class="footer0915">
-<div class="left0915">Tension:</div>
-<div class="center0915">`T:\ ` <input class=islide0915 type="range" id="tensionSlider0915" min="50" max="250" value="100" step="25" oninput="boundaryPol0915.setTension(this.value)" onchange="boundaryPol0915.setTension(this.value)"> <span id="tensionValue0915">100</span> N</div>
+<div class="footer">
+<div class="left">Tension:</div>
+<div class="center">`T:\ ` <input class=islide type="range" id="tensionSlider" min="50" max="250" value="100" step="25" oninput="boundaryPol.setTension(this.value)" onchange="boundaryPol.setTension(this.value)"> <span id="tensionValue">100</span> N</div>
 </div>
-<div class="footer0915">
-<div class="left0915">Mass/length, rope 1:</div>
-<div class="center0915">`mu_1:\ ` <input class=islide0915 type="range" id="mu1Slider0915" min="10" max="40" value="10" step="5" oninput="boundaryPol0915.setMu1(this.value)" onchange="boundaryPol0915.setMu1(this.value)"> <span id="mu1Value0915">10</span> g/m</div>
+<div class="footer">
+<div class="left">Mass/length, rope 1:</div>
+<div class="center">`mu_1:\ ` <input class=islide type="range" id="mu1Slider" min="10" max="40" value="10" step="5" oninput="boundaryPol.setMu1(this.value)" onchange="boundaryPol.setMu1(this.value)"> <span id="mu1Value">10</span> g/m</div>
 </div>
-<div class="footer0915">
-<div class="left0915">Mass/length, rope 2:</div>
-<div class="center0915">`mu_2:\ ` <input class=islide0915 type="range" id="mu2Slider0915" min="10" max="40" value="30" step="5" oninput="boundaryPol0915.setMu2(this.value)" onchange="boundaryPol0915.setMu2(this.value)"> <span id="mu2Value0915">30</span> g/m</div>
+<div class="footer">
+<div class="left">Mass/length, rope 2:</div>
+<div class="center">`mu_2:\ ` <input class=islide type="range" id="mu2Slider" min="10" max="40" value="30" step="5" oninput="boundaryPol.setMu2(this.value)" onchange="boundaryPol.setMu2(this.value)"> <span id="mu2Value">30</span> g/m</div>
 </div>
 <hr>
 <ol type="a">
@@ -73,10 +80,10 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <li>Turn on the tracked-point markers and let the animation run. Do the marked points travel horizontally with the wave, or only move vertically?<br /></li>
 <li>How does increasing the tension `T` affect `lambda_1` and `lambda_2` together? Why does a tension change affect both ropes the same way?<br /></li>
 </ol>
-</div><!-- #boundaryRoot0915 -->
-<style>:where(#mobw27200915) * { margin: 0; box-sizing: border-box; }
-:where(#mobw27200915) div { width: 663px; margin: 0; }
-#boundaryRoot0915 {
+</div><!-- #boundaryRoot -->
+<style>:where(#mobw2720) * { margin: 0; box-sizing: border-box; }
+:where(#mobw2720) div { width: 663px; margin: 0; }
+#boundaryRoot {
 --sn-toolbar-bg: #222;
 --sn-rope1:    #cc0000;
 --sn-rope2:    #0066cc;
@@ -88,118 +95,269 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 --sn-marker:   #1a1a2e;
 --sn-boundary: #555555;
 }
-#boundaryRoot0915 .sn_a11y0915 {
+#boundaryRoot .sn_a11y {
 display: flex; gap: 6px; padding: 6px 8px;
 background: var(--sn-toolbar-bg); flex-wrap: wrap; width: 663px;
 }
-#boundaryRoot0915 .sn_a11ybtn0915 {
+#boundaryRoot .sn_a11ybtn {
 padding: 4px 10px; font-size: .72rem; font-family: monospace;
 letter-spacing: .06em; border-radius: 3px; cursor: pointer;
 background: #2a2e3a; border: 1px solid #404a60; color: #7a8aaa;
 transition: border-color .15s, color .15s;
 }
-#boundaryRoot0915 .sn_a11ybtn0915:hover { border-color: #00e8d0; color: #00e8d0; }
-#boundaryRoot0915 .sn_a11yon0915 { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
-#boundaryRoot0915 .sn_narbar0915 {
+#boundaryRoot .sn_a11ybtn:hover { border-color: #00e8d0; color: #00e8d0; }
+#boundaryRoot .sn_a11yon { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
+#boundaryRoot .sn_narbar {
 width: 663px; min-height: 28px; padding: 5px 10px;
 background: #ffefc0; border-left: 4px solid #e0b040;
 font-size: .88rem; color: #333; font-style: italic;
 }
-.tbar0915 { padding: 3px; height: 30px; background-color: #f90; text-align: center; }
-.mcontent0915 { height: 322px; }
-.islide0915 { width: 220px; }
-.playbar0915 {
+.tbar { padding: 3px; height: 30px; background-color: #f90; text-align: center; }
+.mcontent { height: 322px; }
+.islide { width: 220px; }
+.playbar {
 height: auto; min-height: 40px; background-color: #cfe8ff; padding: 6px;
 text-align: center; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
 }
-.wv_btn0915 {
+.wv_btn {
 padding: 6px 10px; font-size: .82rem; border-radius: 4px; cursor: pointer;
 background: #fff; border: 1px solid #557; color: #223;
 }
-.wv_btn0915:hover { background: #eef4ff; }
-.bbar0915 {
+.wv_btn:hover { background: #eef4ff; }
+.bbar {
 background-color: #df9; padding: 8px; text-align: left;
 display: flex; flex-wrap: wrap; gap: 4px 16px;
 }
-.bbar0915 .chk0915 { width: auto; font-size: .84rem; white-space: nowrap; }
-.footer0915 { height: 40px; text-align: center; font-size: normal; display: flex; }
-.footer0915 .left0915 { width: 150px; padding: 2px; }
-.footer0915 .center0915 { width: 513px; padding: 4px; }
-.footer0915:nth-of-type(odd) { background-color: #fce4ec; }
-.footer0915:nth-of-type(even) { background-color: #e8f5e9; }</style>
+.bbar .chk { width: auto; font-size: .84rem; white-space: nowrap; }
+.footer { height: 40px; text-align: center; font-size: normal; display: flex; }
+.footer .left { width: 150px; padding: 2px; }
+.footer .center { width: 513px; padding: 4px; }
+.footer:nth-of-type(odd) { background-color: #fce4ec; }
+.footer:nth-of-type(even) { background-color: #e8f5e9; }</style>
 <!-- ════════════════ ACCESSIBILITY CONTROLLER ════════════════ -->
 <script>
-var boundaryA11y0915 = (function(){
-var ROOT = null;
-var states = { hc: false, lm: false, cb: false, nr: true };
-var THEMES = {
-hc: { '--sn-rope1':'#ffaa00','--sn-rope2':'#00ffff','--sn-axis':'#ffffff',
-'--sn-wrule':'#ff88ff','--sn-vrule':'#ffaa00','--sn-hrule':'#00ff88',
-'--sn-hand':'#ffcc88','--sn-marker':'#ffffff','--sn-boundary':'#ffffff','--sn-toolbar-bg':'#000' },
-lm: { '--sn-rope1':'#aa3311','--sn-rope2':'#0077aa','--sn-axis':'#222222',
-'--sn-wrule':'#6600cc','--sn-vrule':'#996622','--sn-hrule':'#226622',
-'--sn-hand':'#8a6440','--sn-marker':'#000000','--sn-boundary':'#333333','--sn-toolbar-bg':'#333' },
-cb: { '--sn-rope1':'#d55e00','--sn-rope2':'#0072b2','--sn-axis':'#000000',
-'--sn-wrule':'#0072b2','--sn-vrule':'#e69f00','--sn-hrule':'#009e73',
-'--sn-hand':'#e69f00','--sn-marker':'#000000','--sn-boundary':'#000000' }
-};
-var DEFAULTS = { '--sn-rope1':'#cc0000','--sn-rope2':'#0066cc','--sn-axis':'#000000',
-'--sn-wrule':'#800080','--sn-vrule':'#cd853f','--sn-hrule':'#2e8b57',
-'--sn-hand':'#9b7550','--sn-marker':'#1a1a2e','--sn-boundary':'#555555','--sn-toolbar-bg':'#222' };
-function applyVars(theme, on) {
-if (!ROOT) return;
-var vars = THEMES[theme];
-for (var p in vars) ROOT.style.setProperty(p, on ? vars[p] : DEFAULTS[p]);
+var boundaryA11y = (function(){
+var ROOT = null, WRAP = null, states = { hc:false, dm:false, cb:false, nr:true };
+/* ── canvas themes: every colour the sim draws passes through map(); the last frame is recorded,
+      so switching dark mode, high contrast or colour-blind safe colours redraws it at once,
+      even while the sim is paused. No page-wide names: this lives inside the controller. ── */
+function makeCT(){
+  var mode = { dark:false, hc:false, cb:false }, key = '', cache = {}, cvs = [];
+  var probe = document.createElement('canvas').getContext('2d');
+  var P = CanvasRenderingContext2D.prototype;
+  function parse(c){
+    probe.fillStyle = '#000'; probe.fillStyle = c; var s = String(probe.fillStyle), m;
+    if (s.charAt(0) === '#') return [parseInt(s.substr(1,2),16), parseInt(s.substr(3,2),16), parseInt(s.substr(5,2),16), 1];
+    m = s.match(/rgba?\(([^)]+)\)/); if (!m) return null;
+    var p = m[1].split(',').map(parseFloat); return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1];
+  }
+  function lin(v){ v /= 255; return v <= 0.04045 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); }
+  function lum(r,g,b){ return 0.2126*lin(r) + 0.7152*lin(g) + 0.0722*lin(b); }
+  function hsl(r,g,b){
+    r/=255; g/=255; b/=255; var mx = Math.max(r,g,b), mn = Math.min(r,g,b), h = 0, s = 0, l = (mx+mn)/2, d = mx-mn;
+    if (d > 1e-6){ s = d/(1 - Math.abs(2*l - 1));
+      h = mx === r ? ((g-b)/d) % 6 : (mx === g ? (b-r)/d + 2 : (r-g)/d + 4); h *= 60; if (h < 0) h += 360; }
+    return [h, s, l];
+  }
+  function rgb(h,s,l){
+    var c = (1 - Math.abs(2*l - 1))*s, x = c*(1 - Math.abs((h/60) % 2 - 1)), m = l - c/2, t;
+    t = h < 60 ? [c,x,0] : h < 120 ? [x,c,0] : h < 180 ? [0,c,x] : h < 240 ? [0,x,c] : h < 300 ? [x,0,c] : [c,0,x];
+    return [Math.round((t[0]+m)*255), Math.round((t[1]+m)*255), Math.round((t[2]+m)*255)];
+  }
+  /* raise the lightness until the colour stands out on a dark background */
+  function lift(h,s,l,target){ var c = rgb(h,s,l); while (lum(c[0],c[1],c[2]) < target && l < 0.95){ l += 0.03; c = rgb(h,s,l); } return c; }
+  /* Okabe-Ito colours, chosen by hue */
+  function oi(h){
+    return h < 15 || h >= 330 ? [213,94,0] : h < 40 ? [230,159,0] : h < 75 ? [240,228,66] : h < 170 ? [0,158,115]
+         : h < 200 ? [86,180,233] : h < 260 ? [0,114,178] : [204,121,167];
+  }
+  function conv(c){
+    if (!mode.dark && !mode.hc && !mode.cb) return c;
+    var k = key + c; if (cache[k] !== undefined) return cache[k];
+    var v = parse(c); if (!v){ cache[k] = c; return c; }
+    var r = v[0], g = v[1], b = v[2], a = v[3], q = hsl(r,g,b), Y = lum(r,g,b), neutral = q[1] < 0.18, o;
+    if (mode.cb && !neutral && Y <= 0.6 && !(q[2] > 0.6 && q[1] < 0.6)){ o = oi(q[0]); r = o[0]; g = o[1]; b = o[2]; q = hsl(r,g,b); Y = lum(r,g,b); }
+    if (mode.hc){
+      if (neutral) o = Y > 0.8 ? [0,0,0] : (Y < 0.25 ? [255,255,255] : [205,205,205]);
+      else if (Y > 0.6 || (q[2] > 0.6 && q[1] < 0.6)) o = [0,0,0];   /* light or pastel fills are surfaces */
+      else o = lift(q[0], 1, Math.max(q[2], 0.5), 0.4);
+    } else if (mode.dark){
+      if (neutral) o = rgb(q[0], q[1], 0.1 + 0.82*(1 - q[2]));
+      else if (Y > 0.55 || (q[2] > 0.6 && q[1] < 0.6)) o = rgb(q[0], Math.min(q[1], 0.3), 0.18);   /* light or pastel fills are surfaces */
+      else o = lift(q[0], q[1], q[2], 0.3);
+    } else o = [r,g,b];
+    var out = a < 1 ? 'rgba(' + o[0] + ',' + o[1] + ',' + o[2] + ',' + a + ')' : 'rgb(' + o[0] + ',' + o[1] + ',' + o[2] + ')';
+    cache[k] = out; return out;
+  }
+  /* gradients remember their colour stops, so they can be rebuilt in another theme */
+  function style(v, ctx){
+    if (typeof v === 'string') return conv(v);
+    if (v && v.__spec){
+      var sp = v.__spec; if (sp.key === key) return sp.made;
+      var g = P[sp.kind].apply(ctx, sp.args); sp.stops.forEach(function(s){ g.addColorStop(s[0], conv(s[1])); });
+      sp.key = key; sp.made = g; return g;
+    }
+    return v;
+  }
+  function attach(cv){
+    var ctx = cv.getContext('2d'); if (!ctx || ctx.__ct) return; ctx.__ct = true;
+    var log = [], replaying = false, vals = {};
+    /* a fill or clear covering the whole canvas starts a new frame (in device pixels, whatever the transform) */
+    function full(a){ var t = ctx.getTransform(), x0 = t.a*a[0] + t.e, y0 = t.d*a[1] + t.f, x1 = t.a*(a[0] + a[2]) + t.e, y1 = t.d*(a[1] + a[3]) + t.f;
+      return t.b === 0 && t.c === 0 && Math.min(x0, x1) <= 0.5 && Math.min(y0, y1) <= 0.5 && Math.max(x0, x1) >= cv.width - 0.5 && Math.max(y0, y1) >= cv.height - 0.5; }
+    /* a canvas attached after its first drawing: keep that picture, to re-colour pixel by pixel until the next frame */
+    var snap = null, framed = false; try { snap = ctx.getImageData(0, 0, cv.width, cv.height); } catch (e) {}
+    ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); vals[p] = d.get.call(ctx);
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return vals[p]; },
+        set:function(v){ vals[p] = v; if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, style(v, ctx)); } });
+    });
+    var plain = ['lineWidth','font','textAlign','textBaseline','globalAlpha','lineCap','lineJoin','miterLimit','shadowBlur',
+                 'shadowOffsetX','shadowOffsetY','globalCompositeOperation','lineDashOffset','direction','imageSmoothingEnabled'];
+    plain.forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); if (!d || !d.set) return;
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return d.get.call(ctx); },
+        set:function(v){ if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, v); } });
+    });
+    ['createLinearGradient','createRadialGradient','createConicGradient'].forEach(function(n){
+      if (!P[n]) return;
+      ctx[n] = function(){
+        var args = Array.prototype.slice.call(arguments), g = P[n].apply(ctx, args), add = g.addColorStop;
+        var sp = { kind:n, args:args, stops:[], key:key, made:g }; g.__spec = sp;
+        g.addColorStop = function(o, c){ sp.stops.push([o, c]); add.call(g, o, conv(c)); };
+        return g;
+      };
+    });
+    var skip = /^(constructor|get[A-Z]\w*|isPointIn\w*|measureText|create\w*)$/;
+    Object.getOwnPropertyNames(P).forEach(function(n){
+      if (skip.test(n)) return; var d = Object.getOwnPropertyDescriptor(P, n); if (!d || typeof d.value !== 'function') return;
+      var f = d.value;
+      ctx[n] = function(){
+        if (!replaying){
+          if ((n === 'fillRect' || n === 'clearRect') && full(arguments)){ snap = null; framed = true;
+            /* a new frame: start the record from the drawing state of this moment */
+            var t = ctx.getTransform();
+            log = [['c','setTransform',[t.a,t.b,t.c,t.d,t.e,t.f]]];
+            ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){ log.push(['s', p, vals[p]]); });
+            plain.forEach(function(p){ var dd = Object.getOwnPropertyDescriptor(P, p); if (dd && dd.get) log.push(['s', p, dd.get.call(ctx)]); });
+            log.push(['c','setLineDash',[ctx.getLineDash()]]);
+          }
+          if (log){ log.push(['c', n, Array.prototype.slice.call(arguments)]); if (log.length > 60000) log = null; }
+        }
+        return f.apply(ctx, arguments);
+      };
+    });
+    cvs.push({ redraw:function(){
+      if (!framed && snap){
+        var img = new ImageData(new Uint8ClampedArray(snap.data), snap.width, snap.height), d = img.data, memo = {};
+        for (var i = 0; i < d.length; i += 4){ if (!d[i+3]) continue; var k = d[i] + ',' + d[i+1] + ',' + d[i+2], c = memo[k];
+          if (!c){ var v = parse(conv('rgb(' + k + ')')); c = memo[k] = v || [d[i], d[i+1], d[i+2]]; } d[i] = c[0]; d[i+1] = c[1]; d[i+2] = c[2]; }
+        var t0 = ctx.getTransform(); P.setTransform.call(ctx, 1, 0, 0, 1, 0, 0); P.putImageData.call(ctx, img, 0, 0); P.setTransform.call(ctx, t0); return;
+      }
+      if (!framed || !log || log.length < 3) return;
+      replaying = true;
+      try { log.forEach(function(e){ if (e[0] === 's') ctx[e[1]] = e[2]; else P[e[1]].apply(ctx, e[2]); }); }
+      finally { replaying = false; }
+    }});
+  }
+  return {
+    attach: attach,
+    map: conv,
+    set: function(m){ mode = { dark:!!m.dark, hc:!!m.hc, cb:!!m.cb }; key = (mode.dark?'d':'') + (mode.hc?'h':'') + (mode.cb?'c':'') + '|'; cvs.forEach(function(c){ c.redraw(); }); }
+  };
 }
+
+var ct = makeCT();
+function attachAll(){ var w = document.getElementById('mobw2720') || document.getElementById('boundaryRoot'); if (w) [].forEach.call(w.querySelectorAll('canvas'), ct.attach); }
+attachAll();
 function styleBtn(id, active) {
 var b = document.getElementById(id); if (!b) return;
 if (active) { b.style.background='rgba(0,232,208,.12)'; b.style.borderColor='#00e8d0'; b.style.color='#00e8d0'; }
 else        { b.style.background='#2a2e3a'; b.style.borderColor='#404a60'; b.style.color='#7a8aaa'; }
 b.setAttribute('aria-pressed', active ? 'true' : 'false');
 }
-function applyCanvas() {
-var cv = document.getElementById('boundaryCanvas0915');
-if (cv) cv.style.filter = states.lm ? 'invert(1) hue-rotate(180deg) brightness(0.9)' : '';
+function apply(){
+ROOT = ROOT || document.getElementById('boundaryRoot'); if (!ROOT) return;
+WRAP = document.getElementById('mobw2720') || ROOT; attachAll();
+WRAP.classList.toggle('a11y_dm', states.dm); WRAP.classList.toggle('a11y_hc', states.hc); WRAP.classList.toggle('a11y_cb', states.cb);
+ct.set({ dark:states.dm, hc:states.hc, cb:states.cb });
+var nb = document.getElementById('boundaryNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var nr = document.getElementById('snBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('snBtnHC', states.hc); styleBtn('snBtnDM', states.dm); styleBtn('snBtnCB', states.cb); styleBtn('snBtnNR', states.nr);
 }
-function applyNarBar() {
-var nb = document.getElementById('boundaryNarBar0915');
-if (nb) nb.style.display = states.nr ? 'block' : 'none';
-var btn = document.getElementById('snBtnNR0915');
-if (btn) { btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF'); styleBtn('snBtnNR0915', states.nr); }
-}
-function apply() {
-if (!ROOT) return;
-applyVars('hc', states.hc); applyVars('lm', states.lm); applyVars('cb', states.cb);
-applyCanvas(); applyNarBar();
-styleBtn('snBtnHC0915', states.hc);
-styleBtn('snBtnLM0915', states.lm);
-styleBtn('snBtnCB0915', states.cb);
-}
-function getCol(prop) {
-if (!ROOT) return DEFAULTS[prop];
-return getComputedStyle(ROOT).getPropertyValue(prop).trim() || DEFAULTS[prop];
-}
+var DEFAULTS = { '--sn-rope1':'#cc0000','--sn-rope2':'#0066cc','--sn-axis':'#000000',
+'--sn-wrule':'#800080','--sn-vrule':'#cd853f','--sn-hrule':'#2e8b57',
+'--sn-hand':'#9b7550','--sn-marker':'#1a1a2e','--sn-boundary':'#555555','--sn-toolbar-bg':'#222' };
 return {
-init: function() { ROOT = document.getElementById('boundaryRoot0915'); apply(); },
-toggle: function(k) {
+init: function(){ apply(); },
+toggle: function(k){
 states[k] = !states[k];
-if (k === 'hc' && states.hc) states.lm = false;
-if (k === 'lm' && states.lm) states.hc = false;
+if (k === 'hc' && states.hc) states.dm = false;   /* high contrast and dark mode switch each other off; colour-blind combines with either */
+if (k === 'dm' && states.dm) states.hc = false;
 apply();
 },
+/* the colour engine themes every colour on the canvas, so the drawing code keeps its standard colours */
+isHC: function(){ return false; },
+isCB: function(){ return false; },
+col: function(role){ return DEFAULTS['--sn-' + role]; },
 narrate: function(msg) {
 if (!states.nr) return;
-var nb = document.getElementById('boundaryNarBar0915');
+var nb = document.getElementById('boundaryNarBar');
 if (nb) nb.textContent = msg;
-},
-col: function(role) { return getCol('--sn-' + role); }
+}
 };
 })();
 </script>
+<style>
+/* ════════ display options: dark mode, high contrast, colour-blind safe (the canvas follows through its colour engine) ════════ */
+#mobw2720.a11y_dm { background:#16191e; color:#e6e9ee; }
+#mobw2720.a11y_dm .tbar { background:#8a4a00; color:#fff; }
+#mobw2720.a11y_dm .tbar h3, #mobw2720.a11y_dm .tbar H3 { color:#fff; }
+#mobw2720.a11y_dm .bbar, #mobw2720.a11y_dm .playbar { background:#26301c; }
+#mobw2720.a11y_dm .mcontent { background:#16191e; }
+#mobw2720.a11y_dm .footer, #mobw2720.a11y_dm .footer-pink, #mobw2720.a11y_dm .footer-green, #mobw2720.a11y_dm .footer-blue, #mobw2720.a11y_dm .footer-meas, #mobw2720.a11y_dm .footer-measT { background:#22262b; color:#e6e9ee; }
+#mobw2720.a11y_dm .footer:nth-of-type(odd), #mobw2720.a11y_dm .footer-pink { background:#2e2228; }
+#mobw2720.a11y_dm .footer:nth-of-type(even), #mobw2720.a11y_dm .footer-green { background:#1f2a22; }
+#mobw2720.a11y_dm .footer-blue { background:#1c2633; }
+#mobw2720.a11y_dm .footer-meas, #mobw2720.a11y_dm .footer-measT { background:#2a2614; }
+#mobw2720.a11y_dm .txtDPL { background-color:#1b3a8c; color:#ffe680; }
+#mobw2720.a11y_dm .shm_measlbl, #mobw2720.a11y_dm .shm_smlbl, #mobw2720.a11y_dm .chk { color:#d8dce2; }
+#mobw2720.a11y_dm .wv_btn, #mobw2720.a11y_dm .butt, #mobw2720.a11y_dm input[type=button] { background:#2c3138; color:#e6e9ee; border:1px solid #5a6470; }
+#mobw2720.a11y_dm .wv_btnmain { background:#6a5410; color:#fff; border-color:#a8850a; }
+#mobw2720.a11y_dm .shm_narbar, #mobw2720.a11y_dm .sn_narbar, #mobw2720.a11y_dm .rw_narbar { background:#2a2410; color:#f0e2b8; }
+#mobw2720.a11y_dm .mob_desc, #mobw2720.a11y_dm .rw_desc { background:#22262b; color:#e6e9ee; border-color:#3a4048; }
+#mobw2720.a11y_dm .dm_box { background:#1c2026; color:#e6e9ee; border-color:#3a4048; border-top-color:#5599cc; }
+#mobw2720.a11y_dm .dm_hint, #mobw2720.a11y_dm .dm_small { color:#a8b0bb; }
+#mobw2720.a11y_dm .dm_res { background:#2a2614; color:#f0e2b8; border-color:#8a7420; }
+#mobw2720.a11y_dm .dm_btn { background:#2c3138; color:#e6e9ee; border-color:#5a6470; }
+#mobw2720.a11y_dm .dm_rec { background:#1f4a6e; color:#fff; border-color:#5599cc; }
+#mobw2720.a11y_dm .dm_warn { background:#6a2a2a; color:#fff; border-color:#cc6655; }
+#mobw2720.a11y_dm .dm_tbl th { background:#2c3138; border-color:#5a6470; }
+#mobw2720.a11y_dm .dm_tbl td { background:#1c2026; border-color:#3a4048; }
+#mobw2720.a11y_dm select, #mobw2720.a11y_dm input[type=number], #mobw2720.a11y_dm input[type=text] { background:#22262b; color:#e6e9ee; border:1px solid #5a6470; }
+#mobw2720.a11y_dm input[type=range], #mobw2720.a11y_dm input[type=checkbox] { accent-color:#e8a020; }
+#mobw2720.a11y_dm canvas { border-color:#5a6470 !important; }
+#mobw2720.a11y_hc { background:#000; color:#fff; }
+#mobw2720.a11y_hc .tbar, #mobw2720.a11y_hc .bbar, #mobw2720.a11y_hc .playbar, #mobw2720.a11y_hc .mcontent, #mobw2720.a11y_hc .footer, #mobw2720.a11y_hc .footer-pink, #mobw2720.a11y_hc .footer-green, #mobw2720.a11y_hc .footer-blue, #mobw2720.a11y_hc .footer-meas, #mobw2720.a11y_hc .footer-measT, #mobw2720.a11y_hc .footer:nth-of-type(odd), #mobw2720.a11y_hc .footer:nth-of-type(even) { background:#000; color:#fff; box-shadow:inset 0 0 0 1px #fff; }
+#mobw2720.a11y_hc .tbar h3, #mobw2720.a11y_hc .tbar H3, #mobw2720.a11y_hc .tbar { color:#ffd700; }
+#mobw2720.a11y_hc .txtDPL { background-color:#000; color:#ffff00; box-shadow:inset 0 0 0 1px #fff; }
+#mobw2720.a11y_hc .shm_measlbl, #mobw2720.a11y_hc .shm_smlbl, #mobw2720.a11y_hc .chk { color:#fff; }
+#mobw2720.a11y_hc .wv_btn, #mobw2720.a11y_hc .wv_btnmain, #mobw2720.a11y_hc .butt, #mobw2720.a11y_hc input[type=button], #mobw2720.a11y_hc .dm_btn, #mobw2720.a11y_hc .dm_rec, #mobw2720.a11y_hc .dm_warn { background:#000; color:#fff; border:2px solid #fff; font-weight:bold; }
+#mobw2720.a11y_hc .shm_narbar, #mobw2720.a11y_hc .sn_narbar, #mobw2720.a11y_hc .rw_narbar { background:#000; color:#fff; border-left-color:#ffd700; box-shadow:inset 0 0 0 1px #fff; }
+#mobw2720.a11y_hc .mob_desc, #mobw2720.a11y_hc .rw_desc { background:#000; color:#fff; border-color:#fff; border-left-color:#ffd700; }
+#mobw2720.a11y_hc .dm_box { background:#000; color:#fff; border-color:#fff; border-top-color:#ffd700; }
+#mobw2720.a11y_hc .dm_hint, #mobw2720.a11y_hc .dm_small { color:#fff; }
+#mobw2720.a11y_hc .dm_res { background:#000; color:#ffff00; border-color:#fff; }
+#mobw2720.a11y_hc .dm_tbl th { background:#000; color:#ffd700; border-color:#fff; }
+#mobw2720.a11y_hc .dm_tbl td { background:#000; color:#fff; border-color:#888; }
+#mobw2720.a11y_hc select, #mobw2720.a11y_hc input[type=number], #mobw2720.a11y_hc input[type=text] { background:#000; color:#fff; border:1px solid #fff; }
+#mobw2720.a11y_hc input[type=range], #mobw2720.a11y_hc input[type=checkbox] { accent-color:#ffd700; }
+#mobw2720.a11y_hc canvas { border-color:#fff !important; }
+</style>
 <!-- ════════════════ SIMULATION ════════════════ -->
 <script>
-var boundaryPol0915 = (function(){
-var canvas  = document.getElementById('boundaryCanvas0915');
+var boundaryPol = (function(){
+var canvas  = document.getElementById('boundaryCanvas');
 var ctx     = canvas.getContext('2d');
 var CW = canvas.width, CH = canvas.height;
 var xBase = 80, yBase = 75, centerY = yBase + 90;
@@ -208,7 +366,7 @@ var xScale = 300, yScale = 4;
 var plotWidth = 560, dotStep = 2, blendHalf = 25;   /* px half-width of the smooth amplitude blend */
 //var freq = 406, A = 20, t = 0.0, t0 = 0.0, tactual=50.0, runRate=40, dotCoordY0;//, eend=0;
 //var Tension = 100, mu = 10, mu2 = 40, v = Math.sqrt(1000*Tension/mu), v2 = Math.sqrt(1000*Tension/mu2);//v=70.7
-//TM var freq = $freq, A = $amp, Tension = $tension, mu1 = $mu1, mu2 = $mu2;
+//TM var freq = 2, A = 20, Tension = 10, mu1 = 0.1, mu2 = 0.4;
 var freq = 400, A = 20, Tension = 100, mu1 = 10, mu2 = 30;
 var t = 0.0, t0 = 0.0, tactual = 50.0, runRate = 40;
 var index = -1, stopIndex = 300;
@@ -361,9 +519,9 @@ ctx.beginPath(); ctx.arc(dx, dy, r, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
 }
 function drawRope() {
 var b = xb();
-var col1 = boundaryA11y0915.col('rope1');
-var col2 = boundaryA11y0915.col('rope2');
-var markerCol = boundaryA11y0915.col('marker');
+var col1 = boundaryA11y.col('rope1');
+var col2 = boundaryA11y.col('rope2');
+var markerCol = boundaryA11y.col('marker');
 var r1 = clamp(mu1 / 10, 1.5, 5), r2 = clamp(mu2 / 10, 1.5, 5);
 for (var x = xBase; x <= xBase + plotWidth; x += dotStep) {
 var y = dotCoordY(x);
@@ -495,7 +653,7 @@ function draw() {
 if (index >= stopIndex) { runFlag = 0; setPlayLabel(false); }
 ctx.clearRect(0, 0, CW, CH);
 if (runFlag === 1) index = index + 1;
-var axisCol = boundaryA11y0915.col('axis');
+var axisCol = boundaryA11y.col('axis');
 ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, CW, CH);
 var b = xb();
 ctx.fillStyle = '#eef6ff'; ctx.fillRect(xBase, yBase - 20, b - xBase, 220);
@@ -505,23 +663,23 @@ addXYaxis(CH, CW, CH / 4, CW / 4, axisCol);
 t = index / tactual;
 if (t > 0 && showAnimDataFlag) displayData(1.4 * mx, 0, 0.6 * mx, 90);
 if (runFlag === 0 && t > 0) displayEnd(1.6 * mx, my + 45, 0.4 * mx, 64);
-drawBoundary(boundaryA11y0915.col('boundary'));
+drawBoundary(boundaryA11y.col('boundary'));
 drawRope();
 if (showWaveDataFlag) displayWaveData(0.1 * mx, 0, 1.0 * mx, 56);
-handR(xBase + 2, dotCoordY(xBase) - 4, hw, hh, boundaryA11y0915.col('hand'));
-if (addWlenFlag) drawWlenGuide(boundaryA11y0915.col('wrule'));
-if (addXCalFlag) drawXCaliper(boundaryA11y0915.col('vrule'));
-if (addYCalFlag) drawYCaliper(boundaryA11y0915.col('hrule'));
+handR(xBase + 2, dotCoordY(xBase) - 4, hw, hh, boundaryA11y.col('hand'));
+if (addWlenFlag) drawWlenGuide(boundaryA11y.col('wrule'));
+if (addXCalFlag) drawXCaliper(boundaryA11y.col('vrule'));
+if (addYCalFlag) drawYCaliper(boundaryA11y.col('hrule'));
 }
 function narrate() {
 var msg = 'Frequency f = ' + freq.toFixed(0) + ' Hz, common to both ropes. ';
 msg += 'Rope 1: \u03BC = ' + mu1.toFixed(0) + ' g/m, v = ' + v1.toFixed(0) + ' m/s, \u03BB = ' + lambda1.toFixed(2) + ' m. ';
 msg += 'Rope 2: \u03BC = ' + mu2.toFixed(0) + ' g/m, v = ' + v2.toFixed(0) + ' m/s, \u03BB = ' + lambda2.toFixed(2) + ' m. ';
 msg += 'Transmitted amplitude \u2248 ' + A2.toFixed(1) + ' cm from an incident ' + A.toFixed(0) + ' cm.';
-boundaryA11y0915.narrate(msg);
+boundaryA11y.narrate(msg);
 }
 function setPlayLabel(isPlaying) {
-var b = document.getElementById('boundaryPlayBtn0915'); if (!b) return;
+var b = document.getElementById('boundaryPlayBtn'); if (!b) return;
 b.innerHTML = isPlaying ? '\u23F8 Pause' : '\u25B6 Play';
 b.setAttribute('aria-pressed', isPlaying ? 'true' : 'false');
 }
@@ -529,13 +687,13 @@ function runSim() { draw(); if (runFlag === 1) timer = window.setTimeout(runSim,
 function play() {
 window.clearTimeout(timer);
 runFlag = 1; setPlayLabel(true);
-boundaryA11y0915.narrate('Animation playing.');
+boundaryA11y.narrate('Animation playing.');
 runSim();
 }
 function pause() {
 window.clearTimeout(timer);
 runFlag = 0; setPlayLabel(false);
-boundaryA11y0915.narrate('Animation paused.');
+boundaryA11y.narrate('Animation paused.');
 }
 function togglePlay() { if (runFlag === 1) pause(); else play(); }
 function stepForward() { window.clearTimeout(timer); runFlag = 1; draw(); runFlag = 0; setPlayLabel(false); }
@@ -549,11 +707,11 @@ window.clearTimeout(timer);
 index = -1; t = 0; t0 = 0;
 recompute(); runFlag = 0; setPlayLabel(false);
 draw();
-boundaryA11y0915.narrate('Animation reset.');
+boundaryA11y.narrate('Animation reset.');
 }
 function startTimer() {
 t0 = t;
-boundaryA11y0915.narrate('Timer started at the current position.');
+boundaryA11y.narrate('Timer started at the current position.');
 if (runFlag !== 1) play(); else draw();
 }
 /* setFreq/setTension/setMu1/setMu2/setAmp ALL call recompute(), which
@@ -561,37 +719,37 @@ recomputes v1, v2, lambda1, lambda2, A2, and phi together — this is
 what was missing in the original (only rope 1 was ever recomputed on
 tension/frequency changes, leaving rope 2 silently stuck at its
 page-load values). */
-function setFreq(val)    { freq = parseFloat(val); document.getElementById('freqValue0915').innerHTML = freq.toFixed(0); recompute(); reset(); narrate(); }
-function setAmp(val)     { A = parseFloat(val); document.getElementById('ampValue0915').innerHTML = A.toFixed(0); recompute(); reset(); narrate(); }
-function setTension(val) { Tension = parseFloat(val); document.getElementById('tensionValue0915').innerHTML = Tension.toFixed(0); recompute(); reset(); narrate(); }
-function setMu1(val)     { mu1 = parseFloat(val); document.getElementById('mu1Value0915').innerHTML = mu1.toFixed(0); recompute(); reset(); narrate(); }
-function setMu2(val)     { mu2 = parseFloat(val); document.getElementById('mu2Value0915').innerHTML = mu2.toFixed(0); recompute(); reset(); narrate(); }
+function setFreq(val)    { freq = parseFloat(val); document.getElementById('freqValue').innerHTML = freq.toFixed(0); recompute(); reset(); narrate(); }
+function setAmp(val)     { A = parseFloat(val); document.getElementById('ampValue').innerHTML = A.toFixed(0); recompute(); reset(); narrate(); }
+function setTension(val) { Tension = parseFloat(val); document.getElementById('tensionValue').innerHTML = Tension.toFixed(0); recompute(); reset(); narrate(); }
+function setMu1(val)     { mu1 = parseFloat(val); document.getElementById('mu1Value').innerHTML = mu1.toFixed(0); recompute(); reset(); narrate(); }
+function setMu2(val)     { mu2 = parseFloat(val); document.getElementById('mu2Value').innerHTML = mu2.toFixed(0); recompute(); reset(); narrate(); }
 function setLabel(spanId, checked, baseText) {
 var el = document.getElementById(spanId);
 if (el) el.textContent = (checked ? 'Hide ' : 'Show ') + baseText;
 }
 function toggleWlen(cb) {
 addWlenFlag = cb.checked ? 1 : 0; draw();
-setLabel('wlenLbl0915', cb.checked, 'wavelength guide');
-boundaryA11y0915.narrate('Wavelength guide ' + (cb.checked ? 'shown \u2014 it reads whichever rope it sits over.' : 'hidden.'));
+setLabel('wlenLbl', cb.checked, 'wavelength guide');
+boundaryA11y.narrate('Wavelength guide ' + (cb.checked ? 'shown \u2014 it reads whichever rope it sits over.' : 'hidden.'));
 }
 function toggleMarker(cb) {
 showMarkerFlag = cb.checked ? 1 : 0; draw();
-setLabel('markerLbl0915', cb.checked, 'tracked-point markers');
-boundaryA11y0915.narrate('Tracked-point markers ' + (cb.checked ? 'shown. Watch them \u2014 they only move up and down, never sideways with the wave.' : 'hidden.'));
+setLabel('markerLbl', cb.checked, 'tracked-point markers');
+boundaryA11y.narrate('Tracked-point markers ' + (cb.checked ? 'shown. Watch them \u2014 they only move up and down, never sideways with the wave.' : 'hidden.'));
 }
 function toggleDeltaX(cb) {
 addXCalFlag = cb.checked ? 1 : 0; draw();
-setLabel('dxLbl0915', cb.checked, 'horizontal caliper (\u0394x)');
-boundaryA11y0915.narrate('Horizontal-distance caliper ' + (cb.checked ? 'shown, with a live reading. Drag either jaw to change the gap, or drag the reading to move the whole caliper.' : 'hidden.'));
+setLabel('dxLbl', cb.checked, 'horizontal caliper (\u0394x)');
+boundaryA11y.narrate('Horizontal-distance caliper ' + (cb.checked ? 'shown, with a live reading. Drag either jaw to change the gap, or drag the reading to move the whole caliper.' : 'hidden.'));
 }
 function toggleDeltaY(cb) {
 addYCalFlag = cb.checked ? 1 : 0; draw();
-setLabel('dyLbl0915', cb.checked, 'vertical caliper (\u0394y)');
-boundaryA11y0915.narrate('Vertical-distance caliper ' + (cb.checked ? 'shown, with a live reading. Drag either jaw to change the gap, or drag the reading to move the whole caliper.' : 'hidden.'));
+setLabel('dyLbl', cb.checked, 'vertical caliper (\u0394y)');
+boundaryA11y.narrate('Vertical-distance caliper ' + (cb.checked ? 'shown, with a live reading. Drag either jaw to change the gap, or drag the reading to move the whole caliper.' : 'hidden.'));
 }
-function toggleWaveData(cb) { showWaveDataFlag = cb.checked ? 1 : 0; draw(); setLabel('waveDataLbl0915', cb.checked, 'wave-data panel'); }
-function toggleAnimData(cb) { showAnimDataFlag = cb.checked ? 1 : 0; draw(); setLabel('animDataLbl0915', cb.checked, 'animation-time panel'); }
+function toggleWaveData(cb) { showWaveDataFlag = cb.checked ? 1 : 0; draw(); setLabel('waveDataLbl', cb.checked, 'wave-data panel'); }
+function toggleAnimData(cb) { showAnimDataFlag = cb.checked ? 1 : 0; draw(); setLabel('animDataLbl', cb.checked, 'animation-time panel'); }
 function reactionDown(x, y) {
 var r = canvas.getBoundingClientRect(); x = (x - r.left)*canvas.width/r.width; y = (y - r.top)*canvas.height/r.height;   /* canvas units, whatever its displayed size */
 canvas.style.cursor = 'pointer';
@@ -619,7 +777,7 @@ if (dragging && dragging.tool === 'x') msg = 'Horizontal distance: \u0394x = ' +
 if (dragging && dragging.tool === 'y') msg = 'Vertical distance: \u0394y = ' + m2Amp + ' cm.';
 dragging = null;
 canvas.style.cursor = 'default';
-if (msg) boundaryA11y0915.narrate(msg);
+if (msg) boundaryA11y.narrate(msg);
 }
 function init() {
 canvas.onmousedown = function (e) { reactionDown(e.clientX, e.clientY); };
@@ -644,25 +802,25 @@ toggleWaveData: toggleWaveData, toggleAnimData: toggleAnimData
 })();
 </script>
 <script>
-boundaryA11y0915.init();
-boundaryA11y0915.narrate('Two-rope wave sim ready. Adjust frequency, tension, and each rope\u2019s mass per length, then press Play. Watch the wavelength and amplitude change as the wave crosses the junction.');
+boundaryA11y.init();
+boundaryA11y.narrate('Two-rope wave sim ready. Adjust frequency, tension, and each rope\u2019s mass per length, then press Play. Watch the wavelength and amplitude change as the wave crosses the junction.');
 </script>
 <!-- SIM description: a button below the sim toggles the description into view (math in AsciiMath, typeset when opened) -->
-<div class="mob_descwrap0915">
-<button type="button" class="mob_descbtn0915" id="mobDescBtn0915" aria-expanded="false" aria-controls="mobDesc0915" onclick="mobDesc0915()">&#9656; SIM DESCRIPTION</button>
-<div class="mob_desc0915" id="mobDesc0915" role="region" aria-labelledby="mobDescBtn0915" style="display:none">
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc" onclick="mobDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
 <p>This simulation sends a continuous wave along a rope made of two parts joined together, rope 1 and rope 2, with different masses per unit length. The frequency, the amplitude, the tension and the masses per unit length can be changed.</p>
 <p>The speed of the wave in each rope is</p>
-<p class="mob_eq0915">`v = sqrt(T/mu)`,</p>
+<p class="mob_eq">`v = sqrt(T/mu)`,</p>
 <p>When the wave crosses into the second rope its speed changes, but its frequency does not: every point of the joint moves up and down at the frequency of the source. Since</p>
-<p class="mob_eq0915">`v = f lambda`,</p>
+<p class="mob_eq">`v = f lambda`,</p>
 <p>the wavelength changes in proportion to the speed: the wave gets shorter in the slower (heavier) rope. Part of the wave is also reflected at the joint.</p>
 <p>The wavelength guide, the calipers and the timer help measure the wavelength, the period and the speed in each rope.</p>
 </div>
 </div>
 <script>
-function mobDesc0915(){
-var b = document.getElementById('mobDescBtn0915'), d = document.getElementById('mobDesc0915'); if (!b || !d) return;
+function mobDesc(){
+var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
 var open = (d.style.display === 'none');
 d.style.display = open ? 'block' : 'none';
 b.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -672,46 +830,48 @@ if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise(
 </script>
 <style>
 /* ════════ mobile layer: the sim adapts to the width it gets (a phone, or a column in MOM) ════════ */
-#mobw27200915 { container-type:inline-size; width:100%; max-width:100%; box-sizing:border-box; }
+#mobw2720 { container-type:inline-size; width:100%; max-width:100%; box-sizing:border-box; }
 /* only when the sim is narrower than its design (663 px): nothing is wider than the sim, canvases scale down,
    rows wrap, fixed heights relax, wide tables scroll inside the sim -- on a wide screen nothing changes */
 @container (max-width:703px) {
-#mobw27200915 div, #mobw27200915 p, #mobw27200915 fieldset, #mobw27200915 form, #mobw27200915 section, #mobw27200915 ol, #mobw27200915 ul, #mobw27200915 table { max-width:100%; box-sizing:border-box; }
-#mobw27200915 canvas, #mobw27200915 img, #mobw27200915 svg { max-width:100%; height:auto !important; }
-#mobw27200915 input[type=range], #mobw27200915 select { max-width:100%; min-width:0; }
-#mobw27200915 #boundaryRoot0915 .sn_a11y0915, #mobw27200915 .playbar0915, #mobw27200915 .bbar0915, #mobw27200915 .footer0915 { flex-wrap:wrap; }
-#mobw27200915 #boundaryRoot0915 .sn_a11y0915 > div, #mobw27200915 .playbar0915 > div, #mobw27200915 .bbar0915 > div, #mobw27200915 .footer0915 > div { min-width:min(100%, 260px); }
-#mobw27200915 div[style*="height"] { height:auto !important; }
-#mobw27200915 .tbar0915, #mobw27200915 .mcontent0915, #mobw27200915 .footer0915 { height:auto; min-height:0; }
-#mobw27200915 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+#mobw2720 div, #mobw2720 p, #mobw2720 fieldset, #mobw2720 form, #mobw2720 section, #mobw2720 ol, #mobw2720 ul, #mobw2720 table { max-width:100%; box-sizing:border-box; }
+#mobw2720 canvas, #mobw2720 img, #mobw2720 svg { max-width:100%; height:auto !important; }
+#mobw2720 input[type=range], #mobw2720 select { max-width:100%; min-width:0; }
+#mobw2720 #boundaryRoot .sn_a11y, #mobw2720 .playbar, #mobw2720 .bbar, #mobw2720 .footer { flex-wrap:wrap; }
+#mobw2720 #boundaryRoot .sn_a11y > div, #mobw2720 .playbar > div, #mobw2720 .bbar > div, #mobw2720 .footer > div { min-width:min(100%, 260px); }
+#mobw2720 div[style*="height"] { height:auto !important; }
+#mobw2720 .tbar, #mobw2720 .mcontent, #mobw2720 .footer { height:auto; min-height:0; }
+#mobw2720 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
 }
 @media (max-width:723px) {
-#mobw27200915 div, #mobw27200915 p, #mobw27200915 fieldset, #mobw27200915 form, #mobw27200915 section, #mobw27200915 ol, #mobw27200915 ul, #mobw27200915 table { max-width:100%; box-sizing:border-box; }
-#mobw27200915 canvas, #mobw27200915 img, #mobw27200915 svg { max-width:100%; height:auto !important; }
-#mobw27200915 input[type=range], #mobw27200915 select { max-width:100%; min-width:0; }
-#mobw27200915 #boundaryRoot0915 .sn_a11y0915, #mobw27200915 .playbar0915, #mobw27200915 .bbar0915, #mobw27200915 .footer0915 { flex-wrap:wrap; }
-#mobw27200915 #boundaryRoot0915 .sn_a11y0915 > div, #mobw27200915 .playbar0915 > div, #mobw27200915 .bbar0915 > div, #mobw27200915 .footer0915 > div { min-width:min(100%, 260px); }
-#mobw27200915 div[style*="height"] { height:auto !important; }
-#mobw27200915 .tbar0915, #mobw27200915 .mcontent0915, #mobw27200915 .footer0915 { height:auto; min-height:0; }
-#mobw27200915 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+#mobw2720 div, #mobw2720 p, #mobw2720 fieldset, #mobw2720 form, #mobw2720 section, #mobw2720 ol, #mobw2720 ul, #mobw2720 table { max-width:100%; box-sizing:border-box; }
+#mobw2720 canvas, #mobw2720 img, #mobw2720 svg { max-width:100%; height:auto !important; }
+#mobw2720 input[type=range], #mobw2720 select { max-width:100%; min-width:0; }
+#mobw2720 #boundaryRoot .sn_a11y, #mobw2720 .playbar, #mobw2720 .bbar, #mobw2720 .footer { flex-wrap:wrap; }
+#mobw2720 #boundaryRoot .sn_a11y > div, #mobw2720 .playbar > div, #mobw2720 .bbar > div, #mobw2720 .footer > div { min-width:min(100%, 260px); }
+#mobw2720 div[style*="height"] { height:auto !important; }
+#mobw2720 .tbar, #mobw2720 .mcontent, #mobw2720 .footer { height:auto; min-height:0; }
+#mobw2720 table { display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
 }
 /* touch screens: larger targets */
 @media (pointer:coarse) {
-#mobw27200915 button, #mobw27200915 input[type=button], #mobw27200915 input[type=submit], #mobw27200915 input[type=reset] { min-height:40px; }
-#mobw27200915 input[type=range] { height:28px; }
-#mobw27200915 input[type=checkbox], #mobw27200915 input[type=radio] { width:22px; height:22px; }
-#mobw27200915 select { min-height:36px; font-size:16px; }
+#mobw2720 button, #mobw2720 input[type=button], #mobw2720 input[type=submit], #mobw2720 input[type=reset] { min-height:40px; }
+#mobw2720 input[type=range] { height:28px; }
+#mobw2720 input[type=checkbox], #mobw2720 input[type=radio] { width:22px; height:22px; }
+#mobw2720 select { min-height:36px; font-size:16px; }
 }
 /* display options moved to the top */
-#mobw27200915 .mob_a11ytop0915 { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:6px 4px 8px; width:auto; max-width:100%; height:auto; }
-#mobw27200915 .mob_a11ytop0915 input[type=button], #mobw27200915 .mob_a11ytop0915 button { padding:5px 12px; font-size:13px; border:1px solid #8a94a3; border-radius:4px; background:#f4f6f8; color:#1d232a; cursor:pointer; width:auto; height:auto; margin:0; }
+#mobw2720 .mob_a11ytop { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding:6px 4px 8px; width:auto; max-width:100%; height:auto; }
+#mobw2720 .mob_a11ytop input[type=button], #mobw2720 .mob_a11ytop button { padding:5px 12px; font-size:13px; border:1px solid #8a94a3; border-radius:4px; background:#f4f6f8; color:#1d232a; cursor:pointer; width:auto; height:auto; margin:0; }
 /* SIM description */
-#mobw27200915 .mob_descwrap0915 { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
-#mobw27200915 .mob_descbtn0915 { padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
-#mobw27200915 .mob_descbtn0915[aria-expanded="true"] { background:#3a3220; }
-#mobw27200915 .mob_desc0915 { width:100%; max-width:860px; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; text-align:left; }
-#mobw27200915 .mob_desc0915 p { margin:0 0 9px 0; }
-#mobw27200915 .mob_eq0915 { text-align:center; font-size:1rem; }
+#mobw2720 .mob_descwrap { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
+#mobw2720 .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
+#mobw2720 .mob_descbtn[aria-expanded="true"] { background:#3a3220; }
+#mobw2720 .mob_desc { width:100%; max-width:860px; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; text-align:left; }
+#mobw2720 .mob_desc p { margin:0 0 9px 0; }
+#mobw2720 .mob_eq { text-align:center; font-size:1rem; }
 </style>
-</div><!-- #mobw27200915 -->
-</body></html>
+</div><!-- #mobw2720 -->
+</main>
+</body>
+</html>
