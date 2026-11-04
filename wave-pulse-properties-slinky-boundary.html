@@ -288,7 +288,7 @@ var nb = document.getElementById('slinkyPulseNarBar'); if (nb) nb.style.display 
 var nr = document.getElementById('snBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
 styleBtn('snBtnHC', states.hc); styleBtn('snBtnDM', states.dm); styleBtn('snBtnCB', states.cb); styleBtn('snBtnNR', states.nr);
 }
-var DEFAULTS = { '--sn-rope':'#2e8b57','--sn-compress':'#d1495b','--sn-stretch':'#1b998b','--sn-axis':'#000000','--sn-vrule':'#cd853f',
+var DEFAULTS = { '--sn-rope':'#3a4046','--sn-compress':'#d1495b','--sn-stretch':'#1b998b','--sn-axis':'#000000','--sn-vrule':'#cd853f',
 '--sn-hand':'#9b7550','--sn-marker':'#1a1a2e','--sn-boundary':'#555555','--sn-toolbar-bg':'#222' };
 return {
 init: function(){ apply(); },
@@ -499,29 +499,44 @@ else spacing = (coilXs[i + 1] - coilXs[i - 1]) / 2;
 coilRatios.push(spacing / coilSpacing);
 }
 }
-/* ── The slinky: each coil is an ellipse colored by its own local
-compression (compressed = warm, stretched = cool). A single pulse
-naturally shows both, since it carries a compression on its leading
-edge and a rarefaction on its trailing edge. ── */
+/* ── The coils, drawn as a metal helix: each loop runs from one coil's position to the next. The back
+half of every loop is drawn first, darker; then the front halves, and a thin highlight along them, so the
+slinky reads as a wire coil seen slightly from the side. Compression still tints the wire. ── */
+function helixLoop(x0, y0, x1, y1, rx, ry, front){
+var a0 = front ? 0 : Math.PI, n = 14;
+ctx.beginPath();
+for (var k = 0; k <= n; k++){ var th = a0 + Math.PI*k/n, f = th/(2*Math.PI);
+var x = x0 + (x1 - x0)*f + rx*Math.sin(th), y = y0 + (y1 - y0)*f - ry*Math.cos(th);
+if (k) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
+ctx.stroke();
+}
+function shade(rgb, k){ var m = /rgb\((\d+),(\d+),(\d+)\)/.exec(rgb) || /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(rgb); if (!m) return rgb;
+var c = m[0].charAt(0) === 'r' ? [+m[1], +m[2], +m[3]] : [parseInt(m[1],16), parseInt(m[2],16), parseInt(m[3],16)];
+return 'rgb(' + Math.round(c[0]*k) + ',' + Math.round(c[1]*k) + ',' + Math.round(c[2]*k) + ')'; }
+function drawHelix(pts, cols, widths, marked, markerCol){
+var n = pts.length, RX = 6, k, nx, W = widths.map(function(w){ return 1.4 + 0.6*w; });   /* the wire thickens with the mass */
+ctx.lineCap = 'round';
+for (k = 0; k < n; k++){ nx = k < n - 1 ? pts[k + 1] : { x:pts[k].x + coilSpacing, y:pts[k].y }; ctx.strokeStyle = shade(cols[k], 0.55); ctx.lineWidth = Math.max(1, W[k]*0.8); helixLoop(pts[k].x, pts[k].y, nx.x, nx.y, RX, coilRY, false); }
+for (k = 0; k < n; k++){ nx = k < n - 1 ? pts[k + 1] : { x:pts[k].x + coilSpacing, y:pts[k].y }; ctx.strokeStyle = cols[k]; ctx.lineWidth = W[k]; helixLoop(pts[k].x, pts[k].y, nx.x, nx.y, RX, coilRY, true); }
+ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+for (k = 0; k < n; k++){ nx = k < n - 1 ? pts[k + 1] : { x:pts[k].x + coilSpacing, y:pts[k].y }; ctx.lineWidth = Math.max(0.6, W[k]*0.3); helixLoop(pts[k].x - 0.8, pts[k].y - 0.8, nx.x - 0.8, nx.y - 0.8, RX, coilRY - 1, true); }
+ctx.lineCap = 'butt';
+for (k = 0; k < n; k++){ if (marked && marked.indexOf(k) !== -1){ ctx.beginPath(); ctx.ellipse(pts[k].x + coilSpacing/2, pts[k].y, RX + 5, coilRY + 5, 0, 0, 2*Math.PI); ctx.lineWidth = 2.5; ctx.strokeStyle = markerCol; ctx.stroke(); } }
+}
+function wireCol(ratio, compressCol, neutralCol, stretchCol){
+return ratio < 1 ? lerpColor(compressCol, neutralCol, clamp((ratio - 0.6)/0.4, 0, 1)) : lerpColor(neutralCol, stretchCol, clamp((ratio - 1)/0.4, 0, 1)); }
 function drawSlinky() {
-var compressCol = slinkyPulseA11y.col('compress');
-var stretchCol  = slinkyPulseA11y.col('stretch');
-var neutralCol  = slinkyPulseA11y.col('rope');
-var markerCol   = slinkyPulseA11y.col('marker');
-var lineW1 = clamp(Math.round(M1 * 4), 1, 6), lineW2 = clamp(Math.round(M2 * 4), 1, 6);
+var A11 = slinkyPulseA11y;
+var compressCol = A11.col('compress'), stretchCol = A11.col('stretch'), neutralCol = A11.col('rope'), markerCol = A11.col('marker');
+var lineW1 = clamp(Math.round(M1 * 4), 1, 6), lineW2 = clamp(Math.round(M2 * 4), 1, 6), pts = [], cols = [], ws = [];
 for (var i = 0; i < nCoils; i++) {
 var ratio = coilRatios[i], col;
+/* a single pulse is gentle: the tint responds to a 10% squeeze or stretch, as before */
 if (ratio < 1) col = lerpColor(compressCol, neutralCol, clamp((ratio - 0.9) / 0.1, 0, 1));
 else col = lerpColor(neutralCol, stretchCol, clamp((ratio - 1) / 0.1, 0, 1));
-ctx.beginPath();
-ctx.ellipse(coilXs[i], centerY, coilRX, coilRY, 0, 0, 2 * Math.PI);
-ctx.lineWidth = (i < ib) ? lineW1 : lineW2; ctx.strokeStyle = col; ctx.stroke();
-if (showMarkerFlag && markedCoils.indexOf(i) !== -1) {
-ctx.beginPath();
-ctx.ellipse(coilXs[i], centerY, coilRX + 3, coilRY + 3, 0, 0, 2 * Math.PI);
-ctx.lineWidth = 2; ctx.strokeStyle = markerCol; ctx.stroke();
+pts.push({ x:coilXs[i], y:centerY }); cols.push(col); ws.push(i < ib ? lineW1 : lineW2);
 }
-}
+drawHelix(pts, cols, ws, showMarkerFlag ? markedCoils : null, markerCol);
 }
 function drawBoundary(col) {
 var b = boundaryPx();

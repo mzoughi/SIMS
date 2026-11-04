@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-EM Waves: Polarization of an Antenna-Generated Electromagnetic Wave</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, electromagnetic waves, antenna, electric field, magnetic field, polarization, wavelength, frequency, spectrum, speed of light, index of refraction, polarizer, waveplate, lesson, scientific">
+<meta name="description" content="The linearly polarized wave from an antenna passes through up to three optical elements placed along its path: linear polarizers, half-wave and quarter-wave plates, general waveplates (linear retarders) and Faraday rotators.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:920px; max-width:100%; margin:0 auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<main class="page">
+<div id="mobemwavepolarize" class="mob_wrap">
+<div id="emwRoot">
+  <!-- ── Accessibility toolbar ── -->
+  <div class="emw_a11y" id="emwA11yBar" role="toolbar" aria-label="Display options">
+<button type="button" class="emw_a11ybtn" id="emwBtnHC" onclick="emwA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="emw_a11ybtn" id="emwBtnDM" onclick="emwA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="emw_a11ybtn" id="emwBtnCB" onclick="emwA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="emw_a11ybtn emw_a11yon" id="emwBtnNR" onclick="emwA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+  <div class="tbar"><h3>Polarization of an Antenna-Generated Electromagnetic Wave</h3></div>
+  <div class="mcontent">
+    <canvas id="emwCanvas" style="margin:auto;display:block;border:1px solid #ccc;cursor:grab;touch-action:none" width="640" height="480"></canvas>
+    <div class="draghint">Drag to rotate the view &bull; Scroll / pinch to zoom</div>
+  </div>
+  <div id="emwNarBar" class="emw_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+  <div id="emwEqBar" class="emw_eqbar" aria-label="Wave equations"></div>
+  <div class="bbar">
+    <input type="button" id="emwPlay" value="Play"
+           onclick="if(this.value=='Play'){emwSim.pl();this.value='Pause';}else{this.value='Play';emwSim.ps();}">
+    <input type="button" value="Step" onclick="document.getElementById('emwPlay').value='Play';emwSim.step();">
+    <input type="button" value="Restart" onclick="document.getElementById('emwPlay').value='Play';emwSim.rst();">
+    <input type="button" value="Reset View" onclick="emwSim.resetView();">
+  </div>
+  <div class="footer">
+    <div class="frow">
+      <label>Wavelength &lambda;:
+        <input type="range" id="emwLambda" min="1" max="6" value="3" step="0.5"
+               onchange="emwSim.rst()" oninput="document.getElementById('emwLambdaVal').textContent=parseFloat(this.value).toFixed(1)">
+      </label>
+      <span id="emwLambdaVal">3.0</span> m
+    </div>
+    <div class="frow">
+      <label>Current / Amplitude I&#8320;:
+        <input type="range" id="emwAmp" min="1" max="10" value="6" step="1"
+               onchange="emwSim.rst()" oninput="document.getElementById('emwAmpVal').textContent=this.value">
+      </label>
+      <span id="emwAmpVal">6</span> (rel. units)
+    </div>
+    <div class="frow">
+      <label>Antenna tilt toward propagation (a):
+        <input type="range" id="emwThetaN" min="-90" max="90" value="0" step="15"
+               onchange="emwSim.rst()" oninput="document.getElementById('emwThetaNVal').textContent=this.value">
+      </label>
+      <span id="emwThetaNVal">0</span>&deg;
+    </div>
+    <div class="frow">
+      <label>Antenna tilt sideways (b):
+        <input type="range" id="emwPhiN" min="-90" max="90" value="0" step="15"
+               onchange="emwSim.rst()" oninput="document.getElementById('emwPhiNVal').textContent=this.value">
+      </label>
+      <span id="emwPhiNVal">0</span>&deg;
+    </div>
+    <div class="frow">
+      <label>Propagation spin &psi;:
+        <input type="range" id="emwPsi" min="0" max="360" value="0" step="15"
+               onchange="emwSim.rst()" oninput="document.getElementById('emwPsiVal').textContent=this.value">
+      </label>
+      <span id="emwPsiVal">0</span>&deg;
+    </div>
+    <div class="fnote">The input beam is always the linearly-polarized wave from the antenna (polarized along n&#770;, i.e. "vertical" / 0&deg; in the tables below). Animation speed is illustrative, not real time.</div>
+  </div>
+  <div class="elpanel">
+    <div class="elhdr">Add New Element (up to 3)</div>
+    <div class="elrow">
+      <label>Select Type:
+        <select id="emwElemType" onchange="emwElemTypeChanged()">
+          <option value="polarizer">Linear Polarizer (Angle &theta;)</option>
+          <option value="hwp">Half-Wave Plate (HWP)</option>
+          <option value="qwp">Quarter-Wave Plate (QWP)</option>
+          <option value="genwp">General Waveplate (Linear Retarder)</option>
+          <option value="faraday">Faraday Rotator (Angle &theta;<sub>rot</sub>)</option>
+        </select>
+      </label>
+      <label id="emwAngleLabelWrap">Axis angle &theta;:
+        <input type="number" id="emwElemAngle" value="0" step="5" min="-180" max="180" style="width:60px">&deg;
+      </label>
+      <label id="emwRetWrap" style="display:none">Retardance &delta;:
+        <input type="number" id="emwElemRet" value="90" step="5" min="0" max="360" style="width:60px">&deg;
+      </label>
+      <input type="button" id="emwAddBtn" value="Add" onclick="emwAddElement()">
+      <span id="emwMaxMsg" style="color:#a00;font-size:.78rem;display:none">Maximum of 3 elements reached &mdash; remove one to add another.</span>
+    </div>
+    <div class="elhdr">Optical Path</div>
+    <table class="eltable" id="emwElemTable">
+      <thead><tr>
+        <th>#</th><th>Type</th><th>Position s (m)</th><th>Angle</th><th>Retardance</th>
+        <th>Looking straight at it<br>(disc + transmitted polarization)</th><th>Transmission</th><th></th>
+      </tr></thead>
+      <tbody id="emwElemTbody"><tr><td colspan="8" class="elempty">No elements yet &mdash; add one above.</td></tr></tbody>
+    </table>
+    <div class="fnote">Position is distance along the propagation axis (k&#770;) measured from the antenna. Grey line(s) on each disc show the element's own axis (transmission axis for a polarizer, fast/slow axes for a waveplate). The red trace shows the actual shape of the light's polarization immediately after that element &mdash; a straight line for linear polarization, an open ellipse or circle for elliptical/circular polarization, and a vanishing dot when the light is fully blocked.</div>
+  </div>
+</div>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>The linearly polarized wave from an antenna passes through up to three optical elements placed along its path: linear polarizers, half-wave and quarter-wave plates, general waveplates (linear retarders) and Faraday rotators. Each element's table row shows it face on, with its own axis in grey and, in red, the shape of the light's polarization just after it: a line for linear polarization, an ellipse or circle for elliptical or circular polarization, a dot when the light is blocked.</p>
+<p>A polarizer passes only the component of `vec E` along its axis, so the intensity follows Malus's law; a waveplate delays one component relative to the other by its retardance `delta` (`pi` for a half-wave plate, `pi/2` for a quarter-wave plate); a Faraday rotator turns the polarization by its angle.</p>
+<p class="mob_eq">`I = I_0 cos^2 theta`.</p>
+<p>Drag to turn the view, and scroll or pinch to zoom. The animation speed is illustrative.</p>
+</div>
+</div>
+<style>
+  :where(#mobemwavepolarize) * { margin: 0; box-sizing: border-box; }
+  :where(#mobemwavepolarize) div { width: 100%; margin: 0; }
+  #emwRoot {
+    --emw-bg:      #ffffff;
+    --emw-E:       #dd2200;
+    --emw-S:       #227744;
+    --emw-antenna: #222222;
+    --emw-charge:  #e08a00;
+    --emw-text:    #111111;
+    --emw-axis:    #666666;
+    --emw-grid:    #999999;
+    --emw-elem:    #3366aa;
+    --emw-toolbar-bg: #222222;
+  }
+  #emwRoot .emw_a11y {
+    display:flex; gap:6px; padding:6px 8px;
+    background:var(--emw-toolbar-bg); flex-wrap:wrap; width:100%;
+  }
+  #emwRoot .emw_a11ybtn {
+    padding:4px 10px; font-size:.72rem; font-family:monospace;
+    letter-spacing:.06em; border-radius:3px; cursor:pointer;
+    background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa;
+    transition:border-color .15s,color .15s;
+  }
+  #emwRoot .emw_a11ybtn:hover { border-color:#00e8d0; color:#00e8d0; }
+  #emwRoot .emw_a11yon { background:rgba(0,232,208,.12); border-color:#00e8d0; color:#00e8d0; }
+  #emwRoot .emw_narbar {
+    width:100%; min-height:28px; padding:5px 10px;
+    background:#ffefc0; border-left:4px solid #e0b040;
+    font-size:.85rem; color:#333; font-style:italic;
+  }
+  #emwRoot .emw_eqbar {
+    width:100%; min-height:20px; padding:5px 10px;
+    background:#e8f0ff; border-left:4px solid #3366aa;
+    font-size:.78rem; color:#112244; font-family:monospace; line-height:1.55;
+  }
+  .tbar    { padding:4px; height:50px; background-color:#f90; text-align:center; line-height:42px; width:100%;}
+  .tbar h3 { font-size:1.0rem; font-weight:bold; }
+  .mcontent { height:502px; width:100%;}
+  .draghint { width:100%; text-align:center; font-size:.72rem; color:#777; padding-top:2px; font-style:italic;}
+  .bbar    { height:50px; background-color:#df9; padding:10px; text-align:center; width:100%;}
+  .bbar input[type=button] { margin:0 4px; padding:4px 14px; cursor:pointer; }
+  .footer  { width:100%; background-color:#fce4ec; font-size:.85rem; padding:8px 10px; }
+  .footer .frow { width:100%; padding:4px 0; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .footer .frow input[type=range] { width:150px; vertical-align:middle; }
+  .footer .fnote, .elpanel .fnote { width:100%; padding-top:6px; font-size:.72rem; color:#555; font-style:italic; }
+  .elpanel { width:100%; background:#eef2f7; padding:10px; border-top:2px solid #3366aa; }
+  .elpanel .elhdr { width:100%; font-weight:bold; font-size:.92rem; color:#223; padding:6px 0 4px 0; }
+  .elpanel .elrow { width:100%; display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:.82rem; }
+  .elpanel select, .elpanel input[type=number] { font-size:.82rem; padding:2px; }
+  .elpanel input[type=button] { padding:3px 12px; cursor:pointer; font-size:.8rem; }
+  .eltable { width:100%; border-collapse:collapse; font-size:.76rem; background:#fff; }
+  .eltable th, .eltable td { border:1px solid #bbc; padding:4px 6px; text-align:center; vertical-align:middle; }
+  .eltable th { background:#dbe4f0; }
+  .eltable input[type=number] { width:50px; font-size:.76rem; }
+  .eltable .elempty { color:#777; font-style:italic; padding:10px; }
+  .eltable input[type=button] { font-size:.72rem; padding:2px 6px; cursor:pointer; }
+
+/* ── mobile layer: the sim fills its column up to its design width; bars and rows wrap ── */
+#mobemwavepolarize { width:100%; max-width:643px; margin:0 auto; }
+#mobemwavepolarize canvas.main, #mobemwavepolarize .mcontent canvas { width:100%; height:auto; display:block; }
+#mobemwavepolarize .mcontent { height:auto; }
+#mobemwavepolarize .tbar { height:auto; min-height:50px; line-height:1.3; padding:12px 6px; }
+#mobemwavepolarize .bbar { height:auto; min-height:50px; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:6px; }
+#mobemwavepolarize .footer { flex-wrap:wrap; }
+#mobemwavepolarize .footer .center { flex:1 1 300px; width:auto; }
+#mobemwavepolarize .frow input[type=range], #mobemwavepolarize .center input[type=range] { max-width:55%; }
+#mobemwavepolarize .eltable { display:block; overflow-x:auto; }
+#mobemwavepolarize ol { padding-left:24px; } #mobemwavepolarize li { margin-bottom:8px; }
+@media (max-width:560px) { #mobemwavepolarize .footer .left { flex-basis:100%; width:100%; } }
+@media (pointer:coarse) {
+#mobemwavepolarize input[type=button], #mobemwavepolarize .wv_btn { min-height:40px; }
+#mobemwavepolarize input[type=checkbox] { width:20px; height:20px; }
+#mobemwavepolarize input[type=range] { height:28px; }
+#mobemwavepolarize select, #mobemwavepolarize input[type=number] { min-height:34px; }
+}
+/* ── SIM description ── */
+#mobemwavepolarize .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:14px 0 6px; }
+#mobemwavepolarize .mob_descbtn { width:auto; padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobemwavepolarize .mob_desc { width:100%; background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobemwavepolarize .mob_desc p { margin:0 0 8px 0; }
+#mobemwavepolarize .mob_eq { text-align:center; }
+
+/* ════════ display options: dark mode, high contrast, colour-blind safe (the canvases follow through the colour engine) ════════ */
+#mobemwavepolarize.a11y_dm { background:#16191e; color:#e6e9ee; }
+#mobemwavepolarize.a11y_dm .tbar { background:#8a4a00; color:#fff; }
+#mobemwavepolarize.a11y_dm .bbar { background:#26301c; }
+#mobemwavepolarize.a11y_dm .playbar { background:#1c2633; }
+#mobemwavepolarize.a11y_dm .mcontent { background:#16191e; }
+#mobemwavepolarize.a11y_dm .footer { background:#2e2228; color:#e6e9ee; }
+#mobemwavepolarize.a11y_dm .footer:nth-of-type(even) { background:#1f2a22; }
+#mobemwavepolarize.a11y_dm .elpanel { background:#1c2633; color:#e6e9ee; border-top-color:#5599cc; }
+#mobemwavepolarize.a11y_dm .elhdr { color:#e6e9ee; }
+#mobemwavepolarize.a11y_dm .eltable { background:#1c2026; }
+#mobemwavepolarize.a11y_dm .eltable th { background:#2c3138; border-color:#5a6470; }
+#mobemwavepolarize.a11y_dm .eltable td { border-color:#3a4048; }
+#mobemwavepolarize.a11y_dm .fnote, #mobemwavepolarize.a11y_dm .draghint, #mobemwavepolarize.a11y_dm .elempty { color:#a8b0bb; }
+#mobemwavepolarize.a11y_dm .emw_narbar, #mobemwavepolarize.a11y_dm .emant_narbar { background:#2a2410; color:#f0e2b8; }
+#mobemwavepolarize.a11y_dm .emw_eqbar, #mobemwavepolarize.a11y_dm .emant_eqbar { background:#1b2233; color:#bcd0f0; border-left-color:#4f74a8; }
+#mobemwavepolarize.a11y_dm .wv_btn, #mobemwavepolarize.a11y_dm input[type=button] { background:#2c3138; color:#e6e9ee; border:1px solid #5a6470; }
+#mobemwavepolarize.a11y_dm .wv_btnmain { background:#6a5410; color:#fff; border-color:#a8850a; }
+#mobemwavepolarize.a11y_dm select, #mobemwavepolarize.a11y_dm input[type=number] { background:#22262b; color:#e6e9ee; border:1px solid #5a6470; }
+#mobemwavepolarize.a11y_dm input[type=range], #mobemwavepolarize.a11y_dm input[type=checkbox], #mobemwavepolarize.a11y_dm input[type=radio] { accent-color:#e8a020; }
+#mobemwavepolarize.a11y_dm canvas { border-color:#5a6470 !important; }
+#mobemwavepolarize.a11y_dm .mob_desc { background:#22262b; color:#e6e9ee; border-color:#3a4048; border-left-color:#e8a020; }
+#mobemwavepolarize.a11y_hc { background:#000; color:#fff; }
+#mobemwavepolarize.a11y_hc .tbar, #mobemwavepolarize.a11y_hc .bbar, #mobemwavepolarize.a11y_hc .playbar, #mobemwavepolarize.a11y_hc .mcontent, #mobemwavepolarize.a11y_hc .footer, #mobemwavepolarize.a11y_hc .elpanel { background:#000; color:#fff; box-shadow:inset 0 0 0 1px #fff; }
+#mobemwavepolarize.a11y_hc .tbar, #mobemwavepolarize.a11y_hc .tbar h3 { color:#ffd700; }
+#mobemwavepolarize.a11y_hc .elhdr, #mobemwavepolarize.a11y_hc .fnote, #mobemwavepolarize.a11y_hc .draghint, #mobemwavepolarize.a11y_hc .elempty { color:#fff; }
+#mobemwavepolarize.a11y_hc .eltable { background:#000; }
+#mobemwavepolarize.a11y_hc .eltable th { background:#000; color:#ffd700; border-color:#fff; }
+#mobemwavepolarize.a11y_hc .eltable td { border-color:#888; }
+#mobemwavepolarize.a11y_hc .emw_narbar, #mobemwavepolarize.a11y_hc .emant_narbar { background:#000; color:#fff; border-left-color:#ffd700; box-shadow:inset 0 0 0 1px #fff; }
+#mobemwavepolarize.a11y_hc .emw_eqbar, #mobemwavepolarize.a11y_hc .emant_eqbar { background:#000; color:#fff; border-left-color:#00ffff; box-shadow:inset 0 0 0 1px #fff; }
+#mobemwavepolarize.a11y_hc .wv_btn, #mobemwavepolarize.a11y_hc .wv_btnmain, #mobemwavepolarize.a11y_hc input[type=button] { background:#000; color:#fff; border:2px solid #fff; font-weight:bold; }
+#mobemwavepolarize.a11y_hc select, #mobemwavepolarize.a11y_hc input[type=number] { background:#000; color:#fff; border:1px solid #fff; }
+#mobemwavepolarize.a11y_hc input[type=range], #mobemwavepolarize.a11y_hc input[type=checkbox], #mobemwavepolarize.a11y_hc input[type=radio] { accent-color:#ffd700; }
+#mobemwavepolarize.a11y_hc canvas { border-color:#fff !important; }
+#mobemwavepolarize.a11y_hc .mob_desc { background:#000; color:#fff; border-color:#fff; border-left-color:#ffd700; }
+</style>
+<!-- ════════ A11Y CONTROLLER ════════ -->
+<script>
+  var emwA11y = (function(){
+var ROOT = null, WRAP = null, states = { hc:false, dm:false, cb:false, nr:true };
+/* ── canvas themes: every colour the sim draws passes through map(); the last frame is recorded,
+      so switching dark mode, high contrast or colour-blind safe colours redraws it at once,
+      even while the sim is paused. No page-wide names: this lives inside the controller. ── */
+function makeCT(){
+  var mode = { dark:false, hc:false, cb:false }, key = '', cache = {}, cvs = [];
+  var probe = document.createElement('canvas').getContext('2d');
+  var P = CanvasRenderingContext2D.prototype;
+  function parse(c){
+    probe.fillStyle = '#000'; probe.fillStyle = c; var s = String(probe.fillStyle), m;
+    if (s.charAt(0) === '#') return [parseInt(s.substr(1,2),16), parseInt(s.substr(3,2),16), parseInt(s.substr(5,2),16), 1];
+    m = s.match(/rgba?\(([^)]+)\)/); if (!m) return null;
+    var p = m[1].split(',').map(parseFloat); return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1];
+  }
+  function lin(v){ v /= 255; return v <= 0.04045 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); }
+  function lum(r,g,b){ return 0.2126*lin(r) + 0.7152*lin(g) + 0.0722*lin(b); }
+  function hsl(r,g,b){
+    r/=255; g/=255; b/=255; var mx = Math.max(r,g,b), mn = Math.min(r,g,b), h = 0, s = 0, l = (mx+mn)/2, d = mx-mn;
+    if (d > 1e-6){ s = d/(1 - Math.abs(2*l - 1));
+      h = mx === r ? ((g-b)/d) % 6 : (mx === g ? (b-r)/d + 2 : (r-g)/d + 4); h *= 60; if (h < 0) h += 360; }
+    return [h, s, l];
+  }
+  function rgb(h,s,l){
+    var c = (1 - Math.abs(2*l - 1))*s, x = c*(1 - Math.abs((h/60) % 2 - 1)), m = l - c/2, t;
+    t = h < 60 ? [c,x,0] : h < 120 ? [x,c,0] : h < 180 ? [0,c,x] : h < 240 ? [0,x,c] : h < 300 ? [x,0,c] : [c,0,x];
+    return [Math.round((t[0]+m)*255), Math.round((t[1]+m)*255), Math.round((t[2]+m)*255)];
+  }
+  /* raise the lightness until the colour stands out on a dark background */
+  function lift(h,s,l,target){ var c = rgb(h,s,l); while (lum(c[0],c[1],c[2]) < target && l < 0.95){ l += 0.03; c = rgb(h,s,l); } return c; }
+  /* Okabe-Ito colours, chosen by hue */
+  function oi(h){
+    return h < 15 || h >= 330 ? [213,94,0] : h < 40 ? [230,159,0] : h < 75 ? [240,228,66] : h < 170 ? [0,158,115]
+         : h < 200 ? [86,180,233] : h < 260 ? [0,114,178] : [204,121,167];
+  }
+  function conv(c, stroke){
+    if (!mode.dark && !mode.hc && !mode.cb) return c;
+    var k = key + (stroke ? 's' : 'f') + c; if (cache[k] !== undefined) return cache[k];
+    var v = parse(c); if (!v){ cache[k] = c; return c; }
+    var r = v[0], g = v[1], b = v[2], a = v[3], q = hsl(r,g,b), Y = lum(r,g,b), neutral = q[1] < 0.18, o;
+    if (mode.cb && !neutral && Y <= 0.6 && !(q[2] > 0.6 && q[1] < 0.6)){ o = oi(q[0]); r = o[0]; g = o[1]; b = o[2]; q = hsl(r,g,b); Y = lum(r,g,b); }
+    if (mode.hc){
+      if (neutral) o = Y > 0.8 ? [0,0,0] : (Y < 0.25 ? [255,255,255] : [205,205,205]);
+      else if (stroke && Y > 0.4) o = [r,g,b];   /* bright lines stay bright */
+      else if (Y > 0.6 || (q[2] > 0.6 && q[1] < 0.6)) o = [0,0,0];   /* light or pastel fills are surfaces */
+      else o = lift(q[0], 1, Math.max(q[2], 0.5), 0.4);
+    } else if (mode.dark){
+      if (neutral) o = rgb(q[0], q[1], 0.1 + 0.82*(1 - q[2]));
+      else if (stroke && Y > 0.3) o = [r,g,b];   /* bright lines stay bright */
+      else if (Y > 0.55 || (q[2] > 0.6 && q[1] < 0.6)) o = rgb(q[0], Math.min(q[1], 0.3), 0.18);   /* light or pastel fills are surfaces */
+      else o = lift(q[0], q[1], q[2], 0.3);
+    } else o = [r,g,b];
+    var out = a < 1 ? 'rgba(' + o[0] + ',' + o[1] + ',' + o[2] + ',' + a + ')' : 'rgb(' + o[0] + ',' + o[1] + ',' + o[2] + ')';
+    cache[k] = out; return out;
+  }
+  /* gradients remember their colour stops, so they can be rebuilt in another theme */
+  function style(v, ctx, stroke){
+    if (typeof v === 'string') return conv(v, stroke);
+    if (v && v.__spec){
+      var sp = v.__spec; if (sp.key === key) return sp.made;
+      var g = P[sp.kind].apply(ctx, sp.args); sp.stops.forEach(function(s){ g.addColorStop(s[0], conv(s[1])); });
+      sp.key = key; sp.made = g; return g;
+    }
+    return v;
+  }
+  function attach(cv){
+    var ctx = cv.getContext('2d'); if (!ctx || ctx.__ct) return; ctx.__ct = true;
+    var log = [], replaying = false, vals = {};
+    /* a fill or clear covering the whole canvas starts a new frame (in device pixels, whatever the transform) */
+    function full(a){ var t = ctx.getTransform(), x0 = t.a*a[0] + t.e, y0 = t.d*a[1] + t.f, x1 = t.a*(a[0] + a[2]) + t.e, y1 = t.d*(a[1] + a[3]) + t.f;
+      return t.b === 0 && t.c === 0 && Math.min(x0, x1) <= 0.5 && Math.min(y0, y1) <= 0.5 && Math.max(x0, x1) >= cv.width - 0.5 && Math.max(y0, y1) >= cv.height - 0.5; }
+    /* a canvas attached after its first drawing: keep that picture, to re-colour pixel by pixel until the next frame */
+    var snap = null, framed = false; try { snap = ctx.getImageData(0, 0, cv.width, cv.height); } catch (e) {}
+    ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); vals[p] = d.get.call(ctx);
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return vals[p]; },
+        set:function(v){ vals[p] = v; if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, style(v, ctx, p === 'strokeStyle')); } });
+    });
+    var plain = ['lineWidth','font','textAlign','textBaseline','globalAlpha','lineCap','lineJoin','miterLimit','shadowBlur',
+                 'shadowOffsetX','shadowOffsetY','globalCompositeOperation','lineDashOffset','direction','imageSmoothingEnabled'];
+    plain.forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); if (!d || !d.set) return;
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return d.get.call(ctx); },
+        set:function(v){ if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, v); } });
+    });
+    ['createLinearGradient','createRadialGradient','createConicGradient'].forEach(function(n){
+      if (!P[n]) return;
+      ctx[n] = function(){
+        var args = Array.prototype.slice.call(arguments), g = P[n].apply(ctx, args), add = g.addColorStop;
+        var sp = { kind:n, args:args, stops:[], key:key, made:g }; g.__spec = sp;
+        g.addColorStop = function(o, c){ sp.stops.push([o, c]); add.call(g, o, conv(c)); };
+        return g;
+      };
+    });
+    /* text is a line, not a surface: a bright text colour stays bright in dark mode and high contrast */
+    var fsd = Object.getOwnPropertyDescriptor(P, 'fillStyle');
+    function asText(f, args){ var v = vals.fillStyle; if (typeof v === 'string' && key !== '|' && key !== ''){ fsd.set.call(ctx, conv(v, true)); try { return f.apply(ctx, args); } finally { fsd.set.call(ctx, style(v, ctx, false)); } } return f.apply(ctx, args); }
+    var skip = /^(constructor|get[A-Z]\w*|isPointIn\w*|measureText|create\w*)$/;
+    Object.getOwnPropertyNames(P).forEach(function(n){
+      if (skip.test(n)) return; var d = Object.getOwnPropertyDescriptor(P, n); if (!d || typeof d.value !== 'function') return;
+      var f = d.value;
+      ctx[n] = function(){
+        if (!replaying){
+          if ((n === 'fillRect' || n === 'clearRect') && full(arguments)){ snap = null; framed = true;
+            /* a new frame: start the record from the drawing state of this moment */
+            var t = ctx.getTransform();
+            log = [['c','setTransform',[t.a,t.b,t.c,t.d,t.e,t.f]]];
+            ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){ log.push(['s', p, vals[p]]); });
+            plain.forEach(function(p){ var dd = Object.getOwnPropertyDescriptor(P, p); if (dd && dd.get) log.push(['s', p, dd.get.call(ctx)]); });
+            log.push(['c','setLineDash',[ctx.getLineDash()]]);
+          }
+          if (log){ log.push(['c', n, Array.prototype.slice.call(arguments)]); if (log.length > 60000) log = null; }
+        }
+        if (n === 'fillText') return asText(f, arguments);
+        return f.apply(ctx, arguments);
+      };
+    });
+    cvs.push({ redraw:function(){
+      if (!framed && snap){
+        var img = new ImageData(new Uint8ClampedArray(snap.data), snap.width, snap.height), d = img.data, memo = {};
+        for (var i = 0; i < d.length; i += 4){ if (!d[i+3]) continue; var k = d[i] + ',' + d[i+1] + ',' + d[i+2], c = memo[k];
+          if (!c){ var v = parse(conv('rgb(' + k + ')')); c = memo[k] = v || [d[i], d[i+1], d[i+2]]; } d[i] = c[0]; d[i+1] = c[1]; d[i+2] = c[2]; }
+        var t0 = ctx.getTransform(); P.setTransform.call(ctx, 1, 0, 0, 1, 0, 0); P.putImageData.call(ctx, img, 0, 0); P.setTransform.call(ctx, t0); return;
+      }
+      if (!framed || !log || log.length < 3) return;
+      replaying = true;
+      try { log.forEach(function(e){ if (e[0] === 's') ctx[e[1]] = e[2]; else if (e[1] === 'fillText') asText(P.fillText, e[2]); else P[e[1]].apply(ctx, e[2]); }); }
+      finally { replaying = false; }
+    }});
+  }
+  return {
+    attach: attach,
+    map: conv,
+    set: function(m){ mode = { dark:!!m.dark, hc:!!m.hc, cb:!!m.cb }; key = (mode.dark?'d':'') + (mode.hc?'h':'') + (mode.cb?'c':'') + '|'; cvs.forEach(function(c){ c.redraw(); }); }
+  };
+}
+
+var ct = makeCT();
+function attachAll(){ var w = document.getElementById('mobemwavepolarize') || document.getElementById('emwRoot'); if (w) [].forEach.call(w.querySelectorAll('canvas'), ct.attach); }
+attachAll();
+/* canvases the sim adds later (the element tables' small discs) join the colour engine as they appear */
+if (window.MutationObserver){ var w0 = document.getElementById('mobemwavepolarize') || document.getElementById('emwRoot');
+if (w0) new MutationObserver(function(){ var before = w0.__n || 0, all = w0.querySelectorAll('canvas'); if (all.length !== before){ w0.__n = all.length; attachAll(); ct.set({ dark:states.dm, hc:states.hc, cb:states.cb }); } }).observe(w0, { childList:true, subtree:true }); }
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return; b.classList.toggle('emw_a11yon', on);
+b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa';
+b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){
+ROOT = ROOT || document.getElementById('emwRoot'); if (!ROOT) return;
+WRAP = document.getElementById('mobemwavepolarize') || ROOT; attachAll();
+WRAP.classList.toggle('a11y_dm', states.dm); WRAP.classList.toggle('a11y_hc', states.hc); WRAP.classList.toggle('a11y_cb', states.cb);
+ct.set({ dark:states.dm, hc:states.hc, cb:states.cb });
+var nb = document.getElementById('emwNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var nr = document.getElementById('emwBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('emwBtnHC', states.hc); styleBtn('emwBtnDM', states.dm); styleBtn('emwBtnCB', states.cb); styleBtn('emwBtnNR', states.nr);
+}
+return {
+init: function(){ apply(); },
+toggle: function(k){
+states[k] = !states[k];
+if (k === 'hc' && states.hc) states.dm = false;   /* high contrast and dark mode switch each other off; colour-blind combines with either */
+if (k === 'dm' && states.dm) states.hc = false;
+apply();
+},
+/* the colour engine themes every colour on the canvas, so the drawing code keeps its standard colours */
+isHC: function(){ return false; }, isCB: function(){ return false; }, isLM: function(){ return false; },
+col: function(prop, def){ return def; },
+narrate:function(msg){
+        if(!states.nr)return;
+        var nb=document.getElementById('emwNarBar');
+        if(nb) nb.textContent=msg;
+      }
+};
+})();
+  function emwElemTypeChanged(){
+    var t=document.getElementById('emwElemType').value;
+    document.getElementById('emwRetWrap').style.display = (t==='genwp') ? 'inline' : 'none';
+    var lbl = (t==='faraday') ? 'Rotation angle \u03b8_rot:' : 'Axis angle \u03b8:';
+    document.getElementById('emwAngleLabelWrap').firstChild.textContent = lbl;
+  }
+</script>
+<!-- ════════ SIMULATION ════════
+Pattern: mirrors the working VGG example. Adds Jones-calculus polarizing elements
+(polarizer / HWP / QWP / general waveplate / Faraday rotator), an "Optical Path"
+table, and small face-on canvases showing each element's axis and the resulting
+polarization state. Propagation axis is still derived from the antenna orientation.
+Magnetic field is no longer drawn.
+-->
+<script>
+  var emwGen = function() {
+    var canvas  = document.getElementById('emwCanvas');
+    var ctx     = canvas.getContext('2d');
+    var W       = canvas.width;
+    var H       = canvas.height;
+    var timer;
+    var runFlag = 0;
+    var c_light = 3e8;
+    /* ── complex number helpers ── */
+    function cx(re,im){ return {re:re||0, im:im||0}; }
+    function cxAdd(a,b){ return cx(a.re+b.re, a.im+b.im); }
+    function cxMul(a,b){ return cx(a.re*b.re-a.im*b.im, a.re*b.im+a.im*b.re); }
+    function cxAbs2(a){ return a.re*a.re+a.im*a.im; }
+    function cxFromPolar(mag,phase){ return cx(mag*Math.cos(phase), mag*Math.sin(phase)); }
+    function matMul(A,B){
+      return [
+        [cxAdd(cxMul(A[0][0],B[0][0]),cxMul(A[0][1],B[1][0])), cxAdd(cxMul(A[0][0],B[0][1]),cxMul(A[0][1],B[1][1]))],
+        [cxAdd(cxMul(A[1][0],B[0][0]),cxMul(A[1][1],B[1][0])), cxAdd(cxMul(A[1][0],B[0][1]),cxMul(A[1][1],B[1][1]))]
+      ];
+    }
+    function matVec(M,v){
+      return [cxAdd(cxMul(M[0][0],v[0]),cxMul(M[0][1],v[1])), cxAdd(cxMul(M[1][0],v[0]),cxMul(M[1][1],v[1]))];
+    }
+    function realMat(a,b,cc,d){ return [[cx(a,0),cx(b,0)],[cx(cc,0),cx(d,0)]]; }
+    function identityMat(){ return realMat(1,0,0,1); }
+    function polarizerMat(thRad){ var c1=Math.cos(thRad), s1=Math.sin(thRad); return realMat(c1*c1, c1*s1, c1*s1, s1*s1); }
+    function rotMat(thRad){ var c1=Math.cos(thRad), s1=Math.sin(thRad); return realMat(c1,-s1,s1,c1); }
+    function waveplateMat(thRad, delRad){
+      var R=rotMat(thRad), Rm=rotMat(-thRad);
+      var D=[[cx(1,0),cx(0,0)],[cx(0,0), cxFromPolar(1,-delRad)]];
+      return matMul(matMul(R,D),Rm);
+    }
+    function buildMatrixFor(el){
+      var thRad = (el.angle||0)*Math.PI/180;
+      if (el.type==='polarizer') return polarizerMat(thRad);
+      if (el.type==='hwp') return waveplateMat(thRad, Math.PI);
+      if (el.type==='qwp') return waveplateMat(thRad, Math.PI/2);
+      if (el.type==='genwp') return waveplateMat(thRad, (el.retardance||90)*Math.PI/180);
+      if (el.type==='faraday') return rotMat(thRad);
+      return identityMat();
+    }
+    /* shade a polarizer disc darker as it blocks more light (transmission 1 = fully clear, 0 = fully blocked) */
+    function polarizerFillMini(trans){
+      var t = Math.max(0, Math.min(1, trans));
+      var r = Math.round(238*t + 55*(1-t));
+      var g = Math.round(242*t + 55*(1-t));
+      var b = Math.round(249*t + 65*(1-t));
+      return 'rgb('+r+','+g+','+b+')';
+    }
+    function polarizerFill3D(trans){
+      var t = Math.max(0, Math.min(1, trans));
+      var alpha = 0.14 + 0.55*(1-t);
+      var r = Math.round(120*t + 35*(1-t));
+      var g = Math.round(150*t + 35*(1-t));
+      var b = Math.round(190*t + 45*(1-t));
+      return 'rgba('+r+','+g+','+b+','+alpha.toFixed(2)+')';
+    }
+    function typeLabel(t){
+      if (t==='polarizer') return 'Linear Polarizer';
+      if (t==='hwp') return 'Half-Wave Plate';
+      if (t==='qwp') return 'Quarter-Wave Plate';
+      if (t==='genwp') return 'General Waveplate';
+      if (t==='faraday') return 'Faraday Rotator';
+      return t;
+    }
+    /* ── vector helpers (world 3-vectors) ── */
+    function vadd(a,b){ return {x:a.x+b.x, y:a.y+b.y, z:a.z+b.z}; }
+    function vsub(a,b){ return {x:a.x-b.x, y:a.y-b.y, z:a.z-b.z}; }
+    function vscale(a,s){ return {x:a.x*s, y:a.y*s, z:a.z*s}; }
+    function vdot(a,b){ return a.x*b.x + a.y*b.y + a.z*b.z; }
+    function vcross(a,b){ return {x:a.y*b.z-a.z*b.y, y:a.z*b.x-a.x*b.z, z:a.x*b.y-a.y*b.x}; }
+    function vnorm(a){ var m=Math.sqrt(vdot(a,a)); return m<1e-9 ? {x:0,y:0,z:0} : {x:a.x/m,y:a.y/m,z:a.z/m}; }
+    /* ── physics / derived state ── */
+    var lambda, E0, thetaNDeg, phiNDeg, psiDeg, k, f, omega;
+    var nHat, kHat, bHat; /* bHat = ref transverse axis (ex-"B direction"), still used as Jones basis vector */
+    var animPhase, frameCount, Zmax, zOffsetM, spaceScale;
+    var narrationEvery = 70;
+    var INITIAL_VECTOR = [cx(1,0), cx(0,0)]; /* input beam: linear, along nHat, unit amplitude */
+    /* ── elements (polarizers / plates) ── */
+    var elements = [];
+    var nextElemId = 1;
+    var finalVector = INITIAL_VECTOR;
+    /* ── camera (orbit) state ── */
+    var yaw = -0.55, pitch = 0.35, camZoom = 1.0;
+    var DEF_YAW = -0.55, DEF_PITCH = 0.35, DEF_ZOOM = 1.0;
+    var dragging = false, lastPX = 0, lastPY = 0;
+    var perspFactor = 0.0016;
+    var centerX = W/2 - 30, centerY = H/2 - 10;
+    var ampPxPerUnit = 15;
+    function c(prop, def) { return emwA11y.col(prop, def); }
+    /* ── camera math ── */
+    function rotate(px,py,pz){
+      var cy=Math.cos(yaw), sy=Math.sin(yaw);
+      var x1 = px*cy + pz*sy;
+      var z1 = -px*sy + pz*cy;
+      var y1 = py;
+      var cp=Math.cos(pitch), sp=Math.sin(pitch);
+      var y2 = y1*cp - z1*sp;
+      var z2 = y1*sp + z1*cp;
+      return {x:x1, y:y2, z:z2};
+    }
+    function projectScaled(px,py,pz){
+      var r = rotate(px,py,pz);
+      var denom = 1 + r.z*perspFactor;
+      if (denom < 0.35) denom = 0.35;
+      var persp = camZoom/denom;
+      return {x:centerX + r.x*persp, y:centerY - r.y*persp, depth:r.z};
+    }
+    function projPoint(spatialM, fieldUnits){
+      var px = spatialM.x*spaceScale + (fieldUnits? fieldUnits.x*ampPxPerUnit:0);
+      var py = spatialM.y*spaceScale + (fieldUnits? fieldUnits.y*ampPxPerUnit:0);
+      var pz = spatialM.z*spaceScale + (fieldUnits? fieldUnits.z*ampPxPerUnit:0);
+      return projectScaled(px,py,pz);
+    }
+    function projAtField(s, fieldUnits){
+      var cs = s - zOffsetM;
+      return projPoint(vscale(kHat, cs), fieldUnits);
+    }
+    function projAtSpace(s, lateralM){
+      var cs = s - zOffsetM;
+      return projPoint(vadd(vscale(kHat, cs), lateralM || {x:0,y:0,z:0}), null);
+    }
+    function fmtVec(v){ return '(' + v.x.toFixed(2) + ', ' + v.y.toFixed(2) + ', ' + v.z.toFixed(2) + ')'; }
+    function fmtSci(num, digits){
+      if (num === 0) return '0';
+      var sign = num < 0 ? '-' : '';
+      num = Math.abs(num);
+      var exp = Math.floor(Math.log10(num));
+      var mant = num / Math.pow(10, exp);
+      mant = Math.round(mant * Math.pow(10, digits)) / Math.pow(10, digits);
+      if (mant >= 10) { mant /= 10; exp += 1; }
+      var supMap = {'0':'\u2070','1':'\u00b9','2':'\u00b2','3':'\u00b3','4':'\u2074','5':'\u2075','6':'\u2076','7':'\u2077','8':'\u2078','9':'\u2079','-':'\u207b'};
+      var expStr = String(exp).split('').map(function(ch){ return supMap[ch] || ch; }).join('');
+      return sign + mant.toFixed(digits) + '\u00d710' + expStr;
+    }
+    function drawArrow(x0,y0,x1,y1,color,lw){
+      var dx=x1-x0, dy=y1-y0, len=Math.sqrt(dx*dx+dy*dy);
+      ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = lw || 2;
+      ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+      if (len < 2) return;
+      var ang = Math.atan2(dy,dx), headLen = 6 + (lw||2);
+      ctx.beginPath();
+      ctx.moveTo(x1,y1);
+      ctx.lineTo(x1-headLen*Math.cos(ang-Math.PI/7), y1-headLen*Math.sin(ang-Math.PI/7));
+      ctx.lineTo(x1-headLen*Math.cos(ang+Math.PI/7), y1-headLen*Math.sin(ang+Math.PI/7));
+      ctx.closePath(); ctx.fill();
+    }
+    /* ── Jones vector at any point s along the beam ── */
+    function jonesAt(sVal){
+      var v = INITIAL_VECTOR;
+      for (var idx=0; idx<elements.length; idx++){
+        if (elements[idx].s <= sVal) v = elements[idx].cumVector; else break;
+      }
+      return v;
+    }
+    function realFieldAt(sVal, phase){
+      var v = jonesAt(sVal);
+      var cphi = Math.cos(phase), sphi = Math.sin(phase);
+      var Ex = E0*(v[0].re*cphi - v[0].im*sphi);
+      var Ey = E0*(v[1].re*cphi - v[1].im*sphi);
+      return {x: Ex, y: Ey};
+    }
+    /* ── recompute cumulative Jones matrices for all elements (call after any element add/remove/edit) ── */
+    function computeElementMatrices(){
+      elements.sort(function(a,b){ return a.s - b.s; });
+      var cum = identityMat();
+      for (var i=0;i<elements.length;i++){
+        var M = buildMatrixFor(elements[i]);
+        cum = matMul(M, cum);
+        elements[i].cumMatrix = cum;
+        elements[i].cumVector = matVec(cum, INITIAL_VECTOR);
+        elements[i].transmission = cxAbs2(elements[i].cumVector[0]) + cxAbs2(elements[i].cumVector[1]);
+      }
+      finalVector = (elements.length>0) ? elements[elements.length-1].cumVector : INITIAL_VECTOR;
+    }
+    /* ── absolute world-frame ground grid ── */
+    function drawGroundGrid(){
+      var half = Zmax/2;
+      var step = lambda/2;
+      ctx.strokeStyle = c('--emw-grid','#999');
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.3;
+      var gx, gz;
+      for (gx=-half; gx<=half+1e-9; gx+=step){
+        var p0=projPoint({x:gx,y:0,z:-half},null), p1=projPoint({x:gx,y:0,z:half},null);
+        ctx.beginPath(); ctx.moveTo(p0.x,p0.y); ctx.lineTo(p1.x,p1.y); ctx.stroke();
+      }
+      for (gz=-half; gz<=half+1e-9; gz+=step){
+        var q0=projPoint({x:-half,y:0,z:gz},null), q1=projPoint({x:half,y:0,z:gz},null);
+        ctx.beginPath(); ctx.moveTo(q0.x,q0.y); ctx.lineTo(q1.x,q1.y); ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    }
+    function drawAxisLegend(){
+      var anchor = {x:W-78, y:H-88}, L=32;
+      function tip(vx,vy,vz){ var r=rotate(vx*L,vy*L,vz*L); return {x:anchor.x+r.x, y:anchor.y-r.y}; }
+      var zT=tip(0,0,1), yT=tip(0,1,0), xT=tip(1,0,0);
+      ctx.font='11px monospace'; ctx.fillStyle=c('--emw-axis','#666');
+      drawArrow(anchor.x,anchor.y,zT.x,zT.y, c('--emw-axis','#666'), 1.5);
+      ctx.fillText('z', zT.x+3, zT.y+3);
+      drawArrow(anchor.x,anchor.y,yT.x,yT.y, c('--emw-axis','#666'), 1.5);
+      ctx.fillText('y', yT.x+3, yT.y-3);
+      drawArrow(anchor.x,anchor.y,xT.x,xT.y, c('--emw-axis','#666'), 1.5);
+      ctx.fillText('x', xT.x+3, xT.y+3);
+      ctx.fillText('(world frame)', anchor.x-30, anchor.y+18);
+    }
+    /* ── draw one element as a disc in the 3D scene, with its axis line(s) ── */
+    function drawElementDisc(el){
+      var radiusM = lambda/6;
+      var i, pts=[];
+      for (i=0;i<=24;i++){
+        var ang = i/24*2*Math.PI;
+        var lat = vadd(vscale(nHat, radiusM*Math.cos(ang)), vscale(bHat, radiusM*Math.sin(ang)));
+        pts.push(projAtSpace(el.s, lat));
+      }
+      ctx.fillStyle = (el.type==='polarizer') ? polarizerFill3D(el.transmission!=null?el.transmission:1) : 'rgba(120,150,190,0.18)';
+      ctx.strokeStyle = c('--emw-elem','#3366aa'); ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(pts[0].x,pts[0].y);
+      for (i=1;i<pts.length;i++) ctx.lineTo(pts[i].x,pts[i].y);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+      function axisLine(angDeg, dashed){
+        var ar = angDeg*Math.PI/180;
+        var dir = vadd(vscale(nHat, Math.cos(ar)), vscale(bHat, Math.sin(ar)));
+        var p1 = projAtSpace(el.s, vscale(dir, -radiusM));
+        var p2 = projAtSpace(el.s, vscale(dir,  radiusM));
+        if (dashed) ctx.setLineDash([4,3]);
+        ctx.strokeStyle = c('--emw-elem','#3366aa'); ctx.lineWidth = dashed?1.2:2.2;
+        ctx.beginPath(); ctx.moveTo(p1.x,p1.y); ctx.lineTo(p2.x,p2.y); ctx.stroke();
+        ctx.setLineDash([]);
+      }
+      if (el.type==='polarizer'){ axisLine(el.angle, false); }
+      else if (el.type==='faraday'){
+        var pc = projAtSpace(el.s, {x:0,y:0,z:0});
+        ctx.fillStyle = c('--emw-elem','#3366aa'); ctx.font='10px monospace';
+        ctx.fillText('\u21bb '+el.angle.toFixed(0)+'\u00b0', pc.x-14, pc.y+3);
+      } else { axisLine(el.angle, false); axisLine(el.angle+90, true); }
+      var lbl = projAtSpace(el.s, vscale(nHat, radiusM+0.15));
+      ctx.fillStyle=c('--emw-text','#111'); ctx.font='10px monospace';
+      ctx.fillText(typeLabel(el.type), lbl.x-30, lbl.y-6);
+    }
+    /* ── draw antenna, feed, oscillating charge, propagation/Poynting axis ── */
+    function drawAntenna(){
+      var Lhalf = lambda/4;
+      var p1 = projAtSpace(0, vscale(nHat,-Lhalf));
+      var p2 = projAtSpace(0, vscale(nHat, Lhalf));
+      ctx.strokeStyle = c('--emw-antenna','#222'); ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(p1.x,p1.y); ctx.lineTo(p2.x,p2.y); ctx.stroke();
+      var boxX=16, boxY=H-64, boxW=66, boxH=32;
+      var feed = projAtSpace(0, {x:0,y:0,z:0});
+      ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(feed.x,feed.y); ctx.lineTo(boxX+boxW/2, boxY); ctx.stroke();
+      ctx.strokeRect(boxX,boxY,boxW,boxH);
+      ctx.fillStyle = c('--emw-text','#111'); ctx.font='11px monospace'; ctx.textAlign='center';
+      ctx.fillText('TX', boxX+boxW/2, boxY+boxH/2+4);
+      ctx.textAlign='left';
+      var oscAmpMax = 0.42 * Lhalf * (E0/10);
+      var offset = oscAmpMax * Math.sin(animPhase);
+      var cp = projAtSpace(0, vscale(nHat, offset));
+      ctx.fillStyle = c('--emw-charge','#e08a00');
+      ctx.beginPath(); ctx.arc(cp.x, cp.y, 5, 0, 2*Math.PI); ctx.fill();
+      var vSign = Math.cos(animPhase) >= 0 ? 1 : -1;
+      var vTip = projAtSpace(0, vscale(nHat, offset + vSign*0.25));
+      drawArrow(cp.x,cp.y, vTip.x, vTip.y, c('--emw-charge','#e08a00'), 1.5);
+      ctx.font='10px monospace'; ctx.fillText('current', cp.x+8, cp.y-8);
+      var s0 = projAtSpace(0, {x:0,y:0,z:0});
+      var s1 = projAtSpace(Zmax, {x:0,y:0,z:0});
+      ctx.setLineDash([5,4]);
+      drawArrow(s0.x,s0.y,s1.x,s1.y, c('--emw-S','#227744'), 1.8);
+      ctx.setLineDash([]);
+      ctx.fillStyle = c('--emw-S','#227744'); ctx.font='11px monospace';
+      ctx.fillText('S  (propagation direction, k\u0302)', s1.x-90, s1.y-8);
+      for (var e=0;e<elements.length;e++) drawElementDisc(elements[e]);
+    }
+    /* ── draw the propagating E field (through all elements) ── */
+    function drawFields(){
+      var dz = Zmax/200;
+      var pathE=[];
+      var s;
+      for (s=0; s<=Zmax; s+=dz){
+        var phase = k*s - animPhase;
+        var fv = realFieldAt(s, phase);
+        pathE.push(projAtField(s, vadd(vscale(nHat, fv.x), vscale(bHat, fv.y))));
+      }
+      var a0=projAtField(0,{x:0,y:0,z:0}), a1=projAtField(Zmax,{x:0,y:0,z:0});
+      ctx.strokeStyle=c('--emw-axis','#666'); ctx.lineWidth=1; ctx.setLineDash([2,3]);
+      ctx.beginPath(); ctx.moveTo(a0.x,a0.y); ctx.lineTo(a1.x,a1.y); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.strokeStyle=c('--emw-E','#dd2200'); ctx.lineWidth=1.4;
+      ctx.beginPath(); ctx.moveTo(pathE[0].x,pathE[0].y);
+      var i;
+      for (i=1;i<pathE.length;i++) ctx.lineTo(pathE[i].x,pathE[i].y);
+      ctx.stroke();
+      var dzArrow = lambda/10, za;
+      for (za=0; za<=Zmax+1e-9; za+=dzArrow){
+        var ph = k*za - animPhase;
+        var fva = realFieldAt(za, ph);
+        var base = projAtField(za, {x:0,y:0,z:0});
+        var tipE = projAtField(za, vadd(vscale(nHat, fva.x), vscale(bHat, fva.y)));
+        drawArrow(base.x,base.y,tipE.x,tipE.y, c('--emw-E','#dd2200'), 2);
+      }
+      ctx.font='12px monospace';
+      ctx.fillStyle=c('--emw-E','#dd2200'); ctx.fillText('\u2014 E field (V/m)', 14, 18);
+      ctx.fillStyle=c('--emw-S','#227744'); ctx.fillText('- - propagation direction', 14, 34);
+      ctx.fillStyle=c('--emw-elem','#3366aa'); ctx.fillText('\u25a1 optical elements', 14, 50);
+    }
+    /* ── mini face-on canvas: element axis + transmitted polarization trace ── */
+    function drawMiniIcon(canvasEl, el){
+      var mctx = canvasEl.getContext('2d');
+      var w = canvasEl.width, h = canvasEl.height;
+      var cx0=w/2, cy0=h/2, R=Math.min(w,h)/2 - 6;
+      mctx.clearRect(0,0,w,h);
+      mctx.fillStyle = (el.type==='polarizer') ? polarizerFillMini(el.transmission!=null?el.transmission:1) : '#eef2f9';
+      mctx.beginPath(); mctx.arc(cx0,cy0,R,0,2*Math.PI); mctx.fill();
+      mctx.strokeStyle = '#334'; mctx.lineWidth=1.5; mctx.stroke();
+      function toXY(compUp, compRight, rad){ return {x:cx0+compRight*rad, y:cy0-compUp*rad}; }
+      function axisLine(angDeg, dashed){
+        var ar = angDeg*Math.PI/180;
+        var up=Math.cos(ar), right=Math.sin(ar);
+        var p1=toXY(-up,-right,R), p2=toXY(up,right,R);
+        if (dashed) mctx.setLineDash([3,2]);
+        mctx.strokeStyle = '#557'; mctx.lineWidth = dashed?1:1.6;
+        mctx.beginPath(); mctx.moveTo(p1.x,p1.y); mctx.lineTo(p2.x,p2.y); mctx.stroke();
+        mctx.setLineDash([]);
+      }
+      if (el.type==='polarizer'){ axisLine(el.angle,false); }
+      else if (el.type==='faraday'){
+        mctx.strokeStyle='#557'; mctx.lineWidth=1.4; mctx.beginPath();
+        mctx.arc(cx0,cy0,R*0.6, -0.3, Math.PI*1.3); mctx.stroke();
+        mctx.fillStyle='#557'; mctx.font='9px monospace'; mctx.fillText(el.angle.toFixed(0)+'\u00b0',cx0-8,cy0+3);
+      } else { axisLine(el.angle,false); axisLine(el.angle+90,true); }
+      /* transmitted polarization trace (ellipse/line/point) */
+      var v = el.cumVector;
+      var n=48, i, pts=[];
+      for (i=0;i<=n;i++){
+        var ph = i/n*2*Math.PI;
+        var up = v[0].re*Math.cos(ph) - v[0].im*Math.sin(ph);
+        var right = v[1].re*Math.cos(ph) - v[1].im*Math.sin(ph);
+        pts.push(toXY(up, right, R*0.82));
+      }
+      mctx.strokeStyle = '#dd2200'; mctx.lineWidth = 1.8;
+      mctx.beginPath(); mctx.moveTo(pts[0].x,pts[0].y);
+      for (i=1;i<pts.length;i++) mctx.lineTo(pts[i].x,pts[i].y);
+      mctx.stroke();
+    }
+    /* ── build the optical-path table ── */
+    function rebuildTable(){
+      var tbody = document.getElementById('emwElemTbody');
+      if (!tbody) return;
+      if (elements.length===0){
+        tbody.innerHTML = '<tr><td colspan="8" class="elempty">No elements yet &mdash; add one above.</td></tr>';
+      } else {
+        var html='';
+        for (var i=0;i<elements.length;i++){
+          var el = elements[i];
+          var retCell = (el.type==='hwp') ? '180\u00b0 (fixed)' :
+                        (el.type==='qwp') ? '90\u00b0 (fixed)' :
+                        (el.type==='genwp') ? '<input type="number" style="width:44px" value="'+el.retardance+'" step="5" min="0" max="360" onchange="emwUpdateElem('+el.id+',\'retardance\',this.value)">\u00b0' :
+                        '&mdash;';
+          var angleLbl = (el.type==='faraday') ? '\u03b8_rot' : '\u03b8';
+          html += '<tr>' +
+            '<td>'+(i+1)+'</td>' +
+            '<td>'+typeLabel(el.type)+'</td>' +
+            '<td><input type="number" style="width:52px" value="'+el.s.toFixed(2)+'" step="0.1" min="0.05" max="'+(Zmax-0.05).toFixed(2)+'" onchange="emwUpdateElem('+el.id+',\'s\',this.value)"></td>' +
+            '<td>'+angleLbl+' = <input type="number" style="width:48px" value="'+el.angle+'" step="5" min="-180" max="180" onchange="emwUpdateElem('+el.id+',\'angle\',this.value)">\u00b0</td>' +
+            '<td>'+retCell+'</td>' +
+            '<td><canvas id="emwMini'+el.id+'" width="72" height="72"></canvas></td>' +
+            '<td>'+(el.transmission*100).toFixed(1)+'%</td>' +
+            '<td><input type="button" value="Remove" onclick="emwRemoveElem('+el.id+')"></td>' +
+            '</tr>';
+        }
+        tbody.innerHTML = html;
+        for (var j=0;j<elements.length;j++){
+          var cv = document.getElementById('emwMini'+elements[j].id+'');
+          if (cv) drawMiniIcon(cv, elements[j]);
+        }
+      }
+      var addBtn = document.getElementById('emwAddBtn');
+      var maxMsg = document.getElementById('emwMaxMsg');
+      if (elements.length>=3){ addBtn.disabled=true; maxMsg.style.display='inline'; }
+      else { addBtn.disabled=false; maxMsg.style.display='none'; }
+    }
+    function updateEquationPanel(){
+      var eq = document.getElementById('emwEqBar');
+      if (!eq) return;
+      var l1 = 'f = ' + fmtSci(f,2) + ' Hz &nbsp; \u03bb = ' + lambda.toFixed(1) + ' m &nbsp; k = ' + k.toFixed(2) +
+               ' rad/m &nbsp; \u03c9 = ' + fmtSci(omega,2) + ' rad/s &nbsp; E\u2080 = ' + E0.toFixed(1) + ' V/m';
+      var l2 = 'n\u0302 (antenna / input polarization) = ' + fmtVec(nHat) + ' &nbsp; k\u0302 (propagation) = ' + fmtVec(kHat);
+      var l3 = 'Input Jones vector (in n\u0302, \u00ea\u2082 basis) = (1, 0) &mdash; linear, matching the antenna';
+      var l4 = 'E<sub>in</sub>(s,t) = ' + E0.toFixed(1) + ' ' + fmtVec(nHat) + ' cos(' + k.toFixed(2) + ' s \u2212 ' + fmtSci(omega,2) + ' t)  V/m  (before any elements)';
+      var finalT = (cxAbs2(finalVector[0])+cxAbs2(finalVector[1]))*100;
+      var l5 = 'Overall transmission after ' + elements.length + ' element' + (elements.length===1?'':'s') + ' = ' + finalT.toFixed(1) + '% of input intensity';
+      eq.innerHTML = l1 + '<br>' + l2 + '<br>' + l3 + '<br>' + l4 + '<br>' + l5 + ' &nbsp; (s = distance along k\u0302 from the antenna)';
+    }
+    function drawFrame(){
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = c('--emw-bg','#fff');
+      ctx.fillRect(0,0,W,H);
+      drawGroundGrid();
+      drawFields();
+      drawAntenna();
+      drawAxisLegend();
+      ctx.fillStyle = c('--emw-text','#111');
+      ctx.font='12px monospace';
+      ctx.fillText('Dipole antenna (\u03bb/2 = '+(lambda/2).toFixed(1)+' m); tilt a='+thetaNDeg+'\u00b0, b='+phiNDeg+'\u00b0, spin \u03c8='+psiDeg+'\u00b0', 14, H-10);
+    }
+    function sceneNarration(){
+      var finalT = (cxAbs2(finalVector[0])+cxAbs2(finalVector[1]))*100;
+      var msg = 'The wave leaves the antenna linearly polarized. ';
+      if (elements.length===0){ msg += 'No polarizing elements are in the beam path yet. '; }
+      else { msg += 'It passes through ' + elements.length + ' optical element' + (elements.length===1?'':'s') + ', ending with ' + finalT.toFixed(0) + ' percent of its original intensity. '; }
+      msg += 'The red trace shows the electric field; the dashed green line shows the propagation direction, which stays perpendicular to the antenna.';
+      emwA11y.narrate(msg);
+    }
+    function physicsStep(){
+      animPhase += 2*Math.PI/60;
+      frameCount++;
+      if (frameCount % narrationEvery === 0) sceneNarration();
+    }
+    function runMotion(){
+      physicsStep();
+      drawFrame();
+      if (runFlag === 1) timer = window.setTimeout(runMotion, 40);
+    }
+    function pl(){ window.clearTimeout(timer); runFlag=1; runMotion(); }
+    function ps(){ window.clearTimeout(timer); runFlag=0; }
+    function step(){ window.clearTimeout(timer); runFlag=0; physicsStep(); drawFrame(); sceneNarration(); }
+    function resetView(){ yaw=DEF_YAW; pitch=DEF_PITCH; camZoom=DEF_ZOOM; drawFrame(); }
+    function rst(){
+      window.clearTimeout(timer);
+      runFlag = 0;
+      var lamEl = document.getElementById('emwLambda');
+      var ampEl = document.getElementById('emwAmp');
+      var thEl  = document.getElementById('emwThetaN');
+      var phEl  = document.getElementById('emwPhiN');
+      var psEl  = document.getElementById('emwPsi');
+      lambda    = lamEl ? parseFloat(lamEl.value) : 3;
+      E0        = ampEl ? parseFloat(ampEl.value) : 6;
+      thetaNDeg = thEl  ? parseFloat(thEl.value)  : 0;
+      phiNDeg   = phEl  ? parseFloat(phEl.value)  : 0;
+      psiDeg    = psEl  ? parseFloat(psEl.value)  : 0;
+      var thetaN = thetaNDeg*Math.PI/180, phiN = phiNDeg*Math.PI/180, psi = psiDeg*Math.PI/180;
+      /* Two independent tilts composed as rotations (not spherical coords) so that
+         BOTH sliders have a visible effect starting right at the vertical rest position --
+         spherical (theta,phi) has a pole at theta=0 where phi does nothing, which is
+         exactly the default orientation, so that parameterization looked "stuck". */
+      nHat = vnorm({ x: -Math.cos(phiN)*Math.sin(thetaN), y: Math.cos(phiN)*Math.cos(thetaN), z: Math.sin(phiN) });
+      var refZ = {x:0,y:0,z:1}, refX = {x:1,y:0,z:0};
+      var dotZ = vdot(refZ, nHat);
+      var k0;
+      if (Math.abs(dotZ) > 0.999) {
+        var dotX = vdot(refX, nHat);
+        k0 = vnorm(vsub(refX, vscale(nHat, dotX)));
+      } else {
+        k0 = vnorm(vsub(refZ, vscale(nHat, dotZ)));
+      }
+      var kPerp = vcross(nHat, k0);
+      kHat = vnorm(vadd(vscale(k0, Math.cos(psi)), vscale(kPerp, Math.sin(psi))));
+      bHat = vnorm(vcross(kHat, nHat));
+      k = 2*Math.PI/lambda;
+      f = c_light/lambda;
+      omega = 2*Math.PI*f;
+      Zmax = 3*lambda;
+      zOffsetM = Zmax/2;
+      spaceScale = 46;
+      animPhase = 0;
+      frameCount = 0;
+      for (var i=0;i<elements.length;i++){ if (elements[i].s > Zmax-0.05) elements[i].s = Zmax-0.05; }
+      computeElementMatrices();
+      updateEquationPanel();
+      rebuildTable();
+      drawFrame();
+      emwA11y.narrate('Ready. \u03bb = '+lambda.toFixed(1)+' m, tilt a = '+thetaNDeg+'\u00b0, b = '+phiNDeg+'\u00b0, spin \u03c8 = '+psiDeg+'\u00b0, E\u2080 = '+E0.toFixed(1)+' V/m. Press Play, or drag the canvas to look around.');
+    }
+    /* ── element management (exposed globally via emwSim is not enough; use module-level fns below) ── */
+    function addElement(type, angle, retardance){
+      if (elements.length>=3) return;
+      var pos = Zmax * (elements.length+1) / 4;
+      if (pos > Zmax-0.05) pos = Zmax-0.05;
+      elements.push({ id: nextElemId++, type:type, s:pos, angle:angle, retardance:retardance });
+      computeElementMatrices();
+      updateEquationPanel();
+      rebuildTable();
+      drawFrame();
+    }
+    function removeElement(id){
+      elements = elements.filter(function(e){ return e.id!==id; });
+      computeElementMatrices();
+      updateEquationPanel();
+      rebuildTable();
+      drawFrame();
+    }
+    function updateElemField(id, field, val){
+      for (var i=0;i<elements.length;i++){
+        if (elements[i].id===id){
+          var num = parseFloat(val);
+          if (field==='s'){ if (num<0.05) num=0.05; if (num>Zmax-0.05) num=Zmax-0.05; }
+          elements[i][field] = num;
+        }
+      }
+      computeElementMatrices();
+      updateEquationPanel();
+      rebuildTable();
+      drawFrame();
+    }
+    /* ── mouse / touch orbit controls ── */
+    function pointerDown(x,y){ dragging=true; lastPX=x; lastPY=y; canvas.style.cursor='grabbing'; }
+    function pointerMove(x,y){
+      if (!dragging) return;
+      var dx=x-lastPX, dy=y-lastPY;
+      lastPX=x; lastPY=y;
+      yaw += dx*0.007;
+      pitch += dy*0.007;
+      if (pitch>1.4) pitch=1.4; if (pitch<-1.4) pitch=-1.4;
+      drawFrame();
+    }
+    function pointerUp(){ dragging=false; canvas.style.cursor='grab'; }
+    canvas.addEventListener('mousedown', function(e){ pointerDown(e.clientX,e.clientY); });
+    window.addEventListener('mousemove', function(e){ pointerMove(e.clientX,e.clientY); });
+    window.addEventListener('mouseup', pointerUp);
+    canvas.addEventListener('touchstart', function(e){ var t=e.touches[0]; pointerDown(t.clientX,t.clientY); e.preventDefault(); }, {passive:false});
+    canvas.addEventListener('touchmove', function(e){ var t=e.touches[0]; pointerMove(t.clientX,t.clientY); e.preventDefault(); }, {passive:false});
+    canvas.addEventListener('touchend', function(e){ pointerUp(); }, {passive:false});
+    canvas.addEventListener('wheel', function(e){
+      e.preventDefault();
+      camZoom *= (e.deltaY<0) ? 1.08 : 0.93;
+      if (camZoom<0.4) camZoom=0.4; if (camZoom>2.5) camZoom=2.5;
+      drawFrame();
+    }, {passive:false});
+    rst();
+    return { pl:pl, ps:ps, step:step, rst:rst, resetView:resetView, addElement:addElement, removeElement:removeElement, updateElemField:updateElemField };
+  };
+  var emwSim = new emwGen();
+  function emwAddElement(){
+    var type = document.getElementById('emwElemType').value;
+    var angle = parseFloat(document.getElementById('emwElemAngle').value) || 0;
+    var ret = parseFloat(document.getElementById('emwElemRet').value) || 90;
+    emwSim.addElement(type, angle, ret);
+  }
+  function emwRemoveElem(id){ emwSim.removeElement(id); }
+  function emwUpdateElem(id, field, val){ emwSim.updateElemField(id, field, val); }
+</script>
+<script>
+  emwA11y.init();
+</script>
+<script>
+(function(){
+var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+b.addEventListener('click', function(){
+var open = d.style.display === 'none';
+d.style.display = open ? 'block' : 'none';
+b.setAttribute('aria-expanded', open ? 'true' : 'false');
+b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }
+});
+})();
+</script>
+</div><!-- #mobemwavepolarize -->
+</main>
+</body>
+</html>

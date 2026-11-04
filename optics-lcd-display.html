@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Optics: How an LCD Screen Works</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, LCD, liquid crystal, polarization, polarizer, Malus's law, twisted nematic, pixel, subpixel, color filter, lesson, scientific">
+<meta name="description" content="Interactive LCD: the layers of a liquid crystal display and the picture they make, and how polarization, a twisted liquid crystal and a voltage control each subpixel.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+@media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="lcRoot" class="lc_root" role="region" aria-label="LCD simulator: how a liquid crystal display makes a picture, and how polarization controls each pixel">
+<div class="lc_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="lc_a11ybtn" id="lcBtnHC" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="lc_a11ybtn" id="lcBtnLM" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="lc_a11ybtn" id="lcBtnCB" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="lc_a11ybtn lc_a11yon" id="lcBtnNR" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div class="lc_header"><p class="lc_h1">How an LCD Screen Works</p><p class="lc_sub">a backlight, two crossed polarizers, and a liquid crystal that twists the light &middot; a voltage untwists it</p></div>
+<div class="lc_tabs" role="tablist" aria-label="Topics">
+<button type="button" role="tab" class="lc_tab" id="lcT0" aria-selected="true">1. The big picture: layers and pixels</button>
+<button type="button" role="tab" class="lc_tab" id="lcT1" aria-selected="false">2. One pixel: polarization at work</button>
+</div>
+<div class="lc_panel"><div class="lc_ptitle" id="lcLab"></div>
+<canvas id="lcCv" width="760" height="420" tabindex="0" role="img" aria-describedby="lcStatus"></canvas></div>
+<div class="lc_status" id="lcStatus"></div>
+<div class="lc_bbar" id="lcBar"></div>
+<div class="lc_read" id="lcRead" aria-label="Readings"></div>
+<div class="lc_panels"><div class="lc_panel"><div class="lc_ptitle">Controls</div><div class="lc_pbody" id="lcCtlA"></div></div>
+<div class="lc_panel"><div class="lc_ptitle">Try this</div><div class="lc_pbody" id="lcCtlB"></div></div></div>
+<div class="lc_panel"><div class="lc_ptitle" id="lcGrT"></div><canvas id="lcGr" width="760" height="220" role="img" aria-label="Graph"></canvas></div>
+<div class="lc_eqs" id="lcEq"></div>
+<div id="lcNar" class="lc_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="lc_descwrap">
+<button type="button" class="lc_descbtn" id="lcDescBtn" aria-expanded="false" aria-controls="lcDesc">&#9656; SIM DESCRIPTION</button>
+<div class="lc_desc" id="lcDesc" role="region" aria-labelledby="lcDescBtn" hidden>
+<p>A liquid crystal display (LCD) does not make light: it controls how much of the light from a <b>backlight</b> gets through each tiny spot of the screen. Every <b>pixel</b> is made of three <b>subpixels</b>, behind a red, a green and a blue <b>colour filter</b>. Seen from a distance, the three blend: red + green looks yellow, all three look white. Each subpixel works like a light valve controlled by a voltage.</p>
+<p><b>1. The layers</b>, from back to front: the backlight (LEDs and a diffuser); a <b>rear polarizer</b>; a glass plate carrying a grid of tiny <b>transistors</b> (the thin-film transistors, TFT) and a transparent electrode for each subpixel; a thin layer of <b>liquid crystal</b>, a few micrometres thick; the colour filters and a common transparent electrode on the front glass; and a <b>front polarizer</b>, turned 90&deg; from the rear one. Remove any layer to see its role.</p>
+<p><b>2. Polarization.</b> Light is a wave whose electric field oscillates across its direction of travel. The backlight is <i>unpolarized</i>: its field points every which way. A polarizer passes only the part along its axis: unpolarized light loses half its intensity. Polarized light meeting a second polarizer at an angle `theta` to its polarization keeps a fraction given by <b>Malus&rsquo;s law</b>,</p>
+<p class="lc_eq">`I = I_0 cos^2 theta`.</p>
+<p>Crossed polarizers (`theta` = 90&deg;) block all of it. The <b>liquid crystal</b> molecules are long rods. The glass surfaces are brushed so that the rods line up along the rear polarizer at the back and along the front polarizer at the front; in between they form a gentle 90&deg; <b>twist</b> (a twisted nematic cell). Light passing through follows the twist: its polarization is turned by 90&deg;, so it now lines up with the front polarizer and gets through. The subpixel is bright.</p>
+<p>A voltage across the layer (a few volts) makes the rods turn to point along the electric field, toward the viewer. The twist is undone; the light keeps its original polarization and the crossed front polarizer blocks it. The subpixel is dark. In between, partial untwisting gives the shades of gray: if the polarization is turned by `phi`, the transmitted fraction is `sin^2 phi`. This kind of display is &ldquo;normally white&rdquo;: bright with no voltage. With parallel polarizers it would be &ldquo;normally black&rdquo;.</p>
+<p><b>Model.</b> Threshold voltage 1.5 V; above it the rods tilt and the twist decreases smoothly, nearly fully undone at 5 V. The rotation of the polarization is taken equal to the twist (a simplification). The picture is 32 &times; 20 pixels; real screens have millions.</p>
+</div></div>
+</div><!-- #lcRoot -->
+<style>
+#lcRoot { --c-chassis:#1a1c1f; --c-panel:#22262b; --c-hi:#2c3138; --c-lo:#14161a; --c-bd:#3a4048; --c-bd2:#525c66; --c-text:#c8d0d8; --c-dim:#8a94a3; --c-accent:#e8a020; --c-green:#3ad08f; --c-val:#ffdd66; --c-nbg:#2a2410; --c-nbd:#e0b040; --c-ntx:#f0e2b8;
+  background:var(--c-chassis); color:var(--c-text); font-family:Arial, sans-serif; font-size:14px; padding:14px 10px 18px; border-radius:6px; box-sizing:border-box; width:100%; max-width:860px; margin:0 auto 10px; display:flex; flex-direction:column; gap:10px; }
+#lcRoot * { box-sizing:border-box; }
+#lcRoot.lc_lm { --c-chassis:#e9edf1; --c-panel:#ffffff; --c-hi:#f1f4f7; --c-lo:#f4f6f9; --c-bd:#c3cad3; --c-bd2:#9aa3ae; --c-text:#1d232a; --c-dim:#556070; --c-accent:#a8620a; --c-green:#12805a; --c-val:#8a4a00; --c-nbg:#ffefc0; --c-ntx:#333; }
+#lcRoot.lc_hc { --c-chassis:#000; --c-panel:#000; --c-hi:#111; --c-lo:#000; --c-bd:#fff; --c-bd2:#fff; --c-text:#fff; --c-dim:#e8e8e8; --c-accent:#ffd700; --c-green:#00ff88; --c-val:#ffff00; --c-nbg:#000; --c-nbd:#ffd700; --c-ntx:#fff; }
+#lcRoot .lc_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+#lcRoot .lc_a11ybtn { padding:4px 10px; font-size:.72em; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-dim); min-height:32px; }
+#lcRoot .lc_a11yon { background:rgba(58,208,143,.14); border-color:var(--c-green); color:var(--c-green); font-weight:bold; }
+#lcRoot .lc_header { text-align:center; }
+#lcRoot .lc_h1 { margin:0; font-size:1.05em; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--c-accent); }
+#lcRoot .lc_sub { margin:3px 0 0; font-size:.75em; color:var(--c-dim); letter-spacing:.05em; text-transform:uppercase; }
+#lcRoot .lc_tabs { display:flex; gap:4px; flex-wrap:wrap; }
+#lcRoot .lc_tab { flex:1 1 220px; padding:8px 6px; border:1px solid var(--c-bd2); background:var(--c-hi); color:var(--c-text); border-radius:4px; cursor:pointer; font-family:monospace; font-size:.76em; letter-spacing:.05em; text-transform:uppercase; min-height:40px; }
+#lcRoot .lc_tab[aria-selected="true"] { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#lcRoot .lc_panels { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#lcRoot .lc_panel { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; overflow:hidden; min-width:0; }
+#lcRoot .lc_ptitle { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.66em; letter-spacing:.1em; text-transform:uppercase; color:var(--c-dim); }
+#lcRoot .lc_pbody { padding:9px 12px; display:flex; flex-direction:column; gap:9px; }
+#lcRoot canvas { display:block; width:100%; height:auto; }
+#lcRoot #lcCv { cursor:pointer; touch-action:manipulation; }
+#lcRoot .lc_bbar { display:flex; flex-wrap:wrap; gap:6px 10px; justify-content:center; align-items:center; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:6px; padding:8px 10px; }
+#lcRoot .lc_bbar label { display:flex; align-items:center; gap:6px; font-size:.84em; cursor:pointer; }
+#lcRoot .lc_ctrl { display:flex; flex-direction:column; gap:3px; min-width:0; }
+#lcRoot .lc_ctrlhdr { display:flex; justify-content:space-between; align-items:baseline; gap:6px; }
+#lcRoot .lc_ctrlname { font-size:.8em; font-weight:600; color:var(--c-dim); text-transform:uppercase; letter-spacing:.03em; }
+#lcRoot .lc_sval { font-family:monospace; font-size:.9em; color:var(--c-val); white-space:nowrap; }
+#lcRoot .lc_note { margin:0; font-size:.8em; color:var(--c-dim); line-height:1.4; }
+#lcRoot .lc_try { margin:0; padding-left:18px; font-size:.84em; line-height:1.45; }
+#lcRoot .lc_try li { margin-bottom:5px; }
+#lcRoot .lc_brow { display:flex; flex-wrap:wrap; gap:6px; }
+#lcRoot input[type=range] { width:100%; -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; cursor:pointer; background:var(--c-lo); border:1px solid var(--c-bd); margin:9px 0; }
+#lcRoot input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#lcRoot input[type=range]::-moz-range-thumb { width:16px; height:16px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#lcRoot input[type=checkbox] { accent-color:var(--c-accent); width:16px; height:16px; }
+#lcRoot .lc_btn { padding:7px 11px; font-family:monospace; font-size:.78em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-text); border-radius:3px; min-height:36px; }
+#lcRoot .lc_btn:hover { border-color:var(--c-accent); }
+#lcRoot .lc_btn[aria-pressed="true"] { border-color:#ff7a5a; color:#ff9a7a; text-decoration:line-through; }
+#lcRoot .lc_kick { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#lcRoot .lc_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(125px,1fr)); gap:6px 10px; background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; padding:8px 12px; }
+#lcRoot .lc_flabel { font-family:monospace; font-size:.66em; color:var(--c-dim); letter-spacing:.06em; text-transform:uppercase; }
+#lcRoot .lc_fvalue { font-family:monospace; font-size:.98em; color:var(--c-val); }
+#lcRoot .lc_eqs { background:var(--c-lo); border:1px solid var(--c-bd); border-left:4px solid var(--c-accent); border-radius:4px; padding:8px 14px; font-family:monospace; font-size:.8em; color:var(--c-dim); line-height:1.7; }
+#lcRoot .lc_eqs b { color:var(--c-val); }
+#lcRoot .lc_status { padding:8px 12px; border-radius:4px; background:var(--c-panel); border:1px solid var(--c-bd); font-size:.92em; line-height:1.45; }
+#lcRoot .lc_narbar { min-height:30px; padding:6px 12px; background:var(--c-nbg); border-left:4px solid var(--c-nbd); color:var(--c-ntx); font-size:.92em; font-style:italic; line-height:1.45; border-radius:3px; }
+#lcRoot .lc_descwrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+#lcRoot .lc_descbtn { padding:8px 18px; font-family:monospace; font-size:.8em; letter-spacing:.08em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-accent); color:var(--c-accent); border-radius:3px; font-weight:bold; min-height:40px; }
+#lcRoot .lc_desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid var(--c-accent); border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.95em; line-height:1.55; }
+#lcRoot .lc_desc p { margin:0 0 9px; }
+#lcRoot .lc_eq { text-align:center; font-size:1rem; }
+#lcRoot [hidden] { display:none !important; }
+#lcRoot button:focus-visible, #lcRoot input:focus-visible, #lcRoot canvas:focus-visible { outline:2px solid var(--c-accent); outline-offset:2px; }
+@media (max-width:640px) { #lcRoot { padding:10px 6px 14px; } #lcRoot .lc_panels { grid-template-columns:minmax(0,1fr); } #lcRoot .lc_tab { font-size:.68em; padding:8px 3px; } #lcRoot .lc_btn { flex:1 1 40%; } }
+@media (pointer:coarse) { #lcRoot input[type=range] { height:8px; } #lcRoot input[type=range]::-webkit-slider-thumb { width:28px; height:28px; } #lcRoot input[type=range]::-moz-range-thumb { width:26px; height:26px; } #lcRoot .lc_a11ybtn, #lcRoot .lc_btn { min-height:44px; font-size:15px; } #lcRoot input[type=checkbox] { width:22px; height:22px; } }
+</style>
+<!-- ════════ SIMULATION ════════
+Twisted nematic cell, 90 deg twist. s(V) = 0 below Vth = 1.5 V, 1 - exp(-((V - Vth)/1.2)^2) above.
+Molecule tilt toward the field: 85 s deg; polarization rotation phi = 90 (1 - s) deg.
+After the rear polarizer: I0/2. After the analyzer at angle beta (from the rear polarizer): (I0/2) cos^2(beta - phi).
+Crossed polarizers (beta = 90): normally white, T = sin^2 phi. Picture: each subpixel's voltage is found by inverting T.
+No dollar signs or backticks in the code.
+-->
+<script>
+(function(){
+var thisq = '';
+var CFG = { tab:0 };
+function el(id){ return document.getElementById(id + thisq); }
+var ROOT = el('lcRoot'), DEG = Math.PI/180, TAU = 2*Math.PI, VTH = 1.5;
+var th = { hc:false, lm:false, cb:false, nr:true }, TAB = 0;
+function sV(V){ return V <= VTH ? 0 : 1 - Math.exp(-Math.pow((V - VTH)/1.2, 2)); }
+function phiV(V){ return 90*(1 - sV(V)); }       /* rotation of the polarization, degrees */
+function tiltV(V){ return 85*sV(V); }
+function Tnw(V){ return Math.pow(Math.sin(phiV(V)*DEG), 2); }   /* crossed polarizers, relative to the maximum */
+function Vfor(L){ if (L >= 0.9999) return 0; if (L <= 0.0001) return 6; var lo = VTH, hi = 8; for (var i=0; i<50; i++){ var m = (lo + hi)/2; if (Tnw(m) > L) lo = m; else hi = m; } return (lo + hi)/2; }
+function f(v, k){ return (Math.abs(v) < 0.5*Math.pow(10, -k) ? 0 : v).toFixed(k); }
+/* ══════════ tab 1: the picture ══════════ */
+var NX = 32, NY = 20;
+function scene(x, y){ var u = (x + 0.5)/NX, v = (y + 0.5)/NY, c = [0.35 + 0.35*v, 0.6 + 0.3*v, 1.0];
+  if (Math.hypot(u - 0.78, (v - 0.25)*0.62) < 0.085) c = [1, 0.85, 0.15];
+  var hill = 0.66 + 0.07*Math.sin(u*7.5 + 0.6); if (v > hill) c = [0.15 + 0.1*Math.sin(u*20), 0.55 + 0.15*(v - hill), 0.18];
+  if (u > 0.18 && u < 0.38 && v > 0.52 && v < 0.74) c = [0.95, 0.93, 0.85];
+  if (v >= 0.36 && v <= 0.52 && Math.abs(u - 0.28) < (v - 0.36)*0.85 + 0.005) c = [0.85, 0.12, 0.10];
+  if (u > 0.255 && u < 0.305 && v > 0.62 && v < 0.74) c = [0.45, 0.25, 0.1];
+  if (u > 0.06 && u < 0.09 && v > 0.55 && v < 0.75) c = [0.4, 0.25, 0.1];
+  if (Math.hypot(u - 0.075, (v - 0.5)*0.62) < 0.05) c = [0.1, 0.45, 0.15];
+  return c.map(function(q){ return Math.max(0, Math.min(1, q)); }); }
+var IMG = []; (function(){ for (var y=0; y<NY; y++){ var r = []; for (var x=0; x<NX; x++) r.push(scene(x, y)); IMG.push(r); } })();
+var T1 = { sel:[24, 5], off:{ bl:false, rp:false, tft:false, lc:false, cf:false, fp:false } };
+var LAYERS = [['bl', 'backlight', 'LEDs and a diffuser: white, unpolarized light'], ['rp', 'rear polarizer', 'passes only light polarized along its axis (here vertical)'], ['tft', 'TFT glass + electrodes', 'a transistor and a transparent electrode for every subpixel: it sets each one\u2019s voltage'],
+  ['lc', 'liquid crystal', 'a few \u00B5m thick; twists the polarization by 90\u00B0 unless a voltage is applied'], ['cf', 'colour filters', 'red, green and blue stripes, one per subpixel'], ['fp', 'front polarizer', 'axis horizontal: crossed with the rear one']];
+/* what each subpixel actually emits, given the target level L (0..1) and the layers present */
+function emit(L){ var o = T1.off; if (o.bl) return 0; var V = o.tft ? 0 : Vfor(L);
+  if (o.rp || o.fp) return 1;              /* only one polarizer: every subpixel passes half the light, the most there is */
+  if (o.lc) return 0;                      /* crossed polarizers with nothing to turn the light: dark */
+  return Tnw(V); }
+function subColor(k, val){ var cb = th.cb; var base = T1.off.cf ? [1, 1, 1] : [[1, 0.12, 0.08], [0.15, 1, 0.2], [0.2, 0.35, 1]][k]; return base.map(function(q){ return Math.round(255*q*val); }); }
+function pixelSeen(x, y){ var c = IMG[y][x], e = [emit(c[0]), emit(c[1]), emit(c[2])]; if (T1.off.cf){ var m = (e[0] + e[1] + e[2])/3; return [m, m, m]; } return e; }
+/* ══════════ tab 2 ══════════ */
+var T2 = { V:0, beta:90, lc:true, t:0 };
+function t2(){ var phi = T2.lc ? phiV(T2.V) : 0, d = T2.beta - phi, out = 0.5*Math.pow(Math.cos(d*DEG), 2); return { phi:phi, tilt:T2.lc ? tiltV(T2.V) : 0, d:d, out:out, rel:out/0.5 }; }
+/* ══════════ colours ══════════ */
+function pal(){ var cb = th.cb, hc = th.hc, lm = th.lm;
+  return { bg:hc ? '#000' : (lm ? '#eef2f7' : '#0f141c'), txt:hc ? '#fff' : (lm ? '#111' : '#e6ecf2'), dim:hc ? '#ddd' : (lm ? '#556' : '#9aa6b4'), grid:hc ? '#555' : (lm ? '#d6dde5' : 'rgba(150,170,195,0.22)'),
+    E:cb ? '#E69F00' : '#ffd23f', pol:cb ? '#56B4E9' : '#7fd0ff', rod:cb ? '#CC79A7' : '#b58cff', rodE:hc ? '#fff' : '#2a1a4a', glass:hc ? 'rgba(255,255,255,0.25)' : 'rgba(170,200,230,0.22)', sel:hc ? '#ffff00' : '#ffffff', bad:cb ? '#D55E00' : '#ff6a5a', T:cb ? '#009E73' : '#3ad08f' }; }
+var DPR = window.devicePixelRatio || 1, CV = {};
+['lcCv', 'lcGr'].forEach(function(k){ var c = el(k), w = c.width, h = c.height; c.width = w*DPR; c.height = h*DPR; c.style.aspectRatio = w + ' / ' + h; var g = c.getContext('2d'); g.scale(DPR, DPR); CV[k] = { c:c, g:g, W:w, H:h }; });
+function label(g, t, x, y, col, size, al){ g.font = 'bold ' + (size || 12) + 'px Arial, sans-serif'; g.textAlign = al || 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 3.5; g.strokeStyle = th.lm ? 'rgba(255,255,255,0.92)' : 'rgba(0,0,0,0.85)'; g.strokeText(t, x, y); g.fillStyle = col; g.fillText(t, x, y); g.textBaseline = 'alphabetic'; }
+function arrowXY(g, x1, y1, x2, y2, col, w){ var dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy); if (L < 2) return; var ux = dx/L, uy = dy/L, hl = Math.min(10, L*0.45);
+  g.strokeStyle = col; g.fillStyle = col; g.lineWidth = w || 2; g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2 - ux*hl*0.8, y2 - uy*hl*0.8); g.stroke();
+  g.beginPath(); g.moveTo(x2, y2); g.lineTo(x2 - ux*hl - uy*hl*0.55, y2 - uy*hl + ux*hl*0.55); g.lineTo(x2 - ux*hl + uy*hl*0.55, y2 - uy*hl - ux*hl*0.55); g.closePath(); g.fill(); }
+/* a double-headed arrow showing a polarization direction, angle a from vertical, in an oblique transverse plane */
+function polIcon(g, x, y, a, len, col, amp){ var dx = Math.sin(a*DEG)*0.8, dy = -Math.cos(a*DEG) + Math.sin(a*DEG)*0.45, L = len*(amp === undefined ? 1 : amp); if (L < 2){ g.fillStyle = col; g.beginPath(); g.arc(x, y, 2, 0, TAU); g.fill(); return; }
+  arrowXY(g, x, y, x + dx*L, y + dy*L, col, 2.2); arrowXY(g, x, y, x - dx*L, y - dy*L, col, 2.2); }
+function unpolIcon(g, x, y, len, col){ for (var k=0; k<4; k++) polIcon(g, x, y, k*45, len, col); }
+/* ══════════ tab 1 drawing ══════════ */
+var SX = 420, SY = 34, PS = 10;   /* the screen: 32 x 20 pixels of 10 px */
+function draw1(t){ var c = CV.lcCv, g = c.g, W = c.W, H = c.H, p = pal(), i, x, y;
+  g.fillStyle = p.bg; g.fillRect(0, 0, W, H);
+  /* exploded view */
+  label(g, 'EXPLODED VIEW (back \u2192 front)', 14, 18, p.dim, 11, 'left');
+  var cols = { bl:'rgba(255,250,220,0.85)', rp:'rgba(120,180,255,0.30)', tft:'rgba(160,170,190,0.35)', lc:'rgba(181,140,255,0.30)', cf:'rgba(255,255,255,0.12)', fp:'rgba(120,180,255,0.30)' };
+  var by = 205, sel = IMG[T1.sel[1]][T1.sel[0]], gEmit = emit(sel[1]), gV = T1.off.tft ? 0 : Vfor(sel[1]);
+  LAYERS.forEach(function(L, k){ var x0 = 30 + k*62, off = T1.off[L[0]];
+    g.beginPath(); g.moveTo(x0, 90); g.lineTo(x0 + 30, 60); g.lineTo(x0 + 30, 290); g.lineTo(x0, 320); g.closePath();
+    if (off){ g.setLineDash([5, 4]); g.strokeStyle = p.dim; g.lineWidth = 1.2; g.stroke(); g.setLineDash([]); }
+    else { g.fillStyle = th.hc ? 'rgba(255,255,255,0.15)' : cols[L[0]]; g.fill(); g.strokeStyle = th.hc ? '#fff' : 'rgba(200,215,235,0.7)'; g.lineWidth = 1.2; g.stroke();
+      g.save(); g.clip(); g.lineWidth = 1;
+      if (L[0] === 'rp'){ g.strokeStyle = p.pol; for (i=0; i<8; i++){ g.beginPath(); g.moveTo(x0 + 4 + i*3.4, 60); g.lineTo(x0 + 4 + i*3.4, 320); g.stroke(); } }
+      if (L[0] === 'fp'){ g.strokeStyle = p.pol; for (i=0; i<26; i++){ g.beginPath(); g.moveTo(x0, 70 + i*10); g.lineTo(x0 + 30, 40 + i*10); g.stroke(); } }
+      if (L[0] === 'cf'){ for (i=0; i<24; i++){ var cc = [[255, 60, 60], [60, 220, 80], [70, 110, 255]][i % 3]; g.fillStyle = 'rgba(' + cc.join(',') + ',0.55)'; g.fillRect(x0, 60 + i*10, 30, 10); } }
+      if (L[0] === 'tft'){ g.fillStyle = 'rgba(40,50,60,0.8)'; for (i=0; i<10; i++){ g.fillRect(x0 + 18, 80 + i*22, 6, 6); } }
+      if (L[0] === 'lc'){ g.strokeStyle = p.rod; g.lineWidth = 2; for (i=0; i<10; i++){ var ty = 80 + i*22; g.beginPath(); g.moveTo(x0 + 8, ty); g.lineTo(x0 + 22, ty - 6); g.stroke(); } }
+      if (L[0] === 'bl'){ g.fillStyle = 'rgba(255,255,255,0.9)'; for (i=0; i<6; i++){ g.beginPath(); g.arc(x0 + 15, 95 + i*38, 4, 0, TAU); g.fill(); } }
+      g.restore(); }
+    label(g, L[1], x0 + 15, 336 + (k % 2)*16, off ? p.dim : p.txt, 10); });
+  /* light along the beam, for the selected pixel's green subpixel */
+  var xs = [0, 1, 2, 3, 4, 5].map(function(k){ return 30 + k*62 + 15; }); xs.push(410);
+  var state = T1.off.bl ? 'none' : 'unpol', ang = 0, amp = 1;
+  for (i=0; i<6; i++){ var mid = (xs[i] + xs[i + 1])/2, key = LAYERS[i][0];
+    if (!T1.off[key]){ if (key === 'rp' && state === 'unpol'){ state = 'pol'; ang = 0; amp = Math.SQRT1_2; }
+      if (key === 'lc' && state === 'pol'){ ang = phiV(gV); }
+      if (key === 'fp'){ if (state === 'pol'){ amp = amp*Math.abs(Math.cos((90 - ang)*DEG)); ang = 90; } else if (state === 'unpol'){ state = 'pol'; ang = 90; amp = Math.SQRT1_2; } } }
+    if (state === 'none') continue;
+    g.strokeStyle = th.hc ? 'rgba(255,255,255,0.6)' : 'rgba(255,240,180,' + (0.25 + 0.6*amp*amp).toFixed(2) + ')'; g.lineWidth = 2 + 6*amp*amp; g.beginPath(); g.moveTo(xs[i], by); g.lineTo(xs[i + 1], by); g.stroke();
+    if (state === 'unpol') unpolIcon(g, mid, by - 40, 14, p.E); else polIcon(g, mid, by - 40, ang, 16, p.E, amp*1.3); }
+  label(g, 'light of the selected pixel\u2019s green subpixel', 200, 34, p.E, 11);
+  label(g, '\u2192 viewer', 404, by + 22, p.dim, 10, 'right');
+  /* the screen */
+  label(g, 'THE SCREEN (32 \u00D7 20 pixels) \u2014 tap a pixel', SX, 18, p.dim, 11, 'left');
+  for (y=0; y<NY; y++) for (x=0; x<NX; x++){ var e = pixelSeen(x, y); g.fillStyle = 'rgb(' + e.map(function(q){ return Math.round(255*Math.pow(q, 1/1.4)); }).join(',') + ')'; g.fillRect(SX + x*PS, SY + y*PS, PS, PS); }
+  g.strokeStyle = p.sel; g.lineWidth = 2; g.strokeRect(SX + T1.sel[0]*PS - 1, SY + T1.sel[1]*PS - 1, PS + 2, PS + 2);
+  /* magnifier: 3 x 3 pixels around the selection, with subpixels */
+  var mx = SX + 30, my = SY + NY*PS + 26, MS = 52; label(g, 'MAGNIFIED: RED, GREEN, BLUE SUBPIXELS', mx, my - 10, p.dim, 10, 'left');
+  for (var dy=-1; dy<=1; dy++) for (var dx=-1; dx<=1; dx++){ var px = Math.max(0, Math.min(NX - 1, T1.sel[0] + dx)), py = Math.max(0, Math.min(NY - 1, T1.sel[1] + dy)), cc2 = IMG[py][px];
+    for (var k=0; k<3; k++){ var val = emit(cc2[k]); g.fillStyle = 'rgb(' + subColor(k, Math.pow(val, 1/1.4)).join(',') + ')'; g.fillRect(mx + (dx + 1)*MS + k*MS/3 + 1, my + (dy + 1)*MS*0.6 + 1, MS/3 - 2, MS*0.6 - 2); } }
+  g.strokeStyle = p.sel; g.strokeRect(mx + MS, my + MS*0.6, MS, MS*0.6);
+  var e2 = pixelSeen(T1.sel[0], T1.sel[1]); g.fillStyle = 'rgb(' + e2.map(function(q){ return Math.round(255*Math.pow(q, 1/1.4)); }).join(',') + ')'; g.fillRect(mx + 3*MS + 30, my + 10, 60, 60); g.strokeStyle = p.dim; g.strokeRect(mx + 3*MS + 30, my + 10, 60, 60);
+  label(g, 'seen from afar', mx + 3*MS + 60, my + 84, p.dim, 10); }
+function info1(){ var c = IMG[T1.sel[1]][T1.sel[0]], V = c.map(function(q){ return T1.off.tft ? 0 : Vfor(q); }), e = pixelSeen(T1.sel[0], T1.sel[1]), o = T1.off, offs = LAYERS.filter(function(L){ return o[L[0]]; }).map(function(L){ return L[1]; });
+  cells([['SELECTED PIXEL', 'column ' + (T1.sel[0] + 1) + ', row ' + (T1.sel[1] + 1)], ['WANTED R \u00B7 G \u00B7 B', c.map(function(q){ return (100*q).toFixed(0); }).join(' \u00B7 ') + ' %'], ['VOLTAGES R \u00B7 G \u00B7 B', V.map(function(q){ return q.toFixed(2); }).join(' \u00B7 ') + ' V'], ['SHOWN R \u00B7 G \u00B7 B', e.map(function(q){ return (100*q).toFixed(0); }).join(' \u00B7 ') + ' %'], ['LAYERS REMOVED', offs.length ? offs.join(', ') : 'none']]);
+  var st = o.bl ? 'No backlight: an LCD makes no light of its own, so the screen is black. (Some watches and calculators use a mirror and room light instead.)'
+    : o.lc ? 'No liquid crystal: the light polarized by the rear polarizer meets the crossed front polarizer and is blocked everywhere. The screen is black.'
+    : (o.rp || o.fp) ? 'Only one polarizer left: every subpixel passes the same half of the light, whatever its voltage. The picture is gone; the screen is uniformly bright. (Peel the front polarizer off an old LCD and you see exactly this.)'
+    : o.tft ? 'No voltages: every subpixel is at 0 V, the liquid crystal is fully twisted and all the light gets through. This is a \u201Cnormally white\u201D display: blank and white.'
+    : o.cf ? 'No colour filters: each subpixel still controls its brightness, so the picture is there, but in shades of gray.'
+    : 'All layers in place: each subpixel\u2019s voltage untwists the liquid crystal just enough to let through the right amount of light; the colour filters tint it red, green or blue.';
+  status(st);
+  eq('Each subpixel: rear polarizer (I<sub>0</sub>/2), liquid crystal turns the polarization by \u03C6(V), front polarizer at 90\u00B0: <b>I = (I<sub>0</sub>/2) sin\u00B2\u03C6</b><br>Selected pixel: \u03C6 = ' + V.map(function(q){ return phiV(q).toFixed(0) + '\u00B0'; }).join(', ') + ' for R, G, B &rarr; ' + V.map(function(q){ return (100*Tnw(q)).toFixed(0) + '%'; }).join(', ') + ' of the maximum'); }
+function graph1(){ graphT('transmission of one subpixel against its voltage (crossed polarizers, normally white); dots: the selected pixel\u2019s R, G, B', function(X, Y, g, p){ var c = IMG[T1.sel[1]][T1.sel[0]], cols = th.cb ? ['#D55E00', '#009E73', '#0072B2'] : ['#ff5a4a', '#3ad08f', '#5a8cff'];
+  c.forEach(function(q, k){ var V = Vfor(q); g.fillStyle = cols[k]; g.beginPath(); g.arc(X(V), Y(Tnw(V)), 6 - k, 0, TAU); g.fill(); }); }, true); }
+/* ══════════ tab 2 drawing ══════════ */
+function proj(x, d){ return [x + d[2]*0 + d[1]*0, 0]; }
+function draw2(t, dt){ var c = CV.lcCv, g = c.g, W = c.W, H = c.H, p = pal(), C = t2(), cy = 210, i; T2.t += dt;
+  g.fillStyle = p.bg; g.fillRect(0, 0, W, H);
+  var X = { bl:40, p1:140, g1:220, lc0:250, lc1:470, g2:500, p2:580, eye:700 };
+  /* the beam */
+  g.strokeStyle = th.hc ? 'rgba(255,255,255,0.5)' : 'rgba(255,240,180,0.35)'; g.lineWidth = 6; g.beginPath(); g.moveTo(X.bl, cy); g.lineTo(X.p2, cy); g.stroke();
+  g.strokeStyle = th.hc ? 'rgba(255,255,255,0.7)' : 'rgba(255,240,180,' + (0.15 + 0.7*C.rel).toFixed(2) + ')'; g.lineWidth = 2 + 6*C.rel; g.beginPath(); g.moveTo(X.p2, cy); g.lineTo(X.eye - 30, cy); g.stroke();
+  /* backlight */
+  g.fillStyle = th.hc ? '#fff' : '#fff6cc'; g.fillRect(X.bl - 22, cy - 90, 22, 180); label(g, 'backlight', X.bl - 11, cy + 108, p.txt, 11);
+  /* polarizer plates drawn in perspective with their axis lines */
+  function plate(x, axis, name){ g.beginPath(); g.moveTo(x - 14, cy - 70 + 28); g.lineTo(x + 14, cy - 70 - 4); g.lineTo(x + 14, cy + 70 - 4); g.lineTo(x - 14, cy + 70 + 28); g.closePath(); g.fillStyle = th.hc ? 'rgba(255,255,255,0.12)' : 'rgba(120,180,255,0.18)'; g.fill(); g.strokeStyle = p.pol; g.lineWidth = 1.2; g.stroke();
+    g.save(); g.clip(); g.strokeStyle = p.pol; g.lineWidth = 1; var dx = Math.sin(axis*DEG)*0.8, dy = -Math.cos(axis*DEG) + Math.sin(axis*DEG)*0.45, nx = -dy, ny = dx, nl = Math.hypot(nx, ny);
+    for (var k=-12; k<=12; k++){ var ox = x + nx/nl*k*7, oy = cy + 12 + ny/nl*k*7; g.beginPath(); g.moveTo(ox - dx*200, oy - dy*200); g.lineTo(ox + dx*200, oy + dy*200); g.stroke(); } g.restore();
+    label(g, name, x, cy + 118, p.txt, 11); polIcon(g, x, cy - 108, axis, 14, p.pol); label(g, 'axis ' + axis + '\u00B0', x, cy - 130, p.pol, 10); }
+  plate(X.p1, 0, 'rear polarizer'); plate(X.p2, T2.beta, 'front polarizer');
+  label(g, 'directions across the beam are drawn in perspective: 0\u00B0 = up, 90\u00B0 = into the screen', W - 10, H - 12, p.dim, 10, 'right');
+  /* glass plates with electrodes */
+  [X.g1, X.g2].forEach(function(x, k){ g.fillStyle = p.glass; g.fillRect(x - 5, cy - 80, 10, 170); g.fillStyle = T2.V > 0.05 ? (k ? '#ff9a5a' : '#5ab4ff') : p.dim; g.fillRect(x + (k ? -7 : 5), cy - 80, 3, 170); });
+  label(g, 'glass + electrode', (X.g1 + X.g2)/2, cy + 118, p.txt, 11);
+  /* the voltage source */
+  if (T2.V > 0.05){ g.strokeStyle = p.dim; g.lineWidth = 1.5; g.beginPath(); g.moveTo(X.g1 + 6, cy - 80); g.lineTo(X.g1 + 6, cy - 150); g.lineTo(X.g2 - 6, cy - 150); g.lineTo(X.g2 - 6, cy - 80); g.stroke(); g.fillStyle = p.bg; g.fillRect((X.g1 + X.g2)/2 - 30, cy - 162, 60, 24); g.strokeRect((X.g1 + X.g2)/2 - 30, cy - 162, 60, 24); label(g, T2.V.toFixed(2) + ' V', (X.g1 + X.g2)/2, cy - 150, p.txt, 12);
+    for (i=0; i<4; i++){ var fy = cy - 60 + i*38; arrowXY(g, X.g1 + 14, fy, X.g2 - 14, fy, 'rgba(255,154,90,0.35)', 1.2); } }
+  /* liquid crystal molecules: 9 layers, each with 3 rods, twist from 0 to the full twist, tilted toward the field by the voltage */
+  var n = 9, tw = C.phi, tl = C.tilt;
+  if (T2.lc){ for (i=0; i<n; i++){ var x = X.lc0 + (i + 0.5)*(X.lc1 - X.lc0)/n, frac = i/(n - 1), psi = 90*frac*(tw/90), tilt = tl*Math.sin(Math.PI*(0.15 + 0.7*frac));
+      if (tw >= 89.9) psi = 90*frac;
+      for (var r=-1; r<=1; r += 2){ var oy = cy + r*58, L = 22, d = [Math.sin(tilt*DEG), Math.cos(tilt*DEG)*Math.cos(psi*DEG), Math.cos(tilt*DEG)*Math.sin(psi*DEG)];
+        var sx = d[0]*L + d[2]*L*0.8, sy = -d[1]*L + d[2]*L*0.45; g.strokeStyle = p.rodE; g.lineWidth = 9; g.lineCap = 'round'; g.beginPath(); g.moveTo(x - sx, oy - sy); g.lineTo(x + sx, oy + sy); g.stroke();
+        g.strokeStyle = p.rod; g.lineWidth = 6.5; g.beginPath(); g.moveTo(x - sx, oy - sy); g.lineTo(x + sx, oy + sy); g.stroke(); g.lineCap = 'butt'; } }
+    label(g, 'liquid crystal', (X.lc0 + X.lc1)/2, cy + 136, p.rod, 11); }
+  else label(g, '(liquid crystal removed)', (X.lc0 + X.lc1)/2, cy + 136, p.dim, 11);
+  /* polarization of the light along the way (oscillating E field), above the beam */
+  var ey = cy - 4, osc = 0.8 + 0.2*Math.sin(T2.t*0.006);
+  unpolIcon(g, (X.bl + X.p1)/2, ey, 18*osc, p.E);
+  for (i=0; i<=6; i++){ var x2 = X.p1 + 25 + i*(X.lc0 - X.p1 - 30)/6; if (i > 2) break; polIcon(g, x2, ey, 0, 24*Math.SQRT1_2*osc, p.E); }
+  for (i=0; i<7; i++){ var x3 = X.lc0 + (i + 0.5)*(X.lc1 - X.lc0)/7, a3 = C.phi*(i + 0.5)/7; polIcon(g, x3, ey, a3, 24*Math.SQRT1_2*osc, p.E); }
+  polIcon(g, (X.lc1 + X.p2)/2 - 6, ey, C.phi, 24*Math.SQRT1_2*osc, p.E);
+  polIcon(g, (X.p2 + X.eye)/2 - 10, ey, T2.beta, 24*Math.SQRT1_2*Math.abs(Math.cos(C.d*DEG))*osc, p.E);
+  label(g, 'yellow: the electric field of the light', 150, 24, p.E, 11, 'left');
+  /* the viewer's pixel */
+  var b = Math.round(255*Math.pow(C.rel, 1/1.4)); g.fillStyle = 'rgb(' + b + ',' + b + ',' + b + ')'; g.fillRect(X.eye - 26, cy - 40, 52, 80); g.strokeStyle = p.dim; g.lineWidth = 1.5; g.strokeRect(X.eye - 26, cy - 40, 52, 80);
+  label(g, 'subpixel seen', X.eye, cy + 58, p.txt, 11); label(g, (100*C.rel).toFixed(0) + '% bright', X.eye, cy + 76, p.T, 13);
+  label(g, '50% after the rear polarizer', (X.p1 + X.g1)/2 + 6, cy + 30, p.dim, 10);
+  label(g, (100*C.out).toFixed(0) + '% of the backlight', (X.p2 + X.eye)/2 - 10, cy + 30, p.dim, 10); }
+function info2(){ var C = t2();
+  cells([['VOLTAGE', T2.V.toFixed(2) + ' V'], ['MOLECULE TILT TOWARD THE FIELD', C.tilt.toFixed(0) + '\u00B0'], ['POLARIZATION TURNED BY \u03C6', C.phi.toFixed(1) + '\u00B0'], ['FRONT POLARIZER AXIS \u03B2', T2.beta.toFixed(0) + '\u00B0'], ['ANGLE BETWEEN THEM \u03B2 \u2212 \u03C6', C.d.toFixed(1) + '\u00B0'], ['THROUGH THE REAR POLARIZER', '50 %'], ['THROUGH BOTH (OF THE BACKLIGHT)', (100*C.out).toFixed(1) + ' %'], ['SUBPIXEL BRIGHTNESS', (100*C.rel).toFixed(0) + ' % of the maximum']]);
+  var st = !T2.lc ? (Math.abs(Math.cos(T2.beta*DEG)) < 0.05 ? 'Without the liquid crystal, the light reaches the crossed front polarizer still vertical: it is blocked. Dark.' : 'Without the liquid crystal, the light keeps its vertical polarization; Malus\u2019s law gives cos\u00B2' + T2.beta.toFixed(0) + '\u00B0.')
+    : T2.V <= VTH ? 'Below about 1.5 V the molecules stay in their twisted arrangement: they turn the light\u2019s polarization by 90\u00B0, ' + (Math.abs(T2.beta - 90) < 1 ? 'so it lines up with the front polarizer and passes. Bright.' : 'and the front polarizer passes cos\u00B2(\u03B2 \u2212 90\u00B0) of it.')
+    : C.phi < 3 ? 'The voltage has made the molecules stand up along the field: the twist is gone, the polarization is not turned, and the ' + (Math.abs(T2.beta - 90) < 1 ? 'crossed front polarizer blocks the light. Dark.' : 'front polarizer passes cos\u00B2\u03B2 of it.')
+    : 'The voltage tilts the molecules and partly undoes the twist: the polarization is turned by only ' + C.phi.toFixed(0) + '\u00B0, and the front polarizer passes part of the light. A shade of gray.';
+  status(st);
+  eq('Unpolarized light through a polarizer: <b>I<sub>1</sub> = I<sub>0</sub>/2</b> &nbsp;\u00B7&nbsp; Malus\u2019s law at the front polarizer: <b>I<sub>2</sub> = I<sub>1</sub> cos\u00B2(\u03B2 \u2212 \u03C6)</b> = 0.5 \u00D7 cos\u00B2(' + C.d.toFixed(1) + '\u00B0) = <b>' + C.out.toFixed(3) + ' I<sub>0</sub></b>'
+    + '<br>Crossed polarizers (\u03B2 = 90\u00B0): I<sub>2</sub> = (I<sub>0</sub>/2) sin\u00B2\u03C6 &nbsp;\u2014 bright when \u03C6 = 90\u00B0 (no voltage), dark when \u03C6 = 0 (a few volts)'); }
+function graph2(){ graphT('subpixel brightness against voltage: crossed polarizers (normally white, solid) and parallel polarizers (normally black, dashed)', function(X, Y, g, p){ var V;
+  g.strokeStyle = p.dim; g.lineWidth = 2; g.setLineDash([6, 4]); g.beginPath(); for (V=0; V<=6; V += 0.02){ var y = Y(Math.pow(Math.cos(phiV(V)*DEG), 2)); if (!V) g.moveTo(X(V), y); else g.lineTo(X(V), y); } g.stroke(); g.setLineDash([]);
+  var C = t2(); g.fillStyle = p.E; g.beginPath(); g.arc(X(T2.V), Y(C.rel), 6, 0, TAU); g.fill(); }, false); }
+function graphT(ttl, extra, onlyNW){ var c = CV.lcGr, g = c.g, W = c.W, H = c.H, p = pal(), L = 50, R = W - 14, T = 14, B = H - 36, i, V;
+  g.fillStyle = th.hc ? '#000' : (th.lm ? '#fff' : '#121820'); g.fillRect(0, 0, W, H); el('lcGrT').textContent = ttl;
+  function X(v){ return L + v/6*(R - L); } function Y(y){ return B - y*(B - T); }
+  g.strokeStyle = p.grid; g.lineWidth = 1; g.fillStyle = p.dim; g.font = '10px monospace';
+  for (i=0; i<=6; i++){ g.beginPath(); g.moveTo(X(i), T); g.lineTo(X(i), B); g.stroke(); g.textAlign = 'center'; g.fillText(i + ' V', X(i), B + 12); }
+  for (i=0; i<=4; i++){ g.beginPath(); g.moveTo(L, Y(i/4)); g.lineTo(R, Y(i/4)); g.stroke(); g.textAlign = 'right'; g.fillText((25*i) + '%', L - 4, Y(i/4) + 3); }
+  g.strokeStyle = p.dim; g.strokeRect(L, T, R - L, B - T); g.font = '11px Arial, sans-serif'; g.textAlign = 'center'; g.fillText('voltage across the liquid crystal', (L + R)/2, H - 6);
+  g.fillStyle = th.cb ? 'rgba(213,94,0,0.12)' : 'rgba(255,255,255,0.05)'; g.fillRect(L, T, X(VTH) - L, B - T); label(g, 'below threshold', (L + X(VTH))/2, T + 12, p.dim, 10);
+  g.strokeStyle = p.T; g.lineWidth = 2.6; g.beginPath(); for (V=0; V<=6; V += 0.02){ if (!V) g.moveTo(X(V), Y(Tnw(V))); else g.lineTo(X(V), Y(Tnw(V))); } g.stroke();
+  extra(X, Y, g, p); }
+/* ══════════ shared UI ══════════ */
+function cells(c){ el('lcRead').innerHTML = c.map(function(q){ return '<div><div class="lc_flabel">' + q[0] + '</div><div class="lc_fvalue">' + q[1] + '</div></div>'; }).join(''); }
+var lastS = ''; function status(s){ lastS = s; el('lcStatus').textContent = s; }
+function eq(s){ el('lcEq').innerHTML = s; }
+function narrate(m){ if (th.nr) el('lcNar').textContent = m; }
+function row(id, lab, min, max, step, val){ return '<div class="lc_ctrl"><div class="lc_ctrlhdr"><label class="lc_ctrlname" for="' + id + '">' + lab + '</label><span class="lc_sval" id="' + id + 'v"></span></div><input type="range" id="' + id + '" min="' + min + '" max="' + max + '" step="' + step + '" value="' + val + '"></div>'; }
+function btn(id, t, cls, extra){ return '<button type="button" class="lc_btn' + (cls ? ' ' + cls : '') + '" id="' + id + '"' + (extra || '') + '>' + t + '</button>'; }
+function on(id, ev, fn){ var x = el(id); if (x) x.addEventListener(ev, fn); }
+function tries(a){ return '<ol class="lc_try">' + a.map(function(s){ return '<li>' + s + '</li>'; }).join('') + '</ol>'; }
+var LABS = ['THE LAYERS OF AN LCD (LEFT) AND THE PICTURE THEY MAKE (RIGHT)', 'ONE SUBPIXEL, FROM THE SIDE: THE LIGHT GOES FROM LEFT TO RIGHT, TOWARD THE VIEWER'];
+var ARIA = ['Left: the six layers of an LCD drawn apart, with the light passing through them and its polarization shown between them. Right: a small picture made of 32 by 20 pixels, and a magnified view of the red, green and blue subpixels of the selected pixel. Tap a pixel, or use the arrow keys, to select it.',
+  'One subpixel seen from the side: the backlight, the rear polarizer, two glass plates with electrodes, the liquid crystal molecules between them, the front polarizer and the subpixel seen by the viewer. Yellow arrows show the direction of the light\u2019s electric field along the way.'];
+function build(i){ var A = '', B = '', bar = '';
+  if (i === 0){ bar = LAYERS.map(function(L){ return btn('lcL' + L[0], 'remove ' + L[1], '', ' aria-pressed="' + (T1.off[L[0]] ? 'true' : 'false') + '" data-l="' + L[0] + '"'); }).join('') + btn('lcAll', 'Restore all', 'lc_kick') + btn('lcDsc', 'Describe');
+    A = '<p class="lc_note">Tap a pixel of the picture (or focus the drawing and use the arrow keys) to see its subpixels, their voltages and the light through each layer. Remove layers with the buttons above.</p><ol class="lc_try">' + LAYERS.map(function(L){ return '<li><b>' + L[1] + '</b>: ' + L[2] + '</li>'; }).join('') + '</ol>';
+    B = tries(['Select a pixel of the yellow sun: which subpixels are bright, which dark? Why does red + green look yellow?', 'Select a white pixel of the house and a black-ish one: compare the voltages. Which needs more voltage, bright or dark?', 'Remove the front polarizer: why does the picture disappear, and the screen turn bright? Then remove the rear one instead.', 'Remove the liquid crystal: why does the screen go black?', 'Remove the colour filters: what is left of the picture?', 'Cut the power to the transistors: why is the screen white, not black?']); }
+  else { A = row('lcV', 'voltage across the liquid crystal', 0, 6, 0.05, T2.V) + row('lcB', 'front polarizer axis \u03B2 (from the rear one)', 0, 180, 1, T2.beta) + '<div class="lc_brow"><label class="lc_ctrlname"><input type="checkbox" id="lcLC"' + (T2.lc ? ' checked' : '') + '> liquid crystal in place</label></div>';
+    bar = btn('lcV0', '0 V (bright)') + btn('lcVm', '2.5 V (half)') + btn('lcV5', '5 V (dark)') + btn('lcCr', 'crossed polarizers') + btn('lcPa', 'parallel polarizers') + btn('lcDsc', 'Describe');
+    B = tries(['At 0 V, follow the yellow arrows: what does the liquid crystal do to the polarization? Why does the light pass the front polarizer?', 'Raise the voltage slowly: at what voltage does the brightness start to drop? Watch the molecules.', 'Remove the liquid crystal: what fraction gets through crossed polarizers? Now turn the front polarizer: check Malus\u2019s law, cos\u00B2\u03B2.', 'Switch to parallel polarizers: what happens at 0 V and at 5 V? Why is this called \u201Cnormally black\u201D?', 'At most 50% of the backlight gets through even for a white pixel. Where does the rest go?']); }
+  el('lcCtlA').innerHTML = A; el('lcCtlB').innerHTML = B; el('lcBar').innerHTML = bar; on('lcDsc', 'click', describe);
+  if (i === 0){ [].forEach.call(el('lcBar').querySelectorAll('button[data-l]'), function(b){ b.addEventListener('click', function(){ var k = b.getAttribute('data-l'); T1.off[k] = !T1.off[k]; b.setAttribute('aria-pressed', T1.off[k] ? 'true' : 'false'); b.textContent = (T1.off[k] ? 'restore ' : 'remove ') + LAYERS.filter(function(L){ return L[0] === k; })[0][1]; refresh(); narrate(lastS); }); });
+    on('lcAll', 'click', function(){ Object.keys(T1.off).forEach(function(k){ T1.off[k] = false; }); build(0); refresh(); narrate('All layers restored. ' + lastS); }); }
+  else { var uV = function(){ var t = T2.V.toFixed(2) + ' V'; el('lcVv').textContent = t; el('lcV').setAttribute('aria-valuetext', t.replace('V', 'volts')); el('lcV').value = T2.V; },
+      uB = function(){ var t = T2.beta + '\u00B0'; el('lcBv').textContent = t + (T2.beta === 90 ? ' (crossed)' : T2.beta % 180 === 0 ? ' (parallel)' : ''); el('lcB').setAttribute('aria-valuetext', T2.beta + ' degrees'); el('lcB').value = T2.beta; }; uV(); uB();
+    on('lcV', 'input', function(){ T2.V = +this.value; uV(); refresh(); }); on('lcB', 'input', function(){ T2.beta = +this.value; uB(); refresh(); });
+    ['lcV', 'lcB'].forEach(function(k){ on(k, 'change', function(){ narrate(lastS); }); });
+    on('lcLC', 'change', function(){ T2.lc = this.checked; refresh(); narrate(lastS); });
+    [['lcV0', 0], ['lcVm', 2.5], ['lcV5', 5]].forEach(function(q){ on(q[0], 'click', function(){ T2.V = q[1]; uV(); refresh(); narrate(lastS); }); });
+    on('lcCr', 'click', function(){ T2.beta = 90; uB(); refresh(); narrate('Crossed polarizers. ' + lastS); }); on('lcPa', 'click', function(){ T2.beta = 0; uB(); refresh(); narrate('Parallel polarizers. ' + lastS); }); } }
+function refresh(){ [info1, info2][TAB](); [graph1, graph2][TAB](); }
+function describe(){ if (TAB === 0){ var c = IMG[T1.sel[1]][T1.sel[0]]; narrate('Left, the layers of the screen drawn apart, from the backlight to the front polarizer; the light of one subpixel goes through them from left to right, its polarization shown in yellow. Right, a picture of a house, a sun, a tree and green hills under a blue sky, made of 32 by 20 pixels. The selected pixel, column ' + (T1.sel[0] + 1) + ', row ' + (T1.sel[1] + 1) + ', should show red ' + (100*c[0]).toFixed(0) + '%, green ' + (100*c[1]).toFixed(0) + '%, blue ' + (100*c[2]).toFixed(0) + '%. Below, its red, green and blue subpixels magnified. ' + lastS); }
+  else { var C = t2(); narrate('From left to right: the backlight; the rear polarizer, axis vertical; a glass plate with an electrode; nine layers of rod-shaped molecules, ' + (T2.lc ? 'turning gradually through ' + C.phi.toFixed(0) + ' degrees and tilted ' + C.tilt.toFixed(0) + ' degrees toward the field' : 'removed') + '; the second glass plate; the front polarizer, axis at ' + T2.beta + ' degrees; and the subpixel as seen, ' + (100*C.rel).toFixed(0) + ' percent bright. Yellow arrows show the light\u2019s electric field turning along with the molecules. ' + lastS); } }
+function tab(i){ TAB = i; for (var k=0; k<2; k++){ var t = el('lcT' + k); t.setAttribute('aria-selected', k === i ? 'true' : 'false'); t.tabIndex = k === i ? 0 : -1; }
+  el('lcLab').textContent = LABS[i]; el('lcCv').setAttribute('aria-label', ARIA[i]); build(i); refresh(); narrate(['The big picture. ', 'One pixel. '][i] + lastS); }
+[0, 1].forEach(function(k){ on('lcT' + k, 'click', function(){ tab(k); }); on('lcT' + k, 'keydown', function(e){ if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){ tab(1 - k); el('lcT' + TAB).focus(); e.preventDefault(); } }); });
+/* selecting a pixel: tap the picture, or arrow keys */
+function sayPixel(){ var c = IMG[T1.sel[1]][T1.sel[0]]; narrate('Pixel column ' + (T1.sel[0] + 1) + ', row ' + (T1.sel[1] + 1) + ': red ' + (100*c[0]).toFixed(0) + '%, green ' + (100*c[1]).toFixed(0) + '%, blue ' + (100*c[2]).toFixed(0) + '%, needing ' + c.map(function(q){ return Vfor(q).toFixed(1); }).join(', ') + ' volts.'); }
+el('lcCv').addEventListener('click', function(e){ if (TAB) return; var r = this.getBoundingClientRect(), x = (e.clientX - r.left)*CV.lcCv.W/r.width, y = (e.clientY - r.top)*CV.lcCv.H/r.height, px = Math.floor((x - SX)/PS), py = Math.floor((y - SY)/PS);
+  if (px >= 0 && px < NX && py >= 0 && py < NY){ T1.sel = [px, py]; refresh(); sayPixel(); } });
+el('lcCv').addEventListener('keydown', function(e){ if (TAB) return; var d = { ArrowLeft:[-1, 0], ArrowRight:[1, 0], ArrowUp:[0, -1], ArrowDown:[0, 1] }[e.key]; if (!d) return; T1.sel = [Math.max(0, Math.min(NX - 1, T1.sel[0] + d[0])), Math.max(0, Math.min(NY - 1, T1.sel[1] + d[1]))]; refresh(); sayPixel(); e.preventDefault(); });
+function theme(k){ th[k] = !th[k]; if (k === 'hc' && th.hc) th.lm = false; if (k === 'lm' && th.lm) th.hc = false;
+  ROOT.classList.toggle('lc_hc', th.hc); ROOT.classList.toggle('lc_lm', th.lm);
+  [['hc', 'lcBtnHC'], ['lm', 'lcBtnLM'], ['cb', 'lcBtnCB'], ['nr', 'lcBtnNR']].forEach(function(q){ var b = el(q[1]); b.classList.toggle('lc_a11yon', th[q[0]]); b.setAttribute('aria-pressed', th[q[0]] ? 'true' : 'false'); });
+  el('lcBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('lcNar').style.display = th.nr ? '' : 'none'; refresh();
+  if (k === 'cb' && th.cb) narrate('Colour-blind safe colours for the arrows and graphs: electric field orange, polarizer axes sky blue, molecules pink. The screen itself keeps its real red, green and blue, and every colour is also given in numbers.'); }
+on('lcBtnHC', 'click', function(){ theme('hc'); }); on('lcBtnLM', 'click', function(){ theme('lm'); }); on('lcBtnCB', 'click', function(){ theme('cb'); }); on('lcBtnNR', 'click', function(){ theme('nr'); });
+on('lcDescBtn', 'click', function(){ var d = el('lcDesc'), o = d.hidden; d.hidden = !o; this.setAttribute('aria-expanded', o ? 'true' : 'false'); this.innerHTML = (o ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+  if (o && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } });
+var last = 0;
+function loop(t){ var dt = last ? Math.min(50, t - last) : 0; last = t; if (TAB) draw2(t, dt); else draw1(t); requestAnimationFrame(loop); }
+tab(Math.max(0, Math.min(1, CFG.tab | 0)));
+requestAnimationFrame(loop);
+window['lcSim' + thisq] = { tab:tab, _T1:T1, _T2:T2, _Tnw:Tnw, _Vfor:Vfor, _phi:phiV, _emit:emit, _pix:pixelSeen, _t2:t2 };
+})();
+</script>
+
+</body>
+</html>
