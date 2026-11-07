@@ -12,11 +12,11 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Physics Simulations-Electrostatics: Van de Graaff Generator</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, Van de Graaff, capacitance, electric potential, dielectric breakdown, lesson, scientific">
-<meta name="description" content="Van de Graaff Generator -- interactive physics simulation.">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, electrostatics, electric charge, electric field, electric potential, potential energy, work, voltage, Van de Graaff, conductor, drift velocity, current, lesson, scientific">
+<meta name="description" content="This simulation shows a Van de Graaff generator.">
 <style>
 body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
-.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+.page { width:920px; max-width:100%; margin:0 auto; }
 @media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
 </style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
@@ -27,9 +27,9 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <!-- ── Accessibility toolbar ── -->
 <div class="vdg_a11y" id="vdgA11yBar" role="toolbar" aria-label="Display options">
 <button type="button" class="vdg_a11ybtn" id="vdgBtnHC" onclick="vdgA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="vdg_a11ybtn" id="vdgBtnLM" onclick="vdgA11y.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="vdg_a11ybtn" id="vdgBtnDM" onclick="vdgA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
 <button type="button" class="vdg_a11ybtn" id="vdgBtnCB" onclick="vdgA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
-<button type="button" class="vdg_a11ybtn vdg_a11yon" id="vdgBtnNR" onclick="vdgA11y.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+<button type="button" class="vdg_a11ybtn" id="vdgBtnNR" onclick="vdgA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
 </div>
 <div class="tbar"><h3>Van de Graaff Generator</h3></div>
 <div class="mcontent">
@@ -51,7 +51,7 @@ onclick="if(this.value=='Play'){vdgSim.pl();this.value='Pause';}else{this.value=
 </div>
 </div>
 <style>:where(#mobvdg) * { margin: 0; box-sizing: border-box; }
-:where(#mobvdg) div { width: 503px; margin: 0; }
+:where(#mobvdg) div { width:100%; margin: 0; }
 #vdgRoot {
 --vdg-bg:      #ffffff;
 --vdg-sphere:  #cc2200;
@@ -64,7 +64,7 @@ onclick="if(this.value=='Play'){vdgSim.pl();this.value='Pause';}else{this.value=
 }
 #vdgRoot .vdg_a11y {
 display:flex; gap:6px; padding:6px 8px;
-background:var(--vdg-toolbar-bg); flex-wrap:wrap; width:503px;
+background:var(--vdg-toolbar-bg); flex-wrap:wrap; width:100%;
 }
 #vdgRoot .vdg_a11ybtn {
 padding:4px 10px; font-size:.72rem; font-family:monospace;
@@ -75,7 +75,7 @@ transition:border-color .15s,color .15s;
 #vdgRoot .vdg_a11ybtn:hover { border-color:#00e8d0; color:#00e8d0; }
 #vdgRoot .vdg_a11yon { background:rgba(0,232,208,.12); border-color:#00e8d0; color:#00e8d0; }
 #vdgRoot .vdg_narbar {
-width:503px; min-height:28px; padding:5px 10px;
+width:100%; min-height:28px; padding:5px 10px;
 background:#ffefc0; border-left:4px solid #e0b040;
 font-size:.88rem; color:#333; font-style:italic;
 }
@@ -85,48 +85,212 @@ font-size:.88rem; color:#333; font-style:italic;
 .bbar { height:50px; background-color:#df9; padding:10px; text-align:center; }
 .bbar input[type=button] { margin:0 4px; padding:4px 14px; cursor:pointer; }
 .footer { height:60px; background-color:#fce4ec; text-align:center; font-size:larger; display:flex; }
-.footer .left { width:503px; padding:6px; }</style>
+.footer .left { width:100%; padding:6px; }
+/* ── mobile layer: the sim fills its column up to its design width; wide parts shrink, bars wrap ── */
+#mobvdg { width:100%; max-width:503px; margin:0 auto; }
+#mobvdg canvas { max-width:100%; height:auto; }
+#mobvdg img, #mobvdg table { max-width:100%; }
+#mobvdg [class*="footer"], #mobvdg [class*="bbar"], #mobvdg [class*="playbar"], #mobvdg [class*="ctrl"] { flex-wrap:wrap; }
+#mobvdg [class*="bbar"], #mobvdg [class*="footer"], #mobvdg [class*="tbar"], #mobvdg [class*="mcontent"] { height:auto; }
+#mobvdg ol { padding-left:24px; } #mobvdg li { margin-bottom:8px; }
+@media (pointer:coarse) {
+#mobvdg button, #mobvdg input[type=button] { min-height:40px; }
+#mobvdg input[type=checkbox], #mobvdg input[type=radio] { width:20px; height:20px; }
+#mobvdg input[type=range] { height:28px; }
+#mobvdg select { min-height:34px; }
+}
+/* ── SIM description ── */
+#mobvdg .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:14px 0 6px; width:100%; }
+#mobvdg .mob_descbtn { width:auto; padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobvdg .mob_desc { width:100%; background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; text-align:left; }
+#mobvdg .mob_desc p { margin:0 0 8px 0; }
+#mobvdg .mob_eq { text-align:center; }
+/* ════════ display options for the page around the canvases: the whole sim is inverted (dark mode) or inverted
+   and sharpened (high contrast); the canvases, pictures and the toolbar undo it, and the canvases are themed by
+   the colour engine instead. ════════ */
+#mobvdg.a11y_dm { filter:invert(1) hue-rotate(180deg); background:#e9e6e1; }
+#mobvdg.a11y_dm canvas, #mobvdg.a11y_dm img, #mobvdg.a11y_dm [role=toolbar], #mobvdg.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobvdg.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); background:#fff; }
+#mobvdg.a11y_hc canvas, #mobvdg.a11y_hc img, #mobvdg.a11y_hc [role=toolbar], #mobvdg.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+</style>
 <!-- ════════ A11Y CONTROLLER ════════ -->
 <script>
 var vdgA11y = (function(){
-var ROOT = null;
-var states = { hc:false, lm:false, cb:false, nr:true };
-var THEMES = {
-hc:{'--vdg-bg':'#000','--vdg-sphere':'#ffff00','--vdg-belt':'#fff','--vdg-charge':'#ff8800','--vdg-text':'#fff','--vdg-struct':'#fff','--vdg-rupture':'#ff4400','--vdg-toolbar-bg':'#000'},
-lm:{'--vdg-bg':'#f0f0f0','--vdg-sphere':'#aa1100','--vdg-belt':'#555','--vdg-charge':'#aa1100','--vdg-text':'#000','--vdg-struct':'#000','--vdg-rupture':'#aa1100','--vdg-toolbar-bg':'#444'},
-cb:{'--vdg-bg':'#fff','--vdg-sphere':'#0072b2','--vdg-belt':'#999','--vdg-charge':'#d55e00','--vdg-text':'#000','--vdg-struct':'#333','--vdg-rupture':'#d55e00','--vdg-toolbar-bg':'#222'}
-};
+var ROOT = null, WRAP = null, states = { hc:false, dm:false, cb:false, nr:true };
+/* ── canvas themes: every colour the sim draws passes through map(); the last frame is recorded,
+      so switching dark mode, high contrast or colour-blind safe colours redraws it at once,
+      even while the sim is paused. No page-wide names: this lives inside the controller. ── */
+function makeCT(){
+  var mode = { dark:false, light:false, hc:false, cb:false, darkbase:false }, key = '', cache = {}, cvs = [];
+  var probe = document.createElement('canvas').getContext('2d');
+  var P = CanvasRenderingContext2D.prototype;
+  function parse(c){
+    probe.fillStyle = '#000'; probe.fillStyle = c; var s = String(probe.fillStyle), m;
+    if (s.charAt(0) === '#') return [parseInt(s.substr(1,2),16), parseInt(s.substr(3,2),16), parseInt(s.substr(5,2),16), 1];
+    m = s.match(/rgba?\(([^)]+)\)/); if (!m) return null;
+    var p = m[1].split(',').map(parseFloat); return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1];
+  }
+  function lin(v){ v /= 255; return v <= 0.04045 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); }
+  function lum(r,g,b){ return 0.2126*lin(r) + 0.7152*lin(g) + 0.0722*lin(b); }
+  function hsl(r,g,b){
+    r/=255; g/=255; b/=255; var mx = Math.max(r,g,b), mn = Math.min(r,g,b), h = 0, s = 0, l = (mx+mn)/2, d = mx-mn;
+    if (d > 1e-6){ s = d/(1 - Math.abs(2*l - 1));
+      h = mx === r ? ((g-b)/d) % 6 : (mx === g ? (b-r)/d + 2 : (r-g)/d + 4); h *= 60; if (h < 0) h += 360; }
+    return [h, s, l];
+  }
+  function rgb(h,s,l){
+    var c = (1 - Math.abs(2*l - 1))*s, x = c*(1 - Math.abs((h/60) % 2 - 1)), m = l - c/2, t;
+    t = h < 60 ? [c,x,0] : h < 120 ? [x,c,0] : h < 180 ? [0,c,x] : h < 240 ? [0,x,c] : h < 300 ? [x,0,c] : [c,0,x];
+    return [Math.round((t[0]+m)*255), Math.round((t[1]+m)*255), Math.round((t[2]+m)*255)];
+  }
+  /* raise the lightness until the colour stands out on a dark background */
+  function lift(h,s,l,target){ var c = rgb(h,s,l); while (lum(c[0],c[1],c[2]) < target && l < 0.95){ l += 0.03; c = rgb(h,s,l); } return c; }
+  /* Okabe-Ito colours, chosen by hue */
+  function oi(h){
+    return h < 15 || h >= 330 ? [213,94,0] : h < 40 ? [230,159,0] : h < 75 ? [240,228,66] : h < 170 ? [0,158,115]
+         : h < 200 ? [86,180,233] : h < 260 ? [0,114,178] : [204,121,167];
+  }
+  function conv(c, stroke){
+    if (!mode.dark && !mode.light && !mode.hc && !mode.cb) return c;
+    var k = key + (stroke ? 's' : 'f') + c; if (cache[k] !== undefined) return cache[k];
+    var v = parse(c); if (!v){ cache[k] = c; return c; }
+    var r = v[0], g = v[1], b = v[2], a = v[3], q = hsl(r,g,b), Y = lum(r,g,b), neutral = q[1] < 0.18, o;
+    if (mode.cb && !neutral && Y <= 0.6 && !(q[2] > 0.6 && q[1] < 0.6) && !(!stroke && Y < 0.08)){   /* not surfaces, light or dark */
+      o = oi(q[0]); var oq = hsl(o[0],o[1],o[2]); o = rgb(oq[0], oq[1], Math.min(Math.max(q[2], 0.2), 0.75));   /* the safe hue, at about the original lightness */
+      r = o[0]; g = o[1]; b = o[2]; q = hsl(r,g,b); Y = lum(r,g,b); }
+    if (mode.hc && mode.darkbase){   /* a sim drawn dark to begin with: dark stays black, light goes white, colours brighten */
+      if (neutral) o = Y < 0.2 ? [0,0,0] : (Y > 0.45 ? [255,255,255] : [205,205,205]);
+      else if (!stroke && Y < 0.06) o = [0,0,0];
+      else o = lift(q[0], 1, Math.max(q[2], 0.5), 0.4);
+    } else if (mode.light){   /* light mode for a sim drawn dark: the reverse of dark mode */
+      if (neutral) o = rgb(q[0], q[1], 0.1 + 0.82*(1 - q[2]));
+      else if (!stroke && Y < 0.08) o = rgb(q[0], Math.min(q[1], 0.35), 0.93);   /* dark fills are surfaces */
+      else { var l = q[2], cc = rgb(q[0], q[1], l); while (lum(cc[0],cc[1],cc[2]) > 0.2 && l > 0.15){ l -= 0.03; cc = rgb(q[0], q[1], l); } o = cc; }
+    } else if (mode.hc){
+      if (neutral) o = Y > 0.8 ? [0,0,0] : (Y < 0.25 ? [255,255,255] : [205,205,205]);
+      else if (stroke && Y > 0.4) o = [r,g,b];   /* bright lines stay bright */
+      else if (Y > 0.6 || (q[2] > 0.6 && q[1] < 0.6)) o = [0,0,0];   /* light or pastel fills are surfaces */
+      else o = lift(q[0], 1, Math.max(q[2], 0.5), 0.4);
+    } else if (mode.dark){
+      if (neutral) o = rgb(q[0], q[1], 0.1 + 0.82*(1 - q[2]));
+      else if (stroke && Y > 0.3) o = [r,g,b];   /* bright lines stay bright */
+      else if (Y > 0.55 || (q[2] > 0.6 && q[1] < 0.6)) o = rgb(q[0], Math.min(q[1], 0.3), 0.18);   /* light or pastel fills are surfaces */
+      else o = lift(q[0], q[1], q[2], 0.3);
+    } else o = [r,g,b];
+    var out = a < 1 ? 'rgba(' + o[0] + ',' + o[1] + ',' + o[2] + ',' + a + ')' : 'rgb(' + o[0] + ',' + o[1] + ',' + o[2] + ')';
+    cache[k] = out; return out;
+  }
+  /* gradients remember their colour stops, so they can be rebuilt in another theme */
+  function style(v, ctx, stroke){
+    if (typeof v === 'string') return conv(v, stroke);
+    if (v && v.__spec){
+      var sp = v.__spec; if (sp.key === key) return sp.made;
+      var g = P[sp.kind].apply(ctx, sp.args); sp.stops.forEach(function(s){ g.addColorStop(s[0], conv(s[1])); });
+      sp.key = key; sp.made = g; return g;
+    }
+    return v;
+  }
+  function attach(cv){
+    var ctx = cv.getContext('2d'); if (!ctx || ctx.__ct) return; ctx.__ct = true;
+    var log = [], replaying = false, vals = {};
+    /* a fill or clear covering the whole canvas starts a new frame (in device pixels, whatever the transform) */
+    function full(a){ var t = ctx.getTransform(), x0 = t.a*a[0] + t.e, y0 = t.d*a[1] + t.f, x1 = t.a*(a[0] + a[2]) + t.e, y1 = t.d*(a[1] + a[3]) + t.f;
+      return t.b === 0 && t.c === 0 && Math.min(x0, x1) <= 0.5 && Math.min(y0, y1) <= 0.5 && Math.max(x0, x1) >= cv.width - 0.5 && Math.max(y0, y1) >= cv.height - 0.5; }
+    /* a canvas attached after its first drawing: keep that picture, to re-colour pixel by pixel until the next frame */
+    var snap = null, framed = false; try { snap = ctx.getImageData(0, 0, cv.width, cv.height); } catch (e) {}
+    ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); vals[p] = d.get.call(ctx);
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return vals[p]; },
+        set:function(v){ vals[p] = v; if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, style(v, ctx, p === 'strokeStyle')); } });
+    });
+    var plain = ['lineWidth','font','textAlign','textBaseline','globalAlpha','lineCap','lineJoin','miterLimit','shadowBlur',
+                 'shadowOffsetX','shadowOffsetY','globalCompositeOperation','lineDashOffset','direction','imageSmoothingEnabled'];
+    plain.forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); if (!d || !d.set) return;
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return d.get.call(ctx); },
+        set:function(v){ if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, v); } });
+    });
+    ['createLinearGradient','createRadialGradient','createConicGradient'].forEach(function(n){
+      if (!P[n]) return;
+      ctx[n] = function(){
+        var args = Array.prototype.slice.call(arguments), g = P[n].apply(ctx, args), add = g.addColorStop;
+        var sp = { kind:n, args:args, stops:[], key:key, made:g }; g.__spec = sp;
+        g.addColorStop = function(o, c){ sp.stops.push([o, c]); add.call(g, o, conv(c)); };
+        return g;
+      };
+    });
+    /* text is a line, not a surface: a bright text colour stays bright in dark mode and high contrast */
+    var fsd = Object.getOwnPropertyDescriptor(P, 'fillStyle');
+    function asText(f, args){ var v = vals.fillStyle; if (typeof v === 'string' && key !== '|' && key !== ''){ fsd.set.call(ctx, conv(v, true)); try { return f.apply(ctx, args); } finally { fsd.set.call(ctx, style(v, ctx, false)); } } return f.apply(ctx, args); }
+    var skip = /^(constructor|get[A-Z]\w*|isPointIn\w*|measureText|create\w*)$/;
+    Object.getOwnPropertyNames(P).forEach(function(n){
+      if (skip.test(n)) return; var d = Object.getOwnPropertyDescriptor(P, n); if (!d || typeof d.value !== 'function') return;
+      var f = d.value;
+      ctx[n] = function(){
+        if (!replaying){
+          if ((n === 'fillRect' || n === 'clearRect') && full(arguments)){ snap = null; framed = true;
+            /* a new frame: start the record from the drawing state of this moment */
+            var t = ctx.getTransform();
+            log = [['c','setTransform',[t.a,t.b,t.c,t.d,t.e,t.f]]];
+            ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){ log.push(['s', p, vals[p]]); });
+            plain.forEach(function(p){ var dd = Object.getOwnPropertyDescriptor(P, p); if (dd && dd.get) log.push(['s', p, dd.get.call(ctx)]); });
+            log.push(['c','setLineDash',[ctx.getLineDash()]]);
+          }
+          if (log){ log.push(['c', n, Array.prototype.slice.call(arguments)]); if (log.length > 60000) log = null; }
+        }
+        if (n === 'fillText') return asText(f, arguments);
+        return f.apply(ctx, arguments);
+      };
+    });
+    cvs.push({ redraw:function(){
+      if (!framed && snap){
+        var img = new ImageData(new Uint8ClampedArray(snap.data), snap.width, snap.height), d = img.data, memo = {};
+        for (var i = 0; i < d.length; i += 4){ if (!d[i+3]) continue; var k = d[i] + ',' + d[i+1] + ',' + d[i+2], c = memo[k];
+          if (!c){ var v = parse(conv('rgb(' + k + ')')); c = memo[k] = v || [d[i], d[i+1], d[i+2]]; } d[i] = c[0]; d[i+1] = c[1]; d[i+2] = c[2]; }
+        var t0 = ctx.getTransform(); P.setTransform.call(ctx, 1, 0, 0, 1, 0, 0); P.putImageData.call(ctx, img, 0, 0); P.setTransform.call(ctx, t0); return;
+      }
+      if (!framed || !log || log.length < 3) return;
+      replaying = true;
+      try { log.forEach(function(e){ if (e[0] === 's') ctx[e[1]] = e[2]; else if (e[1] === 'fillText') asText(P.fillText, e[2]); else P[e[1]].apply(ctx, e[2]); }); }
+      finally { replaying = false; }
+    }});
+  }
+  return {
+    attach: attach,
+    map: conv,
+    set: function(m){ mode = { dark:!!m.dark, light:!!m.light, hc:!!m.hc, cb:!!m.cb, darkbase:!!m.darkbase }; key = (mode.dark?'d':'') + (mode.light?'l':'') + (mode.hc?'h':'') + (mode.cb?'c':'') + (mode.darkbase?'b':'') + '|'; cvs.forEach(function(c){ c.redraw(); }); }
+  };
+}
+
+var ct = makeCT();
 var DEFS = {'--vdg-bg':'#fff','--vdg-sphere':'#cc2200','--vdg-belt':'#888','--vdg-charge':'#dd2200','--vdg-text':'#111','--vdg-struct':'#111','--vdg-rupture':'#cc2200','--vdg-toolbar-bg':'#222'};
-function applyVars(k,on){ if(!ROOT)return; var v=THEMES[k]; for(var p in v) ROOT.style.setProperty(p,on?v[p]:DEFS[p]); }
-function styleBtn(id,on){
-var b=document.getElementById(id); if(!b)return;
-b.style.background=on?'rgba(0,232,208,.12)':'#2a2e3a';
-b.style.borderColor=on?'#00e8d0':'#404a60';
-b.style.color=on?'#00e8d0':'#7a8aaa';
-b.setAttribute('aria-pressed',on?'true':'false');
-}
-function applyNarBar(){
-var nb=document.getElementById('vdgNarBar');
-if(nb) nb.style.display=states.nr?'block':'none';
-var btn=document.getElementById('vdgBtnNR');
-if(btn){ btn.textContent='NARRATION: '+(states.nr?'ON':'OFF'); styleBtn('vdgBtnNR',states.nr); }
-}
+function attachAll(){ var w = document.getElementById('mobvdg') || document.getElementById('vdgRoot'); if (w) [].forEach.call(w.querySelectorAll('canvas'), ct.attach); }
+attachAll();
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return;
+b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa';
+b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
 function apply(){
-if(!ROOT)return;
-applyVars('hc',states.hc); applyVars('lm',states.lm); applyVars('cb',states.cb);
-applyNarBar();
-styleBtn('vdgBtnHC',states.hc);
-styleBtn('vdgBtnLM',states.lm);
-styleBtn('vdgBtnCB',states.cb);
+ROOT = ROOT || document.getElementById('vdgRoot'); if (!ROOT) return;
+WRAP = document.getElementById('mobvdg') || ROOT; attachAll();
+WRAP.classList.toggle('a11y_dm', states.dm); WRAP.classList.toggle('a11y_hc', states.hc); WRAP.classList.toggle('a11y_cb', states.cb);
+ct.set({ dark:states.dm, hc:states.hc, cb:states.cb, darkbase:false });
+var nb = document.getElementById('vdgNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var nr = document.getElementById('vdgBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('vdgBtnHC', states.hc); styleBtn('vdgBtnDM', states.dm); styleBtn('vdgBtnCB', states.cb); styleBtn('vdgBtnNR', states.nr);
 }
 return {
-init:function(){ ROOT=document.getElementById('vdgRoot'); apply(); },
-toggle:function(k){
-states[k]=!states[k];
-if(k==='hc'&&states.hc) states.lm=false;
-if(k==='lm'&&states.lm) states.hc=false;
+init: function(){ apply(); },
+toggle: function(k){
+states[k] = !states[k];
+if (k === 'hc' && states.hc) states.dm = false;   /* high contrast and dark mode switch each other off; colour-blind combines with either */
+if (k === 'dm' && states.dm) states.hc = false;
 apply();
+
 },
+/* the colour engine themes every colour on the canvas, so the drawing code keeps its standard colours */
+isHC: function(){ return false; }, isCB: function(){ return false; }, isLM: function(){ return false; },
+isNarOn: function(){ return states.nr; },
+col: function(a, def){ if (def !== undefined) return def; var T = DEFS; return T[a] !== undefined ? T[a] : T['' + a]; },
 narrate:function(msg){
 if(!states.nr)return;
 var nb=document.getElementById('vdgNarBar');

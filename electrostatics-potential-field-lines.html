@@ -12,116 +12,133 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Physics Simulations-Electric Potential and Field Lines</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching,Oscilloscope, teach, learn,Electric, Potential, Field,mapping,capacitor, Lines,Diagram,Impedance,Electric, Electricity, Builder, lesson, scientific">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, Oscilloscope, teach, learn,Electric, Potential, Field,mapping,capacitor, Lines,Diagram,Impedance,Electric, Electricity, Builder, lesson, scientific, lesson, scientific">
+<meta name="description" content="Electric charges surround themselves with an electric potential V and an electric field vec E.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:920px; max-width:100%; margin:0 auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
-<div id="fieldsRoot1005">
+<main class="page">
+<div id="mobelectrostaticspo" class="mob_wrap">
+<div id="fieldsRoot">
 <!-- ── Accessibility toolbar ── -->
-<div class="fld_a11y1005" id="fldA11yBar1005" role="toolbar" aria-label="Display options">
-<button type="button" class="fld_a11ybtn1005" id="fldBtnHC1005" onclick="fieldsA11y1005.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="fld_a11ybtn1005" id="fldBtnLM1005" onclick="fieldsA11y1005.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
-<button type="button" class="fld_a11ybtn1005" id="fldBtnCB1005" onclick="fieldsA11y1005.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
-<button type="button" class="fld_a11ybtn1005 fld_a11yon1005" id="fldBtnNR1005" onclick="fieldsA11y1005.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+<div class="fld_a11y" id="fldA11yBar" role="toolbar" aria-label="Display options">
+<button type="button" class="fld_a11ybtn" id="fldBtnHC" onclick="fieldsA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="fld_a11ybtn" id="fldBtnDM" onclick="fieldsA11y.toggle('dm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="fld_a11ybtn" id="fldBtnCB" onclick="fieldsA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="fld_a11ybtn" id="fldBtnNR" onclick="fieldsA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
 </div>
-<div class="tbar1005"><h3>Electric Potential and Field Lines</h3></div>
-<div class="mcontent1005">
+<div class="tbar"><h3>Electric Potential and Field Lines</h3></div>
+<div class="mcontent">
 <!-- Mode tabs -->
-<div class="ftabs1005" role="tablist" aria-label="Charge configuration">
-<button type="button" class="ftab1005" id="fldTabPoints1005" role="tab" aria-selected="true" onclick="fieldsSim1005.switchMode('points')">Point Charges</button>
-<button type="button" class="ftab1005" id="fldTabCap1005" role="tab" aria-selected="false" onclick="fieldsSim1005.switchMode('capacitor')">Parallel Plate Capacitor</button>
-<button type="button" class="ftab1005" id="fldTabRings1005" role="tab" aria-selected="false" onclick="fieldsSim1005.switchMode('rings')">Concentric Rings</button>
+<div class="ftabs" role="tablist" aria-label="Charge configuration">
+<button type="button" class="ftab" id="fldTabPoints" role="tab" aria-selected="true" onclick="fieldsSim.switchMode('points')">Point Charges</button>
+<button type="button" class="ftab" id="fldTabCap" role="tab" aria-selected="false" onclick="fieldsSim.switchMode('capacitor')">Parallel Plate Capacitor</button>
+<button type="button" class="ftab" id="fldTabRings" role="tab" aria-selected="false" onclick="fieldsSim.switchMode('rings')">Concentric Rings</button>
 </div>
 <!-- Stage -->
-<div class="fstage1005" id="fldStage1005">
-<canvas id="fldCanvas1005" width="620" height="434"></canvas>
+<div class="fstage" id="fldStage">
+<canvas id="fldCanvas" width="620" height="434"></canvas>
 </div>
 <!-- Readout -->
-<div class="readout1005" id="fldReadout1005">
-<div><div class="flabel1005">sensor: V</div><div class="fvalue1005" id="fldRV1005">0.00 V</div></div>
-<div><div class="flabel1005">sensor: |E|</div><div class="fvalue1005" id="fldRE1005">0.00 N/C</div></div>
-<div><div class="flabel1005">sensor: Ex</div><div class="fvalue1005" id="fldREx1005">0.00</div></div>
-<div><div class="flabel1005">sensor: Ey</div><div class="fvalue1005" id="fldREy1005">0.00</div></div>
-<div id="fldTestQBox1005"><div class="flabel1005">test q</div><div class="fvalue1005" id="fldRTestQ1005">+0.20</div></div>
-<div id="fldTestABox1005"><div class="flabel1005">test |a|</div><div class="fvalue1005" id="fldRTestA1005">0.00</div></div>
+<div class="readout" id="fldReadout">
+<div><div class="flabel">sensor: V</div><div class="fvalue" id="fldRV">0.00 V</div></div>
+<div><div class="flabel">sensor: |E|</div><div class="fvalue" id="fldRE">0.00 N/C</div></div>
+<div><div class="flabel">sensor: Ex</div><div class="fvalue" id="fldREx">0.00</div></div>
+<div><div class="flabel">sensor: Ey</div><div class="fvalue" id="fldREy">0.00</div></div>
+<div id="fldTestQBox"><div class="flabel">test q</div><div class="fvalue" id="fldRTestQ">+0.20</div></div>
+<div id="fldTestABox"><div class="flabel">test |a|</div><div class="fvalue" id="fldRTestA">0.00</div></div>
 </div>
-<div class="chips1005" id="fldChips1005"></div>
-<div class="fnote1005">equipotential color: warm = positive potential, cool = negative potential (deeper color = larger |V|)</div>
+<div class="chips" id="fldChips"></div>
+<div class="fnote">equipotential color: warm = positive potential, cool = negative potential (deeper color = larger |V|)</div>
 </div><!-- /mcontent -->
 <!-- Narration bar -->
-<div id="fldNarBar1005" class="fld_narbar1005" role="status" aria-live="polite" aria-atomic="true"></div>
+<div id="fldNarBar" class="fld_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
 <!-- Toggles -->
-<div class="bbar1005">
-<div class="right1005"><label><input type="checkbox" id="fldChkField1005" onchange="fieldsSim1005.toggleField(this)"> Show field vectors</label></div>
-<div class="right1005"><label><input type="checkbox" id="fldChkGrid1005" checked onchange="fieldsSim1005.toggleGrid(this)"> Show grid</label></div>
-<div class="right1005"><label><input type="checkbox" id="fldChkTest1005" checked onchange="fieldsSim1005.toggleTest(this)"> Show test charge &amp; force</label></div>
+<div class="bbar">
+<div class="right"><label><input type="checkbox" id="fldChkField" onchange="fieldsSim.toggleField(this)"> Show field vectors</label></div>
+<div class="right"><label><input type="checkbox" id="fldChkGrid" checked onchange="fieldsSim.toggleGrid(this)"> Show grid</label></div>
+<div class="right"><label><input type="checkbox" id="fldChkTest" checked onchange="fieldsSim.toggleTest(this)"> Show test charge &amp; force</label></div>
 </div>
-<div class="bbar1005">
-<div class="right1005 flocked1005" id="fldLinesWrap1005"><label><input type="checkbox" id="fldChkLines1005" disabled onchange="fieldsSim1005.toggleFieldLines(this)"> Show field lines</label></div>
-<div class="fnote1005" id="fldLinesNote1005">Locked: trace 5 equipotential lines first (currently 0/5)</div>
+<div class="bbar">
+<div class="right flocked" id="fldLinesWrap"><label><input type="checkbox" id="fldChkLines" disabled onchange="fieldsSim.toggleFieldLines(this)"> Show field lines</label></div>
+<div class="fnote" id="fldLinesNote">Locked: trace 5 equipotential lines first (currently 0/5)</div>
 </div>
 <!-- Toolbar: add / remove / trace / reset -->
-<div class="ftoolbar1005">
-<button type="button" class="ftoolbtn1005 fld_pos1005" id="fldAddPos1005" onclick="fieldsSim1005.addCharge(1)">+ add positive</button>
-<button type="button" class="ftoolbtn1005 fld_neg1005" id="fldAddNeg1005" onclick="fieldsSim1005.addCharge(-1)">+ add negative</button>
-<button type="button" class="ftoolbtn1005" id="fldRemoveSel1005" onclick="fieldsSim1005.removeSelected()" disabled>remove selected charge</button>
-<button type="button" class="ftoolbtn1005" id="fldTraceEq1005" onclick="fieldsSim1005.traceEquipotential()">trace equipotential at sensor</button>
-<button type="button" class="ftoolbtn1005" id="fldReset1005" onclick="fieldsSim1005.resetAll()">reset</button>
+<div class="ftoolbar">
+<button type="button" class="ftoolbtn fld_pos" id="fldAddPos" onclick="fieldsSim.addCharge(1)">+ add positive</button>
+<button type="button" class="ftoolbtn fld_neg" id="fldAddNeg" onclick="fieldsSim.addCharge(-1)">+ add negative</button>
+<button type="button" class="ftoolbtn" id="fldRemoveSel" onclick="fieldsSim.removeSelected()" disabled>remove selected charge</button>
+<button type="button" class="ftoolbtn" id="fldTraceEq" onclick="fieldsSim.traceEquipotential()">trace equipotential at sensor</button>
+<button type="button" class="ftoolbtn" id="fldReset" onclick="fieldsSim.resetAll()">reset</button>
 </div>
 <!-- Capacitor-only controls -->
-<div class="fpanel1005" id="fldCapPanel1005" style="display:none;">
-<label>plate separation d = <span id="fldDVal1005">2.20</span> m
-<input class="islide1005" type="range" id="fldDSlider1005" min="0.4" max="4" step="0.05" value="2.2" oninput="fieldsSim1005.setPlateSeparation(this.value)">
+<div class="fpanel" id="fldCapPanel" style="display:none;">
+<label>plate separation d = <span id="fldDVal">2.20</span> m
+<input class="islide" type="range" id="fldDSlider" min="0.4" max="4" step="0.05" value="2.2" oninput="fieldsSim.setPlateSeparation(this.value)">
 </label>
-<label>plate 1 charge Q&#8321; = <span id="fldQ1Val1005">+6.0</span>
-<input class="islide1005" type="range" id="fldQ1Slider1005" min="-15" max="15" step="0.5" value="6" oninput="fieldsSim1005.setPlateCharge(1,this.value)">
+<label>plate 1 charge Q&#8321; = <span id="fldQ1Val">+6.0</span>
+<input class="islide" type="range" id="fldQ1Slider" min="-15" max="15" step="0.5" value="6" oninput="fieldsSim.setPlateCharge(1,this.value)">
 </label>
-<label>plate 1 length L&#8321; = <span id="fldL1Val1005">6.0</span> m
-<input class="islide1005" type="range" id="fldL1Slider1005" min="2" max="10" step="0.2" value="6" oninput="fieldsSim1005.setPlateLength(1,this.value)">
+<label>plate 1 length L&#8321; = <span id="fldL1Val">6.0</span> m
+<input class="islide" type="range" id="fldL1Slider" min="2" max="10" step="0.2" value="6" oninput="fieldsSim.setPlateLength(1,this.value)">
 </label>
-<label>plate 2 charge Q&#8322; = <span id="fldQ2Val1005">-6.0</span>
-<input class="islide1005" type="range" id="fldQ2Slider1005" min="-15" max="15" step="0.5" value="-6" oninput="fieldsSim1005.setPlateCharge(2,this.value)">
+<label>plate 2 charge Q&#8322; = <span id="fldQ2Val">-6.0</span>
+<input class="islide" type="range" id="fldQ2Slider" min="-15" max="15" step="0.5" value="-6" oninput="fieldsSim.setPlateCharge(2,this.value)">
 </label>
-<label>plate 2 length L&#8322; = <span id="fldL2Val1005">6.0</span> m
-<input class="islide1005" type="range" id="fldL2Slider1005" min="2" max="10" step="0.2" value="6" oninput="fieldsSim1005.setPlateLength(2,this.value)">
+<label>plate 2 length L&#8322; = <span id="fldL2Val">6.0</span> m
+<input class="islide" type="range" id="fldL2Slider" min="2" max="10" step="0.2" value="6" oninput="fieldsSim.setPlateLength(2,this.value)">
 </label>
-<div class="fnote1005">ideal |E| between infinite sheets \u2248 |\u03c3\u2081\u2212\u03c3\u2082|, \u03c3=Q/L: <span id="fldIdealE1005">2.00</span> (compare to the sensor reading between the plates)</div>
+<div class="fnote">ideal |E| between infinite sheets ≈ |σ₁−σ₂|, σ=Q/L: <span id="fldIdealE">2.00</span> (compare to the sensor reading between the plates)</div>
 </div>
 <!-- Concentric-rings-only controls -->
-<div class="fpanel1005" id="fldRingsPanel1005" style="display:none;">
-<label>inner ring radius r&#8321; = <span id="fldR1Val1005">1.00</span> m
-<input class="islide1005" type="range" id="fldR1Slider1005" min="0.4" max="2.4" step="0.05" value="1.0" oninput="fieldsSim1005.setRingRadius(1,this.value)">
+<div class="fpanel" id="fldRingsPanel" style="display:none;">
+<label>inner ring radius r&#8321; = <span id="fldR1Val">1.00</span> m
+<input class="islide" type="range" id="fldR1Slider" min="0.4" max="2.4" step="0.05" value="1.0" oninput="fieldsSim.setRingRadius(1,this.value)">
 </label>
-<label>inner ring charge magnitude = <span id="fldM1Val1005">6.0</span>
-<input class="islide1005" type="range" id="fldM1Slider1005" min="0" max="12" step="0.5" value="6" oninput="fieldsSim1005.setRingMagnitude(1,this.value)">
+<label>inner ring charge magnitude = <span id="fldM1Val">6.0</span>
+<input class="islide" type="range" id="fldM1Slider" min="0" max="12" step="0.5" value="6" oninput="fieldsSim.setRingMagnitude(1,this.value)">
 </label>
-<button type="button" class="ftoolbtn1005" onclick="fieldsSim1005.flipRingPolarity(1)">flip inner polarity</button>
+<button type="button" class="ftoolbtn" onclick="fieldsSim.flipRingPolarity(1)">flip inner polarity</button>
 <br>
-<label>outer ring radius r&#8322; = <span id="fldR2Val1005">2.60</span> m
-<input class="islide1005" type="range" id="fldR2Slider1005" min="1.0" max="4.6" step="0.05" value="2.6" oninput="fieldsSim1005.setRingRadius(2,this.value)">
+<label>outer ring radius r&#8322; = <span id="fldR2Val">2.60</span> m
+<input class="islide" type="range" id="fldR2Slider" min="1.0" max="4.6" step="0.05" value="2.6" oninput="fieldsSim.setRingRadius(2,this.value)">
 </label>
-<label>outer ring charge magnitude = <span id="fldM2Val1005">6.0</span>
-<input class="islide1005" type="range" id="fldM2Slider1005" min="0" max="12" step="0.5" value="6" oninput="fieldsSim1005.setRingMagnitude(2,this.value)">
+<label>outer ring charge magnitude = <span id="fldM2Val">6.0</span>
+<input class="islide" type="range" id="fldM2Slider" min="0" max="12" step="0.5" value="6" oninput="fieldsSim.setRingMagnitude(2,this.value)">
 </label>
-<button type="button" class="ftoolbtn1005" onclick="fieldsSim1005.flipRingPolarity(2)">flip outer polarity</button>
+<button type="button" class="ftoolbtn" onclick="fieldsSim.flipRingPolarity(2)">flip outer polarity</button>
 </div>
 <!-- Charge magnitude control -->
-<div class="footer1005">
-<div class="left1005">Charge magnitude:</div>
-<div class="center1005">
-<input class="islide1005" type="range" id="fldMagSlider1005" min="1" max="5" value="1" step="1" oninput="fieldsSim1005.setMagnitude(this.value)">
-<span id="fldMagValue1005">1</span>
-<span class="fnote1005" id="fldMagContext1005">(applies to the next charge you add)</span>
+<div class="footer">
+<div class="left">Charge magnitude:</div>
+<div class="center">
+<input class="islide" type="range" id="fldMagSlider" min="1" max="5" value="1" step="1" oninput="fieldsSim.setMagnitude(this.value)">
+<span id="fldMagValue">1</span>
+<span class="fnote" id="fldMagContext">(applies to the next charge you add)</span>
 </div>
 </div>
 <hr>
-<div class="finstructions1005">
+<div class="finstructions">
 <strong>How to use:</strong> drag any charge, the yellow sensor cross, or the lime test charge. Click a charge once to select it (then adjust its magnitude above); double-click, or use the arrow keys plus Delete, to remove it. Use the tabs to switch between point charges, a parallel-plate capacitor, and concentric charged rings &mdash; you can still add extra point charges in either configuration.
 </div>
-</div><!-- #fieldsRoot1005 -->
+</div><!-- #fieldsRoot -->
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>Electric charges surround themselves with an electric potential `V` and an electric field `vec E`. The coloured map shows the potential (warm where it is positive, cool where it is negative); the field lines show the direction of the field, from positive charges toward negative ones. A sensor reads `V`, `|vec E|` and its components wherever it is placed, and a test charge `q` shows the force on it.</p>
+<p>An equipotential is a line along which `V` is the same everywhere. The field is always perpendicular to the equipotentials and points toward lower potential, strongest where the equipotentials are closest together:</p>
+<p class="mob_eq">`vec F = q vec E`,&nbsp;&nbsp; `E ~~ - (Delta V)/(Delta s)`.</p>
+<p>Three set-ups are available: point charges you place and drag, a parallel-plate capacitor (between long plates the field is nearly uniform, as for infinite sheets with `|E| = |sigma_1 - sigma_2|` in the sim's units, `sigma = Q/L`), and concentric charged rings. Trace a few equipotentials with the sensor before the field lines unlock.</p>
+</div>
+</div>
 <style>
-#fieldsRoot1005, #fieldsRoot1005 * { box-sizing: border-box; }
-#fieldsRoot1005 {
-width: 640px; margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+#fieldsRoot, #fieldsRoot * { box-sizing: border-box; }
+#fieldsRoot {
+width:100%; margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 --fld-panelbg: #0d1318; --fld-border: #1c262e; --fld-text: #c9d6de; --fld-muted: #5f7180;
 --fld-toolbar-bg: #222;
 --fld-pos: #ffb454; --fld-neg: #5ad1ff;
@@ -130,136 +147,280 @@ width: 640px; margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monos
 --fld-test: #c6ff4d; --fld-testforce: #fff275;
 --fld-grid: #182129; --fld-axis: #26323c; --fld-bg: #0a0e12;
 }
-#fieldsRoot1005 .fld_a11y1005 {
+#fieldsRoot .fld_a11y {
 display: flex; gap: 6px; padding: 6px 8px; background: var(--fld-toolbar-bg); flex-wrap: wrap; width: 100%;
 }
-#fieldsRoot1005 .fld_a11ybtn1005 {
+#fieldsRoot .fld_a11ybtn {
 padding: 4px 10px; font-size: .72rem; font-family: monospace; letter-spacing: .06em; border-radius: 3px; cursor: pointer;
 background: #2a2e3a; border: 1px solid #404a60; color: #7a8aaa; transition: border-color .15s, color .15s;
 }
-#fieldsRoot1005 .fld_a11ybtn1005:hover { border-color: #00e8d0; color: #00e8d0; }
-#fieldsRoot1005 .fld_a11yon1005 { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
-#fieldsRoot1005 .tbar1005 { padding: 1px; height: 35px; background-color: #f90; text-align: center; }
-#fieldsRoot1005 .tbar1005 h3 { margin: 0; line-height: 33px; font-size: 1rem; color: #1a1f24; font-family: system-ui, sans-serif; }
-#fieldsRoot1005 .mcontent1005 { width: 100%; background: var(--fld-bg); color: var(--fld-text); padding: 10px; }
-#fieldsRoot1005 .ftabs1005, #fieldsRoot1005 .ftoolbar1005 { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; font-family: system-ui, sans-serif; }
-#fieldsRoot1005 .ftab1005, #fieldsRoot1005 .ftoolbtn1005 {
+#fieldsRoot .fld_a11ybtn:hover { border-color: #00e8d0; color: #00e8d0; }
+#fieldsRoot .fld_a11yon { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
+#fieldsRoot .tbar { padding: 1px; height: 35px; background-color: #f90; text-align: center; }
+#fieldsRoot .tbar h3 { margin: 0; line-height: 33px; font-size: 1rem; color: #1a1f24; font-family: system-ui, sans-serif; }
+#fieldsRoot .mcontent { width: 100%; background: var(--fld-bg); color: var(--fld-text); padding: 10px; }
+#fieldsRoot .ftabs, #fieldsRoot .ftoolbar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; font-family: system-ui, sans-serif; }
+#fieldsRoot .ftab, #fieldsRoot .ftoolbtn {
 background: var(--fld-panelbg); border: 1px solid var(--fld-border); color: var(--fld-muted);
 padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 12px; font-family: system-ui, sans-serif;
 }
-#fieldsRoot1005 .ftab1005 [aria-selected="true"] { background: #132018; border-color: #8fe3b0; color: #8fe3b0; font-weight: 600; }
-#fieldsRoot1005 .ftoolbtn1005:disabled { opacity: .4; cursor: not-allowed; }
-#fieldsRoot1005 .fld_pos1005 { color: var(--fld-pos); border-color: var(--fld-pos); }
-#fieldsRoot1005 .fld_neg1005 { color: var(--fld-neg); border-color: var(--fld-neg); }
-#fieldsRoot1005 .fpanel1005 {
+#fieldsRoot .ftab [aria-selected="true"] { background: #132018; border-color: #8fe3b0; color: #8fe3b0; font-weight: 600; }
+#fieldsRoot .ftoolbtn:disabled { opacity: .4; cursor: not-allowed; }
+#fieldsRoot .fld_pos { color: var(--fld-pos); border-color: var(--fld-pos); }
+#fieldsRoot .fld_neg { color: var(--fld-neg); border-color: var(--fld-neg); }
+#fieldsRoot .fpanel {
 display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 8px; padding: 8px 12px;
 background: var(--fld-panelbg); border: 1px solid var(--fld-border); border-radius: 8px; font-family: system-ui, sans-serif; font-size: 12px;
 }
-#fieldsRoot1005 .fpanel1005 label { display: block; min-width: 170px; color: var(--fld-text); line-height: 1.4; }
-#fieldsRoot1005 .fpanel1005 label .islide1005 { display: block; margin-top: 4px; }
-#fieldsRoot1005 .fnote1005 { color: var(--fld-muted); font-size: 11px; }
-#fieldsRoot1005 .fstage1005 { position: relative; width: 620px; height: 434px; border: 1px solid var(--fld-border); border-radius: 6px; touch-action: none; margin: 0 auto 8px; }
-#fieldsRoot1005 canvas { display: block; }
-#fieldsRoot1005 .fhandle1005 { position: absolute; width: 22px; height: 22px; transform: translate(-50%,-50%); cursor: grab; border-radius: 50%; }
-#fieldsRoot1005 .fhandle1005:active { cursor: grabbing; }
-#fieldsRoot1005 .fhandle1005:focus { outline: 2px solid #fff; }
-#fieldsRoot1005 .readout1005 {
+#fieldsRoot .fpanel label { display: block; min-width: 170px; color: var(--fld-text); line-height: 1.4; }
+#fieldsRoot .fpanel label .islide { display: block; margin-top: 4px; }
+#fieldsRoot .fnote { color: var(--fld-muted); font-size: 11px; }
+#fieldsRoot .fstage { position: relative; width:100%;max-width:620px; height: 434px; border: 1px solid var(--fld-border); border-radius: 6px; touch-action: none; margin: 0 auto 8px; }
+#fieldsRoot canvas { display: block; }
+#fieldsRoot .fhandle { position: absolute; width: 22px; height: 22px; transform: translate(-50%,-50%); cursor: grab; border-radius: 50%; }
+#fieldsRoot .fhandle:active { cursor: grabbing; }
+#fieldsRoot .fhandle:focus { outline: 2px solid #fff; }
+#fieldsRoot .readout {
 display: grid; grid-template-columns: repeat(auto-fit, minmax(96px,1fr)); gap: 6px;
 background: var(--fld-panelbg); border: 1px solid var(--fld-border); border-radius: 8px; padding: 8px 12px; font-family: system-ui, sans-serif;
 }
-#fieldsRoot1005 .flabel1005 { font-size: 10px; color: var(--fld-muted); letter-spacing: 1px; }
-#fieldsRoot1005 .fvalue1005 { font-size: 15px; color: #8fe3b0; font-variant-numeric: tabular-nums; }
-#fieldsRoot1005 .chips1005 { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px; font-size: 11px; font-family: system-ui, sans-serif; }
-#fieldsRoot1005 .chip1005 { background: #1a1420; border: 1px solid #ff6fae55; padding: 3px 8px; border-radius: 999px; cursor: pointer; }
-#fieldsRoot1005 .fld_narbar1005 { width: 100%; min-height: 28px; padding: 5px 10px; background: #ffefc0; border-left: 4px solid #e0b040; font-size: .85rem; color: #333; font-style: italic; }
-#fieldsRoot1005 .bbar1005 { width: 100%; background-color: #df9; padding: 8px 10px; margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: .85rem; color: #222; }
-#fieldsRoot1005 .flocked1005 label { color: #888; }
-#fieldsRoot1005 .footer1005 { width: 100%; padding: 8px 10px; margin-bottom: 8px; display: flex; align-items: center; background-color: #e3f2fd; font-size: .85rem; color: #222; }
-#fieldsRoot1005 .footer1005 .left1005 { min-width: 150px; }
-#fieldsRoot1005 .islide1005 { width: 200px; }
-#fieldsRoot1005 .finstructions1005 { font-size: .82rem; color: #333; padding: 6px 2px; font-family: system-ui, sans-serif; }
+#fieldsRoot .flabel { font-size: 10px; color: var(--fld-muted); letter-spacing: 1px; }
+#fieldsRoot .fvalue { font-size: 15px; color: #8fe3b0; font-variant-numeric: tabular-nums; }
+#fieldsRoot .chips { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px; font-size: 11px; font-family: system-ui, sans-serif; }
+#fieldsRoot .chip { background: #1a1420; border: 1px solid #ff6fae55; padding: 3px 8px; border-radius: 999px; cursor: pointer; }
+#fieldsRoot .fld_narbar { width: 100%; min-height: 28px; padding: 5px 10px; background: #ffefc0; border-left: 4px solid #e0b040; font-size: .85rem; color: #333; font-style: italic; }
+#fieldsRoot .bbar { width: 100%; background-color: #df9; padding: 8px 10px; margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: .85rem; color: #222; }
+#fieldsRoot .flocked label { color: #888; }
+#fieldsRoot .footer { width: 100%; padding: 8px 10px; margin-bottom: 8px; display: flex; align-items: center; background-color: #e3f2fd; font-size: .85rem; color: #222; }
+#fieldsRoot .footer .left { min-width: 150px; }
+#fieldsRoot .islide { width: 200px; }
+#fieldsRoot .finstructions { font-size: .82rem; color: #333; padding: 6px 2px; font-family: system-ui, sans-serif; }
+
+/* ── mobile layer: the sim fills its column up to its design width; wide parts shrink, bars wrap ── */
+#mobelectrostaticspo { width:100%; max-width:640px; margin:0 auto; }
+#mobelectrostaticspo canvas { max-width:100%; height:auto; }
+#mobelectrostaticspo img, #mobelectrostaticspo table { max-width:100%; }
+#mobelectrostaticspo [class*="footer"], #mobelectrostaticspo [class*="bbar"], #mobelectrostaticspo [class*="playbar"], #mobelectrostaticspo [class*="ctrl"] { flex-wrap:wrap; }
+#mobelectrostaticspo [class*="bbar"], #mobelectrostaticspo [class*="footer"], #mobelectrostaticspo [class*="tbar"], #mobelectrostaticspo [class*="mcontent"] { height:auto; }
+#mobelectrostaticspo ol { padding-left:24px; } #mobelectrostaticspo li { margin-bottom:8px; }
+@media (pointer:coarse) {
+#mobelectrostaticspo button, #mobelectrostaticspo input[type=button] { min-height:40px; }
+#mobelectrostaticspo input[type=checkbox], #mobelectrostaticspo input[type=radio] { width:20px; height:20px; }
+#mobelectrostaticspo input[type=range] { height:28px; }
+#mobelectrostaticspo select { min-height:34px; }
+}
+/* ── SIM description ── */
+#mobelectrostaticspo .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:14px 0 6px; width:100%; }
+#mobelectrostaticspo .mob_descbtn { width:auto; padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobelectrostaticspo .mob_desc { width:100%; background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; text-align:left; }
+#mobelectrostaticspo .mob_desc p { margin:0 0 8px 0; }
+#mobelectrostaticspo .mob_eq { text-align:center; }
+/* ════════ display options for the page around the canvases: the whole sim is inverted (dark mode) or inverted
+   and sharpened (high contrast); the canvases, pictures and the toolbar undo it, and the canvases are themed by
+   the colour engine instead. ════════ */
+#mobelectrostaticspo.a11y_dm { filter:invert(1) hue-rotate(180deg); background:#e9e6e1; }
+#mobelectrostaticspo.a11y_dm canvas, #mobelectrostaticspo.a11y_dm img, #mobelectrostaticspo.a11y_dm [role=toolbar], #mobelectrostaticspo.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobelectrostaticspo.a11y_hc { filter:contrast(1.6); background:#000; }
+#mobelectrostaticspo.a11y_hc canvas, #mobelectrostaticspo.a11y_hc img, #mobelectrostaticspo.a11y_hc [role=toolbar], #mobelectrostaticspo.a11y_hc .mob_descbtn { filter:contrast(0.625); }
 </style>
 <!-- ════════════════ ACCESSIBILITY CONTROLLER ════════════════ -->
 <script>
-var fieldsA11y1005 = (function(){
-var ROOT = null;
-var states = { hc: false, lm: false, cb: false, nr: true };
-var THEMES = {
-hc: { '--fld-pos':'#ffff00','--fld-neg':'#00ffff','--fld-field-lo':'#00ff88','--fld-field-hi':'#ff00ff',
-'--fld-line':'#00ff88','--fld-equi':'#ff00aa','--fld-equi-pos':'#ffaa00','--fld-equi-neg':'#00ffff',
-'--fld-sensor':'#ffffff','--fld-test':'#00ff00',
-'--fld-testforce':'#ffff00','--fld-grid':'#3a3a3a','--fld-axis':'#888888','--fld-panelbg':'#000000',
-'--fld-border':'#ffffff','--fld-text':'#ffffff','--fld-toolbar-bg':'#000000' },
-cb: { '--fld-pos':'#d55e00','--fld-neg':'#0072b2','--fld-field-lo':'#009e73','--fld-field-hi':'#cc79a7',
-'--fld-line':'#009e73','--fld-equi':'#cc79a7','--fld-equi-pos':'#e69f00','--fld-equi-neg':'#0072b2',
-'--fld-sensor':'#f0e442','--fld-test':'#e69f00',
-'--fld-testforce':'#f0e442','--fld-grid':'#222222','--fld-axis':'#555555' },
-lm: { '--fld-panelbg':'#ffffff','--fld-border':'#ccd6dd','--fld-text':'#1a1f24','--fld-toolbar-bg':'#e8e8e8' }
-};
+var fieldsA11y = (function(){
+var ROOT = null, WRAP = null, states = { hc:false, dm:false, cb:false, nr:true };
+/* ── canvas themes: every colour the sim draws passes through map(); the last frame is recorded,
+      so switching dark mode, high contrast or colour-blind safe colours redraws it at once,
+      even while the sim is paused. No page-wide names: this lives inside the controller. ── */
+function makeCT(){
+  var mode = { dark:false, light:false, hc:false, cb:false, darkbase:false }, key = '', cache = {}, cvs = [];
+  var probe = document.createElement('canvas').getContext('2d');
+  var P = CanvasRenderingContext2D.prototype;
+  function parse(c){
+    probe.fillStyle = '#000'; probe.fillStyle = c; var s = String(probe.fillStyle), m;
+    if (s.charAt(0) === '#') return [parseInt(s.substr(1,2),16), parseInt(s.substr(3,2),16), parseInt(s.substr(5,2),16), 1];
+    m = s.match(/rgba?\(([^)]+)\)/); if (!m) return null;
+    var p = m[1].split(',').map(parseFloat); return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1];
+  }
+  function lin(v){ v /= 255; return v <= 0.04045 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); }
+  function lum(r,g,b){ return 0.2126*lin(r) + 0.7152*lin(g) + 0.0722*lin(b); }
+  function hsl(r,g,b){
+    r/=255; g/=255; b/=255; var mx = Math.max(r,g,b), mn = Math.min(r,g,b), h = 0, s = 0, l = (mx+mn)/2, d = mx-mn;
+    if (d > 1e-6){ s = d/(1 - Math.abs(2*l - 1));
+      h = mx === r ? ((g-b)/d) % 6 : (mx === g ? (b-r)/d + 2 : (r-g)/d + 4); h *= 60; if (h < 0) h += 360; }
+    return [h, s, l];
+  }
+  function rgb(h,s,l){
+    var c = (1 - Math.abs(2*l - 1))*s, x = c*(1 - Math.abs((h/60) % 2 - 1)), m = l - c/2, t;
+    t = h < 60 ? [c,x,0] : h < 120 ? [x,c,0] : h < 180 ? [0,c,x] : h < 240 ? [0,x,c] : h < 300 ? [x,0,c] : [c,0,x];
+    return [Math.round((t[0]+m)*255), Math.round((t[1]+m)*255), Math.round((t[2]+m)*255)];
+  }
+  /* raise the lightness until the colour stands out on a dark background */
+  function lift(h,s,l,target){ var c = rgb(h,s,l); while (lum(c[0],c[1],c[2]) < target && l < 0.95){ l += 0.03; c = rgb(h,s,l); } return c; }
+  /* Okabe-Ito colours, chosen by hue */
+  function oi(h){
+    return h < 15 || h >= 330 ? [213,94,0] : h < 40 ? [230,159,0] : h < 75 ? [240,228,66] : h < 170 ? [0,158,115]
+         : h < 200 ? [86,180,233] : h < 260 ? [0,114,178] : [204,121,167];
+  }
+  function conv(c, stroke){
+    if (!mode.dark && !mode.light && !mode.hc && !mode.cb) return c;
+    var k = key + (stroke ? 's' : 'f') + c; if (cache[k] !== undefined) return cache[k];
+    var v = parse(c); if (!v){ cache[k] = c; return c; }
+    var r = v[0], g = v[1], b = v[2], a = v[3], q = hsl(r,g,b), Y = lum(r,g,b), neutral = q[1] < 0.18, o;
+    if (mode.cb && !neutral && Y <= 0.6 && !(q[2] > 0.6 && q[1] < 0.6) && !(!stroke && Y < 0.08)){   /* not surfaces, light or dark */
+      o = oi(q[0]); var oq = hsl(o[0],o[1],o[2]); o = rgb(oq[0], oq[1], Math.min(Math.max(q[2], 0.2), 0.75));   /* the safe hue, at about the original lightness */
+      r = o[0]; g = o[1]; b = o[2]; q = hsl(r,g,b); Y = lum(r,g,b); }
+    if (mode.hc && mode.darkbase){   /* a sim drawn dark to begin with: dark stays black, light goes white, colours brighten */
+      if (neutral) o = Y < 0.2 ? [0,0,0] : (Y > 0.45 ? [255,255,255] : [205,205,205]);
+      else if (!stroke && Y < 0.06) o = [0,0,0];
+      else o = lift(q[0], 1, Math.max(q[2], 0.5), 0.4);
+    } else if (mode.light){   /* light mode for a sim drawn dark: the reverse of dark mode */
+      if (neutral) o = rgb(q[0], q[1], 0.1 + 0.82*(1 - q[2]));
+      else if (!stroke && Y < 0.08) o = rgb(q[0], Math.min(q[1], 0.35), 0.93);   /* dark fills are surfaces */
+      else { var l = q[2], cc = rgb(q[0], q[1], l); while (lum(cc[0],cc[1],cc[2]) > 0.2 && l > 0.15){ l -= 0.03; cc = rgb(q[0], q[1], l); } o = cc; }
+    } else if (mode.hc){
+      if (neutral) o = Y > 0.8 ? [0,0,0] : (Y < 0.25 ? [255,255,255] : [205,205,205]);
+      else if (stroke && Y > 0.4) o = [r,g,b];   /* bright lines stay bright */
+      else if (Y > 0.6 || (q[2] > 0.6 && q[1] < 0.6)) o = [0,0,0];   /* light or pastel fills are surfaces */
+      else o = lift(q[0], 1, Math.max(q[2], 0.5), 0.4);
+    } else if (mode.dark){
+      if (neutral) o = rgb(q[0], q[1], 0.1 + 0.82*(1 - q[2]));
+      else if (stroke && Y > 0.3) o = [r,g,b];   /* bright lines stay bright */
+      else if (Y > 0.55 || (q[2] > 0.6 && q[1] < 0.6)) o = rgb(q[0], Math.min(q[1], 0.3), 0.18);   /* light or pastel fills are surfaces */
+      else o = lift(q[0], q[1], q[2], 0.3);
+    } else o = [r,g,b];
+    var out = a < 1 ? 'rgba(' + o[0] + ',' + o[1] + ',' + o[2] + ',' + a + ')' : 'rgb(' + o[0] + ',' + o[1] + ',' + o[2] + ')';
+    cache[k] = out; return out;
+  }
+  /* gradients remember their colour stops, so they can be rebuilt in another theme */
+  function style(v, ctx, stroke){
+    if (typeof v === 'string') return conv(v, stroke);
+    if (v && v.__spec){
+      var sp = v.__spec; if (sp.key === key) return sp.made;
+      var g = P[sp.kind].apply(ctx, sp.args); sp.stops.forEach(function(s){ g.addColorStop(s[0], conv(s[1])); });
+      sp.key = key; sp.made = g; return g;
+    }
+    return v;
+  }
+  function attach(cv){
+    var ctx = cv.getContext('2d'); if (!ctx || ctx.__ct) return; ctx.__ct = true;
+    var log = [], replaying = false, vals = {};
+    /* a fill or clear covering the whole canvas starts a new frame (in device pixels, whatever the transform) */
+    function full(a){ var t = ctx.getTransform(), x0 = t.a*a[0] + t.e, y0 = t.d*a[1] + t.f, x1 = t.a*(a[0] + a[2]) + t.e, y1 = t.d*(a[1] + a[3]) + t.f;
+      return t.b === 0 && t.c === 0 && Math.min(x0, x1) <= 0.5 && Math.min(y0, y1) <= 0.5 && Math.max(x0, x1) >= cv.width - 0.5 && Math.max(y0, y1) >= cv.height - 0.5; }
+    /* a canvas attached after its first drawing: keep that picture, to re-colour pixel by pixel until the next frame */
+    var snap = null, framed = false; try { snap = ctx.getImageData(0, 0, cv.width, cv.height); } catch (e) {}
+    ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); vals[p] = d.get.call(ctx);
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return vals[p]; },
+        set:function(v){ vals[p] = v; if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, style(v, ctx, p === 'strokeStyle')); } });
+    });
+    var plain = ['lineWidth','font','textAlign','textBaseline','globalAlpha','lineCap','lineJoin','miterLimit','shadowBlur',
+                 'shadowOffsetX','shadowOffsetY','globalCompositeOperation','lineDashOffset','direction','imageSmoothingEnabled'];
+    plain.forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); if (!d || !d.set) return;
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return d.get.call(ctx); },
+        set:function(v){ if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, v); } });
+    });
+    ['createLinearGradient','createRadialGradient','createConicGradient'].forEach(function(n){
+      if (!P[n]) return;
+      ctx[n] = function(){
+        var args = Array.prototype.slice.call(arguments), g = P[n].apply(ctx, args), add = g.addColorStop;
+        var sp = { kind:n, args:args, stops:[], key:key, made:g }; g.__spec = sp;
+        g.addColorStop = function(o, c){ sp.stops.push([o, c]); add.call(g, o, conv(c)); };
+        return g;
+      };
+    });
+    /* text is a line, not a surface: a bright text colour stays bright in dark mode and high contrast */
+    var fsd = Object.getOwnPropertyDescriptor(P, 'fillStyle');
+    function asText(f, args){ var v = vals.fillStyle; if (typeof v === 'string' && key !== '|' && key !== ''){ fsd.set.call(ctx, conv(v, true)); try { return f.apply(ctx, args); } finally { fsd.set.call(ctx, style(v, ctx, false)); } } return f.apply(ctx, args); }
+    var skip = /^(constructor|get[A-Z]\w*|isPointIn\w*|measureText|create\w*)$/;
+    Object.getOwnPropertyNames(P).forEach(function(n){
+      if (skip.test(n)) return; var d = Object.getOwnPropertyDescriptor(P, n); if (!d || typeof d.value !== 'function') return;
+      var f = d.value;
+      ctx[n] = function(){
+        if (!replaying){
+          if ((n === 'fillRect' || n === 'clearRect') && full(arguments)){ snap = null; framed = true;
+            /* a new frame: start the record from the drawing state of this moment */
+            var t = ctx.getTransform();
+            log = [['c','setTransform',[t.a,t.b,t.c,t.d,t.e,t.f]]];
+            ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){ log.push(['s', p, vals[p]]); });
+            plain.forEach(function(p){ var dd = Object.getOwnPropertyDescriptor(P, p); if (dd && dd.get) log.push(['s', p, dd.get.call(ctx)]); });
+            log.push(['c','setLineDash',[ctx.getLineDash()]]);
+          }
+          if (log){ log.push(['c', n, Array.prototype.slice.call(arguments)]); if (log.length > 60000) log = null; }
+        }
+        if (n === 'fillText') return asText(f, arguments);
+        return f.apply(ctx, arguments);
+      };
+    });
+    cvs.push({ redraw:function(){
+      if (!framed && snap){
+        var img = new ImageData(new Uint8ClampedArray(snap.data), snap.width, snap.height), d = img.data, memo = {};
+        for (var i = 0; i < d.length; i += 4){ if (!d[i+3]) continue; var k = d[i] + ',' + d[i+1] + ',' + d[i+2], c = memo[k];
+          if (!c){ var v = parse(conv('rgb(' + k + ')')); c = memo[k] = v || [d[i], d[i+1], d[i+2]]; } d[i] = c[0]; d[i+1] = c[1]; d[i+2] = c[2]; }
+        var t0 = ctx.getTransform(); P.setTransform.call(ctx, 1, 0, 0, 1, 0, 0); P.putImageData.call(ctx, img, 0, 0); P.setTransform.call(ctx, t0); return;
+      }
+      if (!framed || !log || log.length < 3) return;
+      replaying = true;
+      try { log.forEach(function(e){ if (e[0] === 's') ctx[e[1]] = e[2]; else if (e[1] === 'fillText') asText(P.fillText, e[2]); else P[e[1]].apply(ctx, e[2]); }); }
+      finally { replaying = false; }
+    }});
+  }
+  return {
+    attach: attach,
+    map: conv,
+    set: function(m){ mode = { dark:!!m.dark, light:!!m.light, hc:!!m.hc, cb:!!m.cb, darkbase:!!m.darkbase }; key = (mode.dark?'d':'') + (mode.light?'l':'') + (mode.hc?'h':'') + (mode.cb?'c':'') + (mode.darkbase?'b':'') + '|'; cvs.forEach(function(c){ c.redraw(); }); }
+  };
+}
+
+var ct = makeCT();
 var DEFAULTS = {
 '--fld-pos':'#ffb454','--fld-neg':'#5ad1ff','--fld-field-lo':'#50c88c','--fld-field-hi':'#ff8fa8',
 '--fld-line':'#8fe3b0','--fld-equi':'#ff6fae','--fld-equi-pos':'#ff8a3d','--fld-equi-neg':'#4dc3ff','--fld-sensor':'#ffe066','--fld-test':'#c6ff4d',
 '--fld-testforce':'#fff275','--fld-grid':'#182129','--fld-axis':'#26323c','--fld-panelbg':'#0d1318',
 '--fld-border':'#1c262e','--fld-text':'#c9d6de','--fld-toolbar-bg':'#222'
 };
-function applyVars(theme, on) {
-if (!ROOT) return;
-var vars = THEMES[theme];
-for (var p in vars) ROOT.style.setProperty(p, on ? vars[p] : DEFAULTS[p]);
-}
-function styleBtn(id, active) {
-var b = document.getElementById(id); if (!b) return;
-if (active) { b.style.background='rgba(0,232,208,.12)'; b.style.borderColor='#00e8d0'; b.style.color='#00e8d0'; }
-else        { b.style.background='#2a2e3a'; b.style.borderColor='#404a60'; b.style.color='#7a8aaa'; }
-b.setAttribute('aria-pressed', active ? 'true' : 'false');
-}
-function applyCanvas() {
-var cv = document.getElementById('fldCanvas1005');
-if (cv) cv.style.filter = states.lm ? 'invert(1) hue-rotate(180deg) brightness(0.92)' : '';
-}
-function applyNarBar() {
-var nb = document.getElementById('fldNarBar1005');
-if (nb) nb.style.display = states.nr ? 'block' : 'none';
-var btn = document.getElementById('fldBtnNR1005');
-if (btn) { btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF'); styleBtn('fldBtnNR1005', states.nr); }
-}
-function apply() {
-if (!ROOT) return;
-applyVars('hc', states.hc); applyVars('cb', states.cb); applyVars('lm', states.lm);
-applyCanvas(); applyNarBar();
-styleBtn('fldBtnHC1005', states.hc);
-styleBtn('fldBtnLM1005', states.lm);
-styleBtn('fldBtnCB1005', states.cb);
-if (window.fieldsSim1005) window.fieldsSim1005.draw();
-}
-function getCol(prop) {
-if (!ROOT) return DEFAULTS[prop];
-return getComputedStyle(ROOT).getPropertyValue(prop).trim() || DEFAULTS[prop];
+function attachAll(){ var w = document.getElementById('mobelectrostaticspo') || document.getElementById('fieldsRoot'); if (w) [].forEach.call(w.querySelectorAll('canvas'), ct.attach); }
+attachAll();
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return;
+b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa';
+b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){
+ROOT = ROOT || document.getElementById('fieldsRoot'); if (!ROOT) return;
+WRAP = document.getElementById('mobelectrostaticspo') || ROOT; attachAll();
+WRAP.classList.toggle('a11y_dm', states.dm); WRAP.classList.toggle('a11y_hc', states.hc); WRAP.classList.toggle('a11y_cb', states.cb);
+ct.set({ light:states.dm, hc:states.hc, cb:states.cb, darkbase:true });
+var nb = document.getElementById('fldNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var nr = document.getElementById('fldBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('fldBtnHC', states.hc); styleBtn('fldBtnDM', states.dm); styleBtn('fldBtnCB', states.cb); styleBtn('fldBtnNR', states.nr);
 }
 return {
-init: function() { ROOT = document.getElementById('fieldsRoot1005'); apply(); },
-toggle: function(k) {
+init: function(){ apply(); },
+toggle: function(k){
 states[k] = !states[k];
-if (k === 'hc' && states.hc) states.lm = false;
-if (k === 'lm' && states.lm) states.hc = false;
+if (k === 'hc' && states.hc) states.dm = false;   /* high contrast and dark mode switch each other off; colour-blind combines with either */
+if (k === 'dm' && states.dm) states.hc = false;
 apply();
+
 },
+/* the colour engine themes every colour on the canvas, so the drawing code keeps its standard colours */
+isHC: function(){ return false; }, isCB: function(){ return false; }, isLM: function(){ return false; },
+isNarOn: function(){ return states.nr; },
+col: function(a, def){ if (def !== undefined) return def; var T = DEFAULTS; return T[a] !== undefined ? T[a] : T['--fld-' + a]; },
 narrate: function(msg) {
 if (!states.nr) return;
-var nb = document.getElementById('fldNarBar1005');
+var nb = document.getElementById('fldNarBar');
 if (nb) nb.textContent = msg;
-},
-col: function(role) { return getCol('--fld-' + role); }
+}
 };
 })();
 </script>
 <!-- ════════════════ SIMULATION ════════════════ -->
 <script>
-var fieldsSim1005 = (function(){
+var fieldsSim = (function(){
 "use strict";
-var canvas = document.getElementById('fldCanvas1005');
+var canvas = document.getElementById('fldCanvas');
 var ctx = canvas.getContext('2d');
-var stage = document.getElementById('fldStage1005');
+var stage = document.getElementById('fldStage');
 var CW = canvas.width, CH = canvas.height;
 var X_MIN=-5, X_MAX=5, Y_MIN=-3.5, Y_MAX=3.5;
 var SCALE = CW/(X_MAX-X_MIN);
@@ -425,11 +586,11 @@ return extra.concat(currentCharges());
 function draw(){
 var combined = getCombinedCharges();
 var contourRes = combined.length>10 ? [78,54] : [110,78];
-var posCol = fieldsA11y1005.col('pos'), negCol = fieldsA11y1005.col('neg');
-var loCol = fieldsA11y1005.col('field-lo'), hiCol = fieldsA11y1005.col('field-hi');
-var lineCol = fieldsA11y1005.col('line');
-var sensorCol = fieldsA11y1005.col('sensor'), testCol = fieldsA11y1005.col('test'), testForceCol = fieldsA11y1005.col('testforce');
-var gridCol = fieldsA11y1005.col('grid'), axisCol = fieldsA11y1005.col('axis');
+var posCol = fieldsA11y.col('pos'), negCol = fieldsA11y.col('neg');
+var loCol = fieldsA11y.col('field-lo'), hiCol = fieldsA11y.col('field-hi');
+var lineCol = fieldsA11y.col('line');
+var sensorCol = fieldsA11y.col('sensor'), testCol = fieldsA11y.col('test'), testForceCol = fieldsA11y.col('testforce');
+var gridCol = fieldsA11y.col('grid'), axisCol = fieldsA11y.col('axis');
 ctx.clearRect(0,0,CW,CH);
 ctx.fillStyle='#0a0e12'; ctx.fillRect(0,0,CW,CH);
 if (state.showGrid){
@@ -621,41 +782,41 @@ return 'rgba('+r+','+g+','+bl+','+alpha+')';
 /* Positive potential -> warm color, negative -> cool color, magnitude of V modulates
 intensity (bigger |V| draws darker/more opaque) so sign and size are both readable. */
 function equiColorForLevel(level){
-var zero = fieldsA11y1005.col('equi');
+var zero = fieldsA11y.col('equi');
 if (Math.abs(level) < 1e-6) return { base: zero, css: hexA(zero, 0.85) };
-var base = level>0 ? fieldsA11y1005.col('equi-pos') : fieldsA11y1005.col('equi-neg');
+var base = level>0 ? fieldsA11y.col('equi-pos') : fieldsA11y.col('equi-neg');
 var t = Math.min(1, Math.abs(level)/8);
 return { base: base, css: hexA(base, 0.5+0.4*t) };
 }
 function updateReadout(combined, testField){
 var sf = fieldAt(state.sensor.x, state.sensor.y, combined);
-document.getElementById('fldRV1005').textContent = fmt(sf.V)+' V';
-document.getElementById('fldRE1005').textContent = fmt(Math.hypot(sf.Ex,sf.Ey))+' N/C';
-document.getElementById('fldREx1005').textContent = fmt(sf.Ex);
-document.getElementById('fldREy1005').textContent = fmt(sf.Ey);
-var qBox=document.getElementById('fldTestQBox1005'), aBox=document.getElementById('fldTestABox1005');
+document.getElementById('fldRV').textContent = fmt(sf.V)+' V';
+document.getElementById('fldRE').textContent = fmt(Math.hypot(sf.Ex,sf.Ey))+' N/C';
+document.getElementById('fldREx').textContent = fmt(sf.Ex);
+document.getElementById('fldREy').textContent = fmt(sf.Ey);
+var qBox=document.getElementById('fldTestQBox'), aBox=document.getElementById('fldTestABox');
 if (state.showTestCharge){
 qBox.style.display=''; aBox.style.display='';
 var Fx=TEST_Q*testField.Ex, Fy=TEST_Q*testField.Ey, amag=Math.hypot(Fx,Fy)/TEST_MASS;
-document.getElementById('fldRTestQ1005').textContent='+'+TEST_Q.toFixed(2);
-document.getElementById('fldRTestA1005').textContent=fmt(amag);
+document.getElementById('fldRTestQ').textContent='+'+TEST_Q.toFixed(2);
+document.getElementById('fldRTestA').textContent=fmt(amag);
 } else { qBox.style.display='none'; aBox.style.display='none'; }
 }
 function updateLockUI(){
 var n = state.equipotentials.length;
 var unlocked = n >= EQUI_NEEDED;
-var chk = document.getElementById('fldChkLines1005');
-var wrap = document.getElementById('fldLinesWrap1005');
-var note = document.getElementById('fldLinesNote1005');
+var chk = document.getElementById('fldChkLines');
+var wrap = document.getElementById('fldLinesWrap');
+var note = document.getElementById('fldLinesNote');
 chk.disabled = !unlocked;
-if (unlocked){ wrap.classList.remove('flocked1005'); note.textContent = 'Unlocked \u2014 ' + n + ' equipotential line' + (n===1?'':'s') + ' traced.'; }
-else { wrap.classList.add('flocked1005'); note.textContent = 'Locked: trace 5 equipotential lines first (currently ' + n + '/5)'; if (state.showFieldLines){ state.showFieldLines=false; chk.checked=false; } }
+if (unlocked){ wrap.classList.remove('flocked'); note.textContent = 'Unlocked \u2014 ' + n + ' equipotential line' + (n===1?'':'s') + ' traced.'; }
+else { wrap.classList.add('flocked'); note.textContent = 'Locked: trace 5 equipotential lines first (currently ' + n + '/5)'; if (state.showFieldLines){ state.showFieldLines=false; chk.checked=false; } }
 }
 /* ── DOM handle overlay ── */
 var handleEls = {};
 function makeHandle(type, id, label){
 var el=document.createElement('div');
-el.className='fhandle1005'; el.tabIndex=0; el.setAttribute('role','button'); el.setAttribute('aria-label', label||'');
+el.className='fhandle'; el.tabIndex=0; el.setAttribute('role','button'); el.setAttribute('aria-label', label||'');
 el.addEventListener('pointerdown', function(e){
 dragging = { type:type, id:id, moved:false, startClientX:e.clientX, startClientY:e.clientY };
 e.preventDefault();
@@ -700,9 +861,9 @@ var tp=simToPx(state.testCharge.x,state.testCharge.y);
 if (handleEls.test){ handleEls.test.style.left=(tp.px/CW*100)+'%'; handleEls.test.style.top=(tp.py/CH*100)+'%'; handleEls.test.style.display=state.showTestCharge?'':'none'; }
 }
 function updateChips(){
-var box=document.getElementById('fldChips1005'); box.innerHTML='';
+var box=document.getElementById('fldChips'); box.innerHTML='';
 state.equipotentials.forEach(function(eq){
-var span=document.createElement('span'); span.className='chip1005'; span.title='click to remove';
+var span=document.createElement('span'); span.className='chip'; span.title='click to remove';
 span.textContent=fmt(eq.level)+' V \u2715';
 var col = equiColorForLevel(eq.level).base;
 span.style.color = col; span.style.borderColor = col;
@@ -747,14 +908,14 @@ function selectCharge(id){
 var c=findCharge(id); if (!c) return;
 state.selectedChargeId=id;
 var mag=Math.abs(c.q);
-document.getElementById('fldMagSlider1005').value=mag;
-document.getElementById('fldMagValue1005').textContent=mag;
+document.getElementById('fldMagSlider').value=mag;
+document.getElementById('fldMagValue').textContent=mag;
 updateMagContext();
 narrate('Selected a '+(c.q>0?'positive':'negative')+' charge, magnitude '+mag+'.');
 draw();
 }
 function updateMagContext(){
-var ctxEl=document.getElementById('fldMagContext1005');
+var ctxEl=document.getElementById('fldMagContext');
 ctxEl.textContent = state.selectedChargeId!==null ? '(editing the selected charge)' : '(applies to the next charge you add)';
 }
 /* ── narration ── */
@@ -762,7 +923,7 @@ function narrate(extra){
 var combined=getCombinedCharges();
 var sf=fieldAt(state.sensor.x, state.sensor.y, combined);
 var msg = (extra?extra+' ':'') + 'Mode: '+state.mode+'. Sensor reads V='+fmt(sf.V)+' V, |E|='+fmt(Math.hypot(sf.Ex,sf.Ey))+' N/C.';
-fieldsA11y1005.narrate(msg);
+fieldsA11y.narrate(msg);
 }
 /* ── public API ── */
 /* Any change to the charge configuration invalidates previously-traced equipotential
@@ -772,29 +933,29 @@ function clearEquipotentials(){
 if (state.equipotentials.length===0 && !state.showFieldLines) return;
 state.equipotentials=[];
 state.showFieldLines=false;
-var linesChk=document.getElementById('fldChkLines1005');
-var linesWrap=document.getElementById('fldLinesWrap1005');
-var linesNote=document.getElementById('fldLinesNote1005');
-var chipsBox=document.getElementById('fldChips1005');
+var linesChk=document.getElementById('fldChkLines');
+var linesWrap=document.getElementById('fldLinesWrap');
+var linesNote=document.getElementById('fldLinesNote');
+var chipsBox=document.getElementById('fldChips');
 if (linesChk){ linesChk.checked=false; linesChk.disabled=true; }
-if (linesWrap) linesWrap.classList.add('flocked1005');
+if (linesWrap) linesWrap.classList.add('flocked');
 if (linesNote) linesNote.textContent = 'Locked: trace 5 equipotential lines first (currently 0/5)';
 if (chipsBox) chipsBox.innerHTML='';
 }
 function switchMode(m){
 state.mode=m; state.selectedChargeId=null; updateMagContext();
 clearEquipotentials();
-document.getElementById('fldTabPoints1005').setAttribute('aria-selected', m==='points');
-document.getElementById('fldTabCap1005').setAttribute('aria-selected', m==='capacitor');
-document.getElementById('fldTabRings1005').setAttribute('aria-selected', m==='rings');
-document.getElementById('fldCapPanel1005').style.display = m==='capacitor' ? '' : 'none';
-document.getElementById('fldRingsPanel1005').style.display = m==='rings' ? '' : 'none';
+document.getElementById('fldTabPoints').setAttribute('aria-selected', m==='points');
+document.getElementById('fldTabCap').setAttribute('aria-selected', m==='capacitor');
+document.getElementById('fldTabRings').setAttribute('aria-selected', m==='rings');
+document.getElementById('fldCapPanel').style.display = m==='capacitor' ? '' : 'none';
+document.getElementById('fldRingsPanel').style.display = m==='rings' ? '' : 'none';
 rebuildHandles();
 narrate('Switched to '+m+' configuration. Equipotential and field lines cleared.');
 draw();
 }
 function addCharge(sign){
-var mag=parseFloat(document.getElementById('fldMagSlider1005').value)||1;
+var mag=parseFloat(document.getElementById('fldMagSlider').value)||1;
 var arr=currentCharges();
 arr.push({ id:nextId(), x:(Math.random()-0.5)*2, y:(Math.random()-0.5)*2, q: sign*mag });
 clearEquipotentials();
@@ -805,7 +966,7 @@ draw();
 function removeSelected(){ if (state.selectedChargeId!==null) removeCharge(state.selectedChargeId); }
 function setMagnitude(v){
 var mag=Math.max(MAG_MIN, Math.min(MAG_MAX, Math.round(parseFloat(v))));
-document.getElementById('fldMagValue1005').textContent=mag;
+document.getElementById('fldMagValue').textContent=mag;
 state.newChargeMagnitude=mag;
 if (state.selectedChargeId!==null){
 var c=findCharge(state.selectedChargeId);
@@ -827,31 +988,31 @@ function toggleFieldLines(cb){
 if (state.equipotentials.length<EQUI_NEEDED){ cb.checked=false; return; }
 state.showFieldLines=cb.checked; narrate('Field lines '+(cb.checked?'shown.':'hidden.')); draw();
 }
-function setPlateSeparation(v){ state.plateSeparation=parseFloat(v); document.getElementById('fldDVal1005').textContent=state.plateSeparation.toFixed(2); clearEquipotentials(); draw(); }
+function setPlateSeparation(v){ state.plateSeparation=parseFloat(v); document.getElementById('fldDVal').textContent=state.plateSeparation.toFixed(2); clearEquipotentials(); draw(); }
 function updateIdealE(){
 var s1 = state.plate1Charge/state.plate1Length, s2 = state.plate2Charge/state.plate2Length;
-document.getElementById('fldIdealE1005').textContent = Math.abs(s1-s2).toFixed(2);
+document.getElementById('fldIdealE').textContent = Math.abs(s1-s2).toFixed(2);
 }
 function setPlateCharge(which, v){
 var q=parseFloat(v);
-if (which===1){ state.plate1Charge=q; document.getElementById('fldQ1Val1005').textContent=(q>=0?'+':'')+q.toFixed(1); }
-else { state.plate2Charge=q; document.getElementById('fldQ2Val1005').textContent=(q>=0?'+':'')+q.toFixed(1); }
+if (which===1){ state.plate1Charge=q; document.getElementById('fldQ1Val').textContent=(q>=0?'+':'')+q.toFixed(1); }
+else { state.plate2Charge=q; document.getElementById('fldQ2Val').textContent=(q>=0?'+':'')+q.toFixed(1); }
 updateIdealE(); clearEquipotentials(); draw();
 }
 function setPlateLength(which, v){
 var len=parseFloat(v);
-if (which===1){ state.plate1Length=len; document.getElementById('fldL1Val1005').textContent=len.toFixed(1); }
-else { state.plate2Length=len; document.getElementById('fldL2Val1005').textContent=len.toFixed(1); }
+if (which===1){ state.plate1Length=len; document.getElementById('fldL1Val').textContent=len.toFixed(1); }
+else { state.plate2Length=len; document.getElementById('fldL2Val').textContent=len.toFixed(1); }
 updateIdealE(); clearEquipotentials(); draw();
 }
 function setRingRadius(which, v){
-if (which===1){ state.ring1Radius=parseFloat(v); document.getElementById('fldR1Val1005').textContent=state.ring1Radius.toFixed(2); }
-else { state.ring2Radius=parseFloat(v); document.getElementById('fldR2Val1005').textContent=state.ring2Radius.toFixed(2); }
+if (which===1){ state.ring1Radius=parseFloat(v); document.getElementById('fldR1Val').textContent=state.ring1Radius.toFixed(2); }
+else { state.ring2Radius=parseFloat(v); document.getElementById('fldR2Val').textContent=state.ring2Radius.toFixed(2); }
 clearEquipotentials(); draw();
 }
 function setRingMagnitude(which, v){
-if (which===1){ state.ring1Magnitude=parseFloat(v); document.getElementById('fldM1Val1005').textContent=state.ring1Magnitude.toFixed(1); }
-else { state.ring2Magnitude=parseFloat(v); document.getElementById('fldM2Val1005').textContent=state.ring2Magnitude.toFixed(1); }
+if (which===1){ state.ring1Magnitude=parseFloat(v); document.getElementById('fldM1Val').textContent=state.ring1Magnitude.toFixed(1); }
+else { state.ring2Magnitude=parseFloat(v); document.getElementById('fldM2Val').textContent=state.ring2Magnitude.toFixed(1); }
 clearEquipotentials(); draw();
 }
 function flipRingPolarity(which){
@@ -880,12 +1041,24 @@ resetAll: resetAll
 })();
 </script>
 <script>
-fieldsA11y1005.init();
-fieldsSim1005.draw();
-fieldsA11y1005.narrate('Electrostatics bench ready. Drag charges, the sensor, and the test charge. Field lines stay locked until 5 equipotential lines have been traced.');
+fieldsA11y.init();
+fieldsSim.draw();
+fieldsA11y.narrate('Electrostatics bench ready. Drag charges, the sensor, and the test charge. Field lines stay locked until 5 equipotential lines have been traced.');
 </script>
 <hr>This question was adapted from the "Charges and Fields" SIM developed by students and available here: (<a href=https://mzoughi.github.io/STSIMS/ target=_st01>https://mzoughi.github.io/STSIMS/</a>)
-
-
+<script>
+(function(){
+var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+b.addEventListener('click', function(){
+var open = d.style.display === 'none';
+d.style.display = open ? 'block' : 'none';
+b.setAttribute('aria-expanded', open ? 'true' : 'false');
+b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }
+});
+})();
+</script>
+</div><!-- #mobelectrostaticspo -->
+</main>
 </body>
 </html>
