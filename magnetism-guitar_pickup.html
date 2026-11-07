@@ -93,7 +93,7 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <button type="button" class="gtr_btn" id="btnTune" onclick="gtrSim.playTune()">&#9834; Romance</button>
 <button type="button" class="gtr_btn" onclick="gtrSim.stop()">&#9632; Stop</button>
 </div>
-<p class="gtr_hint">Tune: <i>Romance</i> (Spanish, anonymous, 19th century), opening section, played through this pickup with your settings.</p>
+<p class="gtr_hint">Each string button plucks its string; you can also click a string on the guitar to pluck it at that point (keys 1&ndash;6 work too). Tune: <i>Romance</i> (Spanish, anonymous, 19th century), opening section, played through this pickup with your settings.</p>
 </div>
 </div>
 <!-- Pickup -->
@@ -427,17 +427,19 @@ function visY(s, xmm, now) {
 
 /* ── Cached analysis of the selected note (for the graphs and readouts) ── */
 var ana = null, refCache = {};
+function anaKey() { return JSON.stringify(cfgNow()) + '|' + str + '|' + fret + '|' + strength; }
 function analyse() {
   var r = renderSingle(cfgNow(), strength), key = str + '|' + fret + '|' + strength;
   if (!refCache[key]) { var rr = renderSingle(cfgDef(), strength); refCache[key] = rms(rr.volts, 0, FS); }
   var f = midiF(OPEN[str] + fret), per = Math.round(FS/f), i0 = Math.floor(0.12*FS), wave = [], env = [];
   for (var i = 0; i < 3*per; i++) wave.push(r.volts[i0 + i] || 0);
   for (var k = 0; k < 150; k++) env.push(rms(r.volts, k*640, (k + 1)*640));
-  ana = { r: r, wave: wave, env: env, rms: rms(r.volts, 0, FS), ref: refCache[key], f: f };
+  ana = { r: r, wave: wave, env: env, rms: rms(r.volts, 0, FS), ref: refCache[key], f: f, key: anaKey() };
 }
 
 /* ── Actions ── */
 function pluck() {
+  if (!ana || ana.key !== anaKey()) analyse();   /* the string (or a setting) just changed: work out its sound now */
   stopTune(true);
   var t0 = playBuffer(ana.r.audio);
   strike(str, fret, strength, t0 > 0 ? t0 : clock());
@@ -725,7 +727,7 @@ function describePoint(x, y) {
     if (Math.abs(x - xp) < 10) return 'Pickup: a magnet under each string with a coil of ' + turns + ' turns around all six poles. It hears the string where it sits: ' + pickMm + ' mm from the bridge.';
     if (x > XB - 6 && x < XB + 8) return 'Bridge: the fixed end of every string. Harmonics have nodes here, so pickups near the bridge hear more of the high harmonics (bright).';
     if (x < XN + 4) return 'Nut: the other fixed end of the open strings. Pressing a fret moves this end and shortens the string.';
-    if (y >= 28 && y <= 104) { var mm = Math.round((XB - x)/K); return 'String at ' + mm + ' mm from the bridge. A plucked string vibrates in many harmonics at once; each has nodes at fixed points.'; }
+    if (y >= 28 && y <= 104) { var mm = Math.round((XB - x)/K); return 'String at ' + mm + ' mm from the bridge (click to pluck it here). A plucked string vibrates in many harmonics at once; each has nodes at fixed points.'; }
     return 'Guitar body.';
   }
   if (y < 302 && x < 272) return 'Pickup cross-section: the magnet magnetizes the steel string above it. When the string moves, the flux through the coil changes and an emf appears.';
@@ -733,7 +735,15 @@ function describePoint(x, y) {
   if (x < 374) return 'Pickup output: the emf waveform over three cycles, after the coil and cable resonance.';
   return 'Decay: how the output dies away over three seconds. Higher harmonics fade first, so the tone gets warmer.';
 }
-canvas.addEventListener('mousemove', function(e) { var c = canvasXY(e.clientX, e.clientY); set('gtrHoverReadout', describePoint(c[0], c[1])); });
+canvas.addEventListener('mousemove', function(e) { var c = canvasXY(e.clientX, e.clientY); set('gtrHoverReadout', describePoint(c[0], c[1])); canvas.style.cursor = (c[1] >= 28 && c[1] <= 104 && c[0] >= XN && c[0] <= XB) ? 'pointer' : ''; });
+canvas.addEventListener('click', function(e) {
+  var c = canvasXY(e.clientX, e.clientY), x = c[0], y = c[1];
+  if (y < 28 || y > 104 || x < XN || x > XB) return;
+  var s = Math.max(1, Math.min(6, Math.round(6 - (y - 36)/12)));
+  var mm = Math.round((XB - x)/K/2)*2;
+  if (mm >= 20 && mm <= 324) { pluckMm = mm; var sl = el('slPl'); if (sl) sl.value = mm; set('vPl', mm + ' mm'); }
+  setString(s); pluck();
+});
 canvas.addEventListener('mouseleave', function() { set('gtrHoverReadout', 'Hover over the guitar, the pickup or the graphs to read values'); });
 canvas.addEventListener('touchstart', function(e) { var t = e.touches[0], c = canvasXY(t.clientX, t.clientY); set('gtrHoverReadout', describePoint(c[0], c[1])); }, { passive: true });
 
@@ -763,6 +773,7 @@ ROOT.addEventListener('keydown', function(e) {
     case 'c': case 'C': toggleCB(); e.preventDefault(); break;
     case 'n': case 'N': toggleNarr(); e.preventDefault(); break;
     case 'p': case 'P': pluck(); e.preventDefault(); break;
+    case '1': case '2': case '3': case '4': case '5': case '6': setString(+e.key); pluck(); e.preventDefault(); break;
     case 't': case 'T': playTune(); e.preventDefault(); break;
     case 's': case 'S': stop(); e.preventDefault(); break;
   }
