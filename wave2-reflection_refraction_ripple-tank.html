@@ -10,107 +10,115 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations- Waves: Two Ropes</title>
+<title>Physics Simulations- Waves: Reflection and Refraction on a Ripple Tank</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,Transverse, Longitudinal,Frequency, Amplitude, Tension, Mass,Length,Wave,interference,damping,string, Properties,Rope, lesson, scientific">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, Transverse, Longitudinal,Frequency, Amplitude, Tension, Mass,Length,Wave,interference,damping,string, Properties,Rope, lesson, scientific, lesson, scientific">
+<meta name="description" content="Plane water waves meet a boundary between two depths of water, where they travel at different speeds.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:920px; max-width:100%; margin:0 auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
-<div id="rrRoot0922">
+<main class="page">
+<div id="mobwave2reflectionr" class="mob_wrap">
+<div id="rrRoot">
 <!-- ── Accessibility toolbar ── -->
-<div class="rr_a11y0922" id="rrA11yBar0922" role="toolbar" aria-label="Display options">
-<button type="button" class="rr_a11ybtn0922" id="rrBtnHC0922" onclick="rrA11y0922.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="rr_a11ybtn0922" id="rrBtnLM0922" onclick="rrA11y0922.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
-<button type="button" class="rr_a11ybtn0922" id="rrBtnCB0922" onclick="rrA11y0922.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
-<button type="button" class="rr_a11ybtn0922 rr_a11yon0922" id="rrBtnNR0922" onclick="rrA11y0922.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+<div class="rr_a11y" id="rrA11yBar" role="toolbar" aria-label="Display options">
+<button type="button" class="rr_a11ybtn" id="rrBtnHC" onclick="rrA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="rr_a11ybtn" id="rrBtnDM" onclick="rrA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="rr_a11ybtn" id="rrBtnCB" onclick="rrA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="rr_a11ybtn" id="rrBtnNR" onclick="rrA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
 </div>
-<div class="tbar0922"><h3>Reflection &amp; Refraction &mdash; Two Media</h3></div>
-<div class="mcontent0922">
-<canvas id="rrCanvas0922" style="margin:auto;display:block;border:1px solid #ccc;touch-action:none" width="800" height="500"></canvas>
+<div class="tbar"><h3>Reflection &amp; Refraction &mdash; Two Media</h3></div>
+<div class="mcontent">
+<canvas id="rrCanvas" style="margin:auto;display:block;border:1px solid #ccc;touch-action:none" width="800" height="500"></canvas>
 </div>
-<div id="rrReadout0922" class="rr_readout0922">&theta;i = 30&deg; | &theta;t = 41&deg; | v1 = 150, v2 = 100 mm/s | &lambda;1 &asymp; 150, &lambda;2 &asymp; 100 mm | R = -0.20, T = 0.80</div>
-<div id="rrNarBar0922" class="rr_narbar0922" role="status" aria-live="polite" aria-atomic="true"></div>
-<div class="bbar0922">
-<input type="button" id="rrPlay0922" value="Play"
-onclick="if(this.value=='Play'){rrSim0922.pl();this.value='Pause';}else{this.value='Play';rrSim0922.ps();}">
-<input type="button" value="Step Back" onclick="document.getElementById('rrPlay0922').value='Play';rrSim0922.stepBack();">
-<input type="button" value="Step" onclick="document.getElementById('rrPlay0922').value='Play';rrSim0922.step();">
-<input type="button" value="Restart" onclick="document.getElementById('rrPlay0922').value='Play';rrSim0922.rst();">
+<div id="rrReadout" class="rr_readout">&theta;i = 30&deg; | &theta;t = 41&deg; | v1 = 150, v2 = 100 mm/s | &lambda;1 &asymp; 150, &lambda;2 &asymp; 100 mm | R = -0.20, T = 0.80</div>
+<div id="rrNarBar" class="rr_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="bbar">
+<input type="button" id="rrPlay" value="Play"
+onclick="if(this.value=='Play'){rrSim.pl();this.value='Pause';}else{this.value='Play';rrSim.ps();}">
+<input type="button" value="Step Back" onclick="document.getElementById('rrPlay').value='Play';rrSim.stepBack();">
+<input type="button" value="Step" onclick="document.getElementById('rrPlay').value='Play';rrSim.step();">
+<input type="button" value="Restart" onclick="document.getElementById('rrPlay').value='Play';rrSim.rst();">
 </div>
-<div class="footer0922">
-<div class="rr_sectitle0922">Wave</div>
-<div class="rr_ctrlrow0922">
-<div class="rr_ctrlcol0922">
-<div class="rr_ctrltitle0922">Angle of incidence</div>
-&theta;i = <input type="range" id="rrAngle0922" min="0" max="80" value="30" step="1"
-oninput="rrSim0922.setAngle(this.value)">
-<span id="rrAngleVal0922">30</span>&deg;
+<div class="footer">
+<div class="rr_sectitle">Wave</div>
+<div class="rr_ctrlrow">
+<div class="rr_ctrlcol">
+<div class="rr_ctrltitle">Angle of incidence</div>
+&theta;i = <input type="range" id="rrAngle" min="0" max="80" value="30" step="1"
+oninput="rrSim.setAngle(this.value)">
+<span id="rrAngleVal">30</span>&deg;
 </div>
-<div class="rr_ctrlcol0922">
-<div class="rr_ctrltitle0922">Frequency</div>
-&fnof; = <input type="range" id="rrFreq0922" min="0.4" max="3.0" value="1.0" step="0.1"
-oninput="rrSim0922.setFrequency(this.value)">
-<span id="rrFreqVal0922">1.0</span> Hz
+<div class="rr_ctrlcol">
+<div class="rr_ctrltitle">Frequency</div>
+&fnof; = <input type="range" id="rrFreq" min="0.4" max="3.0" value="1.0" step="0.1"
+oninput="rrSim.setFrequency(this.value)">
+<span id="rrFreqVal">1.0</span> Hz
 </div>
-<div class="rr_ctrlcol0922">
-<div class="rr_ctrltitle0922">Amplitude</div>
-A = <input type="range" id="rrAmp0922" min="4" max="20" value="10" step="1"
-oninput="rrSim0922.setAmplitude(this.value)">
-<span id="rrAmpVal0922">10</span> mm
-</div>
-</div>
-<div class="rr_sectitle0922">Media</div>
-<div class="rr_ctrlrow0922">
-<div class="rr_ctrlcol0922">
-<div class="rr_ctrltitle0922"><span class="rr_sw0922" style="background:#14508c"></span>Medium 1 speed</div>
-v1 = <input type="range" id="rrV10922" min="60" max="300" value="150" step="10"
-oninput="rrSim0922.setV1(this.value)">
-<span id="rrV1Val0922">150</span> mm/s
-</div>
-<div class="rr_ctrlcol0922">
-<div class="rr_ctrltitle0922"><span class="rr_sw0922" style="background:#5a9bd4"></span>Medium 2 speed</div>
-v2 = <input type="range" id="rrV20922" min="60" max="300" value="100" step="10"
-oninput="rrSim0922.setV2(this.value)">
-<span id="rrV2Val0922">100</span> mm/s
-</div>
-<div class="rr_ctrlcol0922">
-<div class="rr_ctrltitle0922">Boundary position</div>
-<input type="range" id="rrBoundary0922" min="160" max="640" value="360" step="5"
-oninput="rrSim0922.setBoundary(this.value)">
-<span id="rrBoundaryVal0922">360</span> mm
+<div class="rr_ctrlcol">
+<div class="rr_ctrltitle">Amplitude</div>
+A = <input type="range" id="rrAmp" min="4" max="20" value="10" step="1"
+oninput="rrSim.setAmplitude(this.value)">
+<span id="rrAmpVal">10</span> mm
 </div>
 </div>
-<div class="rr_sectitle0922">Display</div>
-<div class="rr_ctrlrow0922">
-<div class="rr_ctrlcol0922 rt_ckcol0922">
-<label><span class="rr_sw0922" style="background:#E69F00"></span><input type="checkbox" id="rrInc0922" checked onclick="rrSim0922.toggleIncident()"> Incident</label>
+<div class="rr_sectitle">Media</div>
+<div class="rr_ctrlrow">
+<div class="rr_ctrlcol">
+<div class="rr_ctrltitle"><span class="rr_sw" style="background:#14508c"></span>Medium 1 speed</div>
+v1 = <input type="range" id="rrV1" min="60" max="300" value="150" step="10"
+oninput="rrSim.setV1(this.value)">
+<span id="rrV1Val">150</span> mm/s
 </div>
-<div class="rr_ctrlcol0922 rt_ckcol0922">
-<label><span class="rr_sw0922" style="background:#56B4E9"></span><input type="checkbox" id="rrRef0922" checked onclick="rrSim0922.toggleReflected()"> Reflected</label>
+<div class="rr_ctrlcol">
+<div class="rr_ctrltitle"><span class="rr_sw" style="background:#5a9bd4"></span>Medium 2 speed</div>
+v2 = <input type="range" id="rrV2" min="60" max="300" value="100" step="10"
+oninput="rrSim.setV2(this.value)">
+<span id="rrV2Val">100</span> mm/s
 </div>
-<div class="rr_ctrlcol0922 rt_ckcol0922">
-<label><span class="rr_sw0922" style="background:#009E73"></span><input type="checkbox" id="rrTrans0922" checked onclick="rrSim0922.toggleTransmitted()"> Transmitted</label>
+<div class="rr_ctrlcol">
+<div class="rr_ctrltitle">Boundary position</div>
+<input type="range" id="rrBoundary" min="160" max="640" value="360" step="5"
+oninput="rrSim.setBoundary(this.value)">
+<span id="rrBoundaryVal">360</span> mm
 </div>
-<div class="rr_ctrlcol0922 rt_ckcol0922">
-<label><input type="checkbox" id="rrRays0922" checked onclick="rrSim0922.toggleRays()"> Ray diagram</label>
+</div>
+<div class="rr_sectitle">Display</div>
+<div class="rr_ctrlrow">
+<div class="rr_ctrlcol rt_ckcol">
+<label><span class="rr_sw" style="background:#E69F00"></span><input type="checkbox" id="rrInc" checked onclick="rrSim.toggleIncident()"> Incident</label>
+</div>
+<div class="rr_ctrlcol rt_ckcol">
+<label><span class="rr_sw" style="background:#56B4E9"></span><input type="checkbox" id="rrRef" checked onclick="rrSim.toggleReflected()"> Reflected</label>
+</div>
+<div class="rr_ctrlcol rt_ckcol">
+<label><span class="rr_sw" style="background:#009E73"></span><input type="checkbox" id="rrTrans" checked onclick="rrSim.toggleTransmitted()"> Transmitted</label>
+</div>
+<div class="rr_ctrlcol rt_ckcol">
+<label><input type="checkbox" id="rrRays" checked onclick="rrSim.toggleRays()"> Ray diagram</label>
 </div>
 </div>
-<div class="rr_ctrlrow0922">
-<div class="rr_ctrlcol0922">
-<div class="rr_ctrltitle0922">Ray point (Y)</div>
-<input type="range" id="rrRayY0922" min="0" max="500" value="250" step="5"
-oninput="rrSim0922.setRayY(this.value)">
-<span id="rrRayYVal0922">250</span> mm
+<div class="rr_ctrlrow">
+<div class="rr_ctrlcol">
+<div class="rr_ctrltitle">Ray point (Y)</div>
+<input type="range" id="rrRayY" min="0" max="500" value="250" step="5"
+oninput="rrSim.setRayY(this.value)">
+<span id="rrRayYVal">250</span> mm
 </div>
-<div class="rr_ctrlcol0922 rt_hintcol0922">
-<span class="rr_hint0922">You can also drag the boundary line left/right, and drag the small square marker on it up/down.</span>
+<div class="rr_ctrlcol rt_hintcol">
+<span class="rr_hint">You can also drag the boundary line left/right, and drag the small square marker on it up/down.</span>
 </div>
 </div>
 </div>
 </div>
 <style>
-* { margin: 0; box-sizing: border-box; }
-div { width: 806px; margin: 0; }
-#rrRoot0922 {
+:where(#mobwave2reflectionr) * { margin: 0; box-sizing: border-box; }
+:where(#mobwave2reflectionr) div { width: 100%; margin: 0; }
+#rrRoot {
 --rr-water-deep:   #081e3c;
 --rr-water-mid:    #14508c;
 --rr-water-crest:  #bfe3ff;
@@ -118,91 +126,240 @@ div { width: 806px; margin: 0; }
 --rr-text:         #111111;
 --rr-toolbar-bg:   #222;
 }
-#rrRoot0922 .rr_a11y0922 {
+#rrRoot .rr_a11y {
 display:flex; gap:6px; padding:6px 8px;
-background:var(--rr-toolbar-bg); flex-wrap:wrap; width:806px;
+background:var(--rr-toolbar-bg); flex-wrap:wrap; width:100%;
 }
-#rrRoot0922 .rr_a11ybtn0922 {
+#rrRoot .rr_a11ybtn {
 padding:4px 10px; font-size:.72rem; font-family:monospace;
 letter-spacing:.06em; border-radius:3px; cursor:pointer;
 background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa;
 transition:border-color .15s,color .15s;
 }
-#rrRoot0922 .rr_a11ybtn0922:hover { border-color:#00e8d0; color:#00e8d0; }
-#rrRoot0922 .rr_a11yon0922 { background:rgba(0,232,208,.12); border-color:#00e8d0; color:#00e8d0; }
-#rrRoot0922 .rr_narbar0922 {
-width:806px; min-height:28px; padding:5px 10px;
+#rrRoot .rr_a11ybtn:hover { border-color:#00e8d0; color:#00e8d0; }
+#rrRoot .rr_a11yon { background:rgba(0,232,208,.12); border-color:#00e8d0; color:#00e8d0; }
+#rrRoot .rr_narbar {
+width:100%; min-height:28px; padding:5px 10px;
 background:#ffefc0; border-left:4px solid #e0b040;
 font-size:.88rem; color:#333; font-style:italic;
 }
-.tbar0922    { padding:4px; height:35px; background-color:#f90; text-align:center; line-height:42px; width:806px; }
-.tbar0922 h3 { font-size:1.1rem; font-weight:bold; }
-.mcontent0922 { height:504px; width:806px; background:#0b1830; }
-.rr_readout0922 { width:786px; margin:4px auto 0; color:#222; font-size:.82rem; font-family:monospace; text-align:center; background:#fff6d9; padding:3px 0; }
-.bbar0922    { height:50px; background-color:#df9; padding:10px; text-align:center; width:806px; }
-.bbar0922 input[type=button] { margin:0 4px; padding:4px 12px; cursor:pointer; }
-.footer0922  { width:806px; background-color:#fce4ec; font-size:.85rem; padding:8px 0; }
-.footer0922 .rr_sectitle0922 { width:786px; margin:6px auto 2px; padding-left:12px; font-weight:bold; font-size:.8rem; color:#883355; }
-.footer0922 .rr_ctrlrow0922  { width:806px; display:flex; flex-wrap:wrap; }
-.footer0922 .rr_ctrlcol0922  { width:196px; padding:4px 6px; }
-.footer0922 .rt_ckcol0922    { width:180px; display:flex; align-items:center; }
-.footer0922 .rt_hintcol0922  { width:400px; display:flex; align-items:center; }
-.footer0922 .rr_ctrltitle0922{ width:100%; font-weight:bold; margin-bottom:2px; display:flex; align-items:center; gap:4px; }
-.footer0922 .rr_hint0922     { font-size:.72rem; color:#555; font-style:italic; }
-.rr_sw0922 { display:inline-block; width:10px; height:10px; border:1px solid #000; border-radius:2px; }
+.tbar    { padding:4px; height:35px; background-color:#f90; text-align:center; line-height:42px; width:100%; }
+.tbar h3 { font-size:1.1rem; font-weight:bold; }
+.mcontent { height:504px; width:100%; background:#0b1830; }
+.rr_readout { width:100%;max-width:786px; margin:4px auto 0; color:#222; font-size:.82rem; font-family:monospace; text-align:center; background:#fff6d9; padding:3px 0; }
+.bbar    { height:50px; background-color:#df9; padding:10px; text-align:center; width:100%; }
+.bbar input[type=button] { margin:0 4px; padding:4px 12px; cursor:pointer; }
+.footer  { width:100%; background-color:#fce4ec; font-size:.85rem; padding:8px 0; }
+.footer .rr_sectitle { width:100%;max-width:786px; margin:6px auto 2px; padding-left:12px; font-weight:bold; font-size:.8rem; color:#883355; }
+.footer .rr_ctrlrow  { width:100%; display:flex; flex-wrap:wrap; }
+.footer .rr_ctrlcol  { width:196px; padding:4px 6px; }
+.footer .rt_ckcol    { width:180px; display:flex; align-items:center; }
+.footer .rt_hintcol  { width:400px; display:flex; align-items:center; }
+.footer .rr_ctrltitle{ width:100%; font-weight:bold; margin-bottom:2px; display:flex; align-items:center; gap:4px; }
+.footer .rr_hint     { font-size:.72rem; color:#555; font-style:italic; }
+.rr_sw { display:inline-block; width:10px; height:10px; border:1px solid #000; border-radius:2px; }
+
+/* ── mobile layer: the sim fills its column up to its design width; wide parts shrink, bars wrap ── */
+#mobwave2reflectionr { width:100%; max-width:806px; margin:0 auto; }
+#mobwave2reflectionr canvas { max-width:100%; height:auto; }
+#mobwave2reflectionr img, #mobwave2reflectionr table { max-width:100%; }
+#mobwave2reflectionr [class*="footer"], #mobwave2reflectionr [class*="bbar"], #mobwave2reflectionr [class*="playbar"], #mobwave2reflectionr [class*="ctrl"] { flex-wrap:wrap; }
+#mobwave2reflectionr [class*="bbar"], #mobwave2reflectionr [class*="footer"], #mobwave2reflectionr [class*="tbar"], #mobwave2reflectionr [class*="mcontent"] { height:auto; }
+#mobwave2reflectionr ol { padding-left:24px; } #mobwave2reflectionr li { margin-bottom:8px; }
+@media (pointer:coarse) {
+#mobwave2reflectionr button, #mobwave2reflectionr input[type=button] { min-height:40px; }
+#mobwave2reflectionr input[type=checkbox], #mobwave2reflectionr input[type=radio] { width:20px; height:20px; }
+#mobwave2reflectionr input[type=range] { height:28px; }
+#mobwave2reflectionr select { min-height:34px; }
+}
+/* ── SIM description ── */
+#mobwave2reflectionr .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:14px 0 6px; width:100%; }
+#mobwave2reflectionr .mob_descbtn { width:auto; padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobwave2reflectionr .mob_desc { width:100%; background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; text-align:left; }
+#mobwave2reflectionr .mob_desc p { margin:0 0 8px 0; }
+#mobwave2reflectionr .mob_eq { text-align:center; }
+/* ════════ display options for the page around the canvases: the whole sim is inverted (dark mode) or inverted
+   and sharpened (high contrast); the canvases, pictures and the toolbar undo it, and the canvases are themed by
+   the colour engine instead. ════════ */
+#mobwave2reflectionr.a11y_dm { filter:invert(1) hue-rotate(180deg); background:#e9e6e1; }
+#mobwave2reflectionr.a11y_dm canvas, #mobwave2reflectionr.a11y_dm img, #mobwave2reflectionr.a11y_dm [role=toolbar], #mobwave2reflectionr.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobwave2reflectionr.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); background:#fff; }
+#mobwave2reflectionr.a11y_hc canvas, #mobwave2reflectionr.a11y_hc img, #mobwave2reflectionr.a11y_hc [role=toolbar], #mobwave2reflectionr.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
 </style>
 <!-- ════════ A11Y CONTROLLER ════════ -->
 <script>
-var rrA11y0922 = (function(){
-var ROOT = null;
-var states = { hc:false, lm:false, cb:false, nr:true };
-var THEMES = {
-hc:{'--rr-water-deep':'#000000','--rr-water-mid':'#1a1a1a','--rr-water-crest':'#ffffff','--rr-boundary':'#ffff00','--rr-text':'#ffffff','--rr-toolbar-bg':'#000'},
-lm:{'--rr-water-deep':'#2a5f8f','--rr-water-mid':'#5a9bd4','--rr-water-crest':'#eaf6ff','--rr-boundary':'#ffffff','--rr-text':'#222222','--rr-toolbar-bg':'#444'},
-cb:{'--rr-water-deep':'#012a4a','--rr-water-mid':'#0072b2','--rr-water-crest':'#f0f0f0','--rr-boundary':'#e69f00','--rr-text':'#000000','--rr-toolbar-bg':'#222'}
-};
+var rrA11y = (function(){
+var ROOT = null, WRAP = null, states = { hc:false, dm:false, cb:false, nr:true };
+/* ── canvas themes: every colour the sim draws passes through map(); the last frame is recorded,
+      so switching dark mode, high contrast or colour-blind safe colours redraws it at once,
+      even while the sim is paused. No page-wide names: this lives inside the controller. ── */
+function makeCT(){
+  var mode = { dark:false, hc:false, cb:false }, key = '', cache = {}, cvs = [];
+  var probe = document.createElement('canvas').getContext('2d');
+  var P = CanvasRenderingContext2D.prototype;
+  function parse(c){
+    probe.fillStyle = '#000'; probe.fillStyle = c; var s = String(probe.fillStyle), m;
+    if (s.charAt(0) === '#') return [parseInt(s.substr(1,2),16), parseInt(s.substr(3,2),16), parseInt(s.substr(5,2),16), 1];
+    m = s.match(/rgba?\(([^)]+)\)/); if (!m) return null;
+    var p = m[1].split(',').map(parseFloat); return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1];
+  }
+  function lin(v){ v /= 255; return v <= 0.04045 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); }
+  function lum(r,g,b){ return 0.2126*lin(r) + 0.7152*lin(g) + 0.0722*lin(b); }
+  function hsl(r,g,b){
+    r/=255; g/=255; b/=255; var mx = Math.max(r,g,b), mn = Math.min(r,g,b), h = 0, s = 0, l = (mx+mn)/2, d = mx-mn;
+    if (d > 1e-6){ s = d/(1 - Math.abs(2*l - 1));
+      h = mx === r ? ((g-b)/d) % 6 : (mx === g ? (b-r)/d + 2 : (r-g)/d + 4); h *= 60; if (h < 0) h += 360; }
+    return [h, s, l];
+  }
+  function rgb(h,s,l){
+    var c = (1 - Math.abs(2*l - 1))*s, x = c*(1 - Math.abs((h/60) % 2 - 1)), m = l - c/2, t;
+    t = h < 60 ? [c,x,0] : h < 120 ? [x,c,0] : h < 180 ? [0,c,x] : h < 240 ? [0,x,c] : h < 300 ? [x,0,c] : [c,0,x];
+    return [Math.round((t[0]+m)*255), Math.round((t[1]+m)*255), Math.round((t[2]+m)*255)];
+  }
+  /* raise the lightness until the colour stands out on a dark background */
+  function lift(h,s,l,target){ var c = rgb(h,s,l); while (lum(c[0],c[1],c[2]) < target && l < 0.95){ l += 0.03; c = rgb(h,s,l); } return c; }
+  /* Okabe-Ito colours, chosen by hue */
+  function oi(h){
+    return h < 15 || h >= 330 ? [213,94,0] : h < 40 ? [230,159,0] : h < 75 ? [240,228,66] : h < 170 ? [0,158,115]
+         : h < 200 ? [86,180,233] : h < 260 ? [0,114,178] : [204,121,167];
+  }
+  function conv(c, stroke){
+    if (!mode.dark && !mode.hc && !mode.cb) return c;
+    var k = key + (stroke ? 's' : 'f') + c; if (cache[k] !== undefined) return cache[k];
+    var v = parse(c); if (!v){ cache[k] = c; return c; }
+    var r = v[0], g = v[1], b = v[2], a = v[3], q = hsl(r,g,b), Y = lum(r,g,b), neutral = q[1] < 0.18, o;
+    if (mode.cb && !neutral && Y <= 0.6 && !(q[2] > 0.6 && q[1] < 0.6)){ o = oi(q[0]); r = o[0]; g = o[1]; b = o[2]; q = hsl(r,g,b); Y = lum(r,g,b); }
+    if (mode.hc){
+      if (neutral) o = Y > 0.8 ? [0,0,0] : (Y < 0.25 ? [255,255,255] : [205,205,205]);
+      else if (stroke && Y > 0.4) o = [r,g,b];   /* bright lines stay bright */
+      else if (Y > 0.6 || (q[2] > 0.6 && q[1] < 0.6)) o = [0,0,0];   /* light or pastel fills are surfaces */
+      else o = lift(q[0], 1, Math.max(q[2], 0.5), 0.4);
+    } else if (mode.dark){
+      if (neutral) o = rgb(q[0], q[1], 0.1 + 0.82*(1 - q[2]));
+      else if (stroke && Y > 0.3) o = [r,g,b];   /* bright lines stay bright */
+      else if (Y > 0.55 || (q[2] > 0.6 && q[1] < 0.6)) o = rgb(q[0], Math.min(q[1], 0.3), 0.18);   /* light or pastel fills are surfaces */
+      else o = lift(q[0], q[1], q[2], 0.3);
+    } else o = [r,g,b];
+    var out = a < 1 ? 'rgba(' + o[0] + ',' + o[1] + ',' + o[2] + ',' + a + ')' : 'rgb(' + o[0] + ',' + o[1] + ',' + o[2] + ')';
+    cache[k] = out; return out;
+  }
+  /* gradients remember their colour stops, so they can be rebuilt in another theme */
+  function style(v, ctx, stroke){
+    if (typeof v === 'string') return conv(v, stroke);
+    if (v && v.__spec){
+      var sp = v.__spec; if (sp.key === key) return sp.made;
+      var g = P[sp.kind].apply(ctx, sp.args); sp.stops.forEach(function(s){ g.addColorStop(s[0], conv(s[1])); });
+      sp.key = key; sp.made = g; return g;
+    }
+    return v;
+  }
+  function attach(cv){
+    var ctx = cv.getContext('2d'); if (!ctx || ctx.__ct) return; ctx.__ct = true;
+    var log = [], replaying = false, vals = {};
+    /* a fill or clear covering the whole canvas starts a new frame (in device pixels, whatever the transform) */
+    function full(a){ var t = ctx.getTransform(), x0 = t.a*a[0] + t.e, y0 = t.d*a[1] + t.f, x1 = t.a*(a[0] + a[2]) + t.e, y1 = t.d*(a[1] + a[3]) + t.f;
+      return t.b === 0 && t.c === 0 && Math.min(x0, x1) <= 0.5 && Math.min(y0, y1) <= 0.5 && Math.max(x0, x1) >= cv.width - 0.5 && Math.max(y0, y1) >= cv.height - 0.5; }
+    /* a canvas attached after its first drawing: keep that picture, to re-colour pixel by pixel until the next frame */
+    var snap = null, framed = false; try { snap = ctx.getImageData(0, 0, cv.width, cv.height); } catch (e) {}
+    ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); vals[p] = d.get.call(ctx);
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return vals[p]; },
+        set:function(v){ vals[p] = v; if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, style(v, ctx, p === 'strokeStyle')); } });
+    });
+    var plain = ['lineWidth','font','textAlign','textBaseline','globalAlpha','lineCap','lineJoin','miterLimit','shadowBlur',
+                 'shadowOffsetX','shadowOffsetY','globalCompositeOperation','lineDashOffset','direction','imageSmoothingEnabled'];
+    plain.forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); if (!d || !d.set) return;
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return d.get.call(ctx); },
+        set:function(v){ if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, v); } });
+    });
+    ['createLinearGradient','createRadialGradient','createConicGradient'].forEach(function(n){
+      if (!P[n]) return;
+      ctx[n] = function(){
+        var args = Array.prototype.slice.call(arguments), g = P[n].apply(ctx, args), add = g.addColorStop;
+        var sp = { kind:n, args:args, stops:[], key:key, made:g }; g.__spec = sp;
+        g.addColorStop = function(o, c){ sp.stops.push([o, c]); add.call(g, o, conv(c)); };
+        return g;
+      };
+    });
+    /* text is a line, not a surface: a bright text colour stays bright in dark mode and high contrast */
+    var fsd = Object.getOwnPropertyDescriptor(P, 'fillStyle');
+    function asText(f, args){ var v = vals.fillStyle; if (typeof v === 'string' && key !== '|' && key !== ''){ fsd.set.call(ctx, conv(v, true)); try { return f.apply(ctx, args); } finally { fsd.set.call(ctx, style(v, ctx, false)); } } return f.apply(ctx, args); }
+    var skip = /^(constructor|get[A-Z]\w*|isPointIn\w*|measureText|create\w*)$/;
+    Object.getOwnPropertyNames(P).forEach(function(n){
+      if (skip.test(n)) return; var d = Object.getOwnPropertyDescriptor(P, n); if (!d || typeof d.value !== 'function') return;
+      var f = d.value;
+      ctx[n] = function(){
+        if (!replaying){
+          if ((n === 'fillRect' || n === 'clearRect') && full(arguments)){ snap = null; framed = true;
+            /* a new frame: start the record from the drawing state of this moment */
+            var t = ctx.getTransform();
+            log = [['c','setTransform',[t.a,t.b,t.c,t.d,t.e,t.f]]];
+            ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){ log.push(['s', p, vals[p]]); });
+            plain.forEach(function(p){ var dd = Object.getOwnPropertyDescriptor(P, p); if (dd && dd.get) log.push(['s', p, dd.get.call(ctx)]); });
+            log.push(['c','setLineDash',[ctx.getLineDash()]]);
+          }
+          if (log){ log.push(['c', n, Array.prototype.slice.call(arguments)]); if (log.length > 60000) log = null; }
+        }
+        if (n === 'fillText') return asText(f, arguments);
+        return f.apply(ctx, arguments);
+      };
+    });
+    cvs.push({ redraw:function(){
+      if (!framed && snap){
+        var img = new ImageData(new Uint8ClampedArray(snap.data), snap.width, snap.height), d = img.data, memo = {};
+        for (var i = 0; i < d.length; i += 4){ if (!d[i+3]) continue; var k = d[i] + ',' + d[i+1] + ',' + d[i+2], c = memo[k];
+          if (!c){ var v = parse(conv('rgb(' + k + ')')); c = memo[k] = v || [d[i], d[i+1], d[i+2]]; } d[i] = c[0]; d[i+1] = c[1]; d[i+2] = c[2]; }
+        var t0 = ctx.getTransform(); P.setTransform.call(ctx, 1, 0, 0, 1, 0, 0); P.putImageData.call(ctx, img, 0, 0); P.setTransform.call(ctx, t0); return;
+      }
+      if (!framed || !log || log.length < 3) return;
+      replaying = true;
+      try { log.forEach(function(e){ if (e[0] === 's') ctx[e[1]] = e[2]; else if (e[1] === 'fillText') asText(P.fillText, e[2]); else P[e[1]].apply(ctx, e[2]); }); }
+      finally { replaying = false; }
+    }});
+  }
+  return {
+    attach: attach,
+    map: conv,
+    set: function(m){ mode = { dark:!!m.dark, hc:!!m.hc, cb:!!m.cb }; key = (mode.dark?'d':'') + (mode.hc?'h':'') + (mode.cb?'c':'') + '|'; cvs.forEach(function(c){ c.redraw(); }); }
+  };
+}
+
+var ct = makeCT();
 var DEFS = {'--rr-water-deep':'#081e3c','--rr-water-mid':'#14508c','--rr-water-crest':'#bfe3ff','--rr-boundary':'#ffffff','--rr-text':'#111111','--rr-toolbar-bg':'#222'};
-function applyVars(k,on){ if(!ROOT)return; var v=THEMES[k]; for(var p in v) ROOT.style.setProperty(p,on?v[p]:DEFS[p]); }
-function styleBtn(id,on){
-var b=document.getElementById(id); if(!b)return;
-b.style.background=on?'rgba(0,232,208,.12)':'#2a2e3a';
-b.style.borderColor=on?'#00e8d0':'#404a60';
-b.style.color=on?'#00e8d0':'#7a8aaa';
-b.setAttribute('aria-pressed',on?'true':'false');
-}
-function applyNarBar(){
-var nb=document.getElementById('rrNarBar0922');
-if(nb) nb.style.display=states.nr?'block':'none';
-var btn=document.getElementById('rrBtnNR0922');
-if(btn){ btn.textContent='NARRATION: '+(states.nr?'ON':'OFF'); styleBtn('rrBtnNR0922',states.nr); }
-}
+function attachAll(){ var w = document.getElementById('mobwave2reflectionr') || document.getElementById('rrRoot'); if (w) [].forEach.call(w.querySelectorAll('canvas'), ct.attach); }
+attachAll();
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return;
+b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa';
+b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
 function apply(){
-if(!ROOT)return;
-applyVars('hc',states.hc); applyVars('lm',states.lm); applyVars('cb',states.cb);
-applyNarBar();
-styleBtn('rrBtnHC0922',states.hc);
-styleBtn('rrBtnLM0922',states.lm);
-styleBtn('rrBtnCB0922',states.cb);
+ROOT = ROOT || document.getElementById('rrRoot'); if (!ROOT) return;
+WRAP = document.getElementById('mobwave2reflectionr') || ROOT; attachAll();
+WRAP.classList.toggle('a11y_dm', states.dm); WRAP.classList.toggle('a11y_hc', states.hc); WRAP.classList.toggle('a11y_cb', states.cb);
+ct.set({ dark:states.dm, hc:states.hc, cb:states.cb });
+var nb = document.getElementById('rrNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var nr = document.getElementById('rrBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('rrBtnHC', states.hc); styleBtn('rrBtnDM', states.dm); styleBtn('rrBtnCB', states.cb); styleBtn('rrBtnNR', states.nr);
 }
 return {
-init:function(){ ROOT=document.getElementById('rrRoot0922'); apply(); },
-toggle:function(k){
-states[k]=!states[k];
-if(k==='hc'&&states.hc) states.lm=false;
-if(k==='lm'&&states.lm) states.hc=false;
+init: function(){ apply(); },
+toggle: function(k){
+states[k] = !states[k];
+if (k === 'hc' && states.hc) states.dm = false;   /* high contrast and dark mode switch each other off; colour-blind combines with either */
+if (k === 'dm' && states.dm) states.hc = false;
 apply();
+
 },
+/* the colour engine themes every colour on the canvas, so the drawing code keeps its standard colours */
+isHC: function(){ return false; }, isCB: function(){ return false; }, isLM: function(){ return false; },
+altPalette: function(){ return states.hc || states.cb; },
+isNarOn: function(){ return states.nr; },
+col: function(a, def){ if (def !== undefined) return def; var T = DEFS; return T[a] !== undefined ? T[a] : T['' + a]; },
 narrate:function(msg){
 if(!states.nr)return;
-var nb=document.getElementById('rrNarBar0922');
+var nb=document.getElementById('rrNarBar');
 if(nb) nb.textContent=msg;
-},
-col:function(prop,def){
-if(!ROOT) return def;
-var v=ROOT.style.getPropertyValue(prop);
-return (v&&v.trim())?v.trim():def;
-},
-altPalette:function(){ return states.hc || states.cb; }
+}
 };
 })();
 </script>
@@ -211,7 +368,7 @@ Pattern: mirrors the VGG / Doppler / Shock-Waves / Ripple-Tank examples.
 - var simObj = function() { ... rst(); return { pl, ps, step, stepBack, rst,
 setAngle, setFrequency, setAmplitude, setV1, setV2, setBoundary, setRayY,
 toggleIncident, toggleReflected, toggleTransmitted, toggleRays }; }
-- var simObj0922 = new simObj();
+- var simObj = new simObj();
 - Animation: recursive window.setTimeout(runMotion, trate) guarded by runFlag
 Original build (adapted from the ripple-tank rendering technique built earlier in this project, in place of
 the WebTOP module's rotatable 3D surface plot -- a full 3D perspective/camera engine was judged out of scope
@@ -229,12 +386,12 @@ neither incident nor reflected wave exists there.
 -->
 <script>
 var rrGen = function() {
-var canvas = document.getElementById('rrCanvas0922');
+var canvas = document.getElementById('rrCanvas');
 var ctx    = canvas.getContext('2d');
 var W = canvas.width, H = canvas.height;     /* 800 x 500 mm */
-var readoutEl = document.getElementById('rrReadout0922');
+var readoutEl = document.getElementById('rrReadout');
 var timer, runFlag = 0;
-function c(prop, def) { return rrA11y0922.col(prop, def); }
+function c(prop, def) { return rrA11y.col(prop, def); }
 var GW = 200, GH = 125;
 var off = document.createElement('canvas'); off.width = GW; off.height = GH;
 var offCtx = off.getContext('2d');
@@ -313,7 +470,7 @@ return [col[0]*s, col[1]*s, col[2]*s];
 }
 /* ══════════ render ══════════ */
 function renderTank(){
-var useAlt = rrA11y0922.altPalette();
+var useAlt = rrA11y.altPalette();
 var data = img.data;
 var idx = 0;
 for (var gy=0; gy<GH; gy++){
@@ -405,7 +562,7 @@ else if (v2>v1) bendMsg = 'the wave speeds up entering medium 2 and bends away f
 else bendMsg = 'the two media match, so the wave passes straight through';
 var shown = [];
 if (incOn) shown.push('incident'); if (refOn) shown.push('reflected'); if (transOn) shown.push('transmitted');
-rrA11y0922.narrate('Angle of incidence '+Math.round(thetaI*180/Math.PI)+' degrees. '+bendMsg+'. Showing: '+
+rrA11y.narrate('Angle of incidence '+Math.round(thetaI*180/Math.PI)+' degrees. '+bendMsg+'. Showing: '+
 (shown.length?shown.join(', '):'nothing')+'.');
 }
 /* ══════════ physics tick ══════════ */
@@ -437,7 +594,7 @@ function onUp(){
 if (!dragMode) return;
 var msg = (dragMode===1) ? 'Boundary moved.' : 'Ray point moved.';
 dragMode = 0;
-rrA11y0922.narrate(msg);
+rrA11y.narrate(msg);
 }
 canvas.addEventListener('mousedown', onDown);
 canvas.addEventListener('mousemove', onMove);
@@ -446,68 +603,68 @@ canvas.addEventListener('touchstart', onDown, {passive:false});
 canvas.addEventListener('touchmove', onMove, {passive:false});
 window.addEventListener('touchend', onUp);
 function syncBoundaryUI(){
-var s=el('rrBoundary0922'); if(s) s.value=Math.round(xb);
-var l=el('rrBoundaryVal0922'); if(l) l.textContent=Math.round(xb);
+var s=el('rrBoundary'); if(s) s.value=Math.round(xb);
+var l=el('rrBoundaryVal'); if(l) l.textContent=Math.round(xb);
 }
 function syncRayYUI(){
-var s=el('rrRayY0922'); if(s) s.value=Math.round(rayY);
-var l=el('rrRayYVal0922'); if(l) l.textContent=Math.round(rayY);
+var s=el('rrRayY'); if(s) s.value=Math.round(rayY);
+var l=el('rrRayYVal'); if(l) l.textContent=Math.round(rayY);
 }
 /* ══════════ public controls ══════════ */
 function setAngle(v){
 thetaI = Math.max(0, Math.min(89, parseFloat(v)||0)) * Math.PI/180;
-var l=el('rrAngleVal0922'); if(l) l.textContent = Math.round(thetaI*180/Math.PI);
+var l=el('rrAngleVal'); if(l) l.textContent = Math.round(thetaI*180/Math.PI);
 recompute(); drawFrame();
 }
 function setFrequency(v){
 freq = Math.max(0.1, parseFloat(v)||1.0);
-var l=el('rrFreqVal0922'); if(l) l.textContent = freq.toFixed(1);
+var l=el('rrFreqVal'); if(l) l.textContent = freq.toFixed(1);
 recompute(); drawFrame();
 }
 function setAmplitude(v){
 amp = Math.max(1, parseFloat(v)||10);
-var l=el('rrAmpVal0922'); if(l) l.textContent = amp.toFixed(0);
+var l=el('rrAmpVal'); if(l) l.textContent = amp.toFixed(0);
 recompute(); drawFrame();
 }
 function setV1(v){
 v1 = Math.max(10, parseFloat(v)||150);
-var l=el('rrV1Val0922'); if(l) l.textContent = v1.toFixed(0);
+var l=el('rrV1Val'); if(l) l.textContent = v1.toFixed(0);
 recompute(); drawFrame();
 }
 function setV2(v){
 v2 = Math.max(10, parseFloat(v)||100);
-var l=el('rrV2Val0922'); if(l) l.textContent = v2.toFixed(0);
+var l=el('rrV2Val'); if(l) l.textContent = v2.toFixed(0);
 recompute(); drawFrame();
 }
 function setBoundary(v){
 xb = Math.max(160, Math.min(640, parseFloat(v)||360));
-var l=el('rrBoundaryVal0922'); if(l) l.textContent = Math.round(xb);
+var l=el('rrBoundaryVal'); if(l) l.textContent = Math.round(xb);
 drawFrame();
 }
 function setRayY(v){
 rayY = Math.max(0, Math.min(H, parseFloat(v)||250));
-var l=el('rrRayYVal0922'); if(l) l.textContent = Math.round(rayY);
+var l=el('rrRayYVal'); if(l) l.textContent = Math.round(rayY);
 drawFrame();
 }
 function toggleIncident(){
-incOn = !!(el('rrInc0922') && el('rrInc0922').checked);
+incOn = !!(el('rrInc') && el('rrInc').checked);
 drawFrame();
-rrA11y0922.narrate(incOn?'Incident wave shown.':'Incident wave hidden.');
+rrA11y.narrate(incOn?'Incident wave shown.':'Incident wave hidden.');
 }
 function toggleReflected(){
-refOn = !!(el('rrRef0922') && el('rrRef0922').checked);
+refOn = !!(el('rrRef') && el('rrRef').checked);
 drawFrame();
-rrA11y0922.narrate(refOn?'Reflected wave shown.':'Reflected wave hidden.');
+rrA11y.narrate(refOn?'Reflected wave shown.':'Reflected wave hidden.');
 }
 function toggleTransmitted(){
-transOn = !!(el('rrTrans0922') && el('rrTrans0922').checked);
+transOn = !!(el('rrTrans') && el('rrTrans').checked);
 drawFrame();
-rrA11y0922.narrate(transOn?'Transmitted wave shown.':'Transmitted wave hidden.');
+rrA11y.narrate(transOn?'Transmitted wave shown.':'Transmitted wave hidden.');
 }
 function toggleRays(){
-raysOn = !!(el('rrRays0922') && el('rrRays0922').checked);
+raysOn = !!(el('rrRays') && el('rrRays').checked);
 drawFrame();
-rrA11y0922.narrate(raysOn?'Ray diagram shown.':'Ray diagram hidden.');
+rrA11y.narrate(raysOn?'Ray diagram shown.':'Ray diagram hidden.');
 }
 /* ══════════ animation loop ══════════ */
 function runMotion(){
@@ -525,7 +682,7 @@ function rst(){
 window.clearTimeout(timer); runFlag = 0;
 t = 0; frameCount = 0;
 xb = 360; rayY = 250;
-var playBtn = el('rrPlay0922'); if (playBtn) playBtn.value='Play';
+var playBtn = el('rrPlay'); if (playBtn) playBtn.value='Play';
 syncBoundaryUI(); syncRayYUI();
 recompute(); drawFrame();
 sceneNarration();
@@ -538,11 +695,32 @@ return { pl:pl, ps:ps, step:step, stepBack:stepBack, rst:rst,
  toggleIncident:toggleIncident, toggleReflected:toggleReflected,
  toggleTransmitted:toggleTransmitted, toggleRays:toggleRays };
 };
-var rrSim0922 = new rrGen();
+var rrSim = new rrGen();
 </script>
 <script>
-rrA11y0922.init();
+rrA11y.init();
+</script><div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>Plane water waves meet a boundary between two depths of water, where they travel at different speeds. Part of the wave is reflected, at the same angle as it arrived, and part is transmitted, bending toward or away from the boundary. The frequency is the same on both sides, so the wavelength changes with the speed:</p>
+<p class="mob_eq">`(sin theta_i)/v_1 = (sin theta_t)/v_2`,&nbsp;&nbsp; `lambda = v/f`,</p>
+<p class="mob_eq">`R = (v_2 - v_1)/(v_1 + v_2)`,&nbsp;&nbsp; `T = (2 v_2)/(v_1 + v_2)`,</p>
+<p>where `R` and `T` are the reflected and transmitted amplitudes as fractions of the incident one. The ray diagram shows the three rays; drag the boundary and the ray marker on the tank.</p>
+</div>
+</div>
+<script>
+(function(){
+var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+b.addEventListener('click', function(){
+var open = d.style.display === 'none';
+d.style.display = open ? 'block' : 'none';
+b.setAttribute('aria-expanded', open ? 'true' : 'false');
+b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }
+});
+})();
 </script>
-
+</div><!-- #mobwave2reflectionr -->
+</main>
 </body>
 </html>

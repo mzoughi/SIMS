@@ -2,63 +2,73 @@
 <html lang="en">
 <head>
 <script>
-window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
 </script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Physics Simulations- Sound: A Pentatonic Pan Flute</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,Longitudinal,Frequency,Wavelength,Length,Standing wave,resonance,sound,pan flute,closed pipe,pentatonic,music, lesson, scientific">
-<link rel="shortcut icon" href=mzy.ico>
-</head>
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, Longitudinal,Frequency,Wavelength,Length,Standing wave,resonance,sound,pan flute,closed pipe,pentatonic,music, lesson, scientific, lesson, scientific">
+<meta name="description" content="A pan flute is a set of pipes, each cut to play one note.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:920px; max-width:100%; margin:0 auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
-<div id="pfRoot0922">
+<main class="page">
+<div id="mobsoundpanflute" class="mob_wrap">
+<div id="pfRoot">
 <!-- ── Accessibility toolbar ── -->
-<div class="pf_a11y0922" id="pfA11yBar0922" role="toolbar" aria-label="Display options">
-<button type="button" class="pf_a11ybtn0922" id="pfBtnHC0922" onclick="pfA11y0922.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="pf_a11ybtn0922" id="pfBtnLM0922" onclick="pfA11y0922.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
-<button type="button" class="pf_a11ybtn0922" id="pfBtnCB0922" onclick="pfA11y0922.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
-<button type="button" class="pf_a11ybtn0922 pf_a11yon0922" id="pfBtnNR0922" onclick="pfA11y0922.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+<div class="pf_a11y" id="pfA11yBar" role="toolbar" aria-label="Display options">
+<button type="button" class="pf_a11ybtn" id="pfBtnHC" onclick="pfA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="pf_a11ybtn" id="pfBtnDM" onclick="pfA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="pf_a11ybtn" id="pfBtnCB" onclick="pfA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="pf_a11ybtn" id="pfBtnNR" onclick="pfA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
 </div>
-<div class="pf_tbar0922"><h3>A Pentatonic Pan Flute</h3></div>
-<div class="pf_mcontent0922">
-<canvas id="pfCanvas0922" style="margin:auto;display:block;border:1px solid #ccc;cursor:pointer" width="800" height="300"
+<div class="pf_tbar"><h3>A Pentatonic Pan Flute</h3></div>
+<div class="pf_mcontent">
+<canvas id="pfCanvas" style="margin:auto;display:block;border:1px solid #ccc;cursor:pointer" width="800" height="300"
  role="img" aria-label="Ten capped pipes of decreasing length tied together. The selected pipe shows its standing wave. Click a pipe to select it; the narration below describes it."></canvas>
 </div>
-<div id="pfReadout0922" class="pf_readout0922"></div>
-<div id="pfNarBar0922" class="pf_narbar0922" role="status" aria-live="polite" aria-atomic="true"></div>
-<div class="pf_bbar0922">
-<input type="button" id="pfPlay0922" value="Play" onclick="pfSim0922.togglePlay()">
-<input type="button" value="Step" onclick="pfSim0922.step()">
-<input type="button" value="Restart" onclick="pfSim0922.rst()">
-<input type="button" id="pfScale0922" value="Play the scale" onclick="pfSim0922.toggleScale()">
-<input type="button" id="pfTune0922" value="Play a tune" onclick="pfSim0922.toggleTune()">
+<div id="pfReadout" class="pf_readout"></div>
+<div id="pfNarBar" class="pf_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="pf_bbar">
+<input type="button" id="pfPlay" value="Play" onclick="pfSim.togglePlay()">
+<input type="button" value="Step" onclick="pfSim.step()">
+<input type="button" value="Restart" onclick="pfSim.rst()">
+<input type="button" id="pfScale" value="Play the scale" onclick="pfSim.toggleScale()">
+<input type="button" id="pfTune" value="Play a tune" onclick="pfSim.toggleTune()">
 </div>
-<div class="pf_footer0922">
-<div class="pf_ctrlrow0922">
-<div class="pf_ctrlcol0922">
-<div class="pf_ctrltitle0922"><label for="pfPipe0922">Pipe that sounds</label></div>
-<input type="range" id="pfPipe0922" min="1" max="10" value="1" step="1"
- oninput="pfSim0922.setPipe(this.value)" aria-valuetext="Pipe 1, C5">
-Pipe <span id="pfPipeVal0922">1</span> (<span id="pfNoteVal0922">C5</span>)
+<div class="pf_footer">
+<div class="pf_ctrlrow">
+<div class="pf_ctrlcol">
+<div class="pf_ctrltitle"><label for="pfPipe">Pipe that sounds</label></div>
+<input type="range" id="pfPipe" min="1" max="10" value="1" step="1"
+ oninput="pfSim.setPipe(this.value)" aria-valuetext="Pipe 1, C5">
+Pipe <span id="pfPipeVal">1</span> (<span id="pfNoteVal">C5</span>)
 </div>
-<div class="pf_ctrlcol0922 pf_optcol0922">
-<label><input type="checkbox" id="pfOpen0922" onclick="pfSim0922.toggleOpen()"> Uncap the bottoms</label>
+<div class="pf_ctrlcol pf_optcol">
+<label><input type="checkbox" id="pfOpen" onclick="pfSim.toggleOpen()"> Uncap the bottoms</label>
 <label>Show
-<select id="pfQty0922" onchange="pfSim0922.setQty()">
+<select id="pfQty" onchange="pfSim.setQty()">
 <option value="d" selected>air displacement</option>
 <option value="p">pressure</option>
 </select></label>
 </div>
-<div class="pf_ctrlcol0922 pf_hintcol0922">
-<span class="pf_hint0922">Blow across the top of a pipe like a bottle. Each pipe is capped at the bottom, so its air column holds a quarter wavelength: <i>f</i> = <i>v</i>/(4<i>L</i>). You can also click a pipe to select it.</span>
+<div class="pf_ctrlcol pf_hintcol">
+<span class="pf_hint">Blow across the top of a pipe like a bottle. Each pipe is capped at the bottom, so its air column holds a quarter wavelength: <i>f</i> = <i>v</i>/(4<i>L</i>). You can also click a pipe to select it.</span>
 </div>
 </div>
 </div>
-<details class="pf_note0922">
+<details class="pf_note">
 <summary>How were the pipe lengths chosen?</summary>
-<div class="pf_notebody0922">
+<div class="pf_notebody">
 <p><strong>Each pipe is cut to one note.</strong> A capped pipe resonates when its length is a quarter of the
 wavelength, so <i>L</i> = <i>v</i>/(4<i>f</i>) with <i>v</i> &asymp; 343 m/s. Higher notes need shorter pipes. That is why a pan flute
 looks like a staircase.</p>
@@ -83,106 +93,248 @@ For example, [5, .5] plays A5 for half a beat. The tempo is the 340 (millisecond
 </details>
 </div>
 <style>
-#pfRoot0922, #pfRoot0922 * { margin: 0; box-sizing: border-box; }
-#pfRoot0922 { width: 806px; font-family: Calibri, Arial, sans-serif; --pf-toolbar-bg: #222; }
-#pfRoot0922 .pf_a11y0922 {
- display:flex; gap:6px; padding:6px 8px; background:var(--pf-toolbar-bg); flex-wrap:wrap; width:806px;
+#pfRoot, #pfRoot * { margin: 0; box-sizing: border-box; }
+#pfRoot { width:100%; font-family: Calibri, Arial, sans-serif; --pf-toolbar-bg: #222; }
+#pfRoot .pf_a11y {
+ display:flex; gap:6px; padding:6px 8px; background:var(--pf-toolbar-bg); flex-wrap:wrap; width:100%;
 }
-#pfRoot0922 .pf_a11ybtn0922 {
+#pfRoot .pf_a11ybtn {
  padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer;
  background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; transition:border-color .15s,color .15s;
 }
-#pfRoot0922 .pf_a11ybtn0922:hover { border-color:#00e8d0; color:#00e8d0; }
-#pfRoot0922 .pf_a11yon0922 { background:rgba(0,232,208,.12); border-color:#00e8d0; color:#00e8d0; }
-#pfRoot0922 .pf_tbar0922 { padding:2px; height:30px; background-color:#f90; text-align:center; line-height:28px; width:806px; }
-#pfRoot0922 .pf_tbar0922 h3 { font-size:1.1rem; font-weight:bold; }
-#pfRoot0922 .pf_mcontent0922 { width:806px; }
-#pfRoot0922 .pf_readout0922 {
- width:786px; margin:4px auto 0; color:#222; font-size:.82rem; font-family:monospace; text-align:center;
+#pfRoot .pf_a11ybtn:hover { border-color:#00e8d0; color:#00e8d0; }
+#pfRoot .pf_a11yon { background:rgba(0,232,208,.12); border-color:#00e8d0; color:#00e8d0; }
+#pfRoot .pf_tbar { padding:2px; height:30px; background-color:#f90; text-align:center; line-height:28px; width:100%; }
+#pfRoot .pf_tbar h3 { font-size:1.1rem; font-weight:bold; }
+#pfRoot .pf_mcontent { width:100%; }
+#pfRoot .pf_readout {
+ width:100%;max-width:786px; margin:4px auto 0; color:#222; font-size:.82rem; font-family:monospace; text-align:center;
  background:#fff6d9; padding:3px 0;
 }
-#pfRoot0922 .pf_narbar0922 {
- width:806px; min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040;
+#pfRoot .pf_narbar {
+ width:100%; min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040;
  font-size:.88rem; color:#333; font-style:italic;
 }
-#pfRoot0922 .pf_bbar0922 { height:50px; background-color:#df9; padding:10px; text-align:center; width:806px; }
-#pfRoot0922 .pf_bbar0922 input[type=button] { margin:0 4px; padding:4px 12px; cursor:pointer; }
-#pfRoot0922 .pf_footer0922 { width:806px; background-color:#fce4ec; font-size:.85rem; padding:8px 0; }
-#pfRoot0922 .pf_ctrlrow0922 { width:806px; display:flex; flex-wrap:wrap; }
-#pfRoot0922 .pf_ctrlcol0922 { width:230px; padding:4px 10px; }
-#pfRoot0922 .pf_ctrlcol0922 input[type=range] { width:100%; }
-#pfRoot0922 .pf_optcol0922 { width:210px; display:flex; flex-direction:column; justify-content:center; gap:6px; }
-#pfRoot0922 .pf_optcol0922 select { font-size:.85rem; }
-#pfRoot0922 .pf_hintcol0922 { width:360px; display:flex; align-items:center; }
-#pfRoot0922 .pf_ctrltitle0922 { width:100%; font-weight:bold; margin-bottom:2px; }
-#pfRoot0922 .pf_hint0922 { font-size:.75rem; color:#555; font-style:italic; }
-#pfRoot0922 .pf_note0922 {
- width:806px; background:#fff; border:1px solid #ddd; border-top:none; padding:8px 14px; font-size:.85rem; color:#222;
+#pfRoot .pf_bbar { height:50px; background-color:#df9; padding:10px; text-align:center; width:100%; }
+#pfRoot .pf_bbar input[type=button] { margin:0 4px; padding:4px 12px; cursor:pointer; }
+#pfRoot .pf_footer { width:100%; background-color:#fce4ec; font-size:.85rem; padding:8px 0; }
+#pfRoot .pf_ctrlrow { width:100%; display:flex; flex-wrap:wrap; }
+#pfRoot .pf_ctrlcol { width:230px; padding:4px 10px; }
+#pfRoot .pf_ctrlcol input[type=range] { width:100%; }
+#pfRoot .pf_optcol { width:210px; display:flex; flex-direction:column; justify-content:center; gap:6px; }
+#pfRoot .pf_optcol select { font-size:.85rem; }
+#pfRoot .pf_hintcol { width:360px; display:flex; align-items:center; }
+#pfRoot .pf_ctrltitle { width:100%; font-weight:bold; margin-bottom:2px; }
+#pfRoot .pf_hint { font-size:.75rem; color:#555; font-style:italic; }
+#pfRoot .pf_note {
+ width:100%; background:#fff; border:1px solid #ddd; border-top:none; padding:8px 14px; font-size:.85rem; color:#222;
 }
-#pfRoot0922 .pf_note0922 summary { cursor:pointer; font-weight:bold; padding:4px 0; color:#883355; }
-#pfRoot0922 .pf_notebody0922 p { margin:8px 0; line-height:1.45; }
-#pfRoot0922 input:focus-visible, #pfRoot0922 select:focus-visible, #pfRoot0922 button:focus-visible { outline:2px solid #0072b2; outline-offset:2px; }
+#pfRoot .pf_note summary { cursor:pointer; font-weight:bold; padding:4px 0; color:#883355; }
+#pfRoot .pf_notebody p { margin:8px 0; line-height:1.45; }
+#pfRoot input:focus-visible, #pfRoot select:focus-visible, #pfRoot button:focus-visible { outline:2px solid #0072b2; outline-offset:2px; }
+
+/* ── mobile layer: the sim fills its column up to its design width; wide parts shrink, bars wrap ── */
+#mobsoundpanflute { width:100%; max-width:806px; margin:0 auto; }
+#mobsoundpanflute canvas { max-width:100%; height:auto; }
+#mobsoundpanflute img, #mobsoundpanflute table { max-width:100%; }
+#mobsoundpanflute [class*="footer"], #mobsoundpanflute [class*="bbar"], #mobsoundpanflute [class*="playbar"], #mobsoundpanflute [class*="ctrl"] { flex-wrap:wrap; }
+#mobsoundpanflute [class*="bbar"], #mobsoundpanflute [class*="footer"], #mobsoundpanflute [class*="tbar"], #mobsoundpanflute [class*="mcontent"] { height:auto; }
+#mobsoundpanflute ol { padding-left:24px; } #mobsoundpanflute li { margin-bottom:8px; }
+@media (pointer:coarse) {
+#mobsoundpanflute button, #mobsoundpanflute input[type=button] { min-height:40px; }
+#mobsoundpanflute input[type=checkbox], #mobsoundpanflute input[type=radio] { width:20px; height:20px; }
+#mobsoundpanflute input[type=range] { height:28px; }
+#mobsoundpanflute select { min-height:34px; }
+}
+/* ── SIM description ── */
+#mobsoundpanflute .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:14px 0 6px; width:100%; }
+#mobsoundpanflute .mob_descbtn { width:auto; padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobsoundpanflute .mob_desc { width:100%; background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; text-align:left; }
+#mobsoundpanflute .mob_desc p { margin:0 0 8px 0; }
+#mobsoundpanflute .mob_eq { text-align:center; }
+/* ════════ display options for the page around the canvases: the whole sim is inverted (dark mode) or inverted
+   and sharpened (high contrast); the canvases, pictures and the toolbar undo it, and the canvases are themed by
+   the colour engine instead. ════════ */
+#mobsoundpanflute.a11y_dm { filter:invert(1) hue-rotate(180deg); background:#e9e6e1; }
+#mobsoundpanflute.a11y_dm canvas, #mobsoundpanflute.a11y_dm img, #mobsoundpanflute.a11y_dm [role=toolbar], #mobsoundpanflute.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobsoundpanflute.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); background:#fff; }
+#mobsoundpanflute.a11y_hc canvas, #mobsoundpanflute.a11y_hc img, #mobsoundpanflute.a11y_hc [role=toolbar], #mobsoundpanflute.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
 </style>
 <!-- ════════ A11Y CONTROLLER ════════ -->
 <script>
-var pfA11y0922 = (function(){
- var ROOT = null;
- var states = { hc:false, lm:false, cb:false, nr:true };
- var DEFS = {'--pf-bg':'#eef1f5','--pf-tube':'#e3cf9a','--pf-tube-dark':'#a88a4a','--pf-cap':'#5a3d1a',
+var pfA11y = (function(){
+var ROOT = null, WRAP = null, states = { hc:false, dm:false, cb:false, nr:true };
+/* ── canvas themes: every colour the sim draws passes through map(); the last frame is recorded,
+      so switching dark mode, high contrast or colour-blind safe colours redraws it at once,
+      even while the sim is paused. No page-wide names: this lives inside the controller. ── */
+function makeCT(){
+  var mode = { dark:false, hc:false, cb:false }, key = '', cache = {}, cvs = [];
+  var probe = document.createElement('canvas').getContext('2d');
+  var P = CanvasRenderingContext2D.prototype;
+  function parse(c){
+    probe.fillStyle = '#000'; probe.fillStyle = c; var s = String(probe.fillStyle), m;
+    if (s.charAt(0) === '#') return [parseInt(s.substr(1,2),16), parseInt(s.substr(3,2),16), parseInt(s.substr(5,2),16), 1];
+    m = s.match(/rgba?\(([^)]+)\)/); if (!m) return null;
+    var p = m[1].split(',').map(parseFloat); return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1];
+  }
+  function lin(v){ v /= 255; return v <= 0.04045 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); }
+  function lum(r,g,b){ return 0.2126*lin(r) + 0.7152*lin(g) + 0.0722*lin(b); }
+  function hsl(r,g,b){
+    r/=255; g/=255; b/=255; var mx = Math.max(r,g,b), mn = Math.min(r,g,b), h = 0, s = 0, l = (mx+mn)/2, d = mx-mn;
+    if (d > 1e-6){ s = d/(1 - Math.abs(2*l - 1));
+      h = mx === r ? ((g-b)/d) % 6 : (mx === g ? (b-r)/d + 2 : (r-g)/d + 4); h *= 60; if (h < 0) h += 360; }
+    return [h, s, l];
+  }
+  function rgb(h,s,l){
+    var c = (1 - Math.abs(2*l - 1))*s, x = c*(1 - Math.abs((h/60) % 2 - 1)), m = l - c/2, t;
+    t = h < 60 ? [c,x,0] : h < 120 ? [x,c,0] : h < 180 ? [0,c,x] : h < 240 ? [0,x,c] : h < 300 ? [x,0,c] : [c,0,x];
+    return [Math.round((t[0]+m)*255), Math.round((t[1]+m)*255), Math.round((t[2]+m)*255)];
+  }
+  /* raise the lightness until the colour stands out on a dark background */
+  function lift(h,s,l,target){ var c = rgb(h,s,l); while (lum(c[0],c[1],c[2]) < target && l < 0.95){ l += 0.03; c = rgb(h,s,l); } return c; }
+  /* Okabe-Ito colours, chosen by hue */
+  function oi(h){
+    return h < 15 || h >= 330 ? [213,94,0] : h < 40 ? [230,159,0] : h < 75 ? [240,228,66] : h < 170 ? [0,158,115]
+         : h < 200 ? [86,180,233] : h < 260 ? [0,114,178] : [204,121,167];
+  }
+  function conv(c, stroke){
+    if (!mode.dark && !mode.hc && !mode.cb) return c;
+    var k = key + (stroke ? 's' : 'f') + c; if (cache[k] !== undefined) return cache[k];
+    var v = parse(c); if (!v){ cache[k] = c; return c; }
+    var r = v[0], g = v[1], b = v[2], a = v[3], q = hsl(r,g,b), Y = lum(r,g,b), neutral = q[1] < 0.18, o;
+    if (mode.cb && !neutral && Y <= 0.6 && !(q[2] > 0.6 && q[1] < 0.6)){ o = oi(q[0]); r = o[0]; g = o[1]; b = o[2]; q = hsl(r,g,b); Y = lum(r,g,b); }
+    if (mode.hc){
+      if (neutral) o = Y > 0.8 ? [0,0,0] : (Y < 0.25 ? [255,255,255] : [205,205,205]);
+      else if (stroke && Y > 0.4) o = [r,g,b];   /* bright lines stay bright */
+      else if (Y > 0.6 || (q[2] > 0.6 && q[1] < 0.6)) o = [0,0,0];   /* light or pastel fills are surfaces */
+      else o = lift(q[0], 1, Math.max(q[2], 0.5), 0.4);
+    } else if (mode.dark){
+      if (neutral) o = rgb(q[0], q[1], 0.1 + 0.82*(1 - q[2]));
+      else if (stroke && Y > 0.3) o = [r,g,b];   /* bright lines stay bright */
+      else if (Y > 0.55 || (q[2] > 0.6 && q[1] < 0.6)) o = rgb(q[0], Math.min(q[1], 0.3), 0.18);   /* light or pastel fills are surfaces */
+      else o = lift(q[0], q[1], q[2], 0.3);
+    } else o = [r,g,b];
+    var out = a < 1 ? 'rgba(' + o[0] + ',' + o[1] + ',' + o[2] + ',' + a + ')' : 'rgb(' + o[0] + ',' + o[1] + ',' + o[2] + ')';
+    cache[k] = out; return out;
+  }
+  /* gradients remember their colour stops, so they can be rebuilt in another theme */
+  function style(v, ctx, stroke){
+    if (typeof v === 'string') return conv(v, stroke);
+    if (v && v.__spec){
+      var sp = v.__spec; if (sp.key === key) return sp.made;
+      var g = P[sp.kind].apply(ctx, sp.args); sp.stops.forEach(function(s){ g.addColorStop(s[0], conv(s[1])); });
+      sp.key = key; sp.made = g; return g;
+    }
+    return v;
+  }
+  function attach(cv){
+    var ctx = cv.getContext('2d'); if (!ctx || ctx.__ct) return; ctx.__ct = true;
+    var log = [], replaying = false, vals = {};
+    /* a fill or clear covering the whole canvas starts a new frame (in device pixels, whatever the transform) */
+    function full(a){ var t = ctx.getTransform(), x0 = t.a*a[0] + t.e, y0 = t.d*a[1] + t.f, x1 = t.a*(a[0] + a[2]) + t.e, y1 = t.d*(a[1] + a[3]) + t.f;
+      return t.b === 0 && t.c === 0 && Math.min(x0, x1) <= 0.5 && Math.min(y0, y1) <= 0.5 && Math.max(x0, x1) >= cv.width - 0.5 && Math.max(y0, y1) >= cv.height - 0.5; }
+    /* a canvas attached after its first drawing: keep that picture, to re-colour pixel by pixel until the next frame */
+    var snap = null, framed = false; try { snap = ctx.getImageData(0, 0, cv.width, cv.height); } catch (e) {}
+    ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); vals[p] = d.get.call(ctx);
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return vals[p]; },
+        set:function(v){ vals[p] = v; if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, style(v, ctx, p === 'strokeStyle')); } });
+    });
+    var plain = ['lineWidth','font','textAlign','textBaseline','globalAlpha','lineCap','lineJoin','miterLimit','shadowBlur',
+                 'shadowOffsetX','shadowOffsetY','globalCompositeOperation','lineDashOffset','direction','imageSmoothingEnabled'];
+    plain.forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); if (!d || !d.set) return;
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return d.get.call(ctx); },
+        set:function(v){ if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, v); } });
+    });
+    ['createLinearGradient','createRadialGradient','createConicGradient'].forEach(function(n){
+      if (!P[n]) return;
+      ctx[n] = function(){
+        var args = Array.prototype.slice.call(arguments), g = P[n].apply(ctx, args), add = g.addColorStop;
+        var sp = { kind:n, args:args, stops:[], key:key, made:g }; g.__spec = sp;
+        g.addColorStop = function(o, c){ sp.stops.push([o, c]); add.call(g, o, conv(c)); };
+        return g;
+      };
+    });
+    /* text is a line, not a surface: a bright text colour stays bright in dark mode and high contrast */
+    var fsd = Object.getOwnPropertyDescriptor(P, 'fillStyle');
+    function asText(f, args){ var v = vals.fillStyle; if (typeof v === 'string' && key !== '|' && key !== ''){ fsd.set.call(ctx, conv(v, true)); try { return f.apply(ctx, args); } finally { fsd.set.call(ctx, style(v, ctx, false)); } } return f.apply(ctx, args); }
+    var skip = /^(constructor|get[A-Z]\w*|isPointIn\w*|measureText|create\w*)$/;
+    Object.getOwnPropertyNames(P).forEach(function(n){
+      if (skip.test(n)) return; var d = Object.getOwnPropertyDescriptor(P, n); if (!d || typeof d.value !== 'function') return;
+      var f = d.value;
+      ctx[n] = function(){
+        if (!replaying){
+          if ((n === 'fillRect' || n === 'clearRect') && full(arguments)){ snap = null; framed = true;
+            /* a new frame: start the record from the drawing state of this moment */
+            var t = ctx.getTransform();
+            log = [['c','setTransform',[t.a,t.b,t.c,t.d,t.e,t.f]]];
+            ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){ log.push(['s', p, vals[p]]); });
+            plain.forEach(function(p){ var dd = Object.getOwnPropertyDescriptor(P, p); if (dd && dd.get) log.push(['s', p, dd.get.call(ctx)]); });
+            log.push(['c','setLineDash',[ctx.getLineDash()]]);
+          }
+          if (log){ log.push(['c', n, Array.prototype.slice.call(arguments)]); if (log.length > 60000) log = null; }
+        }
+        if (n === 'fillText') return asText(f, arguments);
+        return f.apply(ctx, arguments);
+      };
+    });
+    cvs.push({ redraw:function(){
+      if (!framed && snap){
+        var img = new ImageData(new Uint8ClampedArray(snap.data), snap.width, snap.height), d = img.data, memo = {};
+        for (var i = 0; i < d.length; i += 4){ if (!d[i+3]) continue; var k = d[i] + ',' + d[i+1] + ',' + d[i+2], c = memo[k];
+          if (!c){ var v = parse(conv('rgb(' + k + ')')); c = memo[k] = v || [d[i], d[i+1], d[i+2]]; } d[i] = c[0]; d[i+1] = c[1]; d[i+2] = c[2]; }
+        var t0 = ctx.getTransform(); P.setTransform.call(ctx, 1, 0, 0, 1, 0, 0); P.putImageData.call(ctx, img, 0, 0); P.setTransform.call(ctx, t0); return;
+      }
+      if (!framed || !log || log.length < 3) return;
+      replaying = true;
+      try { log.forEach(function(e){ if (e[0] === 's') ctx[e[1]] = e[2]; else if (e[1] === 'fillText') asText(P.fillText, e[2]); else P[e[1]].apply(ctx, e[2]); }); }
+      finally { replaying = false; }
+    }});
+  }
+  return {
+    attach: attach,
+    map: conv,
+    set: function(m){ mode = { dark:!!m.dark, hc:!!m.hc, cb:!!m.cb }; key = (mode.dark?'d':'') + (mode.hc?'h':'') + (mode.cb?'c':'') + '|'; cvs.forEach(function(c){ c.redraw(); }); }
+  };
+}
+
+var ct = makeCT();
+var DEFS = {'--pf-bg':'#eef1f5','--pf-tube':'#e3cf9a','--pf-tube-dark':'#a88a4a','--pf-cap':'#5a3d1a',
 '--pf-band':'#8b4513','--pf-wave':'#0a8fd0','--pf-hl':'#ff8c00','--pf-dot':'#333333','--pf-text':'#111111',
 '--pf-panel':'#ffffff','--pf-toolbar-bg':'#222'};
- var THEMES = {
-hc:{'--pf-bg':'#000000','--pf-tube':'#dddddd','--pf-tube-dark':'#888888','--pf-cap':'#ffff00','--pf-band':'#ffffff',
-'--pf-wave':'#00e8d0','--pf-hl':'#ffff00','--pf-dot':'#ff66ff','--pf-text':'#ffffff','--pf-panel':'#111111','--pf-toolbar-bg':'#000'},
-lm:{'--pf-bg':'#f7f9fb','--pf-tube':'#f2e6c4','--pf-tube-dark':'#c9b07a','--pf-cap':'#8a6d3b','--pf-band':'#a0522d',
-'--pf-wave':'#0072b2','--pf-hl':'#ef6c00','--pf-dot':'#444444','--pf-text':'#222222','--pf-panel':'#ffffff','--pf-toolbar-bg':'#444'},
-cb:{'--pf-bg':'#eef1f5','--pf-tube':'#e0e0e0','--pf-tube-dark':'#9a9a9a','--pf-cap':'#555555','--pf-band':'#555555',
-'--pf-wave':'#0072b2','--pf-hl':'#d55e00','--pf-dot':'#000000','--pf-text':'#000000','--pf-panel':'#ffffff','--pf-toolbar-bg':'#222'}
- };
- /* defaults first, then each active theme on top (high contrast last) */
- function applyVars(){
-if(!ROOT) return;
-var m = {}, p;
-for(p in DEFS) m[p] = DEFS[p];
-['lm','cb','hc'].forEach(function(k){ if(states[k]) for(var q in THEMES[k]) m[q] = THEMES[k][q]; });
-for(p in m) ROOT.style.setProperty(p, m[p]);
- }
- function styleBtn(id,on){
-var b=document.getElementById(id); if(!b) return;
-b.style.background=on?'rgba(0,232,208,.12)':'#2a2e3a';
-b.style.borderColor=on?'#00e8d0':'#404a60';
-b.style.color=on?'#00e8d0':'#7a8aaa';
-b.setAttribute('aria-pressed',on?'true':'false');
- }
- function applyNarBar(){
-var nb=document.getElementById('pfNarBar0922'); if(nb) nb.style.display=states.nr?'block':'none';
-var btn=document.getElementById('pfBtnNR0922');
-if(btn){ btn.textContent='NARRATION: '+(states.nr?'ON':'OFF'); styleBtn('pfBtnNR0922',states.nr); }
- }
- function apply(){
-if(!ROOT) return;
-applyVars(); applyNarBar();
-styleBtn('pfBtnHC0922',states.hc); styleBtn('pfBtnLM0922',states.lm); styleBtn('pfBtnCB0922',states.cb);
- }
- return {
-init:function(){ ROOT=document.getElementById('pfRoot0922'); apply(); if(typeof pfSim0922!=='undefined') pfSim0922.redraw(); },
-toggle:function(k){
-states[k]=!states[k];
-if(k==='hc'&&states.hc) states.lm=false;
-if(k==='lm'&&states.lm) states.hc=false;
+function attachAll(){ var w = document.getElementById('mobsoundpanflute') || document.getElementById('pfRoot'); if (w) [].forEach.call(w.querySelectorAll('canvas'), ct.attach); }
+attachAll();
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return;
+b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa';
+b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){
+ROOT = ROOT || document.getElementById('pfRoot'); if (!ROOT) return;
+WRAP = document.getElementById('mobsoundpanflute') || ROOT; attachAll();
+WRAP.classList.toggle('a11y_dm', states.dm); WRAP.classList.toggle('a11y_hc', states.hc); WRAP.classList.toggle('a11y_cb', states.cb);
+ct.set({ dark:states.dm, hc:states.hc, cb:states.cb });
+var nb = document.getElementById('pfNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var nr = document.getElementById('pfBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('pfBtnHC', states.hc); styleBtn('pfBtnDM', states.dm); styleBtn('pfBtnCB', states.cb); styleBtn('pfBtnNR', states.nr);
+}
+return {
+init: function(){ apply(); },
+toggle: function(k){
+states[k] = !states[k];
+if (k === 'hc' && states.hc) states.dm = false;   /* high contrast and dark mode switch each other off; colour-blind combines with either */
+if (k === 'dm' && states.dm) states.hc = false;
 apply();
-if(typeof pfSim0922!=='undefined') pfSim0922.redraw();
+if(typeof pfSim!=='undefined') pfSim.redraw();
 },
+/* the colour engine themes every colour on the canvas, so the drawing code keeps its standard colours */
+isHC: function(){ return false; }, isCB: function(){ return false; }, isLM: function(){ return false; },
+isNarOn: function(){ return states.nr; },
+col: function(a, def){ if (def !== undefined) return def; var T = DEFS; return T[a] !== undefined ? T[a] : T['' + a]; },
 narrate:function(msg){
 if(!states.nr) return;
-var nb=document.getElementById('pfNarBar0922'); if(nb) nb.textContent=msg;
-},
-col:function(prop,def){
-if(!ROOT) return def;
-var v=ROOT.style.getPropertyValue(prop);
-return (v&&v.trim())?v.trim():def;
+var nb=document.getElementById('pfNarBar'); if(nb) nb.textContent=msg;
 }
- };
+};
 })();
 </script>
 <!-- ════════ SIMULATION ════════
@@ -194,13 +346,13 @@ The standing wave is drawn slowed down (visual frequency = f/600) so the motion 
 -->
 <script>
 var pfGen = function() {
- var canvas = document.getElementById('pfCanvas0922');
+ var canvas = document.getElementById('pfCanvas');
  var ctx = canvas.getContext('2d');
  var W = canvas.width, H = canvas.height;
  var timer = null, runFlag = 0, scaleTimer = null, scaleOn = false;
- function c(p, d) { return pfA11y0922.col(p, d); }
+ function c(p, d) { return pfA11y.col(p, d); }
  function el(id) { return document.getElementById(id); }
- function narrate(m) { pfA11y0922.narrate(m); }
+ function narrate(m) { pfA11y.narrate(m); }
  var V_SOUND = 34300;   /* cm/s */
  var NOTES = [['C5',523.25],['D5',587.33],['E5',659.26],['G5',783.99],['A5',880.00],
 ['C6',1046.50],['D6',1174.66],['E6',1318.51],['G6',1567.98],['A6',1760.00]];
@@ -219,10 +371,10 @@ return NOTE_NAMES[((midi % 12) + 12) % 12] + (Math.floor(midi / 12) - 1);
  /* ══════════ readout ══════════ */
  function updateReadout(){
 var f = freqOf(sel), L = LENS[sel], lam = V_SOUND / f;
-var ro = el('pfReadout0922');
+var ro = el('pfReadout');
 if (ro) ro.textContent = 'Pipe ' + (sel + 1) + ' | Length ' + L.toFixed(1) + ' cm | ' + (capOn ? 'Capped (closed-open)' : 'Uncapped (open-open)')
 + ' | Frequency \u2248 ' + f.toFixed(0) + ' Hz | Note \u2248 ' + noteName(f) + ' | \u03bb = ' + (capOn ? '4L' : '2L') + ' = ' + lam.toFixed(1) + ' cm';
-var pv = el('pfPipeVal0922'), nv = el('pfNoteVal0922'), sl = el('pfPipe0922');
+var pv = el('pfPipeVal'), nv = el('pfNoteVal'), sl = el('pfPipe');
 if (pv) pv.textContent = sel + 1;
 if (nv) nv.textContent = noteName(f);
 if (sl) { sl.value = sel + 1; sl.setAttribute('aria-valuetext', 'Pipe ' + (sel + 1) + ', ' + noteName(f)); }
@@ -460,17 +612,17 @@ updateReadout(); retune(); drawFrame();
 if (!quiet) narrate(pipeNarration() + (runFlag === 1 ? '' : ' Press Play to hear it.'));
  }
  function toggleOpen(){
-var cb = el('pfOpen0922'); capOn = !(cb && cb.checked);
+var cb = el('pfOpen'); capOn = !(cb && cb.checked);
 updateReadout(); retune(); drawFrame();
 narrate(capOn ? 'Bottoms capped: every pipe is closed-open again, L = \u03bb/4.'
 : 'Bottoms uncapped: every pipe is open-open, L = \u03bb/2, so each note jumps up one octave.');
  }
  function setQty(){
-var s = el('pfQty0922'); qty = s ? s.value : 'd';
+var s = el('pfQty'); qty = s ? s.value : 'd';
 drawFrame();
 narrate('Now showing ' + (qty === 'd' ? 'air displacement' : 'pressure') + '.' + waveNarration());
  }
- function setPlayBtn(on){ var b = el('pfPlay0922'); if (b) b.value = on ? 'Pause' : 'Play'; }
+ function setPlayBtn(on){ var b = el('pfPlay'); if (b) b.value = on ? 'Pause' : 'Play'; }
  function runMotion(){
 t += dt; drawFrame();
 if (runFlag === 1) timer = window.setTimeout(runMotion, trate);
@@ -508,7 +660,7 @@ panpipe music (A minor pentatonic, short-short-long rhythms). [pipe, beats] */
  function stopSeq(quiet){
 if (!seqOn) return;
 seqOn = false; window.clearTimeout(seqTimer);
-btnLabel('pfScale0922', 'Play the scale'); btnLabel('pfTune0922', 'Play a tune');
+btnLabel('pfScale', 'Play the scale'); btnLabel('pfTune', 'Play a tune');
 if (!quiet) { window.clearTimeout(timer); runFlag = 0; setPlayBtn(false); stopTone(); drawFrame(); }
  }
  function playSeq(seq, beatMs, btnId, stopLabel, startMsg, endMsg){
@@ -527,13 +679,13 @@ seqTimer = window.setTimeout(next, d);
  }
  function toggleScale(){
 if (seqOn) { stopSeq(false); narrate('Stopped on pipe ' + (sel + 1) + '.'); return; }
-playSeq(SCALE, 380, 'pfScale0922', 'Stop the scale',
+playSeq(SCALE, 380, 'pfScale', 'Stop the scale',
 'Playing the C major pentatonic scale up and back down: C D E G A, then the same five notes an octave higher on pipes that are half as long.',
 'Scale finished. Move the slider to choose a pipe.');
  }
  function toggleTune(){
 if (seqOn) { stopSeq(false); narrate('Tune stopped on pipe ' + (sel + 1) + '.'); return; }
-playSeq(TUNE, 340, 'pfTune0922', 'Stop the tune',
+playSeq(TUNE, 340, 'pfTune', 'Stop the tune',
 'Playing "Wind over the Altiplano", a short original tune in the style of Andean panpipe music. Watch the highlight jump between pipes: short pipes for high notes, long pipes for low notes.',
 'Tune finished. It uses eight of the ten pipes, from E5 (pipe 3) up to A6 (pipe 10). Which two pipes were never played?');
  }
@@ -541,8 +693,8 @@ playSeq(TUNE, 340, 'pfTune0922', 'Stop the tune',
 stopSeq(true);
 window.clearTimeout(timer); runFlag = 0; setPlayBtn(false); stopTone();
 sel = 0; capOn = true; qty = 'd'; t = 0;
-var cb = el('pfOpen0922'); if (cb) cb.checked = false;
-var qs = el('pfQty0922'); if (qs) qs.value = 'd';
+var cb = el('pfOpen'); if (cb) cb.checked = false;
+var qs = el('pfQty'); if (qs) qs.value = 'd';
 updateReadout(); drawFrame();
 narrate('Ready. Ten capped pipes, from 16.4 cm down to 4.9 cm, tuned to a C major pentatonic scale. '
 + 'Use the slider (or click a pipe) to choose which pipe sounds, then press Play.');
@@ -566,10 +718,31 @@ return;
  return { pl:pl, ps:ps, togglePlay:togglePlay, step:step, rst:rst, setPipe:setPipe,
 toggleOpen:toggleOpen, setQty:setQty, toggleScale:toggleScale, toggleTune:toggleTune, redraw:redraw };
 };
-var pfSim0922 = new pfGen();
+var pfSim = new pfGen();
 </script>
 <script>
-pfA11y0922.init();
+pfA11y.init();
+</script><div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>A pan flute is a set of pipes, each cut to play one note. Blowing across the top of a pipe, like across a bottle, makes the air column inside it resonate. A pipe capped at the bottom holds a quarter of a wavelength, so</p>
+<p class="mob_eq">`f = v/(4L)`,&nbsp;&nbsp; `L = v/(4f)`,</p>
+<p>with `v ~~ 343` m/s: higher notes need shorter pipes, which is why a pan flute looks like a staircase. The pipes play a C major pentatonic scale over two octaves. Uncapping the bottoms makes open pipes, which hold half a wavelength (`f = v/(2L)`) and sound an octave higher. The air displacement and pressure in the chosen pipe can be shown.</p>
+</div>
+</div>
+<script>
+(function(){
+var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+b.addEventListener('click', function(){
+var open = d.style.display === 'none';
+d.style.display = open ? 'block' : 'none';
+b.setAttribute('aria-expanded', open ? 'true' : 'false');
+b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }
+});
+})();
 </script>
+</div><!-- #mobsoundpanflute -->
+</main>
 </body>
 </html>

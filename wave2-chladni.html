@@ -12,22 +12,24 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Physics Simulations-Waves: Chladni Plates</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching,waves, standing waves, Chladni, plate, resonance, nodal lines, modes, sand, vibration, lesson, scientific">
-<meta name="description" content="Interactive Chladni plates: a disk or a square plate screwed to a vibrator at the centre or off centre; sweep the frequency to find resonances and watch sand gather on the nodal lines.">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, waves, standing waves, Chladni, plate, resonance, nodal lines, modes, sand, vibration, lesson, scientific, lesson, scientific">
+<meta name="description" content="A metal plate, a disk or a square, is screwed onto a vibrator at its centre or off centre, and sand is sprinkled on it.">
 <style>
-body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Calibri, Arial, sans-serif; }
-.page { width:646px; max-width:100%; margin:0 auto; overflow-x:auto; }
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:920px; max-width:100%; margin:0 auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
 </style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
 <main class="page">
+<div id="mobwave2chladni" class="mob_wrap">
 <div id="chlRoot" class="chl_root">
 <!-- ── Accessibility toolbar ── -->
 <div class="chl_a11y" id="chlA11yBar" role="toolbar" aria-label="Display options">
 <button type="button" class="chl_a11ybtn" id="chlBtnHC" onclick="chlA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="chl_a11ybtn" id="chlBtnLM" onclick="chlA11y.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="chl_a11ybtn" id="chlBtnDM" onclick="chlA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
 <button type="button" class="chl_a11ybtn" id="chlBtnCB" onclick="chlA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
-<button type="button" class="chl_a11ybtn chl_a11yon" id="chlBtnNR" onclick="chlA11y.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+<button type="button" class="chl_a11ybtn" id="chlBtnNR" onclick="chlA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
 </div>
 <div class="chl_tbar"><h3>Chladni Plates: Seeing Standing Waves with Sand</h3></div>
 <div class="chl_mcontent">
@@ -70,24 +72,24 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Calibri, Ari
 <style>
 #chlRoot, #chlRoot * { box-sizing:border-box; margin:0; }
 #chlRoot {
-  width:646px; font-family:Arial, sans-serif; color:#111;
+  width:100%; font-family:Arial, sans-serif; color:#111;
   --chl-bg:#ffffff; --chl-plate:#5a6068; --chl-plate2:#7a828c; --chl-sand:#f3e2b3; --chl-text:#111111; --chl-dim:#555555;
   --chl-panel:#f4f6f9; --chl-edge:#9aa3ae; --chl-curve:#1f5fc0; --chl-marker:#d03020; --chl-lcd:#0f5132; --chl-lcdbg:#dff3e4;
   --chl-map1:#2040a0; --chl-map2:#ff4020; --chl-wood:#b8865a; --chl-toolbar-bg:#222;
 }
 #chlRoot canvas { display:block; margin:auto; border:1px solid #ccc; max-width:100%; height:auto; }
-#chlRoot .chl_a11y { display:flex; gap:6px; padding:6px 8px; background:var(--chl-toolbar-bg); flex-wrap:wrap; width:646px; }
+#chlRoot .chl_a11y { display:flex; gap:6px; padding:6px 8px; background:var(--chl-toolbar-bg); flex-wrap:wrap; width:100%; }
 #chlRoot .chl_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer;
   background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; transition:border-color .15s,color .15s; }
 #chlRoot .chl_a11ybtn:hover { border-color:#00e8d0; color:#00e8d0; }
 #chlRoot .chl_a11yon { background:rgba(0,232,208,.12); border-color:#00e8d0; color:#00e8d0; }
-#chlRoot .chl_tbar { padding:4px; height:35px; background-color:#f90; text-align:center; line-height:27px; width:646px; }
+#chlRoot .chl_tbar { padding:4px; height:35px; background-color:#f90; text-align:center; line-height:27px; width:100%; }
 #chlRoot .chl_tbar h3 { font-size:1.1rem; font-weight:bold; }
-#chlRoot .chl_mcontent { width:646px; padding:2px 0; background:var(--chl-bg); }
-#chlRoot .chl_narbar { width:646px; min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
-#chlRoot .chl_bbar { width:646px; background-color:#df9; padding:10px; text-align:center; }
+#chlRoot .chl_mcontent { width:100%; padding:2px 0; background:var(--chl-bg); }
+#chlRoot .chl_narbar { width:100%; min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#chlRoot .chl_bbar { width:100%; background-color:#df9; padding:10px; text-align:center; }
 #chlRoot .chl_bbar input[type=button] { margin:2px 3px; padding:4px 10px; cursor:pointer; }
-#chlRoot .chl_footer { width:646px; background-color:#fce4ec; font-size:.85rem; padding:6px 10px; }
+#chlRoot .chl_footer { width:100%; background-color:#fce4ec; font-size:.85rem; padding:6px 10px; }
 #chlRoot .chl_row { display:flex; align-items:center; gap:6px; padding:4px 0; flex-wrap:wrap; }
 #chlRoot .chl_lbl { font-weight:bold; }
 #chlRoot .chl_gap { margin-left:18px; }
@@ -99,52 +101,206 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Calibri, Ari
 #chlRoot .chl_val { background:#1a3d8f; color:#ffeb3b; padding:1px 6px; font-family:monospace; min-width:76px; text-align:center; border-radius:2px; }
 #chlRoot .chl_chk { display:flex; align-items:center; gap:4px; margin-left:8px; }
 #chlRoot input:focus-visible, #chlRoot button:focus-visible { outline:2px solid #00a3ff; outline-offset:1px; }
+
+/* ── mobile layer: the sim fills its column up to its design width; wide parts shrink, bars wrap ── */
+#mobwave2chladni { width:100%; max-width:646px; margin:0 auto; }
+#mobwave2chladni canvas { max-width:100%; height:auto; }
+#mobwave2chladni img, #mobwave2chladni table { max-width:100%; }
+#mobwave2chladni [class*="footer"], #mobwave2chladni [class*="bbar"], #mobwave2chladni [class*="playbar"], #mobwave2chladni [class*="ctrl"] { flex-wrap:wrap; }
+#mobwave2chladni [class*="bbar"], #mobwave2chladni [class*="footer"], #mobwave2chladni [class*="tbar"], #mobwave2chladni [class*="mcontent"] { height:auto; }
+#mobwave2chladni ol { padding-left:24px; } #mobwave2chladni li { margin-bottom:8px; }
+@media (pointer:coarse) {
+#mobwave2chladni button, #mobwave2chladni input[type=button] { min-height:40px; }
+#mobwave2chladni input[type=checkbox], #mobwave2chladni input[type=radio] { width:20px; height:20px; }
+#mobwave2chladni input[type=range] { height:28px; }
+#mobwave2chladni select { min-height:34px; }
+}
+/* ── SIM description ── */
+#mobwave2chladni .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:14px 0 6px; width:100%; }
+#mobwave2chladni .mob_descbtn { width:auto; padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobwave2chladni .mob_desc { width:100%; background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; text-align:left; }
+#mobwave2chladni .mob_desc p { margin:0 0 8px 0; }
+#mobwave2chladni .mob_eq { text-align:center; }
+/* ════════ display options for the page around the canvases: the whole sim is inverted (dark mode) or inverted
+   and sharpened (high contrast); the canvases, pictures and the toolbar undo it, and the canvases are themed by
+   the colour engine instead. ════════ */
+#mobwave2chladni.a11y_dm { filter:invert(1) hue-rotate(180deg); background:#e9e6e1; }
+#mobwave2chladni.a11y_dm canvas, #mobwave2chladni.a11y_dm img, #mobwave2chladni.a11y_dm [role=toolbar], #mobwave2chladni.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobwave2chladni.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); background:#fff; }
+#mobwave2chladni.a11y_hc canvas, #mobwave2chladni.a11y_hc img, #mobwave2chladni.a11y_hc [role=toolbar], #mobwave2chladni.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
 </style>
 <!-- ════════ A11Y CONTROLLER (same API as the VDG example: init / toggle / narrate / col) ════════ -->
 <script>
 var chlA11y = (function(){
-  var ROOT = null;
-  var states = { hc:false, lm:false, cb:false, nr:true };
-  var DEFS = { '--chl-bg':'#ffffff', '--chl-plate':'#5a6068', '--chl-plate2':'#7a828c', '--chl-sand':'#f3e2b3', '--chl-text':'#111111', '--chl-dim':'#555555',
-    '--chl-panel':'#f4f6f9', '--chl-edge':'#9aa3ae', '--chl-curve':'#1f5fc0', '--chl-marker':'#d03020', '--chl-lcd':'#0f5132', '--chl-lcdbg':'#dff3e4',
-    '--chl-map1':'#2040a0', '--chl-map2':'#ff4020', '--chl-wood':'#b8865a', '--chl-toolbar-bg':'#222' };
-  var THEMES = {
-    hc: { '--chl-bg':'#000000', '--chl-plate':'#000000', '--chl-plate2':'#202020', '--chl-sand':'#ffff00', '--chl-text':'#ffffff', '--chl-dim':'#dddddd',
-          '--chl-panel':'#000000', '--chl-edge':'#ffffff', '--chl-curve':'#00e8d0', '--chl-marker':'#ff5555', '--chl-lcd':'#00ff88', '--chl-lcdbg':'#001a00',
-          '--chl-map1':'#0000ff', '--chl-map2':'#ff0000', '--chl-wood':'#777777', '--chl-toolbar-bg':'#000' },
-    lm: { '--chl-bg':'#fbfbf8', '--chl-plate':'#6a707a', '--chl-plate2':'#8a929c', '--chl-panel':'#ffffff', '--chl-toolbar-bg':'#444' },
-    cb: { '--chl-curve':'#0072b2', '--chl-marker':'#d55e00', '--chl-map1':'#0072b2', '--chl-map2':'#e69f00', '--chl-sand':'#f0e442' }
-  };
-  var cur = {};
-  function applyVars(){
-    if (!ROOT) return; var p, order = ['lm','cb','hc'];
-    cur = {}; for (p in DEFS) cur[p] = DEFS[p];
-    for (var i = 0; i < order.length; i++) if (states[order[i]]) { var t = THEMES[order[i]]; for (p in t) cur[p] = t[p]; }
-    for (p in cur) ROOT.style.setProperty(p, cur[p]);
+var ROOT = null, WRAP = null, states = { hc:false, dm:false, cb:false, nr:true };
+/* ── canvas themes: every colour the sim draws passes through map(); the last frame is recorded,
+      so switching dark mode, high contrast or colour-blind safe colours redraws it at once,
+      even while the sim is paused. No page-wide names: this lives inside the controller. ── */
+function makeCT(){
+  var mode = { dark:false, hc:false, cb:false }, key = '', cache = {}, cvs = [];
+  var probe = document.createElement('canvas').getContext('2d');
+  var P = CanvasRenderingContext2D.prototype;
+  function parse(c){
+    probe.fillStyle = '#000'; probe.fillStyle = c; var s = String(probe.fillStyle), m;
+    if (s.charAt(0) === '#') return [parseInt(s.substr(1,2),16), parseInt(s.substr(3,2),16), parseInt(s.substr(5,2),16), 1];
+    m = s.match(/rgba?\(([^)]+)\)/); if (!m) return null;
+    var p = m[1].split(',').map(parseFloat); return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1];
   }
-  function styleBtn(id, on){
-    var b = document.getElementById(id); if (!b) return;
-    b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa';
-    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  function lin(v){ v /= 255; return v <= 0.04045 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); }
+  function lum(r,g,b){ return 0.2126*lin(r) + 0.7152*lin(g) + 0.0722*lin(b); }
+  function hsl(r,g,b){
+    r/=255; g/=255; b/=255; var mx = Math.max(r,g,b), mn = Math.min(r,g,b), h = 0, s = 0, l = (mx+mn)/2, d = mx-mn;
+    if (d > 1e-6){ s = d/(1 - Math.abs(2*l - 1));
+      h = mx === r ? ((g-b)/d) % 6 : (mx === g ? (b-r)/d + 2 : (r-g)/d + 4); h *= 60; if (h < 0) h += 360; }
+    return [h, s, l];
   }
-  function apply(){
-    if (!ROOT) return; applyVars();
-    var nb = document.getElementById('chlNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
-    var btn = document.getElementById('chlBtnNR'); if (btn) btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
-    styleBtn('chlBtnNR', states.nr); styleBtn('chlBtnHC', states.hc); styleBtn('chlBtnLM', states.lm); styleBtn('chlBtnCB', states.cb);
+  function rgb(h,s,l){
+    var c = (1 - Math.abs(2*l - 1))*s, x = c*(1 - Math.abs((h/60) % 2 - 1)), m = l - c/2, t;
+    t = h < 60 ? [c,x,0] : h < 120 ? [x,c,0] : h < 180 ? [0,c,x] : h < 240 ? [0,x,c] : h < 300 ? [x,0,c] : [c,0,x];
+    return [Math.round((t[0]+m)*255), Math.round((t[1]+m)*255), Math.round((t[2]+m)*255)];
+  }
+  /* raise the lightness until the colour stands out on a dark background */
+  function lift(h,s,l,target){ var c = rgb(h,s,l); while (lum(c[0],c[1],c[2]) < target && l < 0.95){ l += 0.03; c = rgb(h,s,l); } return c; }
+  /* Okabe-Ito colours, chosen by hue */
+  function oi(h){
+    return h < 15 || h >= 330 ? [213,94,0] : h < 40 ? [230,159,0] : h < 75 ? [240,228,66] : h < 170 ? [0,158,115]
+         : h < 200 ? [86,180,233] : h < 260 ? [0,114,178] : [204,121,167];
+  }
+  function conv(c, stroke){
+    if (!mode.dark && !mode.hc && !mode.cb) return c;
+    var k = key + (stroke ? 's' : 'f') + c; if (cache[k] !== undefined) return cache[k];
+    var v = parse(c); if (!v){ cache[k] = c; return c; }
+    var r = v[0], g = v[1], b = v[2], a = v[3], q = hsl(r,g,b), Y = lum(r,g,b), neutral = q[1] < 0.18, o;
+    if (mode.cb && !neutral && Y <= 0.6 && !(q[2] > 0.6 && q[1] < 0.6)){ o = oi(q[0]); r = o[0]; g = o[1]; b = o[2]; q = hsl(r,g,b); Y = lum(r,g,b); }
+    if (mode.hc){
+      if (neutral) o = Y > 0.8 ? [0,0,0] : (Y < 0.25 ? [255,255,255] : [205,205,205]);
+      else if (stroke && Y > 0.4) o = [r,g,b];   /* bright lines stay bright */
+      else if (Y > 0.6 || (q[2] > 0.6 && q[1] < 0.6)) o = [0,0,0];   /* light or pastel fills are surfaces */
+      else o = lift(q[0], 1, Math.max(q[2], 0.5), 0.4);
+    } else if (mode.dark){
+      if (neutral) o = rgb(q[0], q[1], 0.1 + 0.82*(1 - q[2]));
+      else if (stroke && Y > 0.3) o = [r,g,b];   /* bright lines stay bright */
+      else if (Y > 0.55 || (q[2] > 0.6 && q[1] < 0.6)) o = rgb(q[0], Math.min(q[1], 0.3), 0.18);   /* light or pastel fills are surfaces */
+      else o = lift(q[0], q[1], q[2], 0.3);
+    } else o = [r,g,b];
+    var out = a < 1 ? 'rgba(' + o[0] + ',' + o[1] + ',' + o[2] + ',' + a + ')' : 'rgb(' + o[0] + ',' + o[1] + ',' + o[2] + ')';
+    cache[k] = out; return out;
+  }
+  /* gradients remember their colour stops, so they can be rebuilt in another theme */
+  function style(v, ctx, stroke){
+    if (typeof v === 'string') return conv(v, stroke);
+    if (v && v.__spec){
+      var sp = v.__spec; if (sp.key === key) return sp.made;
+      var g = P[sp.kind].apply(ctx, sp.args); sp.stops.forEach(function(s){ g.addColorStop(s[0], conv(s[1])); });
+      sp.key = key; sp.made = g; return g;
+    }
+    return v;
+  }
+  function attach(cv){
+    var ctx = cv.getContext('2d'); if (!ctx || ctx.__ct) return; ctx.__ct = true;
+    var log = [], replaying = false, vals = {};
+    /* a fill or clear covering the whole canvas starts a new frame (in device pixels, whatever the transform) */
+    function full(a){ var t = ctx.getTransform(), x0 = t.a*a[0] + t.e, y0 = t.d*a[1] + t.f, x1 = t.a*(a[0] + a[2]) + t.e, y1 = t.d*(a[1] + a[3]) + t.f;
+      return t.b === 0 && t.c === 0 && Math.min(x0, x1) <= 0.5 && Math.min(y0, y1) <= 0.5 && Math.max(x0, x1) >= cv.width - 0.5 && Math.max(y0, y1) >= cv.height - 0.5; }
+    /* a canvas attached after its first drawing: keep that picture, to re-colour pixel by pixel until the next frame */
+    var snap = null, framed = false; try { snap = ctx.getImageData(0, 0, cv.width, cv.height); } catch (e) {}
+    ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); vals[p] = d.get.call(ctx);
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return vals[p]; },
+        set:function(v){ vals[p] = v; if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, style(v, ctx, p === 'strokeStyle')); } });
+    });
+    var plain = ['lineWidth','font','textAlign','textBaseline','globalAlpha','lineCap','lineJoin','miterLimit','shadowBlur',
+                 'shadowOffsetX','shadowOffsetY','globalCompositeOperation','lineDashOffset','direction','imageSmoothingEnabled'];
+    plain.forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); if (!d || !d.set) return;
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return d.get.call(ctx); },
+        set:function(v){ if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, v); } });
+    });
+    ['createLinearGradient','createRadialGradient','createConicGradient'].forEach(function(n){
+      if (!P[n]) return;
+      ctx[n] = function(){
+        var args = Array.prototype.slice.call(arguments), g = P[n].apply(ctx, args), add = g.addColorStop;
+        var sp = { kind:n, args:args, stops:[], key:key, made:g }; g.__spec = sp;
+        g.addColorStop = function(o, c){ sp.stops.push([o, c]); add.call(g, o, conv(c)); };
+        return g;
+      };
+    });
+    /* text is a line, not a surface: a bright text colour stays bright in dark mode and high contrast */
+    var fsd = Object.getOwnPropertyDescriptor(P, 'fillStyle');
+    function asText(f, args){ var v = vals.fillStyle; if (typeof v === 'string' && key !== '|' && key !== ''){ fsd.set.call(ctx, conv(v, true)); try { return f.apply(ctx, args); } finally { fsd.set.call(ctx, style(v, ctx, false)); } } return f.apply(ctx, args); }
+    var skip = /^(constructor|get[A-Z]\w*|isPointIn\w*|measureText|create\w*)$/;
+    Object.getOwnPropertyNames(P).forEach(function(n){
+      if (skip.test(n)) return; var d = Object.getOwnPropertyDescriptor(P, n); if (!d || typeof d.value !== 'function') return;
+      var f = d.value;
+      ctx[n] = function(){
+        if (!replaying){
+          if ((n === 'fillRect' || n === 'clearRect') && full(arguments)){ snap = null; framed = true;
+            /* a new frame: start the record from the drawing state of this moment */
+            var t = ctx.getTransform();
+            log = [['c','setTransform',[t.a,t.b,t.c,t.d,t.e,t.f]]];
+            ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){ log.push(['s', p, vals[p]]); });
+            plain.forEach(function(p){ var dd = Object.getOwnPropertyDescriptor(P, p); if (dd && dd.get) log.push(['s', p, dd.get.call(ctx)]); });
+            log.push(['c','setLineDash',[ctx.getLineDash()]]);
+          }
+          if (log){ log.push(['c', n, Array.prototype.slice.call(arguments)]); if (log.length > 60000) log = null; }
+        }
+        if (n === 'fillText') return asText(f, arguments);
+        return f.apply(ctx, arguments);
+      };
+    });
+    cvs.push({ redraw:function(){
+      if (!framed && snap){
+        var img = new ImageData(new Uint8ClampedArray(snap.data), snap.width, snap.height), d = img.data, memo = {};
+        for (var i = 0; i < d.length; i += 4){ if (!d[i+3]) continue; var k = d[i] + ',' + d[i+1] + ',' + d[i+2], c = memo[k];
+          if (!c){ var v = parse(conv('rgb(' + k + ')')); c = memo[k] = v || [d[i], d[i+1], d[i+2]]; } d[i] = c[0]; d[i+1] = c[1]; d[i+2] = c[2]; }
+        var t0 = ctx.getTransform(); P.setTransform.call(ctx, 1, 0, 0, 1, 0, 0); P.putImageData.call(ctx, img, 0, 0); P.setTransform.call(ctx, t0); return;
+      }
+      if (!framed || !log || log.length < 3) return;
+      replaying = true;
+      try { log.forEach(function(e){ if (e[0] === 's') ctx[e[1]] = e[2]; else if (e[1] === 'fillText') asText(P.fillText, e[2]); else P[e[1]].apply(ctx, e[2]); }); }
+      finally { replaying = false; }
+    }});
   }
   return {
-    init: function(){ ROOT = document.getElementById('chlRoot'); apply(); },
-    toggle: function(k){
-      states[k] = !states[k];
-      if (k === 'hc' && states.hc) states.lm = false;
-      if (k === 'lm' && states.lm) states.hc = false;
-      apply();
-      if (typeof chlSim !== 'undefined' && chlSim.refresh) chlSim.refresh();
-    },
-    narrate: function(msg){ if (!states.nr) return; var nb = document.getElementById('chlNarBar'); if (nb) nb.textContent = msg; },
-    col: function(prop){ return cur[prop] || DEFS[prop]; }
+    attach: attach,
+    map: conv,
+    set: function(m){ mode = { dark:!!m.dark, hc:!!m.hc, cb:!!m.cb }; key = (mode.dark?'d':'') + (mode.hc?'h':'') + (mode.cb?'c':'') + '|'; cvs.forEach(function(c){ c.redraw(); }); }
   };
+}
+
+var ct = makeCT();
+var DEFS = { '--chl-bg':'#ffffff', '--chl-plate':'#5a6068', '--chl-plate2':'#7a828c', '--chl-sand':'#f3e2b3', '--chl-text':'#111111', '--chl-dim':'#555555',
+    '--chl-panel':'#f4f6f9', '--chl-edge':'#9aa3ae', '--chl-curve':'#1f5fc0', '--chl-marker':'#d03020', '--chl-lcd':'#0f5132', '--chl-lcdbg':'#dff3e4',
+    '--chl-map1':'#2040a0', '--chl-map2':'#ff4020', '--chl-wood':'#b8865a', '--chl-toolbar-bg':'#222' };
+function attachAll(){ var w = document.getElementById('mobwave2chladni') || document.getElementById('chlRoot'); if (w) [].forEach.call(w.querySelectorAll('canvas'), ct.attach); }
+attachAll();
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return;
+b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa';
+b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){
+ROOT = ROOT || document.getElementById('chlRoot'); if (!ROOT) return;
+WRAP = document.getElementById('mobwave2chladni') || ROOT; attachAll();
+WRAP.classList.toggle('a11y_dm', states.dm); WRAP.classList.toggle('a11y_hc', states.hc); WRAP.classList.toggle('a11y_cb', states.cb);
+ct.set({ dark:states.dm, hc:states.hc, cb:states.cb });
+var nb = document.getElementById('chlNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var nr = document.getElementById('chlBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('chlBtnHC', states.hc); styleBtn('chlBtnDM', states.dm); styleBtn('chlBtnCB', states.cb); styleBtn('chlBtnNR', states.nr);
+}
+return {
+init: function(){ apply(); },
+toggle: function(k){
+states[k] = !states[k];
+if (k === 'hc' && states.hc) states.dm = false;   /* high contrast and dark mode switch each other off; colour-blind combines with either */
+if (k === 'dm' && states.dm) states.hc = false;
+apply();
+if (typeof chlSim !== 'undefined' && chlSim.refresh) chlSim.refresh();
+},
+/* the colour engine themes every colour on the canvas, so the drawing code keeps its standard colours */
+isHC: function(){ return false; }, isCB: function(){ return false; }, isLM: function(){ return false; },
+isNarOn: function(){ return states.nr; },
+col: function(a, def){ if (def !== undefined) return def; var T = DEFS; return T[a] !== undefined ? T[a] : T['' + a]; },
+narrate: function(msg){ if (!states.nr) return; var nb = document.getElementById('chlNarBar'); if (nb) nb.textContent = msg; }
+};
 })();
 </script>
 <!-- ════════ SIMULATION ════════
@@ -586,7 +742,26 @@ var chlGen = function() {
 };
 chlA11y.init();
 var chlSim = new chlGen();
+</script><div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>A metal plate, a disk or a square, is screwed onto a vibrator at its centre or off centre, and sand is sprinkled on it. At most frequencies the plate barely moves; at a resonance it vibrates in one of its standing-wave patterns (modes). The sand is thrown off the parts that move and gathers along the nodal lines, which stay still, drawing the Chladni figure.</p>
+<p>Sweep the frequency to find the resonances, shown on the spectrum. Higher modes have more nodal lines and higher frequencies; for a free plate the frequencies grow roughly as the square of the number of nodal lines across it. Mounting the plate off centre breaks its symmetry and bends the nodal lines. The vibration map shows where the plate moves most.</p>
+</div>
+</div>
+<script>
+(function(){
+var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+b.addEventListener('click', function(){
+var open = d.style.display === 'none';
+d.style.display = open ? 'block' : 'none';
+b.setAttribute('aria-expanded', open ? 'true' : 'false');
+b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }
+});
+})();
 </script>
+</div><!-- #mobwave2chladni -->
 </main>
 </body>
 </html>

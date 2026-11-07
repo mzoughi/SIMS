@@ -1,229 +1,414 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations-Standing Waves Air Column </title>
-</head>
-<body>
-<div id="sw6Root0922">
+<title>Physics Simulations-Standing Waves Air Column</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, physics, sound, waves, lesson, scientific">
+<meta name="description" content="Standing sound waves in a tube that is open at both ends, closed at both ends, or open at one end and closed at the other.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:920px; max-width:100%; margin:0 auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<main class="page">
+<div id="mobsoundswaircolumn" class="mob_wrap">
+<div id="sw6Root">
   <!-- ── Accessibility toolbar ── -->
-  <div class="sw6_a11y0922" id="sw6A11yBar0922" role="toolbar" aria-label="Display options">
-    <button type="button" class="sw6_a11ybtn0922" id="sw6BtnHC0922" onclick="sw6A11y0922.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-    <button type="button" class="sw6_a11ybtn0922" id="sw6BtnLM0922" onclick="sw6A11y0922.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
-    <button type="button" class="sw6_a11ybtn0922 sw6_a11yon0922" id="sw6BtnNR0922" onclick="sw6A11y0922.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
-  </div>
+  <div class="sw6_a11y" id="sw6A11yBar" role="toolbar" aria-label="Display options">
+<button type="button" class="sw6_a11ybtn" id="sw6BtnHC" onclick="sw6A11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="sw6_a11ybtn" id="sw6BtnDM" onclick="sw6A11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="sw6_a11ybtn" id="sw6BtnCB" onclick="sw6A11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="sw6_a11ybtn" id="sw6BtnNR" onclick="sw6A11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
   <!-- Narration bar -->
-  <div id="sw6NarBar0922" class="sw6_narbar0922" role="status" aria-live="polite" aria-atomic="true"></div>
+  <div id="sw6NarBar" class="sw6_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
   <!-- Title bar -->
-  <div class="sw6_tbar0922"><H3>Standing Waves in an Air Tube</H3></div>
+  <div class="sw6_tbar"><H3>Standing Waves in an Air Tube</H3></div>
   <!-- Canvas -->
-  <div class="sw6_mcontent0922">
-    <canvas id="sw6Cv0922" width="620" height="260" style="display:block;">
+  <div class="sw6_mcontent">
+    <canvas id="sw6Cv" width="620" height="260" style="display:block;">
       <span style="color:red;">This browser doesn&rsquo;t support HTML5 canvas.</span>
     </canvas>
   </div>
   <!-- Control bar: row 1 -- tube type + display mode -->
-  <div class="sw6_bbar0922 sw6_bbar_top0922">
-    <div class="sw6_bbar_sect0922 sw6_sect_tube0922">
-      <span class="sw6_sectlbl0922">Tube:</span>
-      <button type="button" class="sw6_typebtn0922 sw6_active0922" id="sw6BtnOO0922"
-              onclick="sw6Sim0922.setTube('oo')">Both open</button>
-      <button type="button" class="sw6_typebtn0922" id="sw6BtnCC0922"
-              onclick="sw6Sim0922.setTube('cc')">Both closed</button>
-      <button type="button" class="sw6_typebtn0922" id="sw6BtnOC0922"
-              onclick="sw6Sim0922.setTube('oc')">Open &amp; closed</button>
+  <div class="sw6_bbar sw6_bbar_top">
+    <div class="sw6_bbar_sect sw6_sect_tube">
+      <span class="sw6_sectlbl">Tube:</span>
+      <button type="button" class="sw6_typebtn sw6_active" id="sw6BtnOO"
+              onclick="sw6Sim.setTube('oo')">Both open</button>
+      <button type="button" class="sw6_typebtn" id="sw6BtnCC"
+              onclick="sw6Sim.setTube('cc')">Both closed</button>
+      <button type="button" class="sw6_typebtn" id="sw6BtnOC"
+              onclick="sw6Sim.setTube('oc')">Open &amp; closed</button>
     </div>
-    <div class="sw6_bbar_sect0922 sw6_sect_mode0922">
-      <span class="sw6_sectlbl0922">Show:</span>
-      <button type="button" class="sw6_modebtn0922 sw6_active0922" id="sw6BtnDisp0922"
-              onclick="sw6Sim0922.setMode('disp')">Displacement</button>
-      <button type="button" class="sw6_modebtn0922" id="sw6BtnPres0922"
-              onclick="sw6Sim0922.setMode('pres')">Pressure</button>
+    <div class="sw6_bbar_sect sw6_sect_mode">
+      <span class="sw6_sectlbl">Show:</span>
+      <button type="button" class="sw6_modebtn sw6_active" id="sw6BtnDisp"
+              onclick="sw6Sim.setMode('disp')">Displacement</button>
+      <button type="button" class="sw6_modebtn" id="sw6BtnPres"
+              onclick="sw6Sim.setMode('pres')">Pressure</button>
     </div>
   </div>
   <!-- Control bar: row 2 -- harmonics + playback -->
-  <div class="sw6_bbar0922 sw6_bbar_top20922">
-    <div class="sw6_bbar_left0922">
-      <span class="sw6_sectlbl0922" id="sw6HarmLbl0922">Harmonic:</span>
-      <button type="button" class="sw6_harmbtn0922 sw6_active0922" id="sw6BtnH10922" onclick="sw6Sim0922.setF(1)">n = 1</button>
-      <button type="button" class="sw6_harmbtn0922" id="sw6BtnH20922" onclick="sw6Sim0922.setF(2)">n = 2</button>
-      <button type="button" class="sw6_harmbtn0922" id="sw6BtnH30922" onclick="sw6Sim0922.setF(3)">n = 3</button>
-      <button type="button" class="sw6_harmbtn0922" id="sw6BtnH40922" onclick="sw6Sim0922.setF(4)">n = 4</button>
-      <button type="button" class="sw6_harmbtn0922" id="sw6BtnH50922" onclick="sw6Sim0922.setF(5)">n = 5</button>
-      <button type="button" class="sw6_harmbtn0922" id="sw6BtnH60922" onclick="sw6Sim0922.setF(6)">n = 6</button>
+  <div class="sw6_bbar sw6_bbar_top2">
+    <div class="sw6_bbar_left">
+      <span class="sw6_sectlbl" id="sw6HarmLbl">Harmonic:</span>
+      <button type="button" class="sw6_harmbtn sw6_active" id="sw6BtnH1" onclick="sw6Sim.setF(1)">n = 1</button>
+      <button type="button" class="sw6_harmbtn" id="sw6BtnH2" onclick="sw6Sim.setF(2)">n = 2</button>
+      <button type="button" class="sw6_harmbtn" id="sw6BtnH3" onclick="sw6Sim.setF(3)">n = 3</button>
+      <button type="button" class="sw6_harmbtn" id="sw6BtnH4" onclick="sw6Sim.setF(4)">n = 4</button>
+      <button type="button" class="sw6_harmbtn" id="sw6BtnH5" onclick="sw6Sim.setF(5)">n = 5</button>
+      <button type="button" class="sw6_harmbtn" id="sw6BtnH6" onclick="sw6Sim.setF(6)">n = 6</button>
     </div>
   </div>
-  <div class="sw6_bbar0922 sw6_bbar_bot0922">
-    <div class="sw6_bbar_left0922">
-      <input type="button" class="butt0922" id="sw6Play0922" value="&#9654;" onclick="if(this.value=='&#9654;'){sw6Sim0922.play();this.value='&#9208;';}else{this.value='&#9654;';sw6Sim0922.pause();}">
-      <input type="button" class="butt0922" value="&#10073;&#9664;" onclick="sw6Sim0922.stepBack();document.getElementById('sw6Play0922').value='&#9654;';">
-      <input type="button" class="butt0922" value="&#9654;&#10073;" onclick="sw6Sim0922.stepForward();document.getElementById('sw6Play0922').value='&#9654;';">
-      <input type="button" class="butt0922" value="&#128472;" onclick="sw6Sim0922.reset();document.getElementById('sw6Play0922').value='&#9654;';">
+  <div class="sw6_bbar sw6_bbar_bot">
+    <div class="sw6_bbar_left">
+      <input type="button" class="butt" id="sw6Play" value="&#9654;" onclick="if(this.value=='&#9654;'){sw6Sim.play();this.value='&#9208;';}else{this.value='&#9654;';sw6Sim.pause();}">
+      <input type="button" class="butt" value="&#10073;&#9664;" onclick="sw6Sim.stepBack();document.getElementById('sw6Play').value='&#9654;';">
+      <input type="button" class="butt" value="&#9654;&#10073;" onclick="sw6Sim.stepForward();document.getElementById('sw6Play').value='&#9654;';">
+      <input type="button" class="butt" value="&#128472;" onclick="sw6Sim.reset();document.getElementById('sw6Play').value='&#9654;';">
     </div>
   </div>
   <!-- Control bar: row 3 -- molecule options -->
-  <div class="sw6_bbar0922 sw6_bbar_mol0922">
-    <span class="sw6_sectlbl0922">Molecules:</span>
-    <button type="button" class="sw6_optbtn0922" id="sw6BtnMols0922"
-            onclick="sw6Sim0922.toggleMols()">Molecules: OFF</button>
-    <button type="button" class="sw6_optbtn0922" id="sw6BtnRainbow0922"
-            onclick="sw6Sim0922.toggleRainbow()" disabled>Rainbow: OFF</button>
-    <button type="button" class="sw6_optbtn0922" id="sw6BtnTrace0922"
-            onclick="sw6Sim0922.toggleTrace()" disabled>Trace: OFF</button>
-    <span class="sw6_moltip0922">Molecules vibrate horizontally along the tube axis &mdash; antinodes move most, nodes are still.</span>
+  <div class="sw6_bbar sw6_bbar_mol">
+    <span class="sw6_sectlbl">Molecules:</span>
+    <button type="button" class="sw6_optbtn" id="sw6BtnMols"
+            onclick="sw6Sim.toggleMols()">Molecules: OFF</button>
+    <button type="button" class="sw6_optbtn" id="sw6BtnRainbow"
+            onclick="sw6Sim.toggleRainbow()" disabled>Rainbow: OFF</button>
+    <button type="button" class="sw6_optbtn" id="sw6BtnTrace"
+            onclick="sw6Sim.toggleTrace()" disabled>Trace: OFF</button>
+    <span class="sw6_moltip">Molecules vibrate horizontally along the tube axis &mdash; antinodes move most, nodes are still.</span>
   </div>
-</div><!-- #sw6Root0922 -->
+</div><!-- #sw6Root -->
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>Standing sound waves in a tube that is open at both ends, closed at both ends, or open at one end and closed at the other. The molecules of air move back and forth along the tube: at displacement nodes they stay still and the pressure varies most; at displacement antinodes they move most and the pressure hardly changes. An open end is a displacement antinode (a pressure node); a closed end is a displacement node (a pressure antinode).</p>
+<p class="mob_eq">both open or both closed: `f_n = n v/(2L)`, `n = 1, 2, 3, ...`;&nbsp;&nbsp; open and closed: `f_n = n v/(4L)`, `n = 1, 3, 5, ...`</p>
+<p>The molecule view, the rainbow colouring and the traces show how the air moves in each harmonic.</p>
+</div>
+</div>
 <style>
-  #sw6Root0922 * { box-sizing: border-box; margin: 0; }
-  #sw6Root0922 { display: block; width: 620px; }
-  #sw6Root0922 canvas { display: block; }
+  #sw6Root * { box-sizing: border-box; margin: 0; }
+  #sw6Root { display: block; width:100%; }
+  #sw6Root canvas { display: block; }
   /* A11y toolbar */
-  #sw6Root0922 .sw6_a11y0922 {
+  #sw6Root .sw6_a11y {
     display: flex; gap: 6px; padding: 6px 8px;
-    background: #222; flex-wrap: wrap; width: 620px;
+    background: #222; flex-wrap: wrap; width:100%;
   }
-  #sw6Root0922 .sw6_a11ybtn0922 {
+  #sw6Root .sw6_a11ybtn {
     padding: 4px 10px; font-size: .72rem; font-family: monospace;
     letter-spacing: .06em; border-radius: 3px; cursor: pointer;
     background: #2a2e3a; border: 1px solid #404a60; color: #7a8aaa;
     transition: border-color .15s, color .15s;
   }
-  #sw6Root0922 .sw6_a11ybtn0922:hover { border-color: #00e8d0; color: #00e8d0; }
-  #sw6Root0922 .sw6_a11yon0922 { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
+  #sw6Root .sw6_a11ybtn:hover { border-color: #00e8d0; color: #00e8d0; }
+  #sw6Root .sw6_a11yon { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
   /* Narration bar */
-  #sw6Root0922 .sw6_narbar0922 {
-    width: 620px; min-height: 28px; padding: 5px 10px;
+  #sw6Root .sw6_narbar {
+    width:100%; min-height: 28px; padding: 5px 10px;
     background: #ffefc0; border-left: 4px solid #e0b040;
     font-size: .88rem; color: #333; font-style: italic;
   }
   /* Title bar */
-  #sw6Root0922 .sw6_tbar0922 {
+  #sw6Root .sw6_tbar {
     padding: 4px; height: 30px; background-color: #f90;
-    text-align: center; width: 620px;
+    text-align: center; width:100%;
   }
   /* Canvas wrapper */
-  #sw6Root0922 .sw6_mcontent0922 { height: 262px; width: 620px; }
+  #sw6Root .sw6_mcontent { height: 262px; width:100%; }
   /* Control bars */
-  #sw6Root0922 .sw6_bbar0922 {
-    display: flex; align-items: center; width: 620px;
+  #sw6Root .sw6_bbar {
+    display: flex; align-items: center; width:100%;
     padding: 7px 12px; border-top: 1px solid #ccc;
     flex-wrap: wrap; gap: 8px;
   }
-  #sw6Root0922 .sw6_bbar_top0922 { background: #e8f5e9; }
-  #sw6Root0922 .sw6_bbar_top20922 { background: #d6ffe6; }
-  #sw6Root0922 .sw6_bbar_bot0922 { background: #dd9; justify-content: space-between; }
-  #sw6Root0922 .sw6_bbar_sect0922 {
+  #sw6Root .sw6_bbar_top { background: #e8f5e9; }
+  #sw6Root .sw6_bbar_top2 { background: #d6ffe6; }
+  #sw6Root .sw6_bbar_bot { background: #dd9; justify-content: space-between; }
+  #sw6Root .sw6_bbar_sect {
     display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
   }
-  #sw6Root0922 .sw6_sect_tube0922 { flex: 1; }
-  #sw6Root0922 .sw6_sect_mode0922 { flex: 0 0 auto; }
-  #sw6Root0922 .sw6_bbar_left0922 { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-  #sw6Root0922 .sw6_bbar_right0922 { display: flex; gap: 6px; }
-  #sw6Root0922 .sw6_sectlbl0922 {
+  #sw6Root .sw6_sect_tube { flex: 1; }
+  #sw6Root .sw6_sect_mode { flex: 0 0 auto; }
+  #sw6Root .sw6_bbar_left { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  #sw6Root .sw6_bbar_right { display: flex; gap: 6px; }
+  #sw6Root .sw6_sectlbl {
     font-size: 13px; font-weight: bold; color: #444; white-space: nowrap;
   }
   /* Tube type buttons */
-  #sw6Root0922 .sw6_typebtn0922 {
+  #sw6Root .sw6_typebtn {
     padding: 5px 11px; font-size: 12px; border-radius: 4px; cursor: pointer;
     background: #fff; border: 2px solid #888; color: #333;
     transition: background .12s, border-color .12s;
   }
-  #sw6Root0922 .sw6_typebtn0922:hover { border-color: #333; }
+  #sw6Root .sw6_typebtn:hover { border-color: #333; }
   /* Mode buttons */
-  #sw6Root0922 .sw6_modebtn0922 {
+  #sw6Root .sw6_modebtn {
     padding: 5px 11px; font-size: 12px; border-radius: 4px; cursor: pointer;
     background: #fff; border: 2px solid #888; color: #333;
   }
-  #sw6Root0922 .sw6_modebtn0922:hover { border-color: #333; }
+  #sw6Root .sw6_modebtn:hover { border-color: #333; }
   /* Active state for both */
-  #sw6Root0922 .sw6_active0922 { background: #333; color: #fff; border-color: #333; }
+  #sw6Root .sw6_active { background: #333; color: #fff; border-color: #333; }
   /* Harmonic buttons */
-  #sw6Root0922 .sw6_harmbtn0922 {
+  #sw6Root .sw6_harmbtn {
     padding: 5px 10px; font-size: 13px; border-radius: 4px; cursor: pointer;
     background: #fff; border: 2px solid #888; color: #333; font-weight: bold;
   }
-  #sw6Root0922 .sw6_harmbtn0922:hover { border-color: #333; }
-  #sw6Root0922 .sw6_harmbtn0922:disabled {
+  #sw6Root .sw6_harmbtn:hover { border-color: #333; }
+  #sw6Root .sw6_harmbtn:disabled {
     opacity: 0.35; cursor: not-allowed; border-color: #ccc;
   }
   /* Playback buttons */
-  #sw6Root0922 .sw6_playbtn0922 {
+  #sw6Root .sw6_playbtn {
     padding: 4px 10px; font-size: 14px; border-radius: 4px; cursor: pointer;
     background: #eee; border: 1px solid #999; color: #333; min-width: 36px;
   }
-  #sw6Root0922 .sw6_playbtn0922:hover { background: #ddd; }
+  #sw6Root .sw6_playbtn:hover { background: #ddd; }
   /* Molecule control bar */
-  #sw6Root0922 .sw6_bbar_mol0922 {
+  #sw6Root .sw6_bbar_mol {
     background: #fce4ec; display: flex; align-items: center;
-    gap: 8px; padding: 7px 12px; width: 620px;
+    gap: 8px; padding: 7px 12px; width:100%;
     border-top: 1px solid #ccc; flex-wrap: wrap;
   }
-  #sw6Root0922 .sw6_optbtn0922 {
+  #sw6Root .sw6_optbtn {
     padding: 5px 11px; font-size: 12px; border-radius: 4px; cursor: pointer;
     background: #fff; border: 2px solid #888; color: #333;
     transition: background .12s;
   }
-  #sw6Root0922 .sw6_optbtn0922:hover:not(:disabled) { border-color: #333; }
-  #sw6Root0922 .sw6_optbtn0922:disabled {
+  #sw6Root .sw6_optbtn:hover:not(:disabled) { border-color: #333; }
+  #sw6Root .sw6_optbtn:disabled {
     opacity: 0.35; cursor: not-allowed; border-color: #ccc;
   }
-  #sw6Root0922 .sw6_moltip0922 {
+  #sw6Root .sw6_moltip {
     font-size: 11px; color: #666; font-style: italic; flex: 1;
   }
+
+/* ── mobile layer: the sim fills its column up to its design width; wide parts shrink, bars wrap ── */
+#mobsoundswaircolumn { width:100%; max-width:620px; margin:0 auto; }
+#mobsoundswaircolumn canvas { max-width:100%; height:auto; }
+#mobsoundswaircolumn img, #mobsoundswaircolumn table { max-width:100%; }
+#mobsoundswaircolumn [class*="footer"], #mobsoundswaircolumn [class*="bbar"], #mobsoundswaircolumn [class*="playbar"], #mobsoundswaircolumn [class*="ctrl"] { flex-wrap:wrap; }
+#mobsoundswaircolumn [class*="bbar"], #mobsoundswaircolumn [class*="footer"], #mobsoundswaircolumn [class*="tbar"], #mobsoundswaircolumn [class*="mcontent"] { height:auto; }
+#mobsoundswaircolumn ol { padding-left:24px; } #mobsoundswaircolumn li { margin-bottom:8px; }
+@media (pointer:coarse) {
+#mobsoundswaircolumn button, #mobsoundswaircolumn input[type=button] { min-height:40px; }
+#mobsoundswaircolumn input[type=checkbox], #mobsoundswaircolumn input[type=radio] { width:20px; height:20px; }
+#mobsoundswaircolumn input[type=range] { height:28px; }
+#mobsoundswaircolumn select { min-height:34px; }
+}
+/* ── SIM description ── */
+#mobsoundswaircolumn .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:14px 0 6px; width:100%; }
+#mobsoundswaircolumn .mob_descbtn { width:auto; padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobsoundswaircolumn .mob_desc { width:100%; background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; text-align:left; }
+#mobsoundswaircolumn .mob_desc p { margin:0 0 8px 0; }
+#mobsoundswaircolumn .mob_eq { text-align:center; }
+/* ════════ display options for the page around the canvases: the whole sim is inverted (dark mode) or inverted
+   and sharpened (high contrast); the canvases, pictures and the toolbar undo it, and the canvases are themed by
+   the colour engine instead. ════════ */
+#mobsoundswaircolumn.a11y_dm { filter:invert(1) hue-rotate(180deg); background:#e9e6e1; }
+#mobsoundswaircolumn.a11y_dm canvas, #mobsoundswaircolumn.a11y_dm img, #mobsoundswaircolumn.a11y_dm [role=toolbar], #mobsoundswaircolumn.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobsoundswaircolumn.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); background:#fff; }
+#mobsoundswaircolumn.a11y_hc canvas, #mobsoundswaircolumn.a11y_hc img, #mobsoundswaircolumn.a11y_hc [role=toolbar], #mobsoundswaircolumn.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
 </style>
 <!-- ════════ Accessibility controller ════════ -->
 <script>
-  var sw6A11y0922 = (function(){
-    var ROOT = null, states = { hc: false, lm: false, nr: true };
-    function styleBtn(id, on) {
-      var b = document.getElementById(id); if (!b) return;
-      if (on) { b.style.background='rgba(0,232,208,.12)'; b.style.borderColor='#00e8d0'; b.style.color='#00e8d0'; }
-      else    { b.style.background='#2a2e3a';             b.style.borderColor='#404a60'; b.style.color='#7a8aaa'; }
-      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  var sw6A11y = (function(){
+var ROOT = null, WRAP = null, states = { hc:false, dm:false, cb:false, nr:true };
+/* ── canvas themes: every colour the sim draws passes through map(); the last frame is recorded,
+      so switching dark mode, high contrast or colour-blind safe colours redraws it at once,
+      even while the sim is paused. No page-wide names: this lives inside the controller. ── */
+function makeCT(){
+  var mode = { dark:false, hc:false, cb:false }, key = '', cache = {}, cvs = [];
+  var probe = document.createElement('canvas').getContext('2d');
+  var P = CanvasRenderingContext2D.prototype;
+  function parse(c){
+    probe.fillStyle = '#000'; probe.fillStyle = c; var s = String(probe.fillStyle), m;
+    if (s.charAt(0) === '#') return [parseInt(s.substr(1,2),16), parseInt(s.substr(3,2),16), parseInt(s.substr(5,2),16), 1];
+    m = s.match(/rgba?\(([^)]+)\)/); if (!m) return null;
+    var p = m[1].split(',').map(parseFloat); return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1];
+  }
+  function lin(v){ v /= 255; return v <= 0.04045 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); }
+  function lum(r,g,b){ return 0.2126*lin(r) + 0.7152*lin(g) + 0.0722*lin(b); }
+  function hsl(r,g,b){
+    r/=255; g/=255; b/=255; var mx = Math.max(r,g,b), mn = Math.min(r,g,b), h = 0, s = 0, l = (mx+mn)/2, d = mx-mn;
+    if (d > 1e-6){ s = d/(1 - Math.abs(2*l - 1));
+      h = mx === r ? ((g-b)/d) % 6 : (mx === g ? (b-r)/d + 2 : (r-g)/d + 4); h *= 60; if (h < 0) h += 360; }
+    return [h, s, l];
+  }
+  function rgb(h,s,l){
+    var c = (1 - Math.abs(2*l - 1))*s, x = c*(1 - Math.abs((h/60) % 2 - 1)), m = l - c/2, t;
+    t = h < 60 ? [c,x,0] : h < 120 ? [x,c,0] : h < 180 ? [0,c,x] : h < 240 ? [0,x,c] : h < 300 ? [x,0,c] : [c,0,x];
+    return [Math.round((t[0]+m)*255), Math.round((t[1]+m)*255), Math.round((t[2]+m)*255)];
+  }
+  /* raise the lightness until the colour stands out on a dark background */
+  function lift(h,s,l,target){ var c = rgb(h,s,l); while (lum(c[0],c[1],c[2]) < target && l < 0.95){ l += 0.03; c = rgb(h,s,l); } return c; }
+  /* Okabe-Ito colours, chosen by hue */
+  function oi(h){
+    return h < 15 || h >= 330 ? [213,94,0] : h < 40 ? [230,159,0] : h < 75 ? [240,228,66] : h < 170 ? [0,158,115]
+         : h < 200 ? [86,180,233] : h < 260 ? [0,114,178] : [204,121,167];
+  }
+  function conv(c, stroke){
+    if (!mode.dark && !mode.hc && !mode.cb) return c;
+    var k = key + (stroke ? 's' : 'f') + c; if (cache[k] !== undefined) return cache[k];
+    var v = parse(c); if (!v){ cache[k] = c; return c; }
+    var r = v[0], g = v[1], b = v[2], a = v[3], q = hsl(r,g,b), Y = lum(r,g,b), neutral = q[1] < 0.18, o;
+    if (mode.cb && !neutral && Y <= 0.6 && !(q[2] > 0.6 && q[1] < 0.6)){ o = oi(q[0]); r = o[0]; g = o[1]; b = o[2]; q = hsl(r,g,b); Y = lum(r,g,b); }
+    if (mode.hc){
+      if (neutral) o = Y > 0.8 ? [0,0,0] : (Y < 0.25 ? [255,255,255] : [205,205,205]);
+      else if (stroke && Y > 0.4) o = [r,g,b];   /* bright lines stay bright */
+      else if (Y > 0.6 || (q[2] > 0.6 && q[1] < 0.6)) o = [0,0,0];   /* light or pastel fills are surfaces */
+      else o = lift(q[0], 1, Math.max(q[2], 0.5), 0.4);
+    } else if (mode.dark){
+      if (neutral) o = rgb(q[0], q[1], 0.1 + 0.82*(1 - q[2]));
+      else if (stroke && Y > 0.3) o = [r,g,b];   /* bright lines stay bright */
+      else if (Y > 0.55 || (q[2] > 0.6 && q[1] < 0.6)) o = rgb(q[0], Math.min(q[1], 0.3), 0.18);   /* light or pastel fills are surfaces */
+      else o = lift(q[0], q[1], q[2], 0.3);
+    } else o = [r,g,b];
+    var out = a < 1 ? 'rgba(' + o[0] + ',' + o[1] + ',' + o[2] + ',' + a + ')' : 'rgb(' + o[0] + ',' + o[1] + ',' + o[2] + ')';
+    cache[k] = out; return out;
+  }
+  /* gradients remember their colour stops, so they can be rebuilt in another theme */
+  function style(v, ctx, stroke){
+    if (typeof v === 'string') return conv(v, stroke);
+    if (v && v.__spec){
+      var sp = v.__spec; if (sp.key === key) return sp.made;
+      var g = P[sp.kind].apply(ctx, sp.args); sp.stops.forEach(function(s){ g.addColorStop(s[0], conv(s[1])); });
+      sp.key = key; sp.made = g; return g;
     }
-    function applyCanvas() {
-      var cv = document.getElementById('sw6Cv0922');
-      if (cv) cv.style.filter = states.lm ? 'invert(1) hue-rotate(180deg) brightness(0.9)' : '';
-    }
-    function applyNarBar() {
-      var nb = document.getElementById('sw6NarBar0922');
-      if (nb) nb.style.display = states.nr ? 'block' : 'none';
-      var btn = document.getElementById('sw6BtnNR0922');
-      if (btn) { btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF'); styleBtn('sw6BtnNR0922', states.nr); }
-    }
-    function apply() {
-      if (!ROOT) return;
-      applyCanvas(); applyNarBar();
-      styleBtn('sw6BtnHC0922', states.hc);
-      styleBtn('sw6BtnLM0922', states.lm);
-    }
-    return {
-      init:    function() { ROOT = document.getElementById('sw6Root0922'); apply(); },
-      toggle:  function(k) {
-        states[k] = !states[k];
-        if (k === 'hc' && states.hc) states.lm = false;
-        if (k === 'lm' && states.lm) states.hc = false;
-        apply();
-        if (typeof sw6Sim0922 !== 'undefined') sw6Sim0922.redraw();
-      },
-      isHC:    function() { return states.hc; },
-      narrate: function(msg) {
+    return v;
+  }
+  function attach(cv){
+    var ctx = cv.getContext('2d'); if (!ctx || ctx.__ct) return; ctx.__ct = true;
+    var log = [], replaying = false, vals = {};
+    /* a fill or clear covering the whole canvas starts a new frame (in device pixels, whatever the transform) */
+    function full(a){ var t = ctx.getTransform(), x0 = t.a*a[0] + t.e, y0 = t.d*a[1] + t.f, x1 = t.a*(a[0] + a[2]) + t.e, y1 = t.d*(a[1] + a[3]) + t.f;
+      return t.b === 0 && t.c === 0 && Math.min(x0, x1) <= 0.5 && Math.min(y0, y1) <= 0.5 && Math.max(x0, x1) >= cv.width - 0.5 && Math.max(y0, y1) >= cv.height - 0.5; }
+    /* a canvas attached after its first drawing: keep that picture, to re-colour pixel by pixel until the next frame */
+    var snap = null, framed = false; try { snap = ctx.getImageData(0, 0, cv.width, cv.height); } catch (e) {}
+    ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); vals[p] = d.get.call(ctx);
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return vals[p]; },
+        set:function(v){ vals[p] = v; if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, style(v, ctx, p === 'strokeStyle')); } });
+    });
+    var plain = ['lineWidth','font','textAlign','textBaseline','globalAlpha','lineCap','lineJoin','miterLimit','shadowBlur',
+                 'shadowOffsetX','shadowOffsetY','globalCompositeOperation','lineDashOffset','direction','imageSmoothingEnabled'];
+    plain.forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); if (!d || !d.set) return;
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return d.get.call(ctx); },
+        set:function(v){ if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, v); } });
+    });
+    ['createLinearGradient','createRadialGradient','createConicGradient'].forEach(function(n){
+      if (!P[n]) return;
+      ctx[n] = function(){
+        var args = Array.prototype.slice.call(arguments), g = P[n].apply(ctx, args), add = g.addColorStop;
+        var sp = { kind:n, args:args, stops:[], key:key, made:g }; g.__spec = sp;
+        g.addColorStop = function(o, c){ sp.stops.push([o, c]); add.call(g, o, conv(c)); };
+        return g;
+      };
+    });
+    /* text is a line, not a surface: a bright text colour stays bright in dark mode and high contrast */
+    var fsd = Object.getOwnPropertyDescriptor(P, 'fillStyle');
+    function asText(f, args){ var v = vals.fillStyle; if (typeof v === 'string' && key !== '|' && key !== ''){ fsd.set.call(ctx, conv(v, true)); try { return f.apply(ctx, args); } finally { fsd.set.call(ctx, style(v, ctx, false)); } } return f.apply(ctx, args); }
+    var skip = /^(constructor|get[A-Z]\w*|isPointIn\w*|measureText|create\w*)$/;
+    Object.getOwnPropertyNames(P).forEach(function(n){
+      if (skip.test(n)) return; var d = Object.getOwnPropertyDescriptor(P, n); if (!d || typeof d.value !== 'function') return;
+      var f = d.value;
+      ctx[n] = function(){
+        if (!replaying){
+          if ((n === 'fillRect' || n === 'clearRect') && full(arguments)){ snap = null; framed = true;
+            /* a new frame: start the record from the drawing state of this moment */
+            var t = ctx.getTransform();
+            log = [['c','setTransform',[t.a,t.b,t.c,t.d,t.e,t.f]]];
+            ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){ log.push(['s', p, vals[p]]); });
+            plain.forEach(function(p){ var dd = Object.getOwnPropertyDescriptor(P, p); if (dd && dd.get) log.push(['s', p, dd.get.call(ctx)]); });
+            log.push(['c','setLineDash',[ctx.getLineDash()]]);
+          }
+          if (log){ log.push(['c', n, Array.prototype.slice.call(arguments)]); if (log.length > 60000) log = null; }
+        }
+        if (n === 'fillText') return asText(f, arguments);
+        return f.apply(ctx, arguments);
+      };
+    });
+    cvs.push({ redraw:function(){
+      if (!framed && snap){
+        var img = new ImageData(new Uint8ClampedArray(snap.data), snap.width, snap.height), d = img.data, memo = {};
+        for (var i = 0; i < d.length; i += 4){ if (!d[i+3]) continue; var k = d[i] + ',' + d[i+1] + ',' + d[i+2], c = memo[k];
+          if (!c){ var v = parse(conv('rgb(' + k + ')')); c = memo[k] = v || [d[i], d[i+1], d[i+2]]; } d[i] = c[0]; d[i+1] = c[1]; d[i+2] = c[2]; }
+        var t0 = ctx.getTransform(); P.setTransform.call(ctx, 1, 0, 0, 1, 0, 0); P.putImageData.call(ctx, img, 0, 0); P.setTransform.call(ctx, t0); return;
+      }
+      if (!framed || !log || log.length < 3) return;
+      replaying = true;
+      try { log.forEach(function(e){ if (e[0] === 's') ctx[e[1]] = e[2]; else if (e[1] === 'fillText') asText(P.fillText, e[2]); else P[e[1]].apply(ctx, e[2]); }); }
+      finally { replaying = false; }
+    }});
+  }
+  return {
+    attach: attach,
+    map: conv,
+    set: function(m){ mode = { dark:!!m.dark, hc:!!m.hc, cb:!!m.cb }; key = (mode.dark?'d':'') + (mode.hc?'h':'') + (mode.cb?'c':'') + '|'; cvs.forEach(function(c){ c.redraw(); }); }
+  };
+}
+
+var ct = makeCT();
+var DEFS = {};
+function attachAll(){ var w = document.getElementById('mobsoundswaircolumn') || document.getElementById('sw6Root'); if (w) [].forEach.call(w.querySelectorAll('canvas'), ct.attach); }
+attachAll();
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return;
+b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa';
+b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){
+ROOT = ROOT || document.getElementById('sw6Root'); if (!ROOT) return;
+WRAP = document.getElementById('mobsoundswaircolumn') || ROOT; attachAll();
+WRAP.classList.toggle('a11y_dm', states.dm); WRAP.classList.toggle('a11y_hc', states.hc); WRAP.classList.toggle('a11y_cb', states.cb);
+ct.set({ dark:states.dm, hc:states.hc, cb:states.cb });
+var nb = document.getElementById('sw6NarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var nr = document.getElementById('sw6BtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('sw6BtnHC', states.hc); styleBtn('sw6BtnDM', states.dm); styleBtn('sw6BtnCB', states.cb); styleBtn('sw6BtnNR', states.nr);
+}
+return {
+init: function(){ apply(); },
+toggle: function(k){
+states[k] = !states[k];
+if (k === 'hc' && states.hc) states.dm = false;   /* high contrast and dark mode switch each other off; colour-blind combines with either */
+if (k === 'dm' && states.dm) states.hc = false;
+apply();
+if (typeof sw6Sim !== 'undefined') sw6Sim.redraw();
+},
+/* the colour engine themes every colour on the canvas, so the drawing code keeps its standard colours */
+isHC: function(){ return false; }, isCB: function(){ return false; }, isLM: function(){ return false; },
+isNarOn: function(){ return states.nr; },
+col: function(a, def){ if (def !== undefined) return def; var T = DEFS; return T[a] !== undefined ? T[a] : T['' + a]; },
+narrate: function(msg) {
         if (!states.nr) return;
-        var nb = document.getElementById('sw6NarBar0922'); if (!nb) return;
+        var nb = document.getElementById('sw6NarBar'); if (!nb) return;
         nb.innerHTML = msg;
         if (window.MathJax) {
           if (MathJax.typesetPromise) MathJax.typesetPromise([nb]);
           else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, nb]);
         }
       }
-    };
-  })();
+};
+})();
 </script>
 <!-- ════════ Simulation ════════ -->
 <script>
-  var sw6Sim0922 = (function(){
-    var canvas = document.getElementById('sw6Cv0922');
+  var sw6Sim = (function(){
+    var canvas = document.getElementById('sw6Cv');
     var ctx    = canvas.getContext('2d');
     /* Layout */
     var xBase  = 30, yBase2 = 60;       /* top-left of graph panel */
@@ -330,20 +515,20 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
       return AMPL * spatial * cosT;
     }
     /* ── HC colour helpers ── */
-    function cBg()    { return sw6A11y0922.isHC() ? '#111'    : '#ffd'; }
-    function cGph()   { return sw6A11y0922.isHC() ? '#1a2233' : '#eff'; }
-    function cAx()    { return sw6A11y0922.isHC() ? '#cccccc' : '#000'; }
-    function cGrid()  { return sw6A11y0922.isHC() ? '#334455' : '#999'; }
-    function cTxt()   { return sw6A11y0922.isHC() ? '#eeeeee' : 'black'; }
-    function cTitle() { return sw6A11y0922.isHC() ? '#cc99ff' : 'purple'; }
+    function cBg()    { return sw6A11y.isHC() ? '#111'    : '#ffd'; }
+    function cGph()   { return sw6A11y.isHC() ? '#1a2233' : '#eff'; }
+    function cAx()    { return sw6A11y.isHC() ? '#cccccc' : '#000'; }
+    function cGrid()  { return sw6A11y.isHC() ? '#334455' : '#999'; }
+    function cTxt()   { return sw6A11y.isHC() ? '#eeeeee' : 'black'; }
+    function cTitle() { return sw6A11y.isHC() ? '#cc99ff' : 'purple'; }
     function cWave()  {
-      if (dispMode === 'pres') return sw6A11y0922.isHC() ? '#ffaa44' : '#c80';
-      return sw6A11y0922.isHC() ? '#cc77cc' : '#808';
+      if (dispMode === 'pres') return sw6A11y.isHC() ? '#ffaa44' : '#c80';
+      return sw6A11y.isHC() ? '#cc77cc' : '#808';
     }
-    function cTube()  { return sw6A11y0922.isHC() ? '#88aacc' : '#336699'; }
-    function cTubeFill() { return sw6A11y0922.isHC() ? 'rgba(100,140,200,0.10)' : 'rgba(180,220,255,0.25)'; }
-    function cCap()   { return sw6A11y0922.isHC() ? '#aaccee' : '#336699'; }
-    function cOpen()  { return sw6A11y0922.isHC() ? '#555' : '#aaa'; }
+    function cTube()  { return sw6A11y.isHC() ? '#88aacc' : '#336699'; }
+    function cTubeFill() { return sw6A11y.isHC() ? 'rgba(100,140,200,0.10)' : 'rgba(180,220,255,0.25)'; }
+    function cCap()   { return sw6A11y.isHC() ? '#aaccee' : '#336699'; }
+    function cOpen()  { return sw6A11y.isHC() ? '#555' : '#aaa'; }
     /* ── Draw the tube ── */
     function drawTube() {
       var leftOpen  = (tubeType === 'oo' || tubeType === 'oc');
@@ -423,7 +608,7 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
     }
     function drawTraces() {
       if (!showTrace || !showMols) return;
-      var singleTC = sw6A11y0922.isHC() ? 'rgba(150,210,255,0.55)' : 'rgba(80,80,180,0.30)';
+      var singleTC = sw6A11y.isHC() ? 'rgba(150,210,255,0.55)' : 'rgba(80,80,180,0.30)';
       ctx.save();
       ctx.lineWidth = 1;
       for (var k = 0; k < molecules.length; k++) {
@@ -440,7 +625,7 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
     }
     function drawMolecules() {
       if (!showMols) return;
-      var singleC = sw6A11y0922.isHC() ? '#cccccc' : '#8b1a1a'; /* dark red matching reference */
+      var singleC = sw6A11y.isHC() ? '#cccccc' : '#8b1a1a'; /* dark red matching reference */
       for (var k = 0; k < molecules.length; k++) {
         var mol  = molecules[k];
         var disp = _molDisp(mol.x_eq);
@@ -459,7 +644,7 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
     }
     /* ── Main draw ── */
     function drawMotion() {
-      if (index >= 8000) { runFlag = 0; document.getElementById('sw6Play0922').textContent = '\u25B6'; }
+      if (index >= 8000) { runFlag = 0; document.getElementById('sw6Play').textContent = '\u25B6'; }
       if (runFlag !== 1) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       index++;
@@ -554,8 +739,8 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
         }
         var isNode = isDisp ? isNodeDisp : !isNodeDisp;
         label = isNode ? 'N' : 'A';
-        ctx.fillStyle = isNode ? (sw6A11y0922.isHC() ? '#88ddff' : '#0055cc')
-        : (sw6A11y0922.isHC() ? '#ffaa66' : '#cc4400');
+        ctx.fillStyle = isNode ? (sw6A11y.isHC() ? '#88ddff' : '#0055cc')
+        : (sw6A11y.isHC() ? '#ffaa66' : '#cc4400');
         ctx.fillText(label, px+6, axisY -56);
         ctx.strokeStyle = axC; ctx.lineWidth = 1;
         ctx.beginPath(); ctx.moveTo(px, axisY - 4); ctx.lineTo(px, axisY + 4); ctx.stroke();
@@ -563,7 +748,7 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
     }
     function runMotion() {
       drawMotion();
-      document.getElementById("sw6Play0922").value=String.fromCodePoint(0x23F8);
+      document.getElementById("sw6Play").value=String.fromCodePoint(0x23F8);
       if (runFlag === 1) { timer = window.setTimeout(runMotion, 1000/60); }
     }
     function play()        { window.clearTimeout(timer); runFlag = 1; runMotion(); }
@@ -584,12 +769,12 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
     /* ── Update harmonic buttons ── */
     function _updateHarmBtns() {
       for (var k = 1; k <= 6; k++) {
-        var btn = document.getElementById('sw6BtnH' + k + '0922');
+        var btn = document.getElementById('sw6BtnH' + k + '');
         if (!btn) continue;
         btn.disabled = false;
         /* For oc, button k selects the k-th odd harmonic: n = 2k-1 */
         btn.textContent = (tubeType === 'oc') ? 'n = ' + (2*k-1) : 'n = ' + k;
-        btn.className = 'sw6_harmbtn0922' + (k === harmonic ? ' sw6_active0922' : '');
+        btn.className = 'sw6_harmbtn' + (k === harmonic ? ' sw6_active' : '');
       }
     }
     /* ── Narration helpers ── */
@@ -614,7 +799,7 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
       var nAntDisp   = tubeType === 'oo' ? no + 1 : tubeType === 'cc' ? no - 1 : Math.floor(no/2) + 1;
       var nNodes = dispMode === 'disp' ? nNodesDisp : nAntDisp;
       var nAnts  = dispMode === 'disp' ? nAntDisp   : nNodesDisp;
-      sw6A11y0922.narrate(
+      sw6A11y.narrate(
         'Harmonic n = ' + no + ',  f = ' + f + ' Hz. '
         + nNodes + ' node' + (nNodes!==1?'s':'') + ', '
         + nAnts  + ' antinode' + (nAnts!==1?'s':'') + ' '
@@ -627,23 +812,23 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
       tubeType = type;
       /* Update active button */
       ['oo','cc','oc'].forEach(function(t) {
-        var ids = {oo:'sw6BtnOO0922', cc:'sw6BtnCC0922', oc:'sw6BtnOC0922'};
+        var ids = {oo:'sw6BtnOO', cc:'sw6BtnCC', oc:'sw6BtnOC'};
         var b = document.getElementById(ids[t]);
-        if (b) b.className = 'sw6_typebtn0922' + (t===type?' sw6_active0922':'');
+        if (b) b.className = 'sw6_typebtn' + (t===type?' sw6_active':'');
       });
       _updateHarmBtns();
       _initMols();
       reset();
-      sw6A11y0922.narrate(_tubeDesc() + ' ' + _modeDesc() + ' Press &#9654; to animate.');
+      sw6A11y.narrate(_tubeDesc() + ' ' + _modeDesc() + ' Press &#9654; to animate.');
     }
     function setMode(mode) {
       dispMode = mode;
-      var bd = document.getElementById('sw6BtnDisp0922');
-      var bp = document.getElementById('sw6BtnPres0922');
-      if (bd) bd.className = 'sw6_modebtn0922' + (mode==='disp'?' sw6_active0922':'');
-      if (bp) bp.className = 'sw6_modebtn0922' + (mode==='pres'?' sw6_active0922':'');
+      var bd = document.getElementById('sw6BtnDisp');
+      var bp = document.getElementById('sw6BtnPres');
+      if (bd) bd.className = 'sw6_modebtn' + (mode==='disp'?' sw6_active':'');
+      if (bp) bp.className = 'sw6_modebtn' + (mode==='pres'?' sw6_active':'');
       reset();
-      sw6A11y0922.narrate(_modeDesc());
+      sw6A11y.narrate(_modeDesc());
     }
     function setF(n) {
       harmonic = n;
@@ -654,38 +839,38 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
     function redraw() { drawMotion(); }
     function toggleMols() {
       showMols = !showMols;
-      var btn = document.getElementById('sw6BtnMols0922');
+      var btn = document.getElementById('sw6BtnMols');
       if (btn) {
         btn.textContent = 'Molecules: ' + (showMols ? 'ON' : 'OFF');
-        btn.className = 'sw6_optbtn0922' + (showMols ? ' sw6_active0922' : '');
+        btn.className = 'sw6_optbtn' + (showMols ? ' sw6_active' : '');
       }
       /* Disable trace toggle if no molecules */
-      var bt = document.getElementById('sw6BtnTrace0922');
+      var bt = document.getElementById('sw6BtnTrace');
       if (bt) bt.disabled = !showMols;
-      var br = document.getElementById('sw6BtnRainbow0922');
+      var br = document.getElementById('sw6BtnRainbow');
       if (br) br.disabled = !showMols;
       if (!showMols) { showTrace = false; _syncTraceBtn(); }
       if (!runFlag) drawMotion();
-      sw6A11y0922.narrate(showMols
+      sw6A11y.narrate(showMols
                             ? 'Air molecules shown. Each dot represents a molecule vibrating horizontally about its equilibrium position (faint tick marks). Enable Rainbow or Trace for more detail.'
                             : 'Molecules hidden.');
     }
     function toggleRainbow() {
       if (!showMols) return;
       rainbowMols = !rainbowMols;
-      var btn = document.getElementById('sw6BtnRainbow0922');
+      var btn = document.getElementById('sw6BtnRainbow');
       if (btn) {
         btn.textContent = 'Rainbow: ' + (rainbowMols ? 'ON' : 'OFF');
-        btn.className = 'sw6_optbtn0922' + (rainbowMols ? ' sw6_active0922' : '');
+        btn.className = 'sw6_optbtn' + (rainbowMols ? ' sw6_active' : '');
       }
       if (!runFlag) drawMotion();
-      sw6A11y0922.narrate(rainbowMols ? 'Rainbow colours on -- each molecule has a distinct colour for easy tracking.' : 'Single colour mode.');
+      sw6A11y.narrate(rainbowMols ? 'Rainbow colours on -- each molecule has a distinct colour for easy tracking.' : 'Single colour mode.');
     }
     function _syncTraceBtn() {
-      var btn = document.getElementById('sw6BtnTrace0922');
+      var btn = document.getElementById('sw6BtnTrace');
       if (!btn) return;
       btn.textContent = 'Trace: ' + (showTrace ? 'ON' : 'OFF');
-      btn.className = 'sw6_optbtn0922' + (showTrace ? ' sw6_active0922' : '');
+      btn.className = 'sw6_optbtn' + (showTrace ? ' sw6_active' : '');
     }
     function toggleTrace() {
       if (!showMols) return;
@@ -693,7 +878,7 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
       if (!showTrace) { for (var k=0;k<molecules.length;k++) molecules[k].trace=[]; }
       _syncTraceBtn();
       if (!runFlag) drawMotion();
-      sw6A11y0922.narrate(showTrace
+      sw6A11y.narrate(showTrace
                             ? 'Traces on -- the path each molecule has followed is drawn, showing it oscillates about its equilibrium. Nodes stay still; antinodes swing most.'
                             : 'Traces cleared.');
     }
@@ -702,7 +887,7 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
       _updateHarmBtns();
       _initMols();
       reset();
-      sw6A11y0922.narrate(
+      sw6A11y.narrate(
         'Standing Waves in an Air Tube. '
         + 'Choose a tube type: <strong>Both open</strong>, <strong>Both closed</strong>, or <strong>Open &amp; closed</strong>. '
         + 'Toggle between <strong>displacement</strong> and <strong>pressure</strong> views &mdash; '
@@ -716,13 +901,27 @@ Density per column ∝ pressure amplitude → molecules cluster at pressure anti
   })();
 </script>
 <script>
-  sw6A11y0922.init();
+  sw6A11y.init();
 </script>
 
 <ol type="a">
   <p>Start this simulation: <a href="https://alo.academy/html5/standingwaves/tm-standing-waves01.html" target="_blank" rel="noopener">https://alo.academy/html5/standingwaves/tm-standing-waves01.html</a>. This simulation shows a wave pulse on a string (or rod) moving from left to right and another one moving from right to left. The bottom panel shows both pulses moving on the same string. The shape and orientation of each of the pulses can be modified.</p>
-  <li>Play with the different configurations. What do you conclude about when the pulses meet? <br />[AB2]  </li>
-  <li>Can you have the two waves adding up to no wave at a particular instant? <br />[AB3]  </li>
+  <li>Play with the different configurations. What do you conclude about when the pulses meet? <br /> _____   </li>
+  <li>Can you have the two waves adding up to no wave at a particular instant? <br /> _____   </li>
 </ol>
+<script>
+(function(){
+var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+b.addEventListener('click', function(){
+var open = d.style.display === 'none';
+d.style.display = open ? 'block' : 'none';
+b.setAttribute('aria-expanded', open ? 'true' : 'false');
+b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }
+});
+})();
+</script>
+</div><!-- #mobsoundswaircolumn -->
+</main>
 </body>
 </html>

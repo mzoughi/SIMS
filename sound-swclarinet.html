@@ -1,170 +1,360 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations-Standing Waves Clarinet </title>
-</head>
-<body>
-<div id="clRoot820">
+<title>Physics Simulations-Standing Waves Clarinet</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, physics, sound, waves, lesson, scientific">
+<meta name="description" content="A clarinet's air column is closed at the mouthpiece (by the reed) and open at the other end, so it behaves as a closed-open pipe: only odd harmonics fit, and the lowest note has a wavelength four times the column's length..">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:920px; max-width:100%; margin:0 auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<main class="page">
+<div id="mobsoundswclarinet" class="mob_wrap">
+<div id="clRoot">
   <!-- ── Accessibility toolbar ── -->
-  <div class="cl_a11y820" id="clA11yBar820" role="toolbar" aria-label="Display options">
-    <button type="button" class="cl_a11ybtn820" id="clBtnHC820" onclick="clA11y820.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-    <button type="button" class="cl_a11ybtn820" id="clBtnLM820" onclick="clA11y820.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
-    <button type="button" class="cl_a11ybtn820 cl_a11yon820" id="clBtnNR820" onclick="clA11y820.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
-  </div>
+  <div class="cl_a11y" id="clA11yBar" role="toolbar" aria-label="Display options">
+<button type="button" class="cl_a11ybtn" id="clBtnHC" onclick="clA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="cl_a11ybtn" id="clBtnDM" onclick="clA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="cl_a11ybtn" id="clBtnCB" onclick="clA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="cl_a11ybtn" id="clBtnNR" onclick="clA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
   <!-- Narration bar -->
-  <div id="clNarBar820" class="cl_narbar820" role="status" aria-live="polite" aria-atomic="true"></div>
+  <div id="clNarBar" class="cl_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
   <!-- Title bar -->
-  <div class="cl_tbar820"><H3>Standing Waves in a Clarinet</H3></div>
+  <div class="cl_tbar"><H3>Standing Waves in a Clarinet</H3></div>
   <!-- Canvas -->
-  <div class="cl_mcontent820">
-    <canvas id="clCv820" width="820" height="500" style="display:block;"></canvas>
+  <div class="cl_mcontent">
+    <canvas id="clCv" width="820" height="500" style="display:block;"></canvas>
   </div>
   <!-- Row 1: note selector -->
-  <div class="cl_bbar820 cl_row_notes820">
-    <span class="cl_sectlbl820">Note:</span>
-    <button type="button" class="cl_notebtn820 cl_active820" id="clBtnD3820"  onclick="clSim820.setNote('D3')">D3</button>
-    <button type="button" class="cl_notebtn820" id="clBtnE3820"  onclick="clSim820.setNote('E3')">E3</button>
-    <button type="button" class="cl_notebtn820" id="clBtnF3820"  onclick="clSim820.setNote('F3')">F3</button>
-    <button type="button" class="cl_notebtn820" id="clBtnG3820"  onclick="clSim820.setNote('G3')">G3</button>
-    <button type="button" class="cl_notebtn820" id="clBtnA3820"  onclick="clSim820.setNote('A3')">A3</button>
-    <button type="button" class="cl_notebtn820" id="clBtnB3820"  onclick="clSim820.setNote('B3')">B3</button>
-    <button type="button" class="cl_notebtn820" id="clBtnC4820"  onclick="clSim820.setNote('C4')">C4</button>
-    <button type="button" class="cl_notebtn820 cl_reg2820" id="clBtnA4820"  onclick="clSim820.setNote('A4')">A4 <sup>R2</sup></button>
-    <button type="button" class="cl_notebtn820 cl_reg2820" id="clBtnC5820"  onclick="clSim820.setNote('C5')">C5 <sup>R2</sup></button>
-    <span class="cl_noteinfo820" id="clNoteInfo820"></span>
+  <div class="cl_bbar cl_row_notes">
+    <span class="cl_sectlbl">Note:</span>
+    <button type="button" class="cl_notebtn cl_active" id="clBtnD3"  onclick="clSim.setNote('D3')">D3</button>
+    <button type="button" class="cl_notebtn" id="clBtnE3"  onclick="clSim.setNote('E3')">E3</button>
+    <button type="button" class="cl_notebtn" id="clBtnF3"  onclick="clSim.setNote('F3')">F3</button>
+    <button type="button" class="cl_notebtn" id="clBtnG3"  onclick="clSim.setNote('G3')">G3</button>
+    <button type="button" class="cl_notebtn" id="clBtnA3"  onclick="clSim.setNote('A3')">A3</button>
+    <button type="button" class="cl_notebtn" id="clBtnB3"  onclick="clSim.setNote('B3')">B3</button>
+    <button type="button" class="cl_notebtn" id="clBtnC4"  onclick="clSim.setNote('C4')">C4</button>
+    <button type="button" class="cl_notebtn cl_reg2" id="clBtnA4"  onclick="clSim.setNote('A4')">A4 <sup>R2</sup></button>
+    <button type="button" class="cl_notebtn cl_reg2" id="clBtnC5"  onclick="clSim.setNote('C5')">C5 <sup>R2</sup></button>
+    <span class="cl_noteinfo" id="clNoteInfo"></span>
   </div>
   <!-- Row 2: display mode + harmonic -->
-  <div class="cl_bbar820 cl_row_mode820">
-    <span class="cl_sectlbl820">Show:</span>
-    <button type="button" class="cl_modebtn820 cl_active820" id="clBtnDisp820"
-            onclick="clSim820.setMode('disp')">Displacement</button>
-    <button type="button" class="cl_modebtn820" id="clBtnPres820"
-            onclick="clSim820.setMode('pres')">Pressure</button>
-    <button type="button" class="cl_modebtn820" id="clBtnMols820"
-            onclick="clSim820.toggleMols()">Molecules: OFF</button>
-    <span class="cl_sectlbl820" style="margin-left:14px;">Harmonic:</span>
-    <button type="button" class="cl_harmbtn820 cl_active820" id="clBtnH1820" onclick="clSim820.setHarmonic(1)">n = 1</button>
-    <button type="button" class="cl_harmbtn820" id="clBtnH3820" onclick="clSim820.setHarmonic(3)">n = 3 <small>(12th)</small></button>
-    <button type="button" class="cl_harmbtn820" id="clBtnH5820" onclick="clSim820.setHarmonic(5)">n = 5</button>
-    <button type="button" class="cl_harmbtn820" id="clBtnH7820" onclick="clSim820.setHarmonic(7)">n = 7</button>
+  <div class="cl_bbar cl_row_mode">
+    <span class="cl_sectlbl">Show:</span>
+    <button type="button" class="cl_modebtn cl_active" id="clBtnDisp"
+            onclick="clSim.setMode('disp')">Displacement</button>
+    <button type="button" class="cl_modebtn" id="clBtnPres"
+            onclick="clSim.setMode('pres')">Pressure</button>
+    <button type="button" class="cl_modebtn" id="clBtnMols"
+            onclick="clSim.toggleMols()">Molecules: OFF</button>
+    <span class="cl_sectlbl" style="margin-left:14px;">Harmonic:</span>
+    <button type="button" class="cl_harmbtn cl_active" id="clBtnH1" onclick="clSim.setHarmonic(1)">n = 1</button>
+    <button type="button" class="cl_harmbtn" id="clBtnH3" onclick="clSim.setHarmonic(3)">n = 3 <small>(12th)</small></button>
+    <button type="button" class="cl_harmbtn" id="clBtnH5" onclick="clSim.setHarmonic(5)">n = 5</button>
+    <button type="button" class="cl_harmbtn" id="clBtnH7" onclick="clSim.setHarmonic(7)">n = 7</button>
   </div>
   <!-- Row 3: playback -->
-  <div class="cl_bbar820 cl_row_play820">
-    <input type="button" class="butt820" id="clPlay820" value="&#9654;" onclick="if(this.value=='&#9654;'){clSim820.play();this.value='&#9208;';}else{this.value='&#9654;';clSim820.pause();}">
-    <input type="button" class="butt820" value="&#10073;&#9664;" onclick="clSim820.stepBack();document.getElementById('clPlay820').value='&#9654;';">
-    <input type="button" class="butt820" value="&#9654;&#10073;" onclick="clSim820.stepForward();document.getElementById('clPlay820').value='&#9654;';">
-    <input type="button" class="butt820" value="&#128472;" onclick="clSim820.reset();document.getElementById('clPlay820').value='&#9654;';">
-    <label class="cl_cblbl820">
-      <input type="checkbox" id="clCbSlow820" onchange="clSim820.setSlow(this.checked)"> Slow
+  <div class="cl_bbar cl_row_play">
+    <input type="button" class="butt" id="clPlay" value="&#9654;" onclick="if(this.value=='&#9654;'){clSim.play();this.value='&#9208;';}else{this.value='&#9654;';clSim.pause();}">
+    <input type="button" class="butt" value="&#10073;&#9664;" onclick="clSim.stepBack();document.getElementById('clPlay').value='&#9654;';">
+    <input type="button" class="butt" value="&#9654;&#10073;" onclick="clSim.stepForward();document.getElementById('clPlay').value='&#9654;';">
+    <input type="button" class="butt" value="&#128472;" onclick="clSim.reset();document.getElementById('clPlay').value='&#9654;';">
+    <label class="cl_cblbl">
+      <input type="checkbox" id="clCbSlow" onchange="clSim.setSlow(this.checked)"> Slow
     </label>
   </div>
-</div><!-- #clRoot820 -->
+</div><!-- #clRoot -->
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>A clarinet's air column is closed at the mouthpiece (by the reed) and open at the other end, so it behaves as a closed-open pipe: only odd harmonics fit, and the lowest note has a wavelength four times the column's length.</p>
+<p class="mob_eq">`f_n = n v/(4 L_"eff")`,&nbsp;&nbsp; `n = 1, 3, 5, 7`.</p>
+<p>Opening finger holes shortens the effective length and raises the note. The register key makes the clarinet jump to its third harmonic, a twelfth higher (an octave plus a fifth), not an octave as on a flute. The displacement or pressure of the standing wave and the motion of the air molecules can be shown, slowed down if needed.</p>
+</div>
+</div>
 <style>
-  #clRoot820 * { box-sizing: border-box; margin: 0; }
-  #clRoot820 { display: block; width: 820px; }
-  #clRoot820 canvas { display: block; }
-  #clRoot820 .cl_a11y820 {
+  #clRoot * { box-sizing: border-box; margin: 0; }
+  #clRoot { display: block; width:100%; }
+  #clRoot canvas { display: block; }
+  #clRoot .cl_a11y {
     display: flex; gap: 6px; padding: 6px 8px;
-    background: #222; flex-wrap: wrap; width: 820px;
+    background: #222; flex-wrap: wrap; width:100%;
   }
-  #clRoot820 .cl_a11ybtn820 {
+  #clRoot .cl_a11ybtn {
     padding: 4px 10px; font-size: .72rem; font-family: monospace;
     letter-spacing: .06em; border-radius: 3px; cursor: pointer;
     background: #2a2e3a; border: 1px solid #404a60; color: #7a8aaa;
   }
-  #clRoot820 .cl_a11ybtn820:hover { border-color: #00e8d0; color: #00e8d0; }
-  #clRoot820 .cl_a11yon820 { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
-  #clRoot820 .cl_narbar820 {
-    width: 820px; min-height: 28px; padding: 5px 10px;
+  #clRoot .cl_a11ybtn:hover { border-color: #00e8d0; color: #00e8d0; }
+  #clRoot .cl_a11yon { background: rgba(0,232,208,.12); border-color: #00e8d0; color: #00e8d0; }
+  #clRoot .cl_narbar {
+    width:100%; min-height: 28px; padding: 5px 10px;
     background: #ffefc0; border-left: 4px solid #e0b040;
     font-size: .88rem; color: #333; font-style: italic;
   }
-  #clRoot820 .cl_tbar820 {
+  #clRoot .cl_tbar {
     padding: 4px; height: 30px; background-color: #f90;
-    text-align: center; width: 820px;
+    text-align: center; width:100%;
   }
-  #clRoot820 .cl_mcontent820 { height: 502px; width: 820px; }
+  #clRoot .cl_mcontent { height: 502px; width:100%; }
   /* Control bars */
-  #clRoot820 .cl_bbar820 {
+  #clRoot .cl_bbar {
     display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
-    width: 820px; padding: 7px 10px; border-top: 1px solid #ccc;
+    width:100%; padding: 7px 10px; border-top: 1px solid #ccc;
   }
-  #clRoot820 .cl_row_notes820 { background: #e8f5e9; }
-  #clRoot820 .cl_row_mode820  { background: #e3f2fd; }
-  #clRoot820 .cl_row_play820  { background: #fff9c4; }
-  #clRoot820 .cl_sectlbl820 { font-size: 13px; font-weight: bold; color: #444; white-space: nowrap; }
-  #clRoot820 .cl_noteinfo820 { font-size: 12px; color: #555; margin-left: 10px; font-style: italic; }
-  #clRoot820 .cl_notebtn820 {
+  #clRoot .cl_row_notes { background: #e8f5e9; }
+  #clRoot .cl_row_mode  { background: #e3f2fd; }
+  #clRoot .cl_row_play  { background: #fff9c4; }
+  #clRoot .cl_sectlbl { font-size: 13px; font-weight: bold; color: #444; white-space: nowrap; }
+  #clRoot .cl_noteinfo { font-size: 12px; color: #555; margin-left: 10px; font-style: italic; }
+  #clRoot .cl_notebtn {
     padding: 5px 10px; font-size: 14px; font-weight: bold; border-radius: 4px;
     cursor: pointer; background: #fff; border: 2px solid #888; color: #333;
   }
-  #clRoot820 .cl_notebtn820:hover { border-color: #333; }
-  #clRoot820 .cl_modebtn820, #clRoot820 .cl_harmbtn820 {
+  #clRoot .cl_notebtn:hover { border-color: #333; }
+  #clRoot .cl_modebtn, #clRoot .cl_harmbtn {
     padding: 5px 10px; font-size: 12px; border-radius: 4px; cursor: pointer;
     background: #fff; border: 2px solid #888; color: #333;
   }
-  #clRoot820 .cl_modebtn820:hover, #clRoot820 .cl_harmbtn820:hover { border-color: #333; }
-  #clRoot820 .cl_active820 { background: #333; color: #fff; border-color: #333; }
-  #clRoot820 .cl_playbtn820 {
+  #clRoot .cl_modebtn:hover, #clRoot .cl_harmbtn:hover { border-color: #333; }
+  #clRoot .cl_active { background: #333; color: #fff; border-color: #333; }
+  #clRoot .cl_playbtn {
     padding: 4px 10px; font-size: 14px; border-radius: 4px; cursor: pointer;
     background: #eee; border: 1px solid #999; color: #333; min-width: 36px;
   }
-  #clRoot820 .cl_playbtn820:hover { background: #ddd; }
-  #clRoot820 .cl_cblbl820 { font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
-  #clRoot820 .cl_reg2820 { background: #fff0e0; border-color: #c06000; color: #804000; }
-  #clRoot820 .cl_reg2820.cl_active820 { background: #804000; color: #fff; border-color: #804000; }
+  #clRoot .cl_playbtn:hover { background: #ddd; }
+  #clRoot .cl_cblbl { font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+  #clRoot .cl_reg2 { background: #fff0e0; border-color: #c06000; color: #804000; }
+  #clRoot .cl_reg2.cl_active { background: #804000; color: #fff; border-color: #804000; }
+
+/* ── mobile layer: the sim fills its column up to its design width; wide parts shrink, bars wrap ── */
+#mobsoundswclarinet { width:100%; max-width:820px; margin:0 auto; }
+#mobsoundswclarinet canvas { max-width:100%; height:auto; }
+#mobsoundswclarinet img, #mobsoundswclarinet table { max-width:100%; }
+#mobsoundswclarinet [class*="footer"], #mobsoundswclarinet [class*="bbar"], #mobsoundswclarinet [class*="playbar"], #mobsoundswclarinet [class*="ctrl"] { flex-wrap:wrap; }
+#mobsoundswclarinet [class*="bbar"], #mobsoundswclarinet [class*="footer"], #mobsoundswclarinet [class*="tbar"], #mobsoundswclarinet [class*="mcontent"] { height:auto; }
+#mobsoundswclarinet ol { padding-left:24px; } #mobsoundswclarinet li { margin-bottom:8px; }
+@media (pointer:coarse) {
+#mobsoundswclarinet button, #mobsoundswclarinet input[type=button] { min-height:40px; }
+#mobsoundswclarinet input[type=checkbox], #mobsoundswclarinet input[type=radio] { width:20px; height:20px; }
+#mobsoundswclarinet input[type=range] { height:28px; }
+#mobsoundswclarinet select { min-height:34px; }
+}
+/* ── SIM description ── */
+#mobsoundswclarinet .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:14px 0 6px; width:100%; }
+#mobsoundswclarinet .mob_descbtn { width:auto; padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobsoundswclarinet .mob_desc { width:100%; background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; text-align:left; }
+#mobsoundswclarinet .mob_desc p { margin:0 0 8px 0; }
+#mobsoundswclarinet .mob_eq { text-align:center; }
+/* ════════ display options for the page around the canvases: the whole sim is inverted (dark mode) or inverted
+   and sharpened (high contrast); the canvases, pictures and the toolbar undo it, and the canvases are themed by
+   the colour engine instead. ════════ */
+#mobsoundswclarinet.a11y_dm { filter:invert(1) hue-rotate(180deg); background:#e9e6e1; }
+#mobsoundswclarinet.a11y_dm canvas, #mobsoundswclarinet.a11y_dm img, #mobsoundswclarinet.a11y_dm [role=toolbar], #mobsoundswclarinet.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobsoundswclarinet.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); background:#fff; }
+#mobsoundswclarinet.a11y_hc canvas, #mobsoundswclarinet.a11y_hc img, #mobsoundswclarinet.a11y_hc [role=toolbar], #mobsoundswclarinet.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
 </style>
 <!-- ════════ Accessibility controller ════════ -->
 <script>
-  var clA11y820 = (function(){
-    var ROOT = null, states = { hc: false, lm: false, nr: true };
-    function styleBtn(id, on) {
-      var b = document.getElementById(id); if (!b) return;
-      if (on) { b.style.background='rgba(0,232,208,.12)'; b.style.borderColor='#00e8d0'; b.style.color='#00e8d0'; }
-      else    { b.style.background='#2a2e3a';             b.style.borderColor='#404a60'; b.style.color='#7a8aaa'; }
-      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  var clA11y = (function(){
+var ROOT = null, WRAP = null, states = { hc:false, dm:false, cb:false, nr:true };
+/* ── canvas themes: every colour the sim draws passes through map(); the last frame is recorded,
+      so switching dark mode, high contrast or colour-blind safe colours redraws it at once,
+      even while the sim is paused. No page-wide names: this lives inside the controller. ── */
+function makeCT(){
+  var mode = { dark:false, hc:false, cb:false }, key = '', cache = {}, cvs = [];
+  var probe = document.createElement('canvas').getContext('2d');
+  var P = CanvasRenderingContext2D.prototype;
+  function parse(c){
+    probe.fillStyle = '#000'; probe.fillStyle = c; var s = String(probe.fillStyle), m;
+    if (s.charAt(0) === '#') return [parseInt(s.substr(1,2),16), parseInt(s.substr(3,2),16), parseInt(s.substr(5,2),16), 1];
+    m = s.match(/rgba?\(([^)]+)\)/); if (!m) return null;
+    var p = m[1].split(',').map(parseFloat); return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1];
+  }
+  function lin(v){ v /= 255; return v <= 0.04045 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); }
+  function lum(r,g,b){ return 0.2126*lin(r) + 0.7152*lin(g) + 0.0722*lin(b); }
+  function hsl(r,g,b){
+    r/=255; g/=255; b/=255; var mx = Math.max(r,g,b), mn = Math.min(r,g,b), h = 0, s = 0, l = (mx+mn)/2, d = mx-mn;
+    if (d > 1e-6){ s = d/(1 - Math.abs(2*l - 1));
+      h = mx === r ? ((g-b)/d) % 6 : (mx === g ? (b-r)/d + 2 : (r-g)/d + 4); h *= 60; if (h < 0) h += 360; }
+    return [h, s, l];
+  }
+  function rgb(h,s,l){
+    var c = (1 - Math.abs(2*l - 1))*s, x = c*(1 - Math.abs((h/60) % 2 - 1)), m = l - c/2, t;
+    t = h < 60 ? [c,x,0] : h < 120 ? [x,c,0] : h < 180 ? [0,c,x] : h < 240 ? [0,x,c] : h < 300 ? [x,0,c] : [c,0,x];
+    return [Math.round((t[0]+m)*255), Math.round((t[1]+m)*255), Math.round((t[2]+m)*255)];
+  }
+  /* raise the lightness until the colour stands out on a dark background */
+  function lift(h,s,l,target){ var c = rgb(h,s,l); while (lum(c[0],c[1],c[2]) < target && l < 0.95){ l += 0.03; c = rgb(h,s,l); } return c; }
+  /* Okabe-Ito colours, chosen by hue */
+  function oi(h){
+    return h < 15 || h >= 330 ? [213,94,0] : h < 40 ? [230,159,0] : h < 75 ? [240,228,66] : h < 170 ? [0,158,115]
+         : h < 200 ? [86,180,233] : h < 260 ? [0,114,178] : [204,121,167];
+  }
+  function conv(c, stroke){
+    if (!mode.dark && !mode.hc && !mode.cb) return c;
+    var k = key + (stroke ? 's' : 'f') + c; if (cache[k] !== undefined) return cache[k];
+    var v = parse(c); if (!v){ cache[k] = c; return c; }
+    var r = v[0], g = v[1], b = v[2], a = v[3], q = hsl(r,g,b), Y = lum(r,g,b), neutral = q[1] < 0.18, o;
+    if (mode.cb && !neutral && Y <= 0.6 && !(q[2] > 0.6 && q[1] < 0.6)){ o = oi(q[0]); r = o[0]; g = o[1]; b = o[2]; q = hsl(r,g,b); Y = lum(r,g,b); }
+    if (mode.hc){
+      if (neutral) o = Y > 0.8 ? [0,0,0] : (Y < 0.25 ? [255,255,255] : [205,205,205]);
+      else if (stroke && Y > 0.4) o = [r,g,b];   /* bright lines stay bright */
+      else if (Y > 0.6 || (q[2] > 0.6 && q[1] < 0.6)) o = [0,0,0];   /* light or pastel fills are surfaces */
+      else o = lift(q[0], 1, Math.max(q[2], 0.5), 0.4);
+    } else if (mode.dark){
+      if (neutral) o = rgb(q[0], q[1], 0.1 + 0.82*(1 - q[2]));
+      else if (stroke && Y > 0.3) o = [r,g,b];   /* bright lines stay bright */
+      else if (Y > 0.55 || (q[2] > 0.6 && q[1] < 0.6)) o = rgb(q[0], Math.min(q[1], 0.3), 0.18);   /* light or pastel fills are surfaces */
+      else o = lift(q[0], q[1], q[2], 0.3);
+    } else o = [r,g,b];
+    var out = a < 1 ? 'rgba(' + o[0] + ',' + o[1] + ',' + o[2] + ',' + a + ')' : 'rgb(' + o[0] + ',' + o[1] + ',' + o[2] + ')';
+    cache[k] = out; return out;
+  }
+  /* gradients remember their colour stops, so they can be rebuilt in another theme */
+  function style(v, ctx, stroke){
+    if (typeof v === 'string') return conv(v, stroke);
+    if (v && v.__spec){
+      var sp = v.__spec; if (sp.key === key) return sp.made;
+      var g = P[sp.kind].apply(ctx, sp.args); sp.stops.forEach(function(s){ g.addColorStop(s[0], conv(s[1])); });
+      sp.key = key; sp.made = g; return g;
     }
-    function apply() {
-      if (!ROOT) return;
-      var cv = document.getElementById('clCv820');
-      if (cv) cv.style.filter = states.lm ? 'invert(1) hue-rotate(180deg) brightness(0.9)' : '';
-      var nb = document.getElementById('clNarBar820');
-      if (nb) nb.style.display = states.nr ? 'block' : 'none';
-      var btn = document.getElementById('clBtnNR820');
-      if (btn) { btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF'); styleBtn('clBtnNR820', states.nr); }
-      styleBtn('clBtnHC820', states.hc);
-      styleBtn('clBtnLM820', states.lm);
-    }
-    return {
-      init: function() { ROOT = document.getElementById('clRoot820'); apply(); },
-      toggle: function(k) {
-        states[k] = !states[k];
-        if (k === 'hc' && states.hc) states.lm = false;
-        if (k === 'lm' && states.lm) states.hc = false;
-        apply();
-        if (typeof clSim820 !== 'undefined') clSim820.redraw();
-      },
-      isHC: function() { return states.hc; },
-      narrate: function(msg) {
+    return v;
+  }
+  function attach(cv){
+    var ctx = cv.getContext('2d'); if (!ctx || ctx.__ct) return; ctx.__ct = true;
+    var log = [], replaying = false, vals = {};
+    /* a fill or clear covering the whole canvas starts a new frame (in device pixels, whatever the transform) */
+    function full(a){ var t = ctx.getTransform(), x0 = t.a*a[0] + t.e, y0 = t.d*a[1] + t.f, x1 = t.a*(a[0] + a[2]) + t.e, y1 = t.d*(a[1] + a[3]) + t.f;
+      return t.b === 0 && t.c === 0 && Math.min(x0, x1) <= 0.5 && Math.min(y0, y1) <= 0.5 && Math.max(x0, x1) >= cv.width - 0.5 && Math.max(y0, y1) >= cv.height - 0.5; }
+    /* a canvas attached after its first drawing: keep that picture, to re-colour pixel by pixel until the next frame */
+    var snap = null, framed = false; try { snap = ctx.getImageData(0, 0, cv.width, cv.height); } catch (e) {}
+    ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); vals[p] = d.get.call(ctx);
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return vals[p]; },
+        set:function(v){ vals[p] = v; if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, style(v, ctx, p === 'strokeStyle')); } });
+    });
+    var plain = ['lineWidth','font','textAlign','textBaseline','globalAlpha','lineCap','lineJoin','miterLimit','shadowBlur',
+                 'shadowOffsetX','shadowOffsetY','globalCompositeOperation','lineDashOffset','direction','imageSmoothingEnabled'];
+    plain.forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); if (!d || !d.set) return;
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return d.get.call(ctx); },
+        set:function(v){ if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, v); } });
+    });
+    ['createLinearGradient','createRadialGradient','createConicGradient'].forEach(function(n){
+      if (!P[n]) return;
+      ctx[n] = function(){
+        var args = Array.prototype.slice.call(arguments), g = P[n].apply(ctx, args), add = g.addColorStop;
+        var sp = { kind:n, args:args, stops:[], key:key, made:g }; g.__spec = sp;
+        g.addColorStop = function(o, c){ sp.stops.push([o, c]); add.call(g, o, conv(c)); };
+        return g;
+      };
+    });
+    /* text is a line, not a surface: a bright text colour stays bright in dark mode and high contrast */
+    var fsd = Object.getOwnPropertyDescriptor(P, 'fillStyle');
+    function asText(f, args){ var v = vals.fillStyle; if (typeof v === 'string' && key !== '|' && key !== ''){ fsd.set.call(ctx, conv(v, true)); try { return f.apply(ctx, args); } finally { fsd.set.call(ctx, style(v, ctx, false)); } } return f.apply(ctx, args); }
+    var skip = /^(constructor|get[A-Z]\w*|isPointIn\w*|measureText|create\w*)$/;
+    Object.getOwnPropertyNames(P).forEach(function(n){
+      if (skip.test(n)) return; var d = Object.getOwnPropertyDescriptor(P, n); if (!d || typeof d.value !== 'function') return;
+      var f = d.value;
+      ctx[n] = function(){
+        if (!replaying){
+          if ((n === 'fillRect' || n === 'clearRect') && full(arguments)){ snap = null; framed = true;
+            /* a new frame: start the record from the drawing state of this moment */
+            var t = ctx.getTransform();
+            log = [['c','setTransform',[t.a,t.b,t.c,t.d,t.e,t.f]]];
+            ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){ log.push(['s', p, vals[p]]); });
+            plain.forEach(function(p){ var dd = Object.getOwnPropertyDescriptor(P, p); if (dd && dd.get) log.push(['s', p, dd.get.call(ctx)]); });
+            log.push(['c','setLineDash',[ctx.getLineDash()]]);
+          }
+          if (log){ log.push(['c', n, Array.prototype.slice.call(arguments)]); if (log.length > 60000) log = null; }
+        }
+        if (n === 'fillText') return asText(f, arguments);
+        return f.apply(ctx, arguments);
+      };
+    });
+    cvs.push({ redraw:function(){
+      if (!framed && snap){
+        var img = new ImageData(new Uint8ClampedArray(snap.data), snap.width, snap.height), d = img.data, memo = {};
+        for (var i = 0; i < d.length; i += 4){ if (!d[i+3]) continue; var k = d[i] + ',' + d[i+1] + ',' + d[i+2], c = memo[k];
+          if (!c){ var v = parse(conv('rgb(' + k + ')')); c = memo[k] = v || [d[i], d[i+1], d[i+2]]; } d[i] = c[0]; d[i+1] = c[1]; d[i+2] = c[2]; }
+        var t0 = ctx.getTransform(); P.setTransform.call(ctx, 1, 0, 0, 1, 0, 0); P.putImageData.call(ctx, img, 0, 0); P.setTransform.call(ctx, t0); return;
+      }
+      if (!framed || !log || log.length < 3) return;
+      replaying = true;
+      try { log.forEach(function(e){ if (e[0] === 's') ctx[e[1]] = e[2]; else if (e[1] === 'fillText') asText(P.fillText, e[2]); else P[e[1]].apply(ctx, e[2]); }); }
+      finally { replaying = false; }
+    }});
+  }
+  return {
+    attach: attach,
+    map: conv,
+    set: function(m){ mode = { dark:!!m.dark, hc:!!m.hc, cb:!!m.cb }; key = (mode.dark?'d':'') + (mode.hc?'h':'') + (mode.cb?'c':'') + '|'; cvs.forEach(function(c){ c.redraw(); }); }
+  };
+}
+
+var ct = makeCT();
+var DEFS = {};
+function attachAll(){ var w = document.getElementById('mobsoundswclarinet') || document.getElementById('clRoot'); if (w) [].forEach.call(w.querySelectorAll('canvas'), ct.attach); }
+attachAll();
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return;
+b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa';
+b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){
+ROOT = ROOT || document.getElementById('clRoot'); if (!ROOT) return;
+WRAP = document.getElementById('mobsoundswclarinet') || ROOT; attachAll();
+WRAP.classList.toggle('a11y_dm', states.dm); WRAP.classList.toggle('a11y_hc', states.hc); WRAP.classList.toggle('a11y_cb', states.cb);
+ct.set({ dark:states.dm, hc:states.hc, cb:states.cb });
+var nb = document.getElementById('clNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var nr = document.getElementById('clBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('clBtnHC', states.hc); styleBtn('clBtnDM', states.dm); styleBtn('clBtnCB', states.cb); styleBtn('clBtnNR', states.nr);
+}
+return {
+init: function(){ apply(); },
+toggle: function(k){
+states[k] = !states[k];
+if (k === 'hc' && states.hc) states.dm = false;   /* high contrast and dark mode switch each other off; colour-blind combines with either */
+if (k === 'dm' && states.dm) states.hc = false;
+apply();
+if (typeof clSim !== 'undefined') clSim.redraw();
+},
+/* the colour engine themes every colour on the canvas, so the drawing code keeps its standard colours */
+isHC: function(){ return false; }, isCB: function(){ return false; }, isLM: function(){ return false; },
+isNarOn: function(){ return states.nr; },
+col: function(a, def){ if (def !== undefined) return def; var T = DEFS; return T[a] !== undefined ? T[a] : T['' + a]; },
+narrate: function(msg) {
         if (!states.nr) return;
-        var nb = document.getElementById('clNarBar820'); if (!nb) return;
+        var nb = document.getElementById('clNarBar'); if (!nb) return;
         nb.innerHTML = msg;
         if (window.MathJax) {
           if (MathJax.typesetPromise) MathJax.typesetPromise([nb]);
           else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, nb]);
         }
       }
-    };
-  })();
+};
+})();
 </script>
 <!-- ════════ Simulation ════════ -->
 <!-- ════════ Simulation ════════ -->
 <script>
-  var clSim820 = (function(){
-    var _ACT = ' cl_active820'; /* active-class string for split/join */
-    var canvas = document.getElementById('clCv820');
+  var clSim = (function(){
+    var _ACT = ' cl_active'; /* active-class string for split/join */
+    var canvas = document.getElementById('clCv');
     var ctx    = canvas.getContext('2d');
     var V_SOUND = 345;
     var L0 = V_SOUND / (4 * 146.8); /* full tube length ~0.587 m for D3 */
@@ -214,19 +404,19 @@
       }
     }
     /* Colours */
-    function cBg()  { return clA11y820.isHC()?'#0d0d0d':'#f5f0e8'; }
-    function cAx()  { return clA11y820.isHC()?'#cccccc':'#333333'; }
-    function cGrid(){ return clA11y820.isHC()?'#2a3344':'#c0c0b0'; }
-    function cTxt() { return clA11y820.isHC()?'#eeeeee':'#222222'; }
-    function cTit() { return clA11y820.isHC()?'#bbaaff':'#440088'; }
-    function cWave(){ return dispMode==='pres'?(clA11y820.isHC()?'#ffaa44':'#b86000'):(clA11y820.isHC()?'#cc77cc':'#660066'); }
-    function cBody()    { return clA11y820.isHC()?'#6a7a5a':'#7a5c28'; }
-    function cBodyFill(){ return clA11y820.isHC()?'rgba(80,100,60,0.15)':'rgba(220,195,150,0.40)'; }
-    function cEffFill() { return clA11y820.isHC()?'rgba(60,140,60,0.18)':'rgba(160,255,160,0.35)'; }
-    function cHoleOpen()  { return clA11y820.isHC()?'#222':'#eee8d0'; }
-    function cHoleClosed(){ return clA11y820.isHC()?'#5a4a2a':'#5a3e18'; }
-    function cReed(){ return clA11y820.isHC()?'#aadd88':'#5a8a20'; }
-    function cRegKey(){ return clA11y820.isHC()?'#88ccff':'#1155aa'; }
+    function cBg()  { return clA11y.isHC()?'#0d0d0d':'#f5f0e8'; }
+    function cAx()  { return clA11y.isHC()?'#cccccc':'#333333'; }
+    function cGrid(){ return clA11y.isHC()?'#2a3344':'#c0c0b0'; }
+    function cTxt() { return clA11y.isHC()?'#eeeeee':'#222222'; }
+    function cTit() { return clA11y.isHC()?'#bbaaff':'#440088'; }
+    function cWave(){ return dispMode==='pres'?(clA11y.isHC()?'#ffaa44':'#b86000'):(clA11y.isHC()?'#cc77cc':'#660066'); }
+    function cBody()    { return clA11y.isHC()?'#6a7a5a':'#7a5c28'; }
+    function cBodyFill(){ return clA11y.isHC()?'rgba(80,100,60,0.15)':'rgba(220,195,150,0.40)'; }
+    function cEffFill() { return clA11y.isHC()?'rgba(60,140,60,0.18)':'rgba(160,255,160,0.35)'; }
+    function cHoleOpen()  { return clA11y.isHC()?'#222':'#eee8d0'; }
+    function cHoleClosed(){ return clA11y.isHC()?'#5a4a2a':'#5a3e18'; }
+    function cReed(){ return clA11y.isHC()?'#aadd88':'#5a8a20'; }
+    function cRegKey(){ return clA11y.isHC()?'#88ccff':'#1155aa'; }
     /* Fendt arrow */
     function arrow(x1,y1,x2,y2,w,col,txt,spc,spcy){
       if(!w)w=1;if(!txt)txt='';if(!col)col=ctx.strokeStyle;
@@ -275,7 +465,7 @@
       ctx.beginPath();ctx.moveTo(FX1-20,ty);ctx.bezierCurveTo(FX1-8,ty,FX1,ty-12,FX1,ty-15);ctx.stroke();
       ctx.beginPath();ctx.moveTo(FX1-20,by);ctx.bezierCurveTo(FX1-8,by,FX1,by+12,FX1,by+15);ctx.stroke();
       /* Open end dashes */
-      ctx.strokeStyle=clA11y820.isHC()?'#666':'#aaa';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);
+      ctx.strokeStyle=clA11y.isHC()?'#666':'#aaa';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);
       ctx.beginPath();ctx.moveTo(FX1,ty-19);ctx.lineTo(FX1,by+19);ctx.stroke();
       ctx.setLineDash([]);
       ctx.font='9pt Calibri';ctx.fillStyle=cTxt();
@@ -300,11 +490,11 @@
       }
       /* Effective length bracket */
       var bry=by+38;
-      ctx.strokeStyle=clA11y820.isHC()?'#88cc88':'#226622';ctx.lineWidth=1.5;
+      ctx.strokeStyle=clA11y.isHC()?'#88cc88':'#226622';ctx.lineWidth=1.5;
       ctx.beginPath();ctx.moveTo(FX0,bry);ctx.lineTo(effEnd,bry);ctx.stroke();
       ctx.beginPath();ctx.moveTo(FX0,bry-4);ctx.lineTo(FX0,bry+4);ctx.stroke();
       ctx.beginPath();ctx.moveTo(effEnd,bry-4);ctx.lineTo(effEnd,bry+4);ctx.stroke();
-      ctx.font='9pt Calibri';ctx.fillStyle=clA11y820.isHC()?'#88cc88':'#226622';
+      ctx.font='9pt Calibri';ctx.fillStyle=clA11y.isHC()?'#88cc88':'#226622';
       ctx.textAlign='center';ctx.textBaseline='top';
       ctx.fillText('L\u2091 = '+Leff.toFixed(3)+' m  (\u03bb\u2081/4)',(FX0+effEnd)/2,bry+3);
       /* Wave + molecules inside tube */
@@ -344,7 +534,7 @@
     function drawGraph(){
       var Leff=getLeff(), gW=Math.min(580,Math.round(Leff/L0*600)), gxEnd=GX0+gW;
       var axC=cAx(),grdC=cGrid(),txtC=cTxt(),titC=cTit(),wvC=cWave();
-      ctx.fillStyle=clA11y820.isHC()?'#1a2233':'#f0ecff';
+      ctx.fillStyle=clA11y.isHC()?'#1a2233':'#f0ecff';
       ctx.fillRect(GX0,GY-GH,gW,GH*2);
       /* Grid */
       ctx.strokeStyle=grdC;ctx.lineWidth=0.8;
@@ -380,7 +570,7 @@
         var isNode=(dispMode==='disp')?isDispNode:!isDispNode;
         var lbl=isNode?'N':'A';
         var gxk=GX0+xn*gW;
-        ctx.fillStyle=isNode?(clA11y820.isHC()?'#88ddff':'#0044aa'):(clA11y820.isHC()?'#ffaa66':'#aa2200');
+        ctx.fillStyle=isNode?(clA11y.isHC()?'#88ddff':'#0044aa'):(clA11y.isHC()?'#ffaa66':'#aa2200');
         ctx.textAlign='center';ctx.fillText(lbl,gxk,GY+5);
         ctx.strokeStyle=axC;ctx.lineWidth=1;
         ctx.beginPath();ctx.moveTo(gxk,GY-4);ctx.lineTo(gxk,GY+4);ctx.stroke();
@@ -392,7 +582,7 @@
       ctx.font='10pt Calibri';ctx.textBaseline='bottom';
       var leftLbl =(dispMode==='disp')?'(closed)':'(closed)';
       var rightLbl=(dispMode==='disp')?'(open)':'(open)';
-      ctx.fillStyle=clA11y820.isHC()?'#88ddff':'#0044aa';ctx.textAlign='left';
+      ctx.fillStyle=clA11y.isHC()?'#88ddff':'#0044aa';ctx.textAlign='left';
       ctx.fillText(leftLbl,GX0+6,GY-GH-4);
       ctx.textAlign='right';ctx.fillText(rightLbl,gxEnd,GY-GH-4);
       /* Title */
@@ -413,14 +603,14 @@
       ctx.fillText('n = '+harmonic+' (odd only)',ix,iy+90);
       ctx.fillText('t = '+time.toFixed(2)+' s',ix,iy+112);
       var fluteL=V_SOUND/(2*getNote().freq);
-      ctx.font='10pt Calibri';ctx.fillStyle=clA11y820.isHC()?'#88ccff':'#336699';
+      ctx.font='10pt Calibri';ctx.fillStyle=clA11y.isHC()?'#88ccff':'#336699';
       ctx.fillText('Flute same pitch:',ix,iy+136);
       ctx.fillText('L='+fluteL.toFixed(3)+' m (\xd72 shorter)',ix,iy+150);
-      var el=document.getElementById('clNoteInfo820');
+      var el=document.getElementById('clNoteInfo');
       if(el)el.textContent=note.label+'  |  f='+f.toFixed(1)+' Hz  |  \u03bb='+lam.toFixed(3)+' m';
     }
     function drawMotion(){
-      if(index>=8000){runFlag=0;document.getElementById('clPlay820').textContent='\u25B6';}
+      if(index>=8000){runFlag=0;document.getElementById('clPlay').textContent='\u25B6';}
       if(runFlag!==1)return;
       ctx.clearRect(0,0,canvas.width,canvas.height);
       index++;time=index/(slowMode?30.0:100.0);
@@ -430,7 +620,7 @@
     }
     function runMotion(){ 
       drawMotion(); 
-      document.getElementById("clPlay820").value=String.fromCodePoint(0x23F8);
+      document.getElementById("clPlay").value=String.fromCodePoint(0x23F8);
       if(runFlag===1) timer=window.setTimeout(runMotion,1000/60); }
     function play()        { window.clearTimeout(timer);runFlag=1;runMotion(); }
     function pause()       { window.clearTimeout(timer);runFlag=0; }
@@ -441,7 +631,7 @@
     function redraw()      { drawMotion(); }
     function _setActive(ids,activeId){
       ids.forEach(function(id){
-        var b=document.getElementById(id+'820');
+        var b=document.getElementById(id+'');
         if(!b)return;
         b.className=b.className.split(_ACT).join('');
         if(id===activeId)b.className+=_ACT;
@@ -454,7 +644,7 @@
       if(note.harmBase!==harmonic)setHarmonic(note.harmBase);
       _initMols();reset();
       var Leff=getLeff(),lam=V_SOUND/note.freq;
-      clA11y820.narrate(
+      clA11y.narrate(
         '<strong>'+note.label+'</strong> &mdash; f = '+note.freq.toFixed(1)+' Hz. '
         +'L = '+Leff.toFixed(3)+' m. \u03bb = '+lam.toFixed(3)+' m (= 4L for n=1). '
         +(note.regKey?'<strong>Register key open</strong>: suppresses n=1, forces n=3 harmonic &mdash; a musical <strong>twelfth</strong> (\xd73) above the first register. '
@@ -466,7 +656,7 @@
       dispMode=mode;
       _setActive(['clBtnDisp','clBtnPres'],'clBtn'+(mode==='disp'?'Disp':'Pres'));
       reset();
-      clA11y820.narrate(mode==='disp'
+      clA11y.narrate(mode==='disp'
                            ?'<strong>Displacement</strong>: molecule oscillation. Closed end = node (wall), open end = antinode (free).'
                            :'<strong>Pressure</strong>: local pressure variation. Closed end = antinode (max swing, drives reed). Open end = node (atmospheric).');
     }
@@ -475,7 +665,7 @@
       harmonic=n;
       _setActive(['clBtnH1','clBtnH3','clBtnH5','clBtnH7'],'clBtnH'+n);
       _initMols();reset();
-      clA11y820.narrate(
+      clA11y.narrate(
         'n = '+n+' &mdash; f = '+getFreq().toFixed(1)+' Hz (\xd7'+n+' fundamental). \u03bb = '+getLambda().toFixed(3)+' m. '
         +'Only <strong>odd harmonics</strong> (n=1,3,5,\u2026) exist in a closed-open pipe. '
         +(n===3?'This is the <strong>second register</strong> &mdash; a musical <em>twelfth</em> above the first, unlike the flute whose second register is an <em>octave</em> (\xd72).'
@@ -484,18 +674,18 @@
     }
     function toggleMols(){
       showMols=!showMols;
-      var btn=document.getElementById('clBtnMols820');
+      var btn=document.getElementById('clBtnMols');
       if(btn){btn.textContent='Molecules: '+(showMols?'ON':'OFF');
               btn.className=btn.className.split(_ACT).join('')+(showMols?_ACT:'');}
       if(showMols)_initMols();
       if(!runFlag)drawMotion();
-      clA11y820.narrate(showMols
+      clA11y.narrate(showMols
                            ?'Molecules shown. Density \u221d pressure amplitude &mdash; clusters at pressure antinodes near the reed (closed) end.'
                            :'Molecules hidden.');
     }
     window.setTimeout(function(){
       _initMols();reset();
-      clA11y820.narrate(
+      clA11y.narrate(
         'Standing Waves in a Clarinet. '
         +'Closed-open pipe: reed end = closed (pressure antinode, displacement node); bell = open (pressure node, displacement antinode). '
         +'Only <strong>odd harmonics</strong> (n=1,3,5,\u2026) are supported. '
@@ -508,8 +698,21 @@
   })();
 </script>
 <script>
-  clA11y820.init();
+  clA11y.init();
 </script>
-
+<script>
+(function(){
+var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+b.addEventListener('click', function(){
+var open = d.style.display === 'none';
+d.style.display = open ? 'block' : 'none';
+b.setAttribute('aria-expanded', open ? 'true' : 'false');
+b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }
+});
+})();
+</script>
+</div><!-- #mobsoundswclarinet -->
+</main>
 </body>
 </html>
