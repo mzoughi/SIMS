@@ -715,7 +715,7 @@ toggleHC, toggleCB, toggleNarr
 <script>
 (function(){
 var W = document.getElementById('stdWkposgraphmatch'); if (!W || W.__std) return; W.__std = true;
-var BASE = 'dark', P = {"hc": "[onclick*=\"toggleHC\"]", "cb": "[onclick*=\"toggleCB\"]", "nr": "[onclick*=\"toggleNarr\"]"}, HIDE = ["[class*=\"a11ybar\"]"];
+var BASE = 'dark', CANVAS = 'light', P = {"hc": "[onclick*=\"toggleHC\"]", "cb": "[onclick*=\"toggleCB\"]", "nr": "[onclick*=\"toggleNarr\"]"}, HIDE = ["[class*=\"a11ybar\"]"];
 var st = { hc:false, mode:false, cb:false, nr:true, fs:false };
 /* ── canvas themes: every colour the sim draws passes through map(); the last frame is recorded,
       so switching dark mode, high contrast or colour-blind safe colours redraws it at once,
@@ -872,7 +872,11 @@ function generic(){
 [].forEach.call(W.querySelectorAll('canvas'), ct.attach);
 var gm = !P.mode && st.mode, gh = !P.hc && st.hc, gc = !P.cb && st.cb;
 W.classList.toggle('std_inv', gm); W.classList.toggle('std_hcl', gh && BASE === 'light'); W.classList.toggle('std_hcd', gh && BASE === 'dark');
-ct.set(BASE === 'light' ? { dark:gm, hc:gh, cb:gc } : { light:gm, hc:gh, cb:gc, darkbase:true });
+if (CANVAS === 'light'){
+  /* a dark page holding light graphs: the graphs follow the page -- dark by default, light in light mode (the page filter
+     is undone on the canvases, so they show their own light colours), and the sim's own palette in high contrast */
+  ct.set({ dark: !st.mode && !st.hc, hc: gh, cb: gc });
+} else ct.set(BASE === 'light' ? { dark:gm, hc:gh, cb:gc } : { light:gm, hc:gh, cb:gc, darkbase:true });
 }
 function label(){
 [].forEach.call(W.querySelectorAll('[data-std] button'), function(b){ var k = b.getAttribute('data-k'); b.setAttribute('aria-pressed', st[k] ? 'true' : 'false');
@@ -901,6 +905,7 @@ if (big && big.width < box.width - 30) box = big;   /* a full-width wrapper: lin
 tb.style.maxWidth = Math.round(box.width) + 'px';
 tb.style.marginLeft = Math.max(0, Math.round(box.left - W.getBoundingClientRect().left)) + 'px'; tb.style.marginRight = 'auto'; }
 fit(); window.addEventListener('resize', fit); setTimeout(fit, 300);
+generic();
 label();
 })();
 </script>
