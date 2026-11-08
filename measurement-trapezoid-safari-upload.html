@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Optics: Trapezoid Safari (upload your own image)</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, refraction, reflection, Snell's law, total internal reflection, normal, angle of incidence, glass block, laser, image analysis, lesson, scientific">
+<meta name="description" content="Trace a laser beam through a glass trapezoid on a photo: set the scale, draw the normal where the beam meets each surface, measure the angles, download the marked image and the angles.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+@media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="tsRoot" class="ts_root" role="region" aria-label="Trapezoid safari: trace a laser beam through a glass block on an image, draw normals and measure angles">
+<div class="ts_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="ts_a11ybtn" id="tsBtnHC" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="ts_a11ybtn" id="tsBtnLM" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="ts_a11ybtn" id="tsBtnCB" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="ts_a11ybtn ts_a11yon" id="tsBtnNR" aria-pressed="true">NARRATION: ON</button>
+<button type="button" class="ts_a11ybtn" id="tsBtnFS" aria-pressed="false">FONT: NORMAL</button>
+</div>
+<div class="ts_header"><p class="ts_h1">Trapezoid Safari: Tracing a Laser Beam Through Glass</p><p class="ts_sub">set the scale &middot; draw the normal where the beam meets a surface &middot; measure the angles from the normal</p></div>
+<div class="ts_panel"><div class="ts_ptitle">The image</div><div class="ts_pbody">
+<div class="ts_bar" id="tsLoad"><b>Image:</b> <input type="file" id="tsFile" accept="image/*" aria-label="Choose an image file"> <span id="tsFname" class="ts_note"></span></div>
+<div class="ts_bar"><b>View:</b>
+<button type="button" class="ts_btn" id="tsZfit">Fit</button><button type="button" class="ts_btn" id="tsZ1">1:1</button>
+<button type="button" class="ts_btn" id="tsZin" aria-label="Zoom in">+ Zoom</button><button type="button" class="ts_btn" id="tsZout" aria-label="Zoom out">&minus; Zoom</button>
+<label><input type="checkbox" id="tsLoupeC" checked> magnifier</label><span id="tsPix" class="ts_pix">pixel: &mdash;</span></div>
+</div>
+<div class="ts_view" id="tsView"><div class="ts_drop" id="tsDrop"></div>
+<canvas id="tsCv" width="10" height="10" tabindex="0" style="display:none" role="img" aria-describedby="tsStatus" aria-label="The image with your scale, normals and angles. Click on it, or focus it and move the cross with the arrow keys (Shift for 10 pixels) and press Enter to click."></canvas>
+<canvas class="ts_loupe" id="tsLoupe" width="150" height="150" aria-hidden="true"></canvas></div></div>
+<div class="ts_status" id="tsStatus" role="status" aria-live="polite"></div>
+<div class="ts_panels">
+<div class="ts_panel"><div class="ts_ptitle">1. The scale</div><div class="ts_pbody">
+<div class="ts_bar"><button type="button" class="ts_btn ts_tool" id="tsMScale" aria-pressed="false">Set the scale</button>
+<label>distance between the two points <input type="number" id="tsSv" value="10" step="any" min="0" class="ts_num"></label><input type="text" id="tsSu" value="mm" class="ts_unit" aria-label="unit"></div>
+<p class="ts_note" id="tsSstat">Not set. Press the button, click two marks on the ruler, and type the distance between them.</p>
+<div class="ts_bar"><button type="button" class="ts_btn ts_tool" id="tsMLen" aria-pressed="false">Measure a length</button><span class="ts_note">(click two points)</span></div>
+</div></div>
+<div class="ts_panel"><div class="ts_ptitle">2. Normals and 3. angles</div><div class="ts_pbody">
+<div class="ts_bar"><button type="button" class="ts_btn ts_tool" id="tsMNorm" aria-pressed="false">Draw a normal</button></div>
+<p class="ts_note">Click two points along the surface, then the point where the beam meets it: the normal is drawn on both sides.</p>
+<div class="ts_bar"><button type="button" class="ts_btn ts_tool" id="tsMAng" aria-pressed="false">Measure an angle</button></div>
+<p class="ts_note">Click a point on the beam, then the point of contact, then a third point.</p>
+<div class="ts_bar"><label><input type="checkbox" id="tsSnap" checked> snap to points already drawn</label></div>
+</div></div>
+</div>
+<div class="ts_panel"><div class="ts_ptitle">4. Your measurements</div><div class="ts_pbody">
+<div class="ts_tblwrap"><table class="ts_tbl" aria-label="Measured angles and lengths"><thead><tr><th scope="col">ID</th><th scope="col">value</th><th scope="col">note (optional)</th><th scope="col"><span class="ts_sr">delete</span></th></tr></thead><tbody id="tsTb"></tbody></table></div>
+<div class="ts_bar">
+<button type="button" class="ts_btn" id="tsUndo">Undo last</button>
+<button type="button" class="ts_btn ts_warn" id="tsClr">Clear everything</button>
+<button type="button" class="ts_btn" id="tsPng">5. Download the image (PNG)</button>
+<button type="button" class="ts_btn" id="tsCsv">Download the angles (CSV)</button>
+<button type="button" class="ts_btn ts_kick" id="tsSend">6. Enter the angles in the answer box</button>
+</div></div></div>
+<div id="tsNar" class="ts_narbar" aria-hidden="true"></div>
+<div class="ts_descwrap">
+<button type="button" class="ts_descbtn" id="tsDescBtn" aria-expanded="false" aria-controls="tsDesc">&#9656; SIM DESCRIPTION</button>
+<div class="ts_desc" id="tsDesc" role="region" aria-labelledby="tsDescBtn" hidden>
+<p>The image shows a laser beam entering a glass block shaped like a trapezoid. Inside the block the beam is bent (refracted) or reflected at each surface it meets. This tool lets you trace and measure its path.</p>
+<p><b>1. The scale.</b> Press &ldquo;Set the scale&rdquo;, click two marks on the ruler in the image, and type the distance between them: the tool computes how many millimetres one pixel of the image is. Lengths can then be measured with &ldquo;Measure a length&rdquo;.</p>
+<p><b>2. The normal.</b> Angles in optics are measured from the <b>normal</b>, the line perpendicular to the surface at the point where the beam meets it. Press &ldquo;Draw a normal&rdquo;, click two points along the edge of the block (a line parallel to the surface appears), then click the point where the beam meets the surface. The normal is drawn through that point, on both sides of the surface, and the helper line disappears. The normals are numbered N1, N2, &hellip;</p>
+<p><b>3. The angle.</b> Press &ldquo;Measure an angle&rdquo; and click three points: a point on the beam, the point of contact (the vertex), and a third point. The angle between the two lines is drawn, numbered &theta;1, &theta;2, &hellip; and entered in the table, where you can add a note (for example &ldquo;incidence, first surface&rdquo;). The earlier measurements stay on the image. With &ldquo;snap&rdquo; on, a click near a point already drawn (such as the foot of a normal) jumps to it.</p>
+<p>Snell&rsquo;s law relates the angles on the two sides of a surface: `n_1 sin theta_1 = n_2 sin theta_2`. When the beam goes from glass to air at more than the critical angle, `sin theta_c = n_"air"/n_"glass"`, it cannot leave: it is totally reflected.</p>
+<p><b>Keyboard.</b> Focus the image and use the arrow keys to move the cross (Shift: 10 pixels at a time), Enter to click there. The magnifier and the zoom help place each click precisely. Your work is kept in this browser.</p>
+</div></div>
+</div><!-- #tsRoot -->
+<style>
+#tsRoot { --c-chassis:#1a1c1f; --c-panel:#22262b; --c-hi:#2c3138; --c-lo:#14161a; --c-bd:#3a4048; --c-bd2:#525c66; --c-text:#c8d0d8; --c-dim:#8a94a3; --c-accent:#e8a020; --c-green:#3ad08f; --c-val:#ffdd66; --c-nbg:#2a2410; --c-nbd:#e0b040; --c-ntx:#f0e2b8; --c-bad:#ff8a7a;
+  background:var(--c-chassis); color:var(--c-text); font-family:Arial, sans-serif; font-size:14px; padding:14px 10px 18px; border-radius:6px; box-sizing:border-box; width:100%; max-width:920px; margin:0 auto 10px; display:flex; flex-direction:column; gap:10px; }
+#tsRoot.ts_fsL { font-size:17px; }
+#tsRoot * { box-sizing:border-box; }
+#tsRoot.ts_lm { --c-chassis:#e9edf1; --c-panel:#ffffff; --c-hi:#f1f4f7; --c-lo:#f4f6f9; --c-bd:#c3cad3; --c-bd2:#9aa3ae; --c-text:#1d232a; --c-dim:#556070; --c-accent:#a8620a; --c-green:#12805a; --c-val:#8a4a00; --c-nbg:#ffefc0; --c-ntx:#333; --c-bad:#a02010; }
+#tsRoot.ts_hc { --c-chassis:#000; --c-panel:#000; --c-hi:#111; --c-lo:#000; --c-bd:#fff; --c-bd2:#fff; --c-text:#fff; --c-dim:#e8e8e8; --c-accent:#ffd700; --c-green:#00ff88; --c-val:#ffff00; --c-nbg:#000; --c-nbd:#ffd700; --c-ntx:#fff; --c-bad:#ff5555; }
+#tsRoot .ts_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+#tsRoot .ts_a11ybtn { padding:4px 10px; font-size:.72em; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-dim); min-height:32px; }
+#tsRoot .ts_a11yon { background:rgba(58,208,143,.14); border-color:var(--c-green); color:var(--c-green); font-weight:bold; }
+#tsRoot .ts_header { text-align:center; }
+#tsRoot .ts_h1 { margin:0; font-size:1.05em; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--c-accent); }
+#tsRoot .ts_sub { margin:3px 0 0; font-size:.75em; color:var(--c-dim); letter-spacing:.04em; text-transform:uppercase; }
+#tsRoot .ts_panels { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#tsRoot .ts_panel { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; overflow:hidden; min-width:0; }
+#tsRoot .ts_ptitle { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.68em; letter-spacing:.1em; text-transform:uppercase; color:var(--c-dim); }
+#tsRoot .ts_pbody { padding:9px 12px; display:flex; flex-direction:column; gap:7px; }
+#tsRoot .ts_bar { display:flex; flex-wrap:wrap; gap:6px 10px; align-items:center; }
+#tsRoot .ts_bar label { display:flex; align-items:center; gap:6px; font-size:.9em; cursor:pointer; }
+#tsRoot .ts_note { margin:0; font-size:.82em; color:var(--c-dim); line-height:1.4; }
+#tsRoot .ts_pix { font-family:monospace; font-size:.8em; color:var(--c-dim); }
+#tsRoot .ts_view { position:relative; background:#2b2f36; max-height:72vh; overflow:auto; border-top:1px solid var(--c-bd); }
+#tsRoot #tsCv { display:block; cursor:crosshair; touch-action:none; }
+#tsRoot .ts_drop { padding:40px 10px; text-align:center; color:#bbc; }
+#tsRoot .ts_loupe { position:absolute; border:2px solid #fff; border-radius:50%; box-shadow:0 0 6px rgba(0,0,0,.6); pointer-events:none; display:none; }
+#tsRoot .ts_btn { padding:7px 11px; font-family:monospace; font-size:.8em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-text); border-radius:3px; min-height:36px; }
+#tsRoot .ts_btn:hover { border-color:var(--c-accent); }
+#tsRoot .ts_tool[aria-pressed="true"] { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#tsRoot .ts_kick { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#tsRoot .ts_warn { border-color:#cc6655; color:var(--c-bad); }
+#tsRoot .ts_num { width:6em; } #tsRoot .ts_unit { width:4em; }
+#tsRoot input[type=number], #tsRoot input[type=text] { background:var(--c-hi); color:var(--c-text); border:1px solid var(--c-bd2); border-radius:3px; padding:5px; font-size:.95em; min-height:34px; }
+#tsRoot input[type=file] { color:var(--c-text); font-size:.9em; max-width:100%; }
+#tsRoot input[type=checkbox] { accent-color:var(--c-accent); width:16px; height:16px; }
+#tsRoot .ts_tblwrap { max-height:260px; overflow:auto; }
+#tsRoot .ts_tbl { border-collapse:collapse; width:100%; font-size:.92em; }
+#tsRoot .ts_tbl th, #tsRoot .ts_tbl td { border-bottom:1px solid var(--c-bd); padding:4px 6px; text-align:left; }
+#tsRoot .ts_tbl th { background:var(--c-hi); position:sticky; top:0; font-size:.85em; }
+#tsRoot .ts_tbl td.ts_v { font-family:monospace; color:var(--c-val); white-space:nowrap; }
+#tsRoot .ts_tbl input { width:100%; min-height:30px; }
+#tsRoot .ts_del { background:transparent; border:1px solid #cc6655; color:var(--c-bad); border-radius:3px; cursor:pointer; min-width:30px; min-height:30px; }
+#tsRoot .ts_sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+#tsRoot .ts_status { padding:8px 12px; border-radius:4px; background:var(--c-nbg); border-left:4px solid var(--c-nbd); color:var(--c-ntx); font-size:.95em; line-height:1.45; min-height:36px; }
+#tsRoot .ts_narbar { display:none; }
+#tsRoot .ts_descwrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+#tsRoot .ts_descbtn { padding:8px 18px; font-family:monospace; font-size:.8em; letter-spacing:.08em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-accent); color:var(--c-accent); border-radius:3px; font-weight:bold; min-height:40px; }
+#tsRoot .ts_desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid var(--c-accent); border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.95em; line-height:1.55; }
+#tsRoot .ts_desc p { margin:0 0 9px; }
+#tsRoot [hidden] { display:none !important; }
+#tsRoot button:focus-visible, #tsRoot input:focus-visible, #tsRoot canvas:focus-visible { outline:2px solid var(--c-accent); outline-offset:2px; }
+@media (max-width:640px) { #tsRoot { padding:10px 6px 14px; } #tsRoot .ts_panels { grid-template-columns:minmax(0,1fr); } #tsRoot .ts_btn { flex:1 1 40%; } }
+@media (pointer:coarse) { #tsRoot .ts_a11ybtn, #tsRoot .ts_btn { min-height:44px; font-size:15px; } #tsRoot input[type=checkbox] { width:22px; height:22px; } }
+</style>
+<!-- ════════ TOOL ════════
+Clicks are stored in the image's own pixels. Scale: two clicks and a typed distance (units per pixel).
+Normal: two clicks on the surface give its direction u; the third click Q gives the normal through Q, direction (-u_y, u_x), drawn on both sides.
+Angle: points A, B (vertex), C; angle = acos((BA . BC)/|BA||BC|), 0 to 180 degrees.
+Work kept in localStorage (key: image + question). No dollar signs or backticks in the code.
+-->
+<script>
+(function(){
+/* ══════════ settings for the person who sets the question ══════════ */
+var SHARED = 0;                 /* 1: the image below is loaded for the students; 0: they upload their own */
+var IMAGE_URL = '';               /* https address of the image (shared version); empty: a built-in example image */
+var CSV_ANSWER_NUM = '000';              /* answer box that receives the CSV of the angles */
+var DECIMALS = 1;                        /* decimals of the angles */
+var thisq = '';
+function el(id){ return document.getElementById(id + thisq); }
+var ROOT = el('tsRoot'), view = el('tsView'), cv = el('tsCv'), g = cv.getContext('2d'), loupe = el('tsLoupe'), lg = loupe.getContext('2d');
+var img = null, imgKey = '', zoom = 1, mode = null, clicks = [], hover = null, kcur = null;
+var S = { scale:null, normals:[], angles:[], lens:[], order:[], nN:1, nA:1, nL:1 };
+var th = { hc:false, lm:false, cb:false, nr:true, fs:false };
+function status(t){ el('tsStatus').textContent = t; if (th.nr) el('tsNar').textContent = t; }
+function f(v, k){ return (+v).toFixed(k); }
+/* ══════════ colours of the marks ══════════ */
+function pal(){ return th.cb ? { norm:'#0072B2', surf:'#E69F00', ang:'#CC79A7', scale:'#009E73', pt:'#D55E00', len:'#56B4E9', lab:'#000' } : { norm:'#00b7ff', surf:'#ffd400', ang:'#ff3df2', scale:'#20d070', pt:'#ff4040', len:'#ff9a20', lab:'#000' }; }
+/* ══════════ loading ══════════ */
+function useImage(im, key, name){ img = im; imgKey = key; el('tsDrop').style.display = 'none'; cv.style.display = 'block'; restore(); fit(); table(); kcur = [im.naturalWidth/2, im.naturalHeight/2];
+  status((name ? name + ' loaded. ' : '') + (S.angles.length ? 'Your earlier work (' + S.angles.length + ' angle(s)) was restored. ' : '') + (S.scale ? 'The scale is set.' : 'Start by setting the scale: press \u201CSet the scale\u201D.')); }
+function loadFile(file){ if (!file) return; if (!/^image\//.test(file.type)){ status('That is not an image file.'); return; } var rd = new FileReader();
+  rd.onload = function(){ var im = new Image(); im.onload = function(){ el('tsFname').textContent = file.name; useImage(im, 'f:' + file.name + ':' + im.naturalWidth + 'x' + im.naturalHeight, file.name); }; im.onerror = function(){ status('The image could not be read.'); }; im.src = rd.result; }; rd.readAsDataURL(file); }
+el('tsFile').addEventListener('change', function(){ loadFile(this.files[0]); });
+view.addEventListener('dragover', function(e){ e.preventDefault(); }); view.addEventListener('drop', function(e){ e.preventDefault(); if (!SHARED && e.dataTransfer.files && e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+/* the built-in example: a glass trapezoid (n = 1.50) on paper, with a ruler; the beam path follows Snell's law */
+function exampleImage(){ var W = 1200, H = 800, c = document.createElement('canvas'); c.width = W; c.height = H; var x = c.getContext('2d'), i;
+  x.fillStyle = '#f4f1e8'; x.fillRect(0, 0, W, H); x.strokeStyle = 'rgba(120,150,190,0.25)'; x.lineWidth = 1; for (i=0; i<W; i += 20){ x.beginPath(); x.moveTo(i, 0); x.lineTo(i, H); x.stroke(); } for (i=0; i<H; i += 20){ x.beginPath(); x.moveTo(0, i); x.lineTo(W, i); x.stroke(); }
+  var P = [[330, 250], [870, 250], [1010, 560], [190, 560]];
+  x.fillStyle = 'rgba(170,215,230,0.55)'; x.strokeStyle = '#4a7c8c'; x.lineWidth = 3; x.beginPath(); P.forEach(function(p, k){ if (k) x.lineTo(p[0], p[1]); else x.moveTo(p[0], p[1]); }); x.closePath(); x.fill(); x.stroke();
+  /* ray trace */
+  var n = 1.5, o = [20, 90], d = [258 - 20, 410 - 90], L = Math.hypot(d[0], d[1]); d = [d[0]/L, d[1]/L]; var inside = false, path = [o.slice()];
+  function hit(o, d){ var best = null; for (var k=0; k<4; k++){ var a = P[k], b = P[(k + 1) % 4], e = [b[0] - a[0], b[1] - a[1]], den = d[0]*e[1] - d[1]*e[0]; if (Math.abs(den) < 1e-9) continue;
+      var t = ((a[0] - o[0])*e[1] - (a[1] - o[1])*e[0])/den, s = ((a[0] - o[0])*d[1] - (a[1] - o[1])*d[0])/den; if (t > 1e-6 && s >= 0 && s <= 1 && (!best || t < best.t)) best = { t:t, e:e }; } return best; }
+  for (var step=0; step<6; step++){ var h = hit(o, d); if (!h){ o = [o[0] + d[0]*2000, o[1] + d[1]*2000]; path.push(o); break; }
+    o = [o[0] + d[0]*h.t, o[1] + d[1]*h.t]; path.push(o.slice()); var el2 = Math.hypot(h.e[0], h.e[1]), nn = [-h.e[1]/el2, h.e[0]/el2]; if (nn[0]*d[0] + nn[1]*d[1] > 0) nn = [-nn[0], -nn[1]];
+    var ci = -(nn[0]*d[0] + nn[1]*d[1]), r = inside ? n : 1/n, k2 = 1 - r*r*(1 - ci*ci);
+    if (k2 < 0){ d = [d[0] + 2*ci*nn[0], d[1] + 2*ci*nn[1]]; }
+    else { var ct = Math.sqrt(k2); d = [r*d[0] + (r*ci - ct)*nn[0], r*d[1] + (r*ci - ct)*nn[1]]; inside = !inside; } }
+  x.strokeStyle = 'rgba(255,0,0,0.25)'; x.lineWidth = 10; x.lineCap = 'round'; x.beginPath(); path.forEach(function(p, k){ if (k) x.lineTo(p[0], p[1]); else x.moveTo(p[0], p[1]); }); x.stroke();
+  x.strokeStyle = '#e00000'; x.lineWidth = 3; x.stroke();
+  x.fillStyle = '#333'; x.fillRect(4, 74, 26, 32); x.fillStyle = '#888'; x.fillRect(26, 84, 10, 12);
+  /* ruler: 4 pixels per mm */
+  var rx = 150, ry = 690; x.fillStyle = '#f2d98a'; x.fillRect(rx - 20, ry - 10, 900, 70); x.strokeStyle = '#8a6a10'; x.lineWidth = 1.5; x.strokeRect(rx - 20, ry - 10, 900, 70);
+  x.strokeStyle = '#222'; x.fillStyle = '#222'; x.font = '18px Arial'; x.textAlign = 'center';
+  for (i=0; i<=210; i++){ var tx = rx + i*4, tl = i % 10 === 0 ? 26 : i % 5 === 0 ? 18 : 10; x.lineWidth = i % 10 === 0 ? 1.6 : 1; x.beginPath(); x.moveTo(tx, ry - 10); x.lineTo(tx, ry - 10 + tl); x.stroke(); if (i % 10 === 0) x.fillText(String(i/10), tx, ry + 38); }
+  x.font = '14px Arial'; x.fillText('cm', rx + 860, ry + 38);
+  var im = new Image(); im.onload = function(){ useImage(im, 'example-trapezoid-v1', 'The example image'); }; im.src = c.toDataURL('image/png'); }
+function loadShared(){ if (!IMAGE_URL || IMAGE_URL.indexOf('http') !== 0){ exampleImage(); return; } var im = new Image(); im.crossOrigin = 'anonymous';
+  im.onload = function(){ useImage(im, 'u:' + IMAGE_URL, 'The image for this question'); };
+  im.onerror = function(){ var im2 = new Image(); im2.onload = function(){ useImage(im2, 'u:' + IMAGE_URL, 'The image for this question'); status('Image loaded (its host does not allow it to be saved as PNG with your marks; the measurements still work).'); }; im2.onerror = function(){ el('tsDrop').textContent = 'The image failed to load.'; status('The image failed to load: check IMAGE_URL (https).'); }; im2.src = IMAGE_URL; };
+  im.src = IMAGE_URL; }
+/* ══════════ view ══════════ */
+function fit(){ if (!img) return; zoom = Math.min(1, (view.clientWidth - 4)/img.naturalWidth); size(); }
+function size(){ if (!img) return; cv.width = Math.round(img.naturalWidth*zoom); cv.height = Math.round(img.naturalHeight*zoom); draw(); }
+/* ══════════ drawing (screen, or the PNG at full size) ══════════ */
+function render(x, z, k, forPng){ var p = pal(), W = img.naturalWidth, H = img.naturalHeight;
+  x.drawImage(img, 0, 0, W*z, H*z);
+  function P(q){ return [q[0]*z, q[1]*z]; }
+  function line(a, b, col, w, dash){ x.strokeStyle = col; x.lineWidth = w*k; x.setLineDash((dash || []).map(function(v){ return v*k; })); x.beginPath(); x.moveTo(a[0], a[1]); x.lineTo(b[0], b[1]); x.stroke(); x.setLineDash([]); }
+  function dot(a, col, r){ x.fillStyle = col; x.strokeStyle = '#fff'; x.lineWidth = 1.5*k; x.beginPath(); x.arc(a[0], a[1], (r || 4)*k, 0, 2*Math.PI); x.fill(); x.stroke(); }
+  function lab(t, a, col){ x.font = 'bold ' + Math.round(14*k) + 'px Arial'; var w = x.measureText(t).width; x.fillStyle = 'rgba(255,255,255,0.88)'; x.fillRect(a[0] - 3*k, a[1] - 13*k, w + 6*k, 17*k); x.fillStyle = col; x.fillText(t, a[0], a[1]); }
+  if (S.scale){ var a = P(S.scale.a), b = P(S.scale.b); line(a, b, p.scale, 2.5); dot(a, p.scale, 4); dot(b, p.scale, 4); lab(S.scale.d + ' ' + S.scale.u, [(a[0] + b[0])/2 + 6*k, (a[1] + b[1])/2 - 8*k], p.scale); }
+  S.lens.forEach(function(L){ var a = P(L.a), b = P(L.b); line(a, b, p.len, 2.5); dot(a, p.len, 3.5); dot(b, p.len, 3.5); lab(L.id + ' = ' + lenTxt(L), [(a[0] + b[0])/2 + 6*k, (a[1] + b[1])/2 - 8*k], p.len); });
+  S.normals.forEach(function(N){ var c = P(N.q), e = [N.v[0]*N.L*z, N.v[1]*N.L*z]; line([c[0] - e[0], c[1] - e[1]], [c[0] + e[0], c[1] + e[1]], p.norm, 2, [10, 6]);
+    var t = 10*k, uu = [-N.v[1]*t, N.v[0]*t], vv = [N.v[0]*t, N.v[1]*t]; x.strokeStyle = p.norm; x.lineWidth = 1.5*k; x.beginPath(); x.moveTo(c[0] + uu[0], c[1] + uu[1]); x.lineTo(c[0] + uu[0] + vv[0], c[1] + uu[1] + vv[1]); x.lineTo(c[0] + vv[0], c[1] + vv[1]); x.stroke();
+    dot(c, p.norm, 4); lab(N.id, [c[0] + e[0] + 4*k, c[1] + e[1]], p.norm); });
+  S.angles.forEach(function(A){ var a = P(A.a), b = P(A.b), c = P(A.c); line(b, a, p.ang, 2); line(b, c, p.ang, 2); dot(a, p.ang, 3); dot(c, p.ang, 3); dot(b, p.ang, 4);
+    var r = 34*k, a1 = Math.atan2(a[1] - b[1], a[0] - b[0]), a2 = Math.atan2(c[1] - b[1], c[0] - b[0]), dlt = a2 - a1; while (dlt > Math.PI) dlt -= 2*Math.PI; while (dlt < -Math.PI) dlt += 2*Math.PI;
+    x.strokeStyle = p.ang; x.lineWidth = 2*k; x.beginPath(); x.arc(b[0], b[1], r, a1, a1 + dlt, dlt < 0); x.stroke();
+    var m = a1 + dlt/2; lab(A.id + ' = ' + f(A.v, DECIMALS) + '\u00B0', [b[0] + Math.cos(m)*(r + 12*k) - 10*k, b[1] + Math.sin(m)*(r + 12*k) + 5*k], p.ang); });
+  if (forPng) return;
+  /* work in progress */
+  var pts = clicks.map(P), hv = hover ? P(hover) : null;
+  if (mode === 'norm' && pts.length >= 1){ var q2 = pts.length >= 2 ? pts[1] : hv; if (q2){ var dx = q2[0] - pts[0][0], dy = q2[1] - pts[0][1], ln = Math.hypot(dx, dy) || 1, ext = Math.max(W, H)*z; line([pts[0][0] - dx/ln*ext, pts[0][1] - dy/ln*ext], [pts[0][0] + dx/ln*ext, pts[0][1] + dy/ln*ext], p.surf, 2, [6, 4]); } }
+  if ((mode === 'ang' || mode === 'scale' || mode === 'len') && pts.length && hv){ var col = mode === 'ang' ? p.ang : mode === 'scale' ? p.scale : p.len; line(pts[pts.length - 1], hv, col, 1.5, [4, 4]); if (mode === 'ang' && pts.length === 2) line(pts[0], pts[1], col, 2); }
+  pts.forEach(function(a){ dot(a, p.pt, 5); });
+  if (kcur && document.activeElement === cv){ var kc = P(kcur); x.strokeStyle = '#ff0'; x.lineWidth = 1.5; x.beginPath(); x.moveTo(kc[0] - 12, kc[1]); x.lineTo(kc[0] + 12, kc[1]); x.moveTo(kc[0], kc[1] - 12); x.lineTo(kc[0], kc[1] + 12); x.stroke(); } }
+function draw(){ if (!img) return; g.clearRect(0, 0, cv.width, cv.height); render(g, zoom, 1, false); }
+function lenTxt(L){ return S.scale ? f(Math.hypot(L.b[0] - L.a[0], L.b[1] - L.a[1])*S.scale.k, 2) + ' ' + S.scale.u : f(Math.hypot(L.b[0] - L.a[0], L.b[1] - L.a[1]), 1) + ' px'; }
+/* ══════════ clicking ══════════ */
+function toImg(e){ var r = cv.getBoundingClientRect(); return [(e.clientX - r.left)*img.naturalWidth/r.width, (e.clientY - r.top)*img.naturalHeight/r.height]; }
+function snapPts(){ var L = []; S.normals.forEach(function(N){ L.push(N.q); }); S.angles.forEach(function(A){ L.push(A.a, A.b, A.c); }); clicks.forEach(function(c){ L.push(c); }); return L; }
+function snap(q){ if (!el('tsSnap').checked) return q; var tol = 9/zoom, best = null, bd = tol; snapPts().forEach(function(s){ var d = Math.hypot(s[0] - q[0], s[1] - q[1]); if (d < bd){ bd = d; best = s; } }); return best ? best.slice() : q; }
+var TOOLS = { scale:'tsMScale', len:'tsMLen', norm:'tsMNorm', ang:'tsMAng' };
+var PROMPT = { scale:['Click the first mark on the ruler.', 'Now click the second mark.'], len:['Click the first end.', 'Click the other end.'],
+  norm:['Click a first point along the surface (the edge of the block).', 'Click a second point along the same surface, well apart from the first.', 'Now click the point where the beam meets this surface.'],
+  ang:['Click a point on the beam.', 'Click the point of contact (the vertex of the angle).', 'Click a third point.'] };
+function setMode(m){ if (!img){ status(SHARED ? 'The image is still loading.' : 'Load an image first.'); return; } mode = (mode === m) ? null : m; clicks = [];
+  Object.keys(TOOLS).forEach(function(k){ el(TOOLS[k]).setAttribute('aria-pressed', mode === k ? 'true' : 'false'); });
+  if (mode === 'len' && !S.scale) status('Set the scale first to get lengths in ' + el('tsSu').value + '; for now the length is in pixels. ' + PROMPT.len[0]); else status(mode ? PROMPT[mode][0] : 'Tool off.'); draw(); }
+Object.keys(TOOLS).forEach(function(k){ el(TOOLS[k]).addEventListener('click', function(){ setMode(k); }); });
+function doClick(q){ if (!img || !mode) { if (img) status('Choose a tool first: set the scale, draw a normal or measure an angle.'); return; }
+  if (!(mode === 'norm' && clicks.length < 2)) q = snap(q);   /* the two points along the surface are not snapped */
+  clicks.push(q);
+  if (mode === 'scale' && clicks.length === 2){ var dpx = Math.hypot(clicks[1][0] - clicks[0][0], clicks[1][1] - clicks[0][1]), d = +el('tsSv').value;
+    if (dpx < 5){ status('The two points are too close. Try again: click two marks far apart.'); clicks = []; draw(); return; } if (!(d > 0)){ status('Type the distance between the two marks first.'); clicks = []; return; }
+    S.scale = { a:clicks[0], b:clicks[1], d:d, u:el('tsSu').value || '', px:dpx, k:d/dpx }; S.order.push('scale'); done('Scale set: ' + f(dpx, 1) + ' pixels = ' + d + ' ' + S.scale.u + ', so ' + (d/dpx).toPrecision(3) + ' ' + S.scale.u + ' per pixel.'); return; }
+  if (mode === 'len' && clicks.length === 2){ var L = { id:'L' + S.nL++, a:clicks[0], b:clicks[1], note:'' }; S.lens.push(L); S.order.push('len'); done(L.id + ' = ' + lenTxt(L) + '.', true); return; }
+  if (mode === 'norm' && clicks.length === 2){ if (Math.hypot(clicks[1][0] - clicks[0][0], clicks[1][1] - clicks[0][1]) < 6){ clicks.pop(); status('The two points are too close: click a second point farther along the surface.'); return; } }
+  if (mode === 'norm' && clicks.length === 3){ var u = [clicks[1][0] - clicks[0][0], clicks[1][1] - clicks[0][1]], ul = Math.hypot(u[0], u[1]); u = [u[0]/ul, u[1]/ul];
+    var N = { id:'N' + S.nN++, q:clicks[2], v:[-u[1], u[0]], L:0.12*Math.max(img.naturalWidth, img.naturalHeight) }; S.normals.push(N); S.order.push('norm'); done(N.id + ' drawn: the normal to the surface, on both sides of it.', true); return; }
+  if (mode === 'ang' && clicks.length === 3){ var a = clicks[0], b = clicks[1], c = clicks[2], v1 = [a[0] - b[0], a[1] - b[1]], v2 = [c[0] - b[0], c[1] - b[1]], n1 = Math.hypot(v1[0], v1[1]), n2 = Math.hypot(v2[0], v2[1]);
+    if (n1 < 3 || n2 < 3){ clicks = []; status('Two of the points are on top of each other. Start the angle again: ' + PROMPT.ang[0]); draw(); return; }
+    var ang = Math.acos(Math.max(-1, Math.min(1, (v1[0]*v2[0] + v1[1]*v2[1])/(n1*n2))))*180/Math.PI;
+    var A = { id:'\u03B8' + S.nA++, a:a, b:b, c:c, v:ang, note:'' }; S.angles.push(A); S.order.push('ang'); done(A.id + ' = ' + f(ang, DECIMALS) + '\u00B0, entered in the table.', true); return; }
+  status(PROMPT[mode][clicks.length]); draw(); }
+function done(msg, keep){ clicks = []; if (!keep){ mode = null; Object.keys(TOOLS).forEach(function(k){ el(TOOLS[k]).setAttribute('aria-pressed', 'false'); }); } save(); table(); draw(); status(msg + (keep ? ' ' + PROMPT[mode][0] + ' (Press the tool again to stop.)' : '')); }
+cv.addEventListener('pointerdown', function(e){ if (!img) return; e.preventDefault(); var q = toImg(e); kcur = q.slice(); doClick(q); });
+cv.addEventListener('pointermove', function(e){ if (!img) return; var q = toImg(e); hover = q; el('tsPix').textContent = 'pixel: (' + q[0].toFixed(0) + ', ' + q[1].toFixed(0) + ')'; showLoupe(e.clientX, e.clientY, q); if (mode) draw(); });
+cv.addEventListener('pointerleave', function(){ loupe.style.display = 'none'; hover = null; draw(); });
+cv.addEventListener('keydown', function(e){ if (!img) return; var st = e.shiftKey ? 10 : 1, d = { ArrowLeft:[-st, 0], ArrowRight:[st, 0], ArrowUp:[0, -st], ArrowDown:[0, st] }[e.key];
+  if (d){ kcur = [Math.max(0, Math.min(img.naturalWidth, kcur[0] + d[0])), Math.max(0, Math.min(img.naturalHeight, kcur[1] + d[1]))]; hover = kcur.slice(); el('tsPix').textContent = 'pixel: (' + kcur[0].toFixed(0) + ', ' + kcur[1].toFixed(0) + ')'; draw(); e.preventDefault(); return; }
+  if (e.key === 'Enter' || e.key === ' '){ doClick(kcur.slice()); e.preventDefault(); } if (e.key === 'Escape'){ clicks = []; status(mode ? PROMPT[mode][0] : 'Tool off.'); draw(); } });
+cv.addEventListener('focus', draw); cv.addEventListener('blur', draw);
+function showLoupe(cx, cy, q){ if (!el('tsLoupeC').checked){ loupe.style.display = 'none'; return; }
+  var vr = view.getBoundingClientRect(), visL = view.scrollLeft, visT = view.scrollTop, visW = view.clientWidth, visH = view.clientHeight, L = Math.max(70, Math.min(150, visH - 8, Math.floor(visW/2) - 16)), gap = 18;
+  if (loupe.width !== L){ loupe.width = L; loupe.height = L; } loupe.style.width = L + 'px'; loupe.style.height = L + 'px';
+  var x = cx - vr.left + visL, y = cy - vr.top + visT, lx = (x + gap + L <= visL + visW) ? x + gap : x - gap - L; lx = Math.max(visL + 2, Math.min(visL + visW - L - 2, lx)); var ly = Math.max(visT + 2, Math.min(visT + visH - L - 2, y - L/2));
+  loupe.style.left = lx + 'px'; loupe.style.top = ly + 'px'; loupe.style.display = 'block';
+  var M = 4, sz = L/M, c = L/2, sx = q[0]*zoom - sz/2, sy = q[1]*zoom - sz/2; lg.imageSmoothingEnabled = false; lg.fillStyle = '#000'; lg.fillRect(0, 0, L, L); lg.drawImage(cv, sx, sy, sz, sz, 0, 0, L, L);
+  lg.strokeStyle = '#ff0'; lg.lineWidth = 1; lg.beginPath(); lg.moveTo(c, 0); lg.lineTo(c, L); lg.moveTo(0, c); lg.lineTo(L, c); lg.stroke(); }
+/* ══════════ the table ══════════ */
+function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]; }); }
+function table(){ var rows = S.angles.map(function(A, i){ return ['a', i, A.id, f(A.v, DECIMALS) + '\u00B0', A.note]; }).concat(S.lens.map(function(L, i){ return ['l', i, L.id, lenTxt(L), L.note]; }));
+  el('tsTb').innerHTML = rows.length ? rows.map(function(r){ return '<tr><td>' + esc(r[2]) + '</td><td class="ts_v' + thisq + '">' + r[3] + '</td><td><input type="text" data-t="' + r[0] + '" data-i="' + r[1] + '" value="' + esc(r[4]) + '" aria-label="note for ' + esc(r[2]) + '"></td><td><button type="button" class="ts_del' + thisq + '" data-t="' + r[0] + '" data-i="' + r[1] + '" aria-label="delete ' + esc(r[2]) + '">\u00D7</button></td></tr>'; }).join('') : '<tr><td colspan="4" style="text-align:center;color:var(--c-dim)">no measurements yet</td></tr>';
+  [].forEach.call(el('tsTb').querySelectorAll('input[data-t]'), function(inp){ inp.addEventListener('input', function(){ (this.getAttribute('data-t') === 'a' ? S.angles : S.lens)[+this.getAttribute('data-i')].note = this.value; save(); }); });
+  [].forEach.call(el('tsTb').querySelectorAll('button[data-t]'), function(b){ b.addEventListener('click', function(){ var arr = this.getAttribute('data-t') === 'a' ? S.angles : S.lens, it = arr.splice(+this.getAttribute('data-i'), 1)[0]; save(); table(); draw(); status(it.id + ' deleted.'); }); });
+  var sc = el('tsSstat'); sc.textContent = S.scale ? 'Set: ' + f(S.scale.px, 1) + ' pixels = ' + S.scale.d + ' ' + S.scale.u + ' (' + S.scale.k.toPrecision(3) + ' ' + S.scale.u + ' per pixel). Press the button again to redo it.' : 'Not set. Press the button, click two marks on the ruler, and type the distance between them.'; }
+el('tsUndo').addEventListener('click', function(){ if (clicks.length){ clicks.pop(); status(mode ? PROMPT[mode][clicks.length] : ''); draw(); return; } var k = S.order.pop(); if (!k){ status('Nothing to undo.'); return; }
+  var it = k === 'ang' ? S.angles.pop() : k === 'norm' ? S.normals.pop() : k === 'len' ? S.lens.pop() : (S.scale = null, { id:'the scale' }); save(); table(); draw(); status((it ? it.id : 'Last item') + ' removed.'); });
+el('tsClr').addEventListener('click', function(){ if (!confirm('Remove the scale, all normals and all measurements?')) return; S = { scale:null, normals:[], angles:[], lens:[], order:[], nN:1, nA:1, nL:1 }; clicks = []; save(); table(); draw(); status('Everything cleared.'); });
+/* ══════════ files and the answer box ══════════ */
+function csvText(){ return ['angle ID,angle (degrees),note'].concat(S.angles.map(function(A){ return A.id.replace('\u03B8', 'theta') + ',' + f(A.v, DECIMALS) + ',' + (A.note || '').replace(/,/g, ';'); })).join('\n'); }
+function dl(name, url){ var a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); setTimeout(function(){ a.remove(); }, 500); }
+el('tsPng').addEventListener('click', function(){ if (!img){ status('No image yet.'); return; } var c = document.createElement('canvas'); c.width = img.naturalWidth; c.height = img.naturalHeight; var k = Math.max(1, img.naturalWidth/900);
+  render(c.getContext('2d'), 1, k, true); try { dl('trapezoid_safari.png', c.toDataURL('image/png')); status('The image with your normals and angles was saved as a PNG.'); } catch (e){ status('This image\u2019s host does not allow it to be saved with your marks. Take a screenshot instead.'); } });
+el('tsCsv').addEventListener('click', function(){ if (!S.angles.length){ status('No angles measured yet.'); return; } dl('trapezoid_safari_angles.csv', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvText() + '\n')); status('The angles were saved as a CSV file.'); });
+function getAnswerBox(num){ var id = 'qn' + '' + num; return document.getElementById(id); }
+el('tsSend').addEventListener('click', function(){ if (!S.angles.length){ status('No angles measured yet.'); return; } var box = getAnswerBox(CSV_ANSWER_NUM); if (!box){ status('Could not find answer box ' + CSV_ANSWER_NUM + ' on this page.'); return; }
+  box.value = csvText(); try { box.dispatchEvent(new Event('input', { bubbles:true })); box.dispatchEvent(new Event('change', { bubbles:true })); } catch (e){} status('The ' + S.angles.length + ' angle(s) were entered in the answer box as CSV. Your work stays saved in this browser.'); });
+/* ══════════ keeping the work ══════════ */
+var aidM = (location.search || '').match(/aid=(\d+)/);
+function KEY(){ return 'tsSafari1_' + (aidM ? aidM[1] : location.pathname) + '_' + thisq + '_' + imgKey; }
+function save(){ if (!img) return; try { localStorage.setItem(KEY(), JSON.stringify(S)); } catch (e){} }
+function restore(){ try { var d = JSON.parse(localStorage.getItem(KEY()) || 'null'); if (d && d.angles) S = d; } catch (e){} }
+/* ══════════ zoom and display options ══════════ */
+el('tsZfit').addEventListener('click', fit); el('tsZ1').addEventListener('click', function(){ zoom = 1; size(); });
+el('tsZin').addEventListener('click', function(){ zoom = Math.min(6, zoom*1.5); size(); }); el('tsZout').addEventListener('click', function(){ zoom = Math.max(0.1, zoom/1.5); size(); });
+window.addEventListener('resize', function(){ if (img && zoom <= 1) fit(); });
+el('tsSu').addEventListener('input', function(){ if (S.scale){ S.scale.u = this.value; save(); table(); draw(); } });
+el('tsSv').addEventListener('input', function(){ if (S.scale && +this.value > 0){ S.scale.d = +this.value; S.scale.k = S.scale.d/S.scale.px; save(); table(); draw(); } });
+function theme(k){ th[k] = !th[k]; if (k === 'hc' && th.hc) th.lm = false; if (k === 'lm' && th.lm) th.hc = false;
+  ROOT.classList.toggle('ts_hc' + thisq, th.hc); ROOT.classList.toggle('ts_lm' + thisq, th.lm); ROOT.classList.toggle('ts_fsL' + thisq, th.fs);
+  [['hc', 'tsBtnHC'], ['lm', 'tsBtnLM'], ['cb', 'tsBtnCB'], ['nr', 'tsBtnNR'], ['fs', 'tsBtnFS']].forEach(function(q){ var b = el(q[1]); b.classList.toggle('ts_a11yon' + thisq, th[q[0]]); b.setAttribute('aria-pressed', th[q[0]] ? 'true' : 'false'); });
+  el('tsBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('tsBtnFS').textContent = 'FONT: ' + (th.fs ? 'LARGE' : 'NORMAL'); el('tsStatus').setAttribute('aria-live', th.nr ? 'polite' : 'off'); draw();
+  if (k === 'cb' && th.cb) status('Colour-blind safe colours for the marks: normals blue, angles pink, the surface line orange, the scale bluish green.'); }
+[['tsBtnHC', 'hc'], ['tsBtnLM', 'lm'], ['tsBtnCB', 'cb'], ['tsBtnNR', 'nr'], ['tsBtnFS', 'fs']].forEach(function(q){ el(q[0]).addEventListener('click', function(){ theme(q[1]); }); });
+el('tsDescBtn').addEventListener('click', function(){ var d = el('tsDesc'), o = d.hidden; d.hidden = !o; this.setAttribute('aria-expanded', o ? 'true' : 'false'); this.innerHTML = (o ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+  if (o && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } });
+/* start */
+table();
+if (SHARED){ el('tsLoad').hidden = true; el('tsDrop').textContent = 'Loading the image\u2026'; loadShared(); }
+else { el('tsDrop').textContent = 'Choose an image file above (a photo of your block and beam, with a ruler in it), or drop it here.'; status('Load a photo of your glass block and laser beam, with a ruler in the picture.'); }
+window['tsSim' + thisq] = { _S:function(){ return S; }, _click:doClick, _mode:setMode, _csv:csvText };
+})();
+</script>
+
+<div style="max-width:920px;margin:14px auto;padding:10px 14px;border:1px dashed #889;border-radius:6px;background:#fff;font-family:Arial,sans-serif"><label for="qn000" style="font-size:13px"><b>Answer box (demonstration)</b>: in the MOM version, button 6 fills the question&rsquo;s answer box.</label><br><textarea id="qn000" rows="6" style="width:100%;font-family:monospace;font-size:12px"></textarea></div>
+</body>
+</html>
