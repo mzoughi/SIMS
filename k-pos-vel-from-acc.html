@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
 // Configure MathJax to load the AsciiMath input component
 window.MathJax = {
@@ -10,18 +8,49 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 };
 </script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
-<title>Physics Simulations-Kinematics-Position & Velocity Graphs From Acceleration</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Kinematics: Read Acceleration, Predict Velocity and Position</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,kinematics, position graph, x-t graph, motion diagram, velocity, acceleration, slope, tutorial, lesson, scientific">
-<meta name="description" content="Interactive kinematics lab: read an acceleration-time graph, then predict the velocity and the position of the cart.">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, kinematics, position, velocity, acceleration, graphs, measurement, uncertainty, motion, lesson, scientific">
+<meta name="description" content="An acceleration-time graph made of constant &quot;steps&quot; describes a cart on a frictionless track, with its starting velocity and position given.">
 <style>
 body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
-.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+.page { width:920px; max-width:100%; margin:0 auto; }
 @media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
 </style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
 <main class="page">
+<div id="stdWkposvelfromacc" class="std_wrap">
+<style>
+/* ── standard display-options toolbar (the same in every sim) ── */
+#stdWkposvelfromacc .std_a11y { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; background:#1a1d22; padding:7px 8px; border-radius:4px 4px 0 0; width:100%; max-width:683px; margin:0 auto; box-sizing:border-box; }
+#stdWkposvelfromacc .std_a11y button { font-family:monospace; font-size:.72rem; letter-spacing:.06em; padding:5px 10px; background:#2a2e3a; border:1px solid #404a60; color:#9aa6bd; border-radius:3px; cursor:pointer; text-transform:uppercase; }
+#stdWkposvelfromacc .std_a11y button:hover { border-color:#00e8d0; color:#00e8d0; }
+#stdWkposvelfromacc .std_a11y button[aria-pressed="true"] { background:rgba(0,232,208,.14); border-color:#00e8d0; color:#00e8d0; font-weight:bold; }
+#stdWkposvelfromacc .std_a11y button:focus-visible { outline:2px solid #ffdd66; outline-offset:2px; }
+@media (pointer:coarse) { #stdWkposvelfromacc .std_a11y button { min-height:40px; } }
+/* page themes driven by the shared engine (the canvases, pictures and this toolbar undo the filter) */
+#stdWkposvelfromacc.std_inv { filter:invert(1) hue-rotate(180deg); }
+#stdWkposvelfromacc.std_inv canvas, #stdWkposvelfromacc.std_inv img, #stdWkposvelfromacc.std_inv video, #stdWkposvelfromacc.std_inv .std_a11y { filter:hue-rotate(180deg) invert(1); }
+#stdWkposvelfromacc.std_hcl { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#stdWkposvelfromacc.std_hcl canvas, #stdWkposvelfromacc.std_hcl img, #stdWkposvelfromacc.std_hcl video, #stdWkposvelfromacc.std_hcl .std_a11y { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+#stdWkposvelfromacc.std_hcd { filter:contrast(1.6); }
+#stdWkposvelfromacc.std_hcd canvas, #stdWkposvelfromacc.std_hcd img, #stdWkposvelfromacc.std_hcd video, #stdWkposvelfromacc.std_hcd .std_a11y { filter:contrast(0.625); }
+/* SIM description */
+#stdWkposvelfromacc .std_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:14px auto 6px; max-width:683px; }
+#stdWkposvelfromacc .std_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#stdWkposvelfromacc .std_desc { width:100%; background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; text-align:left; box-sizing:border-box; }
+#stdWkposvelfromacc .std_desc p { margin:0 0 8px 0; }
+#stdWkposvelfromacc .std_eq { text-align:center; }
+</style>
+<div class="std_a11y" data-std="1" role="toolbar" aria-label="Display options">
+<button type="button" data-k="hc" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" data-k="mode" aria-pressed="false">LIGHT MODE</button>
+<button type="button" data-k="cb" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" data-k="nr" aria-pressed="true">NARRATION: ON</button>
+</div>
 <!-- ═══════════════════════════════════════════════════════
 Dunwoody PL02
 SIM -- Kinematics: Read Acceleration, Predict Velocity & Position
@@ -176,29 +205,28 @@ for a better position estimate.<br>
 .ap_stats_title { font-weight:bold; font-size:0.82rem; margin-bottom:4px; border-bottom:1px solid #ccc; padding-bottom:3px; }
 .ap_stats_content { font-family:'Courier New',monospace; font-size:0.77rem; }
 /* HC overrides */
-body.ap-hc-mode { background:#111; }
-body.ap-hc-mode #ap_root { background:#111; }
-body.ap-hc-mode #ap_root .ap_tbar  { background:#cc7700; }
-body.ap-hc-mode #ap_root .ap_bbar  { background:#1a2a1a; }
-body.ap-hc-mode #ap_root .ap_fbar  { background:#1a1a2a; }
-body.ap-hc-mode #ap_root .ap_prompt   { background:#0a220a; border-color:#66cc66; }
-body.ap-hc-mode #ap_root .ap_readout  { background:#111; border-color:#aaa; color:#eee; }
-body.ap-hc-mode #ap_root .ap_narr  { background:#0a0a22; border-color:#6699ff; }
-body.ap-hc-mode #ap_root .ap_info  { background:#111100; border-color:#aa8800; color:#ddd; }
-body.ap-hc-mode #ap_root .ap_boxhd { color:#fff; border-bottom-color:#aaa; }
-body.ap-hc-mode #ap_root .ap_rv    { color:#ff8888; }
-body.ap-hc-mode #ap_root .ap_badge { background:#003300; color:#88ff88; }
-body.ap-hc-mode #ap_root .ap_narrtext,
-body.ap-hc-mode #ap_root .ap_prompttext { color:#aaccff; }
-body.ap-hc-mode #ap_root .ap_taglbl,
-body.ap-hc-mode #ap_root .ap_pval,
-body.ap-hc-mode #ap_root .ap_rrow  { color:#ddd; }
-body.ap-hc-mode #ap_root .ap_tablebox { background:#111; border-color:#aaa; color:#eee; }
-body.ap-hc-mode #ap_root .ap_table th { background:#222; color:#fff; }
-body.ap-hc-mode #apTrackCanvas, body.ap-hc-mode #apPosCanvas,
-body.ap-hc-mode #apVelCanvas, body.ap-hc-mode #apAccCanvas { background:#111; border-color:#555; }
-body.ap-hc-mode .ap_stats_box { background:#111; border-color:#555; color:#eee; }
-body.ap-hc-mode .ap_stats_title { color:#fff; border-bottom-color:#555; }
+#ap_root.ap-hc-mode { background:#111; }
+#ap_root.ap-hc-mode .ap_tbar  { background:#cc7700; }
+#ap_root.ap-hc-mode .ap_bbar  { background:#1a2a1a; }
+#ap_root.ap-hc-mode .ap_fbar  { background:#1a1a2a; }
+#ap_root.ap-hc-mode .ap_prompt   { background:#0a220a; border-color:#66cc66; }
+#ap_root.ap-hc-mode .ap_readout  { background:#111; border-color:#aaa; color:#eee; }
+#ap_root.ap-hc-mode .ap_narr  { background:#0a0a22; border-color:#6699ff; }
+#ap_root.ap-hc-mode .ap_info  { background:#111100; border-color:#aa8800; color:#ddd; }
+#ap_root.ap-hc-mode .ap_boxhd { color:#fff; border-bottom-color:#aaa; }
+#ap_root.ap-hc-mode .ap_rv    { color:#ff8888; }
+#ap_root.ap-hc-mode .ap_badge { background:#003300; color:#88ff88; }
+#ap_root.ap-hc-mode .ap_narrtext,
+#ap_root.ap-hc-mode .ap_prompttext { color:#aaccff; }
+#ap_root.ap-hc-mode .ap_taglbl,
+#ap_root.ap-hc-mode .ap_pval,
+#ap_root.ap-hc-mode .ap_rrow  { color:#ddd; }
+#ap_root.ap-hc-mode .ap_tablebox { background:#111; border-color:#aaa; color:#eee; }
+#ap_root.ap-hc-mode .ap_table th { background:#222; color:#fff; }
+#ap_root.ap-hc-mode #apTrackCanvas, #ap_root.ap-hc-mode #apPosCanvas,
+#ap_root.ap-hc-mode #apVelCanvas, #ap_root.ap-hc-mode #apAccCanvas { background:#111; border-color:#555; }
+#ap_root.ap-hc-mode .ap_stats_box { background:#111; border-color:#555; color:#eee; }
+#ap_root.ap-hc-mode .ap_stats_title { color:#fff; border-bottom-color:#555; }
 /* ════════ Hall effect template layer: mobile friendly, scoped to #ap_root ════════ */
 #ap_root {
 --tp-chassis:#1a1c1f; --tp-panel:#22262b; --tp-panel-hi:#2c3138; --tp-panel-lo:#14161a;
@@ -211,7 +239,7 @@ font-family:Arial, sans-serif; color:var(--tp-text); background:var(--tp-chassis
 background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px),
 repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
 }
-body.ap-hc-mode #ap_root { --tp-chassis:#000000; --tp-panel:#000000; --tp-panel-hi:#111111; --tp-panel-lo:#000000; --tp-border:#ffffff; --tp-border-hi:#ffffff;
+#ap_root.ap-hc-mode { --tp-chassis:#000000; --tp-panel:#000000; --tp-panel-hi:#111111; --tp-panel-lo:#000000; --tp-border:#ffffff; --tp-border-hi:#ffffff;
 --tp-text:#ffffff; --tp-dim:#e0e0e0; --tp-bright:#ffffff; --tp-accent:#ffd700; --tp-green:#00ff88; --tp-val:#ffff00; --tp-warn:#ff5555;
 --tp-focus:#ffff00; --tp-nar-bg:#000000; --tp-nar-border:#ffd700; --tp-nar-text:#ffffff; background-image:none; }
 #ap_root *, #ap_root *::before, #ap_root *::after { box-sizing:border-box; }
@@ -412,7 +440,7 @@ var running=false, animId=null, lastTS=null, simTime=0, xcm=0, simSpeed=1.0;
 var srTimer=null;
 function sr(msg){ var el=document.getElementById('ap_srAnnounce'); if(!el)return;
 el.textContent=''; clearTimeout(srTimer); srTimer=setTimeout(function(){el.textContent=msg;},50); }
-function btnActive(id,on){ var b=document.getElementById(id); if(!b)return;
+function btnActive(id,on){ var b=document.getElementById(id+''); if(!b)return;
 if(on) b.className=(b.className+' ap_active').replace(/\s+/g,' ').trim();
 else   b.className=b.className.replace(/\bap_active\b/g,'').trim(); }
 /* ── A11y toggles ── */
@@ -420,14 +448,14 @@ function toggleHC(){
 hcMode=!hcMode;
 if(hcMode){cbMode=false;btnActive('btnCB',false);document.getElementById('btnCB').value='Color-Blind: OFF';}
 pal=hcMode?PAL.hc:(cbMode?PAL.cb:PAL.def);
-document.body.className=hcMode?'ap-hc-mode':document.body.className.replace(/\bap-hc-mode\b/g,'').trim();
+document.getElementById('ap_root').classList.toggle('ap-hc-mode', hcMode);
 btnActive('btnHC',hcMode);
 document.getElementById('btnHC').value=hcMode?'High Contrast: ON':'High Contrast: OFF';
 drawTrackScene(); drawGraphs();
 }
 function toggleCB(){
 cbMode=!cbMode;
-if(cbMode&&hcMode){hcMode=false;btnActive('btnHC',false);document.getElementById('btnHC').value='High Contrast: OFF';document.body.className=document.body.className.replace(/\bap-hc-mode\b/g,'').trim();}
+if(cbMode&&hcMode){hcMode=false;btnActive('btnHC',false);document.getElementById('btnHC').value='High Contrast: OFF';document.getElementById('ap_root').classList.remove('ap-hc-mode');}
 pal=hcMode?PAL.hc:(cbMode?PAL.cb:PAL.def);
 btnActive('btnCB',cbMode);
 document.getElementById('btnCB').value=cbMode?'Color-Blind: ON':'Color-Blind: OFF';
@@ -486,21 +514,21 @@ updateNarration();
 function buildTables(){
 var aHtml='<table class="ap_table"><tr><th>t (s)</th><th>a (cm/s&sup2;)</th></tr>';
 for(var i=0;i<T.length;i++){
-aHtml+='<tr><td>'+T[i].toFixed(1)+'</td><td><input type="number" step="any" class="ap_input" id="ain_'+i+'" oninput="apSim.onInput(\'a\','+i+',this.value)"></td></tr>';
+aHtml+='<tr><td>'+T[i].toFixed(1)+'</td><td><input type="number" step="any" class="ap_input" id="ain_'+i+'\" oninput="apSim.onInput(\'a\','+i+',this.value)"></td></tr>';
 }
 aHtml+='</table>';
 document.getElementById('aTableWrap').innerHTML=aHtml;
 var vHtml='<table class="ap_table"><tr><th>t (s)</th><th>v (cm/s)</th></tr>';
 vHtml+='<tr><td>'+T[0].toFixed(1)+'</td><td class="ap_given">'+v0.toFixed(1)+' (given)</td></tr>';
 for(var j=1;j<T.length;j++){
-vHtml+='<tr><td>'+T[j].toFixed(1)+'</td><td><input type="number" step="any" class="ap_input" id="vin_'+j+'" oninput="apSim.onInput(\'v\','+j+',this.value)"></td></tr>';
+vHtml+='<tr><td>'+T[j].toFixed(1)+'</td><td><input type="number" step="any" class="ap_input" id="vin_'+j+'\" oninput="apSim.onInput(\'v\','+j+',this.value)"></td></tr>';
 }
 vHtml+='</table>';
 document.getElementById('vTableWrap').innerHTML=vHtml;
 var xHtml='<table class="ap_table"><tr><th>t (s)</th><th>x (cm)</th></tr>';
 xHtml+='<tr><td>'+T[0].toFixed(1)+'</td><td class="ap_given">'+x0.toFixed(1)+' (given)</td></tr>';
 for(var k=1;k<T.length;k++){
-xHtml+='<tr><td>'+T[k].toFixed(1)+'</td><td><input type="number" step="any" class="ap_input" id="xin_'+k+'" oninput="apSim.onInput(\'x\','+k+',this.value)"></td></tr>';
+xHtml+='<tr><td>'+T[k].toFixed(1)+'</td><td><input type="number" step="any" class="ap_input" id="xin_'+k+'\" oninput="apSim.onInput(\'x\','+k+',this.value)"></td></tr>';
 }
 xHtml+='</table>';
 document.getElementById('xTableWrap').innerHTML=xHtml;
@@ -510,20 +538,20 @@ var v=parseFloat(val); v=isNaN(v)?null:v;
 if(kind==='a') studentA[idx]=v;
 else if(kind==='v') studentV[idx]=v;
 else studentX[idx]=v;
-if(graded){ var el=document.getElementById(kind+'in_'+idx); if(el) el.classList.remove('ap_good','ap_ok','ap_off'); }
+if(graded){ var el=document.getElementById(kind+'in_'+idx+''); if(el) el.classList.remove('ap_good','ap_ok','ap_off'); }
 }
 /* ── Grading ── */
 function gradeArray(idPrefix, studentArr, trueArr, tolGood, tolOk, startIdx){
 startIdx=startIdx||0;
 var results=[];
 for(var i=startIdx;i<trueArr.length;i++){
-var el=document.getElementById(idPrefix+i);
+var el=document.getElementById(idPrefix+i+'');
 var sv=studentArr[i];
 if(el) el.classList.remove('ap_good','ap_ok','ap_off');
 if(sv===null || sv===undefined || isNaN(sv)){ results.push(null); continue; }
 var diff=Math.abs(sv-trueArr[i]);
 var tier = diff<=tolGood?'good':(diff<=tolOk?'ok':'off');
-if(el) el.classList.add('ap_'+tier);
+if(el) el.classList.add('ap_'+tier+'');
 results.push(diff);
 }
 return results;
@@ -896,6 +924,208 @@ toggleHC, toggleCB, toggleNarr
 })();
 </script>
 </div><!-- #ap_root -->
+
+<div class="std_descwrap">
+<button type="button" class="std_descbtn" data-stddb="1" aria-expanded="false">&#9656; SIM DESCRIPTION</button>
+<div class="std_desc" data-stddd="1" role="region" aria-label="Simulation description" style="display:none">
+<p>An acceleration-time graph made of constant "steps" describes a cart on a frictionless track, with its starting velocity and position given. Read the acceleration at each listed time, then predict the velocity-time graph and, from it, the position-time graph: each graph is built from the area under the one before.</p>
+<p class="std_eq">`Delta v = int a dt`,&nbsp;&nbsp; `Delta x = int v dt`.</p>
+<p>Two draggable markers on the acceleration graph shade and compute the area (the change in velocity) between them, to check your calculation.</p><p>The cart's true motion stays hidden: only the graph is real data. After you submit, the sim grades your entries, graphs your values against the true ones, and plays the motion back on the 1.2 m track so you can check your work.</p>
+</div>
+</div>
+<script>
+(function(){
+var W = document.getElementById('stdWkposvelfromacc'); if (!W || W.__std) return; W.__std = true;
+var BASE = 'dark', P = {"hc": "[onclick*=\"toggleHC\"]", "cb": "[onclick*=\"toggleCB\"]", "nr": "[onclick*=\"toggleNarr\"]"}, HIDE = ["[class*=\"a11ybar\"]"];
+var st = { hc:false, mode:false, cb:false, nr:true, fs:false };
+/* ── canvas themes: every colour the sim draws passes through map(); the last frame is recorded,
+      so switching dark mode, high contrast or colour-blind safe colours redraws it at once,
+      even while the sim is paused. No page-wide names: this lives inside the controller. ── */
+function makeCT(){
+  var mode = { dark:false, light:false, hc:false, cb:false, darkbase:false }, key = '', cache = {}, cvs = [];
+  var probe = document.createElement('canvas').getContext('2d');
+  var P = CanvasRenderingContext2D.prototype;
+  function parse(c){
+    probe.fillStyle = '#000'; probe.fillStyle = c; var s = String(probe.fillStyle), m;
+    if (s.charAt(0) === '#') return [parseInt(s.substr(1,2),16), parseInt(s.substr(3,2),16), parseInt(s.substr(5,2),16), 1];
+    m = s.match(/rgba?\(([^)]+)\)/); if (!m) return null;
+    var p = m[1].split(',').map(parseFloat); return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1];
+  }
+  function lin(v){ v /= 255; return v <= 0.04045 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); }
+  function lum(r,g,b){ return 0.2126*lin(r) + 0.7152*lin(g) + 0.0722*lin(b); }
+  function hsl(r,g,b){
+    r/=255; g/=255; b/=255; var mx = Math.max(r,g,b), mn = Math.min(r,g,b), h = 0, s = 0, l = (mx+mn)/2, d = mx-mn;
+    if (d > 1e-6){ s = d/(1 - Math.abs(2*l - 1));
+      h = mx === r ? ((g-b)/d) % 6 : (mx === g ? (b-r)/d + 2 : (r-g)/d + 4); h *= 60; if (h < 0) h += 360; }
+    return [h, s, l];
+  }
+  function rgb(h,s,l){
+    var c = (1 - Math.abs(2*l - 1))*s, x = c*(1 - Math.abs((h/60) % 2 - 1)), m = l - c/2, t;
+    t = h < 60 ? [c,x,0] : h < 120 ? [x,c,0] : h < 180 ? [0,c,x] : h < 240 ? [0,x,c] : h < 300 ? [x,0,c] : [c,0,x];
+    return [Math.round((t[0]+m)*255), Math.round((t[1]+m)*255), Math.round((t[2]+m)*255)];
+  }
+  /* raise the lightness until the colour stands out on a dark background */
+  function lift(h,s,l,target){ var c = rgb(h,s,l); while (lum(c[0],c[1],c[2]) < target && l < 0.95){ l += 0.03; c = rgb(h,s,l); } return c; }
+  /* Okabe-Ito colours, chosen by hue */
+  function oi(h){
+    return h < 15 || h >= 330 ? [213,94,0] : h < 40 ? [230,159,0] : h < 75 ? [240,228,66] : h < 170 ? [0,158,115]
+         : h < 200 ? [86,180,233] : h < 260 ? [0,114,178] : [204,121,167];
+  }
+  function conv(c, stroke){
+    if (!mode.dark && !mode.light && !mode.hc && !mode.cb) return c;
+    var k = key + (stroke ? 's' : 'f') + c; if (cache[k] !== undefined) return cache[k];
+    var v = parse(c); if (!v){ cache[k] = c; return c; }
+    var r = v[0], g = v[1], b = v[2], a = v[3], q = hsl(r,g,b), Y = lum(r,g,b), neutral = q[1] < 0.18, o;
+    if (mode.cb && !neutral && Y <= 0.6 && !(q[2] > 0.6 && q[1] < 0.6) && !(!stroke && Y < 0.08)){   /* not surfaces, light or dark */
+      o = oi(q[0]); var oq = hsl(o[0],o[1],o[2]); o = rgb(oq[0], oq[1], Math.min(Math.max(q[2], 0.2), 0.75));   /* the safe hue, at about the original lightness */
+      r = o[0]; g = o[1]; b = o[2]; q = hsl(r,g,b); Y = lum(r,g,b); }
+    if (mode.hc && mode.darkbase){   /* a sim drawn dark to begin with: dark stays black, light goes white, colours brighten */
+      if (neutral) o = Y < 0.2 ? [0,0,0] : (Y > 0.45 ? [255,255,255] : [205,205,205]);
+      else if (!stroke && Y < 0.06) o = [0,0,0];
+      else o = lift(q[0], 1, Math.max(q[2], 0.5), 0.4);
+    } else if (mode.light){   /* light mode for a sim drawn dark: the reverse of dark mode */
+      if (neutral) o = rgb(q[0], q[1], 0.1 + 0.82*(1 - q[2]));
+      else if (!stroke && Y < 0.08) o = rgb(q[0], Math.min(q[1], 0.35), 0.93);   /* dark fills are surfaces */
+      else { var l = q[2], cc = rgb(q[0], q[1], l); while (lum(cc[0],cc[1],cc[2]) > 0.2 && l > 0.15){ l -= 0.03; cc = rgb(q[0], q[1], l); } o = cc; }
+    } else if (mode.hc){
+      if (neutral) o = Y > 0.8 ? [0,0,0] : (Y < 0.25 ? [255,255,255] : [205,205,205]);
+      else if (stroke && Y > 0.4) o = [r,g,b];   /* bright lines stay bright */
+      else if (Y > 0.6 || (q[2] > 0.6 && q[1] < 0.6)) o = [0,0,0];   /* light or pastel fills are surfaces */
+      else o = lift(q[0], 1, Math.max(q[2], 0.5), 0.4);
+    } else if (mode.dark){
+      if (neutral) o = rgb(q[0], q[1], 0.1 + 0.82*(1 - q[2]));
+      else if (stroke && Y > 0.3) o = [r,g,b];   /* bright lines stay bright */
+      else if (Y > 0.55 || (q[2] > 0.6 && q[1] < 0.6)) o = rgb(q[0], Math.min(q[1], 0.3), 0.18);   /* light or pastel fills are surfaces */
+      else o = lift(q[0], q[1], q[2], 0.3);
+    } else o = [r,g,b];
+    var out = a < 1 ? 'rgba(' + o[0] + ',' + o[1] + ',' + o[2] + ',' + a + ')' : 'rgb(' + o[0] + ',' + o[1] + ',' + o[2] + ')';
+    cache[k] = out; return out;
+  }
+  /* gradients remember their colour stops, so they can be rebuilt in another theme */
+  function style(v, ctx, stroke){
+    if (typeof v === 'string') return conv(v, stroke);
+    if (v && v.__spec){
+      var sp = v.__spec; if (sp.key === key) return sp.made;
+      var g = P[sp.kind].apply(ctx, sp.args); sp.stops.forEach(function(s){ g.addColorStop(s[0], conv(s[1])); });
+      sp.key = key; sp.made = g; return g;
+    }
+    return v;
+  }
+  function attach(cv){
+    var ctx = cv.getContext('2d'); if (!ctx || ctx.__ct) return; ctx.__ct = true;
+    var log = [], replaying = false, vals = {};
+    /* a fill or clear covering the whole canvas starts a new frame (in device pixels, whatever the transform) */
+    function full(a){ var t = ctx.getTransform(), x0 = t.a*a[0] + t.e, y0 = t.d*a[1] + t.f, x1 = t.a*(a[0] + a[2]) + t.e, y1 = t.d*(a[1] + a[3]) + t.f;
+      return t.b === 0 && t.c === 0 && Math.min(x0, x1) <= 0.5 && Math.min(y0, y1) <= 0.5 && Math.max(x0, x1) >= cv.width - 0.5 && Math.max(y0, y1) >= cv.height - 0.5; }
+    /* a canvas attached after its first drawing: keep that picture, to re-colour pixel by pixel until the next frame */
+    var snap = null, framed = false; try { snap = ctx.getImageData(0, 0, cv.width, cv.height); } catch (e) {}
+    ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); vals[p] = d.get.call(ctx);
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return vals[p]; },
+        set:function(v){ vals[p] = v; if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, style(v, ctx, p === 'strokeStyle')); } });
+    });
+    var plain = ['lineWidth','font','textAlign','textBaseline','globalAlpha','lineCap','lineJoin','miterLimit','shadowBlur',
+                 'shadowOffsetX','shadowOffsetY','globalCompositeOperation','lineDashOffset','direction','imageSmoothingEnabled'];
+    plain.forEach(function(p){
+      var d = Object.getOwnPropertyDescriptor(P, p); if (!d || !d.set) return;
+      Object.defineProperty(ctx, p, { configurable:true, get:function(){ return d.get.call(ctx); },
+        set:function(v){ if (!replaying && log) log.push(['s', p, v]); d.set.call(ctx, v); } });
+    });
+    ['createLinearGradient','createRadialGradient','createConicGradient'].forEach(function(n){
+      if (!P[n]) return;
+      ctx[n] = function(){
+        var args = Array.prototype.slice.call(arguments), g = P[n].apply(ctx, args), add = g.addColorStop;
+        var sp = { kind:n, args:args, stops:[], key:key, made:g }; g.__spec = sp;
+        g.addColorStop = function(o, c){ sp.stops.push([o, c]); add.call(g, o, conv(c)); };
+        return g;
+      };
+    });
+    /* text is a line, not a surface: a bright text colour stays bright in dark mode and high contrast */
+    var fsd = Object.getOwnPropertyDescriptor(P, 'fillStyle');
+    function asText(f, args){ var v = vals.fillStyle; if (typeof v === 'string' && key !== '|' && key !== ''){ fsd.set.call(ctx, conv(v, true)); try { return f.apply(ctx, args); } finally { fsd.set.call(ctx, style(v, ctx, false)); } } return f.apply(ctx, args); }
+    var skip = /^(constructor|get[A-Z]\w*|isPointIn\w*|measureText|create\w*)$/;
+    Object.getOwnPropertyNames(P).forEach(function(n){
+      if (skip.test(n)) return; var d = Object.getOwnPropertyDescriptor(P, n); if (!d || typeof d.value !== 'function') return;
+      var f = d.value;
+      ctx[n] = function(){
+        if (!replaying){
+          if ((n === 'fillRect' || n === 'clearRect') && full(arguments)){ snap = null; framed = true;
+            /* a new frame: start the record from the drawing state of this moment */
+            var t = ctx.getTransform();
+            log = [['c','setTransform',[t.a,t.b,t.c,t.d,t.e,t.f]]];
+            ['fillStyle','strokeStyle','shadowColor'].forEach(function(p){ log.push(['s', p, vals[p]]); });
+            plain.forEach(function(p){ var dd = Object.getOwnPropertyDescriptor(P, p); if (dd && dd.get) log.push(['s', p, dd.get.call(ctx)]); });
+            log.push(['c','setLineDash',[ctx.getLineDash()]]);
+          }
+          if (log){ log.push(['c', n, Array.prototype.slice.call(arguments)]); if (log.length > 60000) log = null; }
+        }
+        if (n === 'fillText') return asText(f, arguments);
+        return f.apply(ctx, arguments);
+      };
+    });
+    cvs.push({ redraw:function(){
+      if (!framed && snap){
+        var img = new ImageData(new Uint8ClampedArray(snap.data), snap.width, snap.height), d = img.data, memo = {};
+        for (var i = 0; i < d.length; i += 4){ if (!d[i+3]) continue; var k = d[i] + ',' + d[i+1] + ',' + d[i+2], c = memo[k];
+          if (!c){ var v = parse(conv('rgb(' + k + ')')); c = memo[k] = v || [d[i], d[i+1], d[i+2]]; } d[i] = c[0]; d[i+1] = c[1]; d[i+2] = c[2]; }
+        var t0 = ctx.getTransform(); P.setTransform.call(ctx, 1, 0, 0, 1, 0, 0); P.putImageData.call(ctx, img, 0, 0); P.setTransform.call(ctx, t0); return;
+      }
+      if (!framed || !log || log.length < 3) return;
+      replaying = true;
+      try { log.forEach(function(e){ if (e[0] === 's') ctx[e[1]] = e[2]; else if (e[1] === 'fillText') asText(P.fillText, e[2]); else P[e[1]].apply(ctx, e[2]); }); }
+      finally { replaying = false; }
+    }});
+  }
+  return {
+    attach: attach,
+    map: conv,
+    set: function(m){ mode = { dark:!!m.dark, light:!!m.light, hc:!!m.hc, cb:!!m.cb, darkbase:!!m.darkbase }; key = (mode.dark?'d':'') + (mode.light?'l':'') + (mode.hc?'h':'') + (mode.cb?'c':'') + (mode.darkbase?'b':'') + '|'; cvs.forEach(function(c){ c.redraw(); }); }
+  };
+}
+
+var ct = makeCT();
+function q(sel){ return W.querySelector(sel); }
+HIDE.forEach(function(sel){ [].forEach.call(W.querySelectorAll(sel), function(e){ e.style.display = 'none'; e.setAttribute('aria-hidden', 'true'); }); });
+[].forEach.call(W.querySelectorAll('canvas'), ct.attach);
+function press(k){ var p = P[k]; if (!p) return false; if (p.indexOf('status:') === 0) return false; var b = q(p); if (b) b.click(); return true; }
+function generic(){
+/* the shared engine: dark mode (or light mode for a sim drawn dark), high contrast, colour-blind, where the sim has no working one */
+[].forEach.call(W.querySelectorAll('canvas'), ct.attach);
+var gm = !P.mode && st.mode, gh = !P.hc && st.hc, gc = !P.cb && st.cb;
+W.classList.toggle('std_inv', gm); W.classList.toggle('std_hcl', gh && BASE === 'light'); W.classList.toggle('std_hcd', gh && BASE === 'dark');
+ct.set(BASE === 'light' ? { dark:gm, hc:gh, cb:gc } : { light:gm, hc:gh, cb:gc, darkbase:true });
+}
+function label(){
+[].forEach.call(W.querySelectorAll('[data-std] button'), function(b){ var k = b.getAttribute('data-k'); b.setAttribute('aria-pressed', st[k] ? 'true' : 'false');
+if (k === 'nr') b.textContent = 'NARRATION: ' + (st.nr ? 'ON' : 'OFF'); if (k === 'fs') b.textContent = 'FONT SIZE: ' + (st.fs ? 'LARGE' : 'NORMAL'); });
+var s = P.nr && P.nr.indexOf('status:') === 0 ? q(P.nr.slice(7)) : null; if (s){ s.style.display = st.nr ? '' : 'none'; s.setAttribute('aria-live', st.nr ? 'polite' : 'off'); }
+}
+function toggle(k){
+st[k] = !st[k]; press(k);
+/* high contrast and dark (light) mode switch each other off */
+if (k === 'hc' && st.hc && st.mode){ st.mode = false; press('mode'); }
+if (k === 'mode' && st.mode && st.hc){ st.hc = false; press('hc'); }
+generic(); label();
+}
+[].forEach.call(W.querySelectorAll('[data-std] button'), function(b){ b.addEventListener('click', function(){ toggle(b.getAttribute('data-k')); }); });
+var db = W.querySelector('[data-stddb]'), dd = W.querySelector('[data-stddd]');
+if (db && dd) db.addEventListener('click', function(){ var open = dd.style.display === 'none'; dd.style.display = open ? 'block' : 'none'; db.setAttribute('aria-expanded', open ? 'true' : 'false'); db.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([dd]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, dd]); } });
+/* the toolbar takes the width of the sim right below it */
+function fit(){ var tb = W.querySelector('[data-std]'), n = tb && tb.nextElementSibling;
+while (n && (/^(STYLE|SCRIPT|LINK|HR|BR)$/.test(n.tagName) || !n.offsetWidth)) n = n.nextElementSibling;
+if (!tb || !n) return;
+/* a full-width wrapper: take the width of what it holds */
+var box = n.getBoundingClientRect(), big = null;
+[].forEach.call(n.children, function(ch){ if (ch !== tb && ch.offsetWidth && !/^(STYLE|SCRIPT)$/.test(ch.tagName)){ var r = ch.getBoundingClientRect(); if (!big || r.width > big.width) big = r; } });
+if (big && big.width < box.width - 30) box = big;   /* a full-width wrapper: line up with the sim it holds */
+tb.style.maxWidth = Math.round(box.width) + 'px';
+tb.style.marginLeft = Math.max(0, Math.round(box.left - W.getBoundingClientRect().left)) + 'px'; tb.style.marginRight = 'auto'; }
+fit(); window.addEventListener('resize', fit); setTimeout(fit, 300);
+label();
+})();
+</script>
+</div>
 </main>
 </body>
 </html>
