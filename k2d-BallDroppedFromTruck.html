@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 <script>
-  // Configure MathJax to load the AsciiMath input component
-  window.MathJax = {
-    loader: { load: ['input/asciimath', 'output/chtml'] }
-  };
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
 </script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
@@ -15,6 +15,7 @@
 <meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,motion, kinematics, video,analysis,tracker,2d,relative, lesson, scientific">
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
+<div id="k2dWrapTM090786">
 <hr><h2>Ball Dropped From a Moving Truck</h2><hr>
 <p>In the simulation right below, a red ball is dropped from a truck moving at a constant velocity, while a second (blue) remains on the truck bed. You can observe the path of the falling ball both relative to an observer outside the truck as well as relative to someone inside the truck. The effects of air resistance are ignored.</p>
 <div id="tdmRootTM090786">
@@ -837,5 +838,29 @@ ps,pl
 var carBallDropTM090786 = new carBallDrop();
 tdmA11yTM090786.init();
 </script>
+<div class="simdesc_k2dWrapTM090786" style="max-width:683px;margin:10px auto;text-align:center;font-family:Arial,sans-serif"><button type="button" aria-expanded="false" style="padding:7px 16px;font:bold 12px monospace;letter-spacing:.08em;cursor:pointer;background:#2a2e3a;border:1px solid #00a896;color:#00e8d0;border-radius:3px;min-height:36px" onclick="var d=this.nextElementSibling, o=d.style.display==='none'; d.style.display=o?'block':'none'; this.setAttribute('aria-expanded', o?'true':'false'); this.innerHTML=(o?'&#9662;':'&#9656;')+' SIM DESCRIPTION'; if (o && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }">&#9656; SIM DESCRIPTION</button><div role="region" aria-label="Description of the simulation" style="display:none;margin-top:8px;padding:10px 14px;background:#f6f8fb;border:1px solid #ccd;border-left:4px solid #00a896;border-radius:4px;font-size:.93rem;line-height:1.55;color:#222;text-align:left"><p style="margin:0 0 8px">A ball is dropped from a truck moving at a constant velocity. When released, the ball already moves horizontally with the truck, and nothing changes that horizontal velocity, so it keeps up with the truck as it falls, landing right below the release point as seen from the truck.</p><p style="margin:0 0 8px">Seen from the truck, the ball falls straight down; seen from the ground, it follows a parabola. Both descriptions are correct: they differ by the truck&rsquo;s constant velocity. The time to fall depends only on the height, `t = sqrt(2 h / g)`, not on the truck&rsquo;s speed.</p></div></div>
+</div>
+<style>
+/* ── phones and narrow windows: the fixed widths become fluid, the canvases scale (pointer positions are already rescaled), rows wrap ── */
+@media (max-width: 720px) {
+#k2dWrapTM090786 div { height:auto !important; }   /* containers with fixed heights fit their content */
+body { margin:8px !important; }
+#k2dWrapTM090786 { width:100% !important; max-width:100% !important; box-sizing:border-box; }
+#k2dWrapTM090786 [style*="width:683px"], #k2dWrapTM090786 [style*="width: 683px"], #k2dWrapTM090786 [style*="width: 522px"], #k2dWrapTM090786 [style*="width:522px"], #k2dWrapTM090786 [style*="width:680px"], #k2dWrapTM090786 [style*="width:660px"] { width:100% !important; max-width:100% !important; box-sizing:border-box; }
+#k2dWrapTM090786 * { max-width:100%; box-sizing:border-box; }   /* no element wider than its container (widths set by classes too) */
+#k2dWrapTM090786 div { flex-wrap:wrap; }   /* rows may wrap */
+#k2dWrapTM090786 input[type=range] { flex:1 1 110px; min-width:0; }
+#k2dWrapTM090786 canvas { max-width:100% !important; height:auto !important; }
+#k2dWrapTM090786 [style*="min-width"] { min-width:0 !important; }
+#k2dWrapTM090786 [style*="display:flex"], #k2dWrapTM090786 [style*="display: flex"] { flex-wrap:wrap !important; }
+#k2dWrapTM090786 table { display:block; overflow-x:auto; max-width:100%; }
+#k2dWrapTM090786 input[type=number], #k2dWrapTM090786 input[type=text], #k2dWrapTM090786 select { max-width:100%; }
+}
+@media (pointer: coarse) {
+#k2dWrapTM090786 button { min-height:36px; }
+#k2dWrapTM090786 input[type=range] { height:28px; }
+#k2dWrapTM090786 input[type=checkbox], #k2dWrapTM090786 input[type=radio] { width:20px; height:20px; }
+}
+</style>
 </body>
 </html>

@@ -15,60 +15,61 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,motion, kinematics, projectile,2d, acceleration, lesson, scientific">
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
-<div id="brivRoot$briv">
+<div id="k2dWrapBRIV">
+<div id="brivRootBRIV">
 <!-- ── Accessibility toolbar ── -->
-<div class="briv_a11y$briv" id="brivA11yBar$briv" role="toolbar" aria-label="Display options">
-<button type="button" class="briv_a11ybtn$briv" id="brivBtnHC$briv" onclick="brivA11y$briv.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="briv_a11ybtn$briv" id="brivBtnLM$briv" onclick="brivA11y$briv.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
-<button type="button" class="briv_a11ybtn$briv" id="brivBtnCB$briv" onclick="brivA11y$briv.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
-<button type="button" class="briv_a11ybtn$briv briv_a11yon$briv" id="brivBtnNR$briv" onclick="brivA11y$briv.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+<div class="briv_a11yBRIV" id="brivA11yBarBRIV" role="toolbar" aria-label="Display options">
+<button type="button" class="briv_a11ybtnBRIV" id="brivBtnHCBRIV" onclick="brivA11yBRIV.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="briv_a11ybtnBRIV" id="brivBtnLMBRIV" onclick="brivA11yBRIV.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="briv_a11ybtnBRIV" id="brivBtnCBBRIV" onclick="brivA11yBRIV.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="briv_a11ybtnBRIV briv_a11yonBRIV" id="brivBtnNRBRIV" onclick="brivA11yBRIV.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
 </div>
-<div class="tbar$briv"><h3>Boat &amp; River — Relative Velocity</h3></div>
-<div class="mcontent$briv">
-<canvas id="brivCanvas$briv" style="margin:auto;display:block;border:1px solid #ccc" width="500" height="420"></canvas>
+<div class="tbarBRIV"><h3>Boat &amp; River — Relative Velocity</h3></div>
+<div class="mcontentBRIV">
+<canvas id="brivCanvasBRIV" style="margin:auto;display:block;border:1px solid #ccc" width="500" height="420"></canvas>
 </div>
-<div id="brivNarBar$briv" class="briv_narbar$briv" role="status" aria-live="polite" aria-atomic="true"></div>
-<div class="bbar$briv">
-<input type="button" id="brivPlay$briv" value="Play"
-onclick="if(this.value=='Play'){brivSim$briv.pl();this.value='Pause';}else{this.value='Play';brivSim$briv.ps();}">
-<input type="button" value="Step" onclick="document.getElementById('brivPlay$briv').value='Play';brivSim$briv.step();">
-<input type="button" value="Restart" onclick="document.getElementById('brivPlay$briv').value='Play';brivSim$briv.rst();">
+<div id="brivNarBarBRIV" class="briv_narbarBRIV" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="bbarBRIV">
+<input type="button" id="brivPlayBRIV" value="Play"
+onclick="if(this.value=='Play'){brivSimBRIV.pl();this.value='Pause';}else{this.value='Play';brivSimBRIV.ps();}">
+<input type="button" value="Step" onclick="document.getElementById('brivPlayBRIV').value='Play';brivSimBRIV.step();">
+<input type="button" value="Restart" onclick="document.getElementById('brivPlayBRIV').value='Play';brivSimBRIV.rst();">
 </div>
-<div class="footer$briv">
-<div class="frow$briv">
+<div class="footerBRIV">
+<div class="frowBRIV">
 <label>River width (20-100 m):
-<input type="range" id="brivW$briv" min="20" max="100" value="50" step="5" onchange="brivSim$briv.rst()" oninput="document.getElementById('brivWVal$briv').textContent=this.value">
-<span id="brivWVal$briv">50</span> m
+<input type="range" id="brivWBRIV" min="20" max="100" value="50" step="5" onchange="brivSimBRIV.rst()" oninput="document.getElementById('brivWValBRIV').textContent=this.value">
+<span id="brivWValBRIV">50</span> m
 </label>
 <label>Current speed (-4 to 4 m/s, ± = direction):
-<input type="range" id="brivVw$briv" min="-4" max="4" value="1.5" step="0.1" onchange="brivSim$briv.rst()" oninput="document.getElementById('brivVwVal$briv').textContent=this.value">
-<span id="brivVwVal$briv">1.5</span> m/s
+<input type="range" id="brivVwBRIV" min="-4" max="4" value="1.5" step="0.1" onchange="brivSimBRIV.rst()" oninput="document.getElementById('brivVwValBRIV').textContent=this.value">
+<span id="brivVwValBRIV">1.5</span> m/s
 </label>
 </div>
-<div class="frow$briv">
+<div class="frowBRIV">
 <label>Boat speed in still water (1-5 m/s):
-<input type="range" id="brivVb$briv" min="1" max="5" value="3" step="0.1" onchange="brivSim$briv.rst()" oninput="document.getElementById('brivVbVal$briv').textContent=this.value">
-<span id="brivVbVal$briv">3</span> m/s
+<input type="range" id="brivVbBRIV" min="1" max="5" value="3" step="0.1" onchange="brivSimBRIV.rst()" oninput="document.getElementById('brivVbValBRIV').textContent=this.value">
+<span id="brivVbValBRIV">3</span> m/s
 </label>
 <label>Heading angle (-70° to 70°, − left / + right):
-<input type="range" id="brivTh$briv" min="-70" max="70" value="0" step="1" onchange="brivSim$briv.rst()" oninput="document.getElementById('brivThVal$briv').textContent=this.value">
-<span id="brivThVal$briv">0</span>°
+<input type="range" id="brivThBRIV" min="-70" max="70" value="0" step="1" onchange="brivSimBRIV.rst()" oninput="document.getElementById('brivThValBRIV').textContent=this.value">
+<span id="brivThValBRIV">0</span>°
 </label>
 </div>
-<div class="fnote$briv">Heading angle is measured from "straight across" the river: negative points the bow left, positive points it right. Current speed can be positive (flows right) or negative (flows left) — aim the bow opposite the current to fight drift.</div>
-<div class="frow$briv">
+<div class="fnoteBRIV">Heading angle is measured from "straight across" the river: negative points the bow left, positive points it right. Current speed can be positive (flows right) or negative (flows left) — aim the bow opposite the current to fight drift.</div>
+<div class="frowBRIV">
 <label style="flex:2">Target landing point (-80 to 80 m from straight across, − left / + right):
-<input type="range" id="brivTgt$briv" min="-80" max="80" value="0" step="5" onchange="brivSim$briv.rst()" oninput="document.getElementById('brivTgtVal$briv').textContent=this.value">
-<span id="brivTgtVal$briv">0</span> m
+<input type="range" id="brivTgtBRIV" min="-80" max="80" value="0" step="5" onchange="brivSimBRIV.rst()" oninput="document.getElementById('brivTgtValBRIV').textContent=this.value">
+<span id="brivTgtValBRIV">0</span> m
 </label>
 </div>
-<div class="fnote$briv">The destination doesn't have to be straight across — set a target point on the far bank and the sim will report the heading needed to actually land on it.</div>
+<div class="fnoteBRIV">The destination doesn't have to be straight across — set a target point on the far bank and the sim will report the heading needed to actually land on it.</div>
 </div>
 </div>
 <style>
 * { margin: 0; box-sizing: border-box; }
 div { width: 503px; margin: 0; }
-#brivRoot$briv {
+#brivRootBRIV {
 --br-bg:      #ffffff;
 --br-water:   #1565c0;
 --br-boat:    #2e7d32;
@@ -79,37 +80,37 @@ div { width: 503px; margin: 0; }
 --br-grass:   #4a8c3c;
 --br-toolbar-bg: #222;
 }
-#brivRoot$briv .briv_a11y$briv {
+#brivRootBRIV .briv_a11yBRIV {
 display:flex; gap:6px; padding:6px 8px;
 background:var(--br-toolbar-bg); flex-wrap:wrap; width:503px;
 }
-#brivRoot$briv .briv_a11ybtn$briv {
+#brivRootBRIV .briv_a11ybtnBRIV {
 padding:4px 10px; font-size:.72rem; font-family:monospace;
 letter-spacing:.06em; border-radius:3px; cursor:pointer;
 background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa;
 transition:border-color .15s,color .15s;
 }
-#brivRoot$briv .briv_a11ybtn$briv:hover { border-color:#00e8d0; color:#00e8d0; }
-#brivRoot$briv .briv_a11yon$briv { background:rgba(0,232,208,.12); border-color:#00e8d0; color:#00e8d0; }
-#brivRoot$briv .briv_narbar$briv {
+#brivRootBRIV .briv_a11ybtnBRIV:hover { border-color:#00e8d0; color:#00e8d0; }
+#brivRootBRIV .briv_a11yonBRIV { background:rgba(0,232,208,.12); border-color:#00e8d0; color:#00e8d0; }
+#brivRootBRIV .briv_narbarBRIV {
 width:503px; min-height:28px; padding:5px 10px;
 background:#ffefc0; border-left:4px solid #e0b040;
 font-size:.88rem; color:#333; font-style:italic;
 }
-.tbar$briv    { padding:4px; height:35px; background-color:#f90; text-align:center; line-height:42px; }
-.tbar$briv h3 { font-size:1.1rem; font-weight:bold; }
-.mcontent$briv { height:422px; }
-.bbar$briv    { height:50px; background-color:#df9; padding:10px; text-align:center; }
-.bbar$briv input[type=button] { margin:0 4px; padding:4px 14px; cursor:pointer; }
-.footer$briv  { width:503px; background-color:#fce4ec; padding:8px; font-size:.82rem; }
-.frow$briv    { display:flex; justify-content:space-between; gap:10px; margin-bottom:6px; width:100%; }
-.frow$briv label { width:auto; flex:1; }
-.frow$briv input[type=range] { width:120px; vertical-align:middle; }
-.fnote$briv   { width:100%; font-size:.72rem; color:#555; font-style:italic; margin-top:2px; }
+.tbarBRIV    { padding:4px; height:35px; background-color:#f90; text-align:center; line-height:42px; }
+.tbarBRIV h3 { font-size:1.1rem; font-weight:bold; }
+.mcontentBRIV { height:422px; }
+.bbarBRIV    { height:50px; background-color:#df9; padding:10px; text-align:center; }
+.bbarBRIV input[type=button] { margin:0 4px; padding:4px 14px; cursor:pointer; }
+.footerBRIV  { width:503px; background-color:#fce4ec; padding:8px; font-size:.82rem; }
+.frowBRIV    { display:flex; justify-content:space-between; gap:10px; margin-bottom:6px; width:100%; }
+.frowBRIV label { width:auto; flex:1; }
+.frowBRIV input[type=range] { width:120px; vertical-align:middle; }
+.fnoteBRIV   { width:100%; font-size:.72rem; color:#555; font-style:italic; margin-top:2px; }
 </style>
 <!-- ════════ A11Y CONTROLLER ════════ -->
 <script>
-var brivA11y$briv = (function(){
+var brivA11yBRIV = (function(){
 var ROOT = null;
 var states = { hc:false, lm:false, cb:false, nr:true };
 var THEMES = {
@@ -127,21 +128,21 @@ b.style.color=on?'#00e8d0':'#7a8aaa';
 b.setAttribute('aria-pressed',on?'true':'false');
 }
 function applyNarBar(){
-var nb=document.getElementById('brivNarBar$briv');
+var nb=document.getElementById('brivNarBarBRIV');
 if(nb) nb.style.display=states.nr?'block':'none';
-var btn=document.getElementById('brivBtnNR$briv');
-if(btn){ btn.textContent='NARRATION: '+(states.nr?'ON':'OFF'); styleBtn('brivBtnNR$briv',states.nr); }
+var btn=document.getElementById('brivBtnNRBRIV');
+if(btn){ btn.textContent='NARRATION: '+(states.nr?'ON':'OFF'); styleBtn('brivBtnNRBRIV',states.nr); }
 }
 function apply(){
 if(!ROOT)return;
 applyVars('hc',states.hc); applyVars('lm',states.lm); applyVars('cb',states.cb);
 applyNarBar();
-styleBtn('brivBtnHC$briv',states.hc);
-styleBtn('brivBtnLM$briv',states.lm);
-styleBtn('brivBtnCB$briv',states.cb);
+styleBtn('brivBtnHCBRIV',states.hc);
+styleBtn('brivBtnLMBRIV',states.lm);
+styleBtn('brivBtnCBBRIV',states.cb);
 }
 return {
-init:function(){ ROOT=document.getElementById('brivRoot$briv'); apply(); },
+init:function(){ ROOT=document.getElementById('brivRootBRIV'); apply(); },
 toggle:function(k){
 states[k]=!states[k];
 if(k==='hc'&&states.hc) states.lm=false;
@@ -150,7 +151,7 @@ apply();
 },
 narrate:function(msg){
 if(!states.nr)return;
-var nb=document.getElementById('brivNarBar$briv');
+var nb=document.getElementById('brivNarBarBRIV');
 if(nb) nb.textContent=msg;
 },
 col:function(prop,def){
@@ -165,7 +166,7 @@ isHC:function(){ return states.hc; }
 <!-- ════════ SIMULATION ════════ -->
 <script>
 var brivGen = function() {
-var canvas  = document.getElementById('brivCanvas$briv');
+var canvas  = document.getElementById('brivCanvasBRIV');
 var ctx     = canvas.getContext('2d');
 var W       = canvas.width;   /* 500 */
 var H       = canvas.height;  /* 420 */
@@ -181,13 +182,13 @@ var scale, yTop, yBottom, startXPx;
 var progress, frameCount;
 var narrationEvery = 20;
 var arrived = false;
-function c(prop, def) { return brivA11y$briv.col(prop, def); }
+function c(prop, def) { return brivA11yBRIV.col(prop, def); }
 function readSliders() {
-riverWidth = parseFloat(document.getElementById('brivW$briv').value);
-Vw         = parseFloat(document.getElementById('brivVw$briv').value);
-Vb         = parseFloat(document.getElementById('brivVb$briv').value);
-thetaDeg   = parseFloat(document.getElementById('brivTh$briv').value);
-targetOffset = parseFloat(document.getElementById('brivTgt$briv').value);
+riverWidth = parseFloat(document.getElementById('brivWBRIV').value);
+Vw         = parseFloat(document.getElementById('brivVwBRIV').value);
+Vb         = parseFloat(document.getElementById('brivVbBRIV').value);
+thetaDeg   = parseFloat(document.getElementById('brivThBRIV').value);
+targetOffset = parseFloat(document.getElementById('brivTgtBRIV').value);
 }
 function computePhysics() {
 theta = thetaDeg * Math.PI / 180;
@@ -320,7 +321,7 @@ ctx.moveTo(x+2, y); ctx.quadraticCurveTo(x+3, y+dir*6, x+2, y+dir*9);
 ctx.stroke();
 }
 function drawScenery() {
-if (brivA11y$briv.isHC()) return;
+if (brivA11yBRIV.isHC()) return;
 /* grass strips along both banks, drawn under the (later) bank line */
 var grassCol = c('--br-grass', '#4a8c3c');
 ctx.fillStyle = grassCol;
@@ -364,7 +365,7 @@ scenePerson(c('--br-struct', '#111'), targetXPxScenery + 22, yBottom);
 }
 /* light fill for the water itself, under the current chevrons */
 function drawWaterFill() {
-if (brivA11y$briv.isHC()) return;
+if (brivA11yBRIV.isHC()) return;
 ctx.save();
 ctx.globalAlpha = 0.28;
 ctx.fillStyle = c('--br-water', '#1565c0');
@@ -555,7 +556,7 @@ Math.abs(pos.x).toFixed(1) + ' m to the ' + (pos.x >= 0 ? 'right' : 'left') + ' 
 } else {
 msg = 'The boat is being carried sideways by the current without making progress toward the far bank.';
 }
-brivA11y$briv.narrate(msg);
+brivA11yBRIV.narrate(msg);
 }
 function physicsStep() {
 if (arrived) return;
@@ -580,7 +581,7 @@ if (runFlag === 1 && !arrived) {
 timer = window.setTimeout(runMotion, 40);
 } else {
 runFlag = 0;
-var pb = document.getElementById('brivPlay$briv');
+var pb = document.getElementById('brivPlayBRIV');
 if (pb) pb.value = 'Play';
 }
 }
@@ -611,16 +612,40 @@ progress = 0;
 frameCount = 0;
 arrived = false;
 renderCurrent();
-brivA11y$briv.narrate('Ready. River width ' + riverWidth + ' m, current ' + Vw + ' m/s, boat speed ' + Vb + ' m/s, heading ' + thetaDeg + '\u00B0, target ' + targetOffset + ' m. Press Play.');
+brivA11yBRIV.narrate('Ready. River width ' + riverWidth + ' m, current ' + Vw + ' m/s, boat speed ' + Vb + ' m/s, heading ' + thetaDeg + '\u00B0, target ' + targetOffset + ' m. Press Play.');
 }
 rst();
 return { pl:pl, ps:ps, step:step, rst:rst };
 };
-var brivSim$briv = new brivGen();
+var brivSimBRIV = new brivGen();
 </script>
 <script>
-brivA11y$briv.init();
+brivA11yBRIV.init();
 </script>
 
+<div class="simdesc_k2dWrapBRIV" style="max-width:683px;margin:10px auto;text-align:center;font-family:Arial,sans-serif"><button type="button" aria-expanded="false" style="padding:7px 16px;font:bold 12px monospace;letter-spacing:.08em;cursor:pointer;background:#2a2e3a;border:1px solid #00a896;color:#00e8d0;border-radius:3px;min-height:36px" onclick="var d=this.nextElementSibling, o=d.style.display==='none'; d.style.display=o?'block':'none'; this.setAttribute('aria-expanded', o?'true':'false'); this.innerHTML=(o?'&#9662;':'&#9656;')+' SIM DESCRIPTION'; if (o && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }">&#9656; SIM DESCRIPTION</button><div role="region" aria-label="Description of the simulation" style="display:none;margin-top:8px;padding:10px 14px;background:#f6f8fb;border:1px solid #ccd;border-left:4px solid #00a896;border-radius:4px;font-size:.93rem;line-height:1.55;color:#222;text-align:left"><p style="margin:0 0 8px">A boat crossing a river moves relative to the water, and the water moves relative to the shore. Its velocity relative to the shore is the vector sum: `vec v_(boat,shore) = vec v_(boat,water) + vec v_(water,shore)`.</p><p style="margin:0 0 8px">Pointed straight across, the boat drifts downstream, but crosses in the shortest time: the crossing time depends only on the boat&rsquo;s speed across, `t = w / v_(boat,water)`. To land straight across, the boat must point partly upstream, so that the sideways components cancel: `sin theta = v_(water) / v_(boat)`, which is possible only if the boat is faster than the current.</p></div></div>
+</div>
+<style>
+/* ── phones and narrow windows: the fixed widths become fluid, the canvases scale (pointer positions are already rescaled), rows wrap ── */
+@media (max-width: 720px) {
+#k2dWrapBRIV div { height:auto !important; }   /* containers with fixed heights fit their content */
+body { margin:8px !important; }
+#k2dWrapBRIV { width:100% !important; max-width:100% !important; box-sizing:border-box; }
+#k2dWrapBRIV [style*="width:683px"], #k2dWrapBRIV [style*="width: 683px"], #k2dWrapBRIV [style*="width: 522px"], #k2dWrapBRIV [style*="width:522px"], #k2dWrapBRIV [style*="width:680px"], #k2dWrapBRIV [style*="width:660px"] { width:100% !important; max-width:100% !important; box-sizing:border-box; }
+#k2dWrapBRIV * { max-width:100%; box-sizing:border-box; }   /* no element wider than its container (widths set by classes too) */
+#k2dWrapBRIV div { flex-wrap:wrap; }   /* rows may wrap */
+#k2dWrapBRIV input[type=range] { flex:1 1 110px; min-width:0; }
+#k2dWrapBRIV canvas { max-width:100% !important; height:auto !important; }
+#k2dWrapBRIV [style*="min-width"] { min-width:0 !important; }
+#k2dWrapBRIV [style*="display:flex"], #k2dWrapBRIV [style*="display: flex"] { flex-wrap:wrap !important; }
+#k2dWrapBRIV table { display:block; overflow-x:auto; max-width:100%; }
+#k2dWrapBRIV input[type=number], #k2dWrapBRIV input[type=text], #k2dWrapBRIV select { max-width:100%; }
+}
+@media (pointer: coarse) {
+#k2dWrapBRIV button { min-height:36px; }
+#k2dWrapBRIV input[type=range] { height:28px; }
+#k2dWrapBRIV input[type=checkbox], #k2dWrapBRIV input[type=radio] { width:20px; height:20px; }
+}
+</style>
 </body>
 </html>

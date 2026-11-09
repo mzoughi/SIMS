@@ -63,8 +63,8 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 </div><!-- #btRoot -->
 <style>
 #btRoot { --c-chassis:#1a1c1f; --c-panel:#22262b; --c-hi:#2c3138; --c-lo:#14161a; --c-bd:#3a4048; --c-bd2:#525c66; --c-text:#c8d0d8; --c-dim:#8a94a3; --c-accent:#e8a020; --c-green:#3ad08f; --c-val:#ffdd66; --c-nbg:#2a2410; --c-nbd:#e0b040; --c-ntx:#f0e2b8;
-  background:var(--c-chassis); background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
-  color:var(--c-text); font-family:Arial, sans-serif; padding:14px 10px 18px; border-radius:6px; box-sizing:border-box; width:100%; max-width:860px; margin:0 auto 10px; display:flex; flex-direction:column; gap:10px; }
+background:var(--c-chassis); background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
+color:var(--c-text); font-family:Arial, sans-serif; padding:14px 10px 18px; border-radius:6px; box-sizing:border-box; width:100%; max-width:860px; margin:0 auto 10px; display:flex; flex-direction:column; gap:10px; }
 #btRoot * { box-sizing:border-box; }
 #btRoot.bt_lm { --c-chassis:#e9edf1; --c-panel:#ffffff; --c-hi:#f1f4f7; --c-lo:#f4f6f9; --c-bd:#c3cad3; --c-bd2:#9aa3ae; --c-text:#1d232a; --c-dim:#556070; --c-accent:#a8620a; --c-green:#12805a; --c-val:#8a4a00; --c-nbg:#ffefc0; --c-ntx:#333; background-image:none; }
 #btRoot.bt_hc { --c-chassis:#000; --c-panel:#000; --c-hi:#111; --c-lo:#000; --c-bd:#fff; --c-bd2:#fff; --c-text:#fff; --c-dim:#e0e0e0; --c-accent:#ffd700; --c-green:#00ff88; --c-val:#ffff00; --c-nbg:#000; --c-nbd:#ffd700; --c-ntx:#fff; background-image:none; }
@@ -138,10 +138,10 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <script>
 var btSim = (function(){
 /* ══════════ SETTINGS ══════════
-   VTRUCK: the truck's speed (m/s); VTOSS: the toss speed, straight up relative to the truck (m/s)
-   DIAM:   the ball's diameter (cm); DENSITY: its average density (kg/m^3): 80 light, 370 medium, 1100 heavy
-   RHO:    the air density (kg/m^3): 0 is a vacuum, 1.2 is ordinary air
-   In MOM, the variables $vtruck, $vtoss, $diam, $density and $rho, when set, replace these defaults.
+VTRUCK: the truck's speed (m/s); VTOSS: the toss speed, straight up relative to the truck (m/s)
+DIAM:   the ball's diameter (cm); DENSITY: its average density (kg/m^3): 80 light, 370 medium, 1100 heavy
+RHO:    the air density (kg/m^3): 0 is a vacuum, 1.2 is ordinary air
+In MOM, the variables $vtruck, $vtoss, $diam, $density and $rho, when set, replace these defaults.
 */
 var VTRUCK = 15, VTOSS = 8, DIAM = 6.7, DENSITY = 370, RHO = 1.2;
 var MOM = { vtruck:'', vtoss:'', diam:'', density:'', rho:'' };
@@ -159,16 +159,16 @@ function vTerm(){ return st.rho > 0 ? Math.sqrt(2*mass()*G/(st.rho*CD*area())) :
 /* ══════════ the flight: RK4 with 1 ms steps, from the hand until the ball reaches the ground; the air is at rest relative to the ground ══════════ */
 var FL = null, FN = null;
 function fly(rho){ var k = rho*CD*area()/(2*mass()), x = 0, y = H0, vx = st.vT, vy = st.vU, t = 0, dt = 0.001, out = [[0, x, y, vx, vy]], catchT = null, catchX = null;
-  function f(s){ var v = Math.hypot(s[2], s[3]); return [s[2], s[3], -k*v*s[2], -G - k*v*s[3]]; }
-  while (y > 0 && t < 20){ var s = [x, y, vx, vy], a = f(s), b = f(s.map(function(q, i){ return q + a[i]*dt/2; })), c = f(s.map(function(q, i){ return q + b[i]*dt/2; })), d = f(s.map(function(q, i){ return q + c[i]*dt; }));
-    var n = s.map(function(q, i){ return q + dt/6*(a[i] + 2*b[i] + 2*c[i] + d[i]); }), yPrev = y;
-    t += dt; x = n[0]; y = n[1]; vx = n[2]; vy = n[3];
-    if (catchT === null && vy < 0 && yPrev >= H0 && y < H0){ var fr = (yPrev - H0)/(yPrev - y); catchT = t - dt*(1 - fr); catchX = x - n[2]*dt*(1 - fr); }
-    if (Math.round(t*1000) % 5 === 0) out.push([t, x, y, vx, vy]); }
-  var fr2 = out.length > 1 ? out[out.length - 1] : out[0];
-  return { pts:out, catchT:catchT, catchX:catchX, landT:t, landX:x }; }
+function f(s){ var v = Math.hypot(s[2], s[3]); return [s[2], s[3], -k*v*s[2], -G - k*v*s[3]]; }
+while (y > 0 && t < 20){ var s = [x, y, vx, vy], a = f(s), b = f(s.map(function(q, i){ return q + a[i]*dt/2; })), c = f(s.map(function(q, i){ return q + b[i]*dt/2; })), d = f(s.map(function(q, i){ return q + c[i]*dt; }));
+var n = s.map(function(q, i){ return q + dt/6*(a[i] + 2*b[i] + 2*c[i] + d[i]); }), yPrev = y;
+t += dt; x = n[0]; y = n[1]; vx = n[2]; vy = n[3];
+if (catchT === null && vy < 0 && yPrev >= H0 && y < H0){ var fr = (yPrev - H0)/(yPrev - y); catchT = t - dt*(1 - fr); catchX = x - n[2]*dt*(1 - fr); }
+if (Math.round(t*1000) % 5 === 0) out.push([t, x, y, vx, vy]); }
+var fr2 = out.length > 1 ? out[out.length - 1] : out[0];
+return { pts:out, catchT:catchT, catchX:catchX, landT:t, landX:x }; }
 function sample(F, t){ var P = F.pts; if (t <= 0) return P[0]; if (t >= P[P.length - 1][0]) return P[P.length - 1]; var i = Math.min(P.length - 1, Math.floor(t/0.005)); while (i > 0 && P[i][0] > t) i--; while (i < P.length - 2 && P[i + 1][0] < t) i++; var a = P[i], b = P[i + 1], u = (t - a[0])/(b[0] - a[0]);
-  return a.map(function(q, k){ return q + (b[k] - q)*u; }); }
+return a.map(function(q, k){ return q + (b[k] - q)*u; }); }
 function tEnd(){ return st.tossT === null ? TDRIVE : st.tossT + Math.max(FL.landT, FN.landT); }
 function ballAt(F, t){ /* [t, x, y, vx, vy] in absolute time */ if (st.tossT === null || t < st.tossT) return [t, st.vT*t, H0, st.vT, 0]; var tau = Math.min(t - st.tossT, F.landT), q = sample(F, tau); return [t, st.vT*st.tossT + q[1], q[2], q[3], q[4]]; }
 function tau(){ return st.tossT === null ? 0 : Math.max(0, st.t - st.tossT); }
@@ -178,69 +178,69 @@ var cv = el('btCv'), g = cv.getContext('2d'), gc = el('btGr'), gg = gc.getContex
 cv.width = W*DPR; cv.height = H*DPR; g.scale(DPR, DPR); gc.width = 640*DPR; gc.height = 300*DPR; gg.scale(DPR, DPR);
 var th = { hc:false, lm:false, cb:false, nr:true, fs:0 };
 function pal(){ var p = { sky:'#0f1a2a', ground:'#3b2f22', road:'#555', text:'#e6edf3', truck:'#d64545', cab:'#9aa4ae', ball:'#ffd166', noair:'rgba(255,209,102,0.55)', path:'#ffd166', v:'#3ad08f', D:'#ff7b72', Fg:'#5aa9ff', person:'#c9d1d9' };
-  if (th.lm){ p.sky = '#e8f2fc'; p.ground = '#c8b89a'; p.text = '#1d2a36'; p.ball = '#d68a00'; p.noair = 'rgba(214,138,0,0.5)'; p.path = '#d68a00'; p.v = '#12805a'; p.D = '#c2185b'; p.Fg = '#1f4fd6'; p.person = '#333'; }
-  if (th.cb){ p.v = '#009e73'; p.D = '#d55e00'; p.Fg = '#0072b2'; p.truck = '#cc79a7'; p.ball = '#e69f00'; p.path = '#e69f00'; }
-  if (th.hc){ p.sky = '#000'; p.ground = '#333'; p.text = '#fff'; p.ball = '#ffff00'; p.path = '#ffff00'; p.v = '#00ff88'; p.D = '#ff5555'; p.Fg = '#66aaff'; }
-  return p; }
+if (th.lm){ p.sky = '#e8f2fc'; p.ground = '#c8b89a'; p.text = '#1d2a36'; p.ball = '#d68a00'; p.noair = 'rgba(214,138,0,0.5)'; p.path = '#d68a00'; p.v = '#12805a'; p.D = '#c2185b'; p.Fg = '#1f4fd6'; p.person = '#333'; }
+if (th.cb){ p.v = '#009e73'; p.D = '#d55e00'; p.Fg = '#0072b2'; p.truck = '#cc79a7'; p.ball = '#e69f00'; p.path = '#e69f00'; }
+if (th.hc){ p.sky = '#000'; p.ground = '#333'; p.text = '#fff'; p.ball = '#ffff00'; p.path = '#ffff00'; p.v = '#00ff88'; p.D = '#ff5555'; p.Fg = '#66aaff'; }
+return p; }
 var VB = null;
 function frameX(x, t){ return st.view === 'truck' ? x - st.vT*t : x; }
 function fitView(){ var tT = st.tossT === null ? st.t : st.tossT, x0 = 1e9, x1 = -1e9, yMax = H0 + 1, xT = st.vT*tT;
-  [FL, FN].forEach(function(F){ F.pts.forEach(function(q){ var X0 = st.view === 'truck' ? q[1] - st.vT*q[0] : xT + q[1]; x0 = Math.min(x0, X0); x1 = Math.max(x1, X0); yMax = Math.max(yMax, q[2]); }); });   /* the flight from the toss point (or from where the toss would be) */
-  if (st.view === 'ground'){ var Tf = Math.max(FL.landT, FN.landT); x0 = Math.min(x0, xT - 4); x1 = Math.max(x1, xT + st.vT*Tf + 4); } else { x0 = Math.min(x0, -4); x1 = Math.max(x1, 4); }
-  var sc = Math.min((W - 30)/(x1 - x0 + 2), (H - 50)/(yMax + 1)); VB = { x0:x0 - 1, sc:sc }; }
+[FL, FN].forEach(function(F){ F.pts.forEach(function(q){ var X0 = st.view === 'truck' ? q[1] - st.vT*q[0] : xT + q[1]; x0 = Math.min(x0, X0); x1 = Math.max(x1, X0); yMax = Math.max(yMax, q[2]); }); });   /* the flight from the toss point (or from where the toss would be) */
+if (st.view === 'ground'){ var Tf = Math.max(FL.landT, FN.landT); x0 = Math.min(x0, xT - 4); x1 = Math.max(x1, xT + st.vT*Tf + 4); } else { x0 = Math.min(x0, -4); x1 = Math.max(x1, 4); }
+var sc = Math.min((W - 30)/(x1 - x0 + 2), (H - 50)/(yMax + 1)); VB = { x0:x0 - 1, sc:sc }; }
 function X(x){ return 15 + (x - VB.x0)*VB.sc; } function Y(y){ return H - 30 - y*VB.sc; }
 function arrow(x0, y0, dx, dy, col, lab){ var L = Math.hypot(dx, dy); if (L < 3) return; var x1 = x0 + dx, y1 = y0 + dy, an = Math.atan2(dy, dx), h = 8; g.strokeStyle = col; g.fillStyle = col; g.lineWidth = 2.5; g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1 - h*0.6*Math.cos(an), y1 - h*0.6*Math.sin(an)); g.stroke(); g.beginPath(); g.moveTo(x1, y1); g.lineTo(x1 - h*Math.cos(an - 0.4), y1 - h*Math.sin(an - 0.4)); g.lineTo(x1 - h*Math.cos(an + 0.4), y1 - h*Math.sin(an + 0.4)); g.closePath(); g.fill(); g.font = 'bold 12px Arial'; g.fillText(lab, x1 + 4, y1 - 3); }
 function truck(xHand, p){ var bx = X(xHand), gy = Y(0), s = VB.sc;
-  g.fillStyle = p.truck; g.fillRect(bx - 3.2*s, gy - 1.1*s, 5.0*s, 0.45*s); g.fillStyle = p.cab; g.fillRect(bx + 1.8*s, gy - 2.3*s, 1.6*s, 1.65*s); g.fillStyle = '#7fb3ff'; g.fillRect(bx + 2.6*s, gy - 2.1*s, 0.6*s, 0.6*s);
-  g.fillStyle = '#111'; [-2.2, 2.4].forEach(function(o){ g.beginPath(); g.arc(bx + o*s, gy - 0.45*s, 0.45*s, 0, 2*Math.PI); g.fill(); });
-  g.strokeStyle = p.person; g.lineWidth = Math.max(2, 0.12*s); g.beginPath(); g.moveTo(bx - 0.3*s, gy - 1.1*s); g.lineTo(bx - 0.3*s, gy - 1.9*s); g.lineTo(bx, Y(H0)); g.stroke(); g.beginPath(); g.arc(bx - 0.3*s, gy - 2.2*s, 0.22*s, 0, 2*Math.PI); g.stroke(); }
+g.fillStyle = p.truck; g.fillRect(bx - 3.2*s, gy - 1.1*s, 5.0*s, 0.45*s); g.fillStyle = p.cab; g.fillRect(bx + 1.8*s, gy - 2.3*s, 1.6*s, 1.65*s); g.fillStyle = '#7fb3ff'; g.fillRect(bx + 2.6*s, gy - 2.1*s, 0.6*s, 0.6*s);
+g.fillStyle = '#111'; [-2.2, 2.4].forEach(function(o){ g.beginPath(); g.arc(bx + o*s, gy - 0.45*s, 0.45*s, 0, 2*Math.PI); g.fill(); });
+g.strokeStyle = p.person; g.lineWidth = Math.max(2, 0.12*s); g.beginPath(); g.moveTo(bx - 0.3*s, gy - 1.1*s); g.lineTo(bx - 0.3*s, gy - 1.9*s); g.lineTo(bx, Y(H0)); g.stroke(); g.beginPath(); g.arc(bx - 0.3*s, gy - 2.2*s, 0.22*s, 0, 2*Math.PI); g.stroke(); }
 var TREES = []; (function(){ var s = 11, x = -60; while (x < 2000){ s = (s*9301 + 49297) % 233280; var a = s/233280; s = (s*9301 + 49297) % 233280; var b = s/233280; TREES.push([x, 3 + 4*a, b < 0.5 ? 0 : 1]); x += 5 + 9*b; } })();
 function scenery(p, t){ var s = VB.sc, gy = Y(0);
-  g.fillStyle = th.lm ? '#b9d4a6' : (th.hc ? '#111' : '#1d3326'); g.beginPath(); g.moveTo(0, gy); for (var hx = 0; hx <= W; hx += 20){ var wx = (hx - 15)/s + VB.x0 + (st.view === 'truck' ? st.vT*t*0.25 : 0); g.lineTo(hx, gy - (18 + 14*Math.sin(wx*0.07) + 8*Math.sin(wx*0.19))); } g.lineTo(W, gy); g.closePath(); g.fill();   /* distant hills, drifting slowly in the truck's view */
-  TREES.forEach(function(tr){ var xs = X(st.view === 'truck' ? tr[0] - st.vT*t : tr[0]); if (xs < -40 || xs > W + 40) return; var h = tr[1]*s;
-    g.fillStyle = th.hc ? '#666' : '#6b4a2b'; g.fillRect(xs - 0.12*s, gy - h*0.45, 0.24*s, h*0.45);
-    g.fillStyle = th.hc ? '#0a0' : (th.lm ? '#3f8f3a' : '#2f6b34'); g.beginPath(); if (tr[2]){ g.moveTo(xs, gy - h); g.lineTo(xs - 0.9*s, gy - h*0.35); g.lineTo(xs + 0.9*s, gy - h*0.35); g.closePath(); } else g.arc(xs, gy - h*0.7, 0.75*s + h*0.12, 0, 2*Math.PI); g.fill(); }); }
+g.fillStyle = th.lm ? '#b9d4a6' : (th.hc ? '#111' : '#1d3326'); g.beginPath(); g.moveTo(0, gy); for (var hx = 0; hx <= W; hx += 20){ var wx = (hx - 15)/s + VB.x0 + (st.view === 'truck' ? st.vT*t*0.25 : 0); g.lineTo(hx, gy - (18 + 14*Math.sin(wx*0.07) + 8*Math.sin(wx*0.19))); } g.lineTo(W, gy); g.closePath(); g.fill();   /* distant hills, drifting slowly in the truck's view */
+TREES.forEach(function(tr){ var xs = X(st.view === 'truck' ? tr[0] - st.vT*t : tr[0]); if (xs < -40 || xs > W + 40) return; var h = tr[1]*s;
+g.fillStyle = th.hc ? '#666' : '#6b4a2b'; g.fillRect(xs - 0.12*s, gy - h*0.45, 0.24*s, h*0.45);
+g.fillStyle = th.hc ? '#0a0' : (th.lm ? '#3f8f3a' : '#2f6b34'); g.beginPath(); if (tr[2]){ g.moveTo(xs, gy - h); g.lineTo(xs - 0.9*s, gy - h*0.35); g.lineTo(xs + 0.9*s, gy - h*0.35); g.closePath(); } else g.arc(xs, gy - h*0.7, 0.75*s + h*0.12, 0, 2*Math.PI); g.fill(); }); }
 function ballR(){ return Math.max(4, st.d/200*VB.sc*6); }   /* drawn larger than true size, in proportion to it */
 function draw(){ var p = pal(), t = st.t, T = tEnd(); g.fillStyle = p.sky; g.fillRect(0, 0, W, H); g.fillStyle = p.ground; g.fillRect(0, Y(0), W, H - Y(0));
-  /* ground marks, moving backward in the truck's view */ g.strokeStyle = 'rgba(255,255,255,0.35)'; g.lineWidth = 2; for (var m = Math.floor((VB.x0 + (st.view === 'truck' ? st.vT*t : 0))/2)*2 - 4; m < VB.x0 + W/VB.sc + 40; m += 2){ var xm = st.view === 'truck' ? m - st.vT*t : m; g.beginPath(); g.moveTo(X(xm), Y(0) + 8); g.lineTo(X(xm) + 0.8*VB.sc, Y(0) + 8); g.stroke(); }
-  g.fillStyle = p.text; g.font = '12px Arial'; g.fillText(st.view === 'truck' ? 'seen from the truck: the ground moves back' + (st.rho > 0 ? ', and the air blows back at ' + st.vT + ' m/s' : '') : 'seen from the ground: the air is still', 8, 16);
-  if (st.view === 'truck' && st.rho > 0){ g.strokeStyle = 'rgba(160,200,255,0.5)'; g.lineWidth = 1.5; for (var k=0; k<6; k++){ var wy = 30 + k*40, wx = (W - ((t*st.vT*VB.sc*0.5 + k*97) % (W + 60))); g.beginPath(); g.moveTo(wx, wy); g.lineTo(wx - 30, wy); g.stroke(); g.beginPath(); g.moveTo(wx - 30, wy); g.lineTo(wx - 24, wy - 4); g.moveTo(wx - 30, wy); g.lineTo(wx - 24, wy + 4); g.stroke(); } }
-  scenery(p, t); truck(frameX(st.vT*t, t), p);
-  /* the paths since the toss, and the motion diagram */ var ta = tau(); if (st.tossT !== null) [[FN, p.noair, [6, 5], st.shN && st.rho > 0], [FL, p.path, [], true]].forEach(function(c){ if (!c[3]) return; g.strokeStyle = c[1]; g.lineWidth = 2; g.setLineDash(c[2]); g.beginPath(); var first = true; c[0].pts.forEach(function(q){ if (q[0] > ta) return; var T0 = st.tossT + q[0], xx = X(frameX(st.vT*st.tossT + q[1], T0)), yy = Y(q[2]); if (first){ g.moveTo(xx, yy); first = false; } else g.lineTo(xx, yy); }); g.stroke(); g.setLineDash([]);
-    if (st.shG){ g.fillStyle = c[1]; g.globalAlpha = 0.35; for (var tg=0.1; tg<ta - 1e-9 && tg <= c[0].landT; tg+=0.1){ var q2 = sample(c[0], tg); g.beginPath(); g.arc(X(frameX(st.vT*st.tossT + q2[1], st.tossT + tg)), Y(q2[2]), ballR()*0.8, 0, 2*Math.PI); g.fill(); } g.globalAlpha = 1; } });
-  /* the balls (in the hand until the toss) */ if (st.shN && st.rho > 0 && st.tossT !== null){ var n = ballAt(FN, t), tn = Math.min(t, st.tossT + FN.landT); g.strokeStyle = p.noair; g.lineWidth = 2; g.setLineDash([3, 3]); g.beginPath(); g.arc(X(frameX(n[1], tn)), Y(n[2]), ballR(), 0, 2*Math.PI); g.stroke(); g.setLineDash([]); }
-  var tl = st.tossT === null ? t : Math.min(t, st.tossT + FL.landT), q = ballAt(FL, t), bx = X(frameX(q[1], tl)), by = Y(q[2]); g.fillStyle = p.ball; g.beginPath(); g.arc(bx, by, ballR(), 0, 2*Math.PI); g.fill(); g.strokeStyle = '#000'; g.lineWidth = 1; g.stroke();
-  if (st.shV && st.tossT !== null && ta < FL.landT){ var vxF = st.view === 'truck' ? q[3] - st.vT : q[3], v = Math.hypot(q[3], q[4]), k = st.rho*CD*area()/2, Dx = -k*v*q[3], Dy = -k*v*q[4], m = mass();
-    arrow(bx, by, vxF*5, -q[4]*5, p.v, 'v'); if (st.rho > 0) arrow(bx, by, Dx/(m*G)*40, -Dy/(m*G)*40, p.D, 'F\u1D05'); arrow(bx, by, 0, 40, p.Fg, 'F\u1D4D'); }
-  g.fillStyle = p.text; g.font = '11px Arial'; g.fillText('scale: v 5 px per m/s; forces 40 px per weight; the ball is drawn enlarged', 8, H - 8); }
+/* ground marks, moving backward in the truck's view */ g.strokeStyle = 'rgba(255,255,255,0.35)'; g.lineWidth = 2; for (var m = Math.floor((VB.x0 + (st.view === 'truck' ? st.vT*t : 0))/2)*2 - 4; m < VB.x0 + W/VB.sc + 40; m += 2){ var xm = st.view === 'truck' ? m - st.vT*t : m; g.beginPath(); g.moveTo(X(xm), Y(0) + 8); g.lineTo(X(xm) + 0.8*VB.sc, Y(0) + 8); g.stroke(); }
+g.fillStyle = p.text; g.font = '12px Arial'; g.fillText(st.view === 'truck' ? 'seen from the truck: the ground moves back' + (st.rho > 0 ? ', and the air blows back at ' + st.vT + ' m/s' : '') : 'seen from the ground: the air is still', 8, 16);
+if (st.view === 'truck' && st.rho > 0){ g.strokeStyle = 'rgba(160,200,255,0.5)'; g.lineWidth = 1.5; for (var k=0; k<6; k++){ var wy = 30 + k*40, wx = (W - ((t*st.vT*VB.sc*0.5 + k*97) % (W + 60))); g.beginPath(); g.moveTo(wx, wy); g.lineTo(wx - 30, wy); g.stroke(); g.beginPath(); g.moveTo(wx - 30, wy); g.lineTo(wx - 24, wy - 4); g.moveTo(wx - 30, wy); g.lineTo(wx - 24, wy + 4); g.stroke(); } }
+scenery(p, t); truck(frameX(st.vT*t, t), p);
+/* the paths since the toss, and the motion diagram */ var ta = tau(); if (st.tossT !== null) [[FN, p.noair, [6, 5], st.shN && st.rho > 0], [FL, p.path, [], true]].forEach(function(c){ if (!c[3]) return; g.strokeStyle = c[1]; g.lineWidth = 2; g.setLineDash(c[2]); g.beginPath(); var first = true; c[0].pts.forEach(function(q){ if (q[0] > ta) return; var T0 = st.tossT + q[0], xx = X(frameX(st.vT*st.tossT + q[1], T0)), yy = Y(q[2]); if (first){ g.moveTo(xx, yy); first = false; } else g.lineTo(xx, yy); }); g.stroke(); g.setLineDash([]);
+if (st.shG){ g.fillStyle = c[1]; g.globalAlpha = 0.35; for (var tg=0.1; tg<ta - 1e-9 && tg <= c[0].landT; tg+=0.1){ var q2 = sample(c[0], tg); g.beginPath(); g.arc(X(frameX(st.vT*st.tossT + q2[1], st.tossT + tg)), Y(q2[2]), ballR()*0.8, 0, 2*Math.PI); g.fill(); } g.globalAlpha = 1; } });
+/* the balls (in the hand until the toss) */ if (st.shN && st.rho > 0 && st.tossT !== null){ var n = ballAt(FN, t), tn = Math.min(t, st.tossT + FN.landT); g.strokeStyle = p.noair; g.lineWidth = 2; g.setLineDash([3, 3]); g.beginPath(); g.arc(X(frameX(n[1], tn)), Y(n[2]), ballR(), 0, 2*Math.PI); g.stroke(); g.setLineDash([]); }
+var tl = st.tossT === null ? t : Math.min(t, st.tossT + FL.landT), q = ballAt(FL, t), bx = X(frameX(q[1], tl)), by = Y(q[2]); g.fillStyle = p.ball; g.beginPath(); g.arc(bx, by, ballR(), 0, 2*Math.PI); g.fill(); g.strokeStyle = '#000'; g.lineWidth = 1; g.stroke();
+if (st.shV && st.tossT !== null && ta < FL.landT){ var vxF = st.view === 'truck' ? q[3] - st.vT : q[3], v = Math.hypot(q[3], q[4]), k = st.rho*CD*area()/2, Dx = -k*v*q[3], Dy = -k*v*q[4], m = mass();
+arrow(bx, by, vxF*5, -q[4]*5, p.v, 'v'); if (st.rho > 0) arrow(bx, by, Dx/(m*G)*40, -Dy/(m*G)*40, p.D, 'F\u1D05'); arrow(bx, by, 0, 40, p.Fg, 'F\u1D4D'); }
+g.fillStyle = p.text; g.font = '11px Arial'; g.fillText('scale: v 5 px per m/s; forces 40 px per weight; the ball is drawn enlarged', 8, H - 8); }
 function graphs(){ var p = pal(), T = Math.max(FL.landT, FN.landT), GW = 640, GH = 300, L = 54, R = 10, hh = (GH - 20)/3,
-  rows = [['x \u2212 x\u2095\u2090\u2099\u2094 (m)', function(q){ return q[1] - st.vT*q[0]; }], ['v\u2093 (m/s)', function(q){ return q[3]; }], ['v\u1D67 (m/s)', function(q){ return q[4]; }]];
-  gg.fillStyle = p.sky; gg.fillRect(0, 0, GW, GH);
-  rows.forEach(function(rw, i){ var y0 = 4 + i*hh, mn = 0, mx = 0; [FL, FN].forEach(function(F){ F.pts.forEach(function(q){ var v = rw[1](q); mn = Math.min(mn, v); mx = Math.max(mx, v); }); }); if (mx - mn < 1e-6){ mx += 1; mn -= 1; }
-    function GX(t){ return L + (GW - L - R)*t/T; } function GY(v){ return y0 + hh - 8 - (hh - 16)*(v - mn)/(mx - mn); }
-    gg.strokeStyle = 'rgba(127,127,127,0.5)'; gg.lineWidth = 1; gg.beginPath(); gg.moveTo(L, y0 + 4); gg.lineTo(L, y0 + hh - 8); gg.moveTo(L, GY(0)); gg.lineTo(GW - R, GY(0)); gg.stroke();
-    gg.fillStyle = p.text; gg.font = '11px Arial'; gg.fillText(rw[0], 4, y0 + 13); gg.fillText(String(+mx.toPrecision(3)), 4, y0 + 26); gg.fillText(String(+mn.toPrecision(3)), 4, y0 + hh - 8);
-    [[FN, p.noair, [5, 4], st.rho > 0], [FL, p.path, [], true]].forEach(function(c){ if (!c[3]) return; gg.strokeStyle = c[1]; gg.lineWidth = 2; gg.setLineDash(c[2]); gg.beginPath(); var first = true; c[0].pts.forEach(function(q){ if (first){ gg.moveTo(GX(q[0]), GY(rw[1](q))); first = false; } else gg.lineTo(GX(q[0]), GY(rw[1](q))); }); gg.stroke(); gg.setLineDash([]); });
-    gg.strokeStyle = p.text; gg.globalAlpha = 0.6; if (st.tossT !== null){ gg.beginPath(); gg.moveTo(GX(Math.min(T, tau())), y0 + 4); gg.lineTo(GX(Math.min(T, tau())), y0 + hh - 8); gg.stroke(); } gg.globalAlpha = 1; });
-  gg.fillStyle = p.text; gg.fillText('time since the toss (s) \u2192 ' + T.toFixed(2), GW - 170, GH - 3); gg.fillText('\u2014 with air   - - without air', L + 4, GH - 3); }
+rows = [['x \u2212 x\u2095\u2090\u2099\u2094 (m)', function(q){ return q[1] - st.vT*q[0]; }], ['v\u2093 (m/s)', function(q){ return q[3]; }], ['v\u1D67 (m/s)', function(q){ return q[4]; }]];
+gg.fillStyle = p.sky; gg.fillRect(0, 0, GW, GH);
+rows.forEach(function(rw, i){ var y0 = 4 + i*hh, mn = 0, mx = 0; [FL, FN].forEach(function(F){ F.pts.forEach(function(q){ var v = rw[1](q); mn = Math.min(mn, v); mx = Math.max(mx, v); }); }); if (mx - mn < 1e-6){ mx += 1; mn -= 1; }
+function GX(t){ return L + (GW - L - R)*t/T; } function GY(v){ return y0 + hh - 8 - (hh - 16)*(v - mn)/(mx - mn); }
+gg.strokeStyle = 'rgba(127,127,127,0.5)'; gg.lineWidth = 1; gg.beginPath(); gg.moveTo(L, y0 + 4); gg.lineTo(L, y0 + hh - 8); gg.moveTo(L, GY(0)); gg.lineTo(GW - R, GY(0)); gg.stroke();
+gg.fillStyle = p.text; gg.font = '11px Arial'; gg.fillText(rw[0], 4, y0 + 13); gg.fillText(String(+mx.toPrecision(3)), 4, y0 + 26); gg.fillText(String(+mn.toPrecision(3)), 4, y0 + hh - 8);
+[[FN, p.noair, [5, 4], st.rho > 0], [FL, p.path, [], true]].forEach(function(c){ if (!c[3]) return; gg.strokeStyle = c[1]; gg.lineWidth = 2; gg.setLineDash(c[2]); gg.beginPath(); var first = true; c[0].pts.forEach(function(q){ if (first){ gg.moveTo(GX(q[0]), GY(rw[1](q))); first = false; } else gg.lineTo(GX(q[0]), GY(rw[1](q))); }); gg.stroke(); gg.setLineDash([]); });
+gg.strokeStyle = p.text; gg.globalAlpha = 0.6; if (st.tossT !== null){ gg.beginPath(); gg.moveTo(GX(Math.min(T, tau())), y0 + 4); gg.lineTo(GX(Math.min(T, tau())), y0 + hh - 8); gg.stroke(); } gg.globalAlpha = 1; });
+gg.fillStyle = p.text; gg.fillText('time since the toss (s) \u2192 ' + T.toFixed(2), GW - 170, GH - 3); gg.fillText('\u2014 with air   - - without air', L + 4, GH - 3); }
 function f2(v, n){ return (Math.abs(v) < 0.0005 ? 0 : v).toFixed(n === undefined ? 2 : n); }
 function behind(){ return FL.catchT === null ? null : st.vT*FL.catchT - FL.catchX; }
 function readout(){ var q = ballAt(FL, st.t), b = behind(), vt = vTerm(), rows = [['t', st.t.toFixed(3) + ' s'], ['ball: v (ground)', '(' + f2(q[3]) + ', ' + f2(q[4]) + ') m/s'], ['ball: v (truck)', '(' + f2(q[3] - st.vT) + ', ' + f2(q[4]) + ') m/s'], ['phase', st.tossT === null ? (st.t > 0 ? 'riding in the hand' : 'ready') : (tau() < FL.landT ? 'in flight (' + tau().toFixed(2) + ' s)' : 'landed')], ['ahead of the hand', f2(q[1] - st.vT*(st.tossT === null ? st.t : Math.min(st.t, st.tossT + FL.landT))) + ' m'],
-    ['mass', (mass()*1000 < 1000 ? f2(mass()*1000, 1) + ' g' : f2(mass(), 2) + ' kg')], ['terminal speed', isFinite(vt) ? f2(vt, 1) + ' m/s' : '\u221E (no air)'], ['back at hand height', FL.catchT === null || st.tossT === null || tau() < FL.catchT ? '\u2014' : f2(FL.catchT, 3) + ' s after the toss, ' + f2(b, 3) + ' m behind the hand']];
-  el('btRead').innerHTML = rows.map(function(r){ return '<div class="bt_rrow"><span class="bt_rkey">' + r[0] + '</span><span class="bt_rval">' + r[1] + '</span></div>'; }).join(''); }
+['mass', (mass()*1000 < 1000 ? f2(mass()*1000, 1) + ' g' : f2(mass(), 2) + ' kg')], ['terminal speed', isFinite(vt) ? f2(vt, 1) + ' m/s' : '\u221E (no air)'], ['back at hand height', FL.catchT === null || st.tossT === null || tau() < FL.catchT ? '\u2014' : f2(FL.catchT, 3) + ' s after the toss, ' + f2(b, 3) + ' m behind the hand']];
+el('btRead').innerHTML = rows.map(function(r){ return '<div class="bt_rrow"><span class="bt_rkey">' + r[0] + '</span><span class="bt_rval">' + r[1] + '</span></div>'; }).join(''); }
 function render(){ el('btTime').max = tEnd().toFixed(3); el('btTime').min = st.tossT === null ? 0 : st.tossT.toFixed(3); el('btTime').value = st.t; el('btTimeV').textContent = st.t.toFixed(3) + ' s'; fitView(); draw(); graphs(); readout(); }
 /* ══════════ prediction, narration, controls ══════════ */
 var PREDS = [['hand', 'Back in the thrower\u2019s hand'], ['behind', 'Behind the thrower'], ['ahead', 'Ahead of the thrower']];
 function actual(){ var b = behind(); return b === null ? 'behind' : (Math.abs(b) < 0.01 ? 'hand' : (b > 0 ? 'behind' : 'ahead')); }
 function buildPreds(){ el('btPredBtns').innerHTML = PREDS.map(function(p){ return '<button type="button" class="bt_predbtn" data-k="' + p[0] + '" aria-pressed="' + (st.pred === p[0]) + '">' + p[1] + '</button>'; }).join('');
-  [].forEach.call(el('btPredBtns').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ st.pred = b.getAttribute('data-k'); buildPreds(); el('btPredMsg').textContent = 'Prediction recorded. Now toss the ball.'; save(); }); }); }
+[].forEach.call(el('btPredBtns').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ st.pred = b.getAttribute('data-k'); buildPreds(); el('btPredMsg').textContent = 'Prediction recorded. Now toss the ball.'; save(); }); }); }
 function narrate(m){ if (th.nr) el('btNar').textContent = m; }
 function tick(prev){ if (st.tossT === null) return; var a0 = prev - st.tossT, a1 = st.t - st.tossT; if (FL.catchT !== null && a0 < FL.catchT && a1 >= FL.catchT){ var b = behind(), a = actual();
-  narrate('Back at hand height after ' + FL.catchT.toFixed(2) + ' s: ' + (a === 'hand' ? 'right in the hand. Without air, the ball keeps the truck\u2019s horizontal velocity.' : b.toFixed(2) + ' m behind the hand. The air slowed the ball horizontally while the truck kept going.'));
-  if (st.pred) el('btPredMsg').innerHTML = st.pred === a ? '<b>\u2713 Your prediction was right.</b>' : 'Not what you predicted: the ball came down ' + (a === 'hand' ? 'in the hand' : a + ' the thrower') + '. ' + (a === 'hand' ? 'With no air, nothing slows it horizontally.' : 'Look at the drag force: which way does it point?'); } }
+narrate('Back at hand height after ' + FL.catchT.toFixed(2) + ' s: ' + (a === 'hand' ? 'right in the hand. Without air, the ball keeps the truck\u2019s horizontal velocity.' : b.toFixed(2) + ' m behind the hand. The air slowed the ball horizontally while the truck kept going.'));
+if (st.pred) el('btPredMsg').innerHTML = st.pred === a ? '<b>\u2713 Your prediction was right.</b>' : 'Not what you predicted: the ball came down ' + (a === 'hand' ? 'in the hand' : a + ' the thrower') + '. ' + (a === 'hand' ? 'With no air, nothing slows it horizontally.' : 'Look at the drag force: which way does it point?'); } }
 function syncInputs(){ el('btVT').value = st.vT; el('btVTV').textContent = st.vT + ' m/s'; el('btVU').value = st.vU; el('btVUV').textContent = st.vU + ' m/s'; el('btD').value = st.d; el('btDV').textContent = st.d + ' cm';
-  el('btBall').value = String(st.dens); el('btRho').value = st.rho; el('btRhoV').textContent = st.rho.toFixed(1) + (st.rho === 0 ? ' (vacuum)' : Math.abs(st.rho - 1.2) < 0.05 ? ' (air)' : '');
-  el('btNote').textContent = 'C\u1D05 = ' + CD + ' (a sphere); the hand is ' + H0 + ' m above the road; g = ' + G + ' m/s\u00B2.'; el('btShN').checked = st.shN; el('btShV').checked = st.shV; el('btShG').checked = st.shG; }
+el('btBall').value = String(st.dens); el('btRho').value = st.rho; el('btRhoV').textContent = st.rho.toFixed(1) + (st.rho === 0 ? ' (vacuum)' : Math.abs(st.rho - 1.2) < 0.05 ? ' (air)' : '');
+el('btNote').textContent = 'C\u1D05 = ' + CD + ' (a sphere); the hand is ' + H0 + ' m above the road; g = ' + G + ' m/s\u00B2.'; el('btShN').checked = st.shN; el('btShV').checked = st.shV; el('btShG').checked = st.shG; }
 function changed(){ st.t = 0; st.tossT = null; st.playing = false; buttons(); recompute(); syncInputs(); render(); save(); }
 function buttons(){ el('btPlay').innerHTML = st.playing ? '\u2759\u2759 Pause' : (st.t > 0 && st.t < tEnd() - 1e-6 ? '\u25B6 Resume' : '\u25B6 Start'); el('btToss').disabled = !(st.tossT === null && st.playing); }
 [['btVT', 'vT'], ['btVU', 'vU'], ['btD', 'd'], ['btRho', 'rho']].forEach(function(q){ el(q[0]).addEventListener('input', function(){ st[q[1]] = +this.value; changed(); }); });
@@ -256,8 +256,8 @@ el('btTime').addEventListener('input', function(){ var p0 = st.t; st.playing = f
 var ROOT = el('btRoot');
 function theme(k){ if (k === 'fs') th.fs = (th.fs + 1) % 3; else th[k] = !th[k]; if (k === 'hc' && th.hc) th.lm = false; if (k === 'lm' && th.lm) th.hc = false; applyTheme(); save(); }
 function applyTheme(){ ROOT.classList.toggle('bt_hc', th.hc); ROOT.classList.toggle('bt_lm', th.lm); ROOT.classList.toggle('bt_fs1', th.fs === 1); ROOT.classList.toggle('bt_fs2', th.fs === 2);
-  [['hc', 'btBtnHC'], ['lm', 'btBtnLM'], ['cb', 'btBtnCB'], ['nr', 'btBtnNR'], ['fs', 'btBtnFS']].forEach(function(q){ var b = el(q[1]), on = q[0] === 'fs' ? th.fs > 0 : th[q[0]]; b.classList.toggle('bt_a11yon', !!on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
-  el('btBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('btBtnFS').textContent = 'FONT: ' + ['NORMAL', 'LARGE', 'XL'][th.fs]; el('btNar').style.display = th.nr ? '' : 'none'; render(); }
+[['hc', 'btBtnHC'], ['lm', 'btBtnLM'], ['cb', 'btBtnCB'], ['nr', 'btBtnNR'], ['fs', 'btBtnFS']].forEach(function(q){ var b = el(q[1]), on = q[0] === 'fs' ? th.fs > 0 : th[q[0]]; b.classList.toggle('bt_a11yon', !!on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+el('btBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('btBtnFS').textContent = 'FONT: ' + ['NORMAL', 'LARGE', 'XL'][th.fs]; el('btNar').style.display = th.nr ? '' : 'none'; render(); }
 [['hc', 'btBtnHC'], ['lm', 'btBtnLM'], ['cb', 'btBtnCB'], ['nr', 'btBtnNR'], ['fs', 'btBtnFS']].forEach(function(q){ el(q[1]).addEventListener('click', function(){ theme(q[0]); }); });
 el('btDescBtn').addEventListener('click', function(){ var d = el('btDesc'), open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; this.setAttribute('aria-expanded', open ? 'true' : 'false'); this.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION'; if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } });
 var KEY = 'btSaved_';

@@ -15,66 +15,67 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn,motion, kinematics, projectile,2d, acceleration, lesson, scientific">
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
-<div id="dwRoot$dwind">
+<div id="k2dWrapDWIND">
+<div id="dwRootDWIND">
 <!-- ── Accessibility toolbar ── -->
-<div class="dw_a11y$dwind" id="dwA11yBar$dwind" role="toolbar" aria-label="Display options">
-<button type="button" class="dw_a11ybtn$dwind" id="dwBtnHC$dwind" onclick="dwA11y$dwind.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="dw_a11ybtn$dwind" id="dwBtnLM$dwind" onclick="dwA11y$dwind.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
-<button type="button" class="dw_a11ybtn$dwind" id="dwBtnCB$dwind" onclick="dwA11y$dwind.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
-<button type="button" class="dw_a11ybtn$dwind dw_a11yon$dwind" id="dwBtnNR$dwind" onclick="dwA11y$dwind.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+<div class="dw_a11yDWIND" id="dwA11yBarDWIND" role="toolbar" aria-label="Display options">
+<button type="button" class="dw_a11ybtnDWIND" id="dwBtnHCDWIND" onclick="dwA11yDWIND.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="dw_a11ybtnDWIND" id="dwBtnLMDWIND" onclick="dwA11yDWIND.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="dw_a11ybtnDWIND" id="dwBtnCBDWIND" onclick="dwA11yDWIND.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="dw_a11ybtnDWIND dw_a11yonDWIND" id="dwBtnNRDWIND" onclick="dwA11yDWIND.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
 </div>
-<div class="tbar$dwind"><h3>Drone &amp; Wind — Relative Velocity</h3></div>
-<div class="mcontent$dwind">
-<canvas id="dwCanvas$dwind" style="margin:auto;display:block;border:1px solid #ccc" width="500" height="420"></canvas>
+<div class="tbarDWIND"><h3>Drone &amp; Wind — Relative Velocity</h3></div>
+<div class="mcontentDWIND">
+<canvas id="dwCanvasDWIND" style="margin:auto;display:block;border:1px solid #ccc" width="500" height="420"></canvas>
 </div>
-<div id="dwNarBar$dwind" class="dw_narbar$dwind" role="status" aria-live="polite" aria-atomic="true"></div>
-<div class="bbar$dwind">
-<input type="button" id="dwPlay$dwind" value="Play"
-onclick="if(this.value=='Play'){dwSim$dwind.pl();this.value='Pause';}else{this.value='Play';dwSim$dwind.ps();}">
-<input type="button" value="Step" onclick="document.getElementById('dwPlay$dwind').value='Play';dwSim$dwind.step();">
-<input type="button" value="Restart" onclick="document.getElementById('dwPlay$dwind').value='Play';dwSim$dwind.rst();">
+<div id="dwNarBarDWIND" class="dw_narbarDWIND" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="bbarDWIND">
+<input type="button" id="dwPlayDWIND" value="Play"
+onclick="if(this.value=='Play'){dwSimDWIND.pl();this.value='Pause';}else{this.value='Play';dwSimDWIND.ps();}">
+<input type="button" value="Step" onclick="document.getElementById('dwPlayDWIND').value='Play';dwSimDWIND.step();">
+<input type="button" value="Restart" onclick="document.getElementById('dwPlayDWIND').value='Play';dwSimDWIND.rst();">
 </div>
-<div class="footer$dwind">
-<div class="frow$dwind">
+<div class="footerDWIND">
+<div class="frowDWIND">
 <label>Crossing distance (50-300 m):
-<input type="range" id="dwD$dwind" min="50" max="300" value="150" step="10" onchange="dwSim$dwind.rst()" oninput="document.getElementById('dwDVal$dwind').textContent=this.value">
-<span id="dwDVal$dwind">150</span> m
+<input type="range" id="dwDDWIND" min="50" max="300" value="150" step="10" onchange="dwSimDWIND.rst()" oninput="document.getElementById('dwDValDWIND').textContent=this.value">
+<span id="dwDValDWIND">150</span> m
 </label>
 <label>Wind speed (0-15 m/s):
-<input type="range" id="dwVw$dwind" min="0" max="15" value="5" step="0.5" onchange="dwSim$dwind.rst()" oninput="document.getElementById('dwVwVal$dwind').textContent=this.value">
-<span id="dwVwVal$dwind">5</span> m/s
+<input type="range" id="dwVwDWIND" min="0" max="15" value="5" step="0.5" onchange="dwSimDWIND.rst()" oninput="document.getElementById('dwVwValDWIND').textContent=this.value">
+<span id="dwVwValDWIND">5</span> m/s
 </label>
 </div>
-<div class="frow$dwind">
+<div class="frowDWIND">
 <label>Drone airspeed (5-20 m/s):
-<input type="range" id="dwVd$dwind" min="5" max="20" value="12" step="0.5" onchange="dwSim$dwind.rst()" oninput="document.getElementById('dwVdVal$dwind').textContent=this.value">
-<span id="dwVdVal$dwind">12</span> m/s
+<input type="range" id="dwVdDWIND" min="5" max="20" value="12" step="0.5" onchange="dwSimDWIND.rst()" oninput="document.getElementById('dwVdValDWIND').textContent=this.value">
+<span id="dwVdValDWIND">12</span> m/s
 </label>
 <label>Drone heading (-85° to 85°):
-<input type="range" id="dwTh$dwind" min="-85" max="85" value="0" step="1" onchange="dwSim$dwind.rst()" oninput="document.getElementById('dwThVal$dwind').textContent=this.value">
-<span id="dwThVal$dwind">0</span>°
+<input type="range" id="dwThDWIND" min="-85" max="85" value="0" step="1" onchange="dwSimDWIND.rst()" oninput="document.getElementById('dwThValDWIND').textContent=this.value">
+<span id="dwThValDWIND">0</span>°
 </label>
 </div>
-<div class="frow$dwind">
+<div class="frowDWIND">
 <label style="flex:2">Wind direction (0-360°, 0=tailwind, 90=crosswind from left, 180=headwind):
-<input type="range" id="dwPhi$dwind" min="0" max="360" value="90" step="5" onchange="dwSim$dwind.rst()" oninput="document.getElementById('dwPhiVal$dwind').textContent=this.value">
-<span id="dwPhiVal$dwind">90</span>°
+<input type="range" id="dwPhiDWIND" min="0" max="360" value="90" step="5" onchange="dwSimDWIND.rst()" oninput="document.getElementById('dwPhiValDWIND').textContent=this.value">
+<span id="dwPhiValDWIND">90</span>°
 </label>
 </div>
-<div class="fnote$dwind">Heading and wind direction are both measured from the drone's intended flight path (0° = straight ahead). Unlike the river current, wind can blow from <b>any</b> direction.</div>
-<div class="frow$dwind">
+<div class="fnoteDWIND">Heading and wind direction are both measured from the drone's intended flight path (0° = straight ahead). Unlike the river current, wind can blow from <b>any</b> direction.</div>
+<div class="frowDWIND">
 <label style="flex:2">Target landing point (-150 to 150 m, − left / + right):
-<input type="range" id="dwTgt$dwind" min="-150" max="150" value="0" step="10" onchange="dwSim$dwind.rst()" oninput="document.getElementById('dwTgtVal$dwind').textContent=this.value">
-<span id="dwTgtVal$dwind">0</span> m
+<input type="range" id="dwTgtDWIND" min="-150" max="150" value="0" step="10" onchange="dwSimDWIND.rst()" oninput="document.getElementById('dwTgtValDWIND').textContent=this.value">
+<span id="dwTgtValDWIND">0</span> m
 </label>
 </div>
-<div class="fnote$dwind">The destination doesn't have to be straight ahead — set a target point and the sim will report the heading needed to actually land on it.</div>
+<div class="fnoteDWIND">The destination doesn't have to be straight ahead — set a target point and the sim will report the heading needed to actually land on it.</div>
 </div>
 </div>
 <style>
 * { margin: 0; box-sizing: border-box; }
 div { width: 503px; margin: 0; }
-#dwRoot$dwind {
+#dwRootDWIND {
 --dw-bg:      #ffffff;
 --dw-wind:    #6a1b9a;
 --dw-drone:   #2e7d32;
@@ -84,37 +85,37 @@ div { width: 503px; margin: 0; }
 --dw-corridor:#8899aa;
 --dw-toolbar-bg: #222;
 }
-#dwRoot$dwind .dw_a11y$dwind {
+#dwRootDWIND .dw_a11yDWIND {
 display:flex; gap:6px; padding:6px 8px;
 background:var(--dw-toolbar-bg); flex-wrap:wrap; width:503px;
 }
-#dwRoot$dwind .dw_a11ybtn$dwind {
+#dwRootDWIND .dw_a11ybtnDWIND {
 padding:4px 10px; font-size:.72rem; font-family:monospace;
 letter-spacing:.06em; border-radius:3px; cursor:pointer;
 background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa;
 transition:border-color .15s,color .15s;
 }
-#dwRoot$dwind .dw_a11ybtn$dwind:hover { border-color:#00e8d0; color:#00e8d0; }
-#dwRoot$dwind .dw_a11yon$dwind { background:rgba(0,232,208,.12); border-color:#00e8d0; color:#00e8d0; }
-#dwRoot$dwind .dw_narbar$dwind {
+#dwRootDWIND .dw_a11ybtnDWIND:hover { border-color:#00e8d0; color:#00e8d0; }
+#dwRootDWIND .dw_a11yonDWIND { background:rgba(0,232,208,.12); border-color:#00e8d0; color:#00e8d0; }
+#dwRootDWIND .dw_narbarDWIND {
 width:503px; min-height:28px; padding:5px 10px;
 background:#ffefc0; border-left:4px solid #e0b040;
 font-size:.88rem; color:#333; font-style:italic;
 }
-.tbar$dwind    { padding:4px; height:35px; background-color:#f90; text-align:center; line-height:42px; }
-.tbar$dwind h3 { font-size:1.1rem; font-weight:bold; }
-.mcontent$dwind { height:422px; }
-.bbar$dwind    { height:50px; background-color:#df9; padding:10px; text-align:center; }
-.bbar$dwind input[type=button] { margin:0 4px; padding:4px 14px; cursor:pointer; }
-.footer$dwind  { width:503px; background-color:#ede7f6; padding:8px; font-size:.8rem; }
-.frow$dwind    { display:flex; justify-content:space-between; gap:10px; margin-bottom:6px; width:100%; }
-.frow$dwind label { width:auto; flex:1; }
-.frow$dwind input[type=range] { width:120px; vertical-align:middle; }
-.fnote$dwind   { width:100%; font-size:.7rem; color:#555; font-style:italic; margin-top:2px; }
+.tbarDWIND    { padding:4px; height:35px; background-color:#f90; text-align:center; line-height:42px; }
+.tbarDWIND h3 { font-size:1.1rem; font-weight:bold; }
+.mcontentDWIND { height:422px; }
+.bbarDWIND    { height:50px; background-color:#df9; padding:10px; text-align:center; }
+.bbarDWIND input[type=button] { margin:0 4px; padding:4px 14px; cursor:pointer; }
+.footerDWIND  { width:503px; background-color:#ede7f6; padding:8px; font-size:.8rem; }
+.frowDWIND    { display:flex; justify-content:space-between; gap:10px; margin-bottom:6px; width:100%; }
+.frowDWIND label { width:auto; flex:1; }
+.frowDWIND input[type=range] { width:120px; vertical-align:middle; }
+.fnoteDWIND   { width:100%; font-size:.7rem; color:#555; font-style:italic; margin-top:2px; }
 </style>
 <!-- ════════ A11Y CONTROLLER ════════ -->
 <script>
-var dwA11y$dwind = (function(){
+var dwA11yDWIND = (function(){
 var ROOT = null;
 var states = { hc:false, lm:false, cb:false, nr:true };
 var THEMES = {
@@ -132,21 +133,21 @@ b.style.color=on?'#00e8d0':'#7a8aaa';
 b.setAttribute('aria-pressed',on?'true':'false');
 }
 function applyNarBar(){
-var nb=document.getElementById('dwNarBar$dwind');
+var nb=document.getElementById('dwNarBarDWIND');
 if(nb) nb.style.display=states.nr?'block':'none';
-var btn=document.getElementById('dwBtnNR$dwind');
-if(btn){ btn.textContent='NARRATION: '+(states.nr?'ON':'OFF'); styleBtn('dwBtnNR$dwind',states.nr); }
+var btn=document.getElementById('dwBtnNRDWIND');
+if(btn){ btn.textContent='NARRATION: '+(states.nr?'ON':'OFF'); styleBtn('dwBtnNRDWIND',states.nr); }
 }
 function apply(){
 if(!ROOT)return;
 applyVars('hc',states.hc); applyVars('lm',states.lm); applyVars('cb',states.cb);
 applyNarBar();
-styleBtn('dwBtnHC$dwind',states.hc);
-styleBtn('dwBtnLM$dwind',states.lm);
-styleBtn('dwBtnCB$dwind',states.cb);
+styleBtn('dwBtnHCDWIND',states.hc);
+styleBtn('dwBtnLMDWIND',states.lm);
+styleBtn('dwBtnCBDWIND',states.cb);
 }
 return {
-init:function(){ ROOT=document.getElementById('dwRoot$dwind'); apply(); },
+init:function(){ ROOT=document.getElementById('dwRootDWIND'); apply(); },
 toggle:function(k){
 states[k]=!states[k];
 if(k==='hc'&&states.hc) states.lm=false;
@@ -155,7 +156,7 @@ apply();
 },
 narrate:function(msg){
 if(!states.nr)return;
-var nb=document.getElementById('dwNarBar$dwind');
+var nb=document.getElementById('dwNarBarDWIND');
 if(nb) nb.textContent=msg;
 },
 col:function(prop,def){
@@ -170,7 +171,7 @@ isHC:function(){ return states.hc; }
 <!-- ════════ SIMULATION ════════ -->
 <script>
 var dwGen = function() {
-var canvas  = document.getElementById('dwCanvas$dwind');
+var canvas  = document.getElementById('dwCanvasDWIND');
 var ctx     = canvas.getContext('2d');
 var W       = canvas.width;
 var H       = canvas.height;
@@ -186,14 +187,14 @@ var housePositions = [];
 var scale, yTop, yBottom, startXPx;
 var progress, frameCount, arrived = false;
 var narrationEvery = 20;
-function c(prop, def) { return dwA11y$dwind.col(prop, def); }
+function c(prop, def) { return dwA11yDWIND.col(prop, def); }
 function readSliders() {
-dist     = parseFloat(document.getElementById('dwD$dwind').value);
-Vw       = parseFloat(document.getElementById('dwVw$dwind').value);
-Vd       = parseFloat(document.getElementById('dwVd$dwind').value);
-thetaDeg = parseFloat(document.getElementById('dwTh$dwind').value);
-phiDeg   = parseFloat(document.getElementById('dwPhi$dwind').value);
-targetOffset = parseFloat(document.getElementById('dwTgt$dwind').value);
+dist     = parseFloat(document.getElementById('dwDDWIND').value);
+Vw       = parseFloat(document.getElementById('dwVwDWIND').value);
+Vd       = parseFloat(document.getElementById('dwVdDWIND').value);
+thetaDeg = parseFloat(document.getElementById('dwThDWIND').value);
+phiDeg   = parseFloat(document.getElementById('dwPhiDWIND').value);
+targetOffset = parseFloat(document.getElementById('dwTgtDWIND').value);
 }
 function computePhysics() {
 theta = thetaDeg * Math.PI / 180;
@@ -335,7 +336,7 @@ col: cols[Math.floor(Math.random() * cols.length)]
 }
 }
 function drawScenery() {
-if (dwA11y$dwind.isHC()) return;
+if (dwA11yDWIND.isHC()) return;
 var skyY = Math.max(9, yTop - 20);
 sceneCloud(60, skyY, 0.65);
 sceneCloud(300, skyY - 3, 0.55);
@@ -513,7 +514,7 @@ Math.abs(pos.x).toFixed(1) + ' m ' + (pos.x >= 0 ? 'right' : 'left') + ' so far.
 } else {
 msg = 'The drone is being pushed sideways by the wind without making forward progress.';
 }
-dwA11y$dwind.narrate(msg);
+dwA11yDWIND.narrate(msg);
 }
 function physicsStep() {
 if (arrived) return;
@@ -533,7 +534,7 @@ if (runFlag === 1 && !arrived) {
 timer = window.setTimeout(runMotion, 40);
 } else {
 runFlag = 0;
-var pb = document.getElementById('dwPlay$dwind');
+var pb = document.getElementById('dwPlayDWIND');
 if (pb) pb.value = 'Play';
 }
 }
@@ -549,16 +550,40 @@ computeLayout();
 generateHouses();
 progress = 0; frameCount = 0; arrived = false;
 renderCurrent();
-dwA11y$dwind.narrate('Ready. Distance ' + dist + ' m, wind ' + Vw + ' m/s from ' + phiDeg + '\u00B0, airspeed ' + Vd + ' m/s, heading ' + thetaDeg + '\u00B0, target ' + targetOffset + ' m. Press Play.');
+dwA11yDWIND.narrate('Ready. Distance ' + dist + ' m, wind ' + Vw + ' m/s from ' + phiDeg + '\u00B0, airspeed ' + Vd + ' m/s, heading ' + thetaDeg + '\u00B0, target ' + targetOffset + ' m. Press Play.');
 }
 rst();
 return { pl:pl, ps:ps, step:step, rst:rst };
 };
-var dwSim$dwind = new dwGen();
+var dwSimDWIND = new dwGen();
 </script>
 <script>
-dwA11y$dwind.init();
+dwA11yDWIND.init();
 </script>
 
+<div class="simdesc_k2dWrapDWIND" style="max-width:683px;margin:10px auto;text-align:center;font-family:Arial,sans-serif"><button type="button" aria-expanded="false" style="padding:7px 16px;font:bold 12px monospace;letter-spacing:.08em;cursor:pointer;background:#2a2e3a;border:1px solid #00a896;color:#00e8d0;border-radius:3px;min-height:36px" onclick="var d=this.nextElementSibling, o=d.style.display==='none'; d.style.display=o?'block':'none'; this.setAttribute('aria-expanded', o?'true':'false'); this.innerHTML=(o?'&#9662;':'&#9656;')+' SIM DESCRIPTION'; if (o && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }">&#9656; SIM DESCRIPTION</button><div role="region" aria-label="Description of the simulation" style="display:none;margin-top:8px;padding:10px 14px;background:#f6f8fb;border:1px solid #ccd;border-left:4px solid #00a896;border-radius:4px;font-size:.93rem;line-height:1.55;color:#222;text-align:left"><p style="margin:0 0 8px">A drone flies relative to the air, and the air moves relative to the ground (the wind). Its velocity relative to the ground is the vector sum: `vec v_(drone,ground) = vec v_(drone,air) + vec v_(air,ground)`.</p><p style="margin:0 0 8px">To fly along a chosen direction over the ground, the drone must head partly into the wind, so that the wind&rsquo;s sideways push is cancelled; its ground speed then differs from its air speed. Drawing the vectors head to tail shows both the heading needed and the resulting ground speed.</p></div></div>
+</div>
+<style>
+/* ── phones and narrow windows: the fixed widths become fluid, the canvases scale (pointer positions are already rescaled), rows wrap ── */
+@media (max-width: 720px) {
+#k2dWrapDWIND div { height:auto !important; }   /* containers with fixed heights fit their content */
+body { margin:8px !important; }
+#k2dWrapDWIND { width:100% !important; max-width:100% !important; box-sizing:border-box; }
+#k2dWrapDWIND [style*="width:683px"], #k2dWrapDWIND [style*="width: 683px"], #k2dWrapDWIND [style*="width: 522px"], #k2dWrapDWIND [style*="width:522px"], #k2dWrapDWIND [style*="width:680px"], #k2dWrapDWIND [style*="width:660px"] { width:100% !important; max-width:100% !important; box-sizing:border-box; }
+#k2dWrapDWIND * { max-width:100%; box-sizing:border-box; }   /* no element wider than its container (widths set by classes too) */
+#k2dWrapDWIND div { flex-wrap:wrap; }   /* rows may wrap */
+#k2dWrapDWIND input[type=range] { flex:1 1 110px; min-width:0; }
+#k2dWrapDWIND canvas { max-width:100% !important; height:auto !important; }
+#k2dWrapDWIND [style*="min-width"] { min-width:0 !important; }
+#k2dWrapDWIND [style*="display:flex"], #k2dWrapDWIND [style*="display: flex"] { flex-wrap:wrap !important; }
+#k2dWrapDWIND table { display:block; overflow-x:auto; max-width:100%; }
+#k2dWrapDWIND input[type=number], #k2dWrapDWIND input[type=text], #k2dWrapDWIND select { max-width:100%; }
+}
+@media (pointer: coarse) {
+#k2dWrapDWIND button { min-height:36px; }
+#k2dWrapDWIND input[type=range] { height:28px; }
+#k2dWrapDWIND input[type=checkbox], #k2dWrapDWIND input[type=radio] { width:20px; height:20px; }
+}
+</style>
 </body>
 </html>
