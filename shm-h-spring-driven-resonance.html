@@ -10,13 +10,13 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations-Oscillations: Resonance of a Spring Driven Horizontally</title>
+<title>Physics Simulations-SHM: Driven SHM/Resonance - Horizontal Spring</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, light, optics, refraction, refraction, Snell's law, apparent depth, image, Fermat's principle, total internal reflection, critical angle, Snell's window, pool, distortion, lesson, scientific">
-<meta name="description" content="Interactive simulation of resonance: a mass on a spring whose stand is driven at a chosen frequency; transient, steady amplitude, resonance curve and phase lag.">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, simple harmonic motion, oscillation, period, frequency, pendulum, spring, damping, energy, lesson, scientific">
+<meta name="description" content="Physics Simulations-SHM: Driven SHM/Resonance - Horizontal Spring.">
 <style>
 body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
-.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+.page { width:920px; max-width:100%; margin:0 auto; }
 @media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
 </style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
@@ -273,20 +273,32 @@ function theme(k){ th[k] = !th[k]; if (k === 'hc' && th.hc) th.lm = false; if (k
 function toggleDesc(){ var b = el('drDescBtn'), d = el('drDesc'), open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
   if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }
 build(); table(); draw(); narrate('Ready. The natural frequency is ' + f2(f0(), 3) + ' hertz; the stand is driven at ' + f2(P.f, 3) + ' hertz. Change the drive frequency, wait for a steady motion, and record the amplitude. Where is it largest?'); requestAnimationFrame(loop);
+/* ══════════ drag the mass: hold it where it should start, let go, and it starts from rest there ══════════ */
+var _md = null;
+function _cp(e){ var r = CA.c.getBoundingClientRect(); return [(e.clientX - r.left)*CA.W/r.width, (e.clientY - r.top)*CA.H/r.height]; }
+function _mbox(){ var ms = 34 + 14*Math.sqrt(P.m); if (!VERT){ var mxp = 470 + S.x*XS; return { x:mxp - 30, y:120 - ms/2, w:ms, h:ms }; } var myp = 230 - S.x*XS; return { x:200 - ms/2, y:myp - 22, w:ms, h:ms }; }
+function _in(q, b, pad){ return q[0] >= b.x - pad && q[0] <= b.x + b.w + pad && q[1] >= b.y - pad && q[1] <= b.y + b.h + pad; }
+CA.c.style.touchAction = VERT ? 'none' : 'pan-y';
+CA.c.addEventListener('pointerdown', function(e){ var q = _cp(e); if (!_in(q, _mbox(), 6)) return; _md = { q:q, x:S.x }; S.play = false; S.v = 0; CA.c.style.cursor = 'grabbing'; try { CA.c.setPointerCapture(e.pointerId); } catch (er){} e.preventDefault(); });
+CA.c.addEventListener('pointermove', function(e){ var q = _cp(e); if (!_md){ CA.c.style.cursor = _in(q, _mbox(), 0) ? 'grab' : ''; return; }
+  var dd = VERT ? -(q[1] - _md.q[1]) : (q[0] - _md.q[0]); S.x = Math.max(-30, Math.min(30, _md.x + dd/XS)); S.v = 0; draw(); e.preventDefault(); });
+function _mup(){ if (!_md) return; _md = null; S.v = 0; changed(); S.play = true; el('drPlay').innerHTML = '\u2759\u2759 Pause'; CA.c.style.cursor = '';
+  narrate('Let go from rest ' + f2(Math.abs(S.x), 1) + ' cm ' + (VERT ? (S.x >= 0 ? 'above' : 'below') : (S.x >= 0 ? 'to the right of' : 'to the left of')) + ' equilibrium: at first the mass swings at its own frequency, then the drive takes over.'); }
+CA.c.addEventListener('pointerup', _mup); CA.c.addEventListener('pointercancel', _mup);
 return { theme:theme, toggleDesc:toggleDesc, setF:setF, record:record, _P:P, _adv:function(T){ advance(T); draw(); }, _steady:steady, _Xth:Xth, _lag:lagTh, _f0:f0, _S:S };
 })();
 </script>
 <div class="dr_qwrap">
 <hr>
 <ol type="a">
-<p>The spring has `k = 10\ "N/m"`, the mass is `m = 1\ "kg"`, and the damping is `beta = 0.1\ "s"^-1`.</p>
+<p>The spring has `k = 10\ "N/m"`, the mass is `m = 1\ "kg"`, and the damping is `beta = 0.10\ "s"^-1`.</p>
 <li>Calculate the natural frequency of the spring and mass.<br />`f_0 =\ ` _____ ` "Hz"`</li>
-<li>Set the drive frequency to about half of `f_0`. Wait until the motion is steady. How does the mass's amplitude compare with the stand's? Do they move together or opposite?</li>
-<li>Now set the drive frequency to about twice `f_0`. Describe the steady motion of the mass compared with the stand's.</li>
+<li>Set the drive frequency to about half of `f_0`. Wait until the motion is steady. How does the mass's amplitude compare with the stand's? Do they move together or opposite?<br /> _____ </li>
+<li>Now set the drive frequency to about twice `f_0`. Describe the steady motion of the mass compared with the stand's.<br /> _____ </li>
 <li>Record the steady amplitude for at least 10 drive frequencies, more of them near the peak. At which frequency is the amplitude largest?<br />`f_"peak" =\ ` _____ ` "Hz"`</li>
-<li>How does that frequency compare with `f_0`? What is the largest amplitude, and how many times larger is it than the stand's?</li>
-<li>Tick "show the theory curves". Then double the damping, and describe how the peak changes (its height and its width).</li>
-<li>At the peak, by how many degrees does the mass lag behind the stand?</li>
+<li>How does that frequency compare with `f_0`? What is the largest amplitude, and how many times larger is it than the stand's?<br /> _____ </li>
+<li>Tick "show the theory curves". Then double the damping, and describe how the peak changes (its height and its width).<br /> _____ </li>
+<li>At the peak, by how many degrees does the mass lag behind the stand?<br /> _____ </li>
 </ol>
 </div>
 </main>

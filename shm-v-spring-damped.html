@@ -540,20 +540,33 @@ function addXaxis(x,y,h,w,dh,dw,xB,yB){ctx.strokeStyle='green';px=x;py=y;var l=w
 function addYaxis(x,y,h,w,dh,dw,xB,yB){ctx.strokeStyle='green';px=x;py=y;var l=w+Daxis;var xD=((x-(xBase+40))*xIncrement/200).toFixed(2);arrowDraw(maxY+Daxis,Math.PI/2);ctx.font='14pt Calibri';ctx.fillStyle='black';ctx.textAlign='left';ctx.fillText(yAxisTitle,x+10,35);ctx.font='11pt Calibri';ctx.fillStyle='red';ctx.fillText('t='+xD+' s',x+5,y-10);ctx.fillStyle='black';}
 function drawDot(dx,dy,r,colS,colF){if(!colS)colS="#f00";if(!colF)colF="#0ff";ctx.strokeStyle=colS;ctx.lineWidth=1;ctx.beginPath();ctx.arc(dx,dy,r,0,2*Math.PI,true);ctx.fillStyle=colS;ctx.fill();ctx.stroke();}
 /* ── Touch / mouse drag ── */
+/* ── drag the mass to where it should start, and let go: it starts from rest there ── */
+var _drag=false,_off=[0,0],_sg=1;
+function _cxy(cx,cy){var r=canvas.getBoundingClientRect();return [(cx-r.left)*canvas.width/r.width,(cy-r.top)*canvas.height/r.height];}
+function _massDown(x,y){if(!_massHit(x,y))return false;ps();_drag=true;_grab(x,y);canvas.style.cursor='grabbing';return true;}
+function _massMove(x,y){_massSet(x,y);}
+function _massUp(){if(!_drag)return;_drag=false;canvas.style.cursor='default';_endNarrated=false;pl();shmVSA11y.narrate('Let go from rest '+Math.abs(amp).toFixed(1)+' cm '+(amp>=0?'below':'above')+' the equilibrium position: A = <strong>'+Math.abs(amp).toFixed(1)+' cm</strong>. T = '+_T()+' s.');}
+function _massHover(cx,cy){if(_drag)return;var p=_cxy(cx,cy);if(_massHit(p[0],p[1]))canvas.style.cursor='grab';else if(canvas.style.cursor==='grab')canvas.style.cursor='default';}
+function _sl(id,v,txt){var s=document.getElementById(id+'');if(s)s.value=v;var d=document.getElementById(id.replace(/^Amp$/,'AmpValue').replace(/^phif$/,'phiValue')+'');if(d)d.innerHTML=txt;}
+function _cy(){return yPos+_equPos()+radius;}
+function _massHit(x,y){return Math.abs(x-80)<=radius+8&&Math.abs(y-_cy())<=radius+8;}
+function _grab(x,y){_off[1]=y-_cy();}
+function _massSet(x,y){var a=(y-_off[1]-_equPos()-radius)/yScale;a=Math.max(-yMax,Math.min(yMax,a));if(Math.abs(a)<0.5)a=a<0?-0.5:0.5;   /* down is positive here */
+amp=Math.round(a*10)/10;_sl('Amp',Math.abs(amp),amp.toFixed(1));restart();}
 function iniTouch(){
+canvas.onmouseleave=function(){_massUp();};
 canvas.onmousedown=function(e){reactionDown(e.clientX,e.clientY);};
-canvas.ontouchstart=function(e){var o=e.changedTouches[0];reactionDown(o.clientX,o.clientY);if(hrf!=-1||xrf!=-1||yrf!=-1)e.preventDefault();};
-canvas.onmouseup=function(){hrf=-1;xrf=-1;yrf=-1;canvas.style.cursor="default";};
-canvas.ontouchend=function(){hrf=-1;xrf=-1;yrf=-1;canvas.style.cursor="default";};
-canvas.onmousemove=function(e){if(hrf==-1&&xrf==-1&&yrf==-1)return;reactionMove(e.clientX,e.clientY);};
-canvas.ontouchmove=function(e){if(hrf==-1&&xrf==-1&&yrf==-1)return;var o=e.changedTouches[0];reactionMove(o.clientX,o.clientY);e.preventDefault();};
+canvas.ontouchstart=function(e){var o=e.changedTouches[0];reactionDown(o.clientX,o.clientY);if(_drag||hrf!=-1||xrf!=-1||yrf!=-1)e.preventDefault();};
+canvas.onmouseup=function(){_massUp();hrf=-1;xrf=-1;yrf=-1;canvas.style.cursor="default";};
+canvas.ontouchend=function(){_massUp();hrf=-1;xrf=-1;yrf=-1;canvas.style.cursor="default";};
+canvas.onmousemove=function(e){_massHover(e.clientX,e.clientY);if(!_drag&&hrf==-1&&xrf==-1&&yrf==-1)return;reactionMove(e.clientX,e.clientY);};
+canvas.ontouchmove=function(e){if(!_drag&&hrf==-1&&xrf==-1&&yrf==-1)return;var o=e.changedTouches[0];reactionMove(o.clientX,o.clientY);e.preventDefault();};
 }
-function reactionDown(x,y){var r=canvas.getBoundingClientRect();x-=r.left;y-=r.top;canvas.style.cursor="pointer";checkIfHrule(x,y);checkIfXaxis(x,y);checkIfYaxis(x,y);}
+function reactionDown(x,y){var p=_cxy(x,y);x=p[0];y=p[1];if(_massDown(x,y))return;canvas.style.cursor="pointer";checkIfHrule(x,y);checkIfXaxis(x,y);checkIfYaxis(x,y);}
 function checkIfHrule(x,y){var by1=hRule.y*(1-0.5*tol1),ty1=hRule.y*(1+0.5*tol1),bx1=hRule.x*(1-0.5*tol1),tx1=hRule.x*(1+0.5*tol1);if(y>=by1&&y<=ty1&&x>=bx1&&x<=tx1)hrf=1;}
 function checkIfXaxis(x,y){var by1=Xaxis.y*(1-0.5*tol1),ty1=Xaxis.y*(1+0.5*tol1),bx1=Xaxis.x*(1-0.5*tol1),tx1=Xaxis.x*(1+0.5*tol1);if(y>=by1&&y<=ty1&&x>=bx1&&x<=tx1)xrf=1;}
 function checkIfYaxis(x,y){var by1=Yaxis.y*(1-0.5*tol1),ty1=Yaxis.y*(1+0.5*tol1),bx1=Yaxis.x*(1-0.5*tol1),tx1=Yaxis.x*(1+0.5*tol1);if(y>=by1&&y<=ty1&&x>=bx1&&x<=tx1)yrf=1;}
-function reactionMove(x,y){
-var r=canvas.getBoundingClientRect();x-=r.left;y-=r.top;
+function reactionMove(x,y){var p=_cxy(x,y);x=p[0];y=p[1];if(_drag){_massMove(x,y);return;}
 if(hrf==-1&&xrf==-1&&yrf==-1)return;canvas.style.cursor="pointer";
 if(hrf==1){hRule.y=Math.max(amp,Math.min(270,y));}
 else if(xrf==1){Xaxis.y=Math.max(yBase-40,Math.min(yBase-40+maxY,y));}
