@@ -10,13 +10,13 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations-Physical Optics: The Dispersion Grating</title>
+<title>Physics Simulations-Physical Optics: Multi-Slit/Grating Diffraction/Interference</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, diffraction, interference, single slit, double slit, multiple slits, diffraction grating, wavelength, fringes, intensity, lesson, scientific">
-<meta name="description" content="The Dispersion Grating -- interactive physics simulation.">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, physical optics, light, interference, diffraction, single slit, double slit, grating, wavelength, fringe, spectrum, lesson, scientific">
+<meta name="description" content="This simulation shows a diffraction grating used to separate colours.">
 <style>
 body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
-.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+.page { width:920px; max-width:100%; margin:0 auto; }
 @media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
 </style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
@@ -30,8 +30,10 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <!-- ── Accessibility toolbar ── -->
 <div class="sn_a11y" id="snellA11yBar" role="toolbar" aria-label="Display options">
 <button type="button" class="sn_a11ybtn" id="snBtnHC" onclick="snellA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="sn_a11ybtn" id="snBtnLM" onclick="snellA11y.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
-<button type="button" class="sn_a11ybtn sn_a11yon" id="snBtnNR" onclick="snellA11y.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+<button type="button" class="sn_a11ybtn" id="snBtnDM" onclick="snellA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="sn_a11ybtn" id="snBtnCB" onclick="snellA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="sn_a11ybtn sn_a11yon" id="snBtnNR" onclick="snellA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+<button type="button" class="sn_a11ybtn" id="snBtnTH" onclick="snellA11y.toggle('th')" aria-pressed="false">THICK CURVES</button>
 </div>
 <hr><h2>Light Interference</h2><hr>
 <hr>
@@ -95,18 +97,18 @@ When on, overlapping fringes<br>blend additively (as real light).
 <!--hr&gt;<p>&nbsp;</p>
 <p>This simulation uses also a grating. The only difference from the previous one is that you test a light source made up of two or three wavelengths. While keeping the "Red" light checked, check also the "Green" light check box.</p>
 <ol type="a">
-<li>What is the color of the light emanating from the light source?</li>
-<li>What is the color of the central maximum emerging out of the grating?</li>
-<li>What is the color of the light emanating from the light source what all three colors are checked</li>
-<li>With white light, increase d to 3000 nm. What happens to the visible spectrum?</li>
+<li>What is the color of the light emanating from the light source?<br /> _____ </li>
+<li>What is the color of the central maximum emerging out of the grating?<br /> _____ </li>
+<li>What is the color of the light emanating from the light source what all three colors are checked<br /> _____ </li>
+<li>With white light, increase d to 3000 nm. What happens to the visible spectrum?<br /> _____ </li>
 &lt;/ol-->
 <ol type="a">
-<li>With white light selected, observe the diffraction pattern. What do you notice about the central maximum (n=0) compared to the higher orders?</li>
-<li>Compare the positions of red and violet in the first order. Which colour is diffracted more?</li>
-<li>Which color light resulted in the first principal maximum closest to the central maximum?</li>
-<li>Select only red and yellow. What happens at the central maximum? </li>
-<li>Select only red and yellow. What happens at the higher orders?</li>
-<li>Revert back to white light, which order maximum resulted in the largest separation of the colors?</li>
+<li>With white light selected, observe the diffraction pattern. What do you notice about the central maximum (n=0) compared to the higher orders?<br /> _____ </li>
+<li>Compare the positions of red and violet in the first order. Which colour is diffracted more?<br /> _____ </li>
+<li>Which color light resulted in the first principal maximum closest to the central maximum?<br /> _____ </li>
+<li>Select only red and yellow. What happens at the central maximum? <br /> _____ </li>
+<li>Select only red and yellow. What happens at the higher orders?<br /> _____ </li>
+<li>Revert back to white light, which order maximum resulted in the largest separation of the colors?<br /> _____ </li>
 </ol>
 </div><!-- #snellRoot -->
 <style>:where(#mobp8096) * { margin: 0; box-sizing: border-box; }
@@ -160,39 +162,31 @@ border-radius: 2px; vertical-align: middle; margin-right: 3px;
 <!-- ════════════════ ACCESSIBILITY CONTROLLER ════════════════ -->
 <script>
 var snellA11y = (function(){
-var ROOT = null;
-var states = { hc: false, lm: false, nr: true };
+var ROOT = null, WRAP = null;
+var states = { hc:false, dm:false, cb:false, nr:true, th:false };
+/* canvas colours for each mode; the light itself is drawn in its true colour in every mode */
+var PAL = { std:{ bg:'#ffd', graph:'#eff', axis:'#000', blue:'blue' }, dm:{ bg:'#16191e', graph:'#1c2633', axis:'#e6e9ee', blue:'#7fb2ff' }, hc:{ bg:'#000', graph:'#000', axis:'#fff', blue:'#66ccff' } };
+function P(){ return states.hc ? PAL.hc : (states.dm ? PAL.dm : PAL.std); }
 function styleBtn(id, active) {
 var b = document.getElementById(id); if (!b) return;
 if (active) { b.style.background='rgba(0,232,208,.12)'; b.style.borderColor='#00e8d0'; b.style.color='#00e8d0'; }
 else        { b.style.background='#2a2e3a';             b.style.borderColor='#404a60'; b.style.color='#7a8aaa'; }
 b.setAttribute('aria-pressed', active ? 'true' : 'false');
 }
-function applyCanvas() {
-var cv = document.getElementById('cv');
-if (cv) cv.style.filter = states.lm ? 'invert(1) hue-rotate(180deg) brightness(0.9)' : '';
-}
-function applyNarBar() {
-var nb = document.getElementById('snNarBar');
-if (nb) nb.style.display = states.nr ? 'block' : 'none';
-var btn = document.getElementById('snBtnNR');
-if (btn) { btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF'); styleBtn('snBtnNR', states.nr); }
-}
-function applyToolbar() {
-if (ROOT) ROOT.style.setProperty('--sn-toolbar-bg', (states.hc || states.lm) ? '#111' : '#222');
-}
 function apply() {
 if (!ROOT) return;
-applyCanvas(); applyNarBar(); applyToolbar();
-styleBtn('snBtnHC', states.hc);
-styleBtn('snBtnLM', states.lm);
+WRAP = WRAP || document.getElementById('mobp8096') || ROOT;
+WRAP.classList.toggle('a11y_dm', states.dm); WRAP.classList.toggle('a11y_hc', states.hc); WRAP.classList.toggle('a11y_cb', states.cb);
+var nb = document.getElementById('snNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var nr = document.getElementById('snBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('snBtnHC', states.hc); styleBtn('snBtnDM', states.dm); styleBtn('snBtnCB', states.cb); styleBtn('snBtnNR', states.nr); styleBtn('snBtnTH', states.th);
 }
 return {
 init: function() { ROOT = document.getElementById('snellRoot'); apply(); },
 toggle: function(k) {
 states[k] = !states[k];
-if (k === 'hc' && states.hc) states.lm = false;
-if (k === 'lm' && states.lm) states.hc = false;
+if (k === 'hc' && states.hc) states.dm = false;   /* high contrast and dark mode switch each other off */
+if (k === 'dm' && states.dm) states.hc = false;
 apply();
 if (typeof grating2 !== 'undefined') grating2.reset();
 },
@@ -207,11 +201,27 @@ if (MathJax.typesetPromise) MathJax.typesetPromise([nb]);
 else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, nb]);
 }
 },
-getBg:   function() { return states.hc ? '#111' : '#ffd'; },
-getAxis: function() { return states.hc ? '#fff' : '#000'; }
+isHC:     function() { return states.hc; },
+isCB:     function() { return states.cb; },
+isThick:  function() { return states.th || states.hc; },
+getBg:      function() { return P().bg; },
+getGraphBg: function() { return P().graph; },
+getAxis:    function() { return P().axis; },
+col:        function(k) { return P()[k] || k; }
 };
 })();
 </script>
+<style>
+/* ════════ display options for the page around the canvases. The blocks without a canvas are inverted (dark mode)
+   or inverted and sharpened (high contrast); the blocks that hold a canvas are not filtered at all, so the light on
+   the screen keeps its exact colours, and the canvases draw their own dark or high-contrast background. ════════ */
+#mobp8096.a11y_dm, #mobp8096.a11y_dm :has(canvas) { background-color:#16191e; }
+#mobp8096.a11y_dm :has(canvas) > :not(:has(canvas)):not(canvas):not([role=toolbar]):not(style):not(script) { filter:invert(1) hue-rotate(180deg); }
+#mobp8096.a11y_hc, #mobp8096.a11y_hc :has(canvas) { background-color:#000; }
+#mobp8096.a11y_hc :has(canvas) > :not(:has(canvas)):not(canvas):not([role=toolbar]):not(style):not(script) { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobp8096.a11y_dm canvas { border-color:#5a6470 !important; }
+#mobp8096.a11y_hc canvas { border-color:#fff !important; }
+</style>
 <!-- ════════════════ SIMULATION ════════════════ -->
 <script>
 var grating2 = function() {
@@ -359,6 +369,19 @@ ctx.fillStyle='#ffffff'; ctx.fill();
 }
 function drawMotion() { var i0 = index; drawMotion0(); if (index !== i0) sideMarker(); faceMarker(drawFace()); mkUpdate(false); }
 
+function _cbName(nm){ return nm >= 620 ? 'red' : nm >= 590 ? 'orange' : nm >= 570 ? 'yellow' : nm >= 500 ? 'green' : nm >= 480 ? 'cyan' : nm >= 450 ? 'blue' : 'violet'; }
+/* colour-blind safe: each line on the face-on screen is labelled with its wavelength (orders 1 and 2) */
+function _cbFace(g, X, BT, BB){ var act = _activeWavelengths(), white = (typeof _isWhiteSelected === 'function') && _isWhiteSelected();
+g.save(); g.font = 'bold 11px Calibri, Arial, sans-serif'; g.textBaseline = 'middle'; g.textAlign = 'center';
+if (white){ var t = 'white light: in each order, violet (400 nm) is nearest the centre and red (650 nm) farthest'; var w = g.measureText(t).width; g.fillStyle = 'rgba(0,0,0,0.75)'; g.fillRect(X(0) - w/2 - 5, BT + 4, w + 10, 16); g.fillStyle = '#fff'; g.fillText(t, X(0), BT + 12); g.restore(); return; }
+var used = [], maxN = act.length > 4 ? 1 : 2;
+act.forEach(function(a){ var nm = a.wl*1000;
+  for (var n = -maxN; n <= maxN; n++){ if (!n) continue; var s = nm*n/d; if (Math.abs(s) >= 0.9999) continue; var y = 100*L*s/Math.sqrt(1 - s*s); if (Math.abs(y) > 10) continue;
+    var x = X(y), row = 0; while (used.some(function(u){ return u[1] === row && Math.abs(u[0] - x) < 34; })) row++; used.push([x, row]);
+    var yy = BT + 12 + row*15, t = Math.round(nm) + '';
+    g.strokeStyle = '#fff'; g.lineWidth = 1; g.beginPath(); g.moveTo(x, yy + 7); g.lineTo(x, BB - 2); g.stroke();
+    var w = g.measureText(t).width; g.fillStyle = 'rgba(0,0,0,0.8)'; g.fillRect(x - w/2 - 3, yy - 7, w + 6, 14); g.fillStyle = '#fff'; g.fillText(t, x, yy); } });
+g.textAlign = 'right'; g.fillStyle = '#fff'; g.fillText('nm', X(10) - 4, BB - 9); g.restore(); }
 /* ════════ the screen seen face-on: the side view's screen column, laid out as a wide band, with the intensity graph ════════ */
 var SCR = null;
 function drawFace(){
@@ -385,6 +408,7 @@ if (HASI){   /* the slit sims: the band straight from the intensity (the side vi
 for (var k2=0; k2<=X1 - X0; k2++){ var yc = -10 + 20*k2/(X1 - X0), ym = yc*0.01, I1 = computeI(ym/Math.sqrt(ym*ym + L*L)); g.fillStyle = rgb(lambda, Math.sqrt(Math.max(0, I1)));   /* sqrt(I): dark fringes dark, faint maxima still visible */ g.fillRect(X0 + k2, BT, 1.6, BB - BT); }
 }
 g.strokeStyle = ax; g.lineWidth = 1; g.strokeRect(X0, BT, X1 - X0, BB - BT);
+if (snellA11y.isCB()) _cbFace(g, X, BT, BB);
 /* the y axis, in cm, as on the side view */
 g.font = '12px Calibri, Arial, sans-serif'; g.fillStyle = ax; g.textAlign = 'center'; g.textBaseline = 'top';
 for (var ic=-10; ic<=10; ic++){ var x = X(ic); g.beginPath(); g.moveTo(x, BB); g.lineTo(x, BB + (ic % 2 === 0 ? 6 : 3)); g.stroke(); if (ic % 2 === 0) g.fillText(String(ic), x, BB + 7); }
@@ -481,10 +505,10 @@ var ry = CY + rayYs[ri];
 arrow(10, ry, slitX-10, ry, 1, mixedRayCol);
 }
 /* ── L arrow ── */
-ctx.strokeStyle='blue'; ctx.fillStyle='blue';
+ctx.strokeStyle = ctx.fillStyle = snellA11y.col('blue');
 ctx.font='13pt Calibri'; ctx.textAlign='left';
 ctx.fillText('L = '+L.toFixed(2)+' m', slitX+10, 13);
-arrow(slitX+10, 22, scrL-2, 22, 2, 'blue');
+arrow(slitX+10, 22, scrL-2, 22, 2, snellA11y.col('blue'));
 /* ── Screen ── */
 ctx.fillStyle='black';
 ctx.fillRect(scrL, Y_TOP, scrW, Y_BOT-Y_TOP);

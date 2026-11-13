@@ -10,13 +10,13 @@ loader: { load: ['input/asciimath', 'output/chtml'] }
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics Simulations-Physical Optics: Two and More Slits</title>
+<title>Physics Simulations-Physical Optics: Multi-Slit Diffraction/Interference</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, diffraction, interference, single slit, double slit, multiple slits, diffraction grating, wavelength, fringes, intensity, lesson, scientific">
-<meta name="description" content="Two and More Slits -- interactive physics simulation.">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, physical optics, light, interference, diffraction, single slit, double slit, grating, wavelength, fringe, spectrum, lesson, scientific">
+<meta name="description" content="This simulation shows the pattern made by N equally spaced slits, a distance d apart.">
 <style>
 body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
-.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+.page { width:920px; max-width:100%; margin:0 auto; }
 @media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
 </style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
@@ -27,9 +27,10 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <!-- ── Accessibility toolbar ── -->
 <div class="sn_a11y" id="snellA11yBar" role="toolbar" aria-label="Display options">
 <button type="button" class="sn_a11ybtn" id="snBtnHC" onclick="snellA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
-<button type="button" class="sn_a11ybtn" id="snBtnLM" onclick="snellA11y.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
-<button type="button" class="sn_a11ybtn" id="snBtnCB" onclick="snellA11y.toggle('cb')" aria-pressed="false">THICK CURVES</button>
-<button type="button" class="sn_a11ybtn sn_a11yon" id="snBtnNR" onclick="snellA11y.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+<button type="button" class="sn_a11ybtn" id="snBtnDM" onclick="snellA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="sn_a11ybtn" id="snBtnCB" onclick="snellA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="sn_a11ybtn sn_a11yon" id="snBtnNR" onclick="snellA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+<button type="button" class="sn_a11ybtn" id="snBtnTH" onclick="snellA11y.toggle('th')" aria-pressed="false">THICK CURVES</button>
 </div>
 <hr>  <hr>
 <div id="canvasesdiv" class="tbar"><H3>2 and More Slits</H3></div>
@@ -103,10 +104,10 @@ body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-
 <li>Click on the the violet button to change the light color to violet and get the position on the screen of the first order principal maximum.<br />`y_{V1}\ =\ ` _____ </li>
 <li>Click on the the green button to change the light color back to green, now change the number of slits to 3. Get the position on the screen of the first order principal maximum.<br />`y_{G3-1}\ =\ ` _____ </li>
 <li>Now change the number of slits to 4. Get the position on the screen of the first order principal maximum.<br />`y_{G4-1}\ =\ ` _____ </li>
-<li>Does the color of light used change the position of the principal maxima? </li>
-<li>Which wavelength results the largest position for the principal maxima (you can try it again to test your answer)? </li>
-<li>Change the slit separation d. Which slit separation dresults the largest position for the principal maxima?</li>
-<li>Does the number of slits used change the position of the principal maxima? </li>
+<li>Does the color of light used change the position of the principal maxima? <br /> _____ </li>
+<li>Which wavelength results the largest position for the principal maxima (you can try it again to test your answer)? <br /> _____ </li>
+<li>Change the slit separation d. Which slit separation dresults the largest position for the principal maxima?<br /> _____ </li>
+<li>Does the number of slits used change the position of the principal maxima? <br /> _____ </li>
 </ol>
 </div><!-- #snellRoot -->
 <style>:where(#mobp9535) * { margin: 0; box-sizing: border-box; }
@@ -159,41 +160,31 @@ display: inline-block; font-size: 14px; text-align: center; height: 20px; width:
 <!-- ════════════════ ACCESSIBILITY CONTROLLER ════════════════ -->
 <script>
 var snellA11y = (function(){
-var ROOT = null;
-var states = { hc: false, lm: false, cb: false, nr: true };
-/* cb here means "thick curves" for better visibility of intensity plot */
+var ROOT = null, WRAP = null;
+var states = { hc:false, dm:false, cb:false, nr:true, th:false };
+/* canvas colours for each mode; the light itself is drawn in its true colour in every mode */
+var PAL = { std:{ bg:'#ffd', graph:'#eff', axis:'#000', blue:'blue' }, dm:{ bg:'#16191e', graph:'#1c2633', axis:'#e6e9ee', blue:'#7fb2ff' }, hc:{ bg:'#000', graph:'#000', axis:'#fff', blue:'#66ccff' } };
+function P(){ return states.hc ? PAL.hc : (states.dm ? PAL.dm : PAL.std); }
 function styleBtn(id, active) {
 var b = document.getElementById(id); if (!b) return;
 if (active) { b.style.background='rgba(0,232,208,.12)'; b.style.borderColor='#00e8d0'; b.style.color='#00e8d0'; }
 else        { b.style.background='#2a2e3a';             b.style.borderColor='#404a60'; b.style.color='#7a8aaa'; }
 b.setAttribute('aria-pressed', active ? 'true' : 'false');
 }
-function applyCanvas() {
-var cv = document.getElementById('cv');
-if (cv) cv.style.filter = states.lm ? 'invert(1) hue-rotate(180deg) brightness(0.9)' : '';
-}
-function applyNarBar() {
-var nb = document.getElementById('snNarBar');
-if (nb) nb.style.display = states.nr ? 'block' : 'none';
-var btn = document.getElementById('snBtnNR');
-if (btn) { btn.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF'); styleBtn('snBtnNR', states.nr); }
-}
-function applyToolbar() {
-if (ROOT) ROOT.style.setProperty('--sn-toolbar-bg', (states.hc || states.lm) ? '#111' : '#222');
-}
 function apply() {
 if (!ROOT) return;
-applyCanvas(); applyNarBar(); applyToolbar();
-styleBtn('snBtnHC', states.hc);
-styleBtn('snBtnLM', states.lm);
-styleBtn('snBtnCB', states.cb);
+WRAP = WRAP || document.getElementById('mobp9535') || ROOT;
+WRAP.classList.toggle('a11y_dm', states.dm); WRAP.classList.toggle('a11y_hc', states.hc); WRAP.classList.toggle('a11y_cb', states.cb);
+var nb = document.getElementById('snNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var nr = document.getElementById('snBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('snBtnHC', states.hc); styleBtn('snBtnDM', states.dm); styleBtn('snBtnCB', states.cb); styleBtn('snBtnNR', states.nr); styleBtn('snBtnTH', states.th);
 }
 return {
 init: function() { ROOT = document.getElementById('snellRoot'); apply(); },
 toggle: function(k) {
 states[k] = !states[k];
-if (k === 'hc' && states.hc) states.lm = false;
-if (k === 'lm' && states.lm) states.hc = false;
+if (k === 'hc' && states.hc) states.dm = false;   /* high contrast and dark mode switch each other off */
+if (k === 'dm' && states.dm) states.hc = false;
 apply();
 if (typeof lightinterf5 !== 'undefined') lightinterf5.reset();
 },
@@ -208,16 +199,27 @@ if (MathJax.typesetPromise) MathJax.typesetPromise([nb]);
 else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, nb]);
 }
 },
-/* Expose states for the sim to read */
 isHC:     function() { return states.hc; },
-isThick:  function() { return states.cb; },
-/* bg and graphBg colours driven by HC state */
-getBg:      function() { return states.hc ? '#111' : '#ffd'; },
-getGraphBg: function() { return states.hc ? '#112233' : '#eff'; },
-getAxis:    function() { return states.hc ? '#fff' : '#000'; }
+isCB:     function() { return states.cb; },
+isThick:  function() { return states.th || states.hc; },
+getBg:      function() { return P().bg; },
+getGraphBg: function() { return P().graph; },
+getAxis:    function() { return P().axis; },
+col:        function(k) { return P()[k] || k; }
 };
 })();
 </script>
+<style>
+/* ════════ display options for the page around the canvases. The blocks without a canvas are inverted (dark mode)
+   or inverted and sharpened (high contrast); the blocks that hold a canvas are not filtered at all, so the light on
+   the screen keeps its exact colours, and the canvases draw their own dark or high-contrast background. ════════ */
+#mobp9535.a11y_dm, #mobp9535.a11y_dm :has(canvas) { background-color:#16191e; }
+#mobp9535.a11y_dm :has(canvas) > :not(:has(canvas)):not(canvas):not([role=toolbar]):not(style):not(script) { filter:invert(1) hue-rotate(180deg); }
+#mobp9535.a11y_hc, #mobp9535.a11y_hc :has(canvas) { background-color:#000; }
+#mobp9535.a11y_hc :has(canvas) > :not(:has(canvas)):not(canvas):not([role=toolbar]):not(style):not(script) { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobp9535.a11y_dm canvas { border-color:#5a6470 !important; }
+#mobp9535.a11y_hc canvas { border-color:#fff !important; }
+</style>
 <!-- ════════════════ SIMULATION ════════════════ -->
 <script>
 //same as lightinterf4
@@ -349,6 +351,11 @@ return Math.sin(cc)/cc;
 function intensity(x) { var amp=amplitude(x); return amp*amp; }
 function drawMotion() { var i0 = index; drawMotion0(); if (index !== i0) sideMarker(); faceMarker(drawFace()); mkUpdate(false); }
 
+function _cbName(nm){ return nm >= 620 ? 'red' : nm >= 590 ? 'orange' : nm >= 570 ? 'yellow' : nm >= 500 ? 'green' : nm >= 480 ? 'cyan' : nm >= 450 ? 'blue' : 'violet'; }
+/* colour-blind safe: the light is named by its wavelength on the face-on screen */
+function _cbFace(g, X, BT, BB){ var nm = Math.round(lambda), t = '\u03BB = ' + nm + ' nm (' + _cbName(nm) + ')';
+g.save(); g.font = 'bold 13px Calibri, Arial, sans-serif'; var w = g.measureText(t).width; g.fillStyle = 'rgba(0,0,0,0.75)'; g.fillRect(X(-10) + 4, BT + 4, w + 10, 18);
+g.fillStyle = '#fff'; g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillText(t, X(-10) + 9, BT + 13); g.restore(); }
 /* ════════ the screen seen face-on: the side view's screen column, laid out as a wide band, with the intensity graph ════════ */
 var SCR = null;
 function drawFace(){
@@ -375,6 +382,7 @@ if (HASI){   /* the slit sims: the band straight from the intensity (the side vi
 for (var k2=0; k2<=X1 - X0; k2++){ var yc = -10 + 20*k2/(X1 - X0), ym = yc*0.01, I1 = computeI(ym/Math.sqrt(ym*ym + L*L)); g.fillStyle = rgb(lambda, Math.sqrt(Math.max(0, I1)));   /* sqrt(I): dark fringes dark, faint maxima still visible */ g.fillRect(X0 + k2, BT, 1.6, BB - BT); }
 }
 g.strokeStyle = ax; g.lineWidth = 1; g.strokeRect(X0, BT, X1 - X0, BB - BT);
+if (snellA11y.isCB()) _cbFace(g, X, BT, BB);
 /* the y axis, in cm, as on the side view */
 g.font = '12px Calibri, Arial, sans-serif'; g.fillStyle = ax; g.textAlign = 'center'; g.textBaseline = 'top';
 for (var ic=-10; ic<=10; ic++){ var x = X(ic); g.beginPath(); g.moveTo(x, BB); g.lineTo(x, BB + (ic % 2 === 0 ? 6 : 3)); g.stroke(); if (ic % 2 === 0) g.fillText(String(ic), x, BB + 7); }
@@ -491,10 +499,10 @@ arrow(10, ry, slitX-10, ry, 1, rayCol);
 }
 }
 /* ── (2)(3) L arrow: slit → left edge of screen; label leads the arrow ── */
-ctx.strokeStyle = 'blue'; ctx.fillStyle = 'blue';
+ctx.strokeStyle = ctx.fillStyle = snellA11y.col('blue');
 ctx.font='13pt Calibri'; ctx.textAlign='left';
 ctx.fillText('L = '+L.toFixed(1)+' m', slitX+10, 13);
-arrow(slitX+10, 22, scrL-2, 22, 2, 'blue');
+arrow(slitX+10, 22, scrL-2, 22, 2, snellA11y.col('blue'));
 /* ── Graph background ── */
 if (plotgraph) {
 /* (3) graph background matches overall sim background */
