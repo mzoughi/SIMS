@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Physical Optics: Wave Interference: Adding Two Waves</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, waves, interference, superposition, amplitude, frequency, phase, phase difference, constructive, destructive, beats, phasors, lesson, scientific">
+<meta name="description" content="Two waves with their own amplitude, frequency and phase: each on its own, the two together, and their sum.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:920px; max-width:100%; margin:0 auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<main class="page">
+<div id="wiRoot" class="wi_root" role="region" aria-label="Wave interference: two waves, separately, together, and their sum">
+<div class="wi_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="wi_a11ybtn" id="wiBtnHC" onclick="wiSim.theme('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="wi_a11ybtn" id="wiBtnLM" onclick="wiSim.theme('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="wi_a11ybtn" id="wiBtnCB" onclick="wiSim.theme('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="wi_a11ybtn wi_a11yon" id="wiBtnNR" onclick="wiSim.theme('nr')" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div class="wi_header"><p class="wi_h1">Wave Interference: Adding Two Waves</p><p class="wi_sub">two waves, each on its own &middot; the two together &middot; their sum</p></div>
+<div class="wi_bbar"><span class="wi_ctrlname">graph against</span>
+<label><input type="radio" name="wiAx" value="x" checked> position (a snapshot)</label><label><input type="radio" name="wiAx" value="t"> time (at one place)</label></div>
+<div class="wi_diag"><div class="wi_dlabel"><b>1. EACH WAVE ON ITS OWN</b><span id="wiHintA"></span></div><canvas id="wiA" width="780" height="230" role="img" aria-label="Wave 1 and wave 2, each on its own axis."></canvas></div>
+<div class="wi_diag"><div class="wi_dlabel"><b>2. THE TWO WAVES TOGETHER (STILL SEPARATE)</b><span>the same axis</span></div><canvas id="wiB" width="780" height="170" role="img" aria-label="Wave 1 and wave 2 drawn on the same axis."></canvas></div>
+<div class="wi_diag"><div class="wi_dlabel"><b>3. THE INTERFERENCE: THEIR SUM</b><span>point by point, y = y&#8321; + y&#8322;</span></div><canvas id="wiC" width="780" height="220" role="img" aria-label="The sum of the two waves, with the phasors when the frequencies are equal." aria-describedby="wiVerdict"></canvas></div>
+<div class="wi_bbar"><button type="button" class="wi_btn wi_btnon" id="wiPlay">&#10073;&#10073; Pause</button><button type="button" class="wi_btn" id="wiStep">Step &#8539; period &#9656;</button><label>speed <input type="range" id="wiSpd" min="0.05" max="1.5" step="0.05" value="0.5" style="width:110px"></label>
+<label class="wi_chk"><input type="checkbox" id="wiGhost" checked> show the two waves faintly behind the sum</label></div>
+<div class="wi_panels"><div class="wi_panel"><div class="wi_ptitle">Wave 1 and wave 2</div><div class="wi_pbody" id="wiCtl"></div></div>
+<div class="wi_panel"><div class="wi_ptitle">Readout</div><div class="wi_pbody" id="wiRead"></div></div></div>
+<div class="wi_eqs" id="wiVerdict"></div>
+<div id="wiNar" class="wi_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="wi_descwrap">
+<button type="button" class="wi_descbtn" id="wiDescBtn" aria-expanded="false" aria-controls="wiDesc" onclick="wiSim.toggleDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="wi_desc" id="wiDesc" role="region" aria-labelledby="wiDescBtn" style="display:none">
+<p>Two waves travel along the same line, in the same direction and at the same speed `v`. Each has its own amplitude `A`, frequency `f` and starting phase `phi`:</p>
+<p class="wi_eq">`y_1 = A_1 cos(2 pi f_1 t - k_1 x + phi_1)`,&nbsp;&nbsp; `y_2 = A_2 cos(2 pi f_2 t - k_2 x + phi_2)`,&nbsp;&nbsp; `k = (2 pi f)/v`.</p>
+<p>The first view shows each wave on its own, the second shows both on the same axis, and the third shows what is really there: their <b>sum</b>, added point by point (the principle of superposition), `y = y_1 + y_2`. This is <b>interference</b>.</p>
+<p><b>Same frequency.</b> The sum is a wave of the same frequency. If the waves are in step (`Delta phi = 0, 360^@, ...`) their crests line up and the amplitudes add: constructive interference, `A = A_1 + A_2`. If they are half a cycle apart (`Delta phi = 180^@`) a crest meets a trough and they subtract: destructive interference, `A = |A_1 - A_2|`, zero when the amplitudes are equal. In general</p>
+<p class="wi_eq">`A = sqrt(A_1^2 + A_2^2 + 2 A_1 A_2 cos Delta phi)`,</p>
+<p>which the phasors show: each wave is an arrow of length `A` turning once per period, and the sum is the sum of the arrows.</p>
+<p><b>Different frequencies.</b> The two waves drift in and out of step, so the sum swells and fades: <b>beats</b>, at the beat frequency `f_"beat" = |f_1 - f_2|`. Against time, at one place, you hear (or see) the loudness rise and fall `|f_1 - f_2|` times per second.</p>
+</div></div>
+</div><!-- #wiRoot -->
+<style>
+#wiRoot { --c-chassis:#1a1c1f; --c-panel:#22262b; --c-hi:#2c3138; --c-lo:#14161a; --c-bd:#3a4048; --c-bd2:#525c66; --c-text:#c8d0d8; --c-dim:#8a94a3; --c-accent:#e8a020; --c-green:#3ad08f; --c-val:#ffdd66; --c-nbg:#2a2410; --c-nbd:#e0b040; --c-ntx:#f0e2b8;
+  background:var(--c-chassis); background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
+  color:var(--c-text); font-family:Arial, sans-serif; padding:14px 10px 18px; border-radius:6px; box-sizing:border-box; width:100%; max-width:860px; margin:0 auto 10px; display:flex; flex-direction:column; gap:10px; }
+#wiRoot * { box-sizing:border-box; }
+#wiRoot.wi_lm { --c-chassis:#e9edf1; --c-panel:#ffffff; --c-hi:#f1f4f7; --c-lo:#f4f6f9; --c-bd:#c3cad3; --c-bd2:#9aa3ae; --c-text:#1d232a; --c-dim:#556070; --c-accent:#a8620a; --c-green:#12805a; --c-val:#8a4a00; --c-nbg:#ffefc0; --c-ntx:#333; background-image:none; }
+#wiRoot.wi_hc { --c-chassis:#000; --c-panel:#000; --c-hi:#111; --c-lo:#000; --c-bd:#fff; --c-bd2:#fff; --c-text:#fff; --c-dim:#e0e0e0; --c-accent:#ffd700; --c-green:#00ff88; --c-val:#ffff00; --c-nbg:#000; --c-nbd:#ffd700; --c-ntx:#fff; background-image:none; }
+#wiRoot .wi_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+#wiRoot .wi_a11ybtn { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-dim); min-height:30px; }
+#wiRoot .wi_a11yon { background:rgba(58,208,143,.14); border-color:var(--c-green); color:var(--c-green); font-weight:bold; }
+#wiRoot .wi_header { text-align:center; }
+#wiRoot .wi_h1 { margin:0; font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--c-accent); }
+#wiRoot .wi_sub { margin:3px 0 0; font-size:.7rem; color:var(--c-dim); letter-spacing:.08em; text-transform:uppercase; }
+#wiRoot .wi_tabs { display:flex; gap:4px; flex-wrap:wrap; }
+#wiRoot .wi_tab { flex:1 1 90px; padding:8px 6px; border:1px solid var(--c-bd2); background:var(--c-hi); color:var(--c-text); border-radius:4px; cursor:pointer; font-family:monospace; font-size:.76rem; letter-spacing:.06em; text-transform:uppercase; min-height:38px; }
+#wiRoot .wi_tab[aria-selected="true"] { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#wiRoot .wi_diag { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+#wiRoot .wi_dlabel { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--c-dim); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+#wiRoot .wi_dlabel b { color:var(--c-accent); }
+#wiRoot canvas { display:block; width:100%; height:auto; touch-action:none; }
+#wiRoot .wi_row2 { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#wiRoot .wi_bbar { display:flex; flex-wrap:wrap; gap:6px 12px; justify-content:center; align-items:center; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:6px; padding:8px 10px; font-size:.8rem; }
+#wiRoot .wi_bbar label { display:flex; align-items:center; gap:5px; color:var(--c-dim); font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; cursor:pointer; }
+#wiRoot .wi_btn { padding:7px 12px; font-family:monospace; font-size:.72rem; letter-spacing:.04em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-text); border-radius:3px; text-transform:uppercase; min-height:34px; }
+#wiRoot .wi_btn:hover { border-color:var(--c-accent); }
+#wiRoot .wi_btnon { border-color:var(--c-accent); color:var(--c-accent); font-weight:bold; }
+#wiRoot select { background:var(--c-hi); color:var(--c-text); border:1px solid var(--c-bd2); border-radius:3px; padding:4px 6px; font-size:.8rem; }
+#wiRoot .wi_panels { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#wiRoot .wi_panel { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; box-shadow:0 4px 20px rgba(0,0,0,.3); overflow:hidden; }
+#wiRoot .wi_ptitle { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--c-dim); }
+#wiRoot .wi_pbody { padding:9px 12px; display:flex; flex-direction:column; gap:8px; }
+#wiRoot .wi_ctrl { display:flex; flex-direction:column; gap:3px; }
+#wiRoot .wi_ctrlhdr { display:flex; justify-content:space-between; align-items:baseline; gap:6px; }
+#wiRoot .wi_ctrlname { font-size:.72rem; font-weight:600; color:var(--c-dim); text-transform:uppercase; letter-spacing:.04em; }
+#wiRoot .wi_sval { font-family:monospace; font-size:.76rem; color:var(--c-val); white-space:nowrap; }
+#wiRoot input[type=range] { width:100%; -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; cursor:pointer; background:var(--c-lo); border:1px solid var(--c-bd); }
+#wiRoot input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#wiRoot input[type=range]::-moz-range-thumb { width:12px; height:12px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#wiRoot input[type=checkbox] { accent-color:var(--c-accent); width:16px; height:16px; }
+#wiRoot .wi_rrow { display:flex; justify-content:space-between; gap:6px; padding:4px 7px; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:3px; font-family:monospace; font-size:.72rem; }
+#wiRoot .wi_rkey { color:var(--c-dim); }
+#wiRoot .wi_rval { color:var(--c-val); font-weight:bold; text-align:right; }
+#wiRoot .wi_eqs { background:var(--c-lo); border:1px solid var(--c-bd); border-left:4px solid var(--c-accent); border-radius:4px; padding:8px 14px; font-family:monospace; font-size:.74rem; color:var(--c-dim); line-height:1.7; }
+#wiRoot .wi_eqs b { color:var(--c-val); }
+#wiRoot .wi_narbar { min-height:30px; padding:6px 12px; background:var(--c-nbg); border-left:4px solid var(--c-nbd); color:var(--c-ntx); font-size:.84rem; font-style:italic; line-height:1.45; border-radius:3px; }
+#wiRoot .wi_descwrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+#wiRoot .wi_descbtn { padding:8px 18px; font-family:monospace; font-size:.74rem; letter-spacing:.08em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-accent); color:var(--c-accent); border-radius:3px; font-weight:bold; min-height:40px; }
+#wiRoot .wi_desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid var(--c-accent); border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; }
+#wiRoot .wi_desc p { margin:0 0 9px; }
+#wiRoot .wi_eq { text-align:center; font-size:1rem; }
+#wiRoot button:focus-visible, #wiRoot input:focus-visible, #wiRoot select:focus-visible, #wiRoot canvas:focus-visible { outline:2px solid var(--c-accent); outline-offset:2px; }
+@media (max-width:640px) { #wiRoot .wi_row2, #wiRoot .wi_panels { grid-template-columns:minmax(0,1fr); } #wiRoot .wi_tab { font-size:.68rem; padding:8px 3px; } }
+@media (pointer:coarse) { #wiRoot input[type=range] { height:8px; } #wiRoot input[type=range]::-webkit-slider-thumb { width:26px; height:26px; } #wiRoot input[type=range]::-moz-range-thumb { width:24px; height:24px; } #wiRoot .wi_a11ybtn { min-height:40px; } #wiRoot input[type=checkbox] { width:22px; height:22px; } }
+#wiRoot .wi_chk { display:flex; gap:6px; align-items:center; font-size:.8rem; color:var(--c-text); }
+#wiRoot #pdScene { touch-action:none; cursor:grab; }
+#wiRoot .wi_seg { display:flex; flex-wrap:wrap; gap:4px; }
+#wiRoot .wi_seg label { flex:1 1 120px; display:flex; align-items:center; gap:6px; padding:6px 8px; border:1px solid var(--c-bd2); border-radius:4px; background:var(--c-hi); cursor:pointer; font-size:.78rem; color:var(--c-text); }
+#wiRoot .wi_seg input { accent-color:var(--c-accent); }
+#wiRoot .wi_pre { display:flex; flex-wrap:wrap; gap:4px; }
+#wiRoot .wi_pre button { padding:3px 7px; font-size:.7rem; font-family:monospace; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-text); border-radius:3px; cursor:pointer; min-height:28px; }
+#wiRoot #wiA, #wiRoot #wiB { cursor:default; }
+</style>
+<!-- ════════ SIMULATION ════════
+Two waves along x (m), travelling to the right at v = 1 m/s: y_i = A_i cos(2 pi f_i (t - x/v) + phi_i). The snapshot is at the current time t;
+the time view is at x = 0 over the last 4 s. The sum is y_1 + y_2. No dollar signs or backticks in the code.
+-->
+<script>
+var wiSim = (function(){
+function el(id){ return document.getElementById(id + ''); }
+var ROOT = el('wiRoot'), DPR = window.devicePixelRatio || 1;
+function hi(id){ var c = el(id), g = c.getContext('2d'), w = c.width, h = c.height; c.width = w*DPR; c.height = h*DPR; g.scale(DPR, DPR); return { c:c, g:g, W:w, H:h }; }
+var CA = hi('wiA'), CB = hi('wiB'), CC = hi('wiC');
+var th = { hc:false, lm:false, cb:false, nr:true };
+var V = 1, XL = 4, TL = 4;   /* wave speed (m/s), length of the snapshot (m), length of the time window (s) */
+var S = { w:[{ A:1.0, f:1.0, ph:0 }, { A:1.0, f:1.0, ph:0 }], t:0, play:true, spd:0.5, ax:'x', ghost:true };
+function pal(){ var p = { bg:'#f4f7fa', text:'#1d2a36', dim:'#5b6876', grid:'rgba(0,0,0,0.1)', w1:'#1f5fd6', w2:'#e07a10', sum:'#7b2fbf', mk:'#c2185b' };
+  if (th.cb){ p.w1 = '#0072b2'; p.w2 = '#e69f00'; p.sum = '#cc79a7'; p.mk = '#d55e00'; }
+  if (th.hc){ p.bg = '#000'; p.text = '#fff'; p.dim = '#ddd'; p.grid = 'rgba(255,255,255,0.25)'; p.w1 = '#55aaff'; p.w2 = '#ffaa00'; p.sum = th.cb ? '#ff99cc' : '#ff66ff'; p.mk = '#ffd700'; }
+  return p; }
+var DASH = [[], [9, 5]];   /* wave 2 is dashed, so the two waves differ by more than their colour */
+function Tx(g, t, x, y, col, al, font){ g.fillStyle = col; g.font = font || '12px Arial, sans-serif'; g.textAlign = al || 'left'; g.textBaseline = 'middle'; g.fillText(t, x, y); }
+function seg(g, x1, y1, x2, y2, col, w, dash){ g.strokeStyle = col; g.lineWidth = w || 1.5; g.setLineDash(dash || []); g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); g.stroke(); g.setLineDash([]); }
+function f2(v, k){ return (+v).toFixed(k === undefined ? 2 : k); }
+function narrate(m){ if (!th.nr) return; el('wiNar').textContent = m; }
+function rrow(k, v){ return '<div class="wi_rrow"><span class="wi_rkey">' + k + '</span><span class="wi_rval">' + v + '</span></div>'; }
+function row(id, label, min, max, step, val, txt){ return '<div class="wi_ctrl"><div class="wi_ctrlhdr"><label class="wi_ctrlname" for="' + id + '">' + label + '</label><span class="wi_sval" id="' + id + 'v">' + txt + '</span></div><input type="range" id="' + id + '" min="' + min + '" max="' + max + '" step="' + step + '" value="' + val + '"></div>'; }
+/* ══════════ the waves ══════════ */
+function y(i, x, t){ var w = S.w[i]; return w.A*Math.cos(2*Math.PI*w.f*(t - x/V) + w.ph*Math.PI/180); }
+function ysum(x, t){ return y(0, x, t) + y(1, x, t); }
+function sameF(){ return Math.abs(S.w[0].f - S.w[1].f) < 1e-9; }
+function dphi(){ var d = ((S.w[1].ph - S.w[0].ph) % 360 + 360) % 360; return d; }
+function Asum(){ var a = S.w[0].A, b = S.w[1].A, c = Math.cos(dphi()*Math.PI/180); return Math.sqrt(Math.max(0, a*a + b*b + 2*a*b*c)); }
+/* the horizontal axis: position (snapshot at time t) or time (at x = 0, the last TL seconds) */
+function at(i, u){ return S.ax === 'x' ? (i < 0 ? ysum(u, S.t) : y(i, u, S.t)) : (i < 0 ? ysum(0, S.t - TL + u) : y(i, 0, S.t - TL + u)); }
+function span(){ return S.ax === 'x' ? XL : TL; }
+var L = 70, R = 750;
+function axis(g, y0, amp, scale, p, label){ seg(g, L, y0, R, y0, p.grid, 1); seg(g, L, y0 - amp, L, y0 + amp, p.grid, 1);
+  Tx(g, '+' + scale, L - 6, y0 - amp, p.dim, 'right', '10px Arial'); Tx(g, '0', L - 6, y0, p.dim, 'right', '10px Arial'); Tx(g, '\u2212' + scale, L - 6, y0 + amp, p.dim, 'right', '10px Arial');
+  if (label) Tx(g, label, L + 4, y0 - amp - 6, p.text, 'left', 'bold 11px Arial'); }
+function plot(g, i, y0, amp, scale, col, w, dash, alpha){ g.save(); g.globalAlpha = alpha || 1; g.strokeStyle = col; g.lineWidth = w; g.setLineDash(dash || []); g.beginPath();
+  for (var px = L; px <= R; px++){ var u = (px - L)/(R - L)*span(), yy = y0 - at(i, u)/scale*amp; if (px === L) g.moveTo(px, yy); else g.lineTo(px, yy); } g.stroke(); g.restore(); }
+function xlab(g, H, p){ Tx(g, S.ax === 'x' ? 'position x (m) \u2192   (wave speed v = 1 m/s, travelling to the right)' : 'time t (s) \u2192   (at x = 0, the last ' + TL + ' s)', R, H - 8, p.dim, 'right', '11px Arial');
+  for (var k = 0; k <= span(); k++){ var px = L + k/span()*(R - L); Tx(g, String(k), px, H - 22, p.dim, 'center', '10px Arial'); } }
+function marks(g, i, y0, amp, scale, p){ /* the wavelength or the period of one wave, crest to crest */
+  var w = S.w[i], P = S.ax === 'x' ? V/w.f : 1/w.f; if (P > span()*0.9) return;
+  var ph = S.ax === 'x' ? (2*Math.PI*w.f*S.t + w.ph*Math.PI/180) : (2*Math.PI*w.f*(S.t - TL) + w.ph*Math.PI/180);
+  /* first crest in the window: phase of the argument = 2 pi m */
+  var u0;
+  if (S.ax === 'x'){ u0 = (ph/(2*Math.PI) - Math.floor(ph/(2*Math.PI)))*V/w.f; }   /* 2 pi f (t - x/v) + ph0 = 2 pi m  ->  x */
+  else { var fr = ph/(2*Math.PI) - Math.floor(ph/(2*Math.PI)); u0 = (fr === 0 ? 0 : 1 - fr)/w.f; }
+  if (u0 + P > span()) return; var xa = L + u0/span()*(R - L), xb = L + (u0 + P)/span()*(R - L), yy = y0 - w.A/scale*amp - 8;
+  seg(g, xa, yy, xb, yy, p.mk, 1.5); [[xa, 1], [xb, -1]].forEach(function(q){ g.fillStyle = p.mk; g.beginPath(); g.moveTo(q[0], yy); g.lineTo(q[0] + 7*q[1], yy - 4); g.lineTo(q[0] + 7*q[1], yy + 4); g.closePath(); g.fill(); });
+  Tx(g, (S.ax === 'x' ? '\u03BB = ' + f2(P, 2) + ' m' : 'T = ' + f2(P, 2) + ' s'), (xa + xb)/2, yy - 9, p.mk, 'center', 'bold 11px Arial'); }
+function drawA(){ var g = CA.g, W = CA.W, H = CA.H, p = pal(); g.fillStyle = p.bg; g.fillRect(0, 0, W, H);
+  axis(g, 58, 36, 2, p, 'wave 1'); plot(g, 0, 58, 36, 2, p.w1, 2.5, DASH[0]); marks(g, 0, 58, 36, 2, p);
+  axis(g, 160, 36, 2, p, 'wave 2'); plot(g, 1, 160, 36, 2, p.w2, 2.5, DASH[1]); marks(g, 1, 160, 36, 2, p); xlab(g, H, p); }
+function drawB(){ var g = CB.g, W = CB.W, H = CB.H, p = pal(); g.fillStyle = p.bg; g.fillRect(0, 0, W, H);
+  axis(g, 72, 46, 2, p, ''); plot(g, 0, 72, 46, 2, p.w1, 2.5, DASH[0]); plot(g, 1, 72, 46, 2, p.w2, 2.5, DASH[1]);
+  seg(g, L + 380, 18, L + 410, 18, p.w1, 2.5, DASH[0]); Tx(g, 'wave 1', L + 414, 18, p.text); seg(g, L + 480, 18, L + 510, 18, p.w2, 2.5, DASH[1]); Tx(g, 'wave 2', L + 514, 18, p.text); xlab(g, H, p); }
+function drawC(){ var g = CC.g, W = CC.W, H = CC.H, p = pal(), Lr = sameF() ? 600 : R, y0 = 98, amp = 70; g.fillStyle = p.bg; g.fillRect(0, 0, W, H);
+  var R0 = R; R = Lr; axis(g, y0, amp, 4, p, 'y\u2081 + y\u2082');
+  if (S.ghost){ plot(g, 0, y0, amp, 4, p.w1, 1.5, DASH[0], 0.35); plot(g, 1, y0, amp, 4, p.w2, 1.5, DASH[1], 0.35); }
+  plot(g, -1, y0, amp, 4, p.sum, 3);
+  if (sameF()){ var A = Asum(); [A, -A].forEach(function(a){ seg(g, L, y0 - a/4*amp, R, y0 - a/4*amp, p.mk, 1, [4, 4]); }); Tx(g, 'amplitude of the sum ' + f2(A, 2), L + 6, y0 - A/4*amp - 9, p.mk, 'left', 'bold 11px Arial'); }
+  else { /* the beat envelope: A(t) = sqrt(A1^2 + A2^2 + 2 A1 A2 cos(the phase difference, which drifts)) */
+    g.save(); g.strokeStyle = p.mk; g.lineWidth = 1; g.setLineDash([4, 4]); [1, -1].forEach(function(sg){ g.beginPath(); for (var px = L; px <= R; px++){ var u = (px - L)/(R - L)*span(), d;
+      if (S.ax === 'x') d = (2*Math.PI*S.w[1].f*(S.t - u/V) + S.w[1].ph*Math.PI/180) - (2*Math.PI*S.w[0].f*(S.t - u/V) + S.w[0].ph*Math.PI/180);
+      else d = (2*Math.PI*S.w[1].f*(S.t - TL + u) + S.w[1].ph*Math.PI/180) - (2*Math.PI*S.w[0].f*(S.t - TL + u) + S.w[0].ph*Math.PI/180);
+      var a = S.w[0].A, b = S.w[1].A, e = Math.sqrt(Math.max(0, a*a + b*b + 2*a*b*Math.cos(d))), yy = y0 - sg*e/4*amp; if (px === L) g.moveTo(px, yy); else g.lineTo(px, yy); } g.stroke(); }); g.restore();
+    Tx(g, 'beats: the envelope (dashed) swells and fades ' + f2(Math.abs(S.w[0].f - S.w[1].f), 2) + ' times per second', L + 70, 14, p.mk, 'left', 'bold 11px Arial'); }
+  xlab(g, H, p); R = R0;
+  if (sameF()) phasors(g, p); }
+function phasors(g, p){ /* the arrows at x = 0 now: each turns once per period; the sum is tip to tail */
+  var cx = 690, cy = 98, sc = 78/Math.max(0.5, S.w[0].A + S.w[1].A), a1 = 2*Math.PI*S.w[0].f*S.t + S.w[0].ph*Math.PI/180, a2 = 2*Math.PI*S.w[1].f*S.t + S.w[1].ph*Math.PI/180;
+  g.strokeStyle = p.grid; g.lineWidth = 1; g.beginPath(); g.arc(cx, cy, 80, 0, 2*Math.PI); g.stroke(); Tx(g, 'phasors', cx, 14, p.text, 'center', 'bold 11px Arial');
+  function arrow(x0, y0, x1, y1, col, w, dash){ seg(g, x0, y0, x1, y1, col, w, dash); var a = Math.atan2(y1 - y0, x1 - x0); g.fillStyle = col; g.beginPath(); g.moveTo(x1, y1); g.lineTo(x1 - 8*Math.cos(a - 0.4), y1 - 8*Math.sin(a - 0.4)); g.lineTo(x1 - 8*Math.cos(a + 0.4), y1 - 8*Math.sin(a + 0.4)); g.closePath(); g.fill(); }
+  /* the projection on the vertical axis is the displacement: angle measured so that y = A cos(angle) is the height */
+  var p1 = [cx + S.w[0].A*sc*Math.sin(a1), cy - S.w[0].A*sc*Math.cos(a1)], p2 = [p1[0] + S.w[1].A*sc*Math.sin(a2), p1[1] - S.w[1].A*sc*Math.cos(a2)];
+  arrow(cx, cy, p1[0], p1[1], p.w1, 2.5, DASH[0]); arrow(p1[0], p1[1], p2[0], p2[1], p.w2, 2.5, DASH[1]); arrow(cx, cy, p2[0], p2[1], p.sum, 3); }
+function readout(){ var a = S.w[0], b = S.w[1], d = dphi();
+  el('wiRead').innerHTML = rrow('wave 1: A\u2081, f\u2081, \u03C6\u2081', f2(a.A, 2) + ', ' + f2(a.f, 2) + ' Hz, ' + f2(a.ph, 0) + '\u00B0') + rrow('wave 2: A\u2082, f\u2082, \u03C6\u2082', f2(b.A, 2) + ', ' + f2(b.f, 2) + ' Hz, ' + f2(b.ph, 0) + '\u00B0')
+    + rrow('wavelengths \u03BB = v/f', f2(V/a.f, 2) + ' m, ' + f2(V/b.f, 2) + ' m') + rrow('periods T = 1/f', f2(1/a.f, 2) + ' s, ' + f2(1/b.f, 2) + ' s')
+    + (sameF() ? rrow('phase difference \u0394\u03C6', f2(d, 0) + '\u00B0') + rrow('amplitude of the sum', f2(Asum(), 2)) : rrow('beat frequency |f\u2081 \u2212 f\u2082|', f2(Math.abs(a.f - b.f), 2) + ' Hz') + rrow('largest / smallest sum', f2(a.A + b.A, 2) + ' / ' + f2(Math.abs(a.A - b.A), 2)));
+  el('wiVerdict').innerHTML = verdict(); }
+function verdict(){ if (!sameF()) return '<b>Different frequencies: beats.</b> The waves drift in and out of step, so the sum swells (constructive) and fades (destructive), ' + f2(Math.abs(S.w[0].f - S.w[1].f), 2) + ' times per second.';
+  var d = dphi(), A = Asum(), a = S.w[0].A, b = S.w[1].A;
+  if (d < 1 || d > 359) return '<b>In step (\u0394\u03C6 = 0\u00B0): constructive interference.</b> Crest meets crest: the amplitudes add, A = A\u2081 + A\u2082 = ' + f2(a + b, 2) + '.';
+  if (Math.abs(d - 180) < 1) return '<b>Half a cycle apart (\u0394\u03C6 = 180\u00B0): destructive interference.</b> Crest meets trough: the amplitudes subtract, A = |A\u2081 \u2212 A\u2082| = ' + f2(Math.abs(a - b), 2) + (Math.abs(a - b) < 1e-9 ? ': the waves cancel completely.' : '.');
+  return '<b>\u0394\u03C6 = ' + f2(d, 0) + '\u00B0: partly constructive.</b> A = \u221A(A\u2081\u00B2 + A\u2082\u00B2 + 2A\u2081A\u2082 cos \u0394\u03C6) = ' + f2(A, 2) + ', between |A\u2081 \u2212 A\u2082| = ' + f2(Math.abs(a - b), 2) + ' and A\u2081 + A\u2082 = ' + f2(a + b, 2) + '.'; }
+function draw(){ drawA(); drawB(); drawC(); readout(); }
+/* ══════════ controls ══════════ */
+function on(id, ev, fn){ var e = el(id); if (e) e.addEventListener(ev, fn); }
+function build(){
+  var h = '';
+  [0, 1].forEach(function(i){ var w = S.w[i], n = i + 1;
+    h += '<div class="wi_ctrlname" style="margin-top:' + (i ? 8 : 0) + 'px">wave ' + n + (i ? ' (dashed)' : ' (solid)') + '</div>'
+      + row('wiA' + n, 'amplitude A' + (n === 1 ? '\u2081' : '\u2082'), 0, 2, 0.05, w.A, f2(w.A, 2)) + row('wiF' + n, 'frequency f' + (n === 1 ? '\u2081' : '\u2082'), 0.25, 3, 0.05, w.f, f2(w.f, 2) + ' Hz')
+      + row('wiP' + n, 'phase \u03C6' + (n === 1 ? '\u2081' : '\u2082'), 0, 360, 5, w.ph, f2(w.ph, 0) + '\u00B0'); });
+  h += '<div class="wi_ctrlname" style="margin-top:8px">try</div><div class="wi_pre">' + [['in', 'in step'], ['out', 'half a cycle apart'], ['quarter', 'a quarter cycle apart'], ['beats', 'beats (f\u2081 = 2, f\u2082 = 2.5 Hz)']].map(function(q){ return '<button type="button" data-p="' + q[0] + '">' + q[1] + '</button>'; }).join('') + '</div>';
+  el('wiCtl').innerHTML = h;
+  [0, 1].forEach(function(i){ var n = i + 1;
+    on('wiA' + n, 'input', function(){ S.w[i].A = +this.value; el('wiA' + n + 'v').textContent = f2(S.w[i].A, 2); draw(); later(); });
+    on('wiF' + n, 'input', function(){ S.w[i].f = +this.value; el('wiF' + n + 'v').textContent = f2(S.w[i].f, 2) + ' Hz'; draw(); later(); });
+    on('wiP' + n, 'input', function(){ S.w[i].ph = +this.value; el('wiP' + n + 'v').textContent = f2(S.w[i].ph, 0) + '\u00B0'; draw(); later(); }); });
+  [].forEach.call(ROOT.querySelectorAll('[data-p]'), function(b){ b.addEventListener('click', function(){ preset(b.getAttribute('data-p')); }); });
+}
+function preset(k){ var a = S.w[0], b = S.w[1]; b.A = a.A; b.f = a.f; b.ph = a.ph;
+  if (k === 'out') b.ph = (a.ph + 180) % 360; if (k === 'quarter') b.ph = (a.ph + 90) % 360; if (k === 'beats'){ a.f = 2.0; b.f = 2.5; b.A = a.A; b.ph = a.ph; }   /* two beats in the 4 m (or 4 s) window */
+  build(); draw(); narrate(verdict().replace(/<[^>]+>/g, '')); }
+var lt = null; function later(){ clearTimeout(lt); lt = setTimeout(function(){ narrate(verdict().replace(/<[^>]+>/g, '')); }, 500); }
+[].forEach.call(document.getElementsByName('wiAx'), function(r){ r.addEventListener('change', function(){ S.ax = this.value; draw();
+  narrate(S.ax === 'x' ? 'Against position: a snapshot of the waves; crest to crest is the wavelength.' : 'Against time, at one place: crest to crest is the period.'); }); });
+var last = 0; function loop(t){ var dt = Math.min(0.05, (t - (last || t))/1000); last = t; if (S.play) S.t += dt*S.spd; draw(); requestAnimationFrame(loop); }
+on('wiPlay', 'click', function(){ S.play = !S.play; el('wiPlay').innerHTML = S.play ? '\u2759\u2759 Pause' : '\u25B6 Play'; });
+on('wiStep', 'click', function(){ S.play = false; el('wiPlay').innerHTML = '\u25B6 Play'; S.t += 0.125/S.w[0].f; draw(); });
+on('wiSpd', 'input', function(){ S.spd = +this.value; }); on('wiGhost', 'change', function(){ S.ghost = this.checked; draw(); });
+function theme(k){ th[k] = !th[k]; if (k === 'hc' && th.hc) th.lm = false; if (k === 'lm' && th.lm) th.hc = false; ROOT.classList.toggle('wi_hc', th.hc); ROOT.classList.toggle('wi_lm', th.lm);
+  [['hc', 'wiBtnHC'], ['lm', 'wiBtnLM'], ['cb', 'wiBtnCB'], ['nr', 'wiBtnNR']].forEach(function(q){ var b = el(q[1]); b.classList.toggle('wi_a11yon', th[q[0]]); b.setAttribute('aria-pressed', th[q[0]] ? 'true' : 'false'); });
+  el('wiBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('wiNar').style.display = th.nr ? '' : 'none'; draw(); }
+function toggleDesc(){ var b = el('wiDescBtn'), d = el('wiDesc'), open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+  if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }
+S.w[1].ph = 90;   /* start a quarter cycle apart: neither fully constructive nor destructive */
+build(); draw(); narrate('Ready. ' + verdict().replace(/<[^>]+>/g, '') + ' Change the amplitude, the frequency or the phase of either wave, or try a preset.'); requestAnimationFrame(loop);
+return { theme:theme, toggleDesc:toggleDesc, preset:preset, _S:S, _A:Asum, _sum:ysum };
+})();
+</script>
+</main>
+</body>
+</html>

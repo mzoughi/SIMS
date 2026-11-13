@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Physical Optics: A Wave Changing Medium</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, physical optics, light, wave, medium, index of refraction, wavelength, frequency, period, amplitude, reflection, transmission, phase change, lesson, scientific">
+<meta name="description" content="A light wave meets a second medium: compare the wavelength, the frequency and the phase of the incident, reflected and transmitted waves.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:920px; max-width:100%; margin:0 auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<main class="page">
+<div id="mcRoot" class="mc_root" role="region" aria-label="A wave changing medium: the incident, reflected and transmitted waves">
+<div class="mc_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="mc_a11ybtn" id="mcBtnHC" onclick="mcSim.theme('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="mc_a11ybtn" id="mcBtnLM" onclick="mcSim.theme('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="mc_a11ybtn" id="mcBtnCB" onclick="mcSim.theme('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="mc_a11ybtn mc_a11yon" id="mcBtnNR" onclick="mcSim.theme('nr')" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div class="mc_header"><p class="mc_h1">A Wave Changing Medium</p><p class="mc_sub">what happens to the wavelength, the frequency and the phase at a boundary?</p></div>
+<div class="mc_diag"><div class="mc_dlabel"><b>THE WAVE AGAINST POSITION (A SNAPSHOT)</b><span>drag the two probes &#9670; along the wave</span></div><canvas id="mcScene" width="780" height="300" role="img" aria-label="The two media side by side with the boundary between them; the incident and reflected waves in the first medium and the transmitted wave in the second, drawn against position, with two probes." aria-describedby="mcVerdict"></canvas></div>
+<div class="mc_bbar"><button type="button" class="mc_btn mc_btnon" id="mcPlay">&#10073;&#10073; Pause</button><button type="button" class="mc_btn" id="mcStep">Step &#8539; period &#9656;</button><button type="button" class="mc_btn" id="mcRestart">&#8634; Start from the source</button><label>speed <input type="range" id="mcSpd" min="0.05" max="1.5" step="0.05" value="0.5" style="width:110px"></label></div>
+<div class="mc_diag"><div class="mc_dlabel"><b>AT THE PROBES: THE WAVE AGAINST TIME</b><span>the last three periods</span></div><canvas id="mcTime" width="780" height="210" role="img" aria-label="The displacement at each probe against time, with the period marked."></canvas></div>
+<div class="mc_diag"><div class="mc_dlabel"><b>AT THE BOUNDARY: INCIDENT, REFLECTED AND TRANSMITTED</b><span>just before and just after it, against time</span></div><canvas id="mcEdge" width="780" height="180" role="img" aria-label="At the boundary: the incident, reflected and transmitted waves against time, to compare their phases."></canvas></div>
+<div class="mc_panels"><div class="mc_panel"><div class="mc_ptitle">Settings</div><div class="mc_pbody" id="mcCtl"></div></div>
+<div class="mc_panel"><div class="mc_ptitle">Readout</div><div class="mc_pbody" id="mcRead"></div></div></div>
+<div class="mc_eqs" id="mcVerdict"></div>
+<div id="mcNar" class="mc_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="mc_descwrap">
+<button type="button" class="mc_descbtn" id="mcDescBtn" aria-expanded="false" aria-controls="mcDesc" onclick="mcSim.toggleDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="mc_desc" id="mcDesc" role="region" aria-labelledby="mcDescBtn" style="display:none">
+<p>A light wave of frequency `f` travels in a medium of index `n_1` and meets a second medium of index `n_2`. In a medium of index `n` light travels at `v = c/n`. At the boundary part of the wave is <b>reflected</b> back into the first medium and part is <b>transmitted</b> into the second.</p>
+<p><b>Space and time.</b> The top view is a snapshot of the wave against position: the distance between two crests is the <b>wavelength</b> `lambda`. The probes record the wave against time at one place: the time between two crests is the <b>period</b> `T = 1/f`. The <b>amplitude</b> `A` is the height of a crest, which is also the depth of a trough, measured from the middle line.</p>
+<p><b>The frequency does not change.</b> The boundary is shaken by the incident wave, once per period, and it shakes the second medium at the same rate: `f_2 = f_1`, and so the period is the same on both sides. Since `v = f lambda`, the wavelength changes in proportion to the speed:</p>
+<p class="mc_eq">`lambda_1 = v_1/f`,&nbsp;&nbsp; `lambda_2 = v_2/f`,&nbsp;&nbsp; `lambda_2/lambda_1 = v_2/v_1 = n_1/n_2`.</p>
+<p>Going into a slower medium (`v_2 &lt; v_1`, larger index) the wavelength gets smaller; going into a faster one, larger.</p>
+<p><b>The phase.</b> The transmitted wave starts in step with the incident wave: its phase does not change. The reflected wave flips (a crest comes back as a trough, a change of 180&deg;) when the second medium is slower (`n_2 &gt; n_1`), and does not flip when it is faster (`n_2 &lt; n_1`). For light at normal incidence the amplitudes are</p>
+<p class="mc_eq">`r = (n_1 - n_2)/(n_1 + n_2)`,&nbsp;&nbsp; `t = (2 n_1)/(n_1 + n_2)`,</p>
+<p>where a negative `r` is the flip. The boundary view compares the three waves right at the boundary. In the first medium you can show the incident wave, the reflected wave, both separately, or their sum (what is really there). The animation runs in slow motion: real light oscillates about `10^15` times per second.</p>
+</div></div>
+</div><!-- #mcRoot -->
+<style>
+#mcRoot { --c-chassis:#1a1c1f; --c-panel:#22262b; --c-hi:#2c3138; --c-lo:#14161a; --c-bd:#3a4048; --c-bd2:#525c66; --c-text:#c8d0d8; --c-dim:#8a94a3; --c-accent:#e8a020; --c-green:#3ad08f; --c-val:#ffdd66; --c-nbg:#2a2410; --c-nbd:#e0b040; --c-ntx:#f0e2b8;
+  background:var(--c-chassis); background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
+  color:var(--c-text); font-family:Arial, sans-serif; padding:14px 10px 18px; border-radius:6px; box-sizing:border-box; width:100%; max-width:860px; margin:0 auto 10px; display:flex; flex-direction:column; gap:10px; }
+#mcRoot * { box-sizing:border-box; }
+#mcRoot.mc_lm { --c-chassis:#e9edf1; --c-panel:#ffffff; --c-hi:#f1f4f7; --c-lo:#f4f6f9; --c-bd:#c3cad3; --c-bd2:#9aa3ae; --c-text:#1d232a; --c-dim:#556070; --c-accent:#a8620a; --c-green:#12805a; --c-val:#8a4a00; --c-nbg:#ffefc0; --c-ntx:#333; background-image:none; }
+#mcRoot.mc_hc { --c-chassis:#000; --c-panel:#000; --c-hi:#111; --c-lo:#000; --c-bd:#fff; --c-bd2:#fff; --c-text:#fff; --c-dim:#e0e0e0; --c-accent:#ffd700; --c-green:#00ff88; --c-val:#ffff00; --c-nbg:#000; --c-nbd:#ffd700; --c-ntx:#fff; background-image:none; }
+#mcRoot .mc_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+#mcRoot .mc_a11ybtn { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-dim); min-height:30px; }
+#mcRoot .mc_a11yon { background:rgba(58,208,143,.14); border-color:var(--c-green); color:var(--c-green); font-weight:bold; }
+#mcRoot .mc_header { text-align:center; }
+#mcRoot .mc_h1 { margin:0; font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--c-accent); }
+#mcRoot .mc_sub { margin:3px 0 0; font-size:.7rem; color:var(--c-dim); letter-spacing:.08em; text-transform:uppercase; }
+#mcRoot .mc_tabs { display:flex; gap:4px; flex-wrap:wrap; }
+#mcRoot .mc_tab { flex:1 1 90px; padding:8px 6px; border:1px solid var(--c-bd2); background:var(--c-hi); color:var(--c-text); border-radius:4px; cursor:pointer; font-family:monospace; font-size:.76rem; letter-spacing:.06em; text-transform:uppercase; min-height:38px; }
+#mcRoot .mc_tab[aria-selected="true"] { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#mcRoot .mc_diag { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+#mcRoot .mc_dlabel { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--c-dim); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+#mcRoot .mc_dlabel b { color:var(--c-accent); }
+#mcRoot canvas { display:block; width:100%; height:auto; touch-action:none; }
+#mcRoot .mc_row2 { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#mcRoot .mc_bbar { display:flex; flex-wrap:wrap; gap:6px 12px; justify-content:center; align-items:center; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:6px; padding:8px 10px; font-size:.8rem; }
+#mcRoot .mc_bbar label { display:flex; align-items:center; gap:5px; color:var(--c-dim); font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; cursor:pointer; }
+#mcRoot .mc_btn { padding:7px 12px; font-family:monospace; font-size:.72rem; letter-spacing:.04em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-text); border-radius:3px; text-transform:uppercase; min-height:34px; }
+#mcRoot .mc_btn:hover { border-color:var(--c-accent); }
+#mcRoot .mc_btnon { border-color:var(--c-accent); color:var(--c-accent); font-weight:bold; }
+#mcRoot select { background:var(--c-hi); color:var(--c-text); border:1px solid var(--c-bd2); border-radius:3px; padding:4px 6px; font-size:.8rem; }
+#mcRoot .mc_panels { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#mcRoot .mc_panel { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; box-shadow:0 4px 20px rgba(0,0,0,.3); overflow:hidden; }
+#mcRoot .mc_ptitle { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--c-dim); }
+#mcRoot .mc_pbody { padding:9px 12px; display:flex; flex-direction:column; gap:8px; }
+#mcRoot .mc_ctrl { display:flex; flex-direction:column; gap:3px; }
+#mcRoot .mc_ctrlhdr { display:flex; justify-content:space-between; align-items:baseline; gap:6px; }
+#mcRoot .mc_ctrlname { font-size:.72rem; font-weight:600; color:var(--c-dim); text-transform:uppercase; letter-spacing:.04em; }
+#mcRoot .mc_sval { font-family:monospace; font-size:.76rem; color:var(--c-val); white-space:nowrap; }
+#mcRoot input[type=range] { width:100%; -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; cursor:pointer; background:var(--c-lo); border:1px solid var(--c-bd); }
+#mcRoot input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#mcRoot input[type=range]::-moz-range-thumb { width:12px; height:12px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#mcRoot input[type=checkbox] { accent-color:var(--c-accent); width:16px; height:16px; }
+#mcRoot .mc_rrow { display:flex; justify-content:space-between; gap:6px; padding:4px 7px; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:3px; font-family:monospace; font-size:.72rem; }
+#mcRoot .mc_rkey { color:var(--c-dim); }
+#mcRoot .mc_rval { color:var(--c-val); font-weight:bold; text-align:right; }
+#mcRoot .mc_eqs { background:var(--c-lo); border:1px solid var(--c-bd); border-left:4px solid var(--c-accent); border-radius:4px; padding:8px 14px; font-family:monospace; font-size:.74rem; color:var(--c-dim); line-height:1.7; }
+#mcRoot .mc_eqs b { color:var(--c-val); }
+#mcRoot .mc_narbar { min-height:30px; padding:6px 12px; background:var(--c-nbg); border-left:4px solid var(--c-nbd); color:var(--c-ntx); font-size:.84rem; font-style:italic; line-height:1.45; border-radius:3px; }
+#mcRoot .mc_descwrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+#mcRoot .mc_descbtn { padding:8px 18px; font-family:monospace; font-size:.74rem; letter-spacing:.08em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-accent); color:var(--c-accent); border-radius:3px; font-weight:bold; min-height:40px; }
+#mcRoot .mc_desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid var(--c-accent); border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; }
+#mcRoot .mc_desc p { margin:0 0 9px; }
+#mcRoot .mc_eq { text-align:center; font-size:1rem; }
+#mcRoot button:focus-visible, #mcRoot input:focus-visible, #mcRoot select:focus-visible, #mcRoot canvas:focus-visible { outline:2px solid var(--c-accent); outline-offset:2px; }
+@media (max-width:640px) { #mcRoot .mc_row2, #mcRoot .mc_panels { grid-template-columns:minmax(0,1fr); } #mcRoot .mc_tab { font-size:.68rem; padding:8px 3px; } }
+@media (pointer:coarse) { #mcRoot input[type=range] { height:8px; } #mcRoot input[type=range]::-webkit-slider-thumb { width:26px; height:26px; } #mcRoot input[type=range]::-moz-range-thumb { width:24px; height:24px; } #mcRoot .mc_a11ybtn { min-height:40px; } #mcRoot input[type=checkbox] { width:22px; height:22px; } }
+#mcRoot .mc_chk { display:flex; gap:6px; align-items:center; font-size:.8rem; color:var(--c-text); }
+#mcRoot #pdScene { touch-action:none; cursor:grab; }
+#mcRoot .mc_seg { display:flex; flex-wrap:wrap; gap:4px; }
+#mcRoot .mc_seg label { flex:1 1 120px; display:flex; align-items:center; gap:6px; padding:6px 8px; border:1px solid var(--c-bd2); border-radius:4px; background:var(--c-hi); cursor:pointer; font-size:.78rem; color:var(--c-text); }
+#mcRoot .mc_seg input { accent-color:var(--c-accent); }
+#mcRoot .mc_pre { display:flex; flex-wrap:wrap; gap:4px; }
+#mcRoot .mc_pre button { padding:3px 7px; font-size:.7rem; font-family:monospace; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-text); border-radius:3px; cursor:pointer; min-height:28px; }
+#mcRoot #mcScene, #mcRoot #mcTime { cursor:default; }
+</style>
+<!-- ════════ SIMULATION ════════
+Positions x in nm, the boundary at x = 0, medium 1 for x < 0. The wave is described by the number of cycles N the source has done.
+Incident: y = cos 2 pi (N - (x - X0)/lambda1), present for x < X0 + N lambda1 (it starts at the source, x = X0).
+Reflected: r cos 2 pi (N - Nb + x/lambda1) for x > -(N - Nb) lambda1; transmitted: t cos 2 pi (N - Nb - x/lambda2) for x < (N - Nb) lambda2,
+where Nb = -X0/lambda1 is the time (in cycles) the wave takes to reach the boundary, r = (n1 - n2)/(n1 + n2), t = 2 n1/(n1 + n2).
+No dollar signs or backticks in the code.
+-->
+<script>
+var mcSim = (function(){
+function el(id){ return document.getElementById(id + ''); }
+var ROOT = el('mcRoot'), DPR = window.devicePixelRatio || 1;
+function hi(id){ var c = el(id), g = c.getContext('2d'), w = c.width, h = c.height; c.width = w*DPR; c.height = h*DPR; g.scale(DPR, DPR); return { c:c, g:g, W:w, H:h }; }
+var CS = hi('mcScene'), CT = hi('mcTime'), CE = hi('mcEdge');
+var th = { hc:false, lm:false, cb:false, nr:true };
+var C = 299792.458;   /* nm per ps... the speed of light as nm times THz */
+var S = { f:600, n1:1.00, n2:1.50, view:'sep', N:0, play:true, spd:0.5, X0:-1500, XR:1500, p1:-750, p2:700, marks:true, hist:[] };
+var VIEWS = [['inc', 'incident only'], ['ref', 'reflected only'], ['sep', 'both, separately'], ['both', 'both, added (what is really there)']];
+function lam0(){ return C/S.f; } function lam1(){ return lam0()/S.n1; } function lam2(){ return lam0()/S.n2; }
+function rr(){ return (S.n1 - S.n2)/(S.n1 + S.n2); } function tt(){ return 2*S.n1/(S.n1 + S.n2); }
+function Nb(){ return -S.X0/lam1(); }
+function pal(){ var p = { bg:'#f4f7fa', text:'#1d2a36', dim:'#5b6876', grid:'rgba(0,0,0,0.1)', inc:'#1f5fd6', ref:'#c2185b', tra:'#12805a', sum:'#1d2a36', m1:'rgba(120,170,220,0.10)', m2:'rgba(120,170,220,0.32)', bd:'#5b6876', mk:'#c47f17' };
+  if (th.cb){ p.inc = '#0072b2'; p.ref = '#d55e00'; p.tra = '#009e73'; p.mk = '#cc79a7'; }
+  if (th.hc){ p.bg = '#000'; p.text = '#fff'; p.dim = '#ddd'; p.grid = 'rgba(255,255,255,0.25)'; p.inc = '#55aaff'; p.ref = th.cb ? '#ff9a4d' : '#ff66cc'; p.tra = th.cb ? '#2fe0b0' : '#33ff99'; p.sum = '#fff'; p.m1 = 'rgba(80,140,255,0.12)'; p.m2 = 'rgba(80,140,255,0.38)'; p.bd = '#fff'; p.mk = '#ffd700'; }
+  return p; }
+function Tx(g, t, x, y, col, al, font){ g.fillStyle = col; g.font = font || '12px Arial, sans-serif'; g.textAlign = al || 'left'; g.textBaseline = 'middle'; g.fillText(t, x, y); }
+function seg(g, x1, y1, x2, y2, col, w, dash){ g.strokeStyle = col; g.lineWidth = w || 1.5; g.setLineDash(dash || []); g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); g.stroke(); g.setLineDash([]); }
+function arr(g, x1, y1, x2, y2, col){ seg(g, x1, y1, x2, y2, col, 1.5); [[x1, y1, x2, y2], [x2, y2, x1, y1]].forEach(function(q){ var a = Math.atan2(q[3] - q[1], q[2] - q[0]); g.fillStyle = col; g.beginPath(); g.moveTo(q[2], q[3]); g.lineTo(q[2] - 7*Math.cos(a - 0.4), q[3] - 7*Math.sin(a - 0.4)); g.lineTo(q[2] - 7*Math.cos(a + 0.4), q[3] - 7*Math.sin(a + 0.4)); g.closePath(); g.fill(); }); }
+function f2(v, k){ return (+v).toFixed(k === undefined ? 2 : k); }
+function narrate(m){ if (!th.nr) return; el('mcNar').textContent = m; }
+function rrow(k, v){ return '<div class="mc_rrow"><span class="mc_rkey">' + k + '</span><span class="mc_rval">' + v + '</span></div>'; }
+function row(id, label, min, max, step, val, txt){ return '<div class="mc_ctrl"><div class="mc_ctrlhdr"><label class="mc_ctrlname" for="' + id + '">' + label + '</label><span class="mc_sval" id="' + id + 'v">' + txt + '</span></div><input type="range" id="' + id + '" min="' + min + '" max="' + max + '" step="' + step + '" value="' + val + '"></div>'; }
+/* ══════════ the three waves at position x (nm) after N cycles; null where the wave has not arrived yet ══════════ */
+function inc(x, N){ if (x > 0 || x > S.X0 + N*lam1()) return null; return Math.cos(2*Math.PI*(N - (x - S.X0)/lam1())); }
+function ref(x, N){ var m = N - Nb(); if (x > 0 || m <= 0 || x < -m*lam1()) return null; return rr()*Math.cos(2*Math.PI*(m + x/lam1())); }
+function tra(x, N){ var m = N - Nb(); if (x < 0 || m <= 0 || x > m*lam2()) return null; return tt()*Math.cos(2*Math.PI*(m - x/lam2())); }
+function med1(x, N, what){ var a = inc(x, N), b = ref(x, N);
+  if (what === 'inc') return a; if (what === 'ref') return b; if (a === null && b === null) return null; return (a || 0) + (b || 0); }
+/* ══════════ drawing ══════════ */
+var X = { l:40, r:740, y0:150, A:52 };
+function px(x){ return X.l + (x - S.X0)/(S.XR - S.X0)*(X.r - X.l); }
+function nm(p){ return S.X0 + (p - X.l)/(X.r - X.l)*(S.XR - S.X0); }
+function curve(g, from, to, fn, col, w, dash){ g.strokeStyle = col; g.lineWidth = w; g.setLineDash(dash || []); g.beginPath(); var on = false;
+  for (var p = from; p <= to; p += 1){ var v = fn(nm(p)); if (v === null){ on = false; continue; } var y = X.y0 - v*X.A; if (on) g.lineTo(p, y); else { g.moveTo(p, y); on = true; } } g.stroke(); g.setLineDash([]); }
+function drawScene(){ var g = CS.g, W = CS.W, H = CS.H, p = pal(), b = px(0);
+  g.fillStyle = p.bg; g.fillRect(0, 0, W, H);
+  g.fillStyle = p.m1; g.fillRect(X.l, 20, b - X.l, H - 50); g.fillStyle = p.m2; g.fillRect(b, 20, X.r - b, H - 50);
+  seg(g, b, 20, b, H - 30, p.bd, 2); Tx(g, 'medium 1: n\u2081 = ' + f2(S.n1, 2) + ',  v\u2081 = c/n\u2081', X.l + 6, 32, p.text, 'left', 'bold 12px Arial'); Tx(g, 'medium 2: n\u2082 = ' + f2(S.n2, 2) + ',  v\u2082 = c/n\u2082', b + 8, 32, p.text, 'left', 'bold 12px Arial');
+  seg(g, X.l, X.y0, X.r, X.y0, p.grid, 1);
+  /* the source at the left edge */
+  g.fillStyle = p.inc; g.beginPath(); g.arc(X.l, X.y0, 6, 0, 2*Math.PI); g.fill(); Tx(g, 'source', X.l, X.y0 + 66, p.dim, 'center', '11px Arial');
+  var N = S.N, v = S.view;
+  if (v === 'both') curve(g, X.l, b, function(x){ return med1(x, N, 'both'); }, p.sum, 2.5);
+  if (v === 'inc' || v === 'sep') curve(g, X.l, b, function(x){ return inc(x, N); }, p.inc, 2.5);
+  if (v === 'ref' || v === 'sep') curve(g, X.l, b, function(x){ return ref(x, N); }, p.ref, 2.5, [8, 5]);
+  curve(g, b, X.r, function(x){ return tra(x, N); }, p.tra, 2.5);
+  /* the wavelength and the amplitude, marked on the steady part of each wave */
+  if (S.marks){ var m = N - Nb();
+    var L1 = lam1(), L2 = lam2();
+    /* a crest of the incident wave in medium 1: x = X0 + (N - k) lambda1 for integer k */
+    var showInc = (v !== 'ref'), k0 = Math.ceil((N - (0 - S.X0)/L1)), xc = null;
+    for (var k = Math.max(0, k0); k < N; k++){ var x = S.X0 + (N - k)*L1; if (x < -L1*1.05 && x > S.X0 + 0.3*L1 && (v === 'inc' || v === 'sep' || m <= 0)){ xc = x; break; } }
+    if (showInc && xc !== null){ var y1 = X.y0 - X.A - 14; arr(g, px(xc), y1, px(xc + L1), y1, p.mk); Tx(g, '\u03BB\u2081 = ' + f2(L1, 0) + ' nm', (px(xc) + px(xc + L1))/2, y1 - 10, p.mk, 'center', 'bold 12px Arial');
+      arr(g, px(xc) - 10, X.y0, px(xc) - 10, X.y0 - X.A, p.mk); Tx(g, 'A', px(xc) - 22, X.y0 - X.A/2, p.mk, 'center', 'bold 12px Arial'); }
+    if (m > 2.2){ var xt = null; for (var k2 = 0; k2 < 40; k2++){ var x2 = (m - k2)*L2; if (x2 < S.XR - L2*1.1 && x2 > 0.2*L2 && x2 < m*L2){ xt = x2; break; } }
+      if (xt !== null){ var y2 = X.y0 - tt()*X.A - 14; arr(g, px(xt), y2, px(xt + L2), y2, p.mk); Tx(g, '\u03BB\u2082 = ' + f2(L2, 0) + ' nm', (px(xt) + px(xt + L2))/2, y2 - 10, p.mk, 'center', 'bold 12px Arial'); } } }
+  /* the probes */
+  [[S.p1, '1'], [S.p2, '2']].forEach(function(q){ var x = px(q[0]); seg(g, x, 46, x, H - 34, p.dim, 1, [3, 3]); g.fillStyle = p.text; g.beginPath(); g.moveTo(x, H - 34); g.lineTo(x - 7, H - 24); g.lineTo(x, H - 14); g.lineTo(x + 7, H - 24); g.closePath(); g.fill(); Tx(g, 'probe ' + q[1], x + 10, H - 24, p.text, 'left', '11px Arial'); });
+  /* the key */
+  var ky = H - 8, kx = X.l; function key(col, dash, t){ seg(g, kx, ky, kx + 26, ky, col, 2.5, dash); Tx(g, t, kx + 30, ky, p.text, 'left', '11px Arial'); kx += 40 + g.measureText(t).width; }
+  if (v === 'both') key(p.sum, [], 'incident + reflected'); if (v === 'inc' || v === 'sep') key(p.inc, [], 'incident'); if (v === 'ref' || v === 'sep') key(p.ref, [8, 5], 'reflected'); key(p.tra, [], 'transmitted');
+}
+function probeVal(x, N){ return x < 0 ? (S.view === 'sep' ? [inc(x, N), ref(x, N)] : [med1(x, N, S.view === 'ref' ? 'ref' : (S.view === 'inc' ? 'inc' : 'both'))]) : [tra(x, N)]; }
+function drawTime(){ var g = CT.g, W = CT.W, H = CT.H, p = pal(); g.fillStyle = p.bg; g.fillRect(0, 0, W, H);
+  var rows = [[S.p1, 'probe 1 (medium 1)', 55], [S.p2, 'probe 2 (medium 2)', 150]], L = 60, R = 740, span = 3;
+  rows.forEach(function(q){ var y0 = q[2], amp = 34; seg(g, L, y0, R, y0, p.grid, 1); Tx(g, q[1], L, y0 - amp - 6, p.text, 'left', 'bold 11px Arial');
+    var cols = q[0] < 0 ? (S.view === 'sep' ? [p.inc, p.ref] : [S.view === 'ref' ? p.ref : (S.view === 'inc' ? p.inc : p.sum)]) : [p.tra], dashes = q[0] < 0 && S.view === 'sep' ? [[], [8, 5]] : [[]];
+    cols.forEach(function(col, j){ g.strokeStyle = col; g.lineWidth = 2; g.setLineDash(dashes[j] || []); g.beginPath(); var on = false;
+      for (var px2 = L; px2 <= R; px2++){ var N = S.N - span + (px2 - L)/(R - L)*span, v = probeVal(q[0], N)[j]; if (v === null || v === undefined || N < 0){ on = false; continue; } var y = y0 - v*amp; if (on) g.lineTo(px2, y); else { g.moveTo(px2, y); on = true; } }
+      g.stroke(); g.setLineDash([]); });
+    /* the period: between two crests, on the time axis */
+    var steady = (q[0] < 0 ? S.N - (q[0] - S.X0)/lam1() : S.N - Nb() - q[0]/lam2()) > span;
+    if (steady && S.marks){ var ph = q[0] < 0 && S.view !== 'ref' && S.view !== 'both' ? (S.N - (q[0] - S.X0)/lam1()) : (q[0] < 0 ? null : S.N - Nb() - q[0]/lam2());
+      if (ph !== null){ var Nc = S.N - (ph - Math.floor(ph)), xA = L + (Nc - 1 - (S.N - span))/span*(R - L), xB = L + (Nc - (S.N - span))/span*(R - L); if (xA < L) { xA += (R - L)/span; xB += (R - L)/span; }
+        if (xB <= R){ arr(g, xA, y0 - amp - 4, xB, y0 - amp - 4, p.mk); Tx(g, 'T = ' + f2(1000/S.f, 3) + ' fs', (xA + xB)/2 + 4, y0 - amp - 14, p.mk, 'center', 'bold 11px Arial'); } } } });
+  Tx(g, 'time \u2192', R, H - 8, p.dim, 'right', '11px Arial'); }
+function drawEdge(){ var g = CE.g, W = CE.W, H = CE.H, p = pal(); g.fillStyle = p.bg; g.fillRect(0, 0, W, H);
+  var L = 60, R = 740, y0 = 92, amp = 52, span = 2.5, m = S.N - Nb(); seg(g, L, y0, R, y0, p.grid, 1);
+  if (m < 0.05){ Tx(g, 'the wave has not reached the boundary yet', (L + R)/2, y0, p.dim, 'center', '13px Arial'); return; }
+  var tr = [[function(N){ return inc(-0.001, N); }, p.inc, [], 'incident'], [function(N){ return ref(-0.001, N); }, p.ref, [8, 5], 'reflected'], [function(N){ return tra(0.001, N); }, p.tra, [3, 3], 'transmitted']];
+  tr.forEach(function(q){ g.strokeStyle = q[1]; g.lineWidth = 2.5; g.setLineDash(q[2]); g.beginPath(); var on = false;
+    for (var x = L; x <= R; x++){ var N = S.N - span + (x - L)/(R - L)*span, v = q[0](N); if (v === null){ on = false; continue; } var y = y0 - v*amp; if (on) g.lineTo(x, y); else { g.moveTo(x, y); on = true; } } g.stroke(); g.setLineDash([]); });
+  var kx = L; tr.forEach(function(q){ seg(g, kx, H - 10, kx + 26, H - 10, q[1], 2.5, q[2]); Tx(g, q[3], kx + 30, H - 10, p.text, 'left', '11px Arial'); kx += 120; });
+  Tx(g, phaseTxt(), L, 14, p.text, 'left', 'bold 12px Arial'); }
+function phaseTxt(){ var r = rr(); return Math.abs(r) < 1e-6 ? 'same index: nothing is reflected' : (r < 0 ? 'reflected: flipped, 180\u00B0 out of step with the incident wave (n\u2082 > n\u2081)' : 'reflected: in step with the incident wave, no flip (n\u2082 < n\u2081)') + ' \u00B7 transmitted: in step'; }
+function readout(){ var r = rr(), t = tt();
+  el('mcRead').innerHTML = rrow('frequency f (same in both media)', f2(S.f, 0) + ' THz') + rrow('period T = 1/f (same in both)', f2(1000/S.f, 3) + ' fs')
+    + rrow('v\u2081 = c/n\u2081', f2(1/S.n1, 3) + ' c') + rrow('v\u2082 = c/n\u2082', f2(1/S.n2, 3) + ' c') + rrow('\u03BB\u2081 = v\u2081/f', f2(lam1(), 0) + ' nm') + rrow('\u03BB\u2082 = v\u2082/f', f2(lam2(), 0) + ' nm')
+    + rrow('\u03BB\u2082/\u03BB\u2081 = n\u2081/n\u2082', f2(lam2()/lam1(), 3)) + rrow('reflected amplitude r', f2(r, 3)) + rrow('transmitted amplitude t', f2(t, 3));
+  var cmp = Math.abs(S.n2 - S.n1) < 1e-6 ? 'the same speed: the wavelength does not change' : (S.n2 > S.n1 ? 'medium 2 is slower (v\u2082 < v\u2081): the wavelength gets smaller' : 'medium 2 is faster (v\u2082 > v\u2081): the wavelength gets larger');
+  el('mcVerdict').innerHTML = '<b>' + cmp + '</b>; the frequency does not change.<br>' + phaseTxt() + '.'; }
+function draw(){ drawScene(); drawTime(); drawEdge(); readout(); }
+/* ══════════ dragging the probes ══════════ */
+var drag = null;
+function cpx(e){ var r = CS.c.getBoundingClientRect(); return (e.clientX - r.left)*CS.W/r.width; }
+CS.c.addEventListener('pointerdown', function(e){ var x = cpx(e), d1 = Math.abs(x - px(S.p1)), d2 = Math.abs(x - px(S.p2)); if (Math.min(d1, d2) > 18) return; drag = d1 <= d2 ? 'p1' : 'p2'; try { CS.c.setPointerCapture(e.pointerId); } catch (er){} e.preventDefault(); });
+CS.c.addEventListener('pointermove', function(e){ var x = cpx(e); if (!drag){ CS.c.style.cursor = Math.min(Math.abs(x - px(S.p1)), Math.abs(x - px(S.p2))) <= 18 ? 'ew-resize' : ''; return; }
+  var v = Math.round(nm(x)); S[drag] = drag === 'p1' ? Math.max(S.X0 + 50, Math.min(-20, v)) : Math.max(20, Math.min(S.XR - 20, v)); var sl = el(drag === 'p1' ? 'mcP1' : 'mcP2'); if (sl) sl.value = S[drag]; probeTxt(); if (!S.play) draw(); e.preventDefault(); });
+CS.c.addEventListener('pointerup', function(){ drag = null; }); CS.c.addEventListener('pointercancel', function(){ drag = null; });
+function probeTxt(){ var a = el('mcP1v'), b = el('mcP2v'); if (a) a.textContent = f2(S.p1, 0) + ' nm'; if (b) b.textContent = '+' + f2(S.p2, 0) + ' nm'; }
+/* ══════════ controls ══════════ */
+function on(id, ev, fn){ var e = el(id); if (e) e.addEventListener(ev, fn); }
+function build(){
+  var h = row('mcF', 'frequency f', 400, 750, 5, S.f, f2(S.f, 0) + ' THz')
+    + row('mcN1', 'index of medium 1 (n\u2081)', 1, 2.5, 0.01, S.n1, f2(S.n1, 2)) + '<div class="mc_pre" aria-label="Medium 1 presets">' + pre('1') + '</div>'
+    + row('mcN2', 'index of medium 2 (n\u2082)', 1, 2.5, 0.01, S.n2, f2(S.n2, 2)) + '<div class="mc_pre" aria-label="Medium 2 presets">' + pre('2') + '</div>'
+    + '<div class="mc_ctrl"><span class="mc_ctrlname">in medium 1, show</span><div class="mc_seg" role="radiogroup" aria-label="What to show in medium 1">'
+    + VIEWS.map(function(q){ return '<label><input type="radio" name="mcView" value="' + q[0] + '"' + (S.view === q[0] ? ' checked' : '') + '> ' + q[1] + '</label>'; }).join('') + '</div></div>'
+    + row('mcP1', 'probe 1 (medium 1)', S.X0 + 50, -20, 10, S.p1, f2(S.p1, 0) + ' nm') + row('mcP2', 'probe 2 (medium 2)', 20, S.XR - 20, 10, S.p2, '+' + f2(S.p2, 0) + ' nm')
+    + '<label class="mc_chk"><input type="checkbox" id="mcMk"' + (S.marks ? ' checked' : '') + '> mark the wavelengths, the amplitude and the period</label>';
+  el('mcCtl').innerHTML = h;
+  on('mcF', 'input', function(){ S.f = +this.value; el('mcFv').textContent = f2(S.f, 0) + ' THz'; draw(); later(); });
+  on('mcN1', 'input', function(){ setN('n1', +this.value); }); on('mcN2', 'input', function(){ setN('n2', +this.value); });
+  [].forEach.call(ROOT.querySelectorAll('[data-pre]'), function(b){ b.addEventListener('click', function(){ var k = b.getAttribute('data-k'); setN(k, +b.getAttribute('data-pre')); el(k === 'n1' ? 'mcN1' : 'mcN2').value = S[k]; }); });
+  [].forEach.call(document.getElementsByName('mcView'), function(r){ r.addEventListener('change', function(){ S.view = this.value; draw(); narrate(viewTxt()); }); });
+  on('mcP1', 'input', function(){ S.p1 = +this.value; probeTxt(); draw(); }); on('mcP2', 'input', function(){ S.p2 = +this.value; probeTxt(); draw(); });
+  on('mcMk', 'change', function(){ S.marks = this.checked; draw(); });
+}
+function pre(k){ return [['air', 1.00], ['water', 1.33], ['glass', 1.50], ['diamond', 2.42]].map(function(q){ return '<button type="button" data-k="n' + k + '" data-pre="' + q[1] + '">' + q[0] + ' ' + f2(q[1], 2) + '</button>'; }).join(''); }
+function setN(k, v){ S[k] = v; el(k === 'n1' ? 'mcN1v' : 'mcN2v').textContent = f2(v, 2); if (k === 'n1') S.N = Math.max(S.N, 0); draw(); later(); }
+function viewTxt(){ return { inc:'Medium 1 shows only the incident wave, travelling toward the boundary.', ref:'Medium 1 shows only the reflected wave, travelling back from the boundary.', sep:'Medium 1 shows the incident wave (solid) and the reflected wave (dashed) separately.', both:'Medium 1 shows the sum of the incident and reflected waves: this is the real displacement there.' }[S.view]; }
+function summary(){ return 'f = ' + f2(S.f, 0) + ' THz in both media. \u03BB\u2081 = ' + f2(lam1(), 0) + ' nm, \u03BB\u2082 = ' + f2(lam2(), 0) + ' nm. ' + (Math.abs(S.n2 - S.n1) < 1e-6 ? 'Same index: no reflection.' : (S.n2 > S.n1 ? 'Into a slower medium: shorter wavelength, and the reflected wave flips.' : 'Into a faster medium: longer wavelength, and the reflected wave does not flip.')); }
+var lt = null; function later(){ clearTimeout(lt); lt = setTimeout(function(){ narrate(summary()); }, 500); }
+var last = 0; function loop(t){ var dt = Math.min(0.05, (t - (last || t))/1000); last = t; if (S.play) S.N += dt*S.spd; draw(); requestAnimationFrame(loop); }
+on('mcPlay', 'click', function(){ S.play = !S.play; el('mcPlay').innerHTML = S.play ? '\u2759\u2759 Pause' : '\u25B6 Play'; });
+on('mcStep', 'click', function(){ S.play = false; el('mcPlay').innerHTML = '\u25B6 Play'; S.N = Math.round(S.N*8)/8 + 0.125; draw(); });
+on('mcRestart', 'click', function(){ S.N = 0; S.play = true; el('mcPlay').innerHTML = '\u2759\u2759 Pause'; draw(); narrate('The source starts: watch the wave reach the boundary, where part of it is reflected and part transmitted.'); });
+on('mcSpd', 'input', function(){ S.spd = +this.value; });
+function theme(k){ th[k] = !th[k]; if (k === 'hc' && th.hc) th.lm = false; if (k === 'lm' && th.lm) th.hc = false; ROOT.classList.toggle('mc_hc', th.hc); ROOT.classList.toggle('mc_lm', th.lm);
+  [['hc', 'mcBtnHC'], ['lm', 'mcBtnLM'], ['cb', 'mcBtnCB'], ['nr', 'mcBtnNR']].forEach(function(q){ var b = el(q[1]); b.classList.toggle('mc_a11yon', th[q[0]]); b.setAttribute('aria-pressed', th[q[0]] ? 'true' : 'false'); });
+  el('mcBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('mcNar').style.display = th.nr ? '' : 'none'; draw(); }
+function toggleDesc(){ var b = el('mcDescBtn'), d = el('mcDesc'), open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+  if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }
+S.N = Nb() + 3.2;   /* start with the wave already across the boundary */
+build(); draw(); narrate('Ready. ' + summary() + ' Drag the probes, change the indices, or start again from the source.'); requestAnimationFrame(loop);
+return { theme:theme, toggleDesc:toggleDesc, _S:S, _lam:function(){ return [lam1(), lam2()]; }, _rt:function(){ return [rr(), tt()]; }, _vals:function(x, N){ return [inc(x, N), ref(x, N), tra(x, N)]; } };
+})();
+</script>
+</main>
+</body>
+</html>
