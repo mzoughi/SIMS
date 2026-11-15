@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Waves: Phasor Tutorial</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, phasor, interference, superposition, resultant, secondary maxima, diffraction grating, tutorial">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobphasortut" class="mob_wrap">
+<div id="pzRoot">
+<div class="pz_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="pz_a11ybtn" id="pzBtnHC" onclick="pzA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="pz_a11ybtn" id="pzBtnDM" onclick="pzA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="pz_a11ybtn" id="pzBtnCB" onclick="pzA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="pz_a11ybtn" id="pzBtnNR" onclick="pzA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+<div class="tbar"><h3>Phasor Tutorial &mdash; Adding Waves with Arrows</h3></div>
+<div class="pz_tabs" role="tablist" aria-label="Number of waves">
+<button type="button" role="tab" class="pz_tab" id="pzT2" aria-selected="true">2 waves</button>
+<button type="button" role="tab" class="pz_tab" id="pzT3" aria-selected="false">3 waves</button>
+<button type="button" role="tab" class="pz_tab" id="pzT4" aria-selected="false">4 waves</button>
+</div>
+<div class="pz_intro">
+<button type="button" class="pz_ibtn" id="pzIntroBtn" aria-expanded="true" aria-controls="pzIntro">&#9662; New to phasors? Start here</button>
+<div class="pz_ibody" id="pzIntro">
+<div class="pz_istep"><span class="pz_inum">1</span><div><b>A wave as an arrow.</b> At a point in space, wave number `k` makes the oscillation `y_k = A_k sin(omega t + theta_k)`. We draw it as an arrow (a <b>phasor</b>) of length `A_k` (its amplitude) pointing at the angle `theta_k` (its phase), measured counterclockwise from the right, like any vector. As time goes on, all the arrows turn together at the same rate `omega`, so only the angles <i>between</i> them matter: we freeze them at `t = 0`.</div></div>
+<div class="pz_istep"><span class="pz_inum">2</span><div><b>The phase difference.</b> In every example, each wave lags the previous one by the same angle `phi`. So arrow `k` is turned by `phi` from arrow `k - 1`, and it points at `theta_k = (k - 1) phi`. Angles past 360&deg; just go around again (405&deg; is the same as 45&deg;).</div></div>
+<div class="pz_istep"><span class="pz_inum">3</span><div><b>Adding waves = adding vectors.</b> The total oscillation is `y = y_1 + y_2 + ... + y_N`. It is again a wave, and its arrow is the <b>resultant</b> `vec R = vec A_1 + vec A_2 + ... + vec A_N`: put the arrows tip to tail, exactly as you add forces or displacements. In components:<br>`x_k = A_k cos theta_k`, &nbsp; `y_k = A_k sin theta_k`, &nbsp; `R_x = x_1 + x_2 + ... + x_N`, &nbsp; `R_y = y_1 + y_2 + ... + y_N`.</div></div>
+<div class="pz_istep"><span class="pz_inum">4</span><div><b>The amplitude of the total wave</b> is the length of the resultant: `|R| = sqrt(R_x^2 + R_y^2)`. You can measure it on the grid (one square = 0.5) or compute it from the components.</div></div>
+<div class="pz_istep"><span class="pz_inum">5</span><div><b>Brightness.</b> The intensity of a wave is proportional to the square of its amplitude. The brightest possible is when all the arrows line up, `|R| = A_1 + A_2 + ... + A_N`, so `I/I_"max" = |R|^2/(A_1 + A_2 + ... + A_N)^2`. Example: 2 equal waves with `|R| = 1` give `I/I_"max" = (1/2)^2 = 25%`.</div></div>
+<div class="pz_istep"><span class="pz_inum">6</span><div><b>Where does `phi` come from?</b> Light from two slits a distance `d` apart reaches a point on the screen at angle `theta`. One path is longer by `d sin theta`, so that wave lags by `phi = 360&deg; (d sin theta)/lambda`. Moving along the screen changes `phi`, and so changes the brightness: that makes the fringes.</div></div>
+</div></div>
+<div class="pz_task" id="pzTask"></div>
+<div class="pz_view">
+<canvas id="pzCv" width="800" height="440" tabindex="0" role="img" aria-describedby="pzStep" aria-label="Drawing area for the phasors. The first arrow is given, pointing right from the origin. Move the pointer, or use the left and right arrow keys, to aim the next arrow from the tip of the previous one; click or press Enter to place it. Then draw the resultant the same way."></canvas>
+</div>
+<div id="pzStep" class="pz_step" aria-live="polite"></div>
+<div id="pzNarBar" class="pz_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<div class="pz_transport" role="toolbar" aria-label="Tracing">
+<div class="pz_tgroup">
+<button type="button" class="pz_vbtn" id="pzUndo">&#8630; Undo</button>
+<button type="button" class="pz_vbtn" id="pzRedo">&#8634; Start over</button>
+</div>
+<div class="pz_tgroup pz_tsep">
+<label class="pz_ans" for="pzR">Your |R| =</label><input type="number" id="pzR" step="0.01" min="0" class="pz_num" aria-label="Your value of the resultant amplitude, in units of one wave">
+<button type="button" class="pz_bbtn" id="pzCheck">Check</button>
+<button type="button" class="pz_vbtn" id="pzShow">Show solution</button>
+</div>
+<div class="pz_tgroup pz_tsep">
+<button type="button" class="pz_tbtn" id="pzPrev" aria-label="Previous example" title="Previous example"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="4" y="4" width="3" height="16" fill="currentColor"/><path d="M20 4 L9 12 L20 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="pz_tbtn" id="pzNext" aria-label="Next example" title="Next example"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="17" y="4" width="3" height="16" fill="currentColor"/><path d="M4 4 L15 12 L4 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="pz_vbtn" id="pzRand">&#9861; Random</button>
+</div>
+</div>
+
+<div class="pz_card2"><div class="pz_ctitle2">Adding the arrows as vectors: components</div><div class="pz_tblwrap" id="pzComp"></div></div>
+<div class="pz_fb" id="pzFb" aria-live="polite"></div>
+
+<div class="pz_card"><div class="pz_ctitle" id="pzGrT">Brightness for every phase difference (revealed after you check)</div>
+<canvas id="pzGr" width="800" height="200" role="img" aria-label="Graph of the intensity, as a fraction of the brightest, against the phase difference from 0 to 360 degrees, with the present example marked. After you check, click the graph to trace that phase difference."></canvas>
+<div class="pz_gx" id="pzGx"></div></div>
+
+<div class="pz_panels">
+<div class="pz_panel" role="group" aria-labelledby="pzHdE">
+<div class="pz_ptitle" id="pzHdE">Examples</div>
+<div class="pz_pbody"><div class="pz_presets" id="pzEx"></div>
+<p class="pz_note">A check mark appears on the examples you have solved.</p></div></div>
+<div class="pz_panel" role="group" aria-labelledby="pzHdO">
+<div class="pz_ptitle" id="pzHdO">Help</div>
+<div class="pz_pbody">
+<div class="pz_checks">
+<label class="pz_chk"><input type="checkbox" id="pzTurn" checked>Show the turn of each arrow</label>
+<label class="pz_chk"><input type="checkbox" id="pzHint">Hint: show the direction to aim for</label>
+<label class="pz_chk"><input type="checkbox" id="pzGrid" checked>Grid (1 square = 1/2 wave)</label>
+<label class="pz_chk"><input type="checkbox" id="pzSnap" checked>Snap angles to 5&deg;</label>
+</div>
+<div class="pz_ctrl"><div class="pz_chdr"><label for="pzPhi">Practice: your own &phi;</label><span class="pz_val" id="pzPhiVal"></span></div><input type="range" id="pzPhi" min="0" max="360" step="5" value="60"></div>
+<button type="button" class="pz_vbtn" id="pzUseOwn">Trace with this &phi;</button>
+</div></div>
+</div>
+</div>
+<style>
+:where(#mobphasortut) * { margin:0; box-sizing:border-box; }
+#mobphasortut { width:100%; max-width:806px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; }
+#mobphasortut canvas { display:block; width:100%; height:auto; }
+#pzRoot .pz_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#pzRoot .pz_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#pzRoot .pz_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+.tbar { padding:4px; background-color:#f90; text-align:center; }
+.tbar h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+.pz_tabs { display:flex; gap:4px; padding:6px 8px 0; background:#14213a; }
+.pz_tab { flex:1 1 0; padding:8px 6px; border:1px solid #2b3d60; border-bottom:0; border-radius:6px 6px 0 0; background:#1d2c4a; color:#bcd0f0; font-weight:bold; cursor:pointer; font-size:.9rem; min-height:40px; }
+.pz_tab[aria-selected="true"] { background:#f3f5f8; color:#14213a; }
+.pz_intro { background:#eef3fb; border-bottom:1px solid #c9d4e6; }
+.pz_ibtn { width:100%; text-align:left; padding:8px 12px; background:#dfe8f6; border:0; border-bottom:1px solid #c9d4e6; font-weight:bold; font-size:.9rem; color:#1f3f6e; cursor:pointer; min-height:38px; }
+.pz_ibody { padding:8px 12px 10px; display:grid; gap:7px; }
+.pz_istep { display:flex; gap:9px; align-items:flex-start; font-size:.88rem; line-height:1.5; color:#1d232a; }
+.pz_inum { flex:0 0 22px; height:22px; border-radius:50%; background:#883355; color:#fff; font-weight:bold; font-size:.8rem; display:inline-flex; align-items:center; justify-content:center; margin-top:1px; }
+.pz_card2 { margin:10px 10px 0; background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; }
+.pz_ctitle2 { padding:5px 10px; background:#883355; color:#fff; font-size:.74rem; font-weight:bold; letter-spacing:.08em; text-transform:uppercase; }
+.pz_tblwrap { overflow-x:auto; padding:6px 8px 8px; }
+.pz_tbl { border-collapse:collapse; width:100%; font-size:.84rem; }
+.pz_tbl th, .pz_tbl td { padding:4px 6px; border-bottom:1px solid #e3e7ee; text-align:center; white-space:nowrap; }
+.pz_tbl th { background:#f1f4f8; font-size:.78rem; }
+.pz_tbl td.pz_l { text-align:left; }
+.pz_tbl tr.pz_sum td { font-weight:bold; background:#fbf6e9; }
+.pz_tnote { font-size:.8rem; color:#444; margin-top:5px; line-height:1.45; }
+.pz_dim { color:#999; font-size:.78em; }
+.pz_ws { margin-top:8px; padding:8px 10px; background:#f6f8fb; border-left:4px solid #1f5fa8; border-radius:4px; line-height:1.6; }
+.pz_ws .pz_wl { font-family:monospace; font-size:.86rem; }
+.pz_gx { padding:8px 12px 10px; color:#e3ecfa; font-size:.86rem; line-height:1.5; background:#0d1526; border-top:1px solid #2b3d60; }
+.pz_gx b { color:#ffd23f; } .pz_gx ul { margin:4px 0 4px 18px; padding:0; }
+.pz_task { padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; font-size:.92rem; line-height:1.45; color:#1d232a; }
+.pz_task b { color:#883355; }
+.pz_view { background:#0b1222; }
+#pzCv { touch-action:none; cursor:crosshair; }
+.pz_step { color:#222; font-size:.86rem; text-align:center; background:#fff6d9; padding:6px 8px; line-height:1.45; min-height:1.6em; font-weight:bold; }
+.pz_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+.pz_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+.pz_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { .pz_tsep { padding-left:0; border-left:0; } }
+.pz_tbtn { width:44px; height:38px; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer; border:1px solid #6d8a3a; border-radius:5px; background:#fff; color:#223; }
+.pz_vbtn, .pz_bbtn { height:38px; padding:0 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; white-space:nowrap; }
+.pz_bbtn { background:#2e7d32; border-color:#1b5e20; color:#fff; font-weight:bold; }
+.pz_vbtn:disabled, .pz_bbtn:disabled { opacity:.4; cursor:not-allowed; }
+.pz_ans { font-weight:bold; font-size:.88rem; }
+.pz_num { width:5.5em; height:36px; padding:4px 6px; font-size:.95rem; border:1px solid #888; border-radius:4px; }
+.pz_fb { margin:10px 10px 0; padding:0; font-size:.88rem; line-height:1.5; color:#1d232a; }
+.pz_fb:not(:empty) { padding:8px 12px; background:#fff; border:1px solid #c9d0da; border-left:4px solid #883355; border-radius:5px; }
+.pz_fb ul { margin:4px 0 4px 18px; padding:0; } .pz_fb li { margin:2px 0; }
+.pz_ok { color:#1b6e2a; font-weight:bold; } .pz_no { color:#b42318; font-weight:bold; }
+.pz_card { margin:10px 10px 0; background:#0b1222; border:1px solid #2b3d60; border-radius:6px; overflow:hidden; }
+.pz_ctitle { padding:5px 10px; background:#14213a; color:#dbe7ff; font-size:.78rem; font-weight:bold; }
+.pz_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:10px; padding:10px; }
+.pz_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+.pz_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+.pz_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; }
+.pz_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+.pz_chdr { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+.pz_chdr label { font-size:.82rem; font-weight:bold; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+.pz_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; min-width:3.5em; text-align:right; }
+.pz_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+.pz_checks { display:grid; grid-template-columns:minmax(0,1fr); gap:4px; }
+.pz_chk { display:flex; align-items:center; gap:6px; font-size:.82rem; cursor:pointer; }
+.pz_presets { display:flex; flex-wrap:wrap; gap:5px; }
+.pz_presets button { padding:5px 9px; font-size:.82rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:4px; background:#fff; color:#223; min-height:34px; }
+.pz_presets button[aria-current="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+.pz_note { font-size:.76rem; color:#666; font-style:italic; }
+#mobphasortut button:focus-visible, #mobphasortut input:focus-visible, #mobphasortut canvas:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (pointer:coarse) { .pz_tbtn, .pz_vbtn, .pz_bbtn, .pz_num { height:44px; } .pz_presets button { min-height:42px; } #mobphasortut input[type=checkbox] { width:20px; height:20px; } #mobphasortut input[type=range] { height:28px; } }
+#mobphasortut .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobphasortut .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobphasortut .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobphasortut .mob_desc p { margin:0 0 8px 0; }
+#mobphasortut .mob_eq { text-align:center; }
+#mobphasortut.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobphasortut.a11y_dm canvas, #mobphasortut.a11y_dm [aria-label="Display options"], #mobphasortut.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobphasortut.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobphasortut.a11y_hc canvas, #mobphasortut.a11y_hc [aria-label="Display options"], #mobphasortut.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+</style>
+<script>
+var pzA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return;
+  b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobphasortut'); if (!W) return;
+  W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc); W.classList.toggle('a11y_cb', states.cb);
+  var nb = document.getElementById('pzNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+  var nr = document.getElementById('pzBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+  styleBtn('pzBtnHC', states.hc); styleBtn('pzBtnDM', states.dm); styleBtn('pzBtnCB', states.cb); styleBtn('pzBtnNR', states.nr);
+  hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return {
+  init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+  toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply();
+    if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: your arrows blue, the solution orange, the resultant pink; correct items get a check mark, wrong ones a cross.'); },
+  altPalette:function(){ return states.hc || states.cb; }, isHC:function(){ return states.hc; },
+  narrate:function(msg){ if (!states.nr) return; var nb = document.getElementById('pzNarBar'); if (nb) nb.textContent = msg; }
+};
+})();
+</script>
+
+<!-- ════════ TUTORIAL ════════
+Each wave is an arrow (phasor) of length A_k; wave k is behind wave k-1 by the phase difference phi, so arrow k points at (k-1) phi
+(counterclockwise). The resultant R = sum of A_k e^(i (k-1) phi); intensity I/I_max = |R|^2/(sum A_k)^2.
+The student places arrows 2..N (lengths fixed, direction chosen), then the resultant (from the origin to any point; snaps to drawn tips),
+then types |R|. Check: arrow angles within 2.5 degrees, resultant tip within 0.08 of the true sum, |R| within max(0.05, 3%).
+No dollar signs or backticks in the code.
+-->
+<script>
+var pzGen = function(){
+  var cv = document.getElementById('pzCv'), g = cv.getContext('2d'), cG = document.getElementById('pzGr'), gG = cG.getContext('2d');
+  var DEG = Math.PI/180, TAU = 2*Math.PI, W = cv.width, H = cv.height;
+  function el(id){ return document.getElementById(id); }
+  /* ══════════ examples ══════════ */
+  var EX = {
+    2:[{ phi:0, t:'In phase' }, { phi:180, t:'Half a cycle apart' }, { phi:90, t:'A quarter cycle' }, { phi:60, t:'60\u00b0' }, { phi:120, t:'120\u00b0' }, { phi:180, A:[1, 0.5], t:'Unequal waves, 180\u00b0' }, { phi:270, t:'270\u00b0' }],
+    3:[{ phi:0, t:'In phase' }, { phi:120, t:'120\u00b0' }, { phi:240, t:'240\u00b0' }, { phi:180, t:'180\u00b0' }, { phi:90, t:'90\u00b0' }, { phi:60, t:'60\u00b0' }, { phi:150, t:'150\u00b0' }],
+    4:[{ phi:0, t:'In phase' }, { phi:90, t:'90\u00b0' }, { phi:180, t:'180\u00b0' }, { phi:270, t:'270\u00b0' }, { phi:135, t:'135\u00b0' }, { phi:45, t:'45\u00b0' }, { phi:120, t:'120\u00b0' }] };
+  var VIEW = { 2:{ U:140 }, 3:{ U:110 }, 4:{ U:95 } };
+  var N = 2, exi = 0, cur = null, solved = { 2:{}, 3:{}, 4:{} };
+  /* cur: { phi, A[], ang[] (placed angles in deg, index 0 = 0), aim (deg, preview), R (placed tip) | null, Rprev, checked, shown } */
+  function load(n, i, custom){ N = n; exi = i; var e = custom || EX[n][i]; var A = e.A ? e.A.slice() : []; while (A.length < n) A.push(1);
+    cur = { phi:e.phi, A:A, ang:[0], aim:null, R:null, Rprev:null, checked:false, shown:false, t:e.t || ('\u03c6 = ' + e.phi + '\u00b0'), custom:!!custom };
+    el('pzR').value = ''; el('pzFb').innerHTML = ''; tabsUI(); exUI(); all();
+    pzA11y.narrate(taskText(true) + ' ' + stepText()); }
+  function U(){ return VIEW[N].U; }
+  function O(){ var ph = ((cur.phi % 360) + 360) % 360; return [W/2 - 0.6*U(), ph > 0 && ph < 180 ? H*0.74 : ph > 180 ? H*0.26 : H/2]; }
+  function S(x, y){ var o = O(); return [o[0] + x*U(), o[1] - y*U()]; }
+  function Winv(px, py){ var o = O(); return [(px - o[0])/U(), (o[1] - py)/U()]; }
+  function tips(angles){ var p = [[0, 0]], x = 0, y = 0; for (var k=0; k<angles.length; k++){ x += cur.A[k]*Math.cos(angles[k]*DEG); y += cur.A[k]*Math.sin(angles[k]*DEG); p.push([x, y]); } return p; }
+  function trueAng(k){ return ((k*cur.phi) % 360 + 360) % 360; }
+  function trueTips(){ var a = []; for (var k=0; k<N; k++) a.push(trueAng(k)); return tips(a); }
+  function trueR(){ var t = trueTips(); return t[N]; }
+  function sumA(){ return cur.A.reduce(function(s, v){ return s + v; }, 0); }
+  function angDiff(a, b){ var d = ((a - b) % 360 + 540) % 360 - 180; return Math.abs(d); }
+  function stage(){ if (cur.ang.length < N) return 'arrow'; if (!cur.R) return 'res'; return 'ans'; }
+  /* ══════════ text ══════════ */
+  function wav(k){ return 'wave ' + (k + 1); }
+  function taskText(plain){ var eq = cur.A.every(function(a){ return a === cur.A[0]; });
+    var s = (plain ? '' : '<b>' + (cur.custom ? 'Practice' : 'Example ' + (exi + 1) + ' of ' + EX[N].length) + ':</b> ') + N + ' waves' + (eq ? ' of equal amplitude' : ' with amplitudes ' + cur.A.join(', ')) + ', each one behind the previous one by the phase difference <b>\u03c6 = ' + cur.phi + '\u00b0</b>. ';
+    s += 'Arrow 1 is drawn for you. Draw arrow ' + (N === 2 ? '2' : '2 to ' + N) + ' tip to tail, each turned by \u03c6 from the one before (counterclockwise), then the resultant, and find its length |R|.';
+    return plain ? s.replace(/<[^>]+>/g, '') : s; }
+  function stepText(){ var st = stage(); if (cur.checked) return 'Checked. Try again, or go to the next example.';
+    if (st === 'arrow'){ var k = cur.ang.length; return 'Step ' + k + ': arrow ' + (k + 1) + ' is wave ' + (k + 1) + ' (amplitude ' + cur.A[k] + '). It lags wave ' + k + ' by \u03c6 = ' + cur.phi + '\u00b0, so start it at the tip of arrow ' + k + ' and turn it ' + cur.phi + '\u00b0 counterclockwise from the direction of arrow ' + k + '. Click to place it. (Keys: \u2190 \u2192 turn, Enter place.)'; }
+    if (st === 'res') return 'Step ' + N + ': draw the resultant R = arrow 1 + \u2026 + arrow ' + N + '. Like any vector sum, it goes from the tail of the first arrow (the origin) to the tip of the last one: click where it ends.';
+    return 'Last step: find |R|, the length of the resultant: count grid squares (each is 0.5) or use the components in the table below, |R| = \u221a(Rx\u00b2 + Ry\u00b2). Type it and press Check.'; }
+  /* ══════════ drawing ══════════ */
+  function pal(){ var alt = pzA11y.altPalette(); return { me:alt ? '#56B4E9' : '#4fc3ff', sol:alt ? '#E69F00' : '#ffb000', R:alt ? '#CC79A7' : '#ff5ad1', txt:'#e6ecf2', dim:'#8a97ab', grid:'rgba(150,170,195,0.16)', axis:'rgba(200,215,235,0.45)', ok:'#3ad08f', no:'#ff6b6b', hint:'rgba(255,255,255,0.45)' }; }
+  function fsc(c){ var w = c.clientWidth || c.width; return Math.max(1, Math.min(1.8, 0.62*c.width/w)); }
+  function lbl(gx, t, x, y, col, size, al, base){ gx.font = 'bold ' + Math.round((size || 12)*fsc(gx.canvas)) + 'px Arial'; gx.textAlign = al || 'center'; gx.textBaseline = base || 'middle'; gx.lineJoin = 'round'; gx.lineWidth = 3.5; gx.strokeStyle = 'rgba(0,0,0,0.85)'; gx.strokeText(t, x, y); gx.fillStyle = col; gx.fillText(t, x, y); }
+  function arrow(a, b, col, w, dash, alpha){ var A = S(a[0], a[1]), B = S(b[0], b[1]), dx = B[0] - A[0], dy = B[1] - A[1], L = Math.hypot(dx, dy); if (L < 2) return; var ux = dx/L, uy = dy/L, hl = Math.min(14, L*0.4);
+    g.globalAlpha = alpha || 1; g.strokeStyle = col; g.fillStyle = col; g.lineWidth = w; g.setLineDash(dash || []); g.beginPath(); g.moveTo(A[0], A[1]); g.lineTo(B[0] - ux*hl*0.8, B[1] - uy*hl*0.8); g.stroke(); g.setLineDash([]);
+    g.beginPath(); g.moveTo(B[0], B[1]); g.lineTo(B[0] - ux*hl - uy*hl*0.5, B[1] - uy*hl + ux*hl*0.5); g.lineTo(B[0] - ux*hl + uy*hl*0.5, B[1] - uy*hl - ux*hl*0.5); g.closePath(); g.fill(); g.globalAlpha = 1; }
+  function draw(){ var p = pal(), o = O(), u = U(), i, k;
+    g.fillStyle = '#0b1222'; g.fillRect(0, 0, W, H);
+    if (el('pzGrid').checked){ g.strokeStyle = p.grid; g.lineWidth = 1; for (i=-20; i<=20; i++){ var x = o[0] + i*u/2, y = o[1] + i*u/2; if (x >= 0 && x <= W){ g.beginPath(); g.moveTo(x, 0); g.lineTo(x, H); g.stroke(); } if (y >= 0 && y <= H){ g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke(); } } }
+    g.strokeStyle = p.axis; g.lineWidth = 1; g.beginPath(); g.moveTo(0, o[1]); g.lineTo(W, o[1]); g.moveTo(o[0], 0); g.lineTo(o[0], H); g.stroke();
+    g.fillStyle = p.txt; g.beginPath(); g.arc(o[0], o[1], 4, 0, TAU); g.fill(); lbl(g, 'origin', o[0] - 6, o[1] + 14, p.dim, 10, 'right');
+    /* the solution */
+    var showSol = cur.checked || cur.shown, T = trueTips();
+    if (showSol){ for (k=0; k<N; k++) arrow(T[k], T[k + 1], p.sol, 3, [7, 5], 0.95); arrow([0, 0], T[N], p.sol, 3, [3, 4], 0.9);
+      var tr = Math.hypot(T[N][0], T[N][1]); if (tr < 0.03){ var Z = S(0, 0); g.strokeStyle = p.sol; g.lineWidth = 2; g.beginPath(); g.arc(Z[0], Z[1], 10, 0, TAU); g.stroke(); lbl(g, 'R = 0: the chain closes', Z[0] + 14, Z[1] + 22, p.sol, 11, 'left'); } }
+    /* hint: the direction to aim for */
+    var st = stage(), tp = tips(cur.ang);
+    if (el('pzHint').checked && st === 'arrow' && !cur.checked){ var kk = cur.ang.length, base = tp[kk], ta = trueAng(kk), prev = cur.ang[kk - 1];
+      var a1 = S(base[0], base[1]), ext = S(base[0] + 0.8*Math.cos(prev*DEG), base[1] + 0.8*Math.sin(prev*DEG)); g.strokeStyle = p.hint; g.setLineDash([3, 4]); g.lineWidth = 1.5; g.beginPath(); g.moveTo(a1[0], a1[1]); g.lineTo(ext[0], ext[1]); g.stroke(); g.setLineDash([]);
+      g.beginPath(); g.arc(a1[0], a1[1], 0.55*u, -prev*DEG, -(prev + cur.phi)*DEG, true); g.stroke(); lbl(g, 'turn ' + cur.phi + '\u00b0', a1[0] + 0.75*u*Math.cos(-(prev + cur.phi/2)*DEG), a1[1] + 0.75*u*Math.sin(-(prev + cur.phi/2)*DEG), '#ffffff', 11); }
+    /* your arrows */
+    for (k=0; k<cur.ang.length; k++){ var good = cur.checked && k > 0 ? angDiff(cur.ang[k], trueAng(k)) <= 2.5 : null; arrow(tp[k], tp[k + 1], k === 0 ? '#cfd8e6' : p.me, 4);
+      var mid = S((tp[k][0] + tp[k + 1][0])/2, (tp[k][1] + tp[k + 1][1])/2), nx = Math.sin(cur.ang[k]*DEG), ny = Math.cos(cur.ang[k]*DEG);
+      lbl(g, String(k + 1) + (good === true ? ' \u2713' : good === false ? ' \u2717' : ''), mid[0] + nx*14, mid[1] + ny*14, good === true ? p.ok : good === false ? p.no : (k === 0 ? '#cfd8e6' : p.me), 12);
+      if (el('pzTurn').checked && k > 0){ var B0 = S(tp[k][0], tp[k][1]), pa = cur.ang[k - 1], turn = ((cur.ang[k] - pa) % 360 + 360) % 360; g.strokeStyle = 'rgba(79,195,255,0.6)'; g.lineWidth = 1.2; g.beginPath(); g.arc(B0[0], B0[1], 18, -pa*DEG, -(pa + turn)*DEG, true); g.stroke(); } }
+    /* the arrow being aimed */
+    if (st === 'arrow' && cur.aim !== null && !cur.checked){ var kk2 = cur.ang.length, bs = tp[kk2], en = [bs[0] + cur.A[kk2]*Math.cos(cur.aim*DEG), bs[1] + cur.A[kk2]*Math.sin(cur.aim*DEG)]; arrow(bs, en, p.me, 3, [6, 4], 0.85);
+      var pa2 = cur.ang[kk2 - 1], tn = ((cur.aim - pa2) % 360 + 360) % 360, B1 = S(bs[0], bs[1]); g.strokeStyle = '#ffffff'; g.lineWidth = 1.2; g.beginPath(); g.arc(B1[0], B1[1], 22, -pa2*DEG, -(pa2 + tn)*DEG, true); g.stroke();
+      var ext2 = S(bs[0] + 0.5*Math.cos(pa2*DEG), bs[1] + 0.5*Math.sin(pa2*DEG)); g.setLineDash([2, 3]); g.strokeStyle = 'rgba(255,255,255,0.5)'; g.beginPath(); g.moveTo(B1[0], B1[1]); g.lineTo(ext2[0], ext2[1]); g.stroke(); g.setLineDash([]);
+      var E = S(en[0], en[1]); lbl(g, 'turned ' + Math.round(tn) + '\u00b0 \u00b7 pointing at ' + Math.round(cur.aim) + '\u00b0', E[0] + 10, E[1] - 12, '#ffffff', 11, 'left'); }
+    /* resultant */
+    var Rp = cur.R || (st === 'res' && !cur.checked ? cur.Rprev : null);
+    if (Rp){ arrow([0, 0], Rp, p.R, cur.R ? 4.5 : 3, cur.R ? [] : [6, 4]); var Lr = Math.hypot(Rp[0], Rp[1]), E2 = S(Rp[0], Rp[1]);
+      if (Lr > 0.02) lbl(g, (cur.R ? 'R' : 'R?') + (cur.checked ? (Math.hypot(Rp[0] - trueR()[0], Rp[1] - trueR()[1]) <= 0.08 ? ' \u2713' : ' \u2717') : ''), E2[0] + 12, E2[1] + 12, p.R, 13, 'left'); }
+    lbl(g, '\u03c6 = ' + cur.phi + '\u00b0' + (cur.A.some(function(a){ return a !== 1; }) ? '   \u00b7   amplitudes ' + cur.A.join(', ') : ''), 10, 14, p.txt, 13, 'left');
+    if (cur.checked || cur.shown) lbl(g, 'orange dashed: the solution', W - 10, 14, p.sol, 11, 'right'); else lbl(g, 'angles are measured counterclockwise from the right', W - 10, 14, p.dim, 10, 'right'); }
+  /* ══════════ intensity graph ══════════ */
+  function drawGraph(){ var p = pal(), gx = gG, Wg = cG.width, Hg = cG.height, L = 50, R = Wg - 14, T = 14, B = Hg - 34, i;
+    gx.fillStyle = '#0b1222'; gx.fillRect(0, 0, Wg, Hg); var open = cur.checked || cur.shown;
+    function X(ph){ return L + ph/360*(R - L); } function Y(v){ return B - v*(B - T); }
+    gx.strokeStyle = p.grid; gx.lineWidth = 1; gx.fillStyle = p.dim; gx.font = '10px monospace'; gx.textBaseline = 'alphabetic';
+    for (i=0; i<=360; i += 45){ gx.beginPath(); gx.moveTo(X(i), T); gx.lineTo(X(i), B); gx.stroke(); gx.textAlign = 'center'; gx.fillText(i + '\u00b0', X(i), B + 13); }
+    [0, 0.5, 1].forEach(function(v){ gx.beginPath(); gx.moveTo(L, Y(v)); gx.lineTo(R, Y(v)); gx.stroke(); gx.textAlign = 'right'; gx.fillText(v.toFixed(1), L - 4, Y(v) + 3); });
+    gx.textAlign = 'center'; gx.fillText('phase difference \u03c6 between neighbouring waves', (L + R)/2, Hg - 6); gx.save(); gx.translate(13, (T + B)/2); gx.rotate(-Math.PI/2); gx.fillText('I / I max', 0, 0); gx.restore();
+    if (!open){ lbl(gx, 'Trace the phasors and check your answer to see this graph.', (L + R)/2, (T + B)/2, p.dim, 12); el('pzGrT').textContent = 'Brightness for every phase difference (revealed after you check)'; return; }
+    function I(ph){ var x = 0, y = 0; for (var k=0; k<N; k++){ x += cur.A[k]*Math.cos(k*ph*DEG); y += cur.A[k]*Math.sin(k*ph*DEG); } return (x*x + y*y)/Math.pow(sumA(), 2); }
+    gx.strokeStyle = '#ffd23f'; gx.lineWidth = 2.2; gx.beginPath(); for (i=0; i<=720; i++){ var ph = i/2, y2 = Y(I(ph)); if (!i) gx.moveTo(X(ph), y2); else gx.lineTo(X(ph), y2); } gx.stroke();
+    if (cur.A.every(function(a){ return a === cur.A[0]; })){ for (var kz=1; kz<N; kz++){ gx.fillStyle = '#9aa6b4'; gx.beginPath(); gx.arc(X(360*kz/N), Y(0), 3.5, 0, TAU); gx.fill(); }
+      for (var js=1; js<=N - 2; js++){ var best = 0, at = 0; for (var q = 360*js/N; q <= 360*(js + 1)/N; q += 0.5){ var vq = I(q); if (vq > best){ best = vq; at = q; } } gx.fillStyle = '#ff9f43'; gx.beginPath(); gx.moveTo(X(at), Y(best) - 3); gx.lineTo(X(at) - 5, Y(best) - 11); gx.lineTo(X(at) + 5, Y(best) - 11); gx.closePath(); gx.fill(); }
+      if (N > 2) lbl(gx, '\u25bc secondary maxima \u00b7 grey dots: dark points', (L + R)/2, T + 8, '#ff9f43', 10); else lbl(gx, 'grey dot: dark point', (L + R)/2, T + 8, '#9aa6b4', 10); }
+    lbl(gx, 'brightest', X(0) + 4, Y(1) + 10, '#ffd23f', 10, 'left'); lbl(gx, 'brightest', X(360) - 4, Y(1) + 10, '#ffd23f', 10, 'right');
+    var v = I(cur.phi); gx.strokeStyle = p.R; gx.setLineDash([3, 3]); gx.beginPath(); gx.moveTo(X(cur.phi), T); gx.lineTo(X(cur.phi), B); gx.stroke(); gx.setLineDash([]);
+    gx.fillStyle = p.R; gx.beginPath(); gx.arc(X(cur.phi), Y(v), 5, 0, TAU); gx.fill(); lbl(gx, 'this example: ' + (100*v).toFixed(1) + '%', X(cur.phi) + (cur.phi > 250 ? -8 : 8), Y(v) - 12, p.R, 11, cur.phi > 250 ? 'right' : 'left');
+    el('pzGrT').textContent = 'Brightness I/I max = |R|\u00b2/(' + (cur.A.every(function(a){ return a === 1; }) ? N : sumA()) + ')\u00b2 for every phase difference, ' + N + ' waves'; }
+  function f3(v){ v = Math.abs(v) < 5e-4 ? 0 : v; return (v < 0 ? '\u2212' : '') + Math.abs(v).toFixed(3); }
+  function fA(v){ return (+v).toFixed(v % 1 ? (String(v).split('.')[1].length > 1 ? 2 : 1) : 0); }
+  function norm(a){ return ((a % 360) + 360) % 360; }
+  function compTable(){ var open = cur.checked || cur.shown, rows = [], k, sx = 0, sy = 0, tx = 0, ty = 0;
+    for (k=0; k<N; k++){ var ta = k*cur.phi, mine = k < cur.ang.length ? cur.ang[k] : null, use = open ? norm(ta) : mine;
+      var thCell = k === 0 ? '0' : open ? k + ' \u00d7 ' + cur.phi + '\u00b0 = ' + ta + '\u00b0' + (ta >= 360 ? ' \u2192 ' + norm(ta) + '\u00b0' : '') : '(' + (k + 1) + ' \u2212 1)\u03c6 = ' + (k === 1 ? '' : k) + '\u03c6';
+      var youCell = mine === null ? '\u2014' : Math.round(mine) + '\u00b0' + (open && k > 0 ? (angDiff(mine, ta) <= 2.5 ? ' \u2713' : ' \u2717') : '');
+      var x = use === null ? null : cur.A[k]*Math.cos(use*DEG), y = use === null ? null : cur.A[k]*Math.sin(use*DEG);
+      if (x !== null){ sx += x; sy += y; } tx += cur.A[k]*Math.cos(ta*DEG); ty += cur.A[k]*Math.sin(ta*DEG);
+      rows.push('<tr><td>' + (k + 1) + '</td><td>' + fA(cur.A[k]) + '</td><td>' + thCell + '</td><td>' + youCell + '</td><td>' + (x === null ? '\u2014' : fA(cur.A[k]) + ' cos ' + Math.round(use) + '\u00b0 = ' + f3(x)) + '</td><td>' + (y === null ? '\u2014' : fA(cur.A[k]) + ' sin ' + Math.round(use) + '\u00b0 = ' + f3(y)) + '</td></tr>'); }
+    var done = open || cur.ang.length === N;
+    rows.push('<tr class="pz_sum' + '"><td colspan="4" class="pz_l' + '">sum (resultant)' + (open ? '' : ' \u2014 your turn: add each column') + '</td><td>R<sub>x</sub> = ' + (open ? f3(tx) : '?') + '</td><td>R<sub>y</sub> = ' + (open ? f3(ty) : '?') + '</td></tr>');
+    var note = open ? '|R| = \u221a(R<sub>x</sub>\u00b2 + R<sub>y</sub>\u00b2) = \u221a(' + f3(tx) + '\u00b2 + ' + f3(ty) + '\u00b2) = <b>' + Math.hypot(tx, ty).toFixed(3) + '</b>' + (Math.hypot(tx, ty) > 0.01 ? ', pointing at \u03b8<sub>R</sub> = ' + Math.round(norm(Math.atan2(ty, tx)/DEG)) + '\u00b0' : '') + ' &nbsp;\u00b7&nbsp; I/I<sub>max</sub> = |R|\u00b2/(' + cur.A.map(fA).join(' + ') + ')\u00b2 = ' + (100*(tx*tx + ty*ty)/Math.pow(sumA(), 2)).toFixed(1) + '%' + (cur.shown && !cur.checked ? ' (solution shown)' : '')
+      : (done ? 'All arrows placed. Add the x column to get R<sub>x</sub> and the y column to get R<sub>y</sub>; then |R| = \u221a(R<sub>x</sub>\u00b2 + R<sub>y</sub>\u00b2). Compare with your measurement on the grid.' : 'The x and y columns are computed from <i>your</i> arrows as you place them. The \u03b8<sub>k</sub> column shows the rule; the numbers appear after you check.');
+    el('pzComp').innerHTML = '<table class="pz_tbl' + '"><thead><tr><th scope="col">wave k</th><th scope="col">A<sub>k</sub></th><th scope="col">should point at \u03b8<sub>k</sub> = (k \u2212 1)\u03c6</th><th scope="col">your angle</th><th scope="col">x<sub>k</sub> = A<sub>k</sub> cos \u03b8<sub>k</sub></th><th scope="col">y<sub>k</sub> = A<sub>k</sub> sin \u03b8<sub>k</sub></th></tr></thead><tbody>' + rows.join('') + '</tbody></table><div class="pz_tnote' + '">' + note + '</div>'; }
+  function worked(){ var k, xs = [], ys = [], th = [], tx = 0, ty = 0, eq = cur.A.every(function(a){ return a === cur.A[0]; }), A = cur.A[0];
+    for (k=0; k<N; k++){ var t = norm(k*cur.phi), x = cur.A[k]*Math.cos(t*DEG), y = cur.A[k]*Math.sin(t*DEG); th.push(k*cur.phi >= 360 ? k*cur.phi + '\u00b0 (= ' + t + '\u00b0)' : t + '\u00b0'); xs.push(f3(x)); ys.push(f3(y)); tx += x; ty += y; }
+    var R = Math.hypot(tx, ty), s = '<div class="pz_ws' + '"><b>Worked solution</b><br>';
+    s += '1. Angles: \u03b8<sub>k</sub> = (k \u2212 1)\u03c6 = ' + th.join(', ') + '.<br>';
+    s += '2. Components (x<sub>k</sub> = A<sub>k</sub> cos \u03b8<sub>k</sub>, y<sub>k</sub> = A<sub>k</sub> sin \u03b8<sub>k</sub>), added column by column:<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="pz_wl' + '">R<sub>x</sub> = ' + xs.join(' + ').replace(/\+ \u2212/g, '\u2212 ') + ' = ' + f3(tx) + '</span><br>&nbsp;&nbsp;&nbsp;&nbsp;<span class=\"pz_wl' + '\">R<sub>y</sub> = ' + ys.join(' + ').replace(/\+ \u2212/g, '\u2212 ') + ' = ' + f3(ty) + '</span><br>';
+    s += '3. Length: |R| = \u221a(' + f3(tx) + '\u00b2 + ' + f3(ty) + '\u00b2) = <b>' + R.toFixed(3) + '</b>.<br>';
+    if (eq){ var ph = norm(cur.phi), sh = Math.sin(ph/2*DEG);
+      s += '4. Shortcut for equal waves (check): |R| = A |sin(N\u03c6/2) / sin(\u03c6/2)|' + (N === 2 ? ' = 2A |cos(\u03c6/2)|' : '') + ' = ';
+      s += Math.abs(sh) < 1e-9 ? 'N \u00d7 A = ' + (N*A) + ' when \u03c6 is a whole number of turns (all arrows aligned).' : (N === 2 ? '2 \u00d7 ' + fA(A) + ' \u00d7 |cos ' + (ph/2) + '\u00b0| = ' + (2*A*Math.abs(Math.cos(ph/2*DEG))).toFixed(3) : fA(A) + ' \u00d7 |sin ' + (N*ph/2) + '\u00b0 / sin ' + (ph/2) + '\u00b0| = ' + (A*Math.abs(Math.sin(N*ph/2*DEG)/sh)).toFixed(3)) + ' \u2713';
+      s += '<br>5. '; } else s += '4. ';
+    s += 'Brightness: I/I<sub>max</sub> = |R|\u00b2/(' + cur.A.map(fA).join(' + ') + ')\u00b2 = ' + R.toFixed(3) + '\u00b2/' + fA(sumA()) + '\u00b2 = <b>' + (100*R*R/Math.pow(sumA(), 2)).toFixed(1) + '%</b>.</div>';
+    return s; }
+  function graphText(){ var open = cur.checked || cur.shown, eq = cur.A.every(function(a){ return a === cur.A[0]; }), z = [], k;
+    if (!open){ el('pzGx').innerHTML = 'This graph repeats your calculation for <b>every</b> phase difference \u03c6 from 0\u00b0 to 360\u00b0 and plots the brightness I/I<sub>max</sub> = |R|\u00b2/(A<sub>1</sub> + \u2026 + A<sub>N</sub>)\u00b2. It appears once you check your answer.'; return; }
+    for (k=1; k<N; k++) z.push(Math.round(360*k/N*10)/10 + '\u00b0');
+    var s = '<b>How to read this graph.</b> Each point is one complete phasor sum like the one you just traced. Horizontally: the phase difference \u03c6 between neighbouring waves (past 360\u00b0 the pattern repeats, since 360\u00b0 is one full turn). Vertically: the brightness I/I<sub>max</sub>, from 0 (dark) to 1 (the brightest possible). The <b>pink dot</b> is this example: \u03c6 = ' + cur.phi + '\u00b0.<ul>';
+    s += '<li><b>Brightest (principal maxima)</b> at \u03c6 = 0\u00b0 and 360\u00b0: all ' + N + ' arrows point the same way, |R| = ' + fA(sumA()) + ', I/I<sub>max</sub> = 1.</li>';
+    if (eq){ s += '<li><b>Dark (zeros)</b> where the ' + N + ' arrows close up ' + (N === 2 ? '(the two arrows point opposite ways)' : N === 3 ? 'into a triangle' : '(a square at 90\u00b0 and 270\u00b0, folding back on itself at 180\u00b0)') + ' (N\u03c6 a whole number of turns, but not \u03c6 itself): \u03c6 = 360\u00b0 \u00d7 k/' + N + ' = ' + z.join(', ') + '.</li>';
+      if (N === 2) s += '<li>With 2 waves the curve is simply I/I<sub>max</sub> = cos\u00b2(\u03c6/2): one smooth hump per 360\u00b0, no secondary maxima.</li>';
+      else s += '<li><b>Secondary maxima</b>: between the ' + (N - 1) + ' zeros there ' + (N - 2 === 1 ? 'is 1 small bump' : 'are ' + (N - 2) + ' small bumps') + ' (marked \u25bc), where the arrows curl around without closing. They are weak: ' + (N === 3 ? '1/9 \u2248 11%' : 'about 7%') + ' of the brightest.</li>'; }
+    else { var mn = Math.pow((cur.A[0] - cur.A[1])/sumA(), 2); s += '<li>The waves have different amplitudes, so the arrows can never cancel completely: the darkest point (at \u03c6 = 180\u00b0) is I/I<sub>max</sub> = ((' + fA(cur.A[0]) + ' \u2212 ' + fA(cur.A[1]) + ')/' + fA(sumA()) + ')\u00b2 = ' + (100*mn).toFixed(1) + '%, not 0. The fringes are washed out.</li>'; }
+    s += '</ul><b>Connection to experiments.</b> Behind ' + (N === 2 ? 'two slits' : N + ' slits (a grating)') + ', the phase difference is \u03c6 = 360\u00b0 \u00d7 d sin\u03b8/\u03bb, which grows steadily as you move across the screen. So this graph <i>is</i> the pattern on the screen: every 360\u00b0 of \u03c6 is one more bright fringe' + (N > 2 && eq ? ', with ' + (N - 2) + ' faint secondary fringe' + (N - 2 > 1 ? 's' : '') + ' between bright ones' : '') + '. Compare the 2-, 3- and 4-wave tabs: with more waves the bright peaks get narrower and sharper. <i>Click the graph to trace that \u03c6 yourself.</i>';
+    el('pzGx').innerHTML = s; }
+  function all(){ draw(); drawGraph(); el('pzTask').innerHTML = taskText(false); el('pzStep').textContent = stepText(); compTable(); graphText(); btnUI(); }
+  function btnUI(){ el('pzUndo').disabled = cur.checked || (cur.ang.length <= 1 && !cur.R); el('pzCheck').disabled = cur.checked; }
+  /* ══════════ checking ══════════ */
+  function classify(){ var T = trueR(), R = Math.hypot(T[0], T[1]), eq = cur.A.every(function(a){ return a === cur.A[0]; }), ph = ((cur.phi % 360) + 360) % 360;
+    function af(x){ var a = 0, b = 0; for (var k=0; k<N; k++){ a += Math.cos(k*x*DEG); b += Math.sin(k*x*DEG); } return a*a + b*b; }
+    if (ph === 0) return 'All ' + N + ' arrows point the same way, so they add up to ' + sumA() + ' (the longest possible): the brightest point, a <b>principal maximum</b>.';
+    if (R < 0.02) return N === 2 ? 'The two arrows point in opposite directions and cancel: R = 0, a <b>dark fringe</b>.' : 'The ' + N + ' arrows close into a ' + (N === 3 ? 'triangle' : (N === 4 && cur.phi === 180 ? 'shape that folds back on itself' : 'square')) + ' (' + N + ' turns of ' + cur.phi + '\u00b0 add up to a whole number of turns): R = 0, a <b>dark fringe</b>.';
+    if (!eq) return 'The waves have different amplitudes, so even at ' + cur.phi + '\u00b0 they cannot cancel completely: R = ' + R.toFixed(2) + '. A dark fringe is never perfectly dark when the waves are unequal.';
+    var z = 360/N, j = Math.floor(ph/z);
+    if (N >= 3 && j >= 1 && j <= N - 2 && ph % z !== 0){ var best = 0, at = 0; for (var q = j*z + 0.5; q < (j + 1)*z; q += 0.5){ var v = af(q); if (v > best){ best = v; at = q; } }
+      if (af(ph) >= 0.85*best) return 'The arrows curl around and almost close, but a little is left over: R = ' + R.toFixed(2) + '. This is ' + (Math.abs(at - ph) <= 1 ? 'a' : 'close to a') + ' <b>secondary maximum</b>' + (Math.abs(at - ph) <= 1 ? '' : ' (which peaks near ' + Math.round(at) + '\u00b0)') + ', only ' + (100*R*R/(N*N)).toFixed(1) + '% as bright as a principal maximum.'; }
+    return 'The arrows partly cancel: R = ' + R.toFixed(2) + ' out of a possible ' + N + ', so the intensity is (' + R.toFixed(2) + '/' + N + ')\u00b2 = ' + (100*R*R/(N*N)).toFixed(1) + '% of the brightest.'; }
+  function check(){ var items = [], score = 0, tot = 0, k, T = trueTips(), Rt = T[N], Rlen = Math.hypot(Rt[0], Rt[1]);
+    for (k=1; k<N; k++){ tot++; if (k >= cur.ang.length){ items.push('<span class="pz_no' + '">\u2717</span> Arrow ' + (k + 1) + ' is missing.'); continue; }
+      var ok = angDiff(cur.ang[k], trueAng(k)) <= 2.5; if (ok) score++;
+      items.push(ok ? '<span class="pz_ok' + '">\u2713</span> Arrow ' + (k + 1) + ' points at ' + Math.round(cur.ang[k]) + '\u00b0 = ' + k + ' \u00d7 ' + cur.phi + '\u00b0' + (k*cur.phi >= 360 ? ' (after removing whole turns)' : '') + '.'
+        : '<span class="pz_no' + '">\u2717</span> Arrow ' + (k + 1) + ' points at ' + Math.round(cur.ang[k]) + '\u00b0; it should be turned by ' + cur.phi + '\u00b0 from arrow ' + k + ', so it points at ' + k + ' \u00d7 ' + cur.phi + '\u00b0 = ' + trueAng(k) + '\u00b0' + (k*cur.phi >= 360 ? ' (after removing whole turns)' : '') + '.'); }
+    tot++; if (!cur.R) items.push('<span class="pz_no' + '">\u2717</span> The resultant is missing: draw it from the origin to the tip of the last arrow.');
+    else { var tp = tips(cur.ang), okR = Math.hypot(cur.R[0] - Rt[0], cur.R[1] - Rt[1]) <= 0.08, toOwn = cur.ang.length === N && Math.hypot(cur.R[0] - tp[N][0], cur.R[1] - tp[N][1]) <= 0.08; if (okR) score++;
+      items.push(okR ? '<span class="pz_ok' + '">\u2713</span> Resultant: from the origin to the tip of the last arrow.' : toOwn ? '<span class="pz_no' + '">\u2717</span> Your resultant correctly goes to the tip of <i>your</i> last arrow (good method), but an arrow above is off, so it ends in the wrong place.' : '<span class="pz_no' + '">\u2717</span> The resultant should go from the origin (tail of arrow 1) to the tip of the last arrow.'); }
+    tot++; var v = parseFloat(el('pzR').value);
+    if (!isFinite(v)) items.push('<span class="pz_no' + '">\u2717</span> Type your value of |R|.');
+    else { var okV = Math.abs(v - Rlen) <= Math.max(0.05, 0.03*Rlen); if (okV) score++; items.push(okV ? '<span class="pz_ok' + '">\u2713</span> |R| = ' + v + ' (exact: ' + Rlen.toFixed(3) + ').' : '<span class="pz_no' + '">\u2717</span> |R| = ' + v + '; the exact length is ' + Rlen.toFixed(3) + '.'); }
+    cur.checked = true; if (score === tot && !cur.custom) solved[N][exi] = true;
+    el('pzFb').innerHTML = '<b>' + score + ' / ' + tot + (score === tot ? ' \u2014 well done!' : '') + '</b><ul><li>' + items.join('</li><li>') + '</li></ul>' + classify() + ' The intensity is I/I max = (|R|/' + sumA() + ')\u00b2 = <b>' + (100*Rlen*Rlen/Math.pow(sumA(), 2)).toFixed(1) + '%</b>.' + worked();
+    exUI(); all(); pzA11y.narrate('Score ' + score + ' out of ' + tot + '. ' + classify().replace(/<[^>]+>/g, '')); }
+  /* ══════════ interaction ══════════ */
+  function snapA(a){ a = ((a % 360) + 360) % 360; return el('pzSnap').checked ? (Math.round(a/5)*5) % 360 : Math.round(a); }
+  function cpos(evt){ var r = cv.getBoundingClientRect(); return [(evt.clientX - r.left)*W/r.width, (evt.clientY - r.top)*H/r.height]; }
+  function aimAt(px, py){ var st = stage(); if (cur.checked) return;
+    if (st === 'arrow'){ var k = cur.ang.length, b = tips(cur.ang)[k], w = Winv(px, py); cur.aim = snapA(Math.atan2(w[1] - b[1], w[0] - b[0])/DEG); }
+    else if (st === 'res'){ var w2 = Winv(px, py), best = null, bd = 14/U(); tips(cur.ang).forEach(function(t){ var d = Math.hypot(t[0] - w2[0], t[1] - w2[1]); if (d < bd){ bd = d; best = t; } });
+      cur.Rprev = best ? best.slice() : [Math.round(w2[0]*20)/20, Math.round(w2[1]*20)/20]; } }
+  function place(){ var st = stage(); if (cur.checked) return;
+    if (st === 'arrow' && cur.aim !== null){ var k = cur.ang.length; cur.ang.push(cur.aim); var turn = ((cur.aim - cur.ang[k - 1]) % 360 + 360) % 360; cur.aim = null; all(); pzA11y.narrate('Arrow ' + (k + 1) + ' placed, pointing at ' + cur.ang[k] + ' degrees, turned ' + turn + ' degrees from arrow ' + k + '. ' + stepText()); return; }
+    if ((st === 'res' || st === 'ans') && cur.Rprev){ cur.R = cur.Rprev.slice(); all(); pzA11y.narrate('Resultant drawn, ending at x = ' + cur.R[0].toFixed(2) + ', y = ' + cur.R[1].toFixed(2) + '. ' + stepText()); try { el('pzR').focus({ preventScroll:true }); } catch (e) {} } }
+  var down = false;
+  cv.addEventListener('pointermove', function(evt){ var q = cpos(evt); var st = stage(); if (st === 'ans' && !down) return; aimAt(q[0], q[1]); draw(); });
+  cv.addEventListener('pointerdown', function(evt){ down = true; try { cv.setPointerCapture(evt.pointerId); } catch (e) {} var q = cpos(evt); if (stage() === 'ans') cur.Rprev = cur.R; aimAt(q[0], q[1]); draw(); evt.preventDefault(); });
+  cv.addEventListener('pointerup', function(evt){ if (!down) return; down = false; var q = cpos(evt); aimAt(q[0], q[1]); place(); });
+  cv.addEventListener('pointercancel', function(){ down = false; });
+  cv.addEventListener('pointerleave', function(){ if (!down && stage() !== 'ans'){ cur.aim = null; cur.Rprev = null; draw(); } });
+  cv.addEventListener('keydown', function(e){ if (cur.checked) return; var st = stage(), stp = e.shiftKey ? 15 : 5;
+    if (st === 'arrow'){ if (cur.aim === null) cur.aim = cur.ang[cur.ang.length - 1];
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp'){ cur.aim = snapA(cur.aim + stp); e.preventDefault(); } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown'){ cur.aim = snapA(cur.aim - stp); e.preventDefault(); }
+      else if (e.key === 'Enter' || e.key === ' '){ place(); e.preventDefault(); return; } else return;
+      var tn = ((cur.aim - cur.ang[cur.ang.length - 1]) % 360 + 360) % 360; draw(); pzA11y.narrate('Aiming at ' + cur.aim + ' degrees, turned ' + tn + ' degrees from the previous arrow.'); return; }
+    if (st === 'res' || st === 'ans'){ if (!cur.Rprev) cur.Rprev = cur.R ? cur.R.slice() : [0, 0]; var d = { ArrowLeft:[-0.05, 0], ArrowRight:[0.05, 0], ArrowUp:[0, 0.05], ArrowDown:[0, -0.05] }[e.key];
+      if (d){ cur.Rprev = [Math.round((cur.Rprev[0] + d[0]*(e.shiftKey ? 5 : 1))*20)/20, Math.round((cur.Rprev[1] + d[1]*(e.shiftKey ? 5 : 1))*20)/20]; if (cur.R) cur.R = cur.Rprev.slice(); draw(); pzA11y.narrate('Resultant end at x = ' + cur.Rprev[0].toFixed(2) + ', y = ' + cur.Rprev[1].toFixed(2) + '.'); e.preventDefault(); return; }
+      if (e.key === 'Enter' || e.key === ' '){ var tp = tips(cur.ang); if (!cur.R && Math.hypot(cur.Rprev[0], cur.Rprev[1]) < 1e-9) cur.Rprev = tp[tp.length - 1].slice(); place(); e.preventDefault(); } } });
+  el('pzUndo').addEventListener('click', function(){ if (cur.checked) return; if (cur.R){ cur.R = null; cur.Rprev = null; } else if (cur.ang.length > 1) cur.ang.pop(); cur.aim = null; all(); pzA11y.narrate('Undone. ' + stepText()); });
+  el('pzRedo').addEventListener('click', function(){ cur.ang = [0]; cur.R = null; cur.Rprev = null; cur.aim = null; cur.checked = false; cur.shown = false; el('pzR').value = ''; el('pzFb').innerHTML = ''; all(); pzA11y.narrate('Starting over. ' + stepText()); });
+  el('pzCheck').addEventListener('click', check);
+  cG.addEventListener('click', function(evt){ if (!(cur.checked || cur.shown)) return; var r = cG.getBoundingClientRect(), x = (evt.clientX - r.left)*cG.width/r.width, ph = Math.round(((x - 50)/(cG.width - 64)*360)/5)*5; if (ph < 0 || ph > 360) return; var A = cur.A.slice(); load(N, exi, { phi:ph % 360 === 0 && ph ? 360 : ph, A:A, t:'from the graph' }); pzA11y.narrate('New practice from the graph: phase difference ' + ph + ' degrees. ' + stepText()); });
+  cG.style.cursor = 'pointer';
+  el('pzIntroBtn').addEventListener('click', function(){ var d = el('pzIntro'), open = d.style.display === 'none'; d.style.display = open ? '' : 'none'; this.setAttribute('aria-expanded', open ? 'true' : 'false'); this.innerHTML = (open ? '&#9662;' : '&#9656;') + ' New to phasors? Start here';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } });
+  el('pzShow').addEventListener('click', function(){ cur.shown = !cur.shown; el('pzShow').textContent = cur.shown ? 'Hide solution' : 'Show solution'; all();
+    if (cur.shown){ var T = trueR(); pzA11y.narrate('Solution shown in orange: arrow k points at (k \u2212 1) times ' + cur.phi + ' degrees; the resultant ends at x = ' + T[0].toFixed(2) + ', y = ' + T[1].toFixed(2) + ', length ' + Math.hypot(T[0], T[1]).toFixed(2) + '. You can still trace and check, but try it yourself first next time!'); } });
+  el('pzR').addEventListener('keydown', function(e){ if (e.key === 'Enter'){ check(); e.preventDefault(); } });
+  el('pzPrev').addEventListener('click', function(){ load(N, (exi - 1 + EX[N].length) % EX[N].length); });
+  el('pzNext').addEventListener('click', function(){ load(N, (exi + 1) % EX[N].length); });
+  el('pzRand').addEventListener('click', function(){ var ph; do { ph = 15*Math.floor(Math.random()*24); } while (ph === cur.phi); load(N, exi, { phi:ph, t:'random' }); });
+  el('pzUseOwn').addEventListener('click', function(){ load(N, exi, { phi:+el('pzPhi').value, t:'practice' }); });
+  el('pzPhi').addEventListener('input', function(){ el('pzPhiVal').textContent = this.value + '\u00b0'; this.setAttribute('aria-valuetext', this.value + ' degrees'); });
+  ['pzTurn', 'pzHint', 'pzGrid', 'pzSnap'].forEach(function(id){ el(id).addEventListener('change', function(){ draw(); if (id === 'pzHint' && this.checked) pzA11y.narrate('Hint on: the dashed line continues the previous arrow, and the arc shows the turn of ' + cur.phi + ' degrees to make.'); }); });
+  [2, 3, 4].forEach(function(n){ var t = el('pzT' + n + ''); t.addEventListener('click', function(){ load(n, 0); });
+    t.addEventListener('keydown', function(e){ var m = e.key === 'ArrowRight' ? (n === 4 ? 2 : n + 1) : e.key === 'ArrowLeft' ? (n === 2 ? 4 : n - 1) : 0; if (m){ load(m, 0); el('pzT' + m + '').focus(); e.preventDefault(); } }); });
+  function tabsUI(){ [2, 3, 4].forEach(function(n){ var t = el('pzT' + n + ''); t.setAttribute('aria-selected', n === N ? 'true' : 'false'); t.tabIndex = n === N ? 0 : -1; }); el('pzShow').textContent = 'Show solution'; }
+  function exUI(){ var box = el('pzEx'); box.innerHTML = EX[N].map(function(e, i){ return '<button type="button" data-i="' + i + '"' + (i === exi && !cur.custom ? ' aria-current="true"' : '') + '>' + (solved[N][i] ? '\u2713 ' : '') + e.t + '</button>'; }).join('');
+    [].forEach.call(box.querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ load(N, +b.getAttribute('data-i')); }); }); }
+  pzA11y.onChange(function(){ all(); });
+  el('pzPhiVal').textContent = '60\u00b0';
+  load(2, 0);
+  return { load:load, _cur:function(){ return cur; }, _place:function(a){ cur.aim = a; place(); }, _res:function(x, y){ cur.Rprev = [x, y]; place(); }, _true:trueR, check:function(){ check(); } };
+};
+var pzSim = new pzGen();
+</script>
+<script>pzA11y.init();</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>When several waves of the same frequency arrive at a point, the wave you get there depends on how far each one is behind the others. A <b>phasor</b> is an arrow that represents one wave: its length is the wave&rsquo;s amplitude, and its direction is the wave&rsquo;s phase. Adding the waves is the same as adding the arrows <b>tip to tail</b>.</p>
+<p>In each example, every wave is behind the previous one by the same phase difference `phi` (for light behind slits or a grating, `phi = (2 pi d sin theta)/lambda`). So each arrow is turned by `phi` from the one before: arrow `k` points at `(k - 1) phi`, measured counterclockwise. The <b>resultant</b> arrow goes from the tail of the first arrow to the tip of the last one; its length `|R|` is the amplitude of the combined wave, and the brightness is</p>
+<p class="mob_eq">`I/I_"max" = (|R|/(A_1 + A_2 + ... + A_N))^2`.</p>
+<p><b>How to use it.</b> Arrow 1 is given, pointing right. Aim each next arrow from the tip of the previous one (move the pointer, or use the &larr; &rarr; keys) and click (or press Enter) to place it. Then click where the resultant ends, measure its length on the grid (one square is half a wave), type `|R|` and press Check. The solution and the graph of brightness for every `phi` appear only after you check (or if you ask for the solution). Help options show the turn of each arrow, or, as a hint, the direction to aim for.</p>
+<p><b>What to look for.</b> When `phi` is a whole number of turns, all arrows line up: brightest (principal maximum). When the arrows close into a polygon (`N phi` a whole number of turns), they cancel: dark. With 3 or more waves, between the dark points the arrows curl around without quite closing, leaving a small resultant: the weak secondary maxima. With unequal amplitudes, the cancellation is never complete.</p>
+</div>
+</div>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+</div>
+
+</body>
+</html>
