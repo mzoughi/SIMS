@@ -134,7 +134,7 @@ var ROOT = el('msRoot'), DPR = window.devicePixelRatio || 1;
 function hi(id){ var c = el(id), g = c.getContext('2d'), w = c.width, h = c.height; c.width = w*DPR; c.height = h*DPR; g.scale(DPR, DPR); return { c:c, g:g, W:w, H:h }; }
 var SD = hi('msSide'), CL = hi('msClose'), VW = hi('msView'), LB = hi('msLabCv');
 var DEG = Math.PI/180, NEAR = 250, LAMBDA = 550e-6, NG = 1.52;
-var S = { tab:1, schem:false, eqs:true, lab:false, each:true, labObj:null, spec:'onion', dz:0,
+var S = { tab:1, schem:false, eqs:true, lab:true, each:true, labObj:null, spec:'onion', dz:0,
   mag:{ f:50, d:50 },
   cmp:{ fo:6.0, fe:50, L:230, d:6.2, na:0.30 },
   obj:{ kind:'40', medium:'air', lam:550, sep:0.6 } };
