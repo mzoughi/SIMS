@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Physics Simulations-Waves: Light Interference, Three Scales (Fraunhofer)</title>
 <meta name="author" content="Taha Mzoughi">
-<meta name="keywords" content="physics,Taha, Mzoughi, double slit, interference, diffraction grating, Fraunhofer, far field, path difference, fringe spacing, light, lesson">
+<meta name="keywords" content="physics,Taha, Mzoughi, double slit, interference, diffraction grating, Fraunhofer, far field, path difference, phasor, secondary maxima, fringe spacing, light, lesson">
 <style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
 <link rel="shortcut icon" href=mzy.ico>   </head>
 <body style=margin:25px>
@@ -23,11 +23,14 @@
 
 <div class="fr_view">
 <div class="fr_vtitle"><span class="fr_tag">3</span> Far away: the screen <span class="fr_scale" id="frScFar"></span></div>
-<canvas id="frFar" width="800" height="250" role="img" aria-label="The screen, far from the slits: the bright and dark fringes, the intensity graph below them, the point P and its position in millimetres. Drag P along the screen."></canvas>
+<canvas id="frFar" width="800" height="250" role="img" aria-label="The screen, far from the slits: the bright and dark fringes, the intensity graph below them with the principal and secondary maxima marked, the point P and its position in millimetres. Drag P along the screen."></canvas>
 <div class="fr_vtitle"><span class="fr_tag">2</span> In between: the long trip <span class="fr_scale">not to scale &mdash; the distance is broken</span></div>
 <canvas id="frMid" width="800" height="200" role="img" aria-label="Overview, not to scale: the slits at the bottom, the screen at the top, the rays from the slits to the point P, and a break in the long distance L between them."></canvas>
 <div class="fr_vtitle"><span class="fr_tag">1</span> Near the slits <span class="fr_scale" id="frScNear"></span></div>
 <canvas id="frNear" width="800" height="230" role="img" aria-label="Close-up of the slits: light arrives from below, rays leave every slit toward P, and the extra distance travelled by one ray, the path difference d sin theta, is highlighted."></canvas>
+<div class="fr_vtitle"><span class="fr_tag">&Sigma;</span> Adding the waves at P: phasors <span class="fr_scale" id="frScPh"></span></div>
+<canvas id="frPh" width="800" height="260" role="img" aria-label="Left: the phasor diagram at P, one arrow per slit, each turned by the phase difference phi from the previous one, and their sum. Right: the intensity for one cycle of phase difference, from one principal maximum to the next, with the zeros and secondary maxima marked and P's position on it. Drag on the right graph to move P."></canvas>
+<div class="fr_why" id="frWhy" aria-live="off"></div>
 </div>
 <div id="frReadout" class="fr_readout" aria-live="off"></div>
 <div id="frNarBar" class="fr_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
@@ -43,6 +46,7 @@
 <button type="button" class="fr_vbtn" id="frGo0">Centre</button>
 <button type="button" class="fr_vbtn" id="frGoMax">Next bright</button>
 <button type="button" class="fr_vbtn" id="frGoMin">Next dark</button>
+<button type="button" class="fr_vbtn fr_sec" id="frGoSec">Next secondary</button>
 </div>
 </div>
 
@@ -52,7 +56,7 @@
 <div class="fr_pbody">
 <div class="fr_ctrl"><div class="fr_chdr"><label for="frLam">Wavelength &lambda;</label><span class="fr_val" id="frLamVal"></span></div><input type="range" id="frLam" min="380" max="750" step="5" value="550"></div>
 <div class="fr_ctrl"><div class="fr_chdr"><label for="frL">Slits to screen L</label><span class="fr_val" id="frLVal"></span></div><input type="range" id="frL" min="0.1" max="5" step="0.05" value="1"></div>
-<div class="fr_ctrl"><div class="fr_chdr"><label for="frP">Point P on the screen, x</label><span class="fr_val" id="frPVal"></span></div><input type="range" id="frP" min="-10" max="10" step="0.01" value="0"></div>
+<div class="fr_ctrl"><div class="fr_chdr"><label for="frP">Point P on the screen, x</label><span class="fr_val" id="frPVal"></span></div><input type="range" id="frP" min="-10" max="10" step="any" value="0"></div>
 </div></div>
 <div class="fr_panel" role="group" aria-labelledby="frHdS">
 <div class="fr_ptitle" id="frHdS">Slits</div>
@@ -65,10 +69,11 @@
 <div class="fr_panel" role="group" aria-labelledby="frHdD">
 <div class="fr_ptitle" id="frHdD">Display</div>
 <div class="fr_pbody">
-<div class="fr_checks fr_one">
+<div class="fr_checks">
 <label class="fr_chk"><input type="checkbox" id="frExag" checked>Exaggerate the angle near the slits</label>
 <label class="fr_chk"><input type="checkbox" id="frAll" checked>Rays from every slit</label>
 <label class="fr_chk"><input type="checkbox" id="frExact" checked>Compare with the exact path difference</label>
+<label class="fr_chk"><input type="checkbox" id="frMarks" checked>Mark the secondary maxima on the screen</label>
 </div>
 </div></div>
 <div class="fr_panel" role="group" aria-labelledby="frHdT">
@@ -89,15 +94,18 @@
 .fr_vtitle { display:flex; flex-wrap:wrap; align-items:center; gap:4px 10px; padding:5px 10px; background:#14213a; color:#dbe7ff; font-size:.8rem; font-weight:bold; border-top:1px solid #2b3d60; }
 .fr_tag { display:inline-flex; width:20px; height:20px; border-radius:50%; background:#f90; color:#111; align-items:center; justify-content:center; font-size:.75rem; }
 .fr_scale { font-weight:normal; color:#9fb4d8; font-family:monospace; font-size:.76rem; margin-left:auto; }
+.fr_why { padding:7px 12px 9px; color:#e3ecfa; font-size:.84rem; line-height:1.45; background:#0d1526; border-top:1px solid #2b3d60; }
+.fr_why b { color:#ffd23f; }
 .fr_readout { color:#222; font-size:.8rem; font-family:monospace; text-align:center; background:#fff6d9; padding:4px 6px; line-height:1.5; }
 .fr_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
-.fr_tgroup { display:flex; gap:6px; flex-wrap:nowrap; }
+.fr_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
 .fr_tview { padding-left:14px; border-left:1px solid #9ab060; }
-@media (max-width:520px) { .fr_tview { padding-left:0; border-left:0; } }
+@media (max-width:620px) { .fr_tview { padding-left:0; border-left:0; } }
 .fr_tbtn { width:44px; height:38px; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer; border:1px solid #6d8a3a; border-radius:5px; background:#fff; color:#223; }
 .fr_tbtn.fr_play { background:#2e7d32; color:#fff; border-color:#1b5e20; }
 .fr_tbtn.fr_play[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
 .fr_vbtn { height:38px; padding:0 10px; font-size:.82rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; white-space:nowrap; }
+.fr_vbtn.fr_sec { border-color:#a8620a; color:#7a3a00; font-weight:bold; }
 .fr_tbtn:hover, .fr_vbtn:hover { filter:brightness(.95); }
 .fr_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:10px; padding:10px; }
 .fr_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
@@ -124,9 +132,9 @@
 #mobwave2lightinterf .mob_desc p { margin:0 0 8px 0; }
 #mobwave2lightinterf .mob_eq { text-align:center; }
 #mobwave2lightinterf.a11y_dm { filter:invert(1) hue-rotate(180deg); }
-#mobwave2lightinterf.a11y_dm canvas, #mobwave2lightinterf.a11y_dm [aria-label="Display options"], #mobwave2lightinterf.a11y_dm .mob_descbtn, #mobwave2lightinterf.a11y_dm .fr_vtitle { filter:hue-rotate(180deg) invert(1); }
+#mobwave2lightinterf.a11y_dm canvas, #mobwave2lightinterf.a11y_dm [aria-label="Display options"], #mobwave2lightinterf.a11y_dm .mob_descbtn, #mobwave2lightinterf.a11y_dm .fr_vtitle, #mobwave2lightinterf.a11y_dm .fr_why { filter:hue-rotate(180deg) invert(1); }
 #mobwave2lightinterf.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
-#mobwave2lightinterf.a11y_hc canvas, #mobwave2lightinterf.a11y_hc [aria-label="Display options"], #mobwave2lightinterf.a11y_hc .mob_descbtn, #mobwave2lightinterf.a11y_hc .fr_vtitle { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+#mobwave2lightinterf.a11y_hc canvas, #mobwave2lightinterf.a11y_hc [aria-label="Display options"], #mobwave2lightinterf.a11y_hc .mob_descbtn, #mobwave2lightinterf.a11y_hc .fr_vtitle, #mobwave2lightinterf.a11y_hc .fr_why { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
 </style>
 <script>
 var frA11y = (function(){
@@ -143,7 +151,7 @@ return {
   init:function(){ apply(); },
   onChange:function(f){ hooks.push(f); },
   toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply();
-    if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: the fringes are drawn in white on black, the intensity curve in blue, the path difference in orange.'); },
+    if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: the fringes are drawn in white on black, the intensity curve in blue, the path difference and the phasors in orange.'); },
   altPalette:function(){ return states.hc || states.cb; }, isHC:function(){ return states.hc; }, isCB:function(){ return states.cb; },
   narrate:function(msg){ if (!states.nr) return; var nb = document.getElementById('frNarBar'); if (nb) nb.textContent = msg; }
 };
@@ -151,133 +159,182 @@ return {
 </script>
 
 <!-- ════════ SIMULATION ════════
-Fraunhofer (far-field) model: theta = atan(x/L), path difference between neighbouring slits = d sin(theta),
-phi = 2 pi d sin(theta)/lambda, beta = pi a sin(theta)/lambda,
-I/I0 = [sin(N phi/2)/(N sin(phi/2))]^2 [sin(beta)/beta]^2  (envelope only if the finite slit width is on).
-Exact comparison: r_i = sqrt(L^2 + (x - x_i)^2) for slits 1 and 2; Fraunhofer distance D^2/lambda, D = (N-1) d + a.
-Three panels with three scales: near (micrometres across), overview (not to scale), screen (millimetres across).
+Fraunhofer (far-field) model: theta = atan(x/L), phi = 2 pi d sin(theta)/lambda, beta = pi a sin(theta)/lambda,
+I/I0 = [sin(N phi/2)/(N sin(phi/2))]^2 [sin(beta)/beta]^2 (envelope only if the finite slit width is on).
+Phasors: the wave from slit j at P is a unit arrow at angle j phi; their sum gives the amplitude, |sum|^2/N^2 = array factor.
+Zeros at phi = 2 pi k/N (k not a multiple of N); N - 2 secondary maxima between principal maxima, found numerically
+(golden-section search of the array factor between consecutive zeros).
 No dollar signs or backticks in the code.
 -->
 <script>
 var frGen = function() {
-  var cF = document.getElementById('frFar'), gF = cF.getContext('2d'), cM = document.getElementById('frMid'), gM = cM.getContext('2d'), cN = document.getElementById('frNear'), gN = cN.getContext('2d');
-  var DEG = Math.PI/180, timer = null, sweeping = false;
-  var P = {};   /* lam (nm), L (m), xP (m), N, d (mm), a (mm), env, exag, all, exact */
-  function defaults(){ P = { lam:550, L:1.0, xP:0, N:2, d:0.25, a:0.05, env:false, exag:true, all:true, exact:true }; }
+  var cF = document.getElementById('frFar'), gF = cF.getContext('2d'), cM = document.getElementById('frMid'), gM = cM.getContext('2d'), cN = document.getElementById('frNear'), gN = cN.getContext('2d'), cP = document.getElementById('frPh'), gP = cP.getContext('2d');
+  var DEG = Math.PI/180, TAU = 2*Math.PI, timer = null, sweeping = false;
+  var P = {};
+  function defaults(){ P = { lam:550, L:1.0, xP:0, N:2, d:0.25, a:0.05, env:false, exag:true, all:true, exact:true, marks:true }; }
   function el(id){ return document.getElementById(id); }
   function lam(){ return P.lam*1e-9; } function dm(){ return P.d*1e-3; } function am(){ return P.a*1e-3; }
   function spacing(){ return lam()*P.L/dm(); }
   function halfX(){ var X = 5.5*spacing(); if (P.env) X = Math.max(X, 1.15*lam()*P.L/am()); return Math.min(X, 60*spacing(), P.L*2.5); }
   function thetaOf(x){ return Math.atan2(x, P.L); }
-  function inten(x){ var s = Math.sin(thetaOf(x)), ph = 2*Math.PI*dm()*s/lam(), N = P.N, sh = Math.sin(ph/2), af;
-    af = Math.abs(sh) < 1e-9 ? 1 : Math.pow(Math.sin(N*ph/2)/(N*sh), 2);
-    if (P.env){ var b = Math.PI*am()*s/lam(); af *= Math.abs(b) < 1e-9 ? 1 : Math.pow(Math.sin(b)/b, 2); } return af; }
+  function phiOf(x){ return TAU*dm()*Math.sin(thetaOf(x))/lam(); }
+  function xOfPhi(ph){ var s = ph*lam()/(TAU*dm()); if (Math.abs(s) >= 1) return null; return P.L*Math.tan(Math.asin(s)); }
+  function arrayF(ph, N){ var sh = Math.sin(ph/2); return Math.abs(sh) < 1e-12 ? 1 : Math.pow(Math.sin(N*ph/2)/(N*sh), 2); }
+  function envOf(x){ if (!P.env) return 1; var b = Math.PI*am()*Math.sin(thetaOf(x))/lam(); return Math.abs(b) < 1e-9 ? 1 : Math.pow(Math.sin(b)/b, 2); }
+  function inten(x){ return arrayF(phiOf(x), P.N)*envOf(x); }
   function slitX(i){ return (i - (P.N - 1)/2)*dm(); }
-  /* ══════════ colours ══════════ */
+  /* the secondary maxima inside one cycle 0..2pi of phi: one between each pair of neighbouring zeros 2 pi k/N, k = 1..N-2 */
+  function secondaries(N){ var out = []; for (var k=1; k<=N - 2; k++){ var a = TAU*k/N, b = TAU*(k + 1)/N, gr = (Math.sqrt(5) - 1)/2;
+      for (var it=0; it<60; it++){ var c = b - gr*(b - a), d2 = a + gr*(b - a); if (arrayF(c, N) > arrayF(d2, N)) b = d2; else a = c; } var m = (a + b)/2; out.push({ phi:m, I:arrayF(m, N) }); }
+    return out; }
+  /* ══════════ colours and helpers ══════════ */
   function lamRGB(nm){ var r = 0, g = 0, b = 0;
     if (nm < 440){ r = -(nm - 440)/60; b = 1; } else if (nm < 490){ g = (nm - 440)/50; b = 1; } else if (nm < 510){ g = 1; b = -(nm - 510)/20; } else if (nm < 580){ r = (nm - 510)/70; g = 1; } else if (nm < 645){ r = 1; g = -(nm - 645)/65; } else r = 1;
     var f = nm < 420 ? 0.3 + 0.7*(nm - 380)/40 : nm > 700 ? 0.3 + 0.7*(750 - nm)/50 : 1; return [255*Math.pow(r*f, 0.8), 255*Math.pow(g*f, 0.8), 255*Math.pow(b*f, 0.8)]; }
-  function pal(){ var alt = frA11y.altPalette(); return { beam:alt ? [255,255,255] : lamRGB(P.lam), curve:alt ? '#56B4E9' : '#ffd23f', delta:'#E69F00', ray:alt ? '#ffffff' : 'rgb(' + lamRGB(P.lam).map(function(v){ return Math.round(v); }).join(',') + ')', txt:'#e6ecf2', dim:'#9aa6b4', grid:'rgba(150,170,195,0.25)', P:'#ff5a5a', wf:'#56B4E9' }; }
+  function pal(){ var alt = frA11y.altPalette(); return { beam:alt ? [255,255,255] : lamRGB(P.lam), curve:alt ? '#56B4E9' : '#ffd23f', delta:'#E69F00', ray:alt ? '#ffffff' : 'rgb(' + lamRGB(P.lam).map(function(v){ return Math.round(v); }).join(',') + ')', txt:'#e6ecf2', dim:'#9aa6b4', grid:'rgba(150,170,195,0.25)', P:'#ff5a5a', wf:'#56B4E9', sec:alt ? '#E69F00' : '#ff9f43', zero:'#9aa6b4', res:alt ? '#ffffff' : '#ff5a5a' }; }
   function lbl(g, t, x, y, col, size, al, base){ g.font = 'bold ' + (size || 12) + 'px Arial'; g.textAlign = al || 'center'; g.textBaseline = base || 'middle'; g.lineJoin = 'round'; g.lineWidth = 3.5; g.strokeStyle = 'rgba(0,0,0,0.85)'; g.strokeText(t, x, y); g.fillStyle = col; g.fillText(t, x, y); }
   function fmtLen(m){ var a = Math.abs(m); return a >= 1 ? m.toFixed(2) + ' m' : a >= 1e-2 ? (m*100).toFixed(a >= 0.1 ? 1 : 2) + ' cm' : a >= 1e-3 ? (m*1000).toFixed(2) + ' mm' : a >= 1e-6 ? (m*1e6).toFixed(a >= 1e-5 ? 1 : 2) + ' \u00b5m' : (m*1e9).toFixed(1) + ' nm'; }
   function niceStep(span, n){ var raw = span/n, p = Math.pow(10, Math.floor(Math.log(raw)/Math.LN10)), f = raw/p; return (f < 1.5 ? 1 : f < 3.5 ? 2 : f < 7.5 ? 5 : 10)*p; }
   function scaleBar(g, x, y, pxPerM, maxPx, col){ var len = niceStep(maxPx/pxPerM, 1), px = len*pxPerM; g.strokeStyle = col; g.lineWidth = 2; g.beginPath(); g.moveTo(x, y); g.lineTo(x + px, y); g.moveTo(x, y - 4); g.lineTo(x, y + 4); g.moveTo(x + px, y - 4); g.lineTo(x + px, y + 4); g.stroke(); lbl(g, fmtLen(len), x + px/2, y - 10, col, 11); }
-  /* ══════════ panel 3: the screen (x in mm across) ══════════ */
+  function tri(g, x, y, s, col){ g.fillStyle = col; g.beginPath(); g.moveTo(x, y); g.lineTo(x - s, y - 1.6*s); g.lineTo(x + s, y - 1.6*s); g.closePath(); g.fill(); }
+  /* ══════════ panel 3: the screen ══════════ */
   var FL = 50, FR = 780;
   function farX(x){ var X = halfX(); return FL + (x + X)/(2*X)*(FR - FL); }
   function farInv(px){ var X = halfX(); return (px - FL)/(FR - FL)*2*X - X; }
   function drawFar(){ var g = gF, W = cF.width, H = cF.height, p = pal(), X = halfX(), i;
     g.fillStyle = '#070b14'; g.fillRect(0, 0, W, H);
-    /* the fringes as seen on the screen */
     for (i=FL; i<FR; i++){ var I = inten(farInv(i + 0.5)), c = p.beam.map(function(v){ return Math.round(v*Math.pow(I, 0.6)); }); g.fillStyle = 'rgb(' + c.join(',') + ')'; g.fillRect(i, 16, 1, 60); }
     g.strokeStyle = '#3a4a68'; g.strokeRect(FL - 0.5, 15.5, FR - FL + 1, 61);
-    /* the intensity graph */
     var T = 112, B = 200; g.textBaseline = 'alphabetic'; g.strokeStyle = p.grid; g.lineWidth = 1; [0, 0.5, 1].forEach(function(v){ var y = B - v*(B - T); g.beginPath(); g.moveTo(FL, y); g.lineTo(FR, y); g.stroke(); g.fillStyle = p.dim; g.font = '10px monospace'; g.textAlign = 'right'; g.fillText(v.toFixed(1), FL - 4, y + 3); });
     g.strokeStyle = p.curve; g.lineWidth = 2; g.beginPath(); for (i=FL; i<=FR; i++){ var y2 = B - inten(farInv(i))*(B - T); if (i === FL) g.moveTo(i, y2); else g.lineTo(i, y2); } g.stroke();
-    if (P.env){ g.strokeStyle = 'rgba(255,255,255,0.45)'; g.setLineDash([4, 3]); g.lineWidth = 1.2; g.beginPath(); for (i=FL; i<=FR; i++){ var s = Math.sin(thetaOf(farInv(i))), b = Math.PI*am()*s/lam(), e = Math.abs(b) < 1e-9 ? 1 : Math.pow(Math.sin(b)/b, 2), y3 = B - e*(B - T); if (i === FL) g.moveTo(i, y3); else g.lineTo(i, y3); } g.stroke(); g.setLineDash([]); }
+    if (P.env){ g.strokeStyle = 'rgba(255,255,255,0.45)'; g.setLineDash([4, 3]); g.lineWidth = 1.2; g.beginPath(); for (i=FL; i<=FR; i++){ var y3 = B - envOf(farInv(i))*(B - T); if (i === FL) g.moveTo(i, y3); else g.lineTo(i, y3); } g.stroke(); g.setLineDash([]); }
     lbl(g, 'I/I\u2080', 8, T - 8, p.dim, 10, 'left');
-    /* bright-fringe orders and the axis */
-    var dx = spacing(); for (var m = Math.ceil(-X/dx); m*dx <= X; m++){ var s2 = m*lam()/dm(); if (Math.abs(s2) >= 1) continue; var xm = P.L*Math.tan(Math.asin(s2)), px = farX(xm); if (px < FL || px > FR) continue;
-      g.strokeStyle = 'rgba(255,255,255,0.35)'; g.lineWidth = 1; g.beginPath(); g.moveTo(px, 77); g.lineTo(px, 83); g.stroke(); if (Math.abs(m) <= 12 && (FR - FL)*dx/(2*X) > 22) lbl(g, 'm = ' + m, px, 86, p.dim, 9, 'center', 'top'); }
+    /* principal maxima orders */
+    var dx = spacing(), wide = (FR - FL)*dx/(2*X);
+    for (var m = Math.ceil(-X/dx) - 1; m <= X/dx + 1; m++){ var xm = xOfPhi(TAU*m); if (xm === null) continue; var px = farX(xm); if (px < FL || px > FR) continue;
+      g.strokeStyle = 'rgba(255,255,255,0.35)'; g.lineWidth = 1; g.beginPath(); g.moveTo(px, 77); g.lineTo(px, 83); g.stroke(); if (Math.abs(m) <= 12 && wide > 22) lbl(g, 'm = ' + m, px, 86, p.dim, 9, 'center', 'top'); }
+    /* secondary maxima */
+    if (P.marks && P.N >= 3 && wide > 20){ var S = secondaries(P.N);
+      for (var m2 = Math.ceil(-X/dx) - 1; m2 <= X/dx + 1; m2++) S.forEach(function(s){ var xs = xOfPhi(TAU*m2 + s.phi); if (xs === null) return; var q = farX(xs); if (q < FL || q > FR) return; tri(g, q, B - inten(xs)*(B - T) - 3, 4, p.sec); }); }
     var st = niceStep(2*X, 8); g.fillStyle = p.dim; g.font = '10px monospace'; g.textAlign = 'center'; g.textBaseline = 'alphabetic';
-    for (var v = Math.ceil(-X/st)*st; v <= X + 1e-15; v += st){ var q = farX(v); g.strokeStyle = p.grid; g.beginPath(); g.moveTo(q, B); g.lineTo(q, B + 5); g.stroke(); g.fillText((v*1000).toPrecision(3).replace(/\.?0+$/, '') , q, B + 16); }
-    g.fillText('x on the screen (mm)', (FL + FR)/2, H - 4);
-    /* the point P */
+    for (var v = Math.ceil(-X/st)*st; v <= X + 1e-15; v += st){ var q2 = farX(v); g.strokeStyle = p.grid; g.beginPath(); g.moveTo(q2, B); g.lineTo(q2, B + 5); g.stroke(); g.fillText((v*1000).toPrecision(3).replace(/\.?0+$/, ''), q2, B + 16); }
+    g.fillText('x on the screen (mm)' + (P.marks && P.N >= 3 ? '      \u25BC = secondary maximum' : ''), (FL + FR)/2, H - 4);
     var xp = farX(P.xP); g.strokeStyle = p.P; g.lineWidth = 2; g.beginPath(); g.moveTo(xp, 10); g.lineTo(xp, B); g.stroke();
     g.fillStyle = p.P; g.beginPath(); g.moveTo(xp, 10); g.lineTo(xp - 7, 0); g.lineTo(xp + 7, 0); g.closePath(); g.fill(); lbl(g, 'P', xp + 12, 8, p.P, 12, 'left');
     el('frScFar').textContent = 'across: 1 px = ' + fmtLen(2*X/(FR - FL)) + '   \u00b7   fringe spacing \u03bbL/d = ' + fmtLen(dx); }
   /* ══════════ panel 2: overview, not to scale ══════════ */
   function drawMid(){ var g = gM, W = cM.width, H = cM.height, p = pal(), cx = W/2, ySl = H - 26, ySc = 22, N = P.N, sep = Math.min(36, 220/Math.max(1, N - 1)), X = halfX(), i;
     g.fillStyle = '#070b14'; g.fillRect(0, 0, W, H);
-    /* screen with a miniature fringe pattern */
     for (i=150; i<650; i++){ var I = inten((i - cx)/250*X), c = p.beam.map(function(v){ return Math.round(v*Math.pow(I, 0.6)); }); g.fillStyle = 'rgb(' + c.join(',') + ')'; g.fillRect(i, ySc - 6, 1, 8); }
     lbl(g, 'screen', 655, ySc - 2, p.dim, 11, 'left');
     var xP = cx + P.xP/X*250; g.fillStyle = p.P; g.beginPath(); g.arc(xP, ySc + 2, 4, 0, 2*Math.PI); g.fill(); lbl(g, 'P', xP, ySc + 14, p.P, 11);
-    /* barrier and slits */
     g.fillStyle = '#5a6578'; g.fillRect(150, ySl, 500, 6); var xs = []; for (i=0; i<N; i++){ xs.push(cx + (i - (N - 1)/2)*sep); g.fillStyle = '#070b14'; g.fillRect(xs[i] - 2, ySl, 4, 6); }
     lbl(g, 'slits', 655, ySl + 3, p.dim, 11, 'left');
-    /* rays, broken in the middle */
     var yb1 = H/2 - 12, yb2 = H/2 + 12; g.strokeStyle = p.ray; g.lineWidth = 1.4; g.globalAlpha = 0.85;
     (P.all ? xs : [xs[0], xs[N - 1]]).forEach(function(x0){ var f1 = (ySl - yb2)/(ySl - ySc), f2 = (ySl - yb1)/(ySl - ySc); g.beginPath(); g.moveTo(x0, ySl); g.lineTo(x0 + (xP - x0)*f1, yb2); g.moveTo(x0 + (xP - x0)*f2, yb1); g.lineTo(xP, ySc + 2); g.stroke(); });
     g.globalAlpha = 1;
-    /* break symbol across the picture */
     g.strokeStyle = '#ffd23f'; g.lineWidth = 2; [yb1, yb2].forEach(function(y){ g.beginPath(); for (var x=130; x<=670; x += 12){ var yy = y + ((x/12) % 2 ? -3 : 3); if (x === 130) g.moveTo(x, yy); else g.lineTo(x, yy); } g.stroke(); });
     lbl(g, 'L = ' + fmtLen(P.L) + '  \u2248  ' + Math.round(P.L/dm()).toLocaleString() + ' d  \u2248  ' + Math.round(P.L/lam()).toLocaleString() + ' \u03bb', cx, H/2, '#ffd23f', 12);
     lbl(g, 'd = ' + fmtLen(dm()) + ' (drawn \u00d7' + Math.round(sep/(dm()/P.L*(ySl - ySc))).toLocaleString() + ')', 145, ySl + 3, p.txt, 11, 'right');
-    /* the true-scale note */
     var pxL = ySl - ySc, trueD = dm()/P.L*pxL, trueS = spacing()/P.L*pxL;
     lbl(g, 'Drawn to the true scale of this distance (' + Math.round(pxL) + ' px for L): d \u2248 ' + trueD.toPrecision(2) + ' px, fringe spacing \u2248 ' + trueS.toPrecision(2) + ' px', 8, H - 6, p.dim, 10, 'left');
     lbl(g, 'rays from the slits to P are almost parallel: they meet at ' + (dm()*Math.cos(thetaOf(P.xP))/P.L/DEG*3600).toFixed(1) + '\u2033 (arc-seconds)', 8, 8, p.dim, 10, 'left'); }
-  /* ══════════ panel 1: near the slits (micrometres across) ══════════ */
+  /* ══════════ panel 1: near the slits ══════════ */
   function drawNear(){ var g = gN, W = cN.width, H = cN.height, p = pal(), N = P.N, th = thetaOf(P.xP), i;
     g.fillStyle = '#070b14'; g.fillRect(0, 0, W, H);
-    var span = (N - 1)*dm() + Math.max(P.env ? am() : 0, 0.25*dm()), k = Math.min(520/span, 1e9), cx = W/2, yB = H - 34;   /* k: px per metre across */
+    var span = (N - 1)*dm() + Math.max(P.env ? am() : 0, 0.25*dm()), k = Math.min(520/span, 1e9), cx = W/2, yB = H - 34;
     function X(x){ return cx + x*k; }
-    /* incoming plane wave from below */
     g.strokeStyle = 'rgba(255,255,255,0.35)'; g.lineWidth = 1; for (var a2=0; a2<5; a2++){ var xa = cx - 260 + a2*130; g.beginPath(); g.moveTo(xa, H - 4); g.lineTo(xa, yB + 10); g.stroke(); g.beginPath(); g.moveTo(xa, yB + 8); g.lineTo(xa - 4, yB + 15); g.lineTo(xa + 4, yB + 15); g.closePath(); g.fillStyle = 'rgba(255,255,255,0.35)'; g.fill(); }
     lbl(g, 'light arrives', 12, H - 12, p.dim, 10, 'left');
-    /* barrier with the slits */
     var hw = P.env ? Math.max(1.5, am()*k/2) : 2; g.fillStyle = '#5a6578'; g.fillRect(20, yB, W - 40, 7);
     var xs = []; for (i=0; i<N; i++){ xs.push(X(slitX(i))); g.fillStyle = '#070b14'; g.fillRect(xs[i] - hw, yB - 1, 2*hw, 9); }
-    /* the drawn angle */
     var Kx = 1, thd = th; if (P.exag){ var t35 = Math.tan(35*DEG), tmax = halfX()/P.L; Kx = t35/tmax; thd = Math.atan(Kx*Math.tan(th)); }
     var ux = Math.sin(thd), uy = -Math.cos(thd), Lr = 150;
-    /* rays */
     g.strokeStyle = p.ray; g.lineWidth = 2; (P.all ? xs.map(function(x, i2){ return i2; }) : [0, 1]).forEach(function(j){ var x0 = xs[j]; g.beginPath(); g.moveTo(x0, yB); g.lineTo(x0 + ux*Lr, yB + uy*Lr); g.stroke(); });
     lbl(g, 'toward P', xs[N - 1] + ux*Lr + 6, yB + uy*Lr, p.ray, 11, 'left');
-    /* path difference between slits 1 and 2 */
-    var Ax = xs[0], Ay = yB, Bx = xs[1], By = yB, dot = (Bx - Ax)*ux + (By - Ay)*uy, Fx = Ax + dot*ux, Fy = Ay + dot*uy;
-    if (Math.abs(dot) > 0.5){ var wfP = dot > 0 ? [Bx, By] : [Ax, Ay], ft = dot > 0 ? [Fx, Fy] : [Bx + (-dot)*ux, By + (-dot)*uy];
+    var Ax = xs[0], Ay = yB, Bx = xs[1], By = yB, dot = (Bx - Ax)*ux + (By - Ay)*uy;
+    if (Math.abs(dot) > 0.5){ var wfP = dot > 0 ? [Bx, By] : [Ax, Ay], ft = dot > 0 ? [Ax + dot*ux, Ay + dot*uy] : [Bx + (-dot)*ux, By + (-dot)*uy];
       g.strokeStyle = p.wf; g.setLineDash([5, 4]); g.lineWidth = 1.5; var ex = ft[0] - wfP[0], ey = ft[1] - wfP[1]; g.beginPath(); g.moveTo(wfP[0] - ex*0.4, wfP[1] - ey*0.4); g.lineTo(ft[0] + ex*0.4, ft[1] + ey*0.4); g.stroke(); g.setLineDash([]);
       var st0 = dot > 0 ? [Ax, Ay] : [Bx, By]; g.strokeStyle = p.delta; g.lineWidth = 5; g.beginPath(); g.moveTo(st0[0], st0[1]); g.lineTo(ft[0], ft[1]); g.stroke();
       var rx = -uy, ry = ux, sz = 7, sg = dot > 0 ? -1 : 1; g.strokeStyle = p.wf; g.lineWidth = 1.2; g.beginPath(); g.moveTo(ft[0] - ux*sz, ft[1] - uy*sz); g.lineTo(ft[0] - ux*sz + sg*rx*sz, ft[1] - uy*sz + sg*ry*sz); g.lineTo(ft[0] + sg*rx*sz, ft[1] + sg*ry*sz); g.stroke();
       lbl(g, '\u0394 = d sin\u03b8', (st0[0] + ft[0])/2 + (dot > 0 ? -10 : 10), (st0[1] + ft[1])/2, p.delta, 12, dot > 0 ? 'right' : 'left'); }
-    /* the angle from the normal at slit 1 */
     if (Math.abs(thd) > 0.5*DEG){ var nx = xs[0]; g.strokeStyle = 'rgba(255,255,255,0.5)'; g.setLineDash([3, 3]); g.lineWidth = 1; g.beginPath(); g.moveTo(nx, yB); g.lineTo(nx, yB - 95); g.stroke(); g.setLineDash([]);
       g.strokeStyle = '#ffffff'; g.lineWidth = 1.5; g.beginPath(); g.arc(nx, yB, 60, -Math.PI/2, -Math.PI/2 + thd, thd < 0); g.stroke(); lbl(g, '\u03b8', nx + Math.sin(thd/2)*72, yB - Math.cos(thd/2)*72, '#ffffff', 13); }
-    /* labels: d, lambda to scale */
     g.strokeStyle = p.txt; g.lineWidth = 1; g.beginPath(); g.moveTo(xs[0], yB + 14); g.lineTo(xs[1], yB + 14); g.stroke(); lbl(g, 'd = ' + fmtLen(dm()), (xs[0] + xs[1])/2, yB + 22, p.txt, 11);
     var lpx = lam()*k; lbl(g, '\u03bb drawn to scale: ' + (lpx >= 1 ? lpx.toFixed(1) + ' px' : 'less than one pixel (' + lpx.toFixed(2) + ' px)'), W - 12, 12, p.dim, 10, 'right');
     if (lpx >= 1){ g.strokeStyle = p.ray; g.lineWidth = 3; g.beginPath(); g.moveTo(W - 12 - lpx, 26); g.lineTo(W - 12, 26); g.stroke(); }
     lbl(g, P.exag ? 'angle drawn \u00d7' + (Kx >= 100 ? Math.round(Kx) : Kx.toFixed(1)) + ' (true \u03b8 = ' + (th/DEG).toFixed(3) + '\u00b0)' : 'true angle: \u03b8 = ' + (th/DEG).toFixed(3) + '\u00b0', 12, 12, P.exag ? '#ffd23f' : p.txt, 11, 'left');
     scaleBar(gN, 24, 40, k, 120, p.dim);
     el('frScNear').textContent = 'across: 1 px = ' + fmtLen(1/k); }
+  /* ══════════ panel Σ: phasors and one cycle of the pattern ══════════ */
+  var PG = { L:450, R:782, T:30, B:200 };
+  function phX(ph){ return PG.L + ph/TAU*(PG.R - PG.L); }
+  function drawPh(){ var g = gP, W = cP.width, H = cP.height, p = pal(), N = P.N, ph = phiOf(P.xP), phw = ((ph % TAU) + TAU) % TAU, i;
+    g.fillStyle = '#070b14'; g.fillRect(0, 0, W, H);
+    /* left: phasor chain */
+    /* lay out the chain with unit arrows, then scale and centre it in the left box (x 20..390, y 30..215) */
+    var ux0 = [[0, 0]], xx = 0, yy0 = 0; for (i=0; i<N; i++){ xx += Math.cos(-i*ph); yy0 += Math.sin(-i*ph); ux0.push([xx, yy0]); }
+    var mnx = Math.min.apply(null, ux0.map(function(q){ return q[0]; })), mxx = Math.max.apply(null, ux0.map(function(q){ return q[0]; })), mny = Math.min.apply(null, ux0.map(function(q){ return q[1]; })), mxy = Math.max.apply(null, ux0.map(function(q){ return q[1]; }));
+    var u = Math.min(80, 330/Math.max(mxx - mnx, 1e-6), 160/Math.max(mxy - mny, 1e-6)), cx0 = 205 - u*(mnx + mxx)/2, cy0 = 125 - u*(mny + mxy)/2;
+    var x = cx0, y = cy0, pts = [[x, y]], cy = cy0;
+    var cols = ['#E69F00','#56B4E9','#009E73','#F0E442','#0072B2','#D55E00','#CC79A7','#ffffff'];
+    for (i=0; i<N; i++){ var ang = -i*ph, nx = x + u*Math.cos(ang), ny = y + u*Math.sin(ang);
+      g.strokeStyle = cols[i % 8]; g.fillStyle = cols[i % 8]; g.lineWidth = 3; g.beginPath(); g.moveTo(x, y); g.lineTo(nx, ny); g.stroke();
+      var hx = Math.cos(ang), hy = Math.sin(ang); g.beginPath(); g.moveTo(nx, ny); g.lineTo(nx - 8*hx + 4*hy, ny - 8*hy - 4*hx); g.lineTo(nx - 8*hx - 4*hy, ny - 8*hy + 4*hx); g.closePath(); g.fill();
+      if (N <= 8) lbl(g, String(i + 1), (x + nx)/2 - 9*hy, (y + ny)/2 + 9*hx, cols[i % 8], 10);
+      x = nx; y = ny; pts.push([x, y]); }
+    var R = Math.hypot(x - pts[0][0], y - pts[0][1]);
+    if (R > 2){ g.strokeStyle = p.res; g.lineWidth = 2.5; g.setLineDash([6, 4]); g.beginPath(); g.moveTo(pts[0][0], pts[0][1]); g.lineTo(x, y); g.stroke(); g.setLineDash([]); }
+    else { g.fillStyle = p.res; g.beginPath(); g.arc(pts[0][0], pts[0][1], 4, 0, TAU); g.fill(); }
+    if (Math.abs(phw) > 0.05 && Math.abs(phw - TAU) > 0.05 && N >= 2){ var a0 = 0, a1 = -phw; var c1 = pts[1]; g.strokeStyle = '#ffffff'; g.lineWidth = 1; g.setLineDash([2, 3]); g.beginPath(); g.moveTo(c1[0], c1[1]); g.lineTo(c1[0] + 26, c1[1]); g.stroke(); g.setLineDash([]); g.beginPath(); g.arc(c1[0], c1[1], 18, 0, a1, true); g.stroke(); lbl(g, '\u03c6', c1[0] + 26*Math.cos(a1/2), c1[1] + 26*Math.sin(a1/2) - 2, '#ffffff', 12); }
+    lbl(g, 'one arrow per slit, each turned by \u03c6 from the one before', 12, 14, p.dim, 10, 'left');
+    lbl(g, 'sum (red, dashed): amplitude ' + (R/u).toFixed(2) + ' of ' + N + '  \u2192  I/I\u2080 = (' + (R/u).toFixed(2) + '/' + N + ')\u00b2 = ' + arrayF(ph, N).toFixed(3), 12, H - 12, p.res, 11, 'left');
+    /* right: one cycle of phi */
+    var T = PG.T, B = PG.B; g.textBaseline = 'alphabetic'; g.strokeStyle = p.grid; g.lineWidth = 1; [0, 0.5, 1].forEach(function(v){ var yy = B - v*(B - T); g.beginPath(); g.moveTo(PG.L, yy); g.lineTo(PG.R, yy); g.stroke(); g.fillStyle = p.dim; g.font = '10px monospace'; g.textAlign = 'right'; g.fillText(v.toFixed(1), PG.L - 4, yy + 3); });
+    g.strokeStyle = p.curve; g.lineWidth = 2; g.beginPath(); for (i=0; i<=332; i++){ var q = TAU*i/332, yy2 = B - arrayF(q, N)*(B - T); if (!i) g.moveTo(phX(q), yy2); else g.lineTo(phX(q), yy2); } g.stroke();
+    /* zoom: the small bumps, x5 */
+    if (N >= 3){ g.strokeStyle = p.sec; g.globalAlpha = 0.6; g.setLineDash([3, 3]); g.lineWidth = 1.3; g.beginPath(); var st = false; for (i=0; i<=332; i++){ var q3 = TAU*i/332, v3 = Math.min(1, 5*arrayF(q3, N)); if (q3 < TAU/N*0.98 || q3 > TAU*(1 - 1/N)*1.003) { st = false; continue; } var yy3 = B - v3*(B - T); if (!st){ g.moveTo(phX(q3), yy3); st = true; } else g.lineTo(phX(q3), yy3); } g.stroke(); g.setLineDash([]); g.globalAlpha = 1;
+      lbl(g, 'dotted: \u00d75', PG.R - 4, T + 10, p.sec, 10, 'right'); }
+    g.fillStyle = p.dim; g.font = '10px monospace'; g.textAlign = 'center';
+    for (var k=0; k<=N; k++){ var zx = phX(TAU*k/N); g.strokeStyle = 'rgba(255,255,255,0.35)'; g.beginPath(); g.moveTo(zx, B); g.lineTo(zx, B + 5); g.stroke();
+      if (k > 0 && k < N){ g.fillStyle = p.zero; g.beginPath(); g.arc(zx, B, 3, 0, TAU); g.fill(); } g.fillStyle = p.dim; g.fillText(k === 0 ? '0' : k === N ? '2\u03c0' : '2\u03c0\u00b7' + k + '/' + N, zx, B + 16); }
+    g.fillText('\u03c6 between neighbouring slits (\u0394 from 0 to \u03bb)', (PG.L + PG.R)/2, B + 30);
+    lbl(g, 'principal', phX(0) + 4, T - 12, p.curve, 10, 'left'); lbl(g, 'principal', phX(TAU) - 4, T - 12, p.curve, 10, 'right');
+    secondaries(N).forEach(function(s){ tri(g, phX(s.phi), B - s.I*(B - T) - 3, 4, p.sec); });
+    if (N >= 3) lbl(g, 'secondary maxima (\u25BC): ' + (N - 2), (PG.L + PG.R)/2, T - 12, p.sec, 10);
+    var xq = phX(phw); g.strokeStyle = p.P; g.lineWidth = 2; g.beginPath(); g.moveTo(xq, T - 4); g.lineTo(xq, B); g.stroke(); lbl(g, 'P', xq, B - arrayF(ph, N)*(B - T) - 10, p.P, 11);
+    el('frScPh').textContent = '\u03c6 at P = ' + (ph/DEG).toFixed(0) + '\u00b0' + (Math.abs(ph) >= TAU ? ' (= ' + (phw/DEG).toFixed(0) + '\u00b0 + whole turns)' : '');
+    explain(ph, phw); }
+  function kind(ph){ var N = P.N, phw = ((ph % TAU) + TAU) % TAU, tol = 0.035;
+    if (phw < tol*TAU/N || phw > TAU - tol*TAU/N) return 'principal';
+    for (var k=1; k<N; k++) if (Math.abs(phw - TAU*k/N) < tol*TAU/N) return 'zero';
+    var S = secondaries(N); for (var j=0; j<S.length; j++) if (Math.abs(phw - S[j].phi) < 0.06*TAU/N) return 'secondary';
+    return 'between'; }
+  function explain(ph, phw){ var N = P.N, kd = kind(ph), S = secondaries(N), t;
+    var base = N === 2 ? 'With <b>2 slits</b> there is one dark fringe between two bright ones, and <b>no secondary maxima</b>: try N = 3 or more. '
+      : 'With <b>' + N + ' slits</b>, between two principal maxima there are <b>' + (N - 1) + ' dark fringes</b> (where the ' + N + ' arrows close into a polygon: \u03c6 = 2\u03c0k/' + N + ') and <b>' + (N - 2) + ' secondary maxima</b> in between them. The biggest is only <b>' + (100*S[0].I).toFixed(1) + '%</b> of a principal maximum. ';
+    if (kd === 'principal') t = 'At P all ' + N + ' arrows point the same way (\u03c6 is a whole number of turns): they add to ' + N + ' times one wave, the brightest possible \u2014 a <b>principal maximum</b>.';
+    else if (kd === 'zero') t = 'At P the ' + N + ' arrows ' + (N === 2 ? 'point in opposite directions' : 'close into a polygon') + ': the sum is zero \u2014 a <b>dark fringe</b>.';
+    else if (kd === 'secondary') t = 'At P the arrows curl around more than once but do not close: a little is left over, about ' + Math.sqrt(arrayF(ph, N)).toFixed(2) + ' of the full ' + N + '-wave amplitude. That leftover is a <b>secondary maximum</b>: as \u03c6 grows from one zero to the next, the leftover grows and shrinks again.';
+    else t = 'At P the arrows partly cancel: the sum is ' + Math.sqrt(arrayF(ph, N)).toFixed(2) + ' of the full amplitude, intensity ' + (100*arrayF(ph, N)).toFixed(1) + '% of a principal maximum.';
+    el('frWhy').innerHTML = base + t; }
   /* ══════════ readouts ══════════ */
   function exactDelta(){ var x1 = slitX(0), x2 = slitX(1), r1 = Math.sqrt(P.L*P.L + Math.pow(P.xP - x1, 2)), r2 = Math.sqrt(P.L*P.L + Math.pow(P.xP - x2, 2)); return r1 - r2; }
-  function classify(f){ var r = f - Math.round(f); if (Math.abs(r) < 0.05) return 'bright (constructive)'; if (P.N === 2 && Math.abs(Math.abs(r) - 0.5) < 0.05) return 'dark (destructive)'; return 'in between'; }
+  function kindText(ph){ return { principal:'principal maximum', zero:'dark (zero)', secondary:'secondary maximum', between:'in between' }[kind(ph)]; }
   function readout(){ var th = thetaOf(P.xP), D = dm()*Math.sin(th), f = D/lam(), I = inten(P.xP), De = exactDelta(), lines = [];
-    lines.push('P at x = ' + fmtLen(P.xP) + ' \u2192 \u03b8 = ' + (th/DEG).toFixed(4) + '\u00b0  |  \u0394 = d sin\u03b8 = ' + fmtLen(D) + ' = ' + f.toFixed(2) + ' \u03bb  |  I/I\u2080 = ' + I.toFixed(3) + ' (' + classify(f) + ')');
+    lines.push('P at x = ' + fmtLen(P.xP) + ' \u2192 \u03b8 = ' + (th/DEG).toFixed(4) + '\u00b0  |  \u0394 = d sin\u03b8 = ' + fmtLen(D) + ' = ' + f.toFixed(2) + ' \u03bb  |  I/I\u2080 = ' + I.toFixed(3) + ' (' + kindText(phiOf(P.xP)) + ')');
     if (P.exact) lines.push('exact path difference r\u2081 \u2212 r\u2082 = ' + fmtLen(De) + '   \u00b7   Fraunhofer error = ' + (Math.abs(De - D)*1e9 < 0.001 ? '< 0.001 nm' : fmtLen(Math.abs(De - D))) + ' (' + (Math.abs(De - D)/lam()).toExponential(1) + ' \u03bb)');
     el('frReadout').innerHTML = lines.join('<br>');
-    var Dt = (P.N - 1)*dm() + (P.env ? am() : 0), zF = Dt*Dt/lam();
+    var Dt = (P.N - 1)*dm() + (P.env ? am() : 0), zF = Dt*Dt/lam(), S = secondaries(P.N);
     el('frCmp').innerHTML = '<table>' + [
       ['Slit separation d (panel 1, across)', fmtLen(dm())], ['Wavelength \u03bb', fmtLen(lam())], ['d / \u03bb', Math.round(dm()/lam()).toLocaleString()],
       ['Fringe spacing \u03bbL/d (panel 3, across)', fmtLen(spacing())], ['Fringe spacing / d', (spacing()/dm()).toFixed(1) + '\u00d7'],
       ['Slits to screen L (panel 2, up)', fmtLen(P.L)], ['L / d', Math.round(P.L/dm()).toLocaleString() + '\u00d7'], ['L / fringe spacing', Math.round(P.L/spacing()).toLocaleString() + '\u00d7'],
+      ['Between principal maxima: zeros, secondary maxima', (P.N - 1) + ', ' + (P.N - 2)], ['Largest secondary maximum', P.N >= 3 ? (100*S[0].I).toFixed(1) + '% of I\u2080' : 'none'],
       ['Fraunhofer distance D\u00b2/\u03bb (D = width of the slit array)', fmtLen(zF)], ['Far-field model valid? (L \u226b D\u00b2/\u03bb)', P.L >= zF ? '<span class="fr_ok' + '">yes: L = ' + (P.L/zF).toPrecision(2) + ' D\u00b2/\u03bb</span>' : P.L >= zF/8 ? '<span class="fr_no' + '">borderline: L = ' + (P.L/zF).toPrecision(2) + ' D\u00b2/\u03bb</span>' : '<span class="fr_no' + '">no: L = ' + (P.L/zF).toPrecision(2) + ' D\u00b2/\u03bb</span>']
     ].map(function(r){ return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>'; }).join('') + '</table>'; }
-  function narr(){ var th = thetaOf(P.xP), f = dm()*Math.sin(th)/lam(); frA11y.narrate('P is ' + fmtLen(P.xP) + ' from the centre of the screen, at ' + (th/DEG).toFixed(3) + ' degrees. The path difference is ' + f.toFixed(2) + ' wavelengths: ' + classify(f) + '. Fringe spacing ' + fmtLen(spacing()) + ', ' + (spacing()/dm()).toFixed(0) + ' times the slit separation, while the screen is ' + Math.round(P.L/dm()).toLocaleString() + ' slit separations away.'); }
-  function all(){ drawFar(); drawMid(); drawNear(); readout(); }
+  function narr(){ var th = thetaOf(P.xP), ph = phiOf(P.xP), f = dm()*Math.sin(th)/lam(); frA11y.narrate('P is ' + fmtLen(P.xP) + ' from the centre of the screen, at ' + (th/DEG).toFixed(3) + ' degrees. The path difference between neighbouring slits is ' + f.toFixed(2) + ' wavelengths, a phase difference of ' + (ph/DEG).toFixed(0) + ' degrees: ' + kindText(ph) + ', intensity ' + (100*inten(P.xP)).toFixed(1) + ' percent. ' + el('frWhy').textContent.split('. ').slice(-2).join('. ')); }
+  function all(){ drawFar(); drawMid(); drawNear(); drawPh(); readout(); }
   /* ══════════ controls ══════════ */
   var SL = [
     ['frLam', 'frLamVal', function(){ return P.lam; }, function(v){ P.lam = v; }, function(v){ return Math.round(v) + ' nm'; }],
@@ -287,37 +344,41 @@ var frGen = function() {
     ['frD', 'frDVal', function(){ return P.d; }, function(v){ P.d = v; if (P.a > 0.9*P.d) P.a = Math.max(0.005, Math.floor(0.9*P.d/0.005)*0.005); }, function(v){ return (+v).toFixed(2) + ' mm'; }],
     ['frA', 'frAVal', function(){ return P.a; }, function(v){ P.a = Math.min(v, 0.9*P.d); }, function(v){ return (+v*1000).toFixed(0) + ' \u00b5m'; }]];
   function speak(t){ return t.replace(' nm', ' nanometres').replace(' mm', ' millimetres').replace(' \u00b5m', ' micrometres').replace(' m', ' metres'); }
-  function sync(){ var X = halfX(), ps = el('frP'); P.xP = Math.max(-X, Math.min(X, P.xP)); ps.min = (-X*1000).toPrecision(4); ps.max = (X*1000).toPrecision(4); ps.step = 'any';
+  function sync(){ var X = halfX(), ps = el('frP'); P.xP = Math.max(-X, Math.min(X, P.xP)); ps.min = (-X*1000).toPrecision(4); ps.max = (X*1000).toPrecision(4);
     SL.forEach(function(q){ var v = q[2](), e = el(q[0]), t = q[4](v); e.value = v; e.setAttribute('aria-valuetext', speak(t)); el(q[1]).textContent = t; });
     el('frA').disabled = !P.env; el('frA').parentNode.classList.toggle('fr_off', !P.env);
-    el('frEnv').checked = P.env; el('frExag').checked = P.exag; el('frAll').checked = P.all; el('frExact').checked = P.exact; }
+    el('frEnv').checked = P.env; el('frExag').checked = P.exag; el('frAll').checked = P.all; el('frExact').checked = P.exact; el('frMarks').checked = P.marks; }
   SL.forEach(function(q){ var e = el(q[0]); e.addEventListener('input', function(){ q[3](parseFloat(this.value)); sync(); all(); }); e.addEventListener('change', narr); });
-  [['frEnv', 'env'], ['frExag', 'exag'], ['frAll', 'all'], ['frExact', 'exact']].forEach(function(q){ el(q[0]).addEventListener('change', function(){ P[q[1]] = this.checked; sync(); all();
+  [['frEnv', 'env'], ['frExag', 'exag'], ['frAll', 'all'], ['frExact', 'exact'], ['frMarks', 'marks']].forEach(function(q){ el(q[0]).addEventListener('change', function(){ P[q[1]] = this.checked; sync(); all();
     if (q[1] === 'exag') frA11y.narrate(P.exag ? 'The angle near the slits is drawn larger than it really is, so the path difference can be seen.' : 'True angle: the rays leave the slits almost straight up; the path difference is far too small to see at this scale.'); else narr(); }); });
-  /* dragging P on the screen or in the overview */
   function dragOn(cv, inv){ var dragging = false;
-    function px(evt){ var r = cv.getBoundingClientRect(); return (evt.clientX - r.left)*cv.width/r.width; }
-    cv.addEventListener('pointerdown', function(evt){ dragging = true; try { cv.setPointerCapture(evt.pointerId); } catch (e) {} stop(); P.xP = inv(px(evt)); sync(); all(); evt.preventDefault(); });
-    cv.addEventListener('pointermove', function(evt){ if (!dragging) return; P.xP = inv(px(evt)); sync(); all(); });
+    function pos(evt){ var r = cv.getBoundingClientRect(); return [(evt.clientX - r.left)*cv.width/r.width, (evt.clientY - r.top)*cv.height/r.height]; }
+    cv.addEventListener('pointerdown', function(evt){ var q = pos(evt), x = inv(q[0], q[1]); if (x === null) return; dragging = true; try { cv.setPointerCapture(evt.pointerId); } catch (e) {} stop(); P.xP = x; sync(); all(); evt.preventDefault(); });
+    cv.addEventListener('pointermove', function(evt){ if (!dragging) return; var q = pos(evt), x = inv(q[0], q[1], true); if (x === null) return; P.xP = x; sync(); all(); });
     cv.addEventListener('pointerup', function(){ if (dragging){ dragging = false; narr(); } }); cv.addEventListener('pointercancel', function(){ dragging = false; }); }
-  dragOn(cF, farInv); dragOn(cM, function(x){ return (x - cM.width/2)/250*halfX(); });
-  /* moving P */
+  dragOn(cF, function(x){ return farInv(x); }); dragOn(cM, function(x){ return (x - cM.width/2)/250*halfX(); });
+  /* dragging on the one-cycle graph: keeps P in the same cycle (same order m) */
+  dragOn(cP, function(x, y, moving){ if (!moving && (x < PG.L - 10 || x > PG.R + 10)) return null; var m = Math.floor(phiOf(P.xP)/TAU + 1e-9), q = Math.max(0, Math.min(TAU*0.9999, (x - PG.L)/(PG.R - PG.L)*TAU)); var xx = xOfPhi(TAU*m + q); return xx === null ? null : Math.max(-halfX(), Math.min(halfX(), xx)); });
   var playBtn = el('frPlay'), PLAYI = playBtn.innerHTML, PAUSEI = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>';
   function setPlayUI(){ playBtn.innerHTML = sweeping ? PAUSEI : PLAYI; playBtn.setAttribute('aria-pressed', sweeping ? 'true' : 'false'); playBtn.setAttribute('aria-label', sweeping ? 'Stop the sweep' : 'Sweep P across the screen'); }
-  function tick(){ var X = halfX(); P.xP += 2*X/300; if (P.xP > X) P.xP = -X; sync(); all(); if (sweeping) timer = window.setTimeout(tick, 40); }
+  function tick(){ var X = halfX(); P.xP += spacing()/Math.max(60, 16*P.N); if (P.xP > X) P.xP = -X; sync(); all(); if (sweeping) timer = window.setTimeout(tick, 40); }
   function stop(){ sweeping = false; window.clearTimeout(timer); setPlayUI(); }
   playBtn.addEventListener('click', function(){ if (sweeping){ stop(); narr(); } else { sweeping = true; setPlayUI(); tick(); } });
-  function nudge(sg){ stop(); P.xP += sg*spacing()/8; sync(); all(); narr(); }
+  function nudge(sg){ stop(); P.xP += sg*spacing()/(4*P.N); sync(); all(); narr(); }
   el('frBack').addEventListener('click', function(){ nudge(-1); }); el('frStep').addEventListener('click', function(){ nudge(1); });
   el('frRst').addEventListener('click', function(){ stop(); defaults(); sync(); all(); frA11y.narrate('Restarted: green light, two narrow slits 0.25 mm apart, screen 1 m away.'); });
-  function goOrder(o){ var s = o*lam()/dm(); if (Math.abs(s) >= 1) return false; var x = P.L*Math.tan(Math.asin(s)); if (Math.abs(x) > halfX()) return false; P.xP = x; return true; }
+  /* jumps: the next phi (greater than P's) from a list of targets within each cycle, wrapping to the left edge */
+  function jump(targets){ stop(); var cur = phiOf(P.xP), best = null, mMin = Math.floor(phiOf(-halfX())/TAU) - 1, mMax = Math.ceil(phiOf(halfX())/TAU) + 1, first = null;
+    for (var m = mMin; m <= mMax; m++) targets.forEach(function(t){ var ph = TAU*m + t, x = xOfPhi(ph); if (x === null || Math.abs(x) > halfX()) return; if (first === null || ph < first) first = ph; if (ph > cur + 1e-6 && (best === null || ph < best)) best = ph; });
+    var go = best !== null ? best : first; if (go !== null) P.xP = xOfPhi(go); sync(); all(); narr(); }
   el('frGo0').addEventListener('click', function(){ stop(); P.xP = 0; sync(); all(); narr(); });
-  el('frGoMax').addEventListener('click', function(){ stop(); var cur = dm()*Math.sin(thetaOf(P.xP))/lam(), m = Math.floor(cur + 1e-6) + 1; if (!goOrder(m)) goOrder(Math.ceil(-halfX()*dm()/(P.L*lam()))); sync(); all(); narr(); });
-  el('frGoMin').addEventListener('click', function(){ stop(); var N = P.N, cur = dm()*Math.sin(thetaOf(P.xP))/lam(), j = Math.floor(cur*N + 1e-6) + 1; if (j % N === 0) j++; if (!goOrder(j/N)){ j = Math.ceil(-halfX()*dm()/(P.L*lam())*N); if (j % N === 0) j++; goOrder(j/N); } sync(); all(); narr(); });
+  el('frGoMax').addEventListener('click', function(){ jump([0]); });
+  el('frGoMin').addEventListener('click', function(){ var t = []; for (var k=1; k<P.N; k++) t.push(TAU*k/P.N); jump(t); });
+  el('frGoSec').addEventListener('click', function(){ if (P.N < 3){ P.N = 4; sync(); frA11y.narrate('Two slits have no secondary maxima, so N was set to 4.'); } jump(secondaries(P.N).map(function(s){ return s.phi; })); });
   frA11y.onChange(function(){ all(); });
   defaults(); sync(); all();
-  frA11y.narrate('Three views of the same light pattern, each with its own scale: near the slits in micrometres, the long trip to the screen broken because it is thousands of times longer, and the screen in millimetres. Drag the point P on the screen.');
-  return { all:all, _P:function(){ return P; }, _I:inten, _ex:exactDelta, _sp:spacing, _hx:halfX };
+  frA11y.narrate('Three views of the same light pattern, each with its own scale, and a fourth panel that adds up the waves arriving at P. Drag the point P on the screen; try more slits and press Next secondary.');
+  return { all:all, _P:function(){ return P; }, _I:inten, _ex:exactDelta, _sp:spacing, _hx:halfX, _sec:secondaries, _kind:function(){ return kind(phiOf(P.xP)); } };
 };
 var frSim = new frGen();
 </script>
@@ -325,14 +386,14 @@ var frSim = new frGen();
 <div class="mob_descwrap">
 <button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
 <div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
-<p>In the ripple tank the sources, the wavelength and the distance to the interference pattern are all about the same size, so the whole pattern fits in one picture. For light they are not: the slits are a fraction of a millimetre apart, the wavelength is about a thousand times smaller still, and the screen is about a metre away. No single picture can show all of it, so this SIM shows the same light pattern in three panels, each with its own scale (given in its title).</p>
-<p><b>1. Near the slits</b> (micrometres across). Light leaves every slit toward the point P on the screen. Because P is so far away, the rays to it are practically parallel. A line drawn perpendicular to them (dashed) is a line of equal distance to P, so the extra distance one ray travels is the highlighted segment, the <b>path difference</b>. The true angle is tiny, so by default it is drawn larger (the factor is shown); untick &ldquo;Exaggerate&rdquo; to see the true angle.</p>
-<p class="mob_eq">`Delta = d sin theta`</p>
-<p><b>2. In between</b> (not to scale). The distance `L` is thousands of times larger than `d`, so it is broken. The rays from different slits to P meet at an angle of only a few arc-seconds.</p>
-<p><b>3. The screen</b> (millimetres across). Bright fringes where the path difference is a whole number of wavelengths, dark ones in between:</p>
-<p class="mob_eq">bright: `d sin theta = m lambda`,&nbsp;&nbsp; `tan theta = x/L`,&nbsp;&nbsp; spacing `Delta x ~~ (lambda L)/d`,</p>
-<p class="mob_eq">`I/I_0 = ((sin(N phi//2))/(N sin(phi//2)))^2 ((sin beta)/beta)^2`,&nbsp;&nbsp; `phi = (2 pi d sin theta)/lambda`,&nbsp;&nbsp; `beta = (pi a sin theta)/lambda`.</p>
-<p>The second factor (the single-slit envelope) is included only when the slits have a finite width `a`. More slits (`N &gt; 2`, a grating) make the bright fringes narrower. This is the <b>Fraunhofer</b> (far-field) model: it replaces the exact path difference `r_1 - r_2` by `d sin theta`, which is excellent when `L` is much larger than `D^2/lambda`, `D` being the width of the slit array. The readout compares the two; for light the error is usually a tiny fraction of a wavelength. The usual rule of thumb is `L &gt;&gt; D^2/lambda`; it is cautious, and the pattern is often already very close to the far-field one when `L` is a little smaller (watch the error in the readout). (The ripple-tank SIM, by contrast, uses the exact distances, which is why its fringes curve near the sources.)</p>
+<p>In the ripple tank the sources, the wavelength and the distance to the interference pattern are all about the same size, so the whole pattern fits in one picture. For light they are not: the slits are a fraction of a millimetre apart, the wavelength is about a thousand times smaller still, and the screen is about a metre away. So this SIM shows the same light pattern in three panels, each with its own scale (given in its title), and a fourth panel that adds up the waves.</p>
+<p><b>1. Near the slits</b> (micrometres across). Because P is so far away, the rays to it are practically parallel, and the extra distance one ray travels is the highlighted <b>path difference</b> `Delta = d sin theta`. The true angle is tiny, so by default it is drawn larger (the factor is shown). <b>2. In between</b> (not to scale): `L` is thousands of times larger than `d`, so it is broken. <b>3. The screen</b> (millimetres across): bright fringes where `d sin theta = m lambda`, with `tan theta = x/L` and spacing `Delta x ~~ lambda L//d`.</p>
+<p><b>&Sigma;. Adding the waves: phasors and secondary maxima.</b> Each slit sends a wave of the same size to P; each one is behind the previous one by the phase difference</p>
+<p class="mob_eq">`phi = (2 pi d sin theta)/lambda`.</p>
+<p>Draw each wave as an arrow (a phasor), each turned by `phi` from the one before, and add them tip to tail. The length of the sum is the amplitude at P; the intensity is its square:</p>
+<p class="mob_eq">`I/I_0 = ((sin(N phi//2))/(N sin(phi//2)))^2`.</p>
+<p>When `phi` is a whole number of turns, all `N` arrows line up: a <b>principal maximum</b>. When `N phi` is a whole number of turns (but `phi` is not), the arrows close into a polygon and cancel: a zero, at `phi = 2 pi k//N`. So between two principal maxima there are `N - 1` zeros, and between each pair of neighbouring zeros the arrows curl around without quite closing: a small leftover, a <b>secondary maximum</b>. There are `N - 2` of them, and they are weak (about 5% of a principal maximum for large `N`). With 2 slits there is one zero and no secondary maxima; as `N` grows, the principal maxima get narrower and the secondary maxima more numerous and smaller, as in a diffraction grating. The right graph shows one cycle, `phi` from 0 to `2 pi` (`Delta` from 0 to `lambda`); the dotted curve is the same graph magnified 5 times so the small bumps can be seen.</p>
+<p>The single-slit envelope `(sin beta//beta)^2`, `beta = pi a sin theta//lambda`, multiplies this pattern when the slits have a finite width `a`. This is the <b>Fraunhofer</b> (far-field) model: it replaces the exact path difference `r_1 - r_2` by `d sin theta`, excellent when `L` is well beyond `D^2/lambda` (`D` the width of the slit array); the readout compares the two. (The ripple-tank SIM uses the exact distances, which is why its fringes curve near the sources.)</p>
 </div>
 </div>
 <script>
