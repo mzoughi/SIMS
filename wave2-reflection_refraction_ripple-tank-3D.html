@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Waves: Reflection and Refraction in 3D</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobwave2reflectionr3d" class="mob_wrap">
+<div id="rrRoot">
+<div class="rr_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="rr_a11ybtn" id="rrBtnHC" onclick="rrA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="rr_a11ybtn" id="rrBtnDM" onclick="rrA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="rr_a11ybtn" id="rrBtnCB" onclick="rrA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="rr_a11ybtn" id="rrBtnNR" onclick="rrA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+<div class="tbar"><h3>Reflection &amp; Refraction in 3D &mdash; Two Media</h3></div>
+<div class="mcontent">
+<canvas id="rrCanvas" style="margin:auto;display:block;border:1px solid #ccc;touch-action:none;cursor:grab" width="800" height="560" role="img" aria-label="A 3D view of plane water waves meeting the boundary between deep and shallow water, with the step in the tank floor visible on the sides, and the incident, reflected and transmitted rays drawn above the water. Drag on the water to turn the view; drag the boundary or the white square marker to move them."></canvas>
+</div>
+<div id="rrReadout" class="rr_readout"></div>
+<div id="rrNarBar" class="rr_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<div class="rr_transport" role="toolbar" aria-label="Animation and view">
+<div class="rr_tgroup">
+<button type="button" class="rr_tbtn rr_play" id="rrPlay" aria-label="Play" title="Play / Pause"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="rr_tbtn" id="rrBack" aria-label="Step back" title="Step back"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="4" y="4" width="3" height="16" fill="currentColor"/><path d="M20 4 L9 12 L20 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="rr_tbtn" id="rrStep" aria-label="Step forward" title="Step forward"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="17" y="4" width="3" height="16" fill="currentColor"/><path d="M4 4 L15 12 L4 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="rr_tbtn" id="rrRst" aria-label="Restart" title="Restart"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 5 A7 7 0 1 1 5.6 9" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M3 4 L9.5 4.5 L5.5 10 Z" fill="currentColor"/></svg></button>
+</div>
+<div class="rr_tgroup rr_tview" role="group" aria-label="View">
+<button type="button" class="rr_vbtn" id="rrV3d">3D</button>
+<button type="button" class="rr_vbtn" id="rrVtop">Top</button>
+<button type="button" class="rr_vbtn" id="rrVside">Side</button>
+</div>
+</div>
+<p class="rr_hint">Drag on the water to turn and tilt the view; drag the boundary or the white square marker to move them. The sides of the tank show the floor: the wave is slower where the water is shallower.</p>
+
+<div class="rr_panels">
+<div class="rr_panel" role="group" aria-labelledby="rrHdWave">
+<div class="rr_ptitle" id="rrHdWave">Wave</div>
+<div class="rr_pbody">
+<div class="rr_ctrl"><div class="rr_chdr"><label for="rrAngle">Angle of incidence &theta;<sub>i</sub></label><span class="rr_val" id="rrAngleVal">30&deg;</span></div><input type="range" id="rrAngle" min="0" max="80" value="30" step="1"></div>
+<div class="rr_ctrl"><div class="rr_chdr"><label for="rrFreq">Frequency &fnof;</label><span class="rr_val" id="rrFreqVal">1.0 Hz</span></div><input type="range" id="rrFreq" min="0.4" max="3.0" value="1.0" step="0.1"></div>
+<div class="rr_ctrl"><div class="rr_chdr"><label for="rrAmp">Amplitude A</label><span class="rr_val" id="rrAmpVal">10 mm</span></div><input type="range" id="rrAmp" min="4" max="20" value="10" step="1"></div>
+</div></div>
+<div class="rr_panel" role="group" aria-labelledby="rrHdMed">
+<div class="rr_ptitle" id="rrHdMed">Media</div>
+<div class="rr_pbody">
+<div class="rr_ctrl"><div class="rr_chdr"><label for="rrV1">Medium 1 speed v<sub>1</sub></label><span class="rr_val" id="rrV1Val">150 mm/s</span></div><input type="range" id="rrV1" min="60" max="300" value="150" step="10"></div>
+<div class="rr_ctrl"><div class="rr_chdr"><label for="rrV2">Medium 2 speed v<sub>2</sub></label><span class="rr_val" id="rrV2Val">100 mm/s</span></div><input type="range" id="rrV2" min="60" max="300" value="100" step="10"></div>
+<div class="rr_ctrl"><div class="rr_chdr"><label for="rrBoundary">Boundary position</label><span class="rr_val" id="rrBoundaryVal">360 mm</span></div><input type="range" id="rrBoundary" min="160" max="640" value="360" step="5"></div>
+</div></div>
+<div class="rr_panel" role="group" aria-labelledby="rrHdDisp">
+<div class="rr_ptitle" id="rrHdDisp">Display</div>
+<div class="rr_pbody">
+<div class="rr_checks">
+<label class="rr_chk"><input type="checkbox" id="rrInc" checked><span class="rr_sw" style="background:#E69F00"></span>Incident</label>
+<label class="rr_chk"><input type="checkbox" id="rrRef" checked><span class="rr_sw" style="background:#56B4E9"></span>Reflected</label>
+<label class="rr_chk"><input type="checkbox" id="rrTrans" checked><span class="rr_sw" style="background:#009E73"></span>Transmitted</label>
+<label class="rr_chk"><input type="checkbox" id="rrRays" checked>Ray diagram</label>
+</div>
+<div class="rr_ctrl"><div class="rr_chdr"><label for="rrRayY">Ray point (y)</label><span class="rr_val" id="rrRayYVal">250 mm</span></div><input type="range" id="rrRayY" min="0" max="500" value="250" step="5"></div>
+</div></div>
+<div class="rr_panel" role="group" aria-labelledby="rrHdView">
+<div class="rr_ptitle" id="rrHdView">View</div>
+<div class="rr_pbody">
+<div class="rr_ctrl"><div class="rr_chdr"><label for="rrYaw">Turn</label><span class="rr_val" id="rrYawv"></span></div><input type="range" id="rrYaw" min="-180" max="180" step="1" value="-28"></div>
+<div class="rr_ctrl"><div class="rr_chdr"><label for="rrEl">Tilt</label><span class="rr_val" id="rrElv"></span></div><input type="range" id="rrEl" min="6" max="90" step="1" value="36"></div>
+<div class="rr_ctrl"><div class="rr_chdr"><label for="rrZx">Height exaggeration</label><span class="rr_val" id="rrZxv"></span></div><input type="range" id="rrZx" min="1" max="12" step="1" value="5"></div>
+</div></div>
+</div>
+</div>
+<style>
+:where(#mobwave2reflectionr3d) * { margin:0; box-sizing:border-box; }
+#mobwave2reflectionr3d { width:100%; max-width:806px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; }
+#mobwave2reflectionr3d canvas { max-width:100%; height:auto; }
+#rrRoot .rr_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#rrRoot .rr_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#rrRoot .rr_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+.tbar { padding:4px; background-color:#f90; text-align:center; }
+.tbar h3 { font-size:1.1rem; font-weight:bold; line-height:28px; }
+.mcontent { background:#0b1830; }
+.rr_readout { color:#222; font-size:.8rem; font-family:monospace; text-align:center; background:#fff6d9; padding:4px 6px; }
+/* transport + view bar */
+.rr_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+.rr_tgroup { display:flex; gap:6px; flex-wrap:nowrap; }
+.rr_tview { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:460px) { .rr_tview { padding-left:0; border-left:0; } }
+.rr_tbtn { width:44px; height:38px; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer; border:1px solid #6d8a3a; border-radius:5px; background:#fff; color:#223; }
+.rr_tbtn.rr_play { background:#2e7d32; color:#fff; border-color:#1b5e20; }
+.rr_tbtn.rr_play[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+.rr_vbtn { min-width:52px; height:38px; padding:0 10px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; }
+.rr_vbtn[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+.rr_tbtn:hover, .rr_vbtn:hover { filter:brightness(.95); }
+.rr_hint { font-size:.74rem; color:#555; font-style:italic; padding:6px 12px; background:#eef3e2; line-height:1.4; }
+/* control panels */
+.rr_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:10px; padding:10px; }
+.rr_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+.rr_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+.rr_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; }
+.rr_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+.rr_chdr { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+.rr_chdr label { font-size:.82rem; font-weight:bold; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+.rr_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; flex:0 0 auto; min-width:4.5em; text-align:right; }
+.rr_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+.rr_checks { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 8px; }
+.rr_chk { display:flex; align-items:center; gap:5px; font-size:.82rem; cursor:pointer; white-space:nowrap; }
+.rr_sw { display:inline-block; width:11px; height:11px; border:1px solid #000; border-radius:2px; flex:0 0 auto; }
+#mobwave2reflectionr3d button:focus-visible, #mobwave2reflectionr3d input:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (max-width:420px) { .rr_checks { grid-template-columns:minmax(0,1fr); } .rr_tbtn { width:40px; } }
+@media (pointer:coarse) { .rr_tbtn, .rr_vbtn { height:44px; } #mobwave2reflectionr3d input[type=checkbox] { width:20px; height:20px; } #mobwave2reflectionr3d input[type=range] { height:28px; } }
+#mobwave2reflectionr3d .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobwave2reflectionr3d .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobwave2reflectionr3d .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobwave2reflectionr3d .mob_desc p { margin:0 0 8px 0; }
+#mobwave2reflectionr3d .mob_eq { text-align:center; }
+#mobwave2reflectionr3d.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobwave2reflectionr3d.a11y_dm canvas, #mobwave2reflectionr3d.a11y_dm [aria-label="Display options"], #mobwave2reflectionr3d.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobwave2reflectionr3d.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobwave2reflectionr3d.a11y_hc canvas, #mobwave2reflectionr3d.a11y_hc [aria-label="Display options"], #mobwave2reflectionr3d.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+</style>
+<script>
+var rrA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return;
+  b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobwave2reflectionr3d'); if (!W) return;
+  W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc); W.classList.toggle('a11y_cb', states.cb);
+  var nb = document.getElementById('rrNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+  var nr = document.getElementById('rrBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+  styleBtn('rrBtnHC', states.hc); styleBtn('rrBtnDM', states.dm); styleBtn('rrBtnCB', states.cb); styleBtn('rrBtnNR', states.nr);
+  hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return {
+  init:function(){ apply(); },
+  onChange:function(f){ hooks.push(f); },
+  toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply();
+    if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: the water is coloured from blue (troughs) through white to orange (crests).'); },
+  altPalette:function(){ return states.hc || states.cb; }, isHC:function(){ return states.hc; }, isCB:function(){ return states.cb; },
+  isNarOn:function(){ return states.nr; },
+  narrate:function(msg){ if (!states.nr) return; var nb = document.getElementById('rrNarBar'); if (nb) nb.textContent = msg; }
+};
+})();
+</script>
+
+<!-- ════════ SIMULATION (3D version) ════════
+Snell's law sin(theta_t) = (v2/v1) sin(theta_i), R = (v2 - v1)/(v1 + v2), T = 2 v2/(v1 + v2), total internal reflection when (v2/v1) sin(theta_i) > 1.
+The surface is a lit 3D mesh; the floor is drawn on the sides of the tank with d proportional to v squared (v = sqrt(g d)).
+No dollar signs or backticks in the code.
+-->
+<script>
+var rrGen3 = function() {
+  var canvas = document.getElementById('rrCanvas'), ctx = canvas.getContext('2d');
+  var W = 800, H = 500, readoutEl = document.getElementById('rrReadout'), timer, runFlag = 0;
+  /* ══════════ 3D view: a perspective camera over the tank (world: x, y in mm as in the top view, z up) ══════════ */
+  function make3D(cv, W, H){
+    var VW = cv.width, VH = cv.height, DEG = Math.PI/180;
+    var cam = { yaw:-28*DEG, el:36*DEG, zx:5 };
+    var span = Math.max(W, H), D = span*2.4, F = 0, OY = 0;
+    function fitF(){ var c = [[0,0],[W,0],[W,H],[0,H]], ys, top, bot;
+      F = D*0.86*VW/Math.hypot(W, H); OY = 0; ys = c.map(function(q){ return P(q[0], q[1], 0)[1]; }); top = Math.min.apply(null, ys); bot = Math.max.apply(null, ys);
+      var hspan = bot - top, room = VH*0.86; if (hspan > room) F *= room/hspan; ys = c.map(function(q){ return P(q[0], q[1], 0)[1]; }); top = Math.min.apply(null, ys); bot = Math.max.apply(null, ys);
+      OY = VH/2 - (top + bot)/2 + VH*0.02; }
+    function P(x, y, z){ var X = x - W/2, Y = y - H/2, Z = (z || 0)*cam.zx, cy = Math.cos(cam.yaw), sy = Math.sin(cam.yaw);
+      var xp = X*cy - Y*sy, yp = X*sy + Y*cy, se = Math.sin(cam.el), ce = Math.cos(cam.el), sd = yp*se - Z*ce, dep = D - (yp*ce + Z*se);
+      return [VW/2 + F*xp/dep, VH/2 + OY + F*sd/dep, dep]; }
+    function U(sx, sy){ var a = (sx - VW/2)/F, b = (sy - VH/2 - OY)/F, se = Math.sin(cam.el), ce = Math.cos(cam.el), den = se + b*ce;
+      if (Math.abs(den) < 1e-6) return null; var yp = b*D/den, dep = D - yp*ce; if (dep <= 0) return null; var xp = a*dep, cy = Math.cos(cam.yaw), sy = Math.sin(cam.yaw);
+      return [xp*cy + yp*sy + W/2, -xp*sy + yp*cy + H/2]; }
+    fitF();
+    return { cam:cam, P:P, U:U, refit:fitF, set:function(o){ if (o.yaw !== undefined) cam.yaw = o.yaw; if (o.el !== undefined) cam.el = Math.max(6*DEG, Math.min(90*DEG, o.el)); if (o.zx !== undefined) cam.zx = o.zx; fitF(); } };
+  }
+  function drawSurface(ctx, V, NX, NY, W, H, field, colour, amp, light, ambient){
+    var n = (NX + 1)*(NY + 1), sx = new Float32Array(n), sy = new Float32Array(n), dp = new Float32Array(n), hh = new Float32Array(n), sh = new Float32Array(n), i, j, k = 0;
+    for (j=0; j<=NY; j++) for (i=0; i<=NX; i++, k++){ var x = W*i/NX, y = H*j/NY, f = field(x, y), p = V.P(x, y, f.h);
+      sx[k] = p[0]; sy[k] = p[1]; dp[k] = p[2]; hh[k] = f.h;
+      var nx = -f.gx*V.cam.zx, ny = -f.gy*V.cam.zx, nl = Math.sqrt(nx*nx + ny*ny + 1); sh[k] = ambient + (1 - ambient)*Math.max(0, (nx*light[0] + ny*light[1] + light[2])/nl); }
+    var q = [], NQ = NX*NY; for (j=0; j<NY; j++) for (i=0; i<NX; i++){ var a = j*(NX + 1) + i; q.push([a, dp[a] + dp[a + 1] + dp[a + NX + 1] + dp[a + NX + 2]]); }
+    q.sort(function(A, B){ return B[1] - A[1]; });
+    ctx.lineWidth = 0.9; ctx.lineJoin = 'round';
+    for (var m=0; m<NQ; m++){ var a2 = q[m][0], b = a2 + 1, c = a2 + NX + 2, d = a2 + NX + 1, tn = Math.max(-1, Math.min(1, (hh[a2] + hh[b] + hh[c] + hh[d])/(4*amp))), s = (sh[a2] + sh[b] + sh[c] + sh[d])/4, col = colour(tn, s);
+      var st = 'rgb(' + (col[0] | 0) + ',' + (col[1] | 0) + ',' + (col[2] | 0) + ')'; ctx.fillStyle = st; ctx.strokeStyle = st;
+      ctx.beginPath(); ctx.moveTo(sx[a2], sy[a2]); ctx.lineTo(sx[b], sy[b]); ctx.lineTo(sx[c], sy[c]); ctx.lineTo(sx[d], sy[d]); ctx.closePath(); ctx.fill(); ctx.stroke(); } }
+  function wireView(V, ids, redraw, say){
+    var DEG = Math.PI/180;
+    function sync(){ var y = document.getElementById(ids.yaw), e = document.getElementById(ids.el), z = document.getElementById(ids.zx);
+      if (y){ y.value = Math.round(V.cam.yaw/DEG); document.getElementById(ids.yaw + 'v').textContent = Math.round(V.cam.yaw/DEG) + '\u00B0'; }
+      if (e){ e.value = Math.round(V.cam.el/DEG); document.getElementById(ids.el + 'v').textContent = Math.round(V.cam.el/DEG) + '\u00B0'; }
+      if (z){ z.value = V.cam.zx; document.getElementById(ids.zx + 'v').textContent = '\u00D7' + V.cam.zx; } }
+    function on(id, ev, fn){ var x = document.getElementById(id); if (x) x.addEventListener(ev, fn); }
+    on(ids.yaw, 'input', function(){ V.set({ yaw:+this.value*DEG }); sync(); redraw(); });
+    on(ids.el, 'input', function(){ V.set({ el:+this.value*DEG }); sync(); redraw(); });
+    on(ids.zx, 'input', function(){ V.set({ zx:+this.value }); sync(); redraw(); });
+    on(ids.v3d, 'click', function(){ V.set({ yaw:-28*DEG, el:36*DEG }); sync(); redraw(); say('3D view: the water surface seen at an angle; crests rise, troughs dip.'); });
+    on(ids.top, 'click', function(){ V.set({ yaw:0, el:90*DEG }); sync(); redraw(); say('Top view: looking straight down on the water, as in the flat version.'); });
+    on(ids.side, 'click', function(){ V.set({ yaw:0, el:12*DEG }); sync(); redraw(); say('Low side view: the heights of crests and troughs are easiest to see.'); });
+    sync(); return { sync:sync };
+  }
+
+  var V = make3D(canvas, W, H), NX = 100, NY = 62;
+  var COL_INC = '#E69F00', COL_REF = '#56B4E9', COL_TRANS = '#009E73';
+  var thetaI = 30*Math.PI/180, freq = 1.0, amp = 10, v1 = 150, v2 = 100, xb = 360, rayY = 250;
+  var incOn = true, refOn = true, transOn = true, raysOn = true, t = 0, dt = 0.04, trate = 40, frameCount = 0, narrationEvery = 75;
+  var LIGHT = (function(){ var x = -0.5, y = -0.4, z = 0.75, l = Math.sqrt(x*x + y*y + z*z); return [x/l, y/l, z/l]; })(), AMBIENT = 0.35;
+  var k1, k2, omega, kxi, kyi, kxr, kyr, kxt, kyt, thetaT, TIR, Rcoef, Tcoef, ampClamp;
+  var drag = 0, rot = null, markerXY = [0, 0];
+  function el(id){ return document.getElementById(id); }
+  function recompute(){ k1 = 2*Math.PI*freq/v1; k2 = 2*Math.PI*freq/v2; omega = 2*Math.PI*freq; var sI = Math.sin(thetaI), cI = Math.cos(thetaI);
+    kxi = k1*cI; kyi = k1*sI; kxr = -k1*cI; kyr = k1*sI; var sT = (v2/v1)*sI; TIR = Math.abs(sT) > 1;
+    if (TIR){ thetaT = NaN; Rcoef = 1; Tcoef = 0; kxt = 0; kyt = 0; } else { thetaT = Math.asin(sT); Rcoef = (v2 - v1)/(v1 + v2); Tcoef = 2*v2/(v1 + v2); kxt = k2*Math.cos(thetaT); kyt = k2*Math.sin(thetaT); }
+    ampClamp = amp*Math.max(1 + Math.abs(Rcoef), Math.abs(Tcoef), 1e-3); updateReadout(); }
+  function sampleField(px, py, time){ var h = 0, gx = 0, gy = 0, rx = px - xb, ry = py;
+    if (px < xb){ if (incOn){ var p1 = kxi*rx + kyi*ry - omega*time, c1 = Math.cos(p1); h += amp*Math.sin(p1); gx += amp*kxi*c1; gy += amp*kyi*c1; }
+      if (refOn){ var p2 = kxr*rx + kyr*ry - omega*time, c2 = Math.cos(p2); h += Rcoef*amp*Math.sin(p2); gx += Rcoef*amp*kxr*c2; gy += Rcoef*amp*kyr*c2; } }
+    else if (transOn && !TIR){ var p3 = kxt*rx + kyt*ry - omega*time, c3 = Math.cos(p3); h += Tcoef*amp*Math.sin(p3); gx += Tcoef*amp*kxt*c3; gy += Tcoef*amp*kyt*c3; }
+    return { h:h, gx:gx, gy:gy }; }
+  function lerp3(a, b, u){ return [a[0] + (b[0] - a[0])*u, a[1] + (b[1] - a[1])*u, a[2] + (b[2] - a[2])*u]; }
+  function palR(tn, sh){ var c = tn < 0 ? lerp3([20,110,170], [8,40,90], -tn) : lerp3([20,110,170], [190,230,255], tn); return [c[0]*sh, c[1]*sh, c[2]*sh]; }
+  function palD(tn, sh){ var c = tn < 0 ? lerp3([240,240,240], [0,114,178], -tn) : lerp3([240,240,240], [230,159,0], tn), s = 0.7 + 0.3*sh; return [c[0]*s, c[1]*s, c[2]*s]; }
+  function depthOf(v){ return -Math.max(4, Math.min(60, 22*Math.pow(v/150, 2))); }
+  function drawWalls(){ var d1 = depthOf(v1), d2 = depthOf(v2), faces = [];
+    function wall(pts, shade){ var P = pts.map(function(q){ return V.P(q[0], q[1], q[2]); }), dep = 0; P.forEach(function(p){ dep += p[2]; }); faces.push({ P:P, dep:dep/P.length, col:shade }); }
+    [[H, '#123a5e'], [0, '#0f3150']].forEach(function(q){ var y = q[0]; wall([[0, y, 0], [xb, y, 0], [xb, y, d1], [0, y, d1]], q[1]); wall([[xb, y, 0], [W, y, 0], [W, y, d2], [xb, y, d2]], q[1]); });
+    wall([[0, 0, 0], [0, H, 0], [0, H, d1], [0, 0, d1]], '#0f3150'); wall([[W, 0, 0], [W, H, 0], [W, H, d2], [W, 0, d2]], '#0f3150');
+    faces.sort(function(A, B){ return B.dep - A.dep; });
+    faces.forEach(function(f){ ctx.fillStyle = f.col; ctx.strokeStyle = '#6f8fb0'; ctx.lineWidth = 1; ctx.beginPath(); f.P.forEach(function(p, i){ if (i) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); }); ctx.closePath(); ctx.fill(); ctx.stroke(); });
+    ctx.strokeStyle = '#d8b878'; ctx.lineWidth = 2.5; [0, H].forEach(function(y){ var a = V.P(0, y, d1), b = V.P(xb, y, d1), c = V.P(xb, y, d2), e = V.P(W, y, d2); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.lineTo(c[0], c[1]); ctx.lineTo(e[0], e[1]); ctx.stroke(); }); }
+  function arrow(x1, y1, x2, y2, w, col, txt){ ctx.fillStyle = col; ctx.strokeStyle = col; var dx = x2 - x1, dy = y2 - y1, L = Math.sqrt(dx*dx + dy*dy); if (L === 0) return; dx /= L; dy /= L;
+    var s = 2.5*w + 7.5, xs = x2 - s*dx, ys = y2 - s*dy, hh = 0.5*w + 3.5; ctx.beginPath(); ctx.lineWidth = w; ctx.moveTo(x1, y1); ctx.lineTo(xs, ys); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(xs, ys); ctx.lineTo(xs - hh*dy, ys + hh*dx); ctx.lineTo(x2, y2); ctx.lineTo(xs + hh*dy, ys - hh*dx); ctx.closePath(); ctx.fill();
+    if (txt) lbl(txt, x2 + (x2 < x1 ? -8 : 8), y2, col, x2 < x1 ? 'right' : 'left'); }
+  function lbl(txt, x, y, col, al){ ctx.font = 'bold 13px Calibri'; ctx.textAlign = al; ctx.textBaseline = 'middle'; ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.8)'; ctx.strokeText(txt, x, y); ctx.fillStyle = col; ctx.fillText(txt, x, y); }
+  function drawBoundaryAndRays(){ var zl = ampClamp*1.25, i;
+    ctx.save(); ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.setLineDash([8, 5]); ctx.beginPath();
+    for (i=0; i<=40; i++){ var y = H*i/40, p = V.P(xb, y, sampleField(xb - 0.01, y, t).h + 0.5); if (i) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); } ctx.stroke(); ctx.restore();
+    var mp = V.P(xb, rayY, zl); markerXY = [mp[0], mp[1]];
+    if (raysOn){ var Lr = 150, sI = Math.sin(thetaI), cI = Math.cos(thetaI), o = V.P(xb, rayY, zl);
+      ctx.save(); ctx.setLineDash([4, 3]); ctx.strokeStyle = 'rgba(255,255,255,0.8)'; ctx.lineWidth = 1.2; var n1 = V.P(xb - Lr*0.6, rayY, zl), n2 = V.P(xb + Lr*0.6, rayY, zl); ctx.beginPath(); ctx.moveTo(n1[0], n1[1]); ctx.lineTo(n2[0], n2[1]); ctx.stroke(); ctx.restore();
+      var a = V.P(xb - Lr*cI, rayY - Lr*sI, zl); arrow(a[0], a[1], o[0], o[1], 3, COL_INC, ''); lbl('\u03b8i=' + Math.round(thetaI*180/Math.PI) + '\u00b0', a[0] - 6, a[1], COL_INC, 'right');
+      var r = V.P(xb - Lr*cI, rayY + Lr*sI, zl); arrow(o[0], o[1], r[0], r[1], 3, COL_REF, '\u03b8r=' + Math.round(thetaI*180/Math.PI) + '\u00b0');
+      if (!TIR){ var tp = V.P(xb + Lr*Math.cos(thetaT), rayY + Lr*Math.sin(thetaT), zl); arrow(o[0], o[1], tp[0], tp[1], 3, COL_TRANS, '\u03b8t=' + Math.round(thetaT*180/Math.PI) + '\u00b0'); }
+      else lbl('TIR', o[0] + 12, o[1] + 18, COL_TRANS, 'left'); }
+    var base = V.P(xb, rayY, sampleField(xb - 0.01, rayY, t).h); ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(base[0], base[1]); ctx.lineTo(mp[0], mp[1]); ctx.stroke();
+    ctx.fillStyle = '#ffffff'; ctx.strokeStyle = '#000'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.rect(mp[0] - 6, mp[1] - 6, 12, 12); ctx.fill(); ctx.stroke();
+    var w1 = v1 > v2 ? 'deeper' : v1 < v2 ? 'shallower' : 'same depth', w2 = v2 > v1 ? 'deeper' : v2 < v1 ? 'shallower' : 'same depth';
+    [[xb/2, 'medium 1 (' + w1 + ', v1 = ' + v1 + ' mm/s)'], [(xb + W)/2, 'medium 2 (' + w2 + ', v2 = ' + v2 + ' mm/s)']].forEach(function(q){ var p = V.P(q[0], -30, 0); ctx.font = 'bold 13px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.75)'; ctx.strokeText(q[1], p[0], p[1]); ctx.fillStyle = '#e8f1ff'; ctx.fillText(q[1], p[0], p[1]); }); }
+  function drawFrame(){ var useAlt = rrA11y.altPalette();
+    var bg = ctx.createLinearGradient(0, 0, 0, canvas.height); bg.addColorStop(0, '#05101f'); bg.addColorStop(1, '#16324f'); ctx.fillStyle = bg; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    drawWalls();
+    drawSurface(ctx, V, NX, NY, W, H, function(x, y){ return sampleField(x, y, t); }, useAlt ? palD : palR, ampClamp, LIGHT, AMBIENT);
+    drawBoundaryAndRays();
+    ctx.fillStyle = 'rgba(220,235,255,0.8)'; ctx.font = '12px Arial'; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; ctx.fillText('heights \u00D7' + V.cam.zx + ' \u00B7 floor depths not to scale \u00B7 t = ' + t.toFixed(2) + ' s', 10, canvas.height - 10); }
+  function updateReadout(){ if (!readoutEl) return; var l1 = v1/freq, l2 = v2/freq;
+    readoutEl.textContent = '\u03b8i = ' + Math.round(thetaI*180/Math.PI) + '\u00b0 | \u03b8t = ' + (TIR ? 'TIR (no transmission)' : Math.round(thetaT*180/Math.PI) + '\u00b0') + ' | \u03bb1 \u2248 ' + l1.toFixed(0) + ' mm, \u03bb2 \u2248 ' + (TIR ? '\u2014' : l2.toFixed(0) + ' mm') + ' | R = ' + Rcoef.toFixed(2) + ', T = ' + Tcoef.toFixed(2); }
+  function sceneNarration(){ var m; if (TIR) m = 'total internal reflection: all the wave reflects, nothing enters medium 2'; else if (v2 < v1) m = 'the wave slows entering the shallower medium 2 and bends toward the normal'; else if (v2 > v1) m = 'the wave speeds up entering the deeper medium 2 and bends away from the normal'; else m = 'the two media match, so the wave passes straight through';
+    var sh = []; if (incOn) sh.push('incident'); if (refOn) sh.push('reflected'); if (transOn) sh.push('transmitted');
+    rrA11y.narrate('Angle of incidence ' + Math.round(thetaI*180/Math.PI) + ' degrees. ' + m + '. Showing: ' + (sh.length ? sh.join(', ') : 'nothing') + '.'); }
+  /* ══════════ dragging ══════════ */
+  function cpos(evt){ var r = canvas.getBoundingClientRect(); return { x:(evt.clientX - r.left)*canvas.width/r.width, y:(evt.clientY - r.top)*canvas.height/r.height }; }
+  canvas.addEventListener('pointerdown', function(evt){ var p = cpos(evt), w = V.U(p.x, p.y); try { canvas.setPointerCapture(evt.pointerId); } catch (e) {}
+    if (Math.hypot(p.x - markerXY[0], p.y - markerXY[1]) < 16) drag = 2; else if (w && Math.abs(w[0] - xb) < 18 && w[1] > -10 && w[1] < H + 10) drag = 1; else { drag = 0; rot = { x:p.x, y:p.y, yaw:V.cam.yaw, el:V.cam.el }; }
+    canvas.style.cursor = 'grabbing'; evt.preventDefault(); });
+  canvas.addEventListener('pointermove', function(evt){ var p = cpos(evt);
+    if (rot){ V.set({ yaw:rot.yaw + (p.x - rot.x)*0.008, el:rot.el + (p.y - rot.y)*0.006 }); VWc.sync(); syncViewBtns(); drawFrame(); return; }
+    if (!drag) return; var w = V.U(p.x, p.y); if (!w) return;
+    if (drag === 1){ xb = Math.max(160, Math.min(640, w[0])); sync(); }
+    else { var w2 = V.U(p.x, p.y + (V.P(xb, rayY, 0)[1] - markerXY[1])); if (w2){ rayY = Math.max(0, Math.min(H, w2[1])); sync(); } }
+    recompute(); drawFrame(); });
+  function endDrag(){ canvas.style.cursor = 'grab'; if (rot){ rot = null; return; } if (!drag) return; var m = drag === 1 ? 'Boundary moved.' : 'Ray point moved.'; drag = 0; rrA11y.narrate(m); }
+  canvas.addEventListener('pointerup', endDrag); canvas.addEventListener('pointercancel', endDrag);
+  /* ══════════ controls ══════════ */
+  var SL = [['rrAngle', 'rrAngleVal', function(){ return Math.round(thetaI*180/Math.PI); }, function(v){ thetaI = Math.max(0, Math.min(89, v))*Math.PI/180; }, function(v){ return v + '\u00b0'; }, ' degrees'],
+    ['rrFreq', 'rrFreqVal', function(){ return freq; }, function(v){ freq = Math.max(0.1, v); }, function(v){ return (+v).toFixed(1) + ' Hz'; }, ''],
+    ['rrAmp', 'rrAmpVal', function(){ return amp; }, function(v){ amp = Math.max(1, v); }, function(v){ return Math.round(v) + ' mm'; }, ''],
+    ['rrV1', 'rrV1Val', function(){ return v1; }, function(v){ v1 = Math.max(10, v); }, function(v){ return Math.round(v) + ' mm/s'; }, ''],
+    ['rrV2', 'rrV2Val', function(){ return v2; }, function(v){ v2 = Math.max(10, v); }, function(v){ return Math.round(v) + ' mm/s'; }, ''],
+    ['rrBoundary', 'rrBoundaryVal', function(){ return Math.round(xb); }, function(v){ xb = Math.max(160, Math.min(640, v)); }, function(v){ return Math.round(v) + ' mm'; }, ''],
+    ['rrRayY', 'rrRayYVal', function(){ return Math.round(rayY); }, function(v){ rayY = Math.max(0, Math.min(H, v)); }, function(v){ return Math.round(v) + ' mm'; }, '']];
+  function sync(){ SL.forEach(function(q){ var v = q[2](), e = el(q[0]), t2 = q[4](v); if (e){ e.value = v; e.setAttribute('aria-valuetext', t2.replace('mm/s', 'millimetres per second').replace(' mm', ' millimetres').replace('Hz', 'hertz').replace('\u00b0', ' degrees')); } el(q[1]).textContent = t2; }); }
+  SL.forEach(function(q){ var e = el(q[0]); e.addEventListener('input', function(){ q[3](parseFloat(this.value)); sync(); recompute(); drawFrame(); }); e.addEventListener('change', sceneNarration); });
+  [['rrInc', 'Incident wave', function(b){ incOn = b; }], ['rrRef', 'Reflected wave', function(b){ refOn = b; }], ['rrTrans', 'Transmitted wave', function(b){ transOn = b; }], ['rrRays', 'Ray diagram', function(b){ raysOn = b; }]].forEach(function(q){
+    el(q[0]).addEventListener('change', function(){ q[2](this.checked); drawFrame(); rrA11y.narrate(q[1] + (this.checked ? ' shown.' : ' hidden.')); }); });
+  var playBtn = el('rrPlay'), PLAYI = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor"/></svg>', PAUSEI = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>';
+  function setPlayUI(){ var on = runFlag === 1; playBtn.innerHTML = on ? PAUSEI : PLAYI; playBtn.setAttribute('aria-label', on ? 'Pause' : 'Play'); playBtn.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+  function runMotion(){ t += dt; drawFrame(); frameCount++; if (frameCount % narrationEvery === 0) sceneNarration(); if (runFlag === 1) timer = window.setTimeout(runMotion, trate); }
+  function pl(){ window.clearTimeout(timer); runFlag = 1; setPlayUI(); runMotion(); }
+  function ps(){ window.clearTimeout(timer); runFlag = 0; setPlayUI(); }
+  function step(){ ps(); t += dt; drawFrame(); sceneNarration(); }
+  function stepBack(){ ps(); t = Math.max(0, t - dt); drawFrame(); sceneNarration(); }
+  function rst(){ ps(); t = 0; frameCount = 0; xb = 360; rayY = 250; sync(); recompute(); drawFrame(); sceneNarration(); }
+  playBtn.addEventListener('click', function(){ if (runFlag === 1) ps(); else pl(); });
+  el('rrBack').addEventListener('click', stepBack); el('rrStep').addEventListener('click', step); el('rrRst').addEventListener('click', rst);
+  var DEG = Math.PI/180;
+  function syncViewBtns(){ var c = V.cam, is3 = Math.abs(c.yaw + 28*DEG) < 0.01 && Math.abs(c.el - 36*DEG) < 0.01, isT = Math.abs(c.yaw) < 0.01 && Math.abs(c.el - 90*DEG) < 0.01, isS = Math.abs(c.yaw) < 0.01 && Math.abs(c.el - 12*DEG) < 0.01;
+    el('rrV3d').setAttribute('aria-pressed', is3 ? 'true' : 'false'); el('rrVtop').setAttribute('aria-pressed', isT ? 'true' : 'false'); el('rrVside').setAttribute('aria-pressed', isS ? 'true' : 'false'); }
+  var VWc = wireView(V, { yaw:'rrYaw', el:'rrEl', zx:'rrZx', v3d:'rrV3d', top:'rrVtop', side:'rrVside' }, function(){ syncViewBtns(); drawFrame(); }, function(m){ rrA11y.narrate(m); });
+  rrA11y.onChange(function(){ drawFrame(); });
+  recompute(); rst(); syncViewBtns();
+  return { pl:pl, ps:ps, step:step, stepBack:stepBack, rst:rst, _V:V };
+};
+var rrSim = new rrGen3();
+</script>
+<script>rrA11y.init();</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>Plane water waves meet a boundary between two depths of water, where they travel at different speeds. The water surface is shown in 3D, with the heights exaggerated; the sides of the tank show the floor, with a step at the boundary. On water, waves travel faster where it is deeper (for shallow water, `v = sqrt(g d)`), so a step in the floor is a boundary between two media. Turn and tilt the view by dragging on the water, or use the 3D, Top and Side buttons next to the play controls (play/pause, step back, step forward and restart).</p>
+<p>Part of the wave is reflected, at the same angle as it arrived, and part is transmitted, bending toward or away from the normal. The frequency is the same on both sides, so the wavelength changes with the speed:</p>
+<p class="mob_eq">`(sin theta_i)/v_1 = (sin theta_t)/v_2`,&nbsp;&nbsp; `lambda = v/f`,</p>
+<p class="mob_eq">`R = (v_2 - v_1)/(v_1 + v_2)`,&nbsp;&nbsp; `T = (2 v_2)/(v_1 + v_2)`,</p>
+<p>where `R` and `T` are the reflected and transmitted amplitudes as fractions of the incident one. In the 3D view the crests crowd closer together (shorter wavelength) in the slower, shallower water. The ray diagram is drawn just above the water; drag the boundary and the white square marker.</p>
+</div>
+</div>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+</div>
+
+</body>
+</html>

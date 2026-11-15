@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Nuclear: Build a Nucleus</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobnucleusbuild" class="mob_wrap">
+<div id="nbRoot">
+<div class="nb_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="nb_a11ybtn" id="nbBtnHC" onclick="nbA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="nb_a11ybtn" id="nbBtnDM" onclick="nbA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="nb_a11ybtn" id="nbBtnCB" onclick="nbA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="nb_a11ybtn" id="nbBtnNR" onclick="nbA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+<div class="tbar"><h3>Build a Nucleus &mdash; Forces, Energy Levels &amp; Stability</h3></div>
+<div class="nb_id" id="nbId"></div>
+<div class="nb_view">
+<canvas id="nbCv" width="800" height="470" role="img" aria-label="A 3D view of the nucleus: red protons and grey neutrons, each surrounded by a dashed circle showing the reach of its strong force, an incoming nucleon, and arrows for the Coulomb force, the strong force and their sum. Drag to turn the view; click a nucleon to see every force acting on it."></canvas>
+</div>
+<div id="nbStatus" class="nb_status"></div>
+<div id="nbNarBar" class="nb_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<div class="nb_transport" role="toolbar" aria-label="Build the nucleus">
+<div class="nb_tgroup">
+<button type="button" class="nb_bbtn nb_p" id="nbAddP">+ proton</button>
+<button type="button" class="nb_bbtn nb_n" id="nbAddN">+ neutron</button>
+</div>
+<div class="nb_tgroup nb_tsep">
+<button type="button" class="nb_tbtn nb_play" id="nbGo" aria-label="Bring the nucleon in" title="Bring the nucleon in"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="nb_tbtn" id="nbOut" aria-label="Move it a little farther" title="Farther"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="4" y="4" width="3" height="16" fill="currentColor"/><path d="M20 4 L9 12 L20 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="nb_tbtn" id="nbIn" aria-label="Move it a little closer" title="Closer"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="17" y="4" width="3" height="16" fill="currentColor"/><path d="M4 4 L15 12 L4 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="nb_vbtn" id="nbCancel">Cancel</button>
+</div>
+<div class="nb_tgroup nb_tsep">
+<button type="button" class="nb_vbtn" id="nbRemP">&minus; proton</button>
+<button type="button" class="nb_vbtn" id="nbRemN">&minus; neutron</button>
+</div>
+</div>
+
+<div class="nb_rules" aria-label="The two forces between nucleons">
+<div class="nb_rule"><span class="nb_pair"><i class="nb_dp">+</i><i class="nb_dn"></i></span> <span class="nb_pair"><i class="nb_dn"></i><i class="nb_dn"></i></span> <b>proton&ndash;neutron, neutron&ndash;neutron:</b> strong <span class="nb_g">pull</span> only, and only when their dashed circles overlap. Neutrons are the glue: they attract and never repel.</div>
+<div class="nb_rule"><span class="nb_pair"><i class="nb_dp">+</i><i class="nb_dp">+</i></span> <b>proton&ndash;proton:</b> strong <span class="nb_g">pull</span> when touching, but Coulomb <span class="nb_r">push</span> at <i>any</i> distance. A love&ndash;hate relationship.</div>
+</div>
+
+<div class="nb_row">
+<div class="nb_card"><div class="nb_ctitle">Energy of the incoming nucleon on its way in</div>
+<canvas id="nbPot" width="400" height="230" role="img" aria-label="Graph of the potential energy of the incoming nucleon against its distance from the place it will occupy: the Coulomb part, the strong part and their sum, with a marker at its present distance."></canvas></div>
+<div class="nb_card"><div class="nb_ctitle" id="nbLvT">Energy levels (shell model, schematic)</div>
+<canvas id="nbLev" width="400" height="230" role="img" aria-label="Energy level diagram: proton levels on the left and neutron levels on the right, filled with dots, the magic numbers marked, and the selected nucleon highlighted."></canvas></div>
+</div>
+<div class="nb_card nb_wide"><div class="nb_ctitle">Stability: chart of the light nuclides (Z = protons, N = neutrons)</div>
+<canvas id="nbChart" width="800" height="300" role="img" aria-label="Chart of nuclides from hydrogen to calcium: one square for each combination of protons and neutrons, coloured by how it decays, with the present nucleus outlined. Click a square to build that nucleus."></canvas>
+<div class="nb_stab" id="nbStab" aria-live="off"></div>
+</div>
+
+<div class="nb_panels">
+<div class="nb_panel" role="group" aria-labelledby="nbHdF">
+<div class="nb_ptitle" id="nbHdF">Forces</div>
+<div class="nb_pbody">
+<div class="nb_checks">
+<label class="nb_chk"><input type="checkbox" id="nbFC" checked><span class="nb_sw" id="nbSwC"></span>Coulomb (electric)</label>
+<label class="nb_chk"><input type="checkbox" id="nbFS" checked><span class="nb_sw" id="nbSwS"></span>Strong (nuclear)</label>
+<label class="nb_chk"><input type="checkbox" id="nbFN" checked><span class="nb_sw" id="nbSwN"></span>Net force</label>
+<label class="nb_chk"><input type="checkbox" id="nbFR" checked>Range of the strong force</label>
+<label class="nb_chk"><input type="checkbox" id="nbFP" checked>Each pair separately</label>
+<label class="nb_chk"><input type="checkbox" id="nbF3">Reaction forces (Newton&rsquo;s 3rd law)</label>
+</div>
+<div class="nb_ctrl"><div class="nb_chdr"><label for="nbDist">Distance of the incoming nucleon from its place</label><span class="nb_val" id="nbDistVal"></span></div><input type="range" id="nbDist" min="0" max="12" step="0.05" value="12"></div>
+<div class="nb_checks"><label class="nb_chk"><input type="checkbox" id="nbLin">Linear arrow scale (true proportions)</label></div>
+</div></div>
+<div class="nb_panel" role="group" aria-labelledby="nbHdS">
+<div class="nb_ptitle" id="nbHdS">Jump to a nucleus</div>
+<div class="nb_pbody">
+<div class="nb_presets" id="nbPre"></div>
+<div class="nb_checks"><label class="nb_chk"><input type="checkbox" id="nbAnim" checked>Animate each new nucleon</label><label class="nb_chk"><input type="checkbox" id="nbSpin" checked>Slowly turn the nucleus</label></div>
+</div></div>
+</div>
+</div>
+<style>
+:where(#mobnucleusbuild) * { margin:0; box-sizing:border-box; }
+#mobnucleusbuild { width:100%; max-width:806px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; }
+#mobnucleusbuild canvas { display:block; width:100%; height:auto; }
+#nbRoot .nb_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#nbRoot .nb_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#nbRoot .nb_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+.tbar { padding:4px; background-color:#f90; text-align:center; }
+.tbar h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+.nb_id { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:4px 16px; padding:6px 10px; background:#14213a; color:#e3ecfa; font-size:.9rem; }
+.nb_id b { font-size:1.25rem; color:#ffd23f; }
+.nb_id .nb_tagx { font-family:monospace; font-size:.82rem; color:#9fb4d8; }
+.nb_view { background:#070b14; }
+#nbCv { touch-action:none; cursor:grab; }
+.nb_status { color:#222; font-size:.8rem; font-family:monospace; text-align:center; background:#fff6d9; padding:4px 6px; line-height:1.5; min-height:1.6em; }
+.nb_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+.nb_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+.nb_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:620px) { .nb_tsep { padding-left:0; border-left:0; } }
+.nb_tbtn { width:44px; height:38px; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer; border:1px solid #6d8a3a; border-radius:5px; background:#fff; color:#223; }
+.nb_tbtn.nb_play { background:#2e7d32; color:#fff; border-color:#1b5e20; }
+.nb_tbtn.nb_play[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+.nb_vbtn, .nb_bbtn { height:38px; padding:0 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; white-space:nowrap; }
+.nb_bbtn { font-weight:bold; color:#fff; }
+.nb_bbtn.nb_p { background:#c0392b; border-color:#8e2a1f; } .nb_bbtn.nb_n { background:#55606e; border-color:#3a434e; }
+.nb_tbtn:disabled, .nb_vbtn:disabled, .nb_bbtn:disabled { opacity:.4; cursor:not-allowed; }
+.nb_rules { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:8px; padding:10px 10px 0; }
+.nb_rule { background:#fff; border:1px solid #c9d0da; border-left:4px solid #883355; border-radius:5px; padding:7px 10px; font-size:.84rem; line-height:1.45; color:#222; }
+.nb_pair { display:inline-flex; gap:1px; vertical-align:middle; margin-right:2px; }
+.nb_pair i { display:inline-flex; width:16px; height:16px; border-radius:50%; align-items:center; justify-content:center; font-style:normal; font-weight:bold; font-size:12px; color:#fff; }
+.nb_dp { background:#d63031; } .nb_dn { background:#8f99a6; }
+.nb_g { color:#1b7a4a; font-weight:bold; } .nb_r { color:#c0392b; font-weight:bold; }
+.nb_row { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:10px; padding:10px 10px 0; }
+.nb_card { background:#0b1222; border:1px solid #2b3d60; border-radius:6px; overflow:hidden; min-width:0; }
+.nb_wide { margin:10px 10px 0; }
+.nb_ctitle { padding:5px 10px; background:#14213a; color:#dbe7ff; font-size:.78rem; font-weight:bold; }
+.nb_stab { padding:8px 12px 10px; color:#e3ecfa; font-size:.86rem; line-height:1.45; background:#0d1526; border-top:1px solid #2b3d60; }
+.nb_stab b { color:#ffd23f; }
+.nb_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:10px; padding:10px; }
+.nb_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+.nb_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+.nb_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; }
+.nb_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+.nb_ctrl.nb_off { opacity:.45; }
+.nb_chdr { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+.nb_chdr label { font-size:.82rem; font-weight:bold; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+.nb_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; flex:0 0 auto; min-width:4.5em; text-align:right; }
+.nb_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+.nb_checks { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 8px; }
+.nb_chk { display:flex; align-items:center; gap:6px; font-size:.82rem; cursor:pointer; }
+.nb_sw { display:inline-block; width:14px; height:4px; border-radius:2px; flex:0 0 auto; }
+.nb_presets { display:flex; flex-wrap:wrap; gap:5px; }
+.nb_presets button { padding:5px 8px; font-size:.8rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:4px; background:#fff; color:#223; min-height:32px; }
+.nb_presets button sup { font-size:.7em; }
+#mobnucleusbuild button:focus-visible, #mobnucleusbuild input:focus-visible, #mobnucleusbuild canvas:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (max-width:420px) { .nb_checks { grid-template-columns:minmax(0,1fr); } }
+@media (pointer:coarse) { .nb_tbtn, .nb_vbtn, .nb_bbtn { height:44px; } .nb_presets button { min-height:40px; } #mobnucleusbuild input[type=checkbox] { width:20px; height:20px; } #mobnucleusbuild input[type=range] { height:28px; } }
+#mobnucleusbuild .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobnucleusbuild .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobnucleusbuild .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobnucleusbuild .mob_desc p { margin:0 0 8px 0; }
+#mobnucleusbuild.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobnucleusbuild.a11y_dm canvas, #mobnucleusbuild.a11y_dm [aria-label="Display options"], #mobnucleusbuild.a11y_dm .mob_descbtn, #mobnucleusbuild.a11y_dm .nb_id, #mobnucleusbuild.a11y_dm .nb_card, #mobnucleusbuild.a11y_dm .nb_pair { filter:hue-rotate(180deg) invert(1); }
+#mobnucleusbuild.a11y_dm .nb_card canvas { filter:none; }
+#mobnucleusbuild.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobnucleusbuild.a11y_hc canvas, #mobnucleusbuild.a11y_hc [aria-label="Display options"], #mobnucleusbuild.a11y_hc .mob_descbtn, #mobnucleusbuild.a11y_hc .nb_id, #mobnucleusbuild.a11y_hc .nb_card, #mobnucleusbuild.a11y_hc .nb_pair { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+#mobnucleusbuild.a11y_hc .nb_card canvas { filter:none; }
+</style>
+<script>
+var nbA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return;
+  b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobnucleusbuild'); if (!W) return;
+  W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc); W.classList.toggle('a11y_cb', states.cb);
+  var nb = document.getElementById('nbNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+  var nr = document.getElementById('nbBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+  styleBtn('nbBtnHC', states.hc); styleBtn('nbBtnDM', states.dm); styleBtn('nbBtnCB', states.cb); styleBtn('nbBtnNR', states.nr);
+  hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return {
+  init:function(){ apply(); },
+  onChange:function(f){ hooks.push(f); },
+  toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply();
+    if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: protons orange, neutrons sky blue; Coulomb force orange, strong force bluish green; on the chart, beta-minus blue, beta-plus orange.'); },
+  altPalette:function(){ return states.hc || states.cb; }, isHC:function(){ return states.hc; }, isCB:function(){ return states.cb; },
+  narrate:function(msg){ if (!states.nr) return; var nb = document.getElementById('nbNarBar'); if (nb) nb.textContent = msg; }
+};
+})();
+</script>
+
+<!-- ════════ SIMULATION (conceptual, pairwise) ════════
+Distances in fm, energies in MeV, forces in MeV/fm. Every pair of nucleons interacts separately:
+ Strong (any pair): U = -VP s(r), s = 1 for r <= R1, 0 for r >= R2, smoothstep in between; it acts ONLY when r < R2,
+   i.e. when the dashed circles (radius R2/2) around the two nucleons overlap. F = -dU/dr (attractive).
+ Coulomb (proton-proton only): U = 1.44/r, F = 1.44/r^2 (repulsive), at any distance.
+ VP = 6 MeV, R1 = 1.2 fm, R2 = 2.3 fm (nearest neighbours only); nucleons sit 1.75 fm apart. At that distance the strong pull of one neighbour is
+ about 8 MeV/fm and the Coulomb push of one proton about 0.47 MeV/fm. A very short-range repulsion (not drawn) keeps
+ touching nucleons from overlapping.
+Energy levels: schematic shells 1s1/2 1p3/2 1p1/2 1d5/2 2s1/2 1d3/2 1f7/2. Binding: liquid-drop estimate.
+Half-lives: measured values for Z = 0 to 20 (rounded); combinations not in the list are estimated.
+No dollar signs or backticks in the code.
+-->
+<script>
+var nbGen = function(){
+  var cv = document.getElementById('nbCv'), g = cv.getContext('2d'), cPot = document.getElementById('nbPot'), gP = cPot.getContext('2d'), cLev = document.getElementById('nbLev'), gL = cLev.getContext('2d'), cCh = document.getElementById('nbChart'), gC = cCh.getContext('2d');
+  var TAU = 2*Math.PI, ZMAX = 20, NMAX = 28, KE = 1.44, VP = 6, R1 = 1.2, R2 = 2.3, RBALL = 0.86, DMAX = 12;
+  function el(id){ return document.getElementById(id); }
+  /* ══════════ data ══════════ */
+  var SYM = ['n','H','He','Li','Be','B','C','N','O','F','Ne','Na','Mg','Al','Si','P','S','Cl','Ar','K','Ca'];
+  var NAME = ['neutron','hydrogen','helium','lithium','beryllium','boron','carbon','nitrogen','oxygen','fluorine','neon','sodium','magnesium','aluminium','silicon','phosphorus','sulfur','chlorine','argon','potassium','calcium'];
+  var Y = 3.156e7, D = 86400, HR = 3600, MN = 60, U = 1e-21;
+  var RAW = [[0,1,611,'b-'],[1,0,0,''],[1,1,0,''],[1,2,12.32*Y,'b-'],[1,3,U,'n'],[1,4,U,'n'],[2,0,U,'p'],[0,2,U,'n'],
+    [2,1,0,''],[2,2,0,''],[2,3,7e-22,'n'],[2,4,0.807,'b-'],[2,5,3e-21,'n'],[2,6,0.119,'b-'],
+    [3,1,U,'p'],[3,2,3.7e-22,'p'],[3,3,0,''],[3,4,0,''],[3,5,0.839,'b-'],[3,6,0.178,'b-'],[3,7,U,'n'],
+    [4,2,5e-21,'2p'],[4,3,53.22*D,'b+'],[4,4,8.2e-17,'a'],[4,5,0,''],[4,6,1.39e6*Y,'b-'],[4,7,13.8,'b-'],
+    [5,3,0.770,'b+'],[5,4,8e-19,'p'],[5,5,0,''],[5,6,0,''],[5,7,0.0202,'b-'],[5,8,0.0173,'b-'],
+    [6,2,3.5e-21,'2p'],[6,3,0.1265,'b+'],[6,4,19.3,'b+'],[6,5,20.36*MN,'b+'],[6,6,0,''],[6,7,0,''],[6,8,5730*Y,'b-'],[6,9,2.449,'b-'],[6,10,0.747,'b-'],
+    [7,3,U,'p'],[7,4,U,'p'],[7,5,0.011,'b+'],[7,6,9.965*MN,'b+'],[7,7,0,''],[7,8,0,''],[7,9,7.13,'b-'],[7,10,4.17,'b-'],
+    [8,4,1e-21,'2p'],[8,5,0.00858,'b+'],[8,6,70.6,'b+'],[8,7,122.2,'b+'],[8,8,0,''],[8,9,0,''],[8,10,0,''],[8,11,26.9,'b-'],[8,12,13.5,'b-'],
+    [9,6,U,'p'],[9,7,U,'p'],[9,8,64.5,'b+'],[9,9,109.8*MN,'b+'],[9,10,0,''],[9,11,11.0,'b-'],[9,12,4.16,'b-'],
+    [10,6,U,'2p'],[10,8,1.67,'b+'],[10,9,17.2,'b+'],[10,10,0,''],[10,11,0,''],[10,12,0,''],[10,13,37.2,'b-'],[10,14,3.38*MN,'b-'],
+    [11,8,U,'p'],[11,10,22.5,'b+'],[11,11,2.60*Y,'b+'],[11,12,0,''],[11,13,15.0*HR,'b-'],[11,14,59.1,'b-'],
+    [12,10,3.88,'b+'],[12,11,11.3,'b+'],[12,12,0,''],[12,13,0,''],[12,14,0,''],[12,15,9.46*MN,'b-'],[12,16,20.9*HR,'b-'],
+    [13,12,7.18,'b+'],[13,13,7.17e5*Y,'b+'],[13,14,0,''],[13,15,2.24*MN,'b-'],[13,16,6.56*MN,'b-'],
+    [14,12,2.25,'b+'],[14,13,4.15,'b+'],[14,14,0,''],[14,15,0,''],[14,16,0,''],[14,17,157*MN,'b-'],[14,18,153*Y,'b-'],
+    [15,14,4.14,'b+'],[15,15,2.50*MN,'b+'],[15,16,0,''],[15,17,14.27*D,'b-'],[15,18,25.3*D,'b-'],
+    [16,14,1.18,'b+'],[16,15,2.57,'b+'],[16,16,0,''],[16,17,0,''],[16,18,0,''],[16,19,87.4*D,'b-'],[16,20,0,''],[16,21,5.05*MN,'b-'],
+    [17,16,2.51,'b+'],[17,17,1.53,'b+'],[17,18,0,''],[17,19,3.01e5*Y,'b-'],[17,20,0,''],[17,21,37.2*MN,'b-'],
+    [18,17,1.78,'b+'],[18,18,0,''],[18,19,35.0*D,'b+'],[18,20,0,''],[18,21,269*Y,'b-'],[18,22,0,''],[18,23,109.6*MN,'b-'],
+    [19,18,1.23,'b+'],[19,19,7.6*MN,'b+'],[19,20,0,''],[19,21,1.25e9*Y,'b-'],[19,22,0,''],[19,23,12.36*HR,'b-'],
+    [20,19,0.86,'b+'],[20,20,0,''],[20,21,1.0e5*Y,'b+'],[20,22,0,''],[20,23,0,''],[20,24,0,''],[20,25,163*D,'b-'],[20,26,0,''],[20,27,4.54*D,'b-'],[20,28,0,'']];
+  var DB = {}; RAW.forEach(function(r){ DB[r[0] + ',' + r[1]] = { t:r[2], m:r[3] }; });
+  function BE(Z, N){ var A = Z + N; if (A < 2) return 0;
+    var b = 15.75*A - 17.8*Math.pow(A, 2/3) - 0.711*Z*(Z - 1)/Math.pow(A, 1/3) - 23.7*(N - Z)*(N - Z)/A, d = 11.18/Math.sqrt(A);
+    if (Z % 2 === 0 && N % 2 === 0) b += d; else if (Z % 2 === 1 && N % 2 === 1) b -= d; return b; }
+  function info(Z, N){ var r = DB[Z + ',' + N], A = Z + N; if (r) return { known:true, t:r.t, m:r.m };
+    var Sn = N > 0 ? BE(Z, N) - BE(Z, N - 1) : 99, Sp = Z > 0 ? BE(Z, N) - BE(Z - 1, N) : 99;
+    if (A > 1 && (Sn < 0 || N > 2*Z + 4)) return { known:false, t:1e-21, m:'n' };
+    if (A > 1 && (Sp < 0 || Z > N + 3)) return { known:false, t:1e-21, m:'p' };
+    return { known:false, t:null, m:N > Z ? 'b-' : 'b+' }; }
+  /* ══════════ pair forces ══════════ */
+  function sStep(r){ if (r <= R1) return 1; if (r >= R2) return 0; var u = (R2 - r)/(R2 - R1); return u*u*(3 - 2*u); }
+  function fStrong(r){ if (r <= R1 || r >= R2) return 0; var u = (R2 - r)/(R2 - R1); return VP*6*u*(1 - u)/(R2 - R1); }   /* magnitude of the pull */
+  function sub(a, b){ return [a[0] - b[0], a[1] - b[1], a[2] - b[2]]; } function add(a, b){ return [a[0] + b[0], a[1] + b[1], a[2] + b[2]]; } function mul(a, k){ return [a[0]*k, a[1]*k, a[2]*k]; }
+  function len(a){ return Math.hypot(a[0], a[1], a[2]); }
+  /* all forces on a body (pos x, type t) from a list of partners [{x, t, k}] */
+  function forcesOn(x, t, partners){ var Fc = [0, 0, 0], Fs = [0, 0, 0], Uc = 0, Us = 0, pairs = [];
+    partners.forEach(function(q){ var d = sub(x, q.x), r = len(d); if (r < 1e-6) return; var e = mul(d, 1/r), pc = 0, ps = fStrong(r);
+      if (t === 'p' && q.t === 'p'){ pc = KE/(r*r); Uc += KE/r; Fc = add(Fc, mul(e, pc)); }
+      if (r < R2){ Us += -VP*sStep(r); Fs = add(Fs, mul(e, -ps)); }
+      pairs.push({ k:q.k, t:q.t, x:q.x, e:e, r:r, fc:pc, fs:ps, inRange:r < R2 }); });
+    return { Fc:Fc, Fs:Fs, Fn:add(Fc, Fs), Uc:Uc, Us:Us, pairs:pairs }; }
+  /* ══════════ nucleus state ══════════ */
+  var parts = [];
+  var SLOTS = (function(){ var s = 1.75, pts = [], n = 4; for (var i=-n; i<=n; i++) for (var j=-n; j<=n; j++) for (var k=-n; k<=n; k++){ if ((i + j + k) % 2) continue; pts.push([i*s/Math.SQRT2 + 0.013*j, j*s/Math.SQRT2 + 0.007*k, k*s/Math.SQRT2 + 0.011*i]); }
+    pts.sort(function(a, b){ return (a[0]*a[0] + a[1]*a[1] + a[2]*a[2]) - (b[0]*b[0] + b[1]*b[1] + b[2]*b[2]); }); return pts; })();
+  function centre(k){ var c = [0, 0, 0]; for (var i=0; i<k; i++) c = add(c, SLOTS[i]); return k ? mul(c, 1/k) : c; }
+  function ZN(){ var z = 0; parts.forEach(function(t){ if (t === 'p') z++; }); return [z, parts.length - z]; }
+  var inc = null, sel = -1, cam = { yaw:0.6, el:0.35 }, spin = true, animOn = true, showC = true, showS = true, showN = true, showR = true, showP = true, show3 = false, linear = false, timer = null;
+  function incDir(){ var A = parts.length, c = centre(A), s = SLOTS[A], d = sub(s, c), L = len(d); if (L < 0.3){ d = [0.6, 0.5, 0.62]; L = len(d); } return mul(d, 1/L); }
+  function incPosAt(dist){ return add(SLOTS[parts.length], mul(incDir(), dist)); }
+  function nucList(){ return parts.map(function(t, i){ return { x:SLOTS[i], t:t, k:i }; }); }
+  function incForces(dist){ if (!inc || !parts.length) return null; return forcesOn(incPosAt(dist === undefined ? inc.dist : dist), inc.type, nucList()); }
+  function selForces(){ if (sel < 0) return null; var L = nucList().filter(function(q){ return q.k !== sel; }); if (inc) L.push({ x:incPosAt(inc.dist), t:inc.type, k:-2 }); return forcesOn(SLOTS[sel], parts[sel], L); }
+  /* ══════════ colours, helpers ══════════ */
+  function pal(){ var alt = nbA11y.altPalette(); return { p:alt ? [213,94,0] : [214,48,49], n:alt ? [86,180,233] : [150,160,172], C:alt ? '#E69F00' : '#ff6b6b', S:alt ? '#009E73' : '#3ad08f', N:'#ffffff', txt:'#e6ecf2', dim:'#9aa6b4', grid:'rgba(150,170,195,0.22)', sel:'#ffd23f' }; }
+  function rgb(c, k){ return 'rgb(' + c.map(function(v){ return Math.max(0, Math.min(255, Math.round(v*k))); }).join(',') + ')'; }
+  function lbl(gx, t, x, y, col, size, al, base){ gx.font = 'bold ' + (size || 12) + 'px Arial'; gx.textAlign = al || 'center'; gx.textBaseline = base || 'middle'; gx.lineJoin = 'round'; gx.lineWidth = 3.5; gx.strokeStyle = 'rgba(0,0,0,0.85)'; gx.strokeText(t, x, y); gx.fillStyle = col; gx.fillText(t, x, y); }
+  function fmtF(F){ var a = Math.abs(F); return (a >= 10 ? a.toFixed(0) : a >= 1 ? a.toFixed(1) : a >= 0.01 ? a.toFixed(2) : a >= 0.001 ? a.toFixed(3) : '0') + ' MeV/fm'; }
+  /* ══════════ 3D view ══════════ */
+  var SC = 30, CX = 400, CY = 235, Dcam = 40, C0 = [0, 0, 0];
+  function proj(p0){ var p = sub(p0, C0), cy = Math.cos(cam.yaw), sy = Math.sin(cam.yaw), ce = Math.cos(cam.el), se = Math.sin(cam.el);
+    var x = p[0]*cy - p[2]*sy, z1 = p[0]*sy + p[2]*cy, y = p[1]*ce - z1*se, z = p[1]*se + z1*ce, f = Dcam/(Dcam - z); return [CX + x*SC*f, CY - y*SC*f, z, f]; }
+  function arrowLen(F){ var a = Math.abs(F); if (a < 1e-4) return 0; return linear ? Math.min(150, a*20) : Math.min(140, 24*Math.log(1 + a/0.004)/Math.LN10); }
+  function arrowV(o, v, col, w, alpha){ var F = len(v); var Lp = arrowLen(F); if (Lp < 3) return; var a = proj(o), b = proj(add(o, mul(v, 0.4/F))), dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy);
+    if (L < 1e-6) return; var ux = dx/L, uy = dy/L, x2 = a[0] + ux*Lp, y2 = a[1] + uy*Lp, hl = Math.min(11, Lp*0.5); g.globalAlpha = alpha || 1;
+    g.strokeStyle = col; g.fillStyle = col; g.lineWidth = w; g.beginPath(); g.moveTo(a[0], a[1]); g.lineTo(x2 - ux*hl*0.8, y2 - uy*hl*0.8); g.stroke();
+    g.beginPath(); g.moveTo(x2, y2); g.lineTo(x2 - ux*hl - uy*hl*0.55, y2 - uy*hl + ux*hl*0.55); g.lineTo(x2 - ux*hl + uy*hl*0.55, y2 - uy*hl - ux*hl*0.55); g.closePath(); g.fill(); g.globalAlpha = 1; }
+  var drawn = [];
+  function drawView(){ var p = pal(), W = cv.width, H = cv.height, A = parts.length, i;
+    var bg = g.createRadialGradient(CX, CY, 20, CX, CY, 420); bg.addColorStop(0, '#13213b'); bg.addColorStop(1, '#05080f'); g.fillStyle = bg; g.fillRect(0, 0, W, H);
+    C0 = A ? centre(A) : [0, 0, 0];
+    var items = []; for (i=0; i<A; i++) items.push({ k:i, t:parts[i], x:SLOTS[i] });
+    var IF = incForces(), SF = selForces(), ipos = null; if (inc){ ipos = A ? incPosAt(inc.dist) : SLOTS[0]; items.push({ k:-2, t:inc.type, x:ipos }); }
+    var hot = {}, sp = {}; if (IF) IF.pairs.forEach(function(q){ if (q.inRange){ hot[q.k] = true; hot[-2] = true; } }); if (SF) SF.pairs.forEach(function(q){ sp[q.k] = q; });
+    items.forEach(function(it){ it.P = proj(it.x); }); items.sort(function(a, b){ return a.P[2] - b.P[2]; }); drawn = [];
+    items.forEach(function(it){ var P = it.P, r = RBALL*SC*P[3], col = it.t === 'p' ? p.p : p.n;
+      if (showR){ var rr = (R2/2)*SC*P[3], on = hot[it.k] || it.k === sel || (sp[it.k] && sp[it.k].inRange); g.strokeStyle = on ? p.S : 'rgba(58,208,143,0.22)'; g.lineWidth = on ? 2 : 1; g.setLineDash([4, 4]); g.beginPath(); g.arc(P[0], P[1], rr, 0, TAU); g.stroke(); g.setLineDash([]);
+        if (on && it.k !== -2 && hot[it.k]){ g.fillStyle = 'rgba(58,208,143,0.10)'; g.fill(); } }
+      var gr = g.createRadialGradient(P[0] - r*0.35, P[1] - r*0.35, r*0.1, P[0], P[1], r); gr.addColorStop(0, rgb(col, 1.45)); gr.addColorStop(0.55, rgb(col, 1)); gr.addColorStop(1, rgb(col, 0.45)); g.fillStyle = gr; g.beginPath(); g.arc(P[0], P[1], r, 0, TAU); g.fill();
+      if (it.k === sel){ g.strokeStyle = p.sel; g.lineWidth = 3; g.stroke(); }
+      else if (SF && sp[it.k]){ var q = sp[it.k]; if (q.inRange){ g.strokeStyle = p.S; g.lineWidth = 2.5; g.stroke(); } else if (q.fc > 0){ g.strokeStyle = p.C; g.lineWidth = 2; g.setLineDash([3, 3]); g.stroke(); g.setLineDash([]); } else { g.strokeStyle = 'rgba(0,0,0,0.35)'; g.lineWidth = 1; g.stroke(); } }
+      else { g.strokeStyle = 'rgba(0,0,0,0.35)'; g.lineWidth = 1; g.stroke(); }
+      if (it.t === 'p' && r > 9){ g.fillStyle = 'rgba(255,255,255,0.85)'; g.font = 'bold ' + Math.round(r*0.9) + 'px Arial'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('+', P[0], P[1] + 1); }
+      if (it.k === -2){ g.strokeStyle = '#ffffff'; g.setLineDash([2, 3]); g.lineWidth = 1.5; g.beginPath(); g.arc(P[0], P[1], r + 3, 0, TAU); g.stroke(); g.setLineDash([]); }
+      drawn.push({ k:it.k, x:P[0], y:P[1], r:r }); });
+    /* forces: on the selected nucleon (if any), otherwise on the incoming one */
+    var who = SF ? { F:SF, x:SLOTS[sel], name:'selected ' + (parts[sel] === 'p' ? 'proton' : 'neutron') } : (IF ? { F:IF, x:ipos, name:'incoming ' + (inc.type === 'p' ? 'proton' : 'neutron') } : null);
+    if (who){ var F = who.F;
+      if (showP) F.pairs.forEach(function(q){ if (showS && q.fs > 0) arrowV(who.x, mul(q.e, -q.fs), p.S, 1.5, 0.75); if (showC && q.fc > 0) arrowV(who.x, mul(q.e, q.fc), p.C, 1.5, 0.75); });
+      if (show3) F.pairs.forEach(function(q){ if (showS && q.fs > 0) arrowV(q.x, mul(q.e, q.fs), p.S, 1.5, 0.6); if (showC && q.fc > 0) arrowV(q.x, mul(q.e, -q.fc), p.C, 1.5, 0.6); });
+      if (showN) arrowV(who.x, F.Fn, p.N, 6);
+      if (showC) arrowV(who.x, F.Fc, p.C, 3.5); if (showS) arrowV(who.x, F.Fs, p.S, 3.5);
+      var nS = 0, nC = 0, nCfar = 0, sumS = 0, sumC = 0; F.pairs.forEach(function(q){ if (q.fs > 0){ nS++; sumS += q.fs; } if (q.fc > 0){ nC++; sumC += q.fc; if (!q.inRange) nCfar++; } });
+      var isP = (SF ? parts[sel] : inc.type) === 'p', rows = [];
+      if (showC) rows.push([p.C, isP ? (nC ? 'Coulomb: ' + nC + ' push' + (nC === 1 ? '' : 'es') + (nCfar ? ' (' + nCfar + ' from protons out of reach of the strong force)' : '') + ', total ' + fmtF(len(F.Fc)) + (nC > 1 && len(F.Fc) < 0.4*sumC ? ' (partly cancel)' : '') : 'Coulomb: none (no other proton)') : 'Coulomb: none (a neutron has no charge)']);
+      if (showS) rows.push([p.S, nS ? 'strong: ' + nS + ' pull' + (nS === 1 ? '' : 's') + ' from nucleons within reach, total ' + fmtF(len(F.Fs)) + (nS > 1 && len(F.Fs) < 0.4*sumS ? ' (pulls from all sides balance)' : '') : 'strong: none (no nucleon within reach)']);
+      if (showN) rows.push([p.N, 'net: ' + fmtF(len(F.Fn))]);
+      var bx = 10, by = H - 24 - rows.length*17; g.fillStyle = 'rgba(0,0,0,0.6)'; g.fillRect(bx - 4, by - 26, 520, rows.length*17 + 44);
+      lbl(g, 'forces on the ' + who.name + (showP ? ' (thin: each pair, thick: totals)' : ''), bx, by - 14, p.txt, 11, 'left');
+      rows.forEach(function(q, i){ g.fillStyle = q[0]; g.fillRect(bx, by + i*17 - 2, 18, 4); lbl(g, q[1], bx + 24, by + i*17, q[0], 11, 'left'); });
+      lbl(g, linear ? 'arrows to scale (linear): Coulomb arrows are tiny next to strong ones' : 'arrow lengths on a log scale (strong forces are ~10\u00d7 bigger)', bx, by + rows.length*17 + 4, p.dim, 9, 'left'); }
+    if (!A && !inc) lbl(g, 'Empty. Add a proton or a neutron.', CX, CY, p.dim, 14);
+    lbl(g, 'drag to turn \u00b7 click a nucleon to see every force on it', W - 10, 14, p.dim, 10, 'right');
+    if (showR) lbl(g, 'dashed circles: reach of the strong force (acts only where they overlap)', 10, 14, 'rgba(58,208,143,0.9)', 10, 'left');
+    lbl(g, 'nucleons 1.75 fm apart (1 fm = 10\u207b\u00b9\u2075 m)', 10, 30, p.dim, 10, 'left'); }
+  /* ══════════ energy on the way in ══════════ */
+  function drawPot(){ var p = pal(), gx = gP, W = cPot.width, H = cPot.height, L = 46, R = W - 10, T = 14, B = H - 32, i, A = parts.length;
+    gx.fillStyle = '#0b1222'; gx.fillRect(0, 0, W, H);
+    if (!A){ lbl(gx, 'Add a first nucleon: there is nothing to feel yet.', W/2, H/2, p.dim, 11); return; }
+    var t = inc ? inc.type : 'p', isP = t === 'p', L0 = nucList(), S = [], k;
+    for (k=0; k<=240; k++){ var d = DMAX*k/240, x = add(SLOTS[A], mul(incDir(), d)), F = forcesOn(x, t, L0); S.push([d, isP ? F.Uc : 0, F.Us]); }
+    var lo = Math.min(-5, Math.min.apply(null, S.map(function(q){ return q[1] + q[2]; })), Math.min.apply(null, S.map(function(q){ return q[2]; }))), hi = Math.max(5, Math.max.apply(null, S.map(function(q){ return q[1]; }))*1.2);
+    function X(d){ return L + d/DMAX*(R - L); } function Yv(u){ return B - (u - lo)/(hi - lo)*(B - T); }
+    var st = hi - lo > 60 ? 20 : 10; gx.strokeStyle = p.grid; gx.lineWidth = 1; gx.fillStyle = p.dim; gx.font = '10px monospace'; gx.textBaseline = 'alphabetic';
+    for (var u = Math.ceil(lo/st)*st; u <= hi; u += st){ var y = Yv(u); gx.beginPath(); gx.moveTo(L, y); gx.lineTo(R, y); gx.stroke(); gx.textAlign = 'right'; gx.fillText(String(u), L - 4, y + 3); }
+    for (var dd = 0; dd <= DMAX; dd += 2){ gx.textAlign = 'center'; gx.fillText(String(dd), X(dd), B + 12); }
+    gx.strokeStyle = 'rgba(255,255,255,0.5)'; gx.beginPath(); gx.moveTo(L, Yv(0)); gx.lineTo(R, Yv(0)); gx.stroke();
+    gx.fillText('distance from its place in the nucleus (fm)', (L + R)/2, H - 4); gx.save(); gx.translate(11, (T + B)/2); gx.rotate(-Math.PI/2); gx.fillText('energy (MeV)', 0, 0); gx.restore();
+    var dS = 0; S.forEach(function(q){ if (q[2] < -1e-6) dS = q[0]; });
+    if (dS > 0){ gx.fillStyle = 'rgba(58,208,143,0.10)'; gx.fillRect(L, T, X(dS) - L, B - T); gx.strokeStyle = 'rgba(58,208,143,0.6)'; gx.setLineDash([3, 3]); gx.beginPath(); gx.moveTo(X(dS), T); gx.lineTo(X(dS), B); gx.stroke(); gx.setLineDash([]); lbl(gx, 'strong force reaches it', X(dS) + 3, T + 8, p.S, 9, 'left'); }
+    function curve(j, col, w, dash){ gx.strokeStyle = col; gx.lineWidth = w; gx.setLineDash(dash || []); gx.beginPath(); S.forEach(function(q, i2){ var v = j === 3 ? q[1] + q[2] : q[j], y = Yv(v); if (!i2) gx.moveTo(X(q[0]), y); else gx.lineTo(X(q[0]), y); }); gx.stroke(); gx.setLineDash([]); }
+    if (showS) curve(2, p.S, 2, [5, 3]); if (showC && isP) curve(1, p.C, 2, [5, 3]); curve(3, '#ffffff', 2.5);
+    if (isP && ZN()[0]){ var best = -1e9, bd = 0; S.forEach(function(q){ if (q[1] + q[2] > best){ best = q[1] + q[2]; bd = q[0]; } }); if (bd > 0.05 && bd < DMAX - 0.1){ gx.fillStyle = p.C; gx.beginPath(); gx.arc(X(bd), Yv(best), 3.5, 0, TAU); gx.fill(); lbl(gx, 'Coulomb barrier \u2248 ' + best.toFixed(1) + ' MeV', X(bd) + 6, Yv(best) - 10, p.C, 10, 'left'); } }
+    lbl(gx, (isP ? 'incoming proton' : 'incoming neutron') + ': white = total' + (showS ? ', green = strong' : '') + (showC && isP ? ', red = Coulomb' : ''), L + 4, B - 8, p.dim, 9, 'left');
+    if (inc){ var F2 = incForces(), xm = X(inc.dist), ym = Yv((isP ? F2.Uc : 0) + F2.Us); gx.fillStyle = p.sel; gx.beginPath(); gx.arc(xm, ym, 5, 0, TAU); gx.fill(); gx.strokeStyle = '#000'; gx.lineWidth = 1; gx.stroke(); } }
+  /* ══════════ energy levels ══════════ */
+  var LV = [['1s\u00bd', 2], ['1p\u00b3\u2044\u2082', 4], ['1p\u00bd', 2], ['1d\u2075\u2044\u2082', 6], ['2s\u00bd', 2], ['1d\u00b3\u2044\u2082', 4], ['1f\u2077\u2044\u2082', 8]], OSC = [0, 1, 1.4, 2, 2.35, 2.7, 3.1];
+  function levelOf(idx){ var c = 0; for (var i=0; i<LV.length; i++){ c += LV[i][1]; if (idx < c) return i; } return LV.length - 1; }
+  function typeIndex(k){ var n = 0; for (var i=0; i<k; i++) if (parts[i] === parts[k]) n++; return n; }
+  function levE(lv, zn, A){ var hw = 41*Math.pow(A, -1/3), top = Math.max(zn[0] ? levelOf(zn[0] - 1) : 0, zn[1] ? levelOf(zn[1] - 1) : 0); return -8 - hw*(OSC[top] - OSC[lv]); }
+  function drawLev(){ var p = pal(), gx = gL, W = cLev.width, H = cLev.height, zn = ZN(), A = Math.max(1, parts.length);
+    gx.fillStyle = '#0b1222'; gx.fillRect(0, 0, W, H);
+    var T = 12, B = H - 24, Emin = -62, Emax = 6; function Yv(e){ return B - (Math.max(Emin, Math.min(Emax, e)) - Emin)/(Emax - Emin)*(B - T); }
+    gx.fillStyle = 'rgba(255,255,255,0.05)'; gx.fillRect(40, T, W - 46, Yv(0) - T);
+    gx.strokeStyle = 'rgba(255,255,255,0.5)'; gx.setLineDash([3, 3]); gx.lineWidth = 1; gx.beginPath(); gx.moveTo(40, Yv(0)); gx.lineTo(W - 6, Yv(0)); gx.stroke(); gx.setLineDash([]);
+    lbl(gx, 'not bound above 0', W - 8, T + 6, p.dim, 9, 'right');
+    gx.fillStyle = p.dim; gx.font = '10px monospace'; gx.textAlign = 'right'; gx.textBaseline = 'alphabetic'; [-60, -50, -40, -30, -20, -10, 0].forEach(function(e){ gx.fillText(String(e), 34, Yv(e) + 3); });
+    gx.save(); gx.translate(9, (T + B)/2); gx.rotate(-Math.PI/2); gx.textAlign = 'center'; gx.fillText('energy (MeV)', 0, 0); gx.restore();
+    var COLS = [[52, 172, 'protons', 'p', zn[0]], [236, 356, 'neutrons', 'n', zn[1]]], sk = sel >= 0 ? typeIndex(sel) : -1, slv = sel >= 0 ? levelOf(sk) : -1, st = sel >= 0 ? parts[sel] : null;
+    var maxLv = Math.min(LV.length - 1, Math.max(levelOf(Math.max(zn[0], zn[1])), 1) + 1);
+    COLS.forEach(function(c){ var isP = c[3] === 'p', count = c[4], filled = 0; lbl(gx, c[2] + ' (' + count + ')', (c[0] + c[1])/2, H - 9, isP ? rgb(p.p, 1.2) : rgb(p.n, 1.3), 11);
+      for (var lv=0; lv<=maxLv; lv++){ var e = levE(lv, zn, A), y = Yv(e), n = LV[lv][1], used = Math.max(0, Math.min(n, count - filled)), isSel = st === c[3] && slv === lv;
+        gx.strokeStyle = isSel ? p.sel : 'rgba(255,255,255,0.75)'; gx.lineWidth = isSel ? 3 : 1.5; gx.beginPath(); gx.moveTo(c[0], y); gx.lineTo(c[1], y); gx.stroke();
+        if (isP){ gx.fillStyle = p.dim; gx.font = '9px Arial'; gx.textAlign = 'center'; gx.fillText(LV[lv][0], 204, y + 3); }
+        for (var j=0; j<n; j++){ var x = c[0] + 7 + j*(c[1] - c[0] - 14)/Math.max(1, n - 1), on = j < used, me = isSel && (filled + j) === sk; gx.beginPath(); gx.arc(x, y - 4.5, me ? 5 : 3.2, 0, TAU);
+          if (on){ gx.fillStyle = me ? p.sel : (isP ? rgb(p.p, 1.2) : rgb(p.n, 1.3)); gx.fill(); } else { gx.strokeStyle = 'rgba(255,255,255,0.3)'; gx.lineWidth = 1; gx.stroke(); } }
+        filled += n; if ([2, 8, 20, 28].indexOf(filled) >= 0 && lv < maxLv) lbl(gx, 'magic ' + filled, c[1] + (isP ? -2 : 4), y - 11, '#ffd23f', 8, isP ? 'right' : 'left'); } });
+    el('nbLvT').textContent = sel >= 0 ? 'Energy levels \u2014 selected ' + (st === 'p' ? 'proton' : 'neutron') + ' (yellow): ' + LV[slv][0] + ' level, about ' + levE(slv, zn, A).toFixed(0) + ' MeV' : 'Energy levels (shell model, schematic) \u2014 click a nucleon'; }
+  /* ══════════ chart of nuclides ══════════ */
+  var CH = { L:40, T:12, cw:0, ch:0 };
+  function modeCol(m, stable){ var alt = nbA11y.altPalette(); if (stable) return '#111111'; if (m === 'b-') return alt ? '#0072B2' : '#3a7bd5'; if (m === 'b+') return alt ? '#E69F00' : '#e05a47'; if (m === 'a') return '#f0c419'; return alt ? '#999999' : '#5d6878'; }
+  function drawChart(){ var p = pal(), gx = gC, W = cCh.width, H = cCh.height, zn = ZN(), z, n;
+    gx.fillStyle = '#0b1222'; gx.fillRect(0, 0, W, H); CH.cw = (W - CH.L - 160)/(NMAX + 1); CH.ch = (H - CH.T - 26)/(ZMAX + 1);
+    function X(n){ return CH.L + n*CH.cw; } function Yz(z){ return H - 26 - (z + 1)*CH.ch; }
+    for (z=0; z<=ZMAX; z++) for (n=0; n<=NMAX; n++){ var r = DB[z + ',' + n]; if (!r) continue; gx.fillStyle = modeCol(r.m, r.t === 0); gx.fillRect(X(n) + 1, Yz(z) + 1, CH.cw - 2, CH.ch - 2); if (r.t === 0){ gx.strokeStyle = '#d0d6e0'; gx.lineWidth = 1; gx.strokeRect(X(n) + 1.5, Yz(z) + 1.5, CH.cw - 3, CH.ch - 3); } }
+    gx.strokeStyle = 'rgba(255,255,255,0.35)'; gx.setLineDash([4, 4]); gx.beginPath(); gx.moveTo(X(0) + CH.cw/2, Yz(0) + CH.ch/2); gx.lineTo(X(ZMAX) + CH.cw/2, Yz(ZMAX) + CH.ch/2); gx.stroke(); gx.setLineDash([]); lbl(gx, 'N = Z', X(ZMAX) - 4, Yz(ZMAX) + CH.ch/2, p.dim, 9, 'right');
+    gx.fillStyle = p.dim; gx.font = '9px monospace'; gx.textBaseline = 'alphabetic';
+    for (n=0; n<=NMAX; n += 2){ gx.textAlign = 'center'; gx.fillText(String(n), X(n) + CH.cw/2, H - 14); }
+    for (z=0; z<=ZMAX; z += 2){ gx.textAlign = 'right'; gx.fillText(SYM[z] + ' ' + z, CH.L - 3, Yz(z) + CH.ch/2 + 3); }
+    gx.textAlign = 'center'; gx.fillText('N (neutrons) \u2192', (CH.L + X(NMAX + 1))/2, H - 2);
+    [2, 8, 20, 28].forEach(function(m){ gx.strokeStyle = 'rgba(255,210,63,0.4)'; gx.lineWidth = 1; if (m <= NMAX){ gx.beginPath(); gx.moveTo(X(m) + CH.cw/2, Yz(ZMAX)); gx.lineTo(X(m) + CH.cw/2, Yz(0) + CH.ch); gx.stroke(); } if (m <= ZMAX){ gx.beginPath(); gx.moveTo(X(0), Yz(m) + CH.ch/2); gx.lineTo(X(NMAX + 1), Yz(m) + CH.ch/2); gx.stroke(); } });
+    if (parts.length){ gx.strokeStyle = p.sel; gx.lineWidth = 3; gx.strokeRect(X(zn[1]) - 1, Yz(zn[0]) - 1, CH.cw + 2, CH.ch + 2); }
+    var lx = W - 150, ly = 18; [['stable', '#111111', true], ['\u03b2\u207b (too many n)', modeCol('b-'), false], ['\u03b2\u207a / EC (too many p)', modeCol('b+'), false], ['\u03b1 (splits)', modeCol('a'), false], ['not bound (p or n flies off)', modeCol('n'), false]].forEach(function(q, i){
+      gx.fillStyle = q[1]; gx.fillRect(lx, ly + i*20, 14, 14); if (q[2]){ gx.strokeStyle = '#d0d6e0'; gx.strokeRect(lx + 0.5, ly + i*20 + 0.5, 13, 13); } lbl(gx, q[0], lx + 20, ly + i*20 + 7, p.txt, 10, 'left'); });
+    lbl(gx, 'yellow lines: magic numbers', lx, ly + 108, '#ffd23f', 9, 'left'); lbl(gx, 'click a square to build it', lx, ly + 124, p.dim, 9, 'left'); }
+  /* ══════════ stability text and identity ══════════ */
+  function fmtT(t){ if (t === 0) return 'stable'; if (t === null) return 'short-lived (not in the table)'; var a = t;
+    if (a < 1e-15) return '\u2248 ' + a.toExponential(0) + ' s'; if (a < 1e-3) return (a*1e6 >= 1 ? (a*1e6).toPrecision(2) + ' \u00b5s' : a.toExponential(1) + ' s'); if (a < 1) return (a*1000).toPrecision(3) + ' ms'; if (a < 120) return a.toPrecision(3) + ' s'; if (a < 7200) return (a/60).toPrecision(3) + ' min'; if (a < 172800) return (a/3600).toPrecision(3) + ' h'; if (a < 3.156e7) return (a/86400).toPrecision(3) + ' days'; var yy = a/3.156e7; return yy < 1e4 ? yy.toPrecision(3) + ' years' : yy.toExponential(2) + ' years'; }
+  function modeText(m){ return { 'b-':'\u03b2\u207b decay: a neutron turns into a proton (n \u2192 p + e\u207b + \u03bd\u0304)', 'b+':'\u03b2\u207a decay or electron capture: a proton turns into a neutron (p \u2192 n + e\u207a + \u03bd)', 'a':'splits into two helium-4 nuclei (\u03b1 particles)', 'n':'a neutron is not bound and flies off at once', 'p':'a proton is not bound and flies off at once', '2p':'two protons fly off at once', '':'' }[m] || m; }
+  function loveHate(){ var zn = ZN(), Z = zn[0], A = parts.length; if (Z < 3) return '';
+    var nb = 0, cnt = 0; for (var i=0; i<A; i++){ if (parts[i] !== 'p') continue; cnt++; for (var j=0; j<A; j++) if (j !== i && len(sub(SLOTS[i], SLOTS[j])) < R2) nb++; }
+    return ' <b>Love\u2013hate:</b> each proton is pulled by only about ' + (nb/cnt).toFixed(0) + ' neighbours within reach, but pushed by all ' + (Z - 1) + ' other protons. Every proton added adds a push felt everywhere; every neutron added adds pulls and no push.'; }
+  function update(){ var zn = ZN(), Z = zn[0], N = zn[1], A = Z + N, it = info(Z, N), be = BE(Z, N);
+    var nm = A === 0 ? '\u2014' : (Z === 0 ? (N === 1 ? 'free neutron' : N + ' neutrons') : NAME[Z] + '-' + A);
+    el('nbId').innerHTML = A === 0 ? '<b>empty</b>' : '<b>' + (Z ? '<sup>' + A + '</sup>' + SYM[Z] : nm) + '</b><span>' + nm + '</span><span class="nb_tagx' + '">Z = ' + Z + ' protons \u00b7 N = ' + N + ' neutrons \u00b7 A = ' + A + '</span><span class="nb_tagx' + '">half-life: ' + fmtT(it.t) + '</span>';
+    var s = [];
+    if (A === 0) s.push('Start by adding a proton or a neutron.');
+    else if (A === 1) s.push(Z ? 'A single proton is the nucleus of <b>hydrogen-1</b>: it is <b>stable</b> on its own.' : 'A <b>free neutron</b> is not stable: it \u03b2\u207b-decays into a proton with a half-life of about 10 minutes. Inside a nucleus it can be stable.');
+    else {
+      if (it.t === 0) s.push((Z === 20 && N === 28 ? '<b>Practically stable</b> (its double-beta decay takes about 6\u00d710\u00b9\u2079 years). ' : '<b>Stable.</b> ') + (Z % 2 === 0 && N % 2 === 0 ? 'Even numbers of protons and of neutrons: every nucleon is paired, which adds to the binding. ' : Z % 2 === 1 && N % 2 === 1 ? 'Odd-odd stable nuclei are rare (only a few light ones). ' : '') + ([2, 8, 20, 28].indexOf(Z) >= 0 || [2, 8, 20, 28].indexOf(N) >= 0 ? 'A magic number (' + ([2, 8, 20, 28].indexOf(Z) >= 0 ? 'Z = ' + Z : 'N = ' + N) + ') gives a full shell: extra stable.' : ''));
+      else if (it.m === 'n' || it.m === 'p' || it.m === '2p') s.push('<b>Not bound.</b> ' + modeText(it.m).replace(/^a/, 'A').replace(/^t/, 'T') + ' (in about 10\u207b\u00b2\u00b9 s): ' + (it.m === 'n' ? 'there are too many neutrons for the protons to hold.' : 'there are too many protons: their Coulomb repulsion wins over the strong force.'));
+      else if (it.m === 'a') s.push('<b>Barely unstable.</b> Beryllium-8 has slightly less energy as two helium-4 nuclei, so it ' + modeText('a') + ' in ' + fmtT(it.t) + '.');
+      else s.push('<b>Radioactive</b>, half-life ' + fmtT(it.t) + (it.known ? '' : ' (estimate)') + ': ' + (it.m === 'b-' ? 'too many neutrons for its protons, so ' : 'too many protons for its neutrons, so ') + modeText(it.m) + ', moving it toward the stable squares (black) on the chart.' + (it.t !== null && it.t > 3.156e7*1000 ? ' The decay is very slow because the change in energy is small.' : ''));
+      s.push('Binding energy (liquid-drop estimate): ' + Math.max(0, be).toFixed(1) + ' MeV, ' + (Math.max(0, be)/A).toFixed(2) + ' MeV per nucleon. N/Z = ' + (Z ? (N/Z).toFixed(2) : '\u221e') + '.' + loveHate()); }
+    el('nbStab').innerHTML = s.join(' ');
+    var st = '';
+    if (sel >= 0){ var SF = selForces(), tk = parts[sel], nS = 0, nSp = 0, nSn = 0, nC = 0, nCf = 0; SF.pairs.forEach(function(q){ if (q.fs > 0){ nS++; if (q.t === 'p') nSp++; else nSn++; } if (q.fc > 0){ nC++; if (!q.inRange) nCf++; } });
+      st = 'selected ' + (tk === 'p' ? 'proton' : 'neutron') + ' (' + LV[levelOf(typeIndex(sel))][0] + ' level): pulled by ' + nS + ' neighbour' + (nS === 1 ? '' : 's') + ' within reach (' + nSp + ' p, ' + nSn + ' n)' + (tk === 'p' ? ', pushed by ' + nC + ' other proton' + (nC === 1 ? '' : 's') + (nCf ? ', ' + nCf + ' of them too far to pull' : '') : ', pushed by none') + (len(SF.Fs) < 0.4*SF.pairs.reduce(function(a, q){ return a + q.fs; }, 0) && nS > 2 ? '. Surrounded on all sides, its pulls balance' : nS ? '. Its pulls point mostly inward' : '') + '. (A very short-range repulsion, not drawn, stops touching nucleons from overlapping.)'; }
+    else if (inc && A){ var F = incForces(), out = (F.Fn[0]*incDir()[0] + F.Fn[1]*incDir()[1] + F.Fn[2]*incDir()[2]) > 0;
+      st = 'incoming ' + (inc.type === 'p' ? 'proton' : 'neutron') + ' ' + inc.dist.toFixed(1) + ' fm from its place: ' + (inc.type === 'p' ? 'Coulomb push ' + fmtF(len(F.Fc)) + ', ' : 'no Coulomb force, ') + (len(F.Fs) > 0 ? 'strong pull ' + fmtF(len(F.Fs)) : 'no strong force yet') + ' \u2192 ' + (len(F.Fn) < 1e-4 ? 'no net force' : out ? 'pushed away' : 'pulled in') + '; energy ' + (F.Uc*(inc.type === 'p' ? 1 : 0) + F.Us).toFixed(1) + ' MeV'; }
+    else st = 'Add a nucleon, then bring it in with \u25b6 or the distance slider; click a nucleon to see every force on it.';
+    el('nbStatus').textContent = st;
+    var busy = !!inc; el('nbAddP').disabled = busy || Z >= ZMAX; el('nbAddN').disabled = busy || N >= NMAX; el('nbRemP').disabled = busy || Z === 0; el('nbRemN').disabled = busy || N === 0;
+    el('nbGo').disabled = !inc; el('nbIn').disabled = !inc; el('nbOut').disabled = !inc; el('nbCancel').disabled = !inc;
+    var ds = el('nbDist'); ds.disabled = !inc; ds.parentNode.classList.toggle('nb_off', !inc); ds.value = inc ? inc.dist : DMAX; el('nbDistVal').textContent = inc ? inc.dist.toFixed(1) + ' fm' : '\u2014';
+    ds.setAttribute('aria-valuetext', inc ? inc.dist.toFixed(1) + ' femtometres' : 'no incoming nucleon'); }
+  function all(){ drawView(); drawPot(); drawLev(); drawChart(); update(); }
+  /* ══════════ building ══════════ */
+  function start(t){ if (inc) return; if (!parts.length){ parts.push(t); sel = -1; all(); say(); return; } inc = { type:t, dist:DMAX }; all();
+    nbA11y.narrate('A ' + (t === 'p' ? 'proton' : 'neutron') + ' waits ' + DMAX + ' fm away, too far for the strong force: its dashed circle does not touch any other. ' + (t === 'p' ? 'It already feels a small Coulomb push from the ' + ZN()[0] + ' proton(s), which grows as it comes closer.' : 'A neutron has no charge, so it feels no force at all yet.') + ' Press play or move it closer.');
+    if (animOn) go(); }
+  function finish(){ parts.push(inc.type); var t = inc.type; inc = null; stopAnim(); all(); say(t); }
+  function say(t){ var zn = ZN(), it = info(zn[0], zn[1]), A = parts.length; nbA11y.narrate((t ? 'The ' + (t === 'p' ? 'proton' : 'neutron') + ' joined. ' : '') + 'Now ' + A + ' nucleon' + (A > 1 ? 's' : '') + ': ' + (zn[0] ? NAME[zn[0]] + '-' + A : 'no protons') + ', ' + (it.t === 0 ? 'stable.' : 'half-life ' + fmtT(it.t) + '.')); }
+  var saidS = false;
+  function go(){ if (!inc) return; if (timer){ stopAnim(); return; } var b = el('nbGo'); b.setAttribute('aria-pressed', 'true'); b.setAttribute('aria-label', 'Pause'); saidS = false;
+    (function tick(){ if (!inc) return; inc.dist = Math.max(0, inc.dist - (0.1 + 0.02*inc.dist)); var F = incForces();
+      if (!saidS && len(F.Fs) > 0){ saidS = true; nbA11y.narrate('The dashed circles now overlap: the strong force switches on and ' + (inc.type === 'p' ? 'quickly overwhelms the Coulomb push.' : 'pulls the neutron in; nothing pushes it away.')); }
+      all(); if (inc.dist <= 0){ finish(); return; } timer = window.setTimeout(tick, 45); })(); }
+  function stopAnim(){ if (timer){ window.clearTimeout(timer); timer = null; } var b = el('nbGo'); b.setAttribute('aria-pressed', 'false'); b.setAttribute('aria-label', 'Bring the nucleon in'); }
+  function setNucleus(Z, N){ stopAnim(); inc = null; sel = -1; parts = []; var z = 0, n = 0;
+    while (z < Z || n < N){ if (z < Z && (z*(N + 1) <= n*(Z + 1) || n >= N)){ parts.push('p'); z++; } else { parts.push('n'); n++; } } all(); say(); }
+  function remove(t){ for (var i=parts.length - 1; i>=0; i--) if (parts[i] === t){ parts.splice(i, 1); break; } sel = -1; all(); say(); }
+  function describeF(){ var F = incForces(); if (!F) return; nbA11y.narrate(inc.dist.toFixed(1) + ' fm from its place: ' + (inc.type === 'p' ? 'Coulomb push ' + fmtF(len(F.Fc)) + ', ' : '') + (len(F.Fs) > 0 ? 'strong pull ' + fmtF(len(F.Fs)) + '.' : 'no strong force yet: the dashed circles do not overlap.')); }
+  el('nbAddP').addEventListener('click', function(){ start('p'); }); el('nbAddN').addEventListener('click', function(){ start('n'); });
+  el('nbRemP').addEventListener('click', function(){ remove('p'); }); el('nbRemN').addEventListener('click', function(){ remove('n'); });
+  el('nbGo').addEventListener('click', go);
+  el('nbIn').addEventListener('click', function(){ if (!inc) return; stopAnim(); inc.dist = Math.max(0, inc.dist - 0.25); if (inc.dist <= 0) finish(); else { all(); describeF(); } });
+  el('nbOut').addEventListener('click', function(){ if (!inc) return; stopAnim(); inc.dist = Math.min(DMAX, inc.dist + 0.25); all(); describeF(); });
+  el('nbCancel').addEventListener('click', function(){ stopAnim(); inc = null; all(); nbA11y.narrate('The incoming nucleon was sent away.'); });
+  el('nbDist').addEventListener('input', function(){ if (!inc) return; stopAnim(); inc.dist = +this.value; all(); });
+  el('nbDist').addEventListener('change', function(){ if (!inc) return; if (inc.dist <= 0) finish(); else describeF(); });
+  [['nbFC', function(v){ showC = v; }], ['nbFS', function(v){ showS = v; }], ['nbFN', function(v){ showN = v; }], ['nbFR', function(v){ showR = v; }], ['nbFP', function(v){ showP = v; }], ['nbF3', function(v){ show3 = v; }], ['nbLin', function(v){ linear = v; }], ['nbAnim', function(v){ animOn = v; }], ['nbSpin', function(v){ spin = v; }]].forEach(function(q){ el(q[0]).addEventListener('change', function(){ q[1](this.checked); all(); }); });
+  var PRE = [[1, 0], [1, 1], [2, 2], [3, 4], [4, 4], [6, 6], [6, 8], [8, 8], [10, 10], [13, 14], [19, 21], [20, 20]];
+  el('nbPre').innerHTML = PRE.map(function(q, i){ return '<button type="button" data-i="' + i + '"><sup>' + (q[0] + q[1]) + '</sup>' + SYM[q[0]] + '</button>'; }).join('');
+  [].forEach.call(el('nbPre').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ var q = PRE[+b.getAttribute('data-i')]; setNucleus(q[0], q[1]); }); });
+  function swatch(){ var p = pal(); el('nbSwC').style.background = p.C; el('nbSwS').style.background = p.S; el('nbSwN').style.background = '#333'; }
+  /* ══════════ pointer ══════════ */
+  function cpos(c, evt){ var r = c.getBoundingClientRect(); return [(evt.clientX - r.left)*c.width/r.width, (evt.clientY - r.top)*c.height/r.height]; }
+  var drag = null;
+  cv.addEventListener('pointerdown', function(evt){ var q = cpos(cv, evt); drag = { x:q[0], y:q[1], yaw:cam.yaw, el:cam.el, moved:false }; try { cv.setPointerCapture(evt.pointerId); } catch (e) {} cv.style.cursor = 'grabbing'; evt.preventDefault(); });
+  cv.addEventListener('pointermove', function(evt){ if (!drag) return; var q = cpos(cv, evt), dx = q[0] - drag.x, dy = q[1] - drag.y; if (Math.abs(dx) + Math.abs(dy) > 4) drag.moved = true; if (drag.moved){ cam.yaw = drag.yaw + dx*0.01; cam.el = Math.max(-1.4, Math.min(1.4, drag.el + dy*0.01)); drawView(); } });
+  cv.addEventListener('pointerup', function(evt){ if (!drag) return; var q = cpos(cv, evt), was = drag.moved; drag = null; cv.style.cursor = 'grab'; if (was) return;
+    var hit = -1; for (var i=drawn.length - 1; i>=0; i--){ var d = drawn[i]; if (Math.hypot(q[0] - d.x, q[1] - d.y) < d.r && d.k >= 0){ hit = d.k; break; } }
+    sel = hit === sel ? -1 : hit; all(); if (sel >= 0){ var tk = parts[sel]; nbA11y.narrate('Selected a ' + (tk === 'p' ? 'proton' : 'neutron') + '. Green rings: neighbours close enough to pull it with the strong force. ' + (tk === 'p' ? 'Red dashed rings: protons too far to pull it but still pushing it away. ' : 'As a neutron, nothing pushes it. ') + el('nbStatus').textContent.split('. (')[0] + '.'); } });
+  cv.addEventListener('pointercancel', function(){ drag = null; cv.style.cursor = 'grab'; });
+  cCh.addEventListener('click', function(evt){ var q = cpos(cCh, evt), n = Math.floor((q[0] - CH.L)/CH.cw), z = Math.floor((cCh.height - 26 - q[1])/CH.ch); if (n < 0 || n > NMAX || z < 0 || z > ZMAX || z + n === 0) return; setNucleus(z, n); });
+  cv.tabIndex = 0; cv.addEventListener('keydown', function(e){ var d = { ArrowLeft:[-0.1, 0], ArrowRight:[0.1, 0], ArrowUp:[0, -0.1], ArrowDown:[0, 0.1] }[e.key]; if (!d) return; cam.yaw += d[0]; cam.el = Math.max(-1.4, Math.min(1.4, cam.el + d[1])); drawView(); e.preventDefault(); });
+  (function idle(){ if (spin && !drag){ cam.yaw += 0.004; drawView(); } window.setTimeout(idle, 50); })();
+  nbA11y.onChange(function(){ swatch(); all(); });
+  swatch(); parts = ['p']; all();
+  nbA11y.narrate('One proton: the nucleus of hydrogen-1. Its dashed circle shows how far its strong force reaches. Add a proton or a neutron and watch the forces as it comes in.');
+  return { _parts:function(){ return parts; }, setNucleus:setNucleus, start:start, _inc:function(){ return inc; }, _IF:incForces, _SF:selForces, select:function(k){ sel = k; all(); }, finish:function(){ if (inc){ inc.dist = 0; finish(); } } };
+};
+var nbSim = new nbGen();
+</script>
+<script>nbA11y.init();</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>A conceptual model of the atomic nucleus, from one proton up to calcium (20 protons, up to 28 neutrons). Protons (red, +) and neutrons (grey) are drawn as small balls 1.75 fm apart (1 fm = 10<sup>&minus;15</sup> m).</p>
+<p><b>Two forces, acting between every pair.</b> All nucleons attract each other through the <b>strong nuclear force</b>, but only when they are very close: in the SIM, only when their dashed circles overlap (centres closer than 2.3 fm, so only nearest neighbours). Beyond that it is zero. Protons also repel each other through the <b>Coulomb</b> (electric) force, which is much weaker at contact (about a tenth of the strong pull of one neighbour) but reaches to any distance, getting weaker as `1/r^2`. Neutrons have no charge. So a neutron only ever attracts: it is the glue. Two protons have a love&ndash;hate relationship: they attract when touching but repel at any distance.</p>
+<p>Bring in a proton: from far away it feels only a small push that grows as it comes in; the moment its dashed circle overlaps another one, the strong force switches on and quickly wins. The graph shows its energy: the push makes a small hill (the <b>Coulomb barrier</b>) before the deep valley of the strong force. Click any nucleon to see every force on it, pair by pair: green rings mark the neighbours that pull it; for a proton, red dashed rings mark the protons too far away to pull it that still push it. (A very short-range repulsion, not drawn, stops touching nucleons from overlapping, which is why they don&rsquo;t collapse.) Arrow lengths are on a logarithmic scale so the small Coulomb forces can be seen; the linear option shows the true proportions.</p>
+<p><b>Why bigger nuclei need extra neutrons.</b> Each nucleon is pulled only by its few nearest neighbours, so the strong pull per nucleon soon stops growing. But each proton is pushed by <i>all</i> the other protons, so the repulsion keeps growing with every proton added. Neutrons add pull without push: that is why heavier stable nuclei have more neutrons than protons.</p>
+<p><b>Energy levels.</b> As in an atom, protons and neutrons occupy energy levels, each holding a few of them. Protons and neutrons fill separate ladders. Full shells at the <b>magic numbers</b> 2, 8, 20, 28 are especially stable. The level energies shown are schematic.</p>
+<p><b>Stability.</b> With too many neutrons, a neutron turns into a proton (&beta;<sup>&minus;</sup> decay); with too many protons, a proton turns into a neutron (&beta;<sup>+</sup> decay or electron capture); far off balance, the extra nucleon is not bound and leaves at once. Pairing (even numbers) and magic numbers add stability. Half-lives are measured values (rounded); those not in the table are estimated. Binding energies use the liquid-drop formula, a rough estimate for light nuclei. Pair forces: strong `U = -6 s(r)` MeV (`s` = 1 below 1.2 fm, 0 beyond 2.3 fm), Coulomb `U = 1.44//r` MeV (r in fm), `F = -dU//dr`.</p>
+</div>
+</div>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+</div>
+
+</body>
+</html>

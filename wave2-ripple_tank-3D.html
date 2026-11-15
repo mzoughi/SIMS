@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Waves: Ripple Tank in 3D</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobwave2rippletank3d" class="mob_wrap">
+<div id="rtRoot">
+<div class="rt_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="rt_a11ybtn" id="rtBtnHC" onclick="rtA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="rt_a11ybtn" id="rtBtnDM" onclick="rtA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="rt_a11ybtn" id="rtBtnCB" onclick="rtA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="rt_a11ybtn" id="rtBtnNR" onclick="rtA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+<div class="tbar"><h3>Ripple Tank in 3D &mdash; Interference &amp; Waves</h3></div>
+<div class="mcontent">
+<canvas id="rtCanvas" style="margin:auto;display:block;border:1px solid #ccc;touch-action:none;cursor:grab" width="800" height="620" role="img" aria-label="A 3D view of the water surface of a ripple tank, with the numbered wave sources, the diamond-shaped buoy and a dashed line along which the intensity is measured. Drag on the water to turn the view; drag a source or the buoy to move it."></canvas>
+</div>
+<div id="rtReadout" class="rt_readout"></div>
+<div id="rtNarBar" class="rt_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<div class="rt_transport" role="toolbar" aria-label="Animation and view">
+<div class="rt_tgroup">
+<button type="button" class="rt_tbtn rt_play" id="rtPlay" aria-label="Play" title="Play / Pause"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="rt_tbtn" id="rtBack" aria-label="Step back" title="Step back"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="4" y="4" width="3" height="16" fill="currentColor"/><path d="M20 4 L9 12 L20 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="rt_tbtn" id="rtStep" aria-label="Step forward" title="Step forward"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="17" y="4" width="3" height="16" fill="currentColor"/><path d="M4 4 L15 12 L4 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="rt_tbtn" id="rtRst" aria-label="Restart" title="Restart"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 5 A7 7 0 1 1 5.6 9" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M3 4 L9.5 4.5 L5.5 10 Z" fill="currentColor"/></svg></button>
+</div>
+<div class="rt_tgroup rt_tview" role="group" aria-label="View">
+<button type="button" class="rt_vbtn" id="rtV3d">3D</button>
+<button type="button" class="rt_vbtn" id="rtVtop">Top</button>
+<button type="button" class="rt_vbtn" id="rtVside">Side</button>
+</div>
+</div>
+<p class="rt_hint">Drag on the water to turn and tilt the view. Drag the numbered sources or the diamond buoy to move them. Heights are exaggerated so the waves are easy to see.</p>
+
+<div class="rt_chartwrap">
+<div class="rt_paneltitle">Buoy sensor &mdash; water level vs. time</div>
+<canvas id="rtChart" style="margin:auto;display:block;border:1px solid #ccc" width="800" height="110" role="img" aria-label="Graph of the water level at the buoy against time"></canvas>
+<div id="rtDeltaList" class="rt_deltalist"></div>
+<div class="rt_paneltitle">Intensity vs. position along the dashed line (time-averaged &mdash; compare to double-slit optics)</div>
+<canvas id="rtIntensity" style="margin:auto;display:block;border:1px solid #ccc" width="800" height="110" role="img" aria-label="Graph of the time-averaged wave intensity along the dashed line"></canvas>
+</div>
+
+<div class="rt_panels">
+<div class="rt_panel" role="group" aria-labelledby="rtHdSrc">
+<div class="rt_ptitle" id="rtHdSrc">Sources</div>
+<div class="rt_pbody">
+<div class="rt_ctrl"><div class="rt_chdr"><label for="rtCount">Number of sources</label><span class="rt_val" id="rtCountVal"></span></div><input type="range" id="rtCount" min="1" max="5" step="1" value="2"></div>
+<div class="rt_ctrl"><div class="rt_chdr"><label for="rtSpeed">Wave speed v</label><span class="rt_val" id="rtSpeedVal"></span></div><input type="range" id="rtSpeed" min="60" max="300" step="10" value="90"></div>
+<div class="rt_checks">
+<label class="rt_chk" title="When on, changing the frequency, amplitude or phase changes them for every source (positions stay independent)."><input type="checkbox" id="rtIdent" checked>Identical sources</label>
+<label class="rt_chk" title="When on, the sources stay in a row, evenly spaced; moving one moves the row."><input type="checkbox" id="rtEqui" checked>Equally spaced row</label>
+</div>
+<div class="rt_ctrl"><div class="rt_chdr"><label for="rtSep">Separation d</label><span class="rt_val" id="rtSepVal"></span></div><input type="range" id="rtSep" min="20" max="400" step="5" value="320"></div>
+</div></div>
+<div class="rt_panel" role="group" aria-labelledby="rtHdSel">
+<div class="rt_ptitle" id="rtHdSel">Selected source</div>
+<div class="rt_pbody">
+<div class="rt_seg" role="group" aria-label="Choose the source to edit" id="rtSeg"></div>
+<div class="rt_ctrl"><div class="rt_chdr"><label for="rtFreq">Frequency &fnof;</label><span class="rt_val" id="rtFreqVal"></span></div><input type="range" id="rtFreq" min="0.4" max="3.0" step="0.1" value="1.2"></div>
+<div class="rt_ctrl"><div class="rt_chdr"><label for="rtAmp">Amplitude A</label><span class="rt_val" id="rtAmpVal"></span></div><input type="range" id="rtAmp" min="4" max="20" step="1" value="10"></div>
+<div class="rt_ctrl"><div class="rt_chdr"><label for="rtPhase">Phase &phi;</label><span class="rt_val" id="rtPhaseVal"></span></div><input type="range" id="rtPhase" min="0" max="360" step="5" value="0"></div>
+<div class="rt_ctrl"><div class="rt_chdr"><label for="rtSrcX">Position x</label><span class="rt_val" id="rtSrcXVal"></span></div><input type="range" id="rtSrcX" min="0" max="800" step="5" value="240"></div>
+<div class="rt_ctrl"><div class="rt_chdr"><label for="rtSrcY">Position y</label><span class="rt_val" id="rtSrcYVal"></span></div><input type="range" id="rtSrcY" min="0" max="800" step="5" value="0"></div>
+</div></div>
+<div class="rt_panel" role="group" aria-labelledby="rtHdBuoy">
+<div class="rt_ptitle" id="rtHdBuoy">Buoy (sensor)</div>
+<div class="rt_pbody">
+<div class="rt_ctrl"><div class="rt_chdr"><label for="rtBuoyX">Position x</label><span class="rt_val" id="rtBuoyXVal"></span></div><input type="range" id="rtBuoyX" min="0" max="800" step="5" value="400"></div>
+<div class="rt_ctrl"><div class="rt_chdr"><label for="rtBuoyY">Position y</label><span class="rt_val" id="rtBuoyYVal"></span></div><input type="range" id="rtBuoyY" min="0" max="800" step="5" value="520"></div>
+<div class="rt_checks"><label class="rt_chk"><input type="checkbox" id="rtDist">Show source&rarr;buoy distances</label></div>
+</div></div>
+<div class="rt_panel" role="group" aria-labelledby="rtHdView">
+<div class="rt_ptitle" id="rtHdView">View</div>
+<div class="rt_pbody">
+<div class="rt_ctrl"><div class="rt_chdr"><label for="rtYaw">Turn</label><span class="rt_val" id="rtYawv"></span></div><input type="range" id="rtYaw" min="-180" max="180" step="1" value="-28"></div>
+<div class="rt_ctrl"><div class="rt_chdr"><label for="rtEl">Tilt</label><span class="rt_val" id="rtElv"></span></div><input type="range" id="rtEl" min="6" max="90" step="1" value="36"></div>
+<div class="rt_ctrl"><div class="rt_chdr"><label for="rtZx">Height exaggeration</label><span class="rt_val" id="rtZxv"></span></div><input type="range" id="rtZx" min="1" max="12" step="1" value="5"></div>
+</div></div>
+</div>
+</div>
+<style>
+:where(#mobwave2rippletank3d) * { margin:0; box-sizing:border-box; }
+#mobwave2rippletank3d { width:100%; max-width:806px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; }
+#mobwave2rippletank3d canvas { max-width:100%; height:auto; }
+#rtRoot .rt_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#rtRoot .rt_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#rtRoot .rt_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+.tbar { padding:4px; background-color:#f90; text-align:center; }
+.tbar h3 { font-size:1.1rem; font-weight:bold; line-height:28px; }
+.mcontent { background:#0b1830; }
+.rt_readout { color:#222; font-size:.8rem; font-family:monospace; text-align:center; background:#fff6d9; padding:4px 6px; }
+.rt_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+.rt_tgroup { display:flex; gap:6px; flex-wrap:nowrap; }
+.rt_tview { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:460px) { .rt_tview { padding-left:0; border-left:0; } }
+.rt_tbtn { width:44px; height:38px; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer; border:1px solid #6d8a3a; border-radius:5px; background:#fff; color:#223; }
+.rt_tbtn.rt_play { background:#2e7d32; color:#fff; border-color:#1b5e20; }
+.rt_tbtn.rt_play[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+.rt_vbtn { min-width:52px; height:38px; padding:0 10px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; }
+.rt_vbtn[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+.rt_tbtn:hover, .rt_vbtn:hover { filter:brightness(.95); }
+.rt_hint { font-size:.74rem; color:#555; font-style:italic; padding:6px 12px; background:#eef3e2; line-height:1.4; }
+.rt_chartwrap { background:#0b1830; padding:6px 0 6px; }
+.rt_paneltitle { max-width:786px; margin:2px auto 4px; color:#a9c6e8; font-size:.78rem; text-align:center; }
+.rt_deltalist { max-width:786px; margin:4px auto 8px; color:#ffe08a; font-size:.78rem; font-family:monospace; text-align:center; min-height:1.2em; }
+.rt_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:10px; padding:10px; }
+.rt_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+.rt_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+.rt_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; }
+.rt_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+.rt_ctrl.rt_off { opacity:.45; }
+.rt_chdr { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+.rt_chdr label { font-size:.82rem; font-weight:bold; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+.rt_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; flex:0 0 auto; min-width:4.5em; text-align:right; }
+.rt_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+.rt_checks { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 8px; }
+.rt_chk { display:flex; align-items:center; gap:5px; font-size:.82rem; cursor:pointer; white-space:nowrap; }
+.rt_seg { display:flex; gap:4px; flex-wrap:wrap; }
+.rt_segb { flex:1 1 0; min-width:36px; height:32px; border:2px solid #999; border-radius:5px; background:#fff; font-weight:bold; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:4px; }
+.rt_segb[aria-pressed="true"] { border-color:#223; background:#223; color:#fff; }
+.rt_segb:disabled { opacity:.3; cursor:not-allowed; }
+.rt_sw { display:inline-block; width:10px; height:10px; border:1px solid #000; border-radius:50%; }
+#mobwave2rippletank3d button:focus-visible, #mobwave2rippletank3d input:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (max-width:420px) { .rt_checks { grid-template-columns:minmax(0,1fr); } .rt_tbtn { width:40px; } }
+@media (pointer:coarse) { .rt_tbtn, .rt_vbtn { height:44px; } .rt_segb { height:40px; } #mobwave2rippletank3d input[type=checkbox] { width:20px; height:20px; } #mobwave2rippletank3d input[type=range] { height:28px; } }
+#mobwave2rippletank3d .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobwave2rippletank3d .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobwave2rippletank3d .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobwave2rippletank3d .mob_desc p { margin:0 0 8px 0; }
+#mobwave2rippletank3d .mob_eq { text-align:center; }
+#mobwave2rippletank3d.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobwave2rippletank3d.a11y_dm canvas, #mobwave2rippletank3d.a11y_dm [aria-label="Display options"], #mobwave2rippletank3d.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobwave2rippletank3d.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobwave2rippletank3d.a11y_hc canvas, #mobwave2rippletank3d.a11y_hc [aria-label="Display options"], #mobwave2rippletank3d.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+</style>
+<script>
+var rtA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return;
+  b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobwave2rippletank3d'); if (!W) return;
+  W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc); W.classList.toggle('a11y_cb', states.cb);
+  var nb = document.getElementById('rtNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+  var nr = document.getElementById('rtBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+  styleBtn('rtBtnHC', states.hc); styleBtn('rtBtnDM', states.dm); styleBtn('rtBtnCB', states.cb); styleBtn('rtBtnNR', states.nr);
+  hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return {
+  init:function(){ apply(); },
+  onChange:function(f){ hooks.push(f); },
+  toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply();
+    if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: the water is coloured from blue (troughs) through white to orange (crests).'); },
+  altPalette:function(){ return states.hc || states.cb; }, isHC:function(){ return states.hc; }, isCB:function(){ return states.cb; },
+  isNarOn:function(){ return states.nr; },
+  narrate:function(msg){ if (!states.nr) return; var nb = document.getElementById('rtNarBar'); if (nb) nb.textContent = msg; }
+};
+})();
+</script>
+
+<!-- ════════ SIMULATION (3D version) ════════
+Point sources: h = sum of A/sqrt(1 + r/80) sin(k r - w t + phi), k = 2 pi f/v (exact distances, no Fresnel/Fraunhofer approximation).
+Identical sources: frequency, amplitude and phase are shared by all sources (positions independent).
+Equally spaced row: source i at (x1 + i d, y1); moving any source moves the row.
+No dollar signs or backticks in the code.
+-->
+<script>
+var rtGen3 = function() {
+  var canvas = document.getElementById('rtCanvas'), ctx = canvas.getContext('2d');
+  var W = 800, H = 800;
+  var chartCanvas = document.getElementById('rtChart'), chartCtx = chartCanvas.getContext('2d'), CW = chartCanvas.width, CH = chartCanvas.height;
+  var intensityCanvas = document.getElementById('rtIntensity'), intensityCtx = intensityCanvas.getContext('2d'), IW = intensityCanvas.width, IH = intensityCanvas.height;
+  var readoutEl = document.getElementById('rtReadout'), timer, runFlag = 0;
+  /* ══════════ 3D view: a perspective camera over the tank (world: x, y in mm as in the top view, z up) ══════════ */
+  function make3D(cv, W, H){
+    var VW = cv.width, VH = cv.height, DEG = Math.PI/180;
+    var cam = { yaw:-28*DEG, el:36*DEG, zx:5 };
+    var span = Math.max(W, H), D = span*2.4, F = 0, OY = 0;
+    function fitF(){ var c = [[0,0],[W,0],[W,H],[0,H]], ys, top, bot;
+      F = D*0.86*VW/Math.hypot(W, H); OY = 0; ys = c.map(function(q){ return P(q[0], q[1], 0)[1]; }); top = Math.min.apply(null, ys); bot = Math.max.apply(null, ys);
+      var hspan = bot - top, room = VH*0.86; if (hspan > room) F *= room/hspan; ys = c.map(function(q){ return P(q[0], q[1], 0)[1]; }); top = Math.min.apply(null, ys); bot = Math.max.apply(null, ys);
+      OY = VH/2 - (top + bot)/2 + VH*0.02; }
+    function P(x, y, z){ var X = x - W/2, Y = y - H/2, Z = (z || 0)*cam.zx, cy = Math.cos(cam.yaw), sy = Math.sin(cam.yaw);
+      var xp = X*cy - Y*sy, yp = X*sy + Y*cy, se = Math.sin(cam.el), ce = Math.cos(cam.el), sd = yp*se - Z*ce, dep = D - (yp*ce + Z*se);
+      return [VW/2 + F*xp/dep, VH/2 + OY + F*sd/dep, dep]; }
+    function U(sx, sy){ var a = (sx - VW/2)/F, b = (sy - VH/2 - OY)/F, se = Math.sin(cam.el), ce = Math.cos(cam.el), den = se + b*ce;
+      if (Math.abs(den) < 1e-6) return null; var yp = b*D/den, dep = D - yp*ce; if (dep <= 0) return null; var xp = a*dep, cy = Math.cos(cam.yaw), sy = Math.sin(cam.yaw);
+      return [xp*cy + yp*sy + W/2, -xp*sy + yp*cy + H/2]; }
+    fitF();
+    return { cam:cam, P:P, U:U, refit:fitF, set:function(o){ if (o.yaw !== undefined) cam.yaw = o.yaw; if (o.el !== undefined) cam.el = Math.max(6*DEG, Math.min(90*DEG, o.el)); if (o.zx !== undefined) cam.zx = o.zx; fitF(); } };
+  }
+  function drawSurface(ctx, V, NX, NY, W, H, field, colour, amp, light, ambient){
+    var n = (NX + 1)*(NY + 1), sx = new Float32Array(n), sy = new Float32Array(n), dp = new Float32Array(n), hh = new Float32Array(n), sh = new Float32Array(n), i, j, k = 0;
+    for (j=0; j<=NY; j++) for (i=0; i<=NX; i++, k++){ var x = W*i/NX, y = H*j/NY, f = field(x, y), p = V.P(x, y, f.h);
+      sx[k] = p[0]; sy[k] = p[1]; dp[k] = p[2]; hh[k] = f.h;
+      var nx = -f.gx*V.cam.zx, ny = -f.gy*V.cam.zx, nl = Math.sqrt(nx*nx + ny*ny + 1); sh[k] = ambient + (1 - ambient)*Math.max(0, (nx*light[0] + ny*light[1] + light[2])/nl); }
+    var q = [], NQ = NX*NY; for (j=0; j<NY; j++) for (i=0; i<NX; i++){ var a = j*(NX + 1) + i; q.push([a, dp[a] + dp[a + 1] + dp[a + NX + 1] + dp[a + NX + 2]]); }
+    q.sort(function(A, B){ return B[1] - A[1]; });
+    ctx.lineWidth = 0.9; ctx.lineJoin = 'round';
+    for (var m=0; m<NQ; m++){ var a2 = q[m][0], b = a2 + 1, c = a2 + NX + 2, d = a2 + NX + 1, tn = Math.max(-1, Math.min(1, (hh[a2] + hh[b] + hh[c] + hh[d])/(4*amp))), s = (sh[a2] + sh[b] + sh[c] + sh[d])/4, col = colour(tn, s);
+      var st = 'rgb(' + (col[0] | 0) + ',' + (col[1] | 0) + ',' + (col[2] | 0) + ')'; ctx.fillStyle = st; ctx.strokeStyle = st;
+      ctx.beginPath(); ctx.moveTo(sx[a2], sy[a2]); ctx.lineTo(sx[b], sy[b]); ctx.lineTo(sx[c], sy[c]); ctx.lineTo(sx[d], sy[d]); ctx.closePath(); ctx.fill(); ctx.stroke(); } }
+  function wireView(V, ids, redraw, say){
+    var DEG = Math.PI/180;
+    function sync(){ var y = document.getElementById(ids.yaw), e = document.getElementById(ids.el), z = document.getElementById(ids.zx);
+      if (y){ y.value = Math.round(V.cam.yaw/DEG); document.getElementById(ids.yaw + 'v').textContent = Math.round(V.cam.yaw/DEG) + '\u00B0'; }
+      if (e){ e.value = Math.round(V.cam.el/DEG); document.getElementById(ids.el + 'v').textContent = Math.round(V.cam.el/DEG) + '\u00B0'; }
+      if (z){ z.value = V.cam.zx; document.getElementById(ids.zx + 'v').textContent = '\u00D7' + V.cam.zx; } }
+    function on(id, ev, fn){ var x = document.getElementById(id); if (x) x.addEventListener(ev, fn); }
+    on(ids.yaw, 'input', function(){ V.set({ yaw:+this.value*DEG }); sync(); redraw(); });
+    on(ids.el, 'input', function(){ V.set({ el:+this.value*DEG }); sync(); redraw(); });
+    on(ids.zx, 'input', function(){ V.set({ zx:+this.value }); sync(); redraw(); });
+    on(ids.v3d, 'click', function(){ V.set({ yaw:-28*DEG, el:36*DEG }); sync(); redraw(); say('3D view: the water surface seen at an angle; crests rise, troughs dip.'); });
+    on(ids.top, 'click', function(){ V.set({ yaw:0, el:90*DEG }); sync(); redraw(); say('Top view: looking straight down on the water, as in the flat version.'); });
+    on(ids.side, 'click', function(){ V.set({ yaw:0, el:12*DEG }); sync(); redraw(); say('Low side view: the heights of crests and troughs are easiest to see.'); });
+    sync(); return { sync:sync };
+  }
+
+  var V = make3D(canvas, W, H), NG = 72, DEG = Math.PI/180;
+  var COLS = ['#E69F00','#56B4E9','#009E73','#D55E00','#0072B2'];
+  var C_WAVE = 90, t = 0, dt = 0.04, trate = 40, frameCount = 0, narrationEvery = 25;
+  var LIGHT = (function(){ var x = -0.5, y = -0.4, z = 0.75, l = Math.sqrt(x*x + y*y + z*z); return [x/l, y/l, z/l]; })(), AMBIENT = 0.35;
+  var MAXS = 5, activeCount = 2, sel = 0, sources = [], showDistances = false, identical = true, equi = true, separation = 320, effSep = 320;
+  var DEFPOS = [[240, 0], [560, 0], [400, 0], [100, 0], [700, 0]];
+  var buoy = { x:400, y:520 }, WINDOW_SECS = 6, history = [];
+  var ROW_Y = H*0.90, N_X = 200, intensityAlpha = 0.03, intensityEMA = new Float64Array(N_X);
+  var dragIndex = -1, rot = null, marks = [];
+  function el(id){ return document.getElementById(id); }
+  function defaults(){ sources = DEFPOS.map(function(p){ return { x:p[0], y:p[1], phase:0, freq:1.2, amp:10 }; }); }
+  function resetIntensity(){ intensityEMA = new Float64Array(N_X); }
+  /* the equally spaced row: source i at (x1 + i d, y1), kept inside the tank */
+  function applyRow(){ if (!equi) { effSep = separation; return; } var n = activeCount, s = separation; if (n > 1 && (n - 1)*s > W) s = W/(n - 1); effSep = s;
+    var x0 = Math.max(0, Math.min(W - (n - 1)*s, sources[0].x)), y0 = Math.max(0, Math.min(H, sources[0].y));
+    for (var i=0; i<n; i++){ sources[i].x = x0 + i*s; sources[i].y = y0; } }
+  function placeSource(k, x, y){ x = Math.max(0, Math.min(W, x)); y = Math.max(0, Math.min(H, y));
+    if (equi){ sources[0].x = x - k*effSep; sources[0].y = y; applyRow(); } else { sources[k].x = x; sources[k].y = y; } }
+  function setProp(key, v){ if (identical){ for (var i=0; i<MAXS; i++) sources[i][key] = v; } else sources[sel][key] = v; }
+  function sampleField(px, py, time){ var h = 0, gx = 0, gy = 0;
+    for (var i=0; i<activeCount; i++){ var s = sources[i], k = 2*Math.PI*s.freq/C_WAVE, om = 2*Math.PI*s.freq, dx = px - s.x, dy = py - s.y, r = Math.sqrt(dx*dx + dy*dy), rr = Math.max(r, 4);
+      var env = s.amp/Math.sqrt(1 + rr/80), denv = s.amp*(-0.5/80)/Math.pow(1 + rr/80, 1.5), ph = k*rr - om*time + s.phase, sn = Math.sin(ph), cs = Math.cos(ph);
+      h += env*sn; var d = denv*sn + env*k*cs; gx += d*dx/rr; gy += d*dy/rr; }
+    return { h:h, gx:gx, gy:gy }; }
+  function heightAt(px, py, time){ return sampleField(px, py, time).h; }
+  function wavelengthOf(s){ return C_WAVE/s.freq; }
+  function ampClamp(){ var m = 1e-3; for (var i=0; i<activeCount; i++) m = Math.max(m, sources[i].amp); return m; }
+  function lerp3(a, b, u){ return [a[0] + (b[0] - a[0])*u, a[1] + (b[1] - a[1])*u, a[2] + (b[2] - a[2])*u]; }
+  function palR(tn, sh){ var c = tn < 0 ? lerp3([20,110,170], [8,40,90], -tn) : lerp3([20,110,170], [190,230,255], tn); return [c[0]*sh, c[1]*sh, c[2]*sh]; }
+  function palD(tn, sh){ var c = tn < 0 ? lerp3([240,240,240], [0,114,178], -tn) : lerp3([240,240,240], [230,159,0], tn), s = 0.7 + 0.3*sh; return [c[0]*s, c[1]*s, c[2]*s]; }
+  function degOf(ph){ var d = Math.round(ph/DEG) % 360; return d < 0 ? d + 360 : d; }
+  /* ══════════ drawing ══════════ */
+  function drawWalls(){ var d = -24, c = [[0,0],[W,0],[W,H],[0,H]], faces = [], i;
+    for (i=0; i<4; i++){ var a = c[i], b = c[(i + 1) % 4], pa = V.P(a[0], a[1], 0), pb = V.P(b[0], b[1], 0), qa = V.P(a[0], a[1], d), qb = V.P(b[0], b[1], d); faces.push([pa, pb, qb, qa, (pa[2] + pb[2])/2]); }
+    faces.sort(function(A, B){ return B[4] - A[4]; });
+    faces.forEach(function(f){ ctx.fillStyle = '#123a5e'; ctx.strokeStyle = '#6f8fb0'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(f[0][0], f[0][1]); ctx.lineTo(f[1][0], f[1][1]); ctx.lineTo(f[2][0], f[2][1]); ctx.lineTo(f[3][0], f[3][1]); ctx.closePath(); ctx.fill(); ctx.stroke(); }); }
+  function drawSampleRow(){ ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,0.8)'; ctx.lineWidth = 1.5; ctx.setLineDash([6, 5]); ctx.beginPath();
+    for (var i=0; i<=80; i++){ var x = W*i/80, p = V.P(x, ROW_Y, heightAt(x, ROW_Y, t) + 0.6); if (i) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); } ctx.stroke(); ctx.restore(); }
+  function dists(){ var a = []; for (var i=0; i<activeCount; i++) a.push(Math.hypot(buoy.x - sources[i].x, buoy.y - sources[i].y)); return a; }
+  function deltaLines(){ var d = dists(), lines = [];
+    for (var i=0; i<activeCount; i++) for (var j=i + 1; j<activeCount; j++) if (Math.abs(sources[i].freq - sources[j].freq) < 1e-9){
+      var dphi = degOf(sources[j].phase - sources[i].phase); lines.push('\u0394d(' + (i + 1) + ',' + (j + 1) + ') = ' + ((d[j] - d[i])/wavelengthOf(sources[i])).toFixed(2) + '\u03bb, \u0394\u03c6 = ' + dphi + '\u00b0'); }
+    return lines; }
+  function drawMarkers(){ var amp = ampClamp(), bh = heightAt(buoy.x, buoy.y, t), bp = V.P(buoy.x, buoy.y, bh), lift = 14, items = []; marks = [];
+    for (var i=0; i<activeCount; i++){ var s = sources[i], base = V.P(s.x, s.y, 0), top = V.P(s.x, s.y, amp*1.1); top[1] -= lift; items.push({ k:i, base:base, top:top, dep:base[2] }); }
+    items.push({ k:5, base:bp, top:[bp[0], bp[1] - 18, bp[2]], dep:bp[2] });
+    if (showDistances){ var d = dists(); for (var j=0; j<activeCount; j++){ var it = items[j]; ctx.save(); ctx.strokeStyle = COLS[j]; ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
+        ctx.beginPath(); ctx.moveTo(it.top[0], it.top[1]); ctx.lineTo(bp[0], bp[1] - 18); ctx.stroke(); ctx.restore();
+        var lx = (it.top[0] + bp[0])/2, ly = (it.top[1] + bp[1] - 18)/2 - 4, tx = 'd' + (j + 1) + ' = ' + d[j].toFixed(0) + ' mm';
+        ctx.font = 'bold 12px Calibri'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.75)'; ctx.strokeText(tx, lx, ly); ctx.fillStyle = COLS[j]; ctx.fillText(tx, lx, ly); } }
+    items.sort(function(A, B){ return B.dep - A.dep; });
+    items.forEach(function(it){
+      if (it.k === 5){ var r = 11, x = it.top[0], y = it.top[1]; ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(it.base[0], it.base[1]); ctx.lineTo(x, y); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x, y - r); ctx.lineTo(x + r, y); ctx.lineTo(x, y + r); ctx.lineTo(x - r, y); ctx.closePath(); ctx.fillStyle = '#ff4d4d'; ctx.fill(); ctx.lineWidth = 1.5; ctx.stroke(); marks.push({ k:5, x:x, y:y }); return; }
+      var isSel = it.k === sel; ctx.strokeStyle = '#dfe8f2'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(it.base[0], it.base[1]); ctx.lineTo(it.top[0], it.top[1]); ctx.stroke();
+      ctx.beginPath(); ctx.arc(it.top[0], it.top[1], isSel ? 11 : 9, 0, 2*Math.PI); ctx.fillStyle = COLS[it.k]; ctx.fill(); ctx.strokeStyle = isSel ? '#ffffff' : '#000'; ctx.lineWidth = isSel ? 2.5 : 1.5; ctx.stroke();
+      ctx.fillStyle = '#000'; ctx.font = 'bold 11px Calibri'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(it.k + 1), it.top[0], it.top[1] + 1); marks.push({ k:it.k, x:it.top[0], y:it.top[1] }); }); }
+  function drawFrame(){ var useAlt = rtA11y.altPalette();
+    var bg = ctx.createLinearGradient(0, 0, 0, canvas.height); bg.addColorStop(0, '#05101f'); bg.addColorStop(1, '#16324f'); ctx.fillStyle = bg; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    drawWalls(); drawSurface(ctx, V, NG, NG, W, H, function(x, y){ return sampleField(x, y, t); }, useAlt ? palD : palR, ampClamp(), LIGHT, AMBIENT);
+    drawSampleRow(); drawMarkers();
+    var dl = deltaLines(), box = el('rtDeltaList'); box.textContent = dl.length ? dl.join('   |   ') : (activeCount > 1 ? '\u0394d readout appears when two active sources share a frequency.' : '');
+    ctx.fillStyle = 'rgba(220,235,255,0.8)'; ctx.font = '12px Arial'; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; ctx.fillText('heights \u00D7' + V.cam.zx + ' \u00B7 t = ' + t.toFixed(2) + ' s', 10, canvas.height - 10); }
+  function drawChart(){ chartCtx.fillStyle = '#0b1830'; chartCtx.fillRect(0, 0, CW, CH); var midY = CH/2;
+    chartCtx.strokeStyle = '#55607a'; chartCtx.lineWidth = 1; chartCtx.beginPath(); chartCtx.moveTo(0, midY); chartCtx.lineTo(CW, midY); chartCtx.stroke();
+    var scaleY = (CH*0.42)/Math.max(ampClamp()*1.6, 1e-3), tMin = t - WINDOW_SECS, first = true;
+    chartCtx.beginPath(); for (var i=0; i<history.length; i++){ var p = history[i]; if (p.t < tMin) continue; var x = ((p.t - tMin)/WINDOW_SECS)*CW, y = Math.max(2, Math.min(CH - 2, midY - p.h*scaleY)); if (first){ chartCtx.moveTo(x, y); first = false; } else chartCtx.lineTo(x, y); }
+    chartCtx.strokeStyle = rtA11y.isHC() ? '#ffff00' : '#4fd1ff'; chartCtx.lineWidth = rtA11y.isHC() ? 3 : 2; chartCtx.stroke(); updateReadout(); }
+  function drawIntensity(){ intensityCtx.fillStyle = '#0b1830'; intensityCtx.fillRect(0, 0, IW, IH); var maxI = 1e-9, k; for (k=0; k<N_X; k++) if (intensityEMA[k] > maxI) maxI = intensityEMA[k];
+    var baseY = IH - 8, topM = 8; intensityCtx.strokeStyle = '#55607a'; intensityCtx.lineWidth = 1; intensityCtx.beginPath(); intensityCtx.moveTo(0, baseY); intensityCtx.lineTo(IW, baseY); intensityCtx.stroke();
+    intensityCtx.beginPath(); for (var i=0; i<N_X; i++){ var x = (i + 0.5)*(IW/N_X), y = baseY - intensityEMA[i]/maxI*(baseY - topM); if (i === 0) intensityCtx.moveTo(x, y); else intensityCtx.lineTo(x, y); }
+    intensityCtx.strokeStyle = rtA11y.isHC() ? '#ffff00' : '#4fd1ff'; intensityCtx.lineWidth = rtA11y.isHC() ? 3 : 2; intensityCtx.stroke(); }
+  function updateReadout(){ var s = sources[sel], h = heightAt(buoy.x, buoy.y, t);
+    readoutEl.textContent = 'Source ' + (sel + 1) + ': f = ' + s.freq.toFixed(1) + ' Hz, \u03bb \u2248 ' + wavelengthOf(s).toFixed(0) + ' mm, A = ' + s.amp.toFixed(0) + ' mm, \u03c6 = ' + degOf(s.phase) + '\u00b0  |  buoy: ' + (h >= 0 ? '+' : '') + h.toFixed(1) + ' mm'; }
+  function classify(h){ var f = Math.abs(h)/Math.max(ampClamp(), 1e-3); if (f > 0.7) return h > 0 ? 'near a crest' : 'near a trough'; if (f < 0.2) return 'near a node (little motion)'; return 'partway between a node and an extreme'; }
+  function sceneNarration(){ var h = heightAt(buoy.x, buoy.y, t); rtA11y.narrate('Buoy reading ' + h.toFixed(1) + ' mm, ' + classify(h) + '. ' + activeCount + ' source' + (activeCount > 1 ? 's' : '') + (identical ? ', identical' : '') + (equi && activeCount > 1 ? ', in a row ' + effSep.toFixed(0) + ' mm apart' : '') + '.'); }
+  function updateIntensity(){ for (var k=0; k<N_X; k++){ var x = (k + 0.5)*(W/N_X), h = heightAt(x, ROW_Y, t); intensityEMA[k] = intensityEMA[k]*(1 - intensityAlpha) + h*h*intensityAlpha; } }
+  function physicsStep(){ t += dt; history.push({ t:t, h:heightAt(buoy.x, buoy.y, t) }); var cut = t - WINDOW_SECS - 1; while (history.length && history[0].t < cut) history.shift(); updateIntensity(); }
+  function all(){ drawFrame(); drawChart(); drawIntensity(); }
+  /* ══════════ dragging ══════════ */
+  function cpos(evt){ var r = canvas.getBoundingClientRect(); return { x:(evt.clientX - r.left)*canvas.width/r.width, y:(evt.clientY - r.top)*canvas.height/r.height }; }
+  function hitTest(p){ var best = -1, bd = 20; marks.forEach(function(m){ var d = Math.hypot(p.x - m.x, p.y - m.y); if (d < bd){ bd = d; best = m.k; } }); return best; }
+  canvas.addEventListener('pointerdown', function(evt){ var p = cpos(evt); dragIndex = hitTest(p); try { canvas.setPointerCapture(evt.pointerId); } catch (e) {}
+    if (dragIndex >= 0 && dragIndex < 5){ sel = dragIndex; sync(); }
+    if (dragIndex < 0) rot = { x:p.x, y:p.y, yaw:V.cam.yaw, el:V.cam.el }; canvas.style.cursor = 'grabbing'; evt.preventDefault(); });
+  canvas.addEventListener('pointermove', function(evt){ var p = cpos(evt);
+    if (rot){ V.set({ yaw:rot.yaw + (p.x - rot.x)*0.008, el:rot.el + (p.y - rot.y)*0.006 }); VW.sync(); syncViewBtns(); drawFrame(); return; }
+    if (dragIndex < 0) return; var off = dragIndex === 5 ? 18 : 0, w = V.U(p.x, p.y + off); if (!w) return;
+    if (dragIndex === 5){ buoy.x = Math.max(0, Math.min(W, w[0])); buoy.y = Math.max(0, Math.min(H, w[1])); }
+    else { placeSource(dragIndex, w[0], w[1]); resetIntensity(); }
+    sync(); drawFrame(); if (dragIndex === 5) drawChart(); });
+  function endDrag(){ canvas.style.cursor = 'grab'; if (rot){ rot = null; return; } if (dragIndex < 0) return; var msg = dragIndex === 5 ? 'Buoy moved.' : (equi ? 'Row of sources moved.' : 'Source ' + (dragIndex + 1) + ' moved.'); dragIndex = -1; rtA11y.narrate(msg); }
+  canvas.addEventListener('pointerup', endDrag); canvas.addEventListener('pointercancel', endDrag);
+  /* ══════════ controls ══════════ */
+  var SL = [
+    ['rtCount', 'rtCountVal', function(){ return activeCount; }, function(v){ activeCount = Math.max(1, Math.min(MAXS, Math.round(v))); if (sel >= activeCount) sel = 0; applyRow(); resetIntensity(); }, function(v){ return String(v); }],
+    ['rtSpeed', 'rtSpeedVal', function(){ return C_WAVE; }, function(v){ C_WAVE = Math.max(10, v); resetIntensity(); }, function(v){ return Math.round(v) + ' mm/s'; }],
+    ['rtSep', 'rtSepVal', function(){ return separation; }, function(v){ separation = Math.max(1, v); applyRow(); resetIntensity(); }, function(v){ return equi ? Math.round(effSep) + ' mm' + (effSep < separation - 0.5 ? ' (max)' : '') : '\u2014'; }],
+    ['rtFreq', 'rtFreqVal', function(){ return sources[sel].freq; }, function(v){ setProp('freq', Math.max(0.1, v)); resetIntensity(); }, function(v){ return (+v).toFixed(1) + ' Hz'; }],
+    ['rtAmp', 'rtAmpVal', function(){ return sources[sel].amp; }, function(v){ setProp('amp', Math.max(1, v)); resetIntensity(); }, function(v){ return Math.round(v) + ' mm'; }],
+    ['rtPhase', 'rtPhaseVal', function(){ return degOf(sources[sel].phase); }, function(v){ setProp('phase', v*DEG); resetIntensity(); }, function(v){ return Math.round(v) + '\u00b0'; }],
+    ['rtSrcX', 'rtSrcXVal', function(){ return Math.round(sources[sel].x); }, function(v){ placeSource(sel, v, sources[sel].y); resetIntensity(); }, function(v){ return Math.round(v) + ' mm'; }],
+    ['rtSrcY', 'rtSrcYVal', function(){ return Math.round(sources[sel].y); }, function(v){ placeSource(sel, sources[sel].x, v); resetIntensity(); }, function(v){ return Math.round(v) + ' mm'; }],
+    ['rtBuoyX', 'rtBuoyXVal', function(){ return Math.round(buoy.x); }, function(v){ buoy.x = Math.max(0, Math.min(W, v)); }, function(v){ return Math.round(v) + ' mm'; }],
+    ['rtBuoyY', 'rtBuoyYVal', function(){ return Math.round(buoy.y); }, function(v){ buoy.y = Math.max(0, Math.min(H, v)); }, function(v){ return Math.round(v) + ' mm'; }]];
+  function speak(tx){ return tx.replace('mm/s', 'millimetres per second').replace(' mm', ' millimetres').replace('Hz', 'hertz').replace('\u00b0', ' degrees'); }
+  var seg = el('rtSeg');
+  seg.innerHTML = [0, 1, 2, 3, 4].map(function(i){ return '<button type="button" class="rt_segb" data-i="' + i + '" aria-label="Source ' + (i + 1) + '"><span class="rt_sw" style="background:' + COLS[i] + '"></span>' + (i + 1) + '</button>'; }).join('');
+  [].forEach.call(seg.querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ sel = +b.getAttribute('data-i'); sync(); drawFrame(); updateReadout(); rtA11y.narrate('Now editing source ' + (sel + 1) + (identical ? ' (identical sources: frequency, amplitude and phase change for all).' : '.')); }); });
+  function sync(){ SL.forEach(function(q){ var v = q[2](), e = el(q[0]), tx = q[4](v); e.value = v; e.setAttribute('aria-valuetext', speak(tx)); el(q[1]).textContent = tx; });
+    [].forEach.call(seg.querySelectorAll('button'), function(b){ var i = +b.getAttribute('data-i'); b.disabled = i >= activeCount; b.setAttribute('aria-pressed', i === sel ? 'true' : 'false'); });
+    el('rtSep').disabled = !equi; el('rtSep').parentNode.classList.toggle('rt_off', !equi);
+    el('rtIdent').checked = identical; el('rtEqui').checked = equi; el('rtDist').checked = showDistances; }
+  SL.forEach(function(q){ var e = el(q[0]); e.addEventListener('input', function(){ q[3](parseFloat(this.value)); sync(); all(); }); e.addEventListener('change', sceneNarration); });
+  el('rtIdent').addEventListener('change', function(){ identical = this.checked; if (identical){ var s = sources[sel]; for (var i=0; i<MAXS; i++){ sources[i].freq = s.freq; sources[i].amp = s.amp; sources[i].phase = s.phase; } resetIntensity(); }
+    sync(); all(); rtA11y.narrate(identical ? 'Identical sources: every source now has source ' + (sel + 1) + '\u2019s frequency, amplitude and phase, and changing one changes all. Positions stay independent.' : 'Sources can now be set individually.'); });
+  el('rtEqui').addEventListener('change', function(){ equi = this.checked; applyRow(); resetIntensity(); sync(); all(); rtA11y.narrate(equi ? 'Equally spaced row: the sources are lined up ' + Math.round(effSep) + ' mm apart, starting from source 1. Moving any source moves the row.' : 'Sources can now be moved individually.'); });
+  el('rtDist').addEventListener('change', function(){ showDistances = this.checked; drawFrame(); rtA11y.narrate(showDistances ? 'Distance lines shown: each runs from a source to the buoy, labelled with its length.' : 'Distance lines hidden.'); });
+  /* ══════════ animation ══════════ */
+  var playBtn = el('rtPlay'), PLAYI = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor"/></svg>', PAUSEI = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>';
+  function setPlayUI(){ var on = runFlag === 1; playBtn.innerHTML = on ? PAUSEI : PLAYI; playBtn.setAttribute('aria-label', on ? 'Pause' : 'Play'); playBtn.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+  function runMotion(){ physicsStep(); all(); frameCount++; if (frameCount % narrationEvery === 0) sceneNarration(); if (runFlag === 1) timer = window.setTimeout(runMotion, trate); }
+  function pl(){ window.clearTimeout(timer); runFlag = 1; setPlayUI(); runMotion(); }
+  function ps(){ window.clearTimeout(timer); runFlag = 0; setPlayUI(); }
+  function step(){ ps(); physicsStep(); all(); sceneNarration(); }
+  function stepBack(){ ps(); t = Math.max(0, t - dt); history.push({ t:t, h:heightAt(buoy.x, buoy.y, t) }); updateIntensity(); all(); sceneNarration(); }
+  function rst(){ ps(); defaults(); activeCount = 2; C_WAVE = 90; identical = true; equi = true; separation = 320; showDistances = false; sel = 0; buoy.x = 400; buoy.y = 520; applyRow();
+    t = 0; history = [{ t:0, h:heightAt(buoy.x, buoy.y, 0) }]; frameCount = 0; resetIntensity(); sync(); all();
+    rtA11y.narrate('Ready: two identical sources at the edge of the tank, 320 mm apart; waves travel at 90 mm/s. Drag on the water to turn the view, then press play.'); }
+  playBtn.addEventListener('click', function(){ if (runFlag === 1) ps(); else pl(); });
+  el('rtBack').addEventListener('click', stepBack); el('rtStep').addEventListener('click', step); el('rtRst').addEventListener('click', rst);
+  function syncViewBtns(){ var c = V.cam, is3 = Math.abs(c.yaw + 28*DEG) < 0.01 && Math.abs(c.el - 36*DEG) < 0.01, isT = Math.abs(c.yaw) < 0.01 && Math.abs(c.el - 90*DEG) < 0.01, isS = Math.abs(c.yaw) < 0.01 && Math.abs(c.el - 12*DEG) < 0.01;
+    el('rtV3d').setAttribute('aria-pressed', is3 ? 'true' : 'false'); el('rtVtop').setAttribute('aria-pressed', isT ? 'true' : 'false'); el('rtVside').setAttribute('aria-pressed', isS ? 'true' : 'false'); }
+  var VW = wireView(V, { yaw:'rtYaw', el:'rtEl', zx:'rtZx', v3d:'rtV3d', top:'rtVtop', side:'rtVside' }, function(){ syncViewBtns(); drawFrame(); }, function(m){ rtA11y.narrate(m); });
+  rtA11y.onChange(function(){ all(); });
+  rst(); syncViewBtns();
+  return { pl:pl, ps:ps, step:step, stepBack:stepBack, rst:rst, _V:V, _marks:function(){ return marks; }, _src:function(){ return sources.slice(0, activeCount); } };
+};
+var rtSim = new rtGen3();
+</script>
+<script>rtA11y.init();</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>Up to five point sources make circular waves on the water of a ripple tank, each with its own frequency, amplitude, phase and position. The water surface is shown in 3D: crests rise and troughs dip (the heights are exaggerated so they are easy to see). Turn and tilt the view by dragging on the water, or use the 3D, Top and Side buttons next to the play controls. The top view looks like a photograph of a real ripple tank.</p>
+<p>It starts with two identical sources at the edge of the tank, 320 mm apart. &ldquo;Identical sources&rdquo; makes every source share the frequency, amplitude and phase of the one you edit (their positions stay independent). &ldquo;Equally spaced row&rdquo; keeps the sources in a row with the chosen separation; dragging any source then moves the whole row.</p>
+<p>Where waves from two sources overlap they interfere: crest on crest builds a bigger wave, crest on trough cancels it. For two sources with the same frequency, at a point whose distances to them differ by `Delta d`, and with a phase difference `Delta phi` between the sources,</p>
+<p class="mob_eq">constructive: `(2 pi Delta d)/lambda - Delta phi = 2 pi m`,&nbsp;&nbsp; destructive: `(2 pi Delta d)/lambda - Delta phi = (2m + 1) pi`,&nbsp;&nbsp; `lambda = v/f`.</p>
+<p>With the sources in phase (`Delta phi = 0`) this is `Delta d = m lambda` and `Delta d = (m + 1/2) lambda`. Changing the phase of one source shifts the whole pattern sideways. In the 3D view, the lines of destructive interference (nodal lines) are where the water stays flat. The buoy records the water level at one point over time, and the intensity along the dashed line shows the bright and dark bands, the same pattern as light through a double slit.</p>
+</div>
+</div>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+</div>
+
+</body>
+</html>
