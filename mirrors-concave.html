@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Optics: Concave Mirrors</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="snellRoot" class="sn_root" role="region" aria-label="Concave Mirrors simulator">
+<!-- ── Accessibility toolbar ── -->
+<div class="sn_a11y" id="snellA11yBar" role="toolbar" aria-label="Display options">
+<button type="button" class="sn_a11ybtn" id="snBtnHC" onclick="snellA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="sn_a11ybtn" id="snBtnLM" onclick="snellA11y.toggle('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="sn_a11ybtn" id="snBtnCB" onclick="snellA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="sn_a11ybtn sn_a11yon" id="snBtnNR" onclick="snellA11y.toggle('nr')" aria-pressed="true">NARRATION: ON</button>
+</div>
+<!-- Header -->
+<div class="sn_header">
+<div class="tbar"><H3>Concave Mirrors</H3></div>
+<p class="sn_sub">A converging mirror: real and virtual images, a screen, and an eye</p>
+</div>
+<!-- Ray diagram -->
+<div class="sn_diagpanel">
+<div class="sn_diaglabel"><b>RAY DIAGRAM</b><span class="sn_diagnote">use the sliders below to move the object, the screen and the eye, and to change the mirror</span></div>
+<div class="mcontent">
+<canvas id="cv" width="820" height="380" role="img" aria-label="Ray diagram: the object on the left in front of a concave mirror on the right, three principal rays reflected by the mirror, the focal point F and the centre of curvature C, and the image (dashed when virtual, behind the mirror)."></canvas>
+</div>
+</div>
+<div class="sn_grid">
+<div class="sn_leftcol">
+<div class="sn_panel" role="group" aria-label="Small views">
+<div class="sn_paneltitle">Object, eye and screen</div>
+<div class="sn_views">
+<figure class="sn_view"><figcaption>Object</figcaption><canvas id="cvo" width="192" height="192" role="img" aria-label="The object as it is"></canvas></figure>
+<figure class="sn_view"><figcaption>What the eye sees</figcaption><canvas id="cve" width="192" height="192" role="img" aria-label="What the eye sees in the mirror"></canvas></figure>
+<figure class="sn_view"><figcaption>On the screen</figcaption><canvas id="cvi" width="192" height="192" role="img" aria-label="What appears on the screen"></canvas></figure>
+</div>
+</div>
+<div class="sn_readout" id="snRead" aria-live="off"></div>
+<!-- Narration bar -->
+<div id="snNarBar" class="sn_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+</div>
+<div class="sn_rightcol">
+<div class="sn_panel" role="group" aria-label="Controls">
+<div class="sn_paneltitle">Controls</div>
+<div class="sn_panelbody">
+<div class="sn_objrow">
+<label for="snObj">The object in the small views</label>
+<select id="snObj" onchange="mirObj.set(this.value, function(){ Mirror.rst(); })">
+<option value="F">The letter F</option>
+<option value="clown">The clown</option>
+</select>
+</div>
+<div class="bbbar">
+<div class="left sn_cell">
+Move Screen:
+<input class="zslider" type="range" id="screenSlider" min="10" max="270" step="1" value="150" aria-label="screen distance in front of the mirror, cm"
+ oninput="Mirror.moveScreen(this.value)" onchange="Mirror.moveScreen(this.value)">
+<span class="txtDPL"><span id="screenPositionValue">150</span> cm</span>
+<br>Move Eye:
+<input class="zslider" type="range" id="eyeSlider" min="10" max="270" step="1" value="250" aria-label="eye distance in front of the mirror, cm"
+ oninput="Mirror.moveEye(this.value)" onchange="Mirror.moveEye(this.value)">
+<span class="txtDPL"><span id="EyePositionValue">250</span> cm</span>
+</div>
+<div class="right sn_cell">
+<input type="checkbox" id="myCheck" onchange="Mirror.rst();">
+<label for="myCheck"><span>More rays</span></label>
+</div>
+</div>
+<div class="sbbar">
+<div class="left">Measure `x`</div>
+<div class="centerL sn_cell">
+<input class="slider" type="range" id="MeasXSlider" min="-110" max="290" step="1" value="100" aria-label="measuring line, distance from the mirror in cm (positive in front)"
+ oninput="Mirror.moveMeasX(this.value)" onchange="Mirror.moveMeasX(this.value)">
+<span class="txtDPL"><span id="MeasXValue">100</span> cm</span>
+</div>
+<div class="centerR">Measure `y`</div>
+<div class="right sn_cell">
+<input class="slider" type="range" id="MeasYSlider" min="-90" max="90" step="1" value="40" aria-label="measuring line, height in mm"
+ oninput="Mirror.moveMeasY(this.value)" onchange="Mirror.moveMeasY(this.value)">
+<span class="txtDPL"><span id="MeasYValue">40</span> mm</span>
+</div>
+</div>
+<div class="bbar">
+<div class="left">Object</div>
+<div class="centerL sn_cell">
+`p_o = `<input class="slider" type="range" id="dObjectValue" min="10" max="250" value="80" step="1" aria-label="object distance in cm"
+ oninput="Mirror.showdObject(this.value)" onchange="Mirror.showdObject(this.value)">
+<span class="txtDPL"><span id="initialdObjectValue">80</span> cm</span>
+<span class="sn_br"></span>`h_o = `<input class="slider" type="range" id="hObjectValue" min="-40" max="40" value="20" step="2" aria-label="object height in mm"
+ oninput="Mirror.showhObject(this.value)" onchange="Mirror.showhObject(this.value)">
+<span class="txtDPL"><span id="initialhObjectValue">20</span> mm</span>
+</div>
+<div class="centerR">Mirror</div>
+<div class="right sn_cell">
+`d_f = `<input class="slider" type="range" id="fValue" min="20" max="100" value="50" step="1" aria-label="focal length magnitude in cm"
+ oninput="Mirror.showf(this.value)" onchange="Mirror.showf(this.value)">
+<span class="txtDPL"><span id="initialfValue">50</span> cm</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- SIM description -->
+<div class="sn_descwrap">
+<button type="button" class="sn_descbtn" id="snDescBtn" aria-expanded="false" aria-controls="snDesc" onclick="snDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="sn_desc" id="snDesc" role="region" aria-labelledby="snDescBtn" style="display:none">
+<p>This simulation shows how a concave (converging) mirror forms an image. The object stands in front of the mirror, on the left; the focal point F is on the axis at the distance `f` in front of the mirror, and the centre of curvature C at `R = 2f`. Three principal rays leave the top of the object: one parallel to the axis, which is reflected through F; one through F, which is reflected parallel to the axis; and one to the centre of the mirror (the vertex), which is reflected symmetrically about the axis. Where the reflected rays meet is the image of the top of the object.</p><p>For a spherical mirror of focal length `f = R/2`, an object at the distance `p_o` in front of the mirror forms an image at the distance `p_i` given by the mirror equation</p>
+<p class="sn_eq">`1/p_o + 1/p_i = 1/f`,</p>
+<p>with the magnification</p>
+<p class="sn_eq">`m = h_i/h_o = -p_i/p_o`.</p>
+<p>A positive `p_i` is a real image in front of the mirror, where the reflected light really meets: it can be caught on a screen. A negative `p_i` is a virtual image behind the mirror: the reflected rays only seem to come from it (dashed), so it can only be seen by looking into the mirror. A negative `m` means the image is inverted. Beyond C the image is real, inverted and reduced; between C and F it is real, inverted and enlarged; at F there is no image (the reflected rays are parallel); closer than F it is virtual, upright and enlarged, like a shaving or make-up mirror.</p><p>Three small views show the object as it is, what the eye sees from its position, and what appears on the screen. The object can be shown as the letter F or as a clown; neither looks the same when it is turned around, so the views show clearly whether the image is upright or upside down. When the screen or the eye is not at the right place, the picture is blurred. The screen and the eye are placed in front of the mirror, at the distance shown on their sliders. With "More rays", many more rays from the top of the object are drawn. The measuring lines help read positions (from the mirror, positive in front) and heights on the diagram.</p>
+</div>
+</div>
+<script>
+function snDesc(){
+var b = document.getElementById('snDescBtn'), d = document.getElementById('snDesc'); if (!b || !d) return;
+var open = (d.style.display === 'none');
+d.style.display = open ? 'block' : 'none';
+b.setAttribute('aria-expanded', open ? 'true' : 'false');
+b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); }
+}
+</script>
+</div><!-- #snellRoot -->
+<style>
+#snellRoot {
+--tp-chassis:#1a1c1f; --tp-panel:#22262b; --tp-panel-hi:#2c3138; --tp-panel-lo:#14161a;
+--tp-border:#3a4048; --tp-border-hi:#525c66; --tp-text:#c8d0d8; --tp-dim:#8a94a3;
+--tp-accent:#e8a020; --tp-green:#3ad08f; --tp-val:#ffdd66;
+--tp-focus:#e8a020; --tp-nar-bg:#2a2410; --tp-nar-border:#e0b040; --tp-nar-text:#f0e2b8;
+background:var(--tp-chassis);
+background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
+font-family:Arial, sans-serif; color:var(--tp-text);
+display:flex; flex-direction:column; gap:12px; padding:16px 10px 20px; box-sizing:border-box;
+width:100%; max-width:880px; margin:0 auto 10px; border-radius:6px; position:relative;
+}
+#snellRoot.sn_lm { --tp-chassis:#e9edf1; --tp-panel:#ffffff; --tp-panel-hi:#f1f4f7; --tp-panel-lo:#f4f6f9; --tp-border:#c3cad3; --tp-border-hi:#9aa3ae; --tp-text:#1d232a; --tp-dim:#556070; --tp-accent:#a8620a; --tp-green:#12805a; --tp-val:#8a4a00; --tp-focus:#a8620a; --tp-nar-bg:#ffefc0; --tp-nar-border:#e0b040; --tp-nar-text:#333333; background-image:none; }
+#snellRoot.sn_hc { --tp-chassis:#000000; --tp-panel:#000000; --tp-panel-hi:#111111; --tp-panel-lo:#000000; --tp-border:#ffffff; --tp-border-hi:#ffffff; --tp-text:#ffffff; --tp-dim:#e0e0e0; --tp-accent:#ffd700; --tp-green:#00ff88; --tp-val:#ffff00; --tp-focus:#ffff00; --tp-nar-bg:#000000; --tp-nar-border:#ffd700; --tp-nar-text:#ffffff; background-image:none; }
+#snellRoot.sn_hc .sn_panel, #snellRoot.sn_hc .sn_diagpanel { border-width:2px; }
+#snellRoot :not(mjx-container):not(mjx-container *), #snellRoot :not(mjx-container):not(mjx-container *)::before, #snellRoot :not(mjx-container):not(mjx-container *)::after { box-sizing:border-box; margin:0; }
+#snellRoot input:focus-visible, #snellRoot button:focus-visible, #snellRoot select:focus-visible { outline:2px solid var(--tp-focus); outline-offset:2px; }
+#snellRoot .sn_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; width:100%; padding:0; background:none; }
+#snellRoot .sn_a11ybtn { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--tp-panel-hi); border:1px solid var(--tp-border-hi); color:var(--tp-dim); }
+#snellRoot .sn_a11ybtn:hover { border-color:var(--tp-accent); color:var(--tp-accent); }
+#snellRoot .sn_a11ybtn[aria-pressed="true"] { background:rgba(58,208,143,.14); border-color:var(--tp-green); color:var(--tp-green); font-weight:bold; }
+#snellRoot .tbar { height:auto; padding:0 4px; background:none; text-align:center; }
+#snellRoot .tbar h3 { font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--tp-accent); }
+#snellRoot .sn_sub { font-size:.7rem; color:var(--tp-dim); letter-spacing:.08em; text-transform:uppercase; text-align:center; margin-top:3px; }
+#snellRoot .sn_diagpanel { background:var(--tp-panel); border:1px solid var(--tp-border); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+#snellRoot .sn_diaglabel, #snellRoot .sn_paneltitle { background:var(--tp-panel-lo); border-bottom:1px solid var(--tp-border); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; color:var(--tp-dim); }
+#snellRoot .sn_diaglabel { display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+#snellRoot .sn_diaglabel b { color:var(--tp-accent); }
+#snellRoot .sn_diagnote { text-transform:none; letter-spacing:.02em; }
+#snellRoot .mcontent { height:auto; }
+#snellRoot canvas { display:block; height:auto; margin:0 auto; }
+#snellRoot .mcontent canvas { width:100%; max-width:820px; }
+#snellRoot .sn_grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:12px; }
+#snellRoot .sn_leftcol, #snellRoot .sn_rightcol { display:flex; flex-direction:column; gap:12px; min-width:0; }
+#snellRoot .sn_panel { background:var(--tp-panel); border:1px solid var(--tp-border); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.3); }
+#snellRoot .sn_panelbody { padding:9px 12px; display:flex; flex-direction:column; gap:8px; }
+#snellRoot .sn_views { display:flex; gap:8px; padding:9px; justify-content:center; }
+#snellRoot .sn_view { flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; gap:4px; }
+#snellRoot .sn_view canvas { width:100%; max-width:192px; border:2px solid var(--tp-border-hi); border-radius:3px; background:#fff; }
+#snellRoot .sn_view figcaption { font-family:monospace; font-size:.6rem; letter-spacing:.06em; text-transform:uppercase; color:var(--tp-dim); text-align:center; }
+#snellRoot .sn_readout { font-family:monospace; font-size:.78rem; line-height:1.55; color:var(--tp-val); background:var(--tp-panel); border:1px solid var(--tp-border); border-radius:6px; padding:7px 12px; }
+#snellRoot .sn_narbar { width:100%; min-height:28px; padding:6px 12px; background:var(--tp-nar-bg); border:none; border-left:4px solid var(--tp-nar-border); font-size:.82rem; color:var(--tp-nar-text); font-style:italic; line-height:1.45; border-radius:3px; }
+#snellRoot .bbbar, #snellRoot .sbbar, #snellRoot .bbar { height:auto !important; width:auto; display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; padding:8px 10px; background:var(--tp-panel-lo) !important; border:1px solid var(--tp-border); border-left:3px solid var(--tp-accent); border-radius:4px; text-align:left; font-size:.8rem; color:var(--tp-text); }
+#snellRoot .bbbar > div, #snellRoot .sbbar > div, #snellRoot .bbar > div { width:auto !important; padding:0 !important; background:none !important; flex:1 1 auto; display:flex; flex-wrap:wrap; align-items:center; gap:4px 8px; }
+#snellRoot .left, #snellRoot .centerR { font-weight:bold; color:var(--tp-dim); font-size:.74rem; flex:0 0 auto !important; }
+#snellRoot .sn_cell { flex:1 1 100% !important; font-weight:normal; color:var(--tp-text); font-size:.8rem; }
+#snellRoot .sn_br { flex-basis:100%; height:0; }
+#snellRoot .bbar > .left, #snellRoot .bbar > .centerR, #snellRoot .sbbar > .left, #snellRoot .sbbar > .centerR { flex-basis:100% !important; }
+#snellRoot .slider, #snellRoot .zslider { flex:1 1 120px; width:auto !important; min-width:0; height:auto; accent-color:var(--tp-accent); }
+#snellRoot .txtDPL { background:var(--tp-panel-hi); color:var(--tp-val); border:1px solid var(--tp-border); border-radius:3px; font-family:monospace; font-size:.76rem; width:auto; min-width:58px; height:auto; padding:2px 6px; margin-left:0; text-align:right; }
+#snellRoot input[type=checkbox] { accent-color:var(--tp-accent); width:16px; height:16px; }
+#snellRoot select { width:100%; background:var(--tp-panel-hi); color:var(--tp-text); border:1px solid var(--tp-border-hi); border-radius:3px; padding:4px 6px; font-size:.78rem; }
+#snellRoot .sn_objrow { display:flex; flex-direction:column; gap:4px; padding:8px 10px; background:var(--tp-panel-lo); border:1px solid var(--tp-border); border-left:3px solid #e31836; border-radius:4px; }
+#snellRoot .sn_objrow label { font-size:.74rem; font-weight:bold; color:var(--tp-dim); }
+#snellRoot .sn_descwrap { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; }
+#snellRoot .sn_descbtn { padding:8px 18px; font-family:monospace; font-size:.74rem; letter-spacing:.08em; cursor:pointer; background:var(--tp-panel-hi); border:1px solid var(--tp-accent); color:var(--tp-accent); border-radius:3px; font-weight:bold; }
+#snellRoot .sn_descbtn[aria-expanded="true"] { background:rgba(232,160,32,.12); }
+#snellRoot .sn_desc { width:100%; background:var(--tp-panel); border:1px solid var(--tp-border); border-left:4px solid var(--tp-accent); border-radius:4px; padding:12px 16px; color:var(--tp-text); font-size:.86rem; line-height:1.55; }
+#snellRoot .sn_desc p { margin:0 0 9px 0; }
+#snellRoot .sn_desc p:last-child { margin-bottom:0; }
+#snellRoot .sn_eq { text-align:center; font-size:1rem; }
+.sn_qwrap { width:100%; max-width:880px; margin:0 auto; padding:4px; box-sizing:border-box; }
+.sn_qwrap li { margin:0 0 10px 0; line-height:1.5; }
+@media (max-width:760px) { #snellRoot .sn_grid { grid-template-columns:minmax(0,1fr); } }
+@media (pointer:coarse) {
+#snellRoot input[type=range] { height:28px; }
+#snellRoot .sn_a11ybtn, #snellRoot .sn_descbtn { min-height:40px; }
+#snellRoot select { min-height:36px; font-size:16px; }
+#snellRoot input[type=checkbox] { width:22px; height:22px; }
+}
+@media (max-width:560px) { #snellRoot { padding:10px 6px 14px; } #snellRoot .sn_views { gap:5px; padding:6px; } }
+</style>
+<!-- ════════════════ ACCESSIBILITY CONTROLLER ════════════════ -->
+<script>
+var snellA11y = (function(){
+var ROOT = null;
+var states = { hc:false, lm:false, cb:false, nr:true };
+var CSETS = {
+def:{ bg:'#ffd', axis:'#000', focal:'purple', text:'#000', rayR:'red', rayRg:'#fbb', rayB:'blue', rayBg:'#bbf', rayG:'green', rayGg:'#bfb', obj:'#933', img:'#339', screen:'#888', meas:'darkgreen', eye:'#000', multi1:'#ddd', multi2:'#bbb', mirror:'#4a6f8a', hatch:'#777' },
+hc:{ bg:'#111', axis:'#fff', focal:'#ff88ff', text:'#fff', rayR:'#ff6600', rayRg:'#7b3300', rayB:'#44aaff', rayBg:'#1a4466', rayG:'#00ff88', rayGg:'#005533', obj:'#ff6600', img:'#44aaff', screen:'#bbb', meas:'#00ff88', eye:'#fff', multi1:'#444', multi2:'#666', mirror:'#9cd3ff', hatch:'#aaa' },
+cb:{ bg:'#ffd', axis:'#000', focal:'#cc79a7', text:'#000', rayR:'#d55e00', rayRg:'#e8b49e', rayB:'#0072b2', rayBg:'#99c4e0', rayG:'#009e73', rayGg:'#99d9c3', obj:'#d55e00', img:'#0072b2', screen:'#888', meas:'#009e73', eye:'#000', multi1:'#ddd', multi2:'#bbb', mirror:'#4a6f8a', hatch:'#777' }
+};
+function styleBtn(id, active){ var b = document.getElementById(id); if (b) b.setAttribute('aria-pressed', active ? 'true' : 'false'); }
+function apply(){ if (!ROOT) return;
+ROOT.classList.toggle('sn_hc', states.hc); ROOT.classList.toggle('sn_lm', states.lm); ROOT.classList.toggle('sn_cb', states.cb);
+var filt = states.lm ? 'invert(1) hue-rotate(180deg) brightness(0.9)' : '';
+['cv'].forEach(function(id){ var el = document.getElementById(id); if (el) el.style.filter = filt; });
+var nb = document.getElementById('snNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var nr = document.getElementById('snBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('snBtnHC', states.hc); styleBtn('snBtnLM', states.lm); styleBtn('snBtnCB', states.cb); styleBtn('snBtnNR', states.nr); }
+return {
+init:function(){ ROOT = document.getElementById('snellRoot'); apply(); },
+toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.lm = false; if (k === 'lm' && states.lm) states.hc = false; apply(); if (typeof Mirror !== 'undefined') Mirror.rst(); },
+isNarOn:function(){ return states.nr; },
+narrate:function(msg){ if (!states.nr) return; var nb = document.getElementById('snNarBar'); if (!nb) return; nb.innerHTML = msg; },
+getColors:function(){ return states.cb ? CSETS.cb : states.hc ? CSETS.hc : CSETS.def; }
+};
+})();
+</script>
+<script>
+/* The object in the small views: the letter F or a clown. Both look different when turned around, so the views show
+whether an image is upright or upside down. To use your own clown picture instead of the drawn one, put its data URL
+(for example 'data:image/svg+xml;base64,...') in CLOWN_SRC. Browsers without canvas filters get a blur made of shifted copies. */
+var mirObj = (function(){
+var CLOWN_SRC = '';
+var mode = 'F', img = null, ready = false, onready = null;
+if (CLOWN_SRC){ img = new Image(); img.onload = function(){ ready = true; if (onready) onready(); }; img.src = CLOWN_SRC; }
+var NATIVE = (typeof CanvasRenderingContext2D !== 'undefined') && ('filter' in CanvasRenderingContext2D.prototype);
+function blurOf(c){ if (NATIVE) return 0; var f = c.filter; if (typeof f !== 'string') return 0; var m = /blur\(([0-9.]+)px\)/.exec(f); return m ? parseFloat(m[1]) : 0; }
+/* a clown drawn in a 100-unit tall box centred on (0,0); asymmetric (hat tilted, one eye winking, flower on one side) */
+function clown(c){
+c.save(); c.lineWidth = 2.2; c.lineJoin = 'round';
+c.fillStyle = '#f1c27d'; c.beginPath(); c.arc(0, 5, 24, 0, 2*Math.PI); c.fill(); c.strokeStyle = '#222'; c.stroke();
+c.fillStyle = '#ff7a00'; [[-24, -2], [24, -2], [-20, 12], [20, 12]].forEach(function(p){ c.beginPath(); c.arc(p[0], p[1], 8, 0, 2*Math.PI); c.fill(); });
+c.fillStyle = '#2b6fd6'; c.beginPath(); c.moveTo(-18, -14); c.lineTo(12, -50); c.lineTo(20, -12); c.closePath(); c.fill(); c.stroke();
+c.fillStyle = '#ffd400'; c.beginPath(); c.arc(12, -50, 5, 0, 2*Math.PI); c.fill(); c.stroke();
+c.fillStyle = '#fff'; c.beginPath(); c.ellipse(-9, 0, 6, 7, 0, 0, 2*Math.PI); c.fill(); c.stroke();
+c.fillStyle = '#222'; c.beginPath(); c.arc(-8, 1, 2.6, 0, 2*Math.PI); c.fill();
+c.beginPath(); c.moveTo(4, 1); c.quadraticCurveTo(10, -4, 16, 1); c.stroke();
+c.fillStyle = '#e31836'; c.beginPath(); c.arc(0, 9, 5.5, 0, 2*Math.PI); c.fill();
+c.strokeStyle = '#c00'; c.lineWidth = 3; c.beginPath(); c.moveTo(-12, 17); c.quadraticCurveTo(2, 28, 14, 15); c.stroke();
+c.fillStyle = '#7b2cbf'; c.strokeStyle = '#222'; c.lineWidth = 2; c.beginPath(); c.moveTo(0, 33); c.lineTo(-14, 25); c.lineTo(-14, 41); c.closePath(); c.fill(); c.stroke();
+c.beginPath(); c.moveTo(0, 33); c.lineTo(14, 25); c.lineTo(14, 41); c.closePath(); c.fill(); c.stroke();
+c.fillStyle = '#2bb673'; c.beginPath(); c.moveTo(-6, 41); c.lineTo(8, 41); c.lineTo(14, 50); c.lineTo(-12, 50); c.closePath(); c.fill(); c.stroke();
+c.fillStyle = '#ff4fa3'; for (var i=0; i<5; i++){ var a = i*2*Math.PI/5; c.beginPath(); c.arc(-28 + 4*Math.cos(a), 30 + 4*Math.sin(a), 3, 0, 2*Math.PI); c.fill(); } c.fillStyle = '#ffd400'; c.beginPath(); c.arc(-28, 30, 2.5, 0, 2*Math.PI); c.fill();
+c.restore(); }
+function paint(c, x, y, size, h, shapeF){
+if (!h) return;
+var k = (h/Math.abs(h))*size/100;
+function one(xx, yy){
+if (mode === 'clown'){ c.save(); c.translate(xx, yy); c.scale(k, k);
+if (img && ready){ var H = 100, W = H*img.width/Math.max(1, img.height); c.drawImage(img, -W/2, -H/2, W, H); } else clown(c); c.restore(); }
+else shapeF(c, xx, yy, size); }
+var b = blurOf(c);
+if (b < 0.6){ one(x, y); return; }
+var ga = c.globalAlpha, pts = [[0, 0]], rings = [0.35, 0.7, 1.05, 1.4];
+for (var r=0; r<rings.length; r++) for (var i=0; i<10; i++){ var a = (i + 0.5*r)*Math.PI/5; pts.push([rings[r]*b*Math.cos(a), rings[r]*b*Math.sin(a)]); }
+c.globalAlpha = ga*0.07; for (var j=0; j<pts.length; j++) one(x + pts[j][0], y + pts[j][1]); c.globalAlpha = ga; }
+return { paint:paint, set:function(v, redraw){ mode = v; if (redraw) redraw(); }, mode:function(){ return mode; }, onReady:function(f){ onready = f; if (ready) f(); } };
+})();
+</script>
+<!-- ════════════════ SIMULATION ════════════════
+Spherical mirror (paraxial), mirror equation 1/p_o + 1/p_i = 1/f, f = R/2, m = h_i/h_o = -p_i/p_o.
+Real is positive: p_i > 0 is a real image in front of the mirror, p_i < 0 a virtual image behind it.
+Concave: f > 0; convex: f < 0 (the slider gives |f|). Scale on the diagram: 2 px per cm along the axis, 2 px per mm across.
+Principal rays: parallel to the axis -> through (or away from) F; through F (or aimed at F) -> parallel; to the vertex -> reflected symmetrically.
+No dollar signs or backticks in the code.
+-->
+<script>
+var MirrorGen = function(){
+var KIND = 1;                       /* 1 concave, 0 convex */
+var canvas = document.getElementById('cv'), ctx = canvas.getContext('2d');
+var cvo = document.getElementById('cvo'), cvi = document.getElementById('cvi'), cve = document.getElementById('cve');
+var ctxo = cvo.getContext('2d'), ctxi = cvi.getContext('2d'), ctxe = cve.getContext('2d'), myCheck = document.getElementById('myCheck');
+var MX = 600, y1 = 190, H2 = 160;          /* mirror vertex (px), axis, half-height of the mirror */
+var dObject = Number(document.getElementById('initialdObjectValue').innerHTML);
+var hObject = Number(document.getElementById('initialhObjectValue').innerHTML);
+var fmag = Number(document.getElementById('initialfValue').innerHTML);
+var f = KIND ? fmag : -fmag;
+var screenP = 150, eyeP = 250, measXP = 100, measYP = 40, screenV = 0, eyeV = 0, measXV = 0, measYV = 0, dImage, hImage;
+function el(id){ return document.getElementById(id); }
+function _narrate(m){ snellA11y.narrate(m); }
+function img(){ var den = dObject - f; if (Math.abs(den) < 1e-9) return Infinity; return dObject*f/den; }
+function X(cm){ return MX - 2*cm; }        /* distance in front of the mirror (cm) to px */
+function kindText(pi){ if (!isFinite(pi)) return 'no image: the reflected rays are parallel (object at the focal point)';
+var m = -pi/dObject; return (pi > 0 ? 'real, in front of the mirror' : 'virtual, behind the mirror') + ', ' + (m < 0 ? 'inverted' : 'upright') + ', ' + (Math.abs(m) > 1.005 ? 'enlarged' : Math.abs(m) < 0.995 ? 'reduced' : 'same size'); }
+function _imageMsg(){ var pi = img(), m = -pi/dObject, s = 'p<sub>o</sub> = ' + dObject.toFixed(0) + ' cm, f = ' + f.toFixed(0) + ' cm. ';
+if (!isFinite(pi)) return s + 'Object at the focal point: the reflected rays are parallel, the image is at infinity.';
+return s + 'Image at p<sub>i</sub> = ' + pi.toFixed(1) + ' cm, m = ' + m.toFixed(2) + ': ' + kindText(pi) + '.'; }
+function readout(){ var pi = img(), m = isFinite(pi) ? -pi/dObject : NaN;
+el('snRead').innerHTML = 'p<sub>o</sub> = ' + dObject.toFixed(1) + ' cm &nbsp; h<sub>o</sub> = ' + hObject.toFixed(1) + ' mm &nbsp; f = ' + f.toFixed(1) + ' cm (R = ' + (2*f).toFixed(0) + ' cm)<br>'
++ (isFinite(pi) ? 'p<sub>i</sub> = ' + pi.toFixed(2) + ' cm &nbsp; h<sub>i</sub> = ' + (m*hObject).toFixed(2) + ' mm &nbsp; m = ' + m.toFixed(3) + '<br>image: ' + kindText(pi) : 'image at infinity'); }
+/* ── controls ── */
+function showdObject(v){ el('initialdObjectValue').innerHTML = v; dObject = Number(v); rst(); _narrate(_imageMsg()); }
+function showhObject(v){ el('initialhObjectValue').innerHTML = v; hObject = Number(v); rst(); _narrate('Object height h<sub>o</sub> = ' + hObject + ' mm. Image height h<sub>i</sub> = ' + (isFinite(img()) ? (-img()/dObject*hObject).toFixed(1) + ' mm.' : 'infinite.')); }
+function showf(v){ el('initialfValue').innerHTML = v; fmag = Number(v); f = KIND ? fmag : -fmag; rst(); _narrate('f = ' + f.toFixed(0) + ' cm (' + (KIND ? 'concave, converging' : 'convex, diverging') + '), radius of curvature R = ' + (2*f).toFixed(0) + ' cm. ' + _imageMsg()); }
+function moveMeasX(v){ el('MeasXValue').innerHTML = v; measXP = Number(v); measXV = 1; rst(); }
+function moveMeasY(v){ el('MeasYValue').innerHTML = v; measYP = Number(v); measYV = 1; rst(); }
+function moveScreen(v){ el('screenPositionValue').innerHTML = v; screenP = Number(v); screenV = 1; rst(); var pi = img();
+if (!isFinite(pi)) _narrate('Screen at ' + screenP + ' cm. The image is at infinity: no sharp image anywhere.');
+else if (pi < 0) _narrate('Screen at ' + screenP + ' cm. The image is virtual (behind the mirror, p<sub>i</sub> = ' + pi.toFixed(1) + ' cm): no light gathers there, so it cannot appear on a screen.');
+else { var d = Math.abs(screenP - pi); _narrate(d < 3 ? 'Screen at ' + screenP + ' cm: the image is sharp! (p<sub>i</sub> = ' + pi.toFixed(1) + ' cm)' : 'Screen at ' + screenP + ' cm. The sharp image is at p<sub>i</sub> = ' + pi.toFixed(1) + ' cm (off by ' + d.toFixed(0) + ' cm).'); } }
+function moveEye(v){ el('EyePositionValue').innerHTML = v; eyeP = Number(v); eyeV = 1; rst(); var pi = img();
+if (!isFinite(pi)) _narrate('Eye at ' + eyeP + ' cm. Image at infinity: the eye sees a large, blurred image.');
+else if (pi < 0) _narrate('Eye at ' + eyeP + ' cm, looking into the mirror: it sees the virtual image ' + Math.abs(pi).toFixed(1) + ' cm behind the mirror, upright.');
+else if (eyeP > pi) _narrate('Eye at ' + eyeP + ' cm, farther from the mirror than the real image at p<sub>i</sub> = ' + pi.toFixed(1) + ' cm: it sees the image, inverted.');
+else _narrate('Eye at ' + eyeP + ' cm, between the mirror and the real image at p<sub>i</sub> = ' + pi.toFixed(1) + ' cm: the rays have not met yet, the view is blurred. Move the eye farther away.'); }
+function rst(){ drawMotion(); }
+/* ── drawing helpers ── */
+var px, py, dash = false;
+function arrow(x1, yy1, x2, y2, w, col){ if (!w) w = 1; if (!col) col = ctx.strokeStyle; if (dash) ctx.setLineDash([5, 3]);
+ctx.fillStyle = col; ctx.strokeStyle = col; var dx = x2 - x1, dy = y2 - yy1, L = Math.sqrt(dx*dx + dy*dy); if (L === 0){ ctx.setLineDash([]); return; } dx /= L; dy /= L;
+var s = 2.5*w + 7.5, xS = x2 - s*dx, yS = y2 - s*dy, h = 0.5*w + 3.5; ctx.beginPath(); ctx.lineWidth = w; ctx.moveTo(x1, yy1); ctx.lineTo(L < 5 ? x2 : x2 - 0.6*s*dx, L < 5 ? y2 : y2 - 0.6*s*dy); ctx.stroke();
+if (L >= 5){ ctx.setLineDash([]); ctx.beginPath(); ctx.moveTo(x2 - 0.6*s*dx, y2 - 0.6*s*dy); ctx.lineTo(xS - h*dy, yS + h*dx); ctx.lineTo(x2, y2); ctx.lineTo(xS + h*dy, yS - h*dx); ctx.closePath(); ctx.fill(); }
+ctx.setLineDash([]); }
+function arrowDraw(r, phi){ arrow(px, py, px + r*Math.cos(phi), py - r*Math.sin(phi), 3); }
+function line(x1, yy1, x2, y2, col, w, dsh){ ctx.strokeStyle = col; ctx.lineWidth = w || 2; ctx.setLineDash(dsh || []); ctx.beginPath(); ctx.moveTo(x1, yy1); ctx.lineTo(x2, y2); ctx.stroke(); ctx.setLineDash([]); }
+/* extend a ray from (x0,y0) along (dx,dy) to the left edge of the canvas (dx < 0) or to x = xe */
+function toX(x0, yy0, dx, dy, xe){ var t = (xe - x0)/dx; return [xe, yy0 + dy*t]; }
+function sagS(){ var sag = Math.max(5, Math.min(16, 1000/Math.abs(f))); return KIND ? -sag : sag; }
+function mxAt(yy){ var t = (yy - y1)/H2; return MX + sagS()*Math.min(1, t*t); }
+function drawMirror(C){ var s = sagS();
+ctx.strokeStyle = C.mirror; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(MX + s, y1 - H2); ctx.quadraticCurveTo(MX - s, y1, MX + s, y1 + H2); ctx.stroke();
+ctx.strokeStyle = C.hatch; ctx.lineWidth = 1.2; for (var t = -0.95; t <= 0.95; t += 0.1){ var yy = y1 + t*H2, xm = MX + s*t*t; ctx.beginPath(); ctx.moveTo(xm + 3, yy); ctx.lineTo(xm + 13, yy - 9); ctx.stroke(); } }
+/* the three principal rays: hit height on the mirror and reflected direction (always leftwards) */
+function rays(xo, yo, xF){
+var out = [];
+out.push({ c:'R', yh:yo, d:(function(){ var dx = xF - MX, dy = y1 - yo; if (dx > 0){ dx = -dx; dy = -dy; } return [dx, dy]; })(), inc:[xo, yo] });
+out.push({ c:'B', yh:y1, d:[-(MX - xo), (y1 - yo)], inc:[xo, yo] });
+if (Math.abs(xF - xo) > 1e-6){ var yh = yo + (y1 - yo)*(MX - xo)/(xF - xo); out.push({ c:'G', yh:yh, d:[-1, 0], inc:[xo, yo], aimF:xF > MX }); }
+return out; }
+function drawMotion(){
+var C = snellA11y.getColors(), W = canvas.width, H = canvas.height, i;
+ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
+dImage = img(); hImage = isFinite(dImage) ? -dImage/dObject*hObject : Infinity;
+/* axis, F, C */
+line(0, y1, W, y1, C.axis, 1.5);
+var xF = X(f), xC = X(2*f);
+ctx.fillStyle = C.focal; ctx.font = 'bold 13px Calibri, Arial'; ctx.textAlign = 'center';
+[[xF, 'F'], [xC, 'C']].forEach(function(q){ if (q[0] < 0 || q[0] > W) return; ctx.beginPath(); ctx.arc(q[0], y1, q[1] === 'F' ? 4.5 : 0.1, 0, 2*Math.PI); ctx.fill(); if (q[1] === 'C'){ ctx.strokeStyle = C.focal; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(q[0], y1, 4.5, 0, 2*Math.PI); ctx.stroke(); } ctx.fillText(q[1], q[0], y1 + 20); });
+ctx.fillStyle = C.text; ctx.font = '12px Calibri, Arial'; ctx.textAlign = 'left'; ctx.fillText('in front of the mirror (real side)', 10, 18); ctx.textAlign = 'right'; ctx.fillText('behind (virtual side)', W - 6, 18);
+var xo = X(dObject), yo = y1 - 2*hObject, xi = isFinite(dImage) ? X(dImage) : null, yi = isFinite(hImage) ? y1 - 2*hImage : null;
+/* more rays */
+if (myCheck.checked){ for (i = -8; i <= 8; i++){ var yh = y1 - 16*i, din = [MX - xo, yh - yo], dr;
+if (xi !== null && Math.abs(hImage) < 1e5){ if (dImage > 0){ dr = [xi - MX, yi - yh]; if (dr[0] > -1e-6) dr = [-1e-3, yi - yh]; } else { dr = [MX - xi, yh - yi]; } } else { dr = [-(MX - xo), (y1 - yo)]; }
+var xh = mxAt(yh); if (xi !== null && Math.abs(hImage) < 1e5) dr = dImage > 0 ? [xi - xh, yi - yh] : [xh - xi, yh - yi]; if (dr[0] > -1e-6) dr[0] = -1e-3;
+line(xo, yo, xh, yh, C.multi2, 1.5);
+var e = toX(xh, yh, dr[0], dr[1], 0); line(xh, yh, e[0], e[1], C.multi2, 1.5);
+if (xi !== null && dImage < 0) line(xh, yh, xi, yi, C.multi1, 1.2, [4, 3]); } }
+/* principal rays */
+rays(xo, yo, xF).forEach(function(r){ var col = C['ray' + r.c], colg = C['ray' + r.c + 'g'];
+var xh = mxAt(r.yh), d = r.d.slice(); if (xi !== null && Math.abs(hImage) < 1e5) d = dImage > 0 ? [xi - xh, yi - r.yh] : [xh - xi, r.yh - yi]; if (d[0] > -1e-6) d[0] = -1e-3;
+line(r.inc[0], r.inc[1], xh, r.yh, col, 2);
+if (r.aimF){ line(xh, r.yh, xF, y1, colg, 1.5, [5, 4]); }   /* convex: the ray aimed at F behind the mirror */
+if (r.c === 'G' && KIND && dObject < f) line(xo, yo, xF, y1, colg, 1.5, [5, 4]);   /* concave, object inside F: the ray comes as if from F */
+var e = toX(xh, r.yh, d[0], d[1], 0); line(xh, r.yh, e[0], e[1], col, 2);
+if (xi !== null && dImage < 0) line(xh, r.yh, xi, yi, colg, 2, [6, 4]);   /* virtual image: trace back behind the mirror */
+});
+/* object and image */
+px = xo; py = y1; ctx.strokeStyle = C.obj; if (hObject > 0) arrowDraw(2*hObject, Math.PI/2); else if (hObject < 0) arrowDraw(-2*hObject, 1.5*Math.PI);
+if (xi !== null && Math.abs(hImage) < 2000){ dash = dImage < 0; px = xi; py = y1; ctx.strokeStyle = C.img; if (hImage > 0) arrowDraw(Math.min(2*hImage, 400), Math.PI/2); else if (hImage < 0) arrowDraw(Math.min(-2*hImage, 400), 1.5*Math.PI); dash = false; }
+drawMirror(C);
+/* screen and eye (in front of the mirror) */
+if (screenV){ var xs = X(screenP); ctx.strokeStyle = C.screen; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(xs, y1 - 150); ctx.lineTo(xs, y1 + 150); ctx.stroke(); ctx.fillStyle = C.text; ctx.font = '11px Calibri, Arial'; ctx.textAlign = 'center'; ctx.fillText('screen', xs, y1 + 166); }
+if (eyeV) drawSideEye(ctx, X(eyeP), y1 + 14, 14, 'right', C.eye);
+/* measuring lines */
+if (measXV){ ctx.strokeStyle = C.meas; px = X(measXP); py = H - 6; arrowDraw(H - 30, Math.PI/2); ctx.font = '14pt Calibri'; ctx.fillStyle = C.meas; ctx.textAlign = 'left'; ctx.fillText(measXP.toFixed(0) + ' cm', px + 5, 40); }
+if (measYV){ ctx.strokeStyle = C.meas; px = 6; py = y1 - 2*measYP; arrowDraw(W - 14, 0); ctx.font = '14pt Calibri'; ctx.fillStyle = C.meas; ctx.textAlign = 'left'; ctx.fillText(measYP.toFixed(0) + ' mm', 30, py - 8); }
+/* ── the small views ── */
+ctxo.clearRect(0, 0, cvo.width, cvo.height); ctxo.fillStyle = 'black'; drawF(ctxo, cvo.width/2, cvo.height/2, Math.abs(hObject)*4);
+ctxi.clearRect(0, 0, cvi.width, cvi.height); ctxi.fillStyle = 'black';
+if (isFinite(dImage) && dImage > 0 && Math.abs(hImage) < 500){ ctxi.save(); ctxi.translate(cvi.width/2, cvi.height/2); ctxi.scale(-1, -1); ctxi.filter = 'blur(' + (Math.abs(screenP - dImage)/5) + 'px)'; drawF(ctxi, 0, 0, Math.min(Math.abs(hImage)*4, 600)); ctxi.restore(); ctxi.filter = 'none'; }
+else { ctxi.fillStyle = '#666'; ctxi.font = '13px Arial'; ctxi.textAlign = 'center'; ctxi.fillText(isFinite(dImage) ? 'no image:' : 'no sharp image', cvi.width/2, cvi.height/2 - 6); ctxi.fillText(isFinite(dImage) ? 'the image is virtual' : '(image at infinity)', cvi.width/2, cvi.height/2 + 12); }
+ctxe.clearRect(0, 0, cve.width, cve.height); ctxe.fillStyle = 'black'; ctxe.save(); ctxe.translate(cve.width/2, cve.height/2);
+if (!isFinite(dImage) || Math.abs(hImage) >= 500){ ctxe.filter = 'blur(6px)'; ctxe.scale(-1, -1); drawF(ctxe, 0, 0, 600); }
+else if (dImage > 0){ ctxe.scale(-1, -1); if (eyeP < dImage) ctxe.filter = 'blur(' + ((dImage - eyeP)/5) + 'px)'; drawF(ctxe, 0, 0, Math.min(Math.abs(hImage)*4, 600)); }
+else drawF(ctxe, 0, 0, Math.min(Math.abs(hImage)*4, 600));
+ctxe.restore(); ctxe.filter = 'none';
+readout(); }
+function drawF(c, x, y, size){ mirObj.paint(c, x, y, size, hObject, drawFshape); }
+function drawFshape(c, x, y, size){ c.beginPath(); var s = (hObject/Math.abs(hObject))*size/100;
+c.moveTo(x - 20*s, y - 50*s); c.lineTo(x + 20*s, y - 50*s); c.lineTo(x + 20*s, y - 35*s); c.lineTo(x, y - 35*s); c.lineTo(x, y - 10*s); c.lineTo(x + 15*s, y - 10*s);
+c.lineTo(x + 15*s, y + 5*s); c.lineTo(x, y + 5*s); c.lineTo(x, y + 50*s); c.lineTo(x - 20*s, y + 50*s); c.closePath(); c.fill(); }
+function drawSideEye(ctx, cx, cy, scale, look, color){ var sign = (look === 'left') ? 1 : -1;
+var tipX = cx + scale*1.2*sign, leftX = cx - scale*1.2*sign, topY = cy - scale*0.9, botY = cy + scale*0.9, cX = cx + scale*0.6*sign;
+ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = color; ctx.lineWidth = Math.max(1, scale*0.2);
+ctx.beginPath(); ctx.moveTo(leftX, botY); ctx.quadraticCurveTo(cX, cy - scale*0.15, tipX, cy); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(leftX, topY); ctx.quadraticCurveTo(cX, cy + scale*0.15, tipX, cy); ctx.stroke();
+ctx.beginPath(); ctx.ellipse(cx - sign*(scale*0.6 + 5), cy, scale*0.25, scale*0.7, 0, 0, 2*Math.PI); ctx.fillStyle = color; ctx.fill();
+ctx.beginPath(); ctx.ellipse(cx - sign*(scale*0.6 + 6), cy - 5, scale*0.1, scale*0.14, 0, 0, 2*Math.PI); ctx.fillStyle = 'white'; ctx.fill(); }
+return { rst:rst, showdObject:showdObject, showhObject:showhObject, showf:showf, moveScreen:moveScreen, moveEye:moveEye, moveMeasX:moveMeasX, moveMeasY:moveMeasY, redraw:rst, _img:img };
+};
+</script>
+<script>
+var Mirror = new MirrorGen();
+mirObj.onReady(function(){ if (mirObj.mode() === 'clown') Mirror.rst(); });
+snellA11y.init();
+Mirror.rst();
+snellA11y.narrate('Concave mirror ready. p<sub>o</sub> = 80 cm, h<sub>o</sub> = 20 mm, f = 50 cm. Move the object, the screen and the eye to explore image formation.');
+</script>
+</body>
+</html>
