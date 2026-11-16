@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Optics: Circular Aperture Diffraction</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Calibri, Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobp6403" class="mob_wrap">
+<div id="caRoot">
+<!-- ── Accessibility toolbar ── -->
+<div class="sn_a11y" id="caA11yBar" role="toolbar" aria-label="Display options">
+<button type="button" class="sn_a11ybtn" id="caBtnHC" onclick="caA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="sn_a11ybtn" id="caBtnDM" onclick="caA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="sn_a11ybtn" id="caBtnCB" onclick="caA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="sn_a11ybtn sn_a11yon" id="caBtnNR" onclick="caA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+<button type="button" class="sn_a11ybtn" id="caBtnTH" onclick="caA11y.toggle('th')" aria-pressed="false">THICK CURVES</button>
+</div>
+<div class="tbar"><H3>Circular Aperture &mdash; the Airy Pattern</H3></div>
+<div class="mcontent">
+<canvas id="cv" width="820" height="450" role="img" aria-label="Side view: light passes through a small circular hole and spreads onto a screen; the screen strip shows the bright central disk and the faint rings, with the intensity graph beside it."></canvas>
+</div>
+<div class="face_wrap"><div class="face_lbl">The screen seen face-on: the Airy pattern (a bright disk surrounded by faint rings)<span id="faceLblI">, with the intensity graph beside it, row by row</span></div><canvas id="cvFace" width="820" height="340" role="img" aria-label="The pattern on the screen seen face-on: a bright central disk with faint rings, and the intensity graph beside it."></canvas><div class="mk_bar"><label for="mkSl"><b>Marker</b></label><input type="range" id="mkSl" min="-1000" max="1000" value="250" step="1" aria-label="marker position on the screen, from -10 to +10 cm"><span class="mk_opts">read as <label><input type="radio" name="mkU" value="y" checked> y</label> <label><input type="radio" name="mkU" value="t"> angle &theta;</label> &nbsp;<label><input type="checkbox" id="mkOn" checked> show</label></span><div class="mk_val" id="mkVal" aria-live="polite"></div></div></div>
+<div class="sbbar sbbar-pink">
+<div class="left">Screen distance</div>
+<div class="centerL">
+`L=\ `<input class="slider" type="range" id="LValue" min="1" max="2" value="1.00" step="0.1" oninput="circAp.showL(this.value)" onchange="circAp.showL(this.value)">
+<span class="txtDPL"><span id="initialLValue">1.0</span> m</span>
+</div>
+<div class="centerR">
+<input type="checkbox" id="myCheck" checked onchange="circAp.reset();">
+<label for="myCheck">Show Intensity Curve</label>
+</div>
+<div class="right">
+<input type="radio" id="scale1" name="scale" value="1" onclick="circAp.changeScale(this.value)" checked/><label for="scale1">x1</label>
+<input type="radio" id="scale2" name="scale" value="4" onclick="circAp.changeScale(this.value)"/><label for="scale2">x4</label>
+<input type="radio" id="scale4" name="scale" value="16" onclick="circAp.changeScale(this.value)"/><label for="scale4">x16</label>
+<input type="radio" id="scale8" name="scale" value="64" onclick="circAp.changeScale(this.value)"/><label for="scale8">x64</label>
+</div>
+</div>
+<div id="caNarBar" class="sn_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="bbar bbar-blue">
+<div class="left">Aperture</div>
+<div class="centerL">
+`D =\ `<input class="slider" type="range" id="DValue" min="2" max="80" value="20" step="0.5" oninput="circAp.showD(this.value)" onchange="circAp.showD(this.value)">
+<span class="txtDPL"><span id="initialDValue">20</span> &mu;m</span>
+</div>
+<div class="right info" id="info" aria-live="off"></div>
+</div>
+<div class="bbar bbar-pink">
+<div class="left">Light Source</div>
+<div class="centerL">
+`lambda =\ `<input class="slider" type="range" id="CValue" min="0.4" max="0.65" value="0.65" step="0.01" oninput="circAp.showC(this.value)" onchange="circAp.showC(this.value)">
+<span class="txtDPL"><span id="initialCValue">0.65</span> &mu;m</span>
+<p>
+<input type="button" value="Violet" onclick="circAp.setColor(0.4)">
+<input type="button" value="Green" onclick="circAp.setColor(0.52)">
+<input type="button" value="Red" onclick="circAp.setColor(0.65)">
+</p>
+</div>
+<div class="right cmp"><label><input type="checkbox" id="cmpSlit" onchange="circAp.reset();"> Compare with a single slit of width a = D (dashed curve)</label></div>
+</div>
+<hr><p>&nbsp;</p>
+</div><!-- #caRoot -->
+<style>.face_wrap { width:100%; margin-top:6px; }
+.face_lbl { font-family:Calibri, Arial, sans-serif; font-size:.82rem; color:#555; padding:2px 4px; }
+.face_wrap canvas { display:block; width:100%; height:auto; border:1px solid #bbb; }
+.mk_bar { display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px; padding:6px 8px; background:#eef6ff; border:1px solid #b7cde0; border-top:none; font-family:Calibri, Arial, sans-serif; font-size:.9rem; color:#1d232a; }
+.mk_bar input[type=range] { flex:1 1 220px; min-width:0; accent-color:#0a84ff; }
+.mk_bar label { display:inline-flex; align-items:center; gap:3px; cursor:pointer; }
+.mk_val { flex:1 1 100%; font-family:monospace; font-size:.92rem; color:#0b4f8a; font-weight:bold; }
+.info { font-family:Calibri, Arial, sans-serif; font-size:.86rem; text-align:left; line-height:1.35; }
+.cmp { font-family:Calibri, Arial, sans-serif; font-size:.86rem; text-align:left; }
+@media (pointer:coarse) {
+.mk_bar input[type=range] { height:28px; }
+.mk_bar input[type=radio], .mk_bar input[type=checkbox] { width:20px; height:20px; }
+}</style>
+<style>:where(#mobp6403) * { margin: 0; box-sizing: border-box; }
+:where(#mobp6403) div { width: 823px; margin: 0; }
+#caRoot .sn_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; width:823px; }
+#caRoot .sn_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; transition:border-color .15s, color .15s; }
+#caRoot .sn_a11ybtn:hover { border-color:#00e8d0; color:#00e8d0; }
+#caRoot .sn_narbar { width:823px; min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobp6403 .slider { width:155px; height:14px; display:inline-block; }
+#mobp6403 .txtDPL { background-color:blue; color:yellow; margin-left:10px; padding-top:2px; display:inline-block; font-size:14px; text-align:center; height:20px; width:58px; }
+#mobp6403 .tbar { padding:4px; height:50px; background-color:#f90; text-align:center; }
+#mobp6403 .mcontent { height:452px; }
+#mobp6403 .sbbar { height:45px; text-align:center; display:flex; }
+#mobp6403 .sbbar .left { width:110px; padding:5px; }
+#mobp6403 .sbbar .centerL { width:302px; padding:5px; }
+#mobp6403 .sbbar .centerR { width:140px; padding:5px; }
+#mobp6403 .sbbar .right { width:272px; padding:5px; }
+#mobp6403 .sbbar-pink { background-color:#fce4ec; }
+#mobp6403 .bbar { min-height:80px; text-align:center; display:flex; }
+#mobp6403 .bbar .left { width:110px; padding:5px; }
+#mobp6403 .bbar .centerL { width:302px; padding:5px; }
+#mobp6403 .bbar .right { width:412px; padding:5px; }
+#mobp6403 .bbar-blue { background-color:#e3f2fd; }
+#mobp6403 .bbar-pink { background-color:#fce4ec; }</style>
+<!-- ════════════════ ACCESSIBILITY CONTROLLER ════════════════ -->
+<script>
+var caA11y = (function(){
+var ROOT = null, WRAP = null;
+var states = { hc:false, dm:false, cb:false, nr:true, th:false };
+var PAL = { std:{ bg:'#ffd', graph:'#eff', axis:'#000', blue:'blue' }, dm:{ bg:'#16191e', graph:'#1c2633', axis:'#e6e9ee', blue:'#7fb2ff' }, hc:{ bg:'#000', graph:'#000', axis:'#fff', blue:'#66ccff' } };
+function P(){ return states.hc ? PAL.hc : (states.dm ? PAL.dm : PAL.std); }
+function styleBtn(id, active) { var b = document.getElementById(id); if (!b) return;
+if (active) { b.style.background='rgba(0,232,208,.12)'; b.style.borderColor='#00e8d0'; b.style.color='#00e8d0'; }
+else { b.style.background='#2a2e3a'; b.style.borderColor='#404a60'; b.style.color='#7a8aaa'; }
+b.setAttribute('aria-pressed', active ? 'true' : 'false'); }
+function apply() { if (!ROOT) return;
+WRAP = WRAP || document.getElementById('mobp6403') || ROOT;
+WRAP.classList.toggle('a11y_dm', states.dm); WRAP.classList.toggle('a11y_hc', states.hc); WRAP.classList.toggle('a11y_cb', states.cb);
+var nb = document.getElementById('caNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var nr = document.getElementById('caBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('caBtnHC', states.hc); styleBtn('caBtnDM', states.dm); styleBtn('caBtnCB', states.cb); styleBtn('caBtnNR', states.nr); styleBtn('caBtnTH', states.th); }
+return {
+init: function() { ROOT = document.getElementById('caRoot'); apply(); },
+toggle: function(k) { states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply(); if (typeof circAp !== 'undefined') circAp.reset(); },
+narrate: function(msg) { if (!states.nr) return; var nb = document.getElementById('caNarBar'); if (!nb) return; nb.innerHTML = msg;
+if (window.MathJax) { if (MathJax.typesetPromise) MathJax.typesetPromise([nb]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, nb]); } },
+isHC: function() { return states.hc; }, isCB: function() { return states.cb; }, isThick: function() { return states.th || states.hc; },
+getBg: function() { return P().bg; }, getGraphBg: function() { return P().graph; }, getAxis: function() { return P().axis; }, col: function(k) { return P()[k] || k; }
+};
+})();
+</script>
+<style>
+#mobp6403.a11y_dm, #mobp6403.a11y_dm :has(canvas) { background-color:#16191e; }
+#mobp6403.a11y_dm :has(canvas) > :not(:has(canvas)):not(canvas):not([role=toolbar]):not(style):not(script) { filter:invert(1) hue-rotate(180deg); }
+#mobp6403.a11y_hc, #mobp6403.a11y_hc :has(canvas) { background-color:#000; }
+#mobp6403.a11y_hc :has(canvas) > :not(:has(canvas)):not(canvas):not([role=toolbar]):not(style):not(script) { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobp6403.a11y_dm canvas { border-color:#5a6470 !important; }
+#mobp6403.a11y_hc canvas { border-color:#fff !important; }
+</style>
+<!-- ════════════════ SIMULATION ════════════════
+Fraunhofer diffraction by a circular hole of diameter D: I = I0 (2 J1(x)/x)^2, x = pi D sin(theta)/lambda (the Airy pattern).
+Dark rings at sin(theta) = 1.220, 2.233, 3.238 lambda/D; bright rings at 1.635, 2.679 lambda/D with 1.75% and 0.42% of I0.
+J1 from the rational/asymptotic approximation of Numerical Recipes. No dollar signs or backticks in the code.
+-->
+<script>
+var circApGen = function() {
+var canvas = document.getElementById("cv"), ctx = canvas.getContext("2d");
+var D = 20.0, L = 1.0, wavelength = 0.65, lambda = 650, plotgraph = 1, scaleGraph = 1;
+var ZEROS = [1.2197, 2.2331, 3.2383, 4.2411], MAXS = [[1.6347, 0.0175], [2.6793, 0.0042], [3.6987, 0.0016]];
+function _narrate(msg) { caA11y.narrate(msg); }
+function el(id){ return document.getElementById(id); }
+function _colourName(wl) { if (wl >= 0.62) return 'red'; if (wl >= 0.59) return 'orange'; if (wl >= 0.57) return 'yellow'; if (wl >= 0.49) return 'green'; if (wl >= 0.45) return 'blue'; return 'violet'; }
+function ringY(k){ var s = k*wavelength/D; return s >= 1 ? null : L*Math.tan(Math.asin(s))*100; }   /* cm */
+function _r1(){ var y = ringY(ZEROS[0]); return y === null ? 'beyond the screen' : y.toFixed(2) + ' cm'; }
+function _disk(){ var y = ringY(ZEROS[0]); return y === null ? 'fills the whole screen' : (2*y).toFixed(2) + ' cm'; }
+/* ── Bessel J1 ── */
+function J1(x){ var ax = Math.abs(x), y, a1, a2, ans;
+if (ax < 8.0){ y = x*x; a1 = x*(72362614232.0 + y*(-7895059235.0 + y*(242396853.1 + y*(-2972611.439 + y*(15704.48260 + y*(-30.16036606))))));
+a2 = 144725228442.0 + y*(2300535178.0 + y*(18583304.74 + y*(99447.43394 + y*(376.9991397 + y*1.0)))); return a1/a2; }
+var z = 8.0/ax, xx = ax - 2.356194491; y = z*z;
+a1 = 1.0 + y*(0.183105e-2 + y*(-0.3516396496e-4 + y*(0.2457520174e-5 + y*(-0.240337019e-6))));
+a2 = 0.04687499995 + y*(-0.2002690873e-3 + y*(0.8449199096e-5 + y*(-0.88228987e-6 + y*0.105787412e-6)));
+ans = Math.sqrt(0.636619772/ax)*(Math.cos(xx)*a1 - z*Math.sin(xx)*a2); return x < 0 ? -ans : ans; }
+function computeI(sinT){ var x = Math.PI*D*sinT/wavelength; if (Math.abs(x) < 1e-6) return 1; var v = 2*J1(x)/x; return v*v; }
+function slitI(sinT){ var b = Math.PI*D*sinT/wavelength; if (Math.abs(b) < 1e-9) return 1; var v = Math.sin(b)/b; return v*v; }
+function Iy(ycm){ var ym = ycm*0.01; return computeI(ym/Math.sqrt(ym*ym + L*L)); }
+/* ── colours ── */
+function toHex(z) { if (z < 0) z = 0; if (z > 1) z = 1; var n = Math.floor(256*z), hex = n.toString(16); if (hex.length < 2) hex = "0" + hex; if (hex.length > 2) hex = "ff"; return hex; }
+function rgbA(lambda, relInt) { if (relInt == undefined) relInt = 1; var r1 = 0, g1 = 0, b1 = 0;
+if (lambda >= 380 && lambda < 440){ r1 = (440 - lambda)/60; b1 = 1; } else if (lambda < 490){ g1 = (lambda - 440)/50; b1 = 1; } else if (lambda < 510){ g1 = 1; b1 = (510 - lambda)/20; } else if (lambda < 580){ r1 = (lambda - 510)/70; g1 = 1; } else if (lambda < 645){ r1 = 1; g1 = (645 - lambda)/65; } else if (lambda <= 780){ r1 = 1; }
+var f = lambda < 420 ? 0.3 + 0.7*(lambda - 380)/40 : lambda < 700 ? 1 : 0.3 + 0.7*(780 - lambda)/80, gm = 0.8;
+return [relInt*Math.pow(f*r1, gm), relInt*Math.pow(f*g1, gm), relInt*Math.pow(f*b1, gm)]; }
+function rgb(lambda, relInt){ var c = rgbA(lambda, relInt); return '#' + toHex(c[0]) + toHex(c[1]) + toHex(c[2]); }
+function rgb2(lambda, relInt){ return rgb(lambda, Math.pow(relInt, 1/3)); }
+/* ── controls ── */
+function info(){ var y1 = ringY(ZEROS[0]), y2 = ringY(MAXS[0][0]), y3 = ringY(ZEROS[1]);
+el('info').innerHTML = 'First dark ring: <b>sin&theta;<sub>1</sub> = 1.22 &lambda;/D</b> = ' + (1.22*wavelength/D).toFixed(4) + ', radius on the screen r<sub>1</sub> &asymp; 1.22 &lambda;L/D = <b>' + (y1 === null ? '&mdash;' : y1.toFixed(2) + ' cm') + '</b>. '
++ 'Airy disk diameter &asymp; 2.44 &lambda;L/D = ' + (y1 === null ? '&mdash;' : (2*y1).toFixed(2) + ' cm') + ' (84% of the light). First bright ring at ' + (y2 === null ? '&mdash;' : y2.toFixed(2) + ' cm') + ', only 1.75% as bright; second dark ring at ' + (y3 === null ? '&mdash;' : y3.toFixed(2) + ' cm') + '.'; }
+function showD(v){ el("initialDValue").innerHTML = v; D = Number(v); reset(); _narrate('Hole diameter D = ' + v + ' &mu;m. First dark ring at radius ' + _r1() + '; Airy disk diameter ' + _disk() + '. A smaller hole spreads the light more.'); }
+function showC(v){ el("initialCValue").innerHTML = v; wavelength = Number(v); lambda = wavelength*1000; reset(); _narrate('Wavelength &lambda; = ' + v + ' &mu;m (' + _colourName(Number(v)) + '). First dark ring at radius ' + _r1() + '.'); }
+function showL(v){ el("initialLValue").innerHTML = v; L = Number(v); reset(); _narrate('Screen distance L = ' + v + ' m. The angles stay the same, so the pattern grows in proportion: first dark ring at ' + _r1() + '.'); }
+function changeScale(v){ scaleGraph = Number(v); reset(); _narrate('Magnification &times;' + v + ': the intensity curve and the brightness of the face-on view are multiplied by ' + v + ', to reveal the faint rings (the first ring has only 1.75% of the central intensity).'); }
+function setColor(c){ el('CValue').value = c; showC(c); }
+function reset(){ drawMotion(); }
+/* ════════ side view ════════ */
+var SCR = null;
+function arrow(x1, y1, x2, y2, w, col) { ctx.fillStyle = col; ctx.strokeStyle = col; var dx = x2 - x1, dy = y2 - y1, len = Math.sqrt(dx*dx + dy*dy); if (!len) return; dx /= len; dy /= len;
+var s = 2.5*w + 7.5, h = 0.5*w + 3.5, xS = x2 - s*dx, yS = y2 - s*dy; ctx.beginPath(); ctx.lineWidth = w; ctx.moveTo(x1, y1); ctx.lineTo(x2 - 0.6*s*dx, y2 - 0.6*s*dy); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(x2 - 0.6*s*dx, y2 - 0.6*s*dy); ctx.lineTo(xS - h*dy, yS + h*dx); ctx.lineTo(x2, y2); ctx.lineTo(xS + h*dy, yS - h*dx); ctx.closePath(); ctx.fill(); }
+function drawSide(){
+plotgraph = el("myCheck").checked ? 1 : 0;
+var bgCol = caA11y.getBg(), axisCol = caA11y.getAxis(), curveWidth = caA11y.isThick() ? 4 : 2, cmp = el('cmpSlit').checked;
+var CY = 225, PX_CM = 20, Y_TOP = CY - 10*PX_CM, Y_BOT = CY + 10*PX_CM, apX = 80, scrL = apX + 16 + Math.round((L - 1)*100) + 500, scrW = 35, graphW = 180, graphL = scrL - graphW, axisX = scrL + scrW + 5;
+SCR = { l:scrL, sx:apX, cy:CY };
+ctx.fillStyle = bgCol; ctx.fillRect(0, 0, canvas.width, canvas.height);
+/* the plate with the hole, seen edge-on, and an inset of the hole seen face-on */
+var gap = Math.min(Math.max(D*0.8, 4), 60), lc = rgb2(lambda, 0.9);
+ctx.fillStyle = "black"; ctx.fillRect(apX - 8, Y_TOP, 16, (CY - gap/2) - Y_TOP); ctx.fillRect(apX - 8, CY + gap/2, 16, Y_BOT - (CY + gap/2));
+ctx.fillStyle = lc; ctx.fillRect(apX - 8, CY - gap/2, 16, gap);
+var ix = apX + 60, iy = Y_TOP + 40; ctx.fillStyle = '#333'; ctx.fillRect(ix - 34, iy - 34, 68, 68); ctx.fillStyle = lc; ctx.beginPath(); ctx.arc(ix, iy, Math.max(2, gap/2*0.55), 0, 2*Math.PI); ctx.fill();
+ctx.font = '10pt Calibri'; ctx.fillStyle = axisCol; ctx.textAlign = 'center'; ctx.fillText('the hole, face-on', ix, iy + 50);
+var rayCol = rgb2(lambda, 0.75); [-30, -15, 0, 15, 30].forEach(function(r){ arrow(10, CY + r, apX - 10, CY + r, 1, rayCol); });
+ctx.font = '13pt Calibri'; ctx.textAlign = 'left'; ctx.fillStyle = caA11y.col('blue'); ctx.fillText('L = ' + L.toFixed(1) + ' m', apX + 10, 13); arrow(apX + 10, 22, scrL - 2, 22, 2, caA11y.col('blue'));
+if (plotgraph){ ctx.fillStyle = bgCol; ctx.fillRect(graphL, Y_TOP, graphW, Y_BOT - Y_TOP); ctx.strokeStyle = '#555'; ctx.lineWidth = 1;
+for (var g1 = -10; g1 <= 10; g1++){ var gy = CY - g1*PX_CM; ctx.beginPath(); ctx.moveTo(graphL, gy); ctx.lineTo(graphL + graphW, gy); ctx.stroke(); }
+for (var g2 = 0; g2 <= 10; g2++){ ctx.beginPath(); ctx.moveTo(graphL + g2*graphW/10, Y_TOP); ctx.lineTo(graphL + g2*graphW/10, Y_BOT); ctx.stroke(); }
+arrow(scrL, Y_BOT + 8, graphL - 15, Y_BOT + 8, 2, axisCol); ctx.font = '20pt Calibri'; ctx.textAlign = 'right'; ctx.fillText('I', graphL - 18, Y_BOT + 14); }
+ctx.fillStyle = 'black'; ctx.fillRect(scrL, Y_TOP, scrW, Y_BOT - Y_TOP);
+var pts = [], pts2 = [];
+for (var iy2 = Y_TOP; iy2 <= Y_BOT; iy2++){ var ycm = (CY - iy2)/PX_CM, ym = ycm*0.01, sinT = ym/Math.sqrt(ym*ym + L*L), I0 = computeI(sinT);
+pts.push({ x:scrL - I0*scaleGraph*graphW, y:iy2 }); if (cmp) pts2.push({ x:scrL - slitI(sinT)*scaleGraph*graphW, y:iy2 });
+var br = Math.min(Math.pow(Math.min(1, I0*scaleGraph), 0.45) + 0.1*Math.exp(-ycm*ycm*0.08), 1), padW = Math.round(scrW*0.28), midW = scrW - 2*padW, half = Math.max(Math.pow(I0, 0.18)*midW/2, 0.5);
+ctx.lineWidth = 1; ctx.strokeStyle = rgb2(lambda, br); ctx.beginPath(); ctx.moveTo(scrL + scrW/2 - half, iy2); ctx.lineTo(scrL + scrW/2 + half, iy2); ctx.stroke(); }
+if (plotgraph){ ctx.save(); ctx.beginPath(); ctx.rect(0, Y_TOP - 2, scrL, Y_BOT - Y_TOP + 4); ctx.clip();
+if (cmp){ ctx.strokeStyle = axisCol; ctx.setLineDash([5, 4]); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(scrL, Y_TOP); pts2.forEach(function(q){ ctx.lineTo(q.x, q.y); }); ctx.stroke(); ctx.setLineDash([]); }
+ctx.strokeStyle = rgb2(lambda, 0.9); ctx.lineWidth = curveWidth; ctx.beginPath(); ctx.moveTo(scrL, Y_TOP); pts.forEach(function(q){ ctx.lineTo(q.x, q.y); }); ctx.lineTo(scrL, Y_BOT); ctx.stroke(); ctx.restore(); }
+ctx.font = '13pt Calibri'; ctx.fillStyle = axisCol; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+for (var icm = -10; icm <= 10; icm++){ var ty = CY - icm*PX_CM; ctx.strokeStyle = axisCol; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(scrL + scrW, ty); ctx.lineTo(scrL + scrW + 4, ty); ctx.stroke(); if (icm % 2 === 0) ctx.fillText(String(icm), axisX, ty); }
+ctx.save(); ctx.translate(axisX + 28, CY); ctx.rotate(-Math.PI/2); ctx.textAlign = 'center'; ctx.fillText('y (cm)', 0, 0); ctx.restore();
+ctx.font = '14pt Calibri'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.fillText('circular hole', apX + 20, Y_BOT + 20); ctx.fillText('screen', scrL + scrW/2, Y_BOT + 20);
+/* marker */
+if (MK.on){ var yS = CY - MK.y*PX_CM, x0 = apX + 9, x1 = scrL - 3, th = Math.atan2(CY - yS, x1 - x0); ctx.save(); ctx.strokeStyle = ctx.fillStyle = '#0a84ff'; ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
+ctx.beginPath(); ctx.moveTo(x0, CY); ctx.lineTo(x1, yS); ctx.stroke(); ctx.setLineDash([2, 4]); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x0, CY); ctx.lineTo(x1, CY); ctx.stroke(); ctx.setLineDash([]);
+ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x0, CY, 60, -th, 0, th < 0); ctx.stroke(); ctx.font = 'bold 14px Calibri, Arial'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('\u03B8', x0 + 66, CY - (yS < CY ? 10 : -10));
+ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(scrL - 16, yS); ctx.lineTo(scrL - 1, yS); ctx.stroke(); ctx.restore(); } }
+/* ════════ the screen face-on: a 2D image of the Airy pattern, and the intensity graph beside it, row by row ════════ */
+function drawFace(){
+var fc = el('cvFace'), FW = 820, FH = 340, dpr = window.devicePixelRatio || 1;
+if (fc.width !== Math.round(FW*dpr)){ fc.width = Math.round(FW*dpr); fc.height = Math.round(FH*dpr); }
+var g = fc.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); var bg = caA11y.getBg(), ax = caA11y.getAxis();
+g.fillStyle = bg; g.fillRect(0, 0, FW, FH);
+var SX = 70, ST = 14, S = 300, PXC = S/20;   /* square: y and z from -10 to +10 cm */
+function Yp(ycm){ return ST + (10 - ycm)*PXC; } function Zp(zcm){ return SX + (zcm + 10)*PXC; }
+/* lookup table of the intensity against the radius on the screen */
+var NT = 1500, tab = new Float32Array(NT + 1), i; for (i=0; i<=NT; i++) tab[i] = Iy(15*i/NT);
+var bw = Math.round(S*dpr), img = g.createImageData(bw, bw), col = rgbA(lambda, 1);
+for (var py = 0; py < bw; py++) for (var px = 0; px < bw; px++){ var yc = 10 - 20*(py + 0.5)/bw, zc = -10 + 20*(px + 0.5)/bw, r = Math.sqrt(yc*yc + zc*zc), I = tab[Math.min(NT, Math.round(r/15*NT))],
+b = Math.pow(Math.min(1, I*scaleGraph), 0.45), q = 4*(py*bw + px); img.data[q] = 255*col[0]*b; img.data[q + 1] = 255*col[1]*b; img.data[q + 2] = 255*col[2]*b; img.data[q + 3] = 255; }
+g.putImageData(img, Math.round(SX*dpr), Math.round(ST*dpr));
+g.strokeStyle = ax; g.lineWidth = 1; g.strokeRect(SX, ST, S, S);
+g.font = '11px Calibri, Arial'; g.fillStyle = ax; g.textAlign = 'right'; g.textBaseline = 'middle';
+for (var k = -10; k <= 10; k += 2){ g.beginPath(); g.moveTo(SX - 4, Yp(k)); g.lineTo(SX, Yp(k)); g.stroke(); g.fillText(String(k), SX - 6, Yp(k)); }
+g.save(); g.translate(SX - 34, ST + S/2); g.rotate(-Math.PI/2); g.textAlign = 'center'; g.fillText('y (cm)', 0, 0); g.restore();
+g.textAlign = 'center'; g.textBaseline = 'top'; for (k = -10; k <= 10; k += 5){ g.beginPath(); g.moveTo(Zp(k), ST + S); g.lineTo(Zp(k), ST + S + 4); g.stroke(); g.fillText(String(k), Zp(k), ST + S + 6); }
+g.fillText('z (cm)', SX + S/2, ST + S + 18);
+if (caA11y.isCB()){ var nm = Math.round(lambda), t = '\u03BB = ' + nm + ' nm'; g.font = 'bold 12px Calibri, Arial'; g.fillStyle = 'rgba(0,0,0,0.75)'; g.fillRect(SX + 4, ST + 4, g.measureText(t).width + 10, 18); g.fillStyle = '#fff'; g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillText(t, SX + 9, ST + 13); }
+/* dark-ring circles (dotted) */
+g.save(); g.beginPath(); g.rect(SX, ST, S, S); g.clip(); g.setLineDash([2, 4]); g.strokeStyle = 'rgba(255,255,255,0.35)'; g.lineWidth = 1;
+ZEROS.forEach(function(z){ var r = ringY(z); if (r === null || r > 15) return; g.beginPath(); g.arc(Zp(0), Yp(0), r*PXC, 0, 2*Math.PI); g.stroke(); }); g.setLineDash([]);
+if (MK.on){ g.strokeStyle = '#ffffff'; g.lineWidth = 3.5; g.beginPath(); g.arc(Zp(0), Yp(0), Math.abs(MK.y)*PXC, 0, 2*Math.PI); g.stroke(); g.strokeStyle = '#0a84ff'; g.lineWidth = 2; g.stroke(); }
+g.restore();
+/* graph or summary */
+var GX0 = 440, GX1 = 790;
+if (plotgraph){ g.strokeStyle = 'rgba(128,128,128,0.35)'; g.lineWidth = 1;
+for (k = -10; k <= 10; k++){ g.beginPath(); g.moveTo(GX0, Yp(k)); g.lineTo(GX1, Yp(k)); g.stroke(); }
+for (k = 0; k <= 5; k++){ var gx = GX0 + k*(GX1 - GX0)/5; g.beginPath(); g.moveTo(gx, ST); g.lineTo(gx, ST + S); g.stroke(); }
+g.strokeStyle = ax; g.beginPath(); g.moveTo(GX0, ST); g.lineTo(GX0, ST + S); g.lineTo(GX1 + 6, ST + S); g.stroke();
+g.fillStyle = ax; g.font = '11px Calibri, Arial'; g.textAlign = 'center'; g.textBaseline = 'top';
+for (k = 0; k <= 5; k++) g.fillText((k/5/scaleGraph).toFixed(scaleGraph > 4 ? 3 : 1), GX0 + k*(GX1 - GX0)/5, ST + S + 4);
+g.fillText('I / I\u2080' + (scaleGraph > 1 ? '   (curve \u00D7' + scaleGraph + ')' : ''), (GX0 + GX1)/2, ST + S + 18);
+g.save(); g.beginPath(); g.rect(GX0, ST, GX1 - GX0 + 1, S); g.clip();
+if (el('cmpSlit').checked){ g.strokeStyle = ax; g.setLineDash([5, 4]); g.lineWidth = 1.5; g.beginPath(); for (var p1 = 0; p1 <= S; p1++){ var y1 = 10 - p1/PXC, ym1 = y1*0.01, v1 = slitI(ym1/Math.sqrt(ym1*ym1 + L*L))*scaleGraph, xx1 = GX0 + Math.min(v1, 1.05)*(GX1 - GX0); if (p1) g.lineTo(xx1, ST + p1); else g.moveTo(xx1, ST); } g.stroke(); g.setLineDash([]); }
+g.strokeStyle = rgb2(lambda, 0.9); g.lineWidth = caA11y.isThick() ? 4 : 2; g.beginPath();
+for (var p = 0; p <= S; p++){ var yc2 = 10 - p/PXC, v = Iy(yc2)*scaleGraph, xx = GX0 + Math.min(v, 1.05)*(GX1 - GX0); if (p) g.lineTo(xx, ST + p); else g.moveTo(xx, ST); } g.stroke();
+if (MK.on){ g.strokeStyle = '#0a84ff'; g.lineWidth = 2; g.beginPath(); g.moveTo(GX0, Yp(MK.y)); g.lineTo(GX1, Yp(MK.y)); g.stroke(); }
+g.restore(); }
+else { g.fillStyle = ax; g.font = '13px Calibri, Arial'; g.textAlign = 'left'; g.textBaseline = 'top'; var lines = ['A circular hole gives a circular pattern:', 'a bright central disk (the Airy disk),', 'then a dark ring, a faint bright ring, and so on.', '', 'Dotted circles: the dark rings.', 'Blue circle: the marker.', '', 'Tick "Show Intensity Curve" to see the graph,', 'and use the magnification to reveal the faint rings.']; lines.forEach(function(t, i2){ g.fillText(t, GX0, ST + 20 + i2*19); }); }
+el('faceLblI').style.display = plotgraph ? '' : 'none'; }
+/* ════════ marker ════════ */
+var MK = { y:2.5, unit:'y', on:true }, mkT = null;
+function mkText(){ var ym = MK.y/100, th = Math.atan2(ym, L), sn = Math.sin(th), t;
+t = MK.unit === 'y' ? 'r = |y| = ' + Math.abs(MK.y).toFixed(2) + ' cm' : '\u03B8 = ' + (th*180/Math.PI).toFixed(3) + '\u00B0  (sin \u03B8 = ' + sn.toFixed(4) + ' = ' + (Math.abs(sn)*D/wavelength).toFixed(3) + ' \u03BB/D)';
+return t + '   \u00B7   I/I\u2080 = ' + computeI(sn).toFixed(4); }
+function mkUpdate(say){ var v = el('mkVal'); if (v) v.textContent = MK.on ? mkText() : 'Marker hidden.'; if (say){ clearTimeout(mkT); mkT = setTimeout(function(){ _narrate('Marker: ' + mkText().split('   \u00B7   ').join('. ') + '.'); }, 500); } }
+(function(){ var sl = el('mkSl'); sl.addEventListener('input', function(){ MK.y = this.value/100; mkUpdate(true); reset(); });
+[].forEach.call(document.getElementsByName('mkU'), function(r){ r.addEventListener('change', function(){ MK.unit = this.value; mkUpdate(true); }); });
+el('mkOn').addEventListener('change', function(){ MK.on = this.checked; mkUpdate(false); reset(); }); })();
+function drawMotion(){ drawSide(); drawFace(); info(); mkUpdate(false); }
+return { setColor:setColor, showC:showC, showD:showD, changeScale:changeScale, showL:showL, reset:reset, _I:computeI, _ring:ringY };
+};
+</script>
+<script>
+var circAp = new circApGen();
+caA11y.init();
+window.setTimeout(function(){ circAp.reset(); caA11y.narrate('Circular aperture ready. D = 20 &mu;m, &lambda; = 0.65 &mu;m (red), L = 1 m. The first dark ring is at radius 1.22 &lambda;L/D &approx; ' + (1.22*0.65/20*100).toFixed(2) + ' cm. Use the magnification to reveal the faint rings.'); }, 0);
+</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc" onclick="mobDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>This simulation shows the diffraction of light through a small <b>circular hole</b> of diameter `D`. Light of wavelength `lambda` passes through the hole and falls on a screen a distance `L` away. Instead of a sharp spot, the screen shows a bright central disk, the <b>Airy disk</b>, surrounded by faint concentric rings.</p>
+<p>The pattern is like the single-slit pattern turned around the axis, but the geometry of a circle changes the numbers. The intensity is `I = I_0 ((2 J_1(x))/x)^2` with `x = (pi D sin theta)/lambda`, where `J_1` is a Bessel function. The first dark ring is at</p>
+<p class="mob_eq">`sin theta_1 = 1.22 lambda/D`,</p>
+<p>a little further out than the first minimum of a slit of width `D` (`sin theta = lambda/D`): tick the comparison box to see both. The next dark rings are at `2.23 lambda/D` and `3.24 lambda/D`. On the screen the Airy disk has a radius `r ~~ 1.22 lambda L/D` and contains 84% of the light; the first bright ring has only 1.75% of the central intensity, which is why the magnification buttons (which also brighten the face-on view) are needed to see it.</p>
+<p>A smaller hole or a longer wavelength makes a larger disk. This sets the sharpness of every lens, eye and telescope: a point of light is always imaged as an Airy disk, which limits how close two points can be and still be seen as separate (the Rayleigh criterion, in the next simulation).</p>
+</div>
+</div>
+<script>
+function mobDesc(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return; var open = (d.style.display === 'none');
+d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }
+</script>
+<style>
+#mobp6403 { container-type:inline-size; width:100%; max-width:100%; box-sizing:border-box; }
+@container (max-width:863px) {
+#mobp6403 div, #mobp6403 p, #mobp6403 table { max-width:100%; box-sizing:border-box; }
+#mobp6403 canvas { max-width:100%; height:auto !important; }
+#mobp6403 input[type=range], #mobp6403 select { max-width:100%; min-width:0; }
+#mobp6403 .mk_bar, #mobp6403 .sn_a11y, #mobp6403 .sbbar, #mobp6403 .bbar { flex-wrap:wrap; }
+#mobp6403 .sn_a11y > div, #mobp6403 .sbbar > div, #mobp6403 .bbar > div { min-width:min(100%, 260px); }
+#mobp6403 .tbar, #mobp6403 .mcontent, #mobp6403 .sbbar, #mobp6403 .bbar { height:auto; min-height:0; }
+#mobp6403 table { display:block; overflow-x:auto; }
+}
+@media (max-width:883px) {
+#mobp6403 div, #mobp6403 p, #mobp6403 table { max-width:100%; box-sizing:border-box; }
+#mobp6403 canvas { max-width:100%; height:auto !important; }
+#mobp6403 input[type=range], #mobp6403 select { max-width:100%; min-width:0; }
+#mobp6403 .mk_bar, #mobp6403 .sn_a11y, #mobp6403 .sbbar, #mobp6403 .bbar { flex-wrap:wrap; }
+#mobp6403 .sn_a11y > div, #mobp6403 .sbbar > div, #mobp6403 .bbar > div { min-width:min(100%, 260px); }
+#mobp6403 .tbar, #mobp6403 .mcontent, #mobp6403 .sbbar, #mobp6403 .bbar { height:auto; min-height:0; }
+#mobp6403 table { display:block; overflow-x:auto; }
+}
+@media (pointer:coarse) {
+#mobp6403 button, #mobp6403 input[type=button] { min-height:40px; }
+#mobp6403 input[type=range] { height:28px; }
+#mobp6403 input[type=checkbox], #mobp6403 input[type=radio] { width:22px; height:22px; }
+#mobp6403 select { min-height:36px; font-size:16px; }
+}
+#mobp6403 .mob_descwrap { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
+#mobp6403 .mob_descbtn { width:auto; padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
+#mobp6403 .mob_desc { width:100%; max-width:860px; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; text-align:left; }
+#mobp6403 .mob_desc p { margin:0 0 9px 0; }
+#mobp6403 .mob_eq { text-align:center; font-size:1rem; }
+</style>
+
+</div><!-- #mobp6403 -->
+
+</body>
+</html>

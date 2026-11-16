@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Optics: Rayleigh Criterion and Resolution</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Calibri, Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobp6404" class="mob_wrap">
+<div id="rlRoot">
+<div class="sn_a11y" id="rlA11yBar" role="toolbar" aria-label="Display options">
+<button type="button" class="sn_a11ybtn" id="rlBtnHC" onclick="rlA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="sn_a11ybtn" id="rlBtnDM" onclick="rlA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="sn_a11ybtn" id="rlBtnCB" onclick="rlA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="sn_a11ybtn sn_a11yon" id="rlBtnNR" onclick="rlA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+<button type="button" class="sn_a11ybtn" id="rlBtnTH" onclick="rlA11y.toggle('th')" aria-pressed="false">THICK CURVES</button>
+</div>
+<div class="tbar"><H3>Resolution &mdash; the Rayleigh Criterion</H3></div>
+<div class="mcontent">
+<canvas id="cv" width="820" height="450" role="img" aria-label="Left: two point sources far away, light passing through a circular aperture and forming two images on the screen (not to scale). Right: the screen seen face-on, with the two overlapping Airy patterns."></canvas>
+</div>
+<div class="verdict" id="verdict" aria-live="polite"></div>
+<div class="face_wrap"><div class="face_lbl">Intensity along the line through the two images (dashed: each source alone; solid: what you actually see, the sum)</div>
+<canvas id="cvG" width="820" height="250" role="img" aria-label="Graph of the intensity along the line joining the two images: each Airy pattern alone (dashed) and their sum (solid), with the dip between the peaks."></canvas></div>
+<div class="sbbar sbbar-pink">
+<div class="left">Show</div>
+<div class="right2">
+<label><input type="checkbox" id="shInd" checked onchange="rayl.reset()"> each source alone</label>
+<label><input type="checkbox" id="shRing" checked onchange="rayl.reset()"> first dark rings</label>
+<span class="bst">brighten the faint rings:
+<input type="radio" name="bst" value="1" checked onclick="rayl.boost(1)"> &times;1
+<input type="radio" name="bst" value="10" onclick="rayl.boost(10)"> &times;10
+<input type="radio" name="bst" value="50" onclick="rayl.boost(50)"> &times;50</span>
+</div>
+</div>
+<div id="rlNarBar" class="sn_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="bbar bbar-blue">
+<div class="left">Aperture</div>
+<div class="centerL">
+`D =\ `<input class="slider" type="range" id="DValue" min="0" max="1000" value="250" step="1" oninput="rayl.showD(this.value)" onchange="rayl.showD(this.value, 1)">
+<span class="txtDPL wide" id="DVal"></span>
+</div>
+<div class="right"><p class="hint">Presets:</p>
+<input type="button" value="Eye (3 mm pupil)" onclick="rayl.setD(0.003)">
+<input type="button" value="Binoculars (50 mm)" onclick="rayl.setD(0.05)">
+<input type="button" value="Telescope (20 cm)" onclick="rayl.setD(0.2)">
+<input type="button" value="Hubble (2.4 m)" onclick="rayl.setD(2.4)">
+</div>
+</div>
+<div class="bbar bbar-pink">
+<div class="left">Light Source</div>
+<div class="centerL">
+`lambda =\ `<input class="slider" type="range" id="CValue" min="400" max="700" value="550" step="5" oninput="rayl.showC(this.value)" onchange="rayl.showC(this.value, 1)">
+<span class="txtDPL"><span id="initialCValue">550</span> nm</span>
+<p><input type="button" value="Violet" onclick="rayl.setColor(400)"> <input type="button" value="Green" onclick="rayl.setColor(550)"> <input type="button" value="Red" onclick="rayl.setColor(650)"></p>
+</div>
+<div class="right"><div class="ctl">Second source brightness:
+<input type="range" id="BValue" min="10" max="100" value="100" step="5" oninput="rayl.showB(this.value)" onchange="rayl.showB(this.value, 1)"> <span id="BVal">100%</span></div></div>
+</div>
+<div class="bbar bbar-blue">
+<div class="left">Separation</div>
+<div class="centerL">
+`Delta theta =\ `<input class="slider" type="range" id="SValue" min="0" max="1000" value="500" step="1" oninput="rayl.showS(this.value)" onchange="rayl.showS(this.value, 1)">
+<span class="txtDPL wide" id="SVal"></span>
+<p><input type="button" value="&frac12; &theta;R" onclick="rayl.setRel(0.5)"> <input type="button" value="0.85 &theta;R" onclick="rayl.setRel(0.85)"> <input type="button" value="0.75 &theta;R" onclick="rayl.setRel(0.75)"> <input type="button" value="= &theta;R" onclick="rayl.setRel(1)"> <input type="button" value="1.5 &theta;R" onclick="rayl.setRel(1.5)"> <input type="button" value="2 &theta;R" onclick="rayl.setRel(2)"></p>
+</div>
+<div class="right"><p class="hint">Real objects (sets the separation from the size and distance, &Delta;&theta; = s/R):</p>
+<input type="button" value="Car headlights, 1.4 m apart, 5 km away" onclick="rayl.setObj(1.4, 5000, 0.003)">
+<input type="button" value="Two dots 1 mm apart, 5 m away" onclick="rayl.setObj(0.001, 5, 0.003)">
+<input type="button" value="Moon craters 2 km apart (384 000 km)" onclick="rayl.setObj(2000, 3.84e8, 0.2)">
+<input type="button" value="Double star, 1 arc-second" onclick="rayl.setObj(1, 206265, 0.05)">
+<div class="ctl">Your own: s = <input type="number" id="sIn" value="1.4" step="any" min="0" class="num"> m, R = <input type="number" id="RIn" value="5000" step="any" min="0" class="num"> m <input type="button" value="Use" onclick="rayl.useOwn()"></div>
+</div>
+</div>
+<hr><p>&nbsp;</p>
+</div>
+<style>.face_wrap { width:100%; margin-top:6px; }
+.face_lbl { font-family:Calibri, Arial, sans-serif; font-size:.82rem; color:#555; padding:2px 4px; }
+.face_wrap canvas { display:block; width:100%; height:auto; border:1px solid #bbb; }
+.verdict { font-family:Calibri, Arial, sans-serif; font-size:.95rem; line-height:1.45; padding:8px 12px; background:#fff; border:1px solid #c9d0da; border-left:5px solid #888; }
+.verdict b { font-size:1.02rem; }
+.verdict.ok { border-left-color:#1b8a3a; } .verdict.mid { border-left-color:#d08a00; } .verdict.no { border-left-color:#c62828; }
+.hint { font-size:.82rem; color:#444; margin-bottom:3px !important; text-align:left; }
+.ctl { font-family:Calibri, Arial, sans-serif; font-size:.88rem; text-align:left; margin-top:4px; }
+.num { width:6em; }
+.bst { margin-left:10px; white-space:nowrap; }
+.right input[type=button] { margin:2px 1px; font-size:.82rem; }
+</style>
+<style>:where(#mobp6404) * { margin: 0; box-sizing: border-box; }
+:where(#mobp6404) div { width: 823px; margin: 0; }
+#rlRoot .sn_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; width:823px; }
+#rlRoot .sn_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#rlRoot .sn_a11ybtn:hover { border-color:#00e8d0; color:#00e8d0; }
+#rlRoot .sn_narbar { width:823px; min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobp6404 .slider { width:155px; height:14px; display:inline-block; }
+#mobp6404 .txtDPL { background-color:blue; color:yellow; margin-left:10px; padding-top:2px; display:inline-block; font-size:14px; text-align:center; height:20px; width:58px; }
+#mobp6404 .txtDPL.wide { width:96px; }
+#mobp6404 .tbar { padding:4px; height:50px; background-color:#f90; text-align:center; }
+#mobp6404 .mcontent { height:452px; }
+#mobp6404 .sbbar { min-height:45px; text-align:left; display:flex; align-items:center; font-family:Calibri, Arial, sans-serif; }
+#mobp6404 .sbbar .left { width:110px; padding:5px; text-align:center; }
+#mobp6404 .sbbar .right2 { width:713px; padding:5px; }
+#mobp6404 .sbbar label { margin-right:12px; cursor:pointer; }
+#mobp6404 .sbbar-pink { background-color:#fce4ec; }
+#mobp6404 .bbar { min-height:80px; text-align:center; display:flex; }
+#mobp6404 .bbar .left { width:110px; padding:5px; }
+#mobp6404 .bbar .centerL { width:330px; padding:5px; }
+#mobp6404 .bbar .right { width:383px; padding:5px; text-align:left; }
+#mobp6404 .bbar-blue { background-color:#e3f2fd; }
+#mobp6404 .bbar-pink { background-color:#fce4ec; }</style>
+<script>
+var rlA11y = (function(){
+var ROOT = null, WRAP = null, states = { hc:false, dm:false, cb:false, nr:true, th:false };
+var PAL = { std:{ bg:'#ffd', axis:'#000', blue:'blue', dim:'#666' }, dm:{ bg:'#16191e', axis:'#e6e9ee', blue:'#7fb2ff', dim:'#9aa6b4' }, hc:{ bg:'#000', axis:'#fff', blue:'#66ccff', dim:'#ddd' } };
+function P(){ return states.hc ? PAL.hc : (states.dm ? PAL.dm : PAL.std); }
+function styleBtn(id, a){ var b = document.getElementById(id); if (!b) return; b.style.background = a ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = a ? '#00e8d0' : '#404a60'; b.style.color = a ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', a ? 'true' : 'false'); }
+function apply(){ if (!ROOT) return; WRAP = WRAP || document.getElementById('mobp6404') || ROOT;
+WRAP.classList.toggle('a11y_dm', states.dm); WRAP.classList.toggle('a11y_hc', states.hc); WRAP.classList.toggle('a11y_cb', states.cb);
+var nb = document.getElementById('rlNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var nr = document.getElementById('rlBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('rlBtnHC', states.hc); styleBtn('rlBtnDM', states.dm); styleBtn('rlBtnCB', states.cb); styleBtn('rlBtnNR', states.nr); styleBtn('rlBtnTH', states.th); }
+return { init:function(){ ROOT = document.getElementById('rlRoot'); apply(); },
+toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply(); if (typeof rayl !== 'undefined') rayl.reset(); },
+narrate:function(msg){ if (!states.nr) return; var nb = document.getElementById('rlNarBar'); if (!nb) return; nb.innerHTML = msg; if (window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([nb]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, nb]); } },
+isHC:function(){ return states.hc; }, isCB:function(){ return states.cb; }, isThick:function(){ return states.th || states.hc; },
+getBg:function(){ return P().bg; }, getAxis:function(){ return P().axis; }, col:function(k){ return P()[k] || k; } };
+})();
+</script>
+<style>
+#mobp6404.a11y_dm, #mobp6404.a11y_dm :has(canvas) { background-color:#16191e; }
+#mobp6404.a11y_dm :has(canvas) > :not(:has(canvas)):not(canvas):not([role=toolbar]):not(style):not(script) { filter:invert(1) hue-rotate(180deg); }
+#mobp6404.a11y_dm > div > :not(:has(canvas)):not([role=toolbar]):not(style):not(script) { filter:invert(1) hue-rotate(180deg); }
+#mobp6404.a11y_hc, #mobp6404.a11y_hc :has(canvas) { background-color:#000; }
+#mobp6404.a11y_hc :has(canvas) > :not(:has(canvas)):not(canvas):not([role=toolbar]):not(style):not(script) { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobp6404.a11y_hc > div > :not(:has(canvas)):not([role=toolbar]):not(style):not(script) { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobp6404.a11y_dm canvas { border-color:#5a6470 !important; }
+#mobp6404.a11y_hc canvas { border-color:#fff !important; }
+</style>
+<!-- ════════════════ SIMULATION ════════════════
+Two incoherent point sources an angle dtheta apart, imaged through a circular aperture of diameter D.
+Each gives an Airy pattern I(theta) = (2 J1(x)/x)^2, x = pi D theta/lambda (small angles); the intensities add (no interference).
+Rayleigh criterion: just resolved when dtheta = thetaR = 1.22 lambda/D (the peak of one on the first dark ring of the other);
+then the dip between the peaks is about 73.5% of the peaks. The dip disappears (Sparrow limit) near 0.78 thetaR for equal sources.
+Aperture slider: D = 10^(-3 + 4 v/1000) m (1 mm to 10 m). Separation slider: dtheta = 10^(-2 + 5.7 v/1000) microradians.
+No dollar signs or backticks in the code.
+-->
+<script>
+var raylGen = function(){
+var cv = document.getElementById('cv'), ctx = cv.getContext('2d'), cG = document.getElementById('cvG'), gG = cG.getContext('2d');
+var D = 0.01, lam = 550, dth = 1e-4, b2 = 1, bst = 1, obj = null;
+function el(id){ return document.getElementById(id); }
+function say(m){ rlA11y.narrate(m); }
+function J1(x){ var ax = Math.abs(x), y, a1, a2, ans;
+if (ax < 8.0){ y = x*x; a1 = x*(72362614232.0 + y*(-7895059235.0 + y*(242396853.1 + y*(-2972611.439 + y*(15704.48260 + y*(-30.16036606)))))); a2 = 144725228442.0 + y*(2300535178.0 + y*(18583304.74 + y*(99447.43394 + y*(376.9991397 + y*1.0)))); return a1/a2; }
+var z = 8.0/ax, xx = ax - 2.356194491; y = z*z; a1 = 1.0 + y*(0.183105e-2 + y*(-0.3516396496e-4 + y*(0.2457520174e-5 + y*(-0.240337019e-6)))); a2 = 0.04687499995 + y*(-0.2002690873e-3 + y*(0.8449199096e-5 + y*(-0.88228987e-6 + y*0.105787412e-6)));
+ans = Math.sqrt(0.636619772/ax)*(Math.cos(xx)*a1 - z*Math.sin(xx)*a2); return x < 0 ? -ans : ans; }
+function airy(th){ var x = Math.PI*D*th/(lam*1e-9); if (Math.abs(x) < 1e-6) return 1; var v = 2*J1(x)/x; return v*v; }
+function thR(){ return 1.22*lam*1e-9/D; }
+function rgbA(l, k){ var r = 0, g = 0, b = 0; if (l < 440){ r = (440 - l)/60; b = 1; } else if (l < 490){ g = (l - 440)/50; b = 1; } else if (l < 510){ g = 1; b = (510 - l)/20; } else if (l < 580){ r = (l - 510)/70; g = 1; } else if (l < 645){ r = 1; g = (645 - l)/65; } else r = 1;
+var f = l < 420 ? 0.3 + 0.7*(l - 380)/40 : 1; return [k*Math.pow(f*r, 0.8), k*Math.pow(f*g, 0.8), k*Math.pow(f*b, 0.8)]; }
+function rgbS(l, k){ var c = rgbA(l, k); return 'rgb(' + c.map(function(v){ return Math.round(255*Math.max(0, Math.min(1, v))); }).join(',') + ')'; }
+/* ── formatting ── */
+function fAng(t){ if (t < 0) return '\u2212' + fAng(-t); var u = t*1e6; return (u >= 100 ? u.toFixed(0) : u >= 10 ? u.toFixed(1) : u >= 1 ? u.toFixed(2) : u.toPrecision(2)) + ' \u00b5rad'; }
+function fArc(t){ var s = t*206265; return s >= 60 ? (s/60).toFixed(s >= 600 ? 0 : 1) + '\u2032' : (s >= 10 ? s.toFixed(1) : s.toFixed(2)) + '\u2033'; }
+function fD(d){ return d >= 1 ? d.toFixed(2) + ' m' : d >= 0.1 ? (d*100).toFixed(0) + ' cm' : (d*1000).toFixed(d < 0.01 ? 1 : 0) + ' mm'; }
+function fLen(m){ return m >= 1000 ? (m/1000).toLocaleString(undefined, { maximumFractionDigits:1 }) + ' km' : m >= 1 ? m.toFixed(2) + ' m' : m >= 0.01 ? (m*100).toFixed(1) + ' cm' : (m*1000).toFixed(1) + ' mm'; }
+/* ── the profile along the line through the two images ── */
+function prof(t){ var a = airy(t - dth/2), b = b2*airy(t + dth/2); return [a, b, a + b]; }
+function analyse(){ var N = 800, i, w = dth/2 + thR(), tL = 0, pL = -1, tR = 0, pR = -1;
+/* the peak on each side of the centre, then the lowest point between the two peaks */
+for (i=0; i<=N; i++){ var t1 = -w + w*i/N, v1 = prof(t1)[2], t2 = w*i/N, v2 = prof(t2)[2]; if (v1 > pL){ pL = v1; tL = t1; } if (v2 > pR){ pR = v2; tR = t2; } }
+var minV = 1e9, minT = 0; for (i=0; i<=N; i++){ var t = tL + (tR - tL)*i/N, v = prof(t)[2]; if (v < minV){ minV = v; minT = t; } }
+var lower = Math.min(pL, pR), dip = lower > 0 ? minV/lower : 1, hasDip = dip < 0.999 && dth > 0 && tR - tL > 1e-12;
+return { dip:hasDip ? dip : 1, hasDip:hasDip, minT:minT, pk:Math.max(pL, pR) }; }
+/* ── main canvas: geometry sketch + face-on image ── */
+function draw(){ var W = cv.width, H = cv.height, bg = rlA11y.getBg(), ax = rlA11y.getAxis(), blue = rlA11y.col('blue'), i;
+ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+/* geometry (not to scale) */
+var cy = 225, apX = 250, scX = 385, rel = dth/thR(), ang = Math.min(0.32, 0.06 + 0.07*Math.min(rel, 3.6)), sx = 30, l1 = rgbS(lam, 0.9);
+var sA = [sx, cy - Math.tan(ang/2)*(apX - sx)], sB = [sx, cy + Math.tan(ang/2)*(apX - sx)], hA = Math.max(10, Math.min(70, 2 + 14*Math.log(1 + D*1000)/Math.LN10*1.6));
+[sA, sB].forEach(function(s, k){ var c = k ? rgbS(lam, 0.35 + 0.6*b2) : l1; ctx.strokeStyle = c; ctx.globalAlpha = 0.45; ctx.lineWidth = 1;
+for (var j=-2; j<=2; j++){ var ya = cy + j*hA/2.2; ctx.beginPath(); ctx.moveTo(s[0], s[1]); ctx.lineTo(apX, ya); var yI = cy + (cy - s[1])*(scX - apX)/(apX - sx); ctx.lineTo(scX, yI); ctx.stroke(); } ctx.globalAlpha = 1;
+ctx.fillStyle = c; ctx.beginPath(); ctx.arc(s[0], s[1], 7, 0, 2*Math.PI); ctx.fill(); });
+ctx.strokeStyle = ax; ctx.setLineDash([3, 4]); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(sx, cy); ctx.lineTo(apX, cy); ctx.stroke(); ctx.setLineDash([]);
+ctx.strokeStyle = blue; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(apX, cy, 70, Math.PI - ang/2, Math.PI + ang/2); ctx.stroke(); ctx.fillStyle = blue; ctx.font = 'bold 14px Calibri, Arial'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; ctx.fillText('\u0394\u03b8', apX - 76, cy);
+ctx.fillStyle = '#222'; ctx.fillRect(apX - 5, 40, 10, cy - hA/2 - 40); ctx.fillRect(apX - 5, cy + hA/2, 10, H - 60 - cy - hA/2); ctx.strokeStyle = '#8fb3d9'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(apX, cy, 6, hA/2, 0, 0, 2*Math.PI); ctx.stroke();
+ctx.fillStyle = ax; ctx.font = '13px Calibri, Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.fillText('aperture D = ' + fD(D), apX, H - 40); ctx.fillText('(lens, pupil, mirror)', apX, H - 24);
+ctx.fillStyle = '#111'; ctx.fillRect(scX - 3, 40, 8, H - 100); ctx.fillStyle = ax; ctx.fillText('screen', scX, H - 40); ctx.fillText('two point sources', 70, 30); ctx.fillText('(far away)', 70, 46);
+ctx.fillStyle = rlA11y.col('dim'); ctx.font = 'italic 12px Calibri, Arial'; ctx.fillText('not to scale: angles exaggerated', 160, H - 8);
+/* face-on image */
+var FX = 430, FY = 30, S = 380, half = Math.max(3*thR(), dth/2 + 2.6*thR()), bw = Math.round(S), img = ctx.createImageData(bw, bw), c = rgbA(lam, 1), pk = Math.max(1, analyse().pk);
+var dpr = cv.width/820;
+for (var py = 0; py < bw; py++) for (var px = 0; px < bw; px++){ var u = -half + 2*half*(px + 0.5)/bw, v = half - 2*half*(py + 0.5)/bw, rA = Math.hypot(u - dth/2, v), rB = Math.hypot(u + dth/2, v),
+I = (airy(rA) + b2*airy(rB))/pk, br = Math.pow(Math.min(1, I*bst), 0.5), q = 4*(py*bw + px); img.data[q] = 255*c[0]*br; img.data[q + 1] = 255*c[1]*br; img.data[q + 2] = 255*c[2]*br; img.data[q + 3] = 255; }
+ctx.putImageData(img, FX, FY); ctx.strokeStyle = ax; ctx.lineWidth = 1; ctx.strokeRect(FX, FY, S, S);
+function Xf(u){ return FX + (u + half)/(2*half)*S; }
+if (el('shRing').checked){ ctx.save(); ctx.beginPath(); ctx.rect(FX, FY, S, S); ctx.clip(); ctx.setLineDash([3, 4]); ctx.lineWidth = 1.2;
+[[dth/2, 'rgba(255,255,255,0.6)'], [-dth/2, 'rgba(255,220,120,0.6)']].forEach(function(q){ ctx.strokeStyle = q[1]; ctx.beginPath(); ctx.arc(Xf(q[0]), FY + S/2, thR()/(2*half)*S, 0, 2*Math.PI); ctx.stroke(); }); ctx.restore(); }
+ctx.fillStyle = ax; ctx.font = '13px Calibri, Arial'; ctx.textAlign = 'center'; ctx.fillText('the screen, face-on (view: \u00b1' + fAng(half) + ')', FX + S/2, FY - 10);
+var sb = Math.pow(10, Math.floor(Math.log(half)/Math.LN10)); var sbp = sb/(2*half)*S; if (sbp < 40){ sb *= 5; sbp *= 5; } else if (sbp > 160){ sb /= 2; sbp /= 2; }
+ctx.strokeStyle = ax; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(FX + 10, FY + S + 18); ctx.lineTo(FX + 10 + sbp, FY + S + 18); ctx.stroke(); ctx.textAlign = 'left'; ctx.fillText(fAng(sb), FX + 16 + sbp, FY + S + 22);
+if (rlA11y.isCB()){ ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(FX + 4, FY + 4, 120, 18); ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.fillText('\u03bb = ' + lam + ' nm', FX + 9, FY + 17); }
+return half; }
+/* ── profile graph ── */
+function drawG(half){ var W = cG.width, H = cG.height, bg = rlA11y.getBg(), ax = rlA11y.getAxis(), L = 60, R = W - 20, T = 26, B = H - 40, i, A = analyse(), pk = Math.max(1, A.pk), thick = rlA11y.isThick() ? 4 : 2;
+gG.fillStyle = bg; gG.fillRect(0, 0, W, H);
+function X(t){ return L + (t + half)/(2*half)*(R - L); } function Y(v){ return B - Math.min(1.08, v/pk)*(B - T); }
+gG.strokeStyle = 'rgba(128,128,128,0.35)'; gG.lineWidth = 1; gG.fillStyle = ax; gG.font = '11px Calibri, Arial'; gG.textBaseline = 'alphabetic';
+for (i=0; i<=4; i++){ var yy = B - i*(B - T)/4; gG.beginPath(); gG.moveTo(L, yy); gG.lineTo(R, yy); gG.stroke(); gG.textAlign = 'right'; gG.fillText((i/4).toFixed(2), L - 4, yy + 4); }
+var unit = thR(), k0 = Math.ceil(-half/unit), k1 = Math.floor(half/unit);
+for (i=k0; i<=k1; i++){ var xx = X(i*unit); gG.beginPath(); gG.moveTo(xx, T); gG.lineTo(xx, B); gG.stroke(); gG.textAlign = 'center'; gG.fillText((i ? i + ' \u03b8R' : '0'), xx, B + 14); gG.fillText(fAng(i*unit), xx, T - 8); }
+gG.fillText('angle on the screen, in units of \u03b8R = 1.22 \u03bb/D (bottom) and in microradians (top)', (L + R)/2, H - 6);
+gG.save(); gG.translate(16, (T + B)/2); gG.rotate(-Math.PI/2); gG.textAlign = 'center'; gG.fillText('I (relative)', 0, 0); gG.restore();
+gG.save(); gG.beginPath(); gG.rect(L, T - 4, R - L, B - T + 4); gG.clip();
+if (el('shInd').checked){ [[0, rgbS(lam, 0.95)], [1, rgbS(lam, 0.55)]].forEach(function(q){ gG.strokeStyle = q[1]; gG.lineWidth = 1.6; gG.setLineDash([6, 4]); gG.beginPath();
+for (var j=0; j<=600; j++){ var t = -half + 2*half*j/600, v = prof(t)[q[0]]; if (j) gG.lineTo(X(t), Y(v)); else gG.moveTo(X(t), Y(v)); } gG.stroke(); }); gG.setLineDash([]); }
+gG.strokeStyle = rlA11y.isHC() ? '#ffff00' : ax; gG.lineWidth = thick; gG.beginPath(); for (var j2=0; j2<=600; j2++){ var t2 = -half + 2*half*j2/600, v2 = prof(t2)[2]; if (j2) gG.lineTo(X(t2), Y(v2)); else gG.moveTo(X(t2), Y(v2)); } gG.stroke();
+/* source positions and the dip */
+gG.strokeStyle = rlA11y.col('blue'); gG.lineWidth = 1; gG.setLineDash([2, 3]); [dth/2, -dth/2].forEach(function(t){ gG.beginPath(); gG.moveTo(X(t), T); gG.lineTo(X(t), B); gG.stroke(); }); gG.setLineDash([]);
+if (A.hasDip){ var yd = Y(prof(A.minT)[2]); gG.fillStyle = '#d02020'; gG.beginPath(); gG.arc(X(A.minT), yd, 5, 0, 2*Math.PI); gG.fill(); gG.font = 'bold 12px Calibri, Arial'; gG.textAlign = 'left'; gG.fillText('dip: ' + (100*A.dip).toFixed(0) + '% of the peaks', X(A.minT) + 8, yd + 16); }
+gG.restore(); return A; }
+/* ── verdict and narration ── */
+function verdict(A){ var r = dth/thR(), v = el('verdict'), cls, t;
+if (r >= 1.0005){ cls = 'ok'; t = '<b>Resolved.</b> The images are ' + r.toFixed(2) + ' \u03b8R apart: more than the Rayleigh limit, so two separate spots are seen' + (A.hasDip ? ' (dip ' + (100*A.dip).toFixed(0) + '% of the peaks)' : '') + '.'; }
+else if (r >= 0.9995){ cls = 'ok'; t = '<b>Just resolved (Rayleigh criterion).</b> The peak of each pattern falls on the first dark ring of the other: \u0394\u03b8 = \u03b8R = 1.22 \u03bb/D. The sum dips to about ' + (100*A.dip).toFixed(0) + '% between the peaks (\u2248 73.5% for equal sources).'; }
+else if (A.hasDip){ cls = 'mid'; t = '<b>Below the Rayleigh limit</b> (' + r.toFixed(2) + ' \u03b8R). A small dip (' + (100*A.dip).toFixed(0) + '%) is still there, so a careful observer with a good detector may still split them, but by the Rayleigh criterion they are not resolved.'; }
+else { cls = 'no'; t = '<b>Not resolved.</b> At ' + r.toFixed(2) + ' \u03b8R the two patterns merge into one blob with no dip: they look like a single source.'; }
+v.className = 'verdict ' + cls;
+v.innerHTML = t + '<br>\u03b8R = 1.22 \u03bb/D = 1.22 \u00d7 ' + lam + ' nm / ' + fD(D) + ' = <b>' + fAng(thR()) + '</b> (' + fArc(thR()) + ') &nbsp;\u00b7&nbsp; \u0394\u03b8 = <b>' + fAng(dth) + '</b> (' + fArc(dth) + ')'
++ (obj ? ' &nbsp;\u00b7&nbsp; ' + obj.name + ': \u0394\u03b8 = s/R = ' + fLen(obj.s) + ' / ' + fLen(obj.R) + '. With this aperture, two points ' + fLen(obj.s) + ' apart are resolved out to a distance of ' + fLen(obj.s/thR()) + '.' : ''); }
+function all(){ var half = draw(), A = drawG(half); verdict(A);
+el('DVal').textContent = fD(D); el('SVal').textContent = fAng(dth); el('initialCValue').textContent = lam; el('BVal').textContent = Math.round(100*b2) + '%';
+el('DValue').value = Math.round((Math.log(D)/Math.LN10 + 3)/4*1000); el('SValue').value = Math.round((Math.log(dth*1e6)/Math.LN10 + 2)/5.7*1000); el('CValue').value = lam; return A; }
+function sayNow(pre){ var A = analyse(), r = dth/thR(); say((pre || '') + 'Rayleigh angle &theta;R = ' + fAng(thR()) + '. Separation ' + fAng(dth) + ' = ' + r.toFixed(2) + ' &theta;R: ' + (r >= 0.9995 ? (r < 1.0005 ? 'just resolved.' : 'resolved.') : A.hasDip ? 'below the Rayleigh limit, a small dip remains.' : 'not resolved, one blob.')); }
+return {
+reset:function(){ all(); },
+showD:function(v, s){ D = Math.pow(10, -3 + 4*v/1000); obj = null; all(); if (s) sayNow('Aperture D = ' + fD(D) + '. '); },
+setD:function(d){ D = d; all(); sayNow('Aperture D = ' + fD(D) + '. A larger aperture gives a smaller Airy disk and a smaller &theta;R. '); },
+showC:function(v, s){ lam = +v; all(); if (s) sayNow('Wavelength ' + lam + ' nm. '); },
+setColor:function(v){ lam = v; all(); sayNow('Wavelength ' + lam + ' nm: shorter wavelengths give smaller Airy disks and better resolution. '); },
+showB:function(v, s){ b2 = v/100; all(); if (s) sayNow('Second source at ' + v + '% brightness. '); },
+showS:function(v, s){ dth = Math.pow(10, -2 + 5.7*v/1000)*1e-6; obj = null; all(); if (s) sayNow(''); },
+setRel:function(k){ dth = k*thR(); obj = null; all(); sayNow('Separation set to ' + k + ' &theta;R. '); },
+setObj:function(s, R, d){ D = d; dth = s/R; obj = { s:s, R:R, name:s + ' m at ' + fLen(R) }; obj.name = 'objects ' + fLen(s) + ' apart, ' + fLen(R) + ' away'; all(); sayNow('Objects ' + fLen(s) + ' apart at ' + fLen(R) + ', seen through ' + fD(D) + '. '); },
+useOwn:function(){ var s = parseFloat(el('sIn').value), R = parseFloat(el('RIn').value); if (!(s > 0 && R > 0)) { say('Type a separation s and a distance R, both positive.'); return; } dth = s/R; obj = { s:s, R:R, name:'your objects ' + fLen(s) + ' apart, ' + fLen(R) + ' away' }; all(); sayNow('Your objects: '); },
+boost:function(k){ bst = k; all(); say('Faint rings brightened &times;' + k + ' in the face-on view (the graph is not changed).'); },
+_an:analyse, _thR:thR, _set:function(d, l, t){ D = d; lam = l; dth = t; obj = null; return all(); }
+};
+};
+</script>
+<script>
+var rayl = new raylGen();
+rlA11y.init();
+window.setTimeout(function(){ rayl.setD(0.01); rayl.setRel(1.5); rlA11y.narrate('Two point sources seen through a 1 cm aperture with green light. The Rayleigh angle is &theta;R = 1.22 &lambda;/D. Move the sources closer with the separation slider or the buttons, and watch the dip between the peaks.'); }, 0);
+</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc" onclick="mobDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>Any lens, mirror or pupil is a circular aperture, so it images a point of light not as a point but as an <b>Airy disk</b>, surrounded by faint rings. Two point sources (two stars, two headlights, two dots) at an angle `Delta theta` apart give two Airy patterns on the screen. The two sources are independent (incoherent), so their <b>intensities</b> simply add: there is no interference between them.</p>
+<p>When the patterns overlap too much, they merge into one blob and the two sources cannot be told apart. <b>Rayleigh&rsquo;s criterion</b>: two sources are just resolved when the central peak of one falls on the first dark ring of the other,</p>
+<p class="mob_eq">`theta_R = 1.22 lambda/D`&nbsp;&nbsp; (in radians; `D` the diameter of the aperture).</p>
+<p>At that separation the combined intensity dips to about 73.5% between the peaks. Closer than `theta_R`, the dip shrinks and disappears near `0.78 theta_R`. For objects a distance `s` apart at a distance `R`, `Delta theta ~~ s/R`, so the farthest distance at which they can be resolved is `R = s/theta_R`.</p>
+<p>A larger aperture or a shorter wavelength gives a smaller `theta_R`, so finer detail: this is why telescopes have large mirrors and why blue light resolves better than red. The human eye (pupil about 3 mm) has `theta_R ~~ 2 xx 10^(-4)` rad, about 1 arc-minute. The face-on view uses the same intensities as the graph; the brightening option only makes the faint rings visible.</p>
+</div>
+</div>
+<script>
+function mobDesc(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return; var open = (d.style.display === 'none');
+d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }
+</script>
+<style>
+#mobp6404 { container-type:inline-size; width:100%; max-width:100%; box-sizing:border-box; }
+@container (max-width:863px) {
+#mobp6404 div, #mobp6404 p, #mobp6404 table { max-width:100%; box-sizing:border-box; }
+#mobp6404 canvas { max-width:100%; height:auto !important; }
+#mobp6404 input[type=range], #mobp6404 select { max-width:100%; min-width:0; }
+#mobp6404 .mk_bar, #mobp6404 .sn_a11y, #mobp6404 .sbbar, #mobp6404 .bbar { flex-wrap:wrap; }
+#mobp6404 .sn_a11y > div, #mobp6404 .sbbar > div, #mobp6404 .bbar > div { min-width:min(100%, 260px); }
+#mobp6404 .tbar, #mobp6404 .mcontent, #mobp6404 .sbbar, #mobp6404 .bbar { height:auto; min-height:0; }
+#mobp6404 table { display:block; overflow-x:auto; }
+}
+@media (max-width:883px) {
+#mobp6404 div, #mobp6404 p, #mobp6404 table { max-width:100%; box-sizing:border-box; }
+#mobp6404 canvas { max-width:100%; height:auto !important; }
+#mobp6404 input[type=range], #mobp6404 select { max-width:100%; min-width:0; }
+#mobp6404 .mk_bar, #mobp6404 .sn_a11y, #mobp6404 .sbbar, #mobp6404 .bbar { flex-wrap:wrap; }
+#mobp6404 .sn_a11y > div, #mobp6404 .sbbar > div, #mobp6404 .bbar > div { min-width:min(100%, 260px); }
+#mobp6404 .tbar, #mobp6404 .mcontent, #mobp6404 .sbbar, #mobp6404 .bbar { height:auto; min-height:0; }
+#mobp6404 table { display:block; overflow-x:auto; }
+}
+@media (pointer:coarse) {
+#mobp6404 button, #mobp6404 input[type=button] { min-height:40px; }
+#mobp6404 input[type=range] { height:28px; }
+#mobp6404 input[type=checkbox], #mobp6404 input[type=radio] { width:22px; height:22px; }
+#mobp6404 select { min-height:36px; font-size:16px; }
+}
+#mobp6404 .mob_descwrap { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
+#mobp6404 .mob_descbtn { width:auto; padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
+#mobp6404 .mob_desc { width:100%; max-width:860px; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; text-align:left; }
+#mobp6404 .mob_desc p { margin:0 0 9px 0; }
+#mobp6404 .mob_eq { text-align:center; font-size:1rem; }
+</style>
+
+</div>
+
+</body>
+</html>

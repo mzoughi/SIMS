@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Nuclear: Half-Life</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobnuchalflife" class="mob_wrap">
+<div id="hlRoot">
+<div class="hl_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="hl_a11ybtn" id="hlBtnHC" onclick="hlA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="hl_a11ybtn" id="hlBtnDM" onclick="hlA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="hl_a11ybtn" id="hlBtnCB" onclick="hlA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="hl_a11ybtn" id="hlBtnNR" onclick="hlA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+
+<div class="hl_title"><h3>Half-Life &mdash; Random Decays, Predictable Totals</h3></div>
+<div class="hl_read" aria-live="off">
+<div><div class="hl_rl">time</div><div class="hl_rv" id="hlRt"></div></div>
+<div><div class="hl_rl">undecayed nuclei</div><div class="hl_rv" id="hlRn"></div></div>
+<div><div class="hl_rl">expected N&#8320;(&frac12;)<sup>t/T</sup></div><div class="hl_rv" id="hlRe"></div></div>
+<div><div class="hl_rl">difference</div><div class="hl_rv" id="hlRd"></div></div>
+<div><div class="hl_rl">decays in the last step</div><div class="hl_rv" id="hlRa"></div></div>
+<div><div class="hl_rl">half of them gone at</div><div class="hl_rv" id="hlRh"></div></div>
+</div>
+<div class="hl_view"><canvas id="hlGrid" width="800" height="300" role="img" aria-label="The sample: one square per nucleus, coloured while undecayed and dark once decayed. Click a square to follow that nucleus."></canvas></div>
+<div id="hlStatus" class="hl_status"></div>
+<div id="hlNarBar" class="hl_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="hl_transport" role="toolbar" aria-label="Time">
+<div class="hl_tgroup">
+<button type="button" class="hl_tbtn hl_play" id="hlPlay" aria-label="Play" title="Play / pause"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="hl_tbtn" id="hlBack" aria-label="Step back" title="Step back"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="4" y="4" width="3" height="16" fill="currentColor"/><path d="M20 4 L9 12 L20 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="hl_tbtn" id="hlStep" aria-label="Step forward" title="Step forward"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="17" y="4" width="3" height="16" fill="currentColor"/><path d="M4 4 L15 12 L4 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="hl_tbtn" id="hlRst" aria-label="New sample (same settings)" title="New sample"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 5 A7 7 0 1 1 5.6 9" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M3 4 L9.5 4.5 L5.5 10 Z" fill="currentColor"/></svg></button>
+</div>
+<div class="hl_tgroup hl_tsep">
+<button type="button" class="hl_vbtn" id="hlJ1">Jump 1 half-life</button>
+<button type="button" class="hl_vbtn" id="hlRep">Repeat 50 times</button>
+<button type="button" class="hl_vbtn" id="hlClr">Clear old runs</button>
+</div>
+</div>
+<div class="hl_card"><div class="hl_ctitle">Number of undecayed nuclei against time (this run in colour, earlier runs grey)</div>
+<canvas id="hlGr" width="800" height="260" role="img" aria-label="Graph of the number of undecayed nuclei against time in half-lives: this run, earlier runs, the expected curve and a band of typical random scatter."></canvas>
+<div class="hl_cnote" id="hlGx"></div></div>
+<div class="hl_card" id="hlHistC" hidden><div class="hl_ctitle">50 repeats: when did half of the sample decay?</div>
+<canvas id="hlHist" width="800" height="200" role="img" aria-label="Histogram of the time at which half of the sample had decayed, over 50 repeated samples."></canvas>
+<div class="hl_cnote" id="hlHx"></div></div>
+<div class="hl_panels">
+<div class="hl_panel" role="group" aria-labelledby="hlHdS"><div class="hl_ptitle" id="hlHdS">Sample</div><div class="hl_pbody">
+<div class="hl_ctrl"><div class="hl_chdr"><label for="hlIso">Isotope</label></div><select id="hlIso"></select></div>
+<div class="hl_ctrl"><div class="hl_chdr"><label for="hlN">Number of nuclei N&#8320;</label><span class="hl_val" id="hlNVal"></span></div><input type="range" id="hlN" min="0" max="7" step="1" value="4"></div>
+<div class="hl_ctrl"><div class="hl_chdr"><label for="hlSp">Speed</label><span class="hl_val" id="hlSpVal"></span></div><input type="range" id="hlSp" min="1" max="5" step="1" value="3"></div>
+</div></div>
+<div class="hl_panel" role="group" aria-labelledby="hlHdD"><div class="hl_ptitle" id="hlHdD">Show</div><div class="hl_pbody">
+<div class="hl_checks">
+<label class="hl_chk"><input type="checkbox" id="hlTh" checked>Expected curve</label>
+<label class="hl_chk"><input type="checkbox" id="hlBand" checked>Typical scatter (&plusmn;1&sigma;)</label>
+<label class="hl_chk"><input type="checkbox" id="hlLog">Logarithmic N axis</label>
+<label class="hl_chk"><input type="checkbox" id="hlAct">Activity (decays per step)</label>
+</div>
+<p class="hl_note">Click any square to follow one nucleus: you can never tell when it will decay, only the chance that it will.</p>
+</div></div>
+</div>
+</div>
+<style>
+:where(#mobnuchalflife) * { margin:0; box-sizing:border-box; }
+#mobnuchalflife { width:100%; max-width:806px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; color:#1d232a; }
+#mobnuchalflife canvas { display:block; width:100%; height:auto; }
+#hlRoot .hl_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#hlRoot .hl_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#hlRoot .hl_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobnuchalflife .hl_title { padding:4px; background-color:#f90; text-align:center; }
+#mobnuchalflife .hl_title h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+#mobnuchalflife .hl_tabs { display:flex; gap:4px; padding:6px 8px 0; background:#14213a; flex-wrap:wrap; }
+#mobnuchalflife .hl_tab { flex:1 1 120px; padding:8px 6px; border:1px solid #2b3d60; border-bottom:0; border-radius:6px 6px 0 0; background:#1d2c4a; color:#bcd0f0; font-weight:bold; cursor:pointer; font-size:.88rem; min-height:40px; }
+#mobnuchalflife .hl_tab[aria-selected="true"] { background:#f3f5f8; color:#14213a; }
+#mobnuchalflife .hl_view { background:#0b1222; }
+#mobnuchalflife .hl_status { color:#222; font-size:.84rem; text-align:center; background:#fff6d9; padding:5px 8px; line-height:1.45; min-height:1.6em; }
+#mobnuchalflife .hl_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+#mobnuchalflife .hl_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+#mobnuchalflife .hl_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { #mobnuchalflife .hl_tsep { padding-left:0; border-left:0; } }
+#mobnuchalflife .hl_tbtn { width:44px; height:38px; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer; border:1px solid #6d8a3a; border-radius:5px; background:#fff; color:#223; }
+#mobnuchalflife .hl_tbtn.hl_play { background:#2e7d32; color:#fff; border-color:#1b5e20; }
+#mobnuchalflife .hl_tbtn.hl_play[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+#mobnuchalflife .hl_vbtn, #mobnuchalflife .hl_bbtn { height:38px; padding:0 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; white-space:nowrap; }
+#mobnuchalflife .hl_vbtn[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobnuchalflife .hl_bbtn { background:#2e7d32; border-color:#1b5e20; color:#fff; font-weight:bold; }
+#mobnuchalflife button:disabled { opacity:.4; cursor:not-allowed; }
+#mobnuchalflife .hl_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:10px; padding:10px; }
+#mobnuchalflife .hl_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+#mobnuchalflife .hl_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+#mobnuchalflife .hl_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; font-size:.86rem; line-height:1.45; }
+#mobnuchalflife .hl_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+#mobnuchalflife .hl_ctrl.hl_off { opacity:.45; }
+#mobnuchalflife .hl_chdr { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+#mobnuchalflife .hl_chdr label { font-size:.82rem; font-weight:bold; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+#mobnuchalflife .hl_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; flex:0 0 auto; min-width:4.5em; text-align:right; }
+#mobnuchalflife .hl_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+#mobnuchalflife select { width:100%; min-height:34px; padding:4px 6px; font-size:.86rem; border:1px solid #8a96a8; border-radius:4px; background:#fff; }
+#mobnuchalflife .hl_checks { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 8px; }
+#mobnuchalflife .hl_chk { display:flex; align-items:center; gap:6px; font-size:.82rem; cursor:pointer; }
+#mobnuchalflife .hl_presets { display:flex; flex-wrap:wrap; gap:5px; }
+#mobnuchalflife .hl_presets button { padding:5px 9px; font-size:.82rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:4px; background:#fff; color:#223; min-height:34px; }
+#mobnuchalflife .hl_presets button[aria-current="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobnuchalflife .hl_card { margin:10px 10px 0; background:#0b1222; border:1px solid #2b3d60; border-radius:6px; overflow:hidden; }
+#mobnuchalflife .hl_ctitle { padding:5px 10px; background:#14213a; color:#dbe7ff; font-size:.78rem; font-weight:bold; }
+#mobnuchalflife .hl_cnote { padding:8px 12px 10px; color:#e3ecfa; font-size:.86rem; line-height:1.5; background:#0d1526; border-top:1px solid #2b3d60; }
+#mobnuchalflife .hl_cnote b { color:#ffd23f; }
+#mobnuchalflife .hl_note { font-size:.78rem; color:#555; font-style:italic; }
+#mobnuchalflife .hl_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:6px 12px; padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; }
+#mobnuchalflife .hl_rl { font-size:.7rem; color:#667; text-transform:uppercase; letter-spacing:.05em; }
+#mobnuchalflife .hl_rv { font-family:monospace; font-size:.95rem; color:#7a3a00; font-weight:bold; }
+#mobnuchalflife .hl_tbl { border-collapse:collapse; width:100%; font-size:.82rem; }
+#mobnuchalflife .hl_tbl th, #mobnuchalflife .hl_tbl td { padding:4px 6px; border-bottom:1px solid #e3e7ee; text-align:center; }
+#mobnuchalflife .hl_tbl th { background:#f1f4f8; font-size:.76rem; }
+#mobnuchalflife .hl_tbl td.hl_l, #mobnuchalflife .hl_tbl th.hl_l { text-align:left; }
+#mobnuchalflife .hl_tblwrap { overflow-x:auto; }
+#mobnuchalflife button:focus-visible, #mobnuchalflife input:focus-visible, #mobnuchalflife select:focus-visible, #mobnuchalflife canvas:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (max-width:420px) { #mobnuchalflife .hl_checks { grid-template-columns:minmax(0,1fr); } }
+@media (pointer:coarse) { #mobnuchalflife .hl_tbtn, #mobnuchalflife .hl_vbtn, #mobnuchalflife .hl_bbtn { height:44px; } #mobnuchalflife .hl_presets button { min-height:42px; } #mobnuchalflife input[type=checkbox] { width:20px; height:20px; } #mobnuchalflife input[type=range] { height:28px; } }
+#mobnuchalflife .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobnuchalflife .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobnuchalflife .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobnuchalflife .mob_desc p { margin:0 0 8px 0; }
+#mobnuchalflife .mob_eq { text-align:center; }
+#mobnuchalflife.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobnuchalflife.a11y_dm canvas, #mobnuchalflife.a11y_dm [aria-label="Display options"], #mobnuchalflife.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobnuchalflife.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobnuchalflife.a11y_hc canvas, #mobnuchalflife.a11y_hc [aria-label="Display options"], #mobnuchalflife.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+
+#mobnuchalflife #hlGrid { cursor:pointer; }
+</style>
+<script>
+var hlA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return;
+  b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobnuchalflife'); if (!W) return;
+  W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc); W.classList.toggle('a11y_cb', states.cb);
+  var nb = document.getElementById('hlNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+  var nr = document.getElementById('hlBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+  styleBtn('hlBtnHC', states.hc); styleBtn('hlBtnDM', states.dm); styleBtn('hlBtnCB', states.cb); styleBtn('hlBtnNR', states.nr);
+  hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return {
+  init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+  toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply();
+    if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: undecayed nuclei orange, decayed dark blue, this run sky blue, activity pink.'); },
+  altPalette:function(){ return states.hc || states.cb; }, isHC:function(){ return states.hc; },
+  narrate:function(msg){ if (!states.nr) return; var nb = document.getElementById('hlNarBar'); if (nb) nb.textContent = msg; }
+};
+})();
+</script>
+
+<!-- ════════ SIMULATION ════════
+Each nucleus gets a random lifetime t_i = T ln(1/u)/ln 2 (u uniform in (0,1)): exactly the exponential law with half-life T.
+At time t, undecayed = number of t_i > t. Expected N0 (1/2)^(t/T); scatter sigma = sqrt(N0 p (1 - p)), p = (1/2)^(t/T).
+Half of them gone at = the median lifetime. Repeats: 50 fresh samples, histogram of their medians.
+No dollar signs or backticks in the code.
+-->
+<script>
+var hlGen = function(){
+  var cG = document.getElementById('hlGrid'), gG = cG.getContext('2d'), cP = document.getElementById('hlGr'), gP = cP.getContext('2d'), cH = document.getElementById('hlHist'), gH = cH.getContext('2d');
+  var TAU = 2*Math.PI, LN2 = Math.LN2, DT = 0.05, TMAX = 6;
+  function el(id){ return document.getElementById(id); }
+  var NS = [4, 16, 50, 100, 400, 1000, 2500, 10000];
+  var ISO = [['Polonium-214', 164e-6, 's', '\u03b1'], ['Radon-220', 55.6, 's', '\u03b1'], ['Barium-137m', 153, 's', '\u03b3'], ['Iodine-131', 8.02*86400, 'd', '\u03b2\u207b'], ['Cobalt-60', 5.27*3.156e7, 'y', '\u03b2\u207b'], ['Carbon-14', 5730*3.156e7, 'y', '\u03b2\u207b'], ['Uranium-238', 4.47e9*3.156e7, 'y', '\u03b1']];
+  var N0 = 100, iso = 3, life = [], sorted = [], t = 0, runs = [], timer = null, speed = 3, follow = -1, hist = null;
+  function newSample(){ life = []; for (var i=0; i<N0; i++){ var u = Math.random(); life.push(Math.log(1/(u || 1e-12))/LN2); } sorted = life.slice().sort(function(a, b){ return a - b; }); t = 0; follow = -1; }
+  function alive(tt){ var lo = 0, hi = sorted.length; while (lo < hi){ var m = (lo + hi) >> 1; if (sorted[m] <= tt) lo = m + 1; else hi = m; } return sorted.length - lo; }
+  function median(arr){ var n = arr.length; return n % 2 ? arr[(n - 1)/2] : (arr[n/2 - 1] + arr[n/2])/2; }
+  function T(){ return ISO[iso][1]; }
+  function fmtTime(halves){ var s = halves*T(), u = ISO[iso][2]; if (u === 's'){ return s < 1e-3 ? (s*1e6).toPrecision(3) + ' \u00b5s' : s < 120 ? s.toPrecision(3) + ' s' : (s/60).toPrecision(3) + ' min'; } if (u === 'd') return (s/86400).toPrecision(3) + ' days'; var y = s/3.156e7; return y < 1e6 ? (y < 100 ? y.toPrecision(3) : Math.round(y).toLocaleString()) + ' years' : (y/1e9).toPrecision(3) + ' billion years'; }
+  function fmtT(){ return fmtTime(1); }
+  /* ══════════ grid ══════════ */
+  function pal(){ var alt = hlA11y.altPalette(); return { live:alt ? '#E69F00' : '#ffb000', dead:alt ? '#25445f' : '#2b3550', fol:'#ffffff', curve:alt ? '#56B4E9' : '#4fc3ff', th:'#ffffff', band:'rgba(255,255,255,0.12)', old:'rgba(160,175,200,0.35)', act:alt ? '#CC79A7' : '#ff5ad1' }; }
+  var GL = { cols:0, rows:0, s:0, x0:0, y0:0 };
+  function drawGrid(){ var p = pal(), W = cG.width, H = cG.height, n = N0, cols = Math.ceil(Math.sqrt(n*W/H)), rows = Math.ceil(n/cols), s = Math.min((W - 20)/cols, (H - 20)/rows), x0 = (W - cols*s)/2, y0 = (H - rows*s)/2, i;
+    GL = { cols:cols, rows:rows, s:s, x0:x0, y0:y0 }; gG.fillStyle = '#0b1222'; gG.fillRect(0, 0, W, H);
+    var pad = s > 6 ? Math.max(1, s*0.12) : 0;
+    for (i=0; i<n; i++){ var c = i % cols, r = (i/cols) | 0, on = life[i] > t; gG.fillStyle = on ? p.live : p.dead; if (s >= 10){ gG.beginPath(); gG.arc(x0 + c*s + s/2, y0 + r*s + s/2, s/2 - pad, 0, TAU); gG.fill(); } else gG.fillRect(x0 + c*s, y0 + r*s, s - pad, s - pad); }
+    if (follow >= 0){ var fc = follow % cols, fr = (follow/cols) | 0; gG.strokeStyle = p.fol; gG.lineWidth = 3; gG.strokeRect(x0 + fc*s - 2, y0 + fr*s - 2, s + 4, s + 4); } }
+  /* ══════════ graph ══════════ */
+  function drawGraph(){ var p = pal(), W = cP.width, H = cP.height, L = 60, R = W - 14, Tp = 14, B = H - 36, i, lg = el('hlLog').checked;
+    gP.fillStyle = '#0b1222'; gP.fillRect(0, 0, W, H);
+    function X(h){ return L + h/TMAX*(R - L); } function Y(v){ if (lg){ var lo = Math.log(Math.max(0.5, 0.5)), hi = Math.log(N0); return B - (Math.log(Math.max(0.5, v)) - lo)/(hi - lo)*(B - Tp); } return B - v/N0*(B - Tp); }
+    gP.strokeStyle = 'rgba(150,170,195,0.2)'; gP.lineWidth = 1; gP.fillStyle = '#9aa6b4'; gP.font = '10px monospace'; gP.textBaseline = 'alphabetic';
+    for (i=0; i<=TMAX; i++){ gP.beginPath(); gP.moveTo(X(i), Tp); gP.lineTo(X(i), B); gP.stroke(); gP.textAlign = 'center'; gP.fillText(i + (i ? ' T' : ''), X(i), B + 13); }
+    var yt = lg ? [1, 10, 100, 1000, 10000].filter(function(v){ return v <= N0; }) : [0, 0.125, 0.25, 0.5, 1].map(function(f){ return f*N0; });
+    yt.forEach(function(v){ gP.beginPath(); gP.moveTo(L, Y(v)); gP.lineTo(R, Y(v)); gP.stroke(); gP.textAlign = 'right'; gP.fillText((v % 1 ? v.toFixed(1) : String(v)) + (lg ? '' : ''), L - 4, Y(v) + 3); });
+    gP.textAlign = 'center'; gP.fillText('time, in half-lives T  (1 T = ' + fmtT() + ')', (L + R)/2, H - 6); gP.save(); gP.translate(14, (Tp + B)/2); gP.rotate(-Math.PI/2); gP.fillText('undecayed N', 0, 0); gP.restore();
+    if (el('hlBand').checked){ gP.fillStyle = p.band; gP.beginPath(); for (i=0; i<=240; i++){ var h = TMAX*i/240, q = Math.pow(0.5, h), m = N0*q, sd = Math.sqrt(N0*q*(1 - q)); if (!i) gP.moveTo(X(h), Y(m + sd)); else gP.lineTo(X(h), Y(m + sd)); } for (i=240; i>=0; i--){ var h2 = TMAX*i/240, q2 = Math.pow(0.5, h2), m2 = N0*q2, sd2 = Math.sqrt(N0*q2*(1 - q2)); gP.lineTo(X(h2), Y(Math.max(lg ? 0.5 : 0, m2 - sd2))); } gP.closePath(); gP.fill(); }
+    runs.forEach(function(rs){ gP.strokeStyle = p.old; gP.lineWidth = 1.2; gP.beginPath(); for (var j=0; j<=120; j++){ var hh = TMAX*j/120, v = aliveIn(rs, hh); if (!j) gP.moveTo(X(hh), Y(v)); else gP.lineTo(X(hh), Y(v)); } gP.stroke(); });
+    if (el('hlTh').checked){ gP.strokeStyle = p.th; gP.setLineDash([6, 4]); gP.lineWidth = 1.8; gP.beginPath(); for (i=0; i<=240; i++){ var h3 = TMAX*i/240; if (!i) gP.moveTo(X(h3), Y(N0*Math.pow(0.5, h3))); else gP.lineTo(X(h3), Y(N0*Math.pow(0.5, h3))); } gP.stroke(); gP.setLineDash([]);
+      for (i=1; i<=4; i++){ var v4 = N0*Math.pow(0.5, i); gP.fillStyle = 'rgba(255,255,255,0.8)'; gP.beginPath(); gP.arc(X(i), Y(v4), 3, 0, TAU); gP.fill(); } }
+    gP.strokeStyle = p.curve; gP.lineWidth = 2.6; gP.beginPath(); var nstep = Math.round(t/DT); for (i=0; i<=nstep; i++){ var h4 = i*DT, v5 = alive(h4); if (!i) gP.moveTo(X(h4), Y(v5)); else gP.lineTo(X(h4), Y(v5)); } gP.stroke();
+    if (el('hlAct').checked){ var amax = 1; for (i=1; i<=TMAX/DT; i++) amax = Math.max(amax, N0*(Math.pow(0.5, (i - 1)*DT) - Math.pow(0.5, i*DT))*1.6); gP.fillStyle = p.act;
+      for (i=1; i<=nstep; i++){ var a = alive((i - 1)*DT) - alive(i*DT), bh = a/amax*(B - Tp)*0.5; gP.globalAlpha = 0.6; gP.fillRect(X((i - 1)*DT) + 0.5, B - bh, X(DT) - X(0) - 1, bh); gP.globalAlpha = 1; }
+      gP.fillStyle = p.act; gP.font = 'bold 10px Arial'; gP.textAlign = 'right'; gP.fillText('pink bars: decays per step (activity, not to the N scale)', R - 4, Tp + 26); }
+    gP.fillStyle = p.curve; gP.beginPath(); gP.arc(X(t), Y(alive(t)), 5, 0, TAU); gP.fill();
+    gP.font = 'bold 11px Arial'; gP.textAlign = 'right'; gP.fillStyle = '#e6ecf2'; gP.fillText('blue: this run \u00b7 white dashed: N\u2080(\u00bd)^(t/T) \u00b7 grey band: typical random scatter', R - 4, Tp + 10); }
+  function aliveIn(rs, tt){ var lo = 0, hi = rs.length; while (lo < hi){ var m = (lo + hi) >> 1; if (rs[m] <= tt) lo = m + 1; else hi = m; } return rs.length - lo; }
+  /* ══════════ readouts and explanations ══════════ */
+  function readouts(){ var n = alive(t), e = N0*Math.pow(0.5, t), q = Math.pow(0.5, t), sd = Math.sqrt(N0*q*(1 - q)), d = n - e, a = t > 0 ? alive(Math.max(0, t - DT)) - n : 0, med = median(sorted);
+    el('hlRt').textContent = t.toFixed(2) + ' T = ' + fmtTime(t); el('hlRn').textContent = n + ' of ' + N0 + ' (' + (100*n/N0).toFixed(1) + '%)'; el('hlRe').textContent = e.toFixed(1);
+    el('hlRd').textContent = (d >= 0 ? '+' : '') + d.toFixed(1) + (sd > 0 ? ' (' + (Math.abs(d)/sd).toFixed(1) + '\u03c3)' : ''); el('hlRa').textContent = String(a);
+    el('hlRh').textContent = n <= N0/2 ? med.toFixed(2) + ' T = ' + fmtTime(med) : 'not yet';
+    var st = 'Each step lasts 0.05 T. In each step, every undecayed nucleus has the same chance to decay: 1 \u2212 (\u00bd)^0.05 \u2248 3.4%, no matter how long it has already waited.';
+    if (follow >= 0) st = 'Followed nucleus #' + (follow + 1) + ': ' + (life[follow] > t ? 'still undecayed. It has the same 3.4% chance per step as every other one; its past does not matter.' : 'decayed at t = ' + life[follow].toFixed(2) + ' T. Nothing about it predicted that moment.');
+    el('hlStatus').textContent = st;
+    var rel = N0 > 0 ? 1/Math.sqrt(N0) : 0;
+    el('hlGx').innerHTML = '<b>Half-life T</b>: the time in which, on average, half of the undecayed nuclei decay. After 1 T, about \u00bd is left; after 2 T, \u00bc; after 3 T, \u215b: N = N\u2080(\u00bd)<sup>t/T</sup> (white dots). '
+      + 'The <b>blue curve</b> is this sample, decaying at random. The <b>grey band</b> shows the typical scatter: about \u00b1\u221a(N\u2080 p(1 \u2212 p)), with p = (\u00bd)<sup>t/T</sup>, the chance that one nucleus is still undecayed. With N\u2080 = ' + N0 + ' the scatter is about ' + (100*rel/2).toFixed(rel > 0.1 ? 0 : 1) + '% of N\u2080 at t = T. '
+      + (N0 <= 16 ? 'With so few nuclei, each run looks very different: the half-life describes the average, not each sample. Try 10 000.' : N0 >= 2500 ? 'With this many nuclei the runs follow the expected curve almost exactly: randomness averages out.' : 'Press the restart button a few times to compare runs.') + ' The <b>activity</b> (decays per step) also halves every half-life, because it is proportional to the number left.'; }
+  function all(){ drawGrid(); drawGraph(); readouts(); }
+  /* ══════════ repeats ══════════ */
+  function repeat(){ var meds = [], k, i; for (k=0; k<50; k++){ var L2 = []; for (i=0; i<N0; i++) L2.push(Math.log(1/(Math.random() || 1e-12))/LN2); L2.sort(function(a, b){ return a - b; }); meds.push(median(L2)); if (k < 20) runs.push(L2); }
+    while (runs.length > 40) runs.shift(); hist = meds; el('hlHistC').hidden = false; drawHist(); drawGraph();
+    var m = meds.reduce(function(a, b){ return a + b; }, 0)/meds.length, sd = Math.sqrt(meds.reduce(function(a, b){ return a + (b - m)*(b - m); }, 0)/(meds.length - 1));
+    el('hlHx').innerHTML = 'Each bar counts how many of the 50 samples (each of ' + N0 + ' nuclei) had lost half of their nuclei by that time. Average: <b>' + m.toFixed(3) + ' T</b>, spread (standard deviation): <b>' + sd.toFixed(3) + ' T</b>. The measured half-life varies from sample to sample; the spread shrinks roughly as 1/\u221aN\u2080 (theory: about ' + (1.44/Math.sqrt(N0)).toFixed(3) + ' T). Try a different number of nuclei and repeat.';
+    hlA11y.narrate('50 samples of ' + N0 + ' nuclei: half had decayed after ' + m.toFixed(2) + ' half-lives on average, with a spread of ' + sd.toFixed(2) + ' half-lives.'); }
+  function drawHist(){ if (!hist) return; var W = cH.width, H = cH.height, L = 50, R = W - 14, Tp = 14, B = H - 32, lo = 0, hi = 2, nb = 40, bins = new Array(nb).fill(0), i, mx = 1;
+    hist.forEach(function(v){ var b = Math.floor((v - lo)/(hi - lo)*nb); if (b >= 0 && b < nb){ bins[b]++; mx = Math.max(mx, bins[b]); } });
+    gH.fillStyle = '#0b1222'; gH.fillRect(0, 0, W, H); function X(v){ return L + (v - lo)/(hi - lo)*(R - L); }
+    gH.strokeStyle = 'rgba(150,170,195,0.2)'; gH.fillStyle = '#9aa6b4'; gH.font = '10px monospace'; gH.textBaseline = 'alphabetic';
+    for (i=0; i<=8; i++){ var v = i*0.25; gH.beginPath(); gH.moveTo(X(v), Tp); gH.lineTo(X(v), B); gH.stroke(); gH.textAlign = 'center'; gH.fillText(v.toFixed(2) + ' T', X(v), B + 13); }
+    gH.textAlign = 'center'; gH.fillText('time when half of the sample had decayed', (L + R)/2, H - 4); gH.textAlign = 'right'; gH.fillText(String(mx), L - 4, Tp + 8); gH.fillText('0', L - 4, B);
+    gH.fillStyle = pal().curve; for (i=0; i<nb; i++){ var h = bins[i]/mx*(B - Tp); gH.fillRect(X(lo + i*(hi - lo)/nb) + 1, B - h, (R - L)/nb - 2, h); }
+    gH.strokeStyle = '#ffffff'; gH.setLineDash([5, 4]); gH.beginPath(); gH.moveTo(X(1), Tp); gH.lineTo(X(1), B); gH.stroke(); gH.setLineDash([]); gH.fillStyle = '#fff'; gH.font = 'bold 11px Arial'; gH.textAlign = 'left'; gH.fillText('1 T', X(1) + 4, Tp + 10); }
+  /* ══════════ controls ══════════ */
+  el('hlIso').innerHTML = ISO.map(function(q, i){ return '<option value="' + i + '"' + (i === iso ? ' selected' : '') + '>' + q[0] + ' (' + q[3] + ', T = ' + (function(){ var s = q[1], u = q[2]; return u === 's' ? (s < 1e-3 ? (s*1e6).toPrecision(3) + ' \u00b5s' : s < 120 ? s.toPrecision(3) + ' s' : (s/60).toPrecision(3) + ' min') : u === 'd' ? (s/86400).toPrecision(3) + ' days' : (s/3.156e7 < 1e6 ? (s/3.156e7).toPrecision(4).replace(/\.0+$/, '') + ' years' : (s/3.156e7/1e9).toPrecision(3) + ' billion years'); })() + ')</option>'; }).join('');
+  var playBtn = el('hlPlay'), PLAYI = playBtn.innerHTML, PAUSEI = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>';
+  function stop(){ if (timer){ clearTimeout(timer); timer = null; } playBtn.innerHTML = PLAYI; playBtn.setAttribute('aria-pressed', 'false'); playBtn.setAttribute('aria-label', 'Play'); }
+  function stepTo(nt){ var before = alive(t); t = Math.max(0, Math.min(TMAX, Math.round(nt/DT)*DT)); all(); return before - alive(t); }
+  var said = {};
+  function tick(){ stepTo(t + DT); var k = Math.round(t); if (Math.abs(t - k) < 1e-6 && k >= 1 && !said[k]){ said[k] = 1; hlA11y.narrate('After ' + k + ' half-li' + (k === 1 ? 'fe' : 'ves') + ' (' + fmtTime(k) + '): ' + alive(t) + ' left; expected ' + (N0*Math.pow(0.5, k)).toFixed(1) + '.'); }
+    if (t >= TMAX - 1e-9 || alive(t) === 0){ stop(); runs.push(sorted.slice()); while (runs.length > 40) runs.shift(); hlA11y.narrate(alive(t) === 0 ? 'All nuclei have decayed, after ' + t.toFixed(2) + ' half-lives.' : 'Six half-lives: ' + alive(t) + ' left of ' + N0 + '.'); return; }
+    timer = setTimeout(tick, [0, 260, 140, 70, 35, 12][speed]); }
+  playBtn.addEventListener('click', function(){ if (timer){ stop(); return; } if (t >= TMAX - 1e-9 || alive(t) === 0) fresh(); playBtn.innerHTML = PAUSEI; playBtn.setAttribute('aria-pressed', 'true'); playBtn.setAttribute('aria-label', 'Pause'); tick(); });
+  el('hlStep').addEventListener('click', function(){ stop(); var d = stepTo(t + DT); hlA11y.narrate(d + ' decayed in this step; ' + alive(t) + ' left.'); });
+  el('hlBack').addEventListener('click', function(){ stop(); stepTo(t - DT); });
+  el('hlJ1').addEventListener('click', function(){ stop(); var n0 = alive(t); stepTo(Math.floor(t + 1e-6) + 1); hlA11y.narrate('One more half-life: from ' + n0 + ' to ' + alive(t) + ' (half would be ' + (n0/2).toFixed(1) + ').'); });
+  function fresh(){ if (t > 0) { runs.push(sorted.slice()); while (runs.length > 40) runs.shift(); } said = {}; newSample(); all(); }
+  el('hlRst').addEventListener('click', function(){ stop(); fresh(); hlA11y.narrate('New sample of ' + N0 + ' nuclei. The previous run is kept in grey.'); });
+  el('hlClr').addEventListener('click', function(){ runs = []; hist = null; el('hlHistC').hidden = true; drawGraph(); });
+  el('hlRep').addEventListener('click', function(){ stop(); repeat(); });
+  el('hlN').addEventListener('input', function(){ stop(); N0 = NS[+this.value]; el('hlNVal').textContent = N0.toLocaleString(); this.setAttribute('aria-valuetext', N0 + ' nuclei'); runs = []; hist = null; el('hlHistC').hidden = true; said = {}; newSample(); all(); });
+  el('hlSp').addEventListener('input', function(){ speed = +this.value; el('hlSpVal').textContent = ['', 'slowest', 'slow', 'normal', 'fast', 'fastest'][speed]; this.setAttribute('aria-valuetext', el('hlSpVal').textContent); });
+  el('hlIso').addEventListener('change', function(){ iso = +this.value; all(); hlA11y.narrate(ISO[iso][0] + ': half-life ' + fmtT() + '. The shape of the decay is the same for every isotope; only the time scale changes.'); });
+  ['hlTh', 'hlBand', 'hlLog', 'hlAct'].forEach(function(id){ el(id).addEventListener('change', function(){ drawGraph(); if (id === 'hlLog' && this.checked) hlA11y.narrate('Logarithmic axis: the expected decay becomes a straight line, dropping by the same factor, one half, every half-life.'); }); });
+  cG.addEventListener('click', function(evt){ var r = cG.getBoundingClientRect(), x = (evt.clientX - r.left)*cG.width/r.width, y = (evt.clientY - r.top)*cG.height/r.height, c = Math.floor((x - GL.x0)/GL.s), rr = Math.floor((y - GL.y0)/GL.s), i = rr*GL.cols + c;
+    if (c < 0 || c >= GL.cols || rr < 0 || i >= N0) return; follow = follow === i ? -1 : i; all(); if (follow >= 0) hlA11y.narrate(el('hlStatus').textContent); });
+  hlA11y.onChange(function(){ all(); drawHist(); });
+  el('hlN').value = 3; N0 = NS[3]; el('hlNVal').textContent = '100'; el('hlSpVal').textContent = 'normal';
+  newSample(); all(); hlA11y.narrate('A sample of 100 iodine-131 nuclei. Press play and watch them decay at random, one by one, while the total follows the half-life curve.');
+  return { _alive:function(){ return alive(t); }, _t:function(){ return t; }, _med:function(){ return median(sorted); }, _hist:function(){ return hist; }, _setN:function(i){ el('hlN').value = i; el('hlN').dispatchEvent(new Event('input')); } };
+};
+var hlSim = new hlGen();
+</script>
+<script>hlA11y.init();</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>Radioactive decay is <b>random</b>: there is no way to tell when a particular nucleus will decay. Each one has the same chance to decay in each second, whatever its age (it does not &ldquo;wear out&rdquo;). But with many nuclei, the total behaves very predictably.</p>
+<p>The <b>half-life</b> `T` is the time in which half of the nuclei of a sample decay, on average. What is left then halves again in the next half-life, and so on:</p>
+<p class="mob_eq">`N = N_0 (1/2)^(t/T)`&nbsp;&nbsp;&nbsp; (equivalently `N = N_0 e^(-lambda t)`, `lambda = (ln 2)/T`)</p>
+<p>The <b>activity</b>, the number of decays per second, is proportional to the number left, `A = lambda N`, so it halves every half-life too. Each square is one nucleus; the graph compares this sample (blue) with the expected curve (white). Because decay is random, real samples scatter around that curve by about `sqrt(N_0 p(1 - p))`, where `p = (1/2)^(t/T)`: large compared to small samples, tiny compared to large ones. &ldquo;Repeat 50 times&rdquo; measures the half-life on 50 fresh samples to show this spread. The isotope only changes the time unit: every isotope follows the same curve when time is counted in its own half-lives.</p>
+</div>
+</div>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Nuclear: Radiation Penetration</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobnucpenetr" class="mob_wrap">
+<div id="pnRoot">
+<div class="pn_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="pn_a11ybtn" id="pnBtnHC" onclick="pnA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="pn_a11ybtn" id="pnBtnDM" onclick="pnA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="pn_a11ybtn" id="pnBtnCB" onclick="pnA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="pn_a11ybtn" id="pnBtnNR" onclick="pnA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+
+<div class="pn_title"><h3>Radiation Penetration &mdash; Source, Absorbers &amp; Geiger Counter</h3></div>
+<div class="pn_view"><canvas id="pnCv" width="800" height="300" role="img" aria-label="Side view: the radioactive source on the left, an absorber in the middle, and the Geiger counter on the right, with the radiation drawn as it travels and is stopped."></canvas></div>
+<div class="pn_meter" aria-live="off">
+<div class="pn_dial"><div class="pn_rl">count rate</div><div class="pn_big" id="pnRate">0</div><div class="pn_rl">counts per second</div></div>
+<div class="pn_dial"><div class="pn_rl">total counts</div><div class="pn_big" id="pnTot">0</div><div class="pn_rl" id="pnTime">in 0.0 s</div></div>
+<div class="pn_dial"><div class="pn_rl">10-second count</div><div class="pn_big" id="pnTen">&mdash;</div><div class="pn_rl" id="pnTenS">press &ldquo;Count 10 s&rdquo;</div></div>
+</div>
+<div id="pnStatus" class="pn_status"></div>
+<div id="pnNarBar" class="pn_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="pn_transport" role="toolbar" aria-label="Counter">
+<div class="pn_tgroup">
+<button type="button" class="pn_tbtn pn_play" id="pnRun" aria-label="Turn the counter off" aria-pressed="true" title="Counter on / off"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg></button>
+<button type="button" class="pn_vbtn" id="pnSnd" aria-pressed="false">Sound: off</button>
+<button type="button" class="pn_vbtn" id="pnZero">Reset total</button>
+</div>
+<div class="pn_tgroup pn_tsep">
+<button type="button" class="pn_bbtn" id="pnTen10">Count 10 s</button>
+<button type="button" class="pn_vbtn" id="pnRec" disabled>Record</button>
+</div>
+</div>
+<div class="pn_card"><div class="pn_ctitle">Count rate over the last 30 seconds</div><canvas id="pnGr" width="800" height="150" role="img" aria-label="Bar graph of the counts in each second for the last 30 seconds."></canvas></div>
+<div class="pn_panels">
+<div class="pn_panel" role="group" aria-labelledby="pnHdS"><div class="pn_ptitle" id="pnHdS">Source &amp; distance</div><div class="pn_pbody">
+<div class="pn_ctrl"><div class="pn_chdr"><label for="pnSrc">Radioactive source</label></div><select id="pnSrc"></select></div>
+<div class="pn_ctrl"><div class="pn_chdr"><label for="pnD">Distance source &rarr; counter</label><span class="pn_val" id="pnDVal"></span></div><input type="range" id="pnD" min="1" max="30" step="0.5" value="3"></div>
+<div class="pn_checks"><label class="pn_chk"><input type="checkbox" id="pnBg" checked>Background radiation</label><label class="pn_chk"><input type="checkbox" id="pnRays" checked>Show the radiation</label></div>
+</div></div>
+<div class="pn_panel" role="group" aria-labelledby="pnHdA"><div class="pn_ptitle" id="pnHdA">Absorber (between source and counter)</div><div class="pn_pbody">
+<div class="pn_presets" id="pnMat" role="group" aria-label="Material"></div>
+<div class="pn_ctrl" id="pnThC"><div class="pn_chdr"><label for="pnTh" id="pnThL">Thickness</label><span class="pn_val" id="pnThVal"></span></div><input type="range" id="pnTh" min="0" max="10" step="1" value="1"></div>
+</div></div>
+</div>
+<div class="pn_card2"><div class="pn_ctitle2">Your measurements</div><div class="pn_tblwrap" id="pnTbl"></div></div>
+<div class="pn_card2"><div class="pn_ctitle2">What stops what</div><div class="pn_tblwrap">
+<table class="pn_tbl"><thead><tr><th class="pn_l" scope="col">radiation</th><th scope="col">range in air</th><th scope="col">paper</th><th scope="col">aluminium</th><th scope="col">lead</th><th class="pn_l" scope="col">why</th></tr></thead><tbody>
+<tr><td class="pn_l"><b>&alpha;</b> (He nucleus)</td><td>a few cm</td><td>stopped</td><td>stopped</td><td>stopped</td><td class="pn_l">heavy, charge +2: ionizes everything it meets and loses its energy fast</td></tr>
+<tr><td class="pn_l"><b>&beta;</b> (electron)</td><td>about a metre</td><td>mostly passes</td><td>stopped by a few mm</td><td>stopped by about 1 mm</td><td class="pn_l">light, charge &minus;1: ionizes less, travels further</td></tr>
+<tr><td class="pn_l"><b>&gamma;</b> (photon)</td><td>very far</td><td>passes</td><td>mostly passes</td><td>halved every ~1.2 cm (Co-60)</td><td class="pn_l">no charge: interacts only now and then; it is reduced, never fully stopped</td></tr>
+</tbody></table></div></div>
+</div>
+<style>
+:where(#mobnucpenetr) * { margin:0; box-sizing:border-box; }
+#mobnucpenetr { width:100%; max-width:806px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; color:#1d232a; }
+#mobnucpenetr canvas { display:block; width:100%; height:auto; }
+#pnRoot .pn_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#pnRoot .pn_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#pnRoot .pn_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobnucpenetr .pn_title { padding:4px; background-color:#f90; text-align:center; }
+#mobnucpenetr .pn_title h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+#mobnucpenetr .pn_tabs { display:flex; gap:4px; padding:6px 8px 0; background:#14213a; flex-wrap:wrap; }
+#mobnucpenetr .pn_tab { flex:1 1 120px; padding:8px 6px; border:1px solid #2b3d60; border-bottom:0; border-radius:6px 6px 0 0; background:#1d2c4a; color:#bcd0f0; font-weight:bold; cursor:pointer; font-size:.88rem; min-height:40px; }
+#mobnucpenetr .pn_tab[aria-selected="true"] { background:#f3f5f8; color:#14213a; }
+#mobnucpenetr .pn_view { background:#0b1222; }
+#mobnucpenetr .pn_status { color:#222; font-size:.84rem; text-align:center; background:#fff6d9; padding:5px 8px; line-height:1.45; min-height:1.6em; }
+#mobnucpenetr .pn_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+#mobnucpenetr .pn_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+#mobnucpenetr .pn_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { #mobnucpenetr .pn_tsep { padding-left:0; border-left:0; } }
+#mobnucpenetr .pn_tbtn { width:44px; height:38px; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer; border:1px solid #6d8a3a; border-radius:5px; background:#fff; color:#223; }
+#mobnucpenetr .pn_tbtn.pn_play { background:#2e7d32; color:#fff; border-color:#1b5e20; }
+#mobnucpenetr .pn_tbtn.pn_play[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+#mobnucpenetr .pn_vbtn, #mobnucpenetr .pn_bbtn { height:38px; padding:0 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; white-space:nowrap; }
+#mobnucpenetr .pn_vbtn[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobnucpenetr .pn_bbtn { background:#2e7d32; border-color:#1b5e20; color:#fff; font-weight:bold; }
+#mobnucpenetr button:disabled { opacity:.4; cursor:not-allowed; }
+#mobnucpenetr .pn_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:10px; padding:10px; }
+#mobnucpenetr .pn_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+#mobnucpenetr .pn_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+#mobnucpenetr .pn_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; font-size:.86rem; line-height:1.45; }
+#mobnucpenetr .pn_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+#mobnucpenetr .pn_ctrl.pn_off { opacity:.45; }
+#mobnucpenetr .pn_chdr { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+#mobnucpenetr .pn_chdr label { font-size:.82rem; font-weight:bold; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+#mobnucpenetr .pn_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; flex:0 0 auto; min-width:4.5em; text-align:right; }
+#mobnucpenetr .pn_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+#mobnucpenetr select { width:100%; min-height:34px; padding:4px 6px; font-size:.86rem; border:1px solid #8a96a8; border-radius:4px; background:#fff; }
+#mobnucpenetr .pn_checks { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 8px; }
+#mobnucpenetr .pn_chk { display:flex; align-items:center; gap:6px; font-size:.82rem; cursor:pointer; }
+#mobnucpenetr .pn_presets { display:flex; flex-wrap:wrap; gap:5px; }
+#mobnucpenetr .pn_presets button { padding:5px 9px; font-size:.82rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:4px; background:#fff; color:#223; min-height:34px; }
+#mobnucpenetr .pn_presets button[aria-current="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobnucpenetr .pn_card { margin:10px 10px 0; background:#0b1222; border:1px solid #2b3d60; border-radius:6px; overflow:hidden; }
+#mobnucpenetr .pn_ctitle { padding:5px 10px; background:#14213a; color:#dbe7ff; font-size:.78rem; font-weight:bold; }
+#mobnucpenetr .pn_cnote { padding:8px 12px 10px; color:#e3ecfa; font-size:.86rem; line-height:1.5; background:#0d1526; border-top:1px solid #2b3d60; }
+#mobnucpenetr .pn_cnote b { color:#ffd23f; }
+#mobnucpenetr .pn_note { font-size:.78rem; color:#555; font-style:italic; }
+#mobnucpenetr .pn_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:6px 12px; padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; }
+#mobnucpenetr .pn_rl { font-size:.7rem; color:#667; text-transform:uppercase; letter-spacing:.05em; }
+#mobnucpenetr .pn_rv { font-family:monospace; font-size:.95rem; color:#7a3a00; font-weight:bold; }
+#mobnucpenetr .pn_tbl { border-collapse:collapse; width:100%; font-size:.82rem; }
+#mobnucpenetr .pn_tbl th, #mobnucpenetr .pn_tbl td { padding:4px 6px; border-bottom:1px solid #e3e7ee; text-align:center; }
+#mobnucpenetr .pn_tbl th { background:#f1f4f8; font-size:.76rem; }
+#mobnucpenetr .pn_tbl td.pn_l, #mobnucpenetr .pn_tbl th.pn_l { text-align:left; }
+#mobnucpenetr .pn_tblwrap { overflow-x:auto; }
+#mobnucpenetr button:focus-visible, #mobnucpenetr input:focus-visible, #mobnucpenetr select:focus-visible, #mobnucpenetr canvas:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (max-width:420px) { #mobnucpenetr .pn_checks { grid-template-columns:minmax(0,1fr); } }
+@media (pointer:coarse) { #mobnucpenetr .pn_tbtn, #mobnucpenetr .pn_vbtn, #mobnucpenetr .pn_bbtn { height:44px; } #mobnucpenetr .pn_presets button { min-height:42px; } #mobnucpenetr input[type=checkbox] { width:20px; height:20px; } #mobnucpenetr input[type=range] { height:28px; } }
+#mobnucpenetr .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobnucpenetr .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobnucpenetr .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobnucpenetr .mob_desc p { margin:0 0 8px 0; }
+#mobnucpenetr .mob_eq { text-align:center; }
+#mobnucpenetr.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobnucpenetr.a11y_dm canvas, #mobnucpenetr.a11y_dm [aria-label="Display options"], #mobnucpenetr.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobnucpenetr.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobnucpenetr.a11y_hc canvas, #mobnucpenetr.a11y_hc [aria-label="Display options"], #mobnucpenetr.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+
+#mobnucpenetr .pn_meter { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:8px; padding:8px 10px; background:#1b2333; }
+#mobnucpenetr .pn_dial { background:#0e1520; border:2px solid #3a4a62; border-radius:8px; padding:6px; text-align:center; }
+#mobnucpenetr .pn_big { font-family:'Courier New', monospace; font-size:1.7rem; font-weight:bold; color:#7dff9a; text-shadow:0 0 6px rgba(125,255,154,.5); line-height:1.2; }
+#mobnucpenetr .pn_rl { font-size:.7rem; color:#9fb0c8; text-transform:uppercase; letter-spacing:.05em; }
+#mobnucpenetr .pn_card2 { margin:0 10px 10px; background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; }
+#mobnucpenetr .pn_ctitle2 { padding:5px 10px; background:#883355; color:#fff; font-size:.74rem; font-weight:bold; letter-spacing:.08em; text-transform:uppercase; }
+#mobnucpenetr .pn_tblwrap { padding:6px 8px 8px; }
+#mobnucpenetr .pn_x { background:none; border:1px solid #c66; color:#b42318; border-radius:3px; cursor:pointer; min-width:28px; min-height:28px; }
+@media (max-width:480px) { #mobnucpenetr .pn_big { font-size:1.25rem; } }
+</style>
+<script>
+var pnA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return;
+  b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobnucpenetr'); if (!W) return;
+  W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc); W.classList.toggle('a11y_cb', states.cb);
+  var nb = document.getElementById('pnNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+  var nr = document.getElementById('pnBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+  styleBtn('pnBtnHC', states.hc); styleBtn('pnBtnDM', states.dm); styleBtn('pnBtnCB', states.cb); styleBtn('pnBtnNR', states.nr);
+  hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return {
+  init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+  toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply();
+    if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: alpha vermillion, beta sky blue, gamma yellow.'); },
+  altPalette:function(){ return states.hc || states.cb; }, isHC:function(){ return states.hc; },
+  narrate:function(msg){ if (!states.nr) return; var nb = document.getElementById('pnNarBar'); if (nb) nb.textContent = msg; }
+};
+})();
+</script>
+
+<!-- ════════ SIMULATION ════════
+Count rate at the counter = background + sum over the source's emissions of S x (2 cm / d)^2 x transmission.
+Transmission (simplified, to show the right behaviour):
+ alpha (5 MeV): range in air 3.9 cm (smooth edge); any paper, aluminium or lead stops it.
+ beta (Sr-90/Y-90, up to 2.28 MeV): paper exp(-0.05 per sheet); aluminium exp(-x/1.0 mm), zero beyond 5 mm; lead exp(-x/0.25 mm), zero beyond 1.3 mm.
+ gamma (Co-60): aluminium exp(-0.016 x/mm); lead exp(-0.058 x/mm) (half-value layer about 12 mm); paper none.
+Counts are random (Poisson). Background about 0.5 counts per second. No dollar signs or backticks in the code.
+-->
+<script>
+var pnGen = function(){
+  var cv = document.getElementById('pnCv'), g = cv.getContext('2d'), cG = document.getElementById('pnGr'), gG = cG.getContext('2d'), W = cv.width, H = cv.height, TAU = 2*Math.PI;
+  function el(id){ return document.getElementById(id); }
+  var SRC = [['Polonium-210 (\u03b1)', { a:260 }], ['Strontium-90 (\u03b2)', { b:300 }], ['Cobalt-60 (\u03b3)', { g:70 }], ['Americium-241 (\u03b1 and weak \u03b3)', { a:220, g:6 }], ['Radium-226 with its daughters (\u03b1, \u03b2, \u03b3)', { a:180, b:150, g:40 }], ['Unknown source A', null], ['Unknown source B', null], ['No source (background only)', {}]];
+  var UNK = [{ b:220, g:50 }, { a:240, b:180 }, { a:200, g:60 }, { g:90 }, { b:260 }];
+  var unkA = UNK[Math.floor(Math.random()*UNK.length)], unkB; do { unkB = UNK[Math.floor(Math.random()*UNK.length)]; } while (unkB === unkA);
+  var MAT = [['none', 'No absorber'], ['paper', 'Paper'], ['al', 'Aluminium'], ['pb', 'Lead']];
+  var S = { src:0, d:3, mat:'none', th:{ paper:1, al:1, pb:5 }, bg:true, rays:true, on:true, snd:false };
+  var total = 0, elapsed = 0, perSec = [], curSec = 0, secT = 0, ten = null, recs = [], last = 0, parts = [], flash = 0, ac = null;
+  function emits(){ var s = SRC[S.src]; return s[1] === null ? (S.src === 5 ? unkA : unkB) : s[1]; }
+  function thick(){ return S.mat === 'none' ? 0 : S.th[S.mat]; }
+  function thText(){ var t = thick(); return S.mat === 'paper' ? t + ' sheet' + (t === 1 ? '' : 's') + ' (' + (t*0.1).toFixed(1) + ' mm)' : S.mat === 'none' ? '\u2014' : t + ' mm'; }
+  function trans(kind){ var m = S.mat, x = thick(), d = S.d;
+    if (kind === 'a'){ var air = d < 3.4 ? 1 : d > 4.4 ? 0 : (4.4 - d); if (m !== 'none' && x > 0) return 0; return air; }
+    var airB = kind === 'b' ? Math.exp(-0.004*d) : 1;
+    if (m === 'none' || x === 0) return airB;
+    if (kind === 'b'){ if (m === 'paper') return airB*Math.exp(-0.05*x); if (m === 'al') return x > 5 ? 0 : airB*Math.exp(-x/1.0); if (m === 'pb') return x > 1.3 ? 0 : airB*Math.exp(-x/0.25); }
+    if (kind === 'g'){ if (m === 'paper') return 1; if (m === 'al') return Math.exp(-0.016*x); if (m === 'pb') return Math.exp(-0.058*x); } return 1; }
+  function geo(){ return Math.pow(2/Math.max(1, S.d), 2); }
+  function rates(){ var e = emits(), r = { a:0, b:0, g:0 }; ['a', 'b', 'g'].forEach(function(k){ if (e[k]) r[k] = e[k]*geo()*trans(k); }); r.bg = S.bg ? 0.5 : 0; r.tot = r.a + r.b + r.g + r.bg; return r; }
+  function poisson(l){ if (l > 30) return Math.max(0, Math.round(l + Math.sqrt(l)*gauss())); var L = Math.exp(-l), k = 0, p = 1; do { k++; p *= Math.random(); } while (p > L); return k - 1; }
+  function gauss(){ var u = Math.random() || 1e-9, v = Math.random(); return Math.sqrt(-2*Math.log(u))*Math.cos(TAU*v); }
+  /* ══════════ sound ══════════ */
+  function click(){ if (!S.snd) return; try { if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)(); var n = ac.createBufferSource(), b = ac.createBuffer(1, 220, ac.sampleRate), d = b.getChannelData(0); for (var i=0; i<220; i++) d[i] = (Math.random()*2 - 1)*Math.exp(-i/25); n.buffer = b; var gn = ac.createGain(); gn.gain.value = 0.5; n.connect(gn); gn.connect(ac.destination); n.start(); } catch (e) {} }
+  /* ══════════ geometry ══════════ */
+  function K(){ return Math.min(110, 560/Math.max(S.d, 5)); } function X(cm){ return 80 + cm*K(); } var CY = 150;
+  function barrierX(){ return (X(0) + X(S.d))/2; }
+  function barrierW(){ var x = thick(); if (S.mat === 'paper') return Math.max(3, x*1.5); if (S.mat === 'al') return Math.max(3, x*3); if (S.mat === 'pb') return Math.max(4, x*1.3); return 0; }
+  function stopX(kind){ /* where a particle of this kind is stopped, or null if it reaches the counter */ var bx = barrierX(), bw = barrierW(), x = thick(), m = S.mat;
+    if (kind === 'a'){ var r = 3.4 + Math.random(); if (m !== 'none' && x > 0 && X(r) > bx - bw/2) return bx - bw/2 + Math.random()*2; if (r < S.d) return X(r); return null; }
+    if (m !== 'none' && x > 0){ var T = trans(kind)/(kind === 'b' ? Math.exp(-0.004*S.d) : 1); if (Math.random() > T) return bx - bw/2 + Math.random()*bw; }
+    if (kind === 'b' && Math.random() > Math.exp(-0.004*S.d)) return X(Math.random()*S.d); return null; }
+  /* ══════════ drawing ══════════ */
+  function pal(){ var alt = pnA11y.altPalette(); return { a:alt ? '#D55E00' : '#ff5a4a', b:alt ? '#56B4E9' : '#4fc3ff', g:alt ? '#F0E442' : '#ffd23f' }; }
+  function lbl(t, x, y, col, size, al){ g.font = 'bold ' + (size || 12) + 'px Arial'; g.textAlign = al || 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 3.5; g.strokeStyle = 'rgba(0,0,0,0.85)'; g.strokeText(t, x, y); g.fillStyle = col; g.fillText(t, x, y); }
+  function draw(){ var p = pal(), i;
+    g.fillStyle = '#0b1222'; g.fillRect(0, 0, W, H);
+    g.strokeStyle = 'rgba(150,170,195,0.25)'; g.fillStyle = '#9aa6b4'; g.font = '10px monospace'; g.textAlign = 'center'; g.textBaseline = 'alphabetic'; g.lineWidth = 1;
+    var maxc = Math.floor((W - 20 - X(0))/K()), lab = K() > 40 ? 1 : 5; for (i=0; i<=maxc; i++){ var x = X(i); g.beginPath(); g.moveTo(x, H - 30); g.lineTo(x, H - (i % lab ? 25 : 20)); g.stroke(); if (i % lab === 0) g.fillText(i + ' cm', x, H - 8); }
+    g.beginPath(); g.moveTo(X(0), H - 30); g.lineTo(X(maxc), H - 30); g.stroke();
+    /* particles */
+    if (S.rays) parts.forEach(function(q){ var col = p[q.k]; if (q.k === 'g'){ g.strokeStyle = col; g.lineWidth = 2; g.beginPath(); for (var s=0; s<=14; s++){ var xx = q.x - 14 + s, yy = q.y + (q.x - 14 + s - X(0))*q.s + 3*Math.sin((q.x + s)*0.9); if (!s) g.moveTo(xx, yy); else g.lineTo(xx, yy); } g.stroke(); }
+      else { g.fillStyle = col; g.beginPath(); g.arc(q.x, q.y + (q.x - X(0))*q.s, q.k === 'a' ? 4.5 : 2.6, 0, TAU); g.fill(); } });
+    /* source */
+    g.fillStyle = '#5b6370'; g.fillRect(X(0) - 44, CY - 26, 44, 52); g.fillStyle = '#c9a227'; g.beginPath(); g.arc(X(0) - 2, CY, 9, 0, TAU); g.fill();
+    g.fillStyle = '#111'; for (i=0; i<3; i++){ g.beginPath(); g.moveTo(X(0) - 22, CY); g.arc(X(0) - 22, CY, 12, i*TAU/3 - 0.5, i*TAU/3 + 0.5); g.closePath(); g.fill(); } g.fillStyle = '#c9a227'; g.beginPath(); g.arc(X(0) - 22, CY, 3, 0, TAU); g.fill();
+    lbl('source', X(0) - 22, CY + 40, '#e6ecf2', 11);
+    /* absorber */
+    if (S.mat !== 'none' && thick() > 0){ var bx = barrierX(), bw = barrierW(), col = S.mat === 'paper' ? '#f2efe6' : S.mat === 'al' ? '#b9c3cf' : '#5f6875'; g.fillStyle = col; g.fillRect(bx - bw/2, CY - 75, bw, 150); g.strokeStyle = 'rgba(0,0,0,0.5)'; g.strokeRect(bx - bw/2, CY - 75, bw, 150);
+      lbl({ paper:'paper', al:'aluminium', pb:'lead' }[S.mat] + ' ' + thText(), bx, CY - 88, '#e6ecf2', 11); }
+    /* Geiger tube */
+    var gx = X(S.d); g.fillStyle = '#c8ccd2'; g.fillRect(gx, CY - 14, 120, 28); g.fillStyle = '#7d858f'; g.fillRect(gx + 120, CY - 18, 30, 36); g.fillStyle = '#2b2f36'; g.fillRect(gx - 3, CY - 14, 4, 28);
+    if (flash > 0){ g.fillStyle = 'rgba(125,255,154,' + flash + ')'; g.beginPath(); g.arc(gx + 135, CY - 26, 5, 0, TAU); g.fill(); }
+    g.strokeStyle = '#7d858f'; g.lineWidth = 3; g.beginPath(); g.moveTo(gx + 150, CY); g.quadraticCurveTo(gx + 175, CY + 50, Math.min(W - 10, gx + 190), CY + 70); g.stroke();
+    lbl('Geiger\u2013M\u00fcller tube', gx + 60, CY + 30, '#e6ecf2', 11); lbl('\u2190 thin window', gx + 4, CY - 30, '#9aa6b4', 9, 'left');
+    lbl('d = ' + S.d + ' cm', (X(0) + gx)/2, H - 46, '#ffd23f', 11);
+    var e = emits(), ks = []; if (e.a) ks.push(['\u03b1', p.a]); if (e.b) ks.push(['\u03b2', p.b]); if (e.g) ks.push(['\u03b3', p.g]); if (SRC[S.src][1] === null) ks = [['?', '#fff']];
+    lbl('emits: ' + (ks.length ? ks.map(function(q){ return q[0]; }).join(' + ') : 'nothing'), 10, 16, '#e6ecf2', 12, 'left'); lbl('\u03b1 red \u00b7 \u03b2 blue \u00b7 \u03b3 yellow wave (only some of the radiation is drawn)', W - 10, 16, '#9aa6b4', 10, 'right'); }
+  function drawGraph(){ var w = cG.width, h = cG.height, L = 44, R = w - 10, T = 10, B = h - 24, arr = perSec.slice(-30), mx = 5, i;
+    arr.forEach(function(v){ mx = Math.max(mx, v); }); mx = Math.ceil(mx*1.15);
+    gG.fillStyle = '#0b1222'; gG.fillRect(0, 0, w, h); gG.strokeStyle = 'rgba(150,170,195,0.2)'; gG.fillStyle = '#9aa6b4'; gG.font = '10px monospace'; gG.textBaseline = 'alphabetic';
+    [0, 0.5, 1].forEach(function(f){ var y = B - f*(B - T); gG.beginPath(); gG.moveTo(L, y); gG.lineTo(R, y); gG.stroke(); gG.textAlign = 'right'; gG.fillText(String(Math.round(f*mx)), L - 4, y + 3); });
+    var bw = (R - L)/30; gG.fillStyle = '#7dff9a'; for (i=0; i<arr.length; i++){ var hh = arr[i]/mx*(B - T); gG.fillRect(R - (arr.length - i)*bw + 1, B - hh, bw - 2, hh); }
+    var r = rates(); gG.strokeStyle = '#ffffff'; gG.setLineDash([5, 4]); gG.beginPath(); gG.moveTo(L, B - Math.min(1, r.tot/mx)*(B - T)); gG.lineTo(R, B - Math.min(1, r.tot/mx)*(B - T)); gG.stroke(); gG.setLineDash([]);
+    gG.textAlign = 'center'; gG.fillText('seconds ago (30 \u2192 now); dashed: the average expected rate', (L + R)/2, h - 6); gG.save(); gG.translate(11, (T + B)/2); gG.rotate(-Math.PI/2); gG.fillText('counts', 0, 0); gG.restore(); }
+  /* ══════════ loop ══════════ */
+  function loop(now){ var dt = last ? Math.min(0.1, (now - last)/1000) : 0; last = now;
+    if (S.on && dt > 0){ var r = rates(), n = poisson(r.tot*dt), i; for (i=0; i<n; i++){ setTimeout(click, Math.random()*dt*1000); } if (n) flash = 1;
+      total += n; elapsed += dt; curSec += n; secT += dt; if (secT >= 1){ perSec.push(curSec); if (perSec.length > 60) perSec.shift(); curSec = 0; secT -= 1; drawGraph(); el('pnRate').textContent = perSec[perSec.length - 1]; }
+      if (ten){ ten.c += n; ten.t += dt; el('pnTen').textContent = ten.c; el('pnTenS').textContent = ten.t >= 10 ? 'in 10 s = ' + (ten.c/10).toFixed(1) + ' per second' : 'counting\u2026 ' + ten.t.toFixed(1) + ' s'; if (ten.t >= 10){ ten.done = true; var res = ten; ten = null; el('pnRec').disabled = false; lastTen = res; pnA11y.narrate('10-second count: ' + res.c + ' counts, ' + (res.c/10).toFixed(1) + ' per second.'); } }
+      el('pnTot').textContent = total; el('pnTime').textContent = 'in ' + elapsed.toFixed(1) + ' s';
+      /* visible particles: a thinned sample of the emitted radiation */
+      var e = emits(); ['a', 'b', 'g'].forEach(function(k){ if (!e[k] || !S.rays) return; var m = poisson(Math.min(40, e[k]*0.12)*dt); for (var j=0; j<m; j++) parts.push({ k:k, x:X(0) + 2, y:CY + (Math.random() - 0.5)*10, s:(Math.random() - 0.5)*0.18, v:{ a:120, b:300, g:520 }[k]*K()/22, stop:stopX(k) }); });
+      parts = parts.filter(function(q){ q.x += q.v*dt; if (q.stop !== null && q.x >= q.stop) return false; return q.x < X(S.d) + 4 && Math.abs(q.y + (q.x - X(0))*q.s - CY) < 120; }); }
+    flash = Math.max(0, flash - dt*6); draw(); requestAnimationFrame(loop); }
+  var lastTen = null;
+  /* ══════════ explanations ══════════ */
+  function explain(){ var r = rates(), e = emits(), s = [], unk = SRC[S.src][1] === null;
+    if (!e.a && !e.b && !e.g) s.push('No source: the counter still clicks now and then. That is <b>background radiation</b> (cosmic rays, radon in the air, rocks), about 0.5 counts per second here.');
+    else if (unk) s.push('<b>Mystery source.</b> Find out what it emits: compare the count rate with no absorber, with paper, with a few mm of aluminium and with lead, and at distances above and below 4 cm.');
+    else { if (e.a) s.push(r.a > 0.05 ? '\u03b1 particles reach the counter.' : (thick() > 0 && S.mat !== 'none' ? 'The \u03b1 particles are stopped by the ' + { paper:'paper', al:'aluminium', pb:'lead' }[S.mat] + '.' : 'The \u03b1 particles are stopped by about 4 cm of air.'));
+      if (e.b) s.push(r.b > 0.5 ? '\u03b2 particles get through' + (S.mat === 'al' || S.mat === 'pb' ? ' but are reduced to ' + (100*trans('b')).toFixed(0) + '%' : '') + '.' : '\u03b2 particles are stopped by the ' + { paper:'paper', al:'aluminium', pb:'lead' }[S.mat] + '.');
+      if (e.g) s.push('\u03b3 rays get through' + (S.mat === 'pb' && thick() > 0 ? ', reduced to ' + (100*trans('g')).toFixed(0) + '% (about halved every 12 mm of lead)' : S.mat === 'al' ? ', barely reduced' : '') + '.'); }
+    if (!unk && (e.a || e.b || e.g)) s.push('Expected rate: ' + r.tot.toFixed(1) + ' counts per second' + (S.bg ? ' (including 0.5 background)' : '') + '. Counts are random, so each second differs.');
+    el('pnStatus').innerHTML = s.join(' ');
+    el('pnDVal').textContent = S.d + ' cm'; el('pnD').setAttribute('aria-valuetext', S.d + ' centimetres'); }
+  function tableUI(){ el('pnTbl').innerHTML = recs.length ? '<table class="pn_tbl' + '"><thead><tr><th scope="col">#</th><th class="pn_l' + '" scope="col">source</th><th scope="col">absorber</th><th scope="col">distance</th><th scope="col">counts in 10 s</th><th scope="col">rate (per s)</th><th scope="col">rate \u2212 background</th><th scope="col"><span style="position:absolute;left:-9999px">delete</span></th></tr></thead><tbody>' + recs.map(function(q, i){ return '<tr><td>' + (i + 1) + '</td><td class="pn_l' + '">' + q.src + '</td><td>' + q.abs + '</td><td>' + q.d + ' cm</td><td>' + q.c + '</td><td>' + (q.c/10).toFixed(1) + '</td><td>' + Math.max(0, q.c/10 - (q.bg ? 0.5 : 0)).toFixed(1) + '</td><td><button type="button" class="pn_x' + '" data-i="' + i + '" aria-label="delete row ' + (i + 1) + '">\u00d7</button></td></tr>'; }).join('') + '</tbody></table>' : '<p class="pn_note' + '">Press &ldquo;Count 10 s&rdquo;, then &ldquo;Record&rdquo; to keep the result here. Background (if on) is about 0.5 per second.</p>';
+    [].forEach.call(el('pnTbl').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ recs.splice(+b.getAttribute('data-i'), 1); tableUI(); }); }); }
+  /* ══════════ controls ══════════ */
+  el('pnSrc').innerHTML = SRC.map(function(q, i){ return '<option value="' + i + '">' + q[0] + '</option>'; }).join('');
+  el('pnMat').innerHTML = MAT.map(function(q){ return '<button type="button" data-m="' + q[0] + '" aria-pressed="' + (q[0] === S.mat ? 'true' : 'false') + '"' + (q[0] === S.mat ? ' aria-current="true"' : '') + '>' + q[1] + '</button>'; }).join('');
+  function matUI(){ [].forEach.call(el('pnMat').querySelectorAll('button'), function(b){ var on = b.getAttribute('data-m') === S.mat; b.setAttribute('aria-pressed', on ? 'true' : 'false'); if (on) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current'); });
+    var r = el('pnTh'), none = S.mat === 'none'; el('pnThC').classList.toggle('pn_off' + '', none); r.disabled = none;
+    if (S.mat === 'paper'){ r.min = 1; r.max = 10; r.step = 1; el('pnThL').textContent = 'Number of sheets'; } else if (S.mat === 'al'){ r.min = 0; r.max = 10; r.step = 0.5; el('pnThL').textContent = 'Thickness'; } else if (S.mat === 'pb'){ r.min = 0; r.max = 50; r.step = 1; el('pnThL').textContent = 'Thickness'; }
+    if (!none) r.value = S.th[S.mat]; el('pnThVal').textContent = thText(); r.setAttribute('aria-valuetext', thText()); }
+  [].forEach.call(el('pnMat').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ S.mat = b.getAttribute('data-m'); matUI(); changed(); pnA11y.narrate((S.mat === 'none' ? 'Absorber removed. ' : MAT.filter(function(q){ return q[0] === S.mat; })[0][1] + ', ' + thText() + ', placed between source and counter. ') + el('pnStatus').textContent); }); });
+  el('pnTh').addEventListener('input', function(){ if (S.mat === 'none') return; S.th[S.mat] = +this.value; matUI(); changed(); });
+  el('pnTh').addEventListener('change', function(){ pnA11y.narrate(thText() + '. ' + el('pnStatus').textContent); });
+  el('pnD').addEventListener('input', function(){ S.d = +this.value; changed(); });
+  el('pnD').addEventListener('change', function(){ pnA11y.narrate('Distance ' + S.d + ' cm. ' + el('pnStatus').textContent); });
+  el('pnSrc').addEventListener('change', function(){ S.src = +this.value; changed(); pnA11y.narrate(SRC[S.src][0] + '. ' + el('pnStatus').textContent); });
+  el('pnBg').addEventListener('change', function(){ S.bg = this.checked; changed(); }); el('pnRays').addEventListener('change', function(){ S.rays = this.checked; parts = []; });
+  function changed(){ el('pnSrc').value = S.src; el('pnD').value = S.d; el('pnBg').checked = S.bg; parts = []; ten = null; el('pnTen').textContent = '\u2014'; el('pnTenS').textContent = 'press \u201cCount 10 s\u201d'; el('pnRec').disabled = true; lastTen = null; explain(); drawGraph(); }
+  var runBtn = el('pnRun'), PAUSEI = runBtn.innerHTML, PLAYI = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor"/></svg>';
+  runBtn.addEventListener('click', function(){ S.on = !S.on; runBtn.innerHTML = S.on ? PAUSEI : PLAYI; runBtn.setAttribute('aria-pressed', S.on ? 'true' : 'false'); runBtn.setAttribute('aria-label', S.on ? 'Turn the counter off' : 'Turn the counter on'); });
+  el('pnSnd').addEventListener('click', function(){ S.snd = !S.snd; this.setAttribute('aria-pressed', S.snd ? 'true' : 'false'); this.textContent = S.snd ? 'Sound: on' : 'Sound: off'; if (S.snd){ try { if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)(); if (ac.resume) ac.resume(); } catch (e) {} } });
+  el('pnZero').addEventListener('click', function(){ total = 0; elapsed = 0; el('pnTot').textContent = '0'; el('pnTime').textContent = 'in 0.0 s'; });
+  el('pnTen10').addEventListener('click', function(){ if (!S.on) runBtn.click(); ten = { c:0, t:0 }; el('pnRec').disabled = true; pnA11y.narrate('Counting for 10 seconds\u2026'); });
+  el('pnRec').addEventListener('click', function(){ if (!lastTen) return; recs.push({ src:SRC[S.src][0].split(' (')[0], abs:S.mat === 'none' ? 'none' : MAT.filter(function(q){ return q[0] === S.mat; })[0][1].toLowerCase() + ' ' + thText(), d:S.d, c:lastTen.c, bg:S.bg }); lastTen = null; this.disabled = true; tableUI(); pnA11y.narrate('Recorded as row ' + recs.length + '.'); });
+  pnA11y.onChange(function(){ draw(); drawGraph(); });
+  matUI(); explain(); tableUI(); drawGraph(); requestAnimationFrame(loop);
+  pnA11y.narrate('A polonium-210 alpha source 3 cm from a Geiger counter. Turn the sound on to hear the clicks, then try absorbers and distances.');
+  return { _rates:rates, _S:S, _set:function(o){ for (var k in o) S[k] = o[k]; matUI(); changed(); }, _status:function(){ return el('pnStatus').textContent; } };
+};
+var pnSim = new pnGen();
+</script>
+<script>pnA11y.init();</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>A radioactive source sends radiation toward a <b>Geiger&ndash;M&uuml;ller counter</b>. Each time an ionizing particle or photon enters its tube, the gas inside is ionized, a pulse of current flows and the counter <b>clicks</b>. Turn the sound on to hear it. Because decays are random, the clicks are irregular and the count in each second varies; the 10-second count gives a steadier value (its typical random error is about `sqrt(N)`).</p>
+<p>Put absorbers between the source and the counter: <b>alpha</b> particles are stopped by a sheet of paper or a few centimetres of air; <b>beta</b> particles pass paper but are stopped by a few millimetres of aluminium; <b>gamma</b> rays pass through both and are only gradually reduced by lead (Co-60: about halved every 12 mm). The counter also picks up <b>background radiation</b>, about 0.5 counts per second here: subtract it from your readings.</p>
+<p>Moving the counter away also lowers the rate, roughly as `1/d^2` (the radiation spreads out over a larger area), and for alpha particles there is a sharp cut-off near 4 cm. Use the two <b>unknown sources</b> to identify what they emit. The transmissions are simplified models chosen to give realistic behaviour.</p>
+</div>
+</div>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+
+</div>
+
+</body>
+</html>

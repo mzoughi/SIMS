@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Optics: Poisson's Spot</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Calibri, Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobp6405" class="mob_wrap">
+<div id="psRoot">
+<div class="sn_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="sn_a11ybtn" id="psBtnHC" onclick="psA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="sn_a11ybtn" id="psBtnDM" onclick="psA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="sn_a11ybtn" id="psBtnCB" onclick="psA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="sn_a11ybtn" id="psBtnNR" onclick="psA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+<button type="button" class="sn_a11ybtn" id="psBtnTH" onclick="psA11y.toggle('th')" aria-pressed="false">THICK CURVES</button>
+</div>
+<div class="tbar"><H3>Circular Obstacle &mdash; Poisson&rsquo;s (Arago&rsquo;s) Bright Spot</H3></div>
+<div class="mcontent">
+<canvas id="cv" width="820" height="420" role="img" aria-label="Left: side view of a plane wave meeting an opaque disk, with the waves from its rim reaching the centre of the screen. Right: the screen seen face-on, with the shadow of the disk, the fringes at its edge and the bright spot at its centre."></canvas>
+</div>
+<div class="verdict" id="verdict" aria-live="off"></div>
+<div class="face_wrap"><div class="face_lbl" id="lblZ">Left: the centre of the shadow, magnified. Right: intensity against the distance r from the axis</div>
+<canvas id="cvZ" width="820" height="270" role="img" aria-label="Left: a magnified view of the centre of the shadow, showing the bright spot. Right: graph of the intensity against the distance from the axis, with the geometric shadow shaded."></canvas>
+<div class="mk_bar"><label for="mkSl"><b>Marker r</b></label><input type="range" id="mkSl" min="0" max="1000" value="0" step="1" aria-label="marker distance from the axis">
+<span class="mk_opts">graph range <label><input type="radio" name="gr" value="w" checked> whole pattern</label> <label><input type="radio" name="gr" value="c"> centre only</label></span>
+<div class="mk_val" id="mkVal" aria-live="polite"></div></div></div>
+<div class="sbbar sbbar-pink">
+<div class="left">Obstacle</div>
+<div class="right2">
+<label><input type="radio" name="obj" value="d" checked onclick="pois.setObj('d')"> opaque disk</label>
+<label><input type="radio" name="obj" value="h" onclick="pois.setObj('h')"> hole of the same size (Babinet)</label>
+<label><input type="checkbox" id="geo" checked onchange="pois.reset()"> geometric shadow</label>
+<span class="bst">brighten: <input type="radio" name="bst" value="1" checked onclick="pois.boost(1)"> &times;1 <input type="radio" name="bst" value="4" onclick="pois.boost(4)"> &times;4 <input type="radio" name="bst" value="20" onclick="pois.boost(20)"> &times;20</span>
+</div></div>
+<div id="psNarBar" class="sn_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="bbar bbar-blue">
+<div class="left">Disk</div>
+<div class="centerL">`D =\ `<input class="slider" type="range" id="DValue" min="0.5" max="10" value="3" step="0.1" oninput="pois.showD(this.value)" onchange="pois.showD(this.value, 1)">
+<span class="txtDPL"><span id="DVal">3.0</span> mm</span></div>
+<div class="right"><p class="hint">Experiments:</p>
+<input type="button" value="Ball bearing 3 mm, 1 m, red laser" onclick="pois.preset(3, 1, 633)">
+<input type="button" value="Arago 1818 (2 mm, 1 m, red)" onclick="pois.preset(2, 1, 640)">
+<input type="button" value="Close: few Fresnel zones" onclick="pois.preset(1, 0.5, 600)">
+<input type="button" value="Large disk, deep shadow" onclick="pois.preset(10, 2, 550)">
+</div></div>
+<div class="bbar bbar-pink">
+<div class="left">Screen distance</div>
+<div class="centerL">`z =\ `<input class="slider" type="range" id="zValue" min="0.25" max="10" value="1" step="0.05" oninput="pois.showz(this.value)" onchange="pois.showz(this.value, 1)">
+<span class="txtDPL"><span id="zVal">1.00</span> m</span></div>
+<div class="right">`lambda =\ `<input class="slider" type="range" id="CValue" min="400" max="700" value="633" step="1" oninput="pois.showC(this.value)" onchange="pois.showC(this.value, 1)">
+<span class="txtDPL"><span id="CVal">633</span> nm</span>
+<p><input type="button" value="Violet" onclick="pois.setC(405)"> <input type="button" value="Green" onclick="pois.setC(532)"> <input type="button" value="Red" onclick="pois.setC(633)"></p></div>
+</div>
+<hr><p>&nbsp;</p>
+</div>
+<style>.face_wrap { width:100%; margin-top:6px; }
+.face_lbl { font-family:Calibri, Arial, sans-serif; font-size:.82rem; color:#555; padding:2px 4px; }
+.face_wrap canvas { display:block; width:100%; height:auto; border:1px solid #bbb; }
+.mk_bar { display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px; padding:6px 8px; background:#eef6ff; border:1px solid #b7cde0; border-top:none; font-family:Calibri, Arial, sans-serif; font-size:.9rem; color:#1d232a; }
+.mk_bar input[type=range] { flex:1 1 220px; min-width:0; accent-color:#0a84ff; }
+.mk_bar label { display:inline-flex; align-items:center; gap:3px; cursor:pointer; }
+.mk_val { flex:1 1 100%; font-family:monospace; font-size:.92rem; color:#0b4f8a; font-weight:bold; }
+.verdict { font-family:Calibri, Arial, sans-serif; font-size:.93rem; line-height:1.45; padding:8px 12px; background:#fff; border:1px solid #c9d0da; border-left:5px solid #1f5fa8; }
+.hint { font-size:.82rem; color:#444; margin-bottom:3px !important; text-align:left; }
+.bst { margin-left:10px; white-space:nowrap; }
+.right input[type=button] { margin:2px 1px; font-size:.82rem; }
+</style>
+<style>:where(#mobp6405) * { margin:0; box-sizing:border-box; }
+:where(#mobp6405) div { width:823px; margin:0; }
+#psRoot .sn_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; width:823px; }
+#psRoot .sn_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#psRoot .sn_narbar { width:823px; min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobp6405 .slider { width:155px; height:14px; display:inline-block; }
+#mobp6405 .txtDPL { background-color:blue; color:yellow; margin-left:10px; padding-top:2px; display:inline-block; font-size:14px; text-align:center; height:20px; width:70px; }
+#mobp6405 .tbar { padding:4px; height:50px; background-color:#f90; text-align:center; }
+#mobp6405 .mcontent { height:422px; }
+#mobp6405 .sbbar { min-height:45px; text-align:left; display:flex; align-items:center; font-family:Calibri, Arial, sans-serif; }
+#mobp6405 .sbbar .left { width:110px; padding:5px; text-align:center; }
+#mobp6405 .sbbar .right2 { width:713px; padding:5px; }
+#mobp6405 .sbbar label { margin-right:12px; cursor:pointer; }
+#mobp6405 .sbbar-pink { background-color:#fce4ec; }
+#mobp6405 .bbar { min-height:80px; text-align:center; display:flex; }
+#mobp6405 .bbar .left { width:110px; padding:5px; }
+#mobp6405 .bbar .centerL { width:330px; padding:5px; }
+#mobp6405 .bbar .right { width:383px; padding:5px; text-align:left; }
+#mobp6405 .bbar-blue { background-color:#e3f2fd; }
+#mobp6405 .bbar-pink { background-color:#fce4ec; }</style>
+<script>
+var psA11y = (function(){
+var ROOT = null, WRAP = null, states = { hc:false, dm:false, cb:false, nr:true, th:false };
+var PAL = { std:{ bg:'#ffd', axis:'#000', blue:'blue', dim:'#666' }, dm:{ bg:'#16191e', axis:'#e6e9ee', blue:'#7fb2ff', dim:'#9aa6b4' }, hc:{ bg:'#000', axis:'#fff', blue:'#66ccff', dim:'#ddd' } };
+function P(){ return states.hc ? PAL.hc : (states.dm ? PAL.dm : PAL.std); }
+function styleBtn(id, a){ var b = document.getElementById(id); if (!b) return; b.style.background = a ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = a ? '#00e8d0' : '#404a60'; b.style.color = a ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', a ? 'true' : 'false'); }
+function apply(){ if (!ROOT) return; WRAP = WRAP || document.getElementById('mobp6405') || ROOT;
+WRAP.classList.toggle('a11y_dm', states.dm); WRAP.classList.toggle('a11y_hc', states.hc); WRAP.classList.toggle('a11y_cb', states.cb);
+var nb = document.getElementById('psNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+var nr = document.getElementById('psBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('psBtnHC', states.hc); styleBtn('psBtnDM', states.dm); styleBtn('psBtnCB', states.cb); styleBtn('psBtnNR', states.nr); styleBtn('psBtnTH', states.th); }
+return { init:function(){ ROOT = document.getElementById('psRoot'); apply(); },
+toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply(); if (typeof pois !== 'undefined') pois.reset(); },
+narrate:function(msg){ if (!states.nr) return; var nb = document.getElementById('psNarBar'); if (nb) nb.innerHTML = msg; },
+isHC:function(){ return states.hc; }, isCB:function(){ return states.cb; }, isThick:function(){ return states.th || states.hc; },
+getBg:function(){ return P().bg; }, getAxis:function(){ return P().axis; }, col:function(k){ return P()[k] || k; } };
+})();
+</script>
+<style>
+#mobp6405.a11y_dm, #mobp6405.a11y_dm :has(canvas) { background-color:#16191e; }
+#mobp6405.a11y_dm :has(canvas) > :not(:has(canvas)):not(canvas):not([role=toolbar]):not(style):not(script) { filter:invert(1) hue-rotate(180deg); }
+#mobp6405.a11y_dm > div > :not(:has(canvas)):not([role=toolbar]):not(style):not(script) { filter:invert(1) hue-rotate(180deg); }
+#mobp6405.a11y_hc, #mobp6405.a11y_hc :has(canvas) { background-color:#000; }
+#mobp6405.a11y_hc :has(canvas) > :not(:has(canvas)):not(canvas):not([role=toolbar]):not(style):not(script) { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobp6405.a11y_hc > div > :not(:has(canvas)):not([role=toolbar]):not(style):not(script) { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+</style>
+<!-- ════════════════ SIMULATION ════════════════
+Fresnel diffraction by an opaque disk of radius a (plane wave, screen at distance z), Fresnel number NF = a^2/(lambda z).
+Hole of radius a (Fresnel approximation, u = r/a, s = rho/a):
+ U_hole(u) = -i 2 pi NF e^(i pi NF u^2) integral_0^1 e^(i pi NF s^2) J0(2 pi NF s u) s ds      (incident wave = 1)
+Babinet: U_disk = 1 - U_hole. On the axis U_disk(0) = e^(i pi NF): I = 1 exactly, whatever the size of the disk (Poisson's spot);
+U_hole(0) = 1 - e^(i pi NF): I = 4 sin^2(pi NF/2). Near the axis I_disk ~ J0^2(2 pi NF u): spot radius (first zero) 0.383 lambda z/a.
+Integral by Simpson's rule; J0 from the Numerical Recipes approximation. No dollar signs or backticks in the code.
+-->
+<script>
+var poisGen = function(){
+var cv = document.getElementById('cv'), ctx = cv.getContext('2d'), cZ = document.getElementById('cvZ'), gZ = cZ.getContext('2d');
+var Dmm = 3, z = 1, lam = 633, obj = 'd', bst = 1, gRange = 'w', MKu = 0;
+var UW = 1.8, NWU = 500, tabW = null, tabC = null, UC = 0;
+function el(id){ return document.getElementById(id); }
+function say(m){ psA11y.narrate(m); }
+function a(){ return Dmm/2000; }
+function NF(){ return a()*a()/(lam*1e-9*z); }
+function spotR(){ return 0.383*lam*1e-9*z/a(); }   /* m */
+function J0(x){ var ax = Math.abs(x), y, a1, a2;
+if (ax < 8.0){ y = x*x; a1 = 57568490574.0 + y*(-13362590354.0 + y*(651619640.7 + y*(-11214424.18 + y*(77392.33017 + y*(-184.9052456))))); a2 = 57568490411.0 + y*(1029532985.0 + y*(9494680.718 + y*(59272.64853 + y*(267.8532712 + y*1.0)))); return a1/a2; }
+var zz = 8.0/ax, xx = ax - 0.785398164; y = zz*zz; a1 = 1.0 + y*(-0.1098628627e-2 + y*(0.2734510407e-4 + y*(-0.2073370639e-5 + y*0.2093887211e-6))); a2 = -0.1562499995e-1 + y*(0.1430488765e-3 + y*(-0.6911147651e-5 + y*(0.7621095161e-6 - y*0.934935152e-7)));
+return Math.sqrt(0.636619772/ax)*(Math.cos(xx)*a1 - zz*Math.sin(xx)*a2); }
+/* complex field of the hole at radii us[] */
+function fieldHole(us){ var N = NF(), M = Math.max(600, Math.ceil(12*N*(1 + us[us.length - 1])) | 0); if (M % 2) M++; if (M > 12000) M = 12000;
+var wr = new Float64Array(M + 1), wi = new Float64Array(M + 1), arg = new Float64Array(M + 1), h = 1/M, i, j;
+for (i=0; i<=M; i++){ var s = i*h, w = (i === 0 || i === M ? 1 : i % 2 ? 4 : 2)*h/3*s, ph = Math.PI*N*s*s; wr[i] = w*Math.cos(ph); wi[i] = w*Math.sin(ph); arg[i] = 2*Math.PI*N*s; }
+var out = [];
+for (j=0; j<us.length; j++){ var u = us[j], sr = 0, si = 0; for (i=0; i<=M; i++){ var jj = u === 0 ? 1 : J0(arg[i]*u); sr += wr[i]*jj; si += wi[i]*jj; }
+/* multiply by -i 2 pi N e^(i pi N u^2) */ var ph2 = Math.PI*N*u*u, c = Math.cos(ph2), s2 = Math.sin(ph2), k = 2*Math.PI*N, pr = sr*c - si*s2, pi = sr*s2 + si*c; out.push([k*pi, -k*pr]); }
+return out; }
+function intens(f){ if (obj === 'h') return f[0]*f[0] + f[1]*f[1]; var r = 1 - f[0], i = -f[1]; return r*r + i*i; }
+function compute(){ var us = [], i; for (i=0; i<=NWU; i++) us.push(UW*i/NWU); var F = fieldHole(us); tabW = F.map(intens);
+UC = Math.min(UW, 5*0.383/NF()); us = []; for (i=0; i<=300; i++) us.push(UC*i/300); F = fieldHole(us); tabC = F.map(intens); }
+function I_at(u, wide){ var T = wide ? tabW : tabC, U = wide ? UW : UC, x = u/U*(T.length - 1); if (x >= T.length - 1) return T[T.length - 1]; var i0 = Math.floor(x), f = x - i0; return T[i0]*(1 - f) + T[i0 + 1]*f; }
+function Iu(u){ return u <= UC ? I_at(u, false) : I_at(u, true); }
+/* colours */
+function rgbA(l, k){ var r = 0, g = 0, b = 0; if (l < 440){ r = (440 - l)/60; b = 1; } else if (l < 490){ g = (l - 440)/50; b = 1; } else if (l < 510){ g = 1; b = (510 - l)/20; } else if (l < 580){ r = (l - 510)/70; g = 1; } else if (l < 645){ r = 1; g = (645 - l)/65; } else r = 1;
+var f = l < 420 ? 0.3 + 0.7*(l - 380)/40 : 1; return [k*Math.pow(f*r, 0.8), k*Math.pow(f*g, 0.8), k*Math.pow(f*b, 0.8)]; }
+function rgbS(l, k){ var c = rgbA(l, k); return 'rgb(' + c.map(function(v){ return Math.round(255*Math.max(0, Math.min(1, v))); }).join(',') + ')'; }
+function fLen(m){ var u = Math.abs(m); return u >= 1e-3 ? (m*1000).toFixed(u >= 1e-2 ? 1 : 2) + ' mm' : (m*1e6).toFixed(u >= 1e-5 ? 0 : 1) + ' \u00b5m'; }
+/* image of a disc of radius uMax (in units of a) into a square */
+function face(g, X0, Y0, S, uMax, fine){ var bw = Math.round(S), img = g.createImageData(bw, bw), c = rgbA(lam, 1), i, j;
+for (j=0; j<bw; j++) for (i=0; i<bw; i++){ var x = -uMax + 2*uMax*(i + 0.5)/bw, y = uMax - 2*uMax*(j + 0.5)/bw, u = Math.hypot(x, y), I = fine ? I_at(Math.min(u, UC), false) : (u <= UW ? Iu(u) : 1), br = Math.pow(Math.min(1, I*bst/1.6), 0.75), q = 4*(j*bw + i);
+img.data[q] = 255*c[0]*br; img.data[q + 1] = 255*c[1]*br; img.data[q + 2] = 255*c[2]*br; img.data[q + 3] = 255; }
+g.putImageData(img, X0, Y0); }
+function draw(){ var W = cv.width, H = cv.height, bg = psA11y.getBg(), ax = psA11y.getAxis(), blue = psA11y.col('blue'), i;
+ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+/* side view */
+var cy = 210, dX = 110, sX = 360, rD = 60, lc = rgbS(lam, 0.9);
+ctx.strokeStyle = lc; ctx.lineWidth = 1.2; for (i=-5; i<=5; i++){ var yy = cy + i*30; if (Math.abs(yy - cy) < rD && obj === 'd') continue; if (Math.abs(yy - cy) > rD && obj === 'h') continue; ctx.beginPath(); ctx.moveTo(12, yy); ctx.lineTo(dX - 8, yy); ctx.stroke(); }
+for (i=0; i<4; i++){ ctx.beginPath(); ctx.moveTo(30 + i*16, cy - 160); ctx.lineTo(30 + i*16, cy + 160); ctx.globalAlpha = 0.35; ctx.stroke(); ctx.globalAlpha = 1; }
+ctx.fillStyle = ax; ctx.font = '12px Calibri, Arial'; ctx.textAlign = 'center'; ctx.fillText('plane wave', 55, cy - 170);
+if (obj === 'd'){ ctx.fillStyle = '#333'; ctx.fillRect(dX - 5, cy - rD, 10, 2*rD); ctx.fillText('opaque disk', dX, cy + rD + 18); }
+else { ctx.fillStyle = '#333'; ctx.fillRect(dX - 5, 20, 10, cy - rD - 20); ctx.fillRect(dX - 5, cy + rD, 10, H - 40 - cy - rD); ctx.fillText('hole', dX, H - 20); }
+/* waves from the rim to the axis point */
+ctx.strokeStyle = blue; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]); [cy - rD, cy + rD].forEach(function(yr){ ctx.beginPath(); ctx.moveTo(dX, yr); ctx.lineTo(sX, cy); ctx.stroke(); }); ctx.setLineDash([]);
+ctx.fillStyle = blue; ctx.beginPath(); ctx.arc(sX, cy, 5, 0, 2*Math.PI); ctx.fill();
+ctx.font = '12px Calibri, Arial'; ctx.textAlign = 'left'; ctx.fillText('every point of the rim is', 150, cy - 95); ctx.fillText('the same distance from', 150, cy - 80); ctx.fillText('the centre: they arrive in phase', 150, cy - 65);
+if (psA11y.getBg() !== '#000'){ /* geometric shadow */ ctx.fillStyle = 'rgba(0,0,0,0.08)'; if (obj === 'd') ctx.fillRect(dX + 5, cy - rD, sX - dX - 5, 2*rD); }
+ctx.fillStyle = '#111'; ctx.fillRect(sX - 2, 20, 6, H - 60); ctx.fillStyle = ax; ctx.textAlign = 'center'; ctx.fillText('screen', sX, H - 20);
+ctx.strokeStyle = ax; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(dX, H - 36); ctx.lineTo(sX, H - 36); ctx.stroke(); ctx.fillText('z = ' + z.toFixed(2) + ' m (not to scale)', (dX + sX)/2, H - 42);
+/* face-on */
+var FX = 410, FY = 26, S = 370, um = UW; face(ctx, FX, FY, S, um, false); ctx.strokeStyle = ax; ctx.strokeRect(FX, FY, S, S);
+function Xf(u){ return FX + (u + um)/(2*um)*S; }
+if (el('geo').checked){ ctx.save(); ctx.strokeStyle = 'rgba(120,200,255,0.8)'; ctx.setLineDash([5, 4]); ctx.lineWidth = 1.4; ctx.beginPath(); ctx.arc(FX + S/2, FY + S/2, S/(2*um), 0, 2*Math.PI); ctx.stroke(); ctx.restore(); }
+var zb = UC*S/(2*um); ctx.strokeStyle = '#ffd23f'; ctx.lineWidth = 1.2; ctx.strokeRect(FX + S/2 - zb, FY + S/2 - zb, 2*zb, 2*zb);
+ctx.fillStyle = ax; ctx.font = '12px Calibri, Arial'; ctx.textAlign = 'center'; ctx.fillText('the screen face-on (\u00b1' + fLen(um*a()) + ')' + (el('geo').checked ? ' \u00b7 dashed: geometric shadow' : ''), FX + S/2, FY - 9);
+ctx.fillText('yellow box: magnified below', FX + S/2, FY + S + 16); }
+function drawZ(){ var W = cZ.width, H = cZ.height, bg = psA11y.getBg(), ax = psA11y.getAxis(), i;
+gZ.fillStyle = bg; gZ.fillRect(0, 0, W, H);
+var S = 230, X0 = 14, Y0 = 18; face(gZ, X0, Y0, S, UC, true); gZ.strokeStyle = '#ffd23f'; gZ.lineWidth = 2; gZ.strokeRect(X0, Y0, S, S);
+var sr = 0.383/NF()/UC*S/2; gZ.strokeStyle = 'rgba(255,255,255,0.6)'; gZ.setLineDash([3, 4]); gZ.lineWidth = 1; gZ.beginPath(); gZ.arc(X0 + S/2, Y0 + S/2, sr, 0, 2*Math.PI); gZ.stroke(); gZ.setLineDash([]);
+gZ.fillStyle = ax; gZ.font = '11px Calibri, Arial'; gZ.textAlign = 'center'; gZ.fillText('centre, \u00b1' + fLen(UC*a()) + ' (dotted: 0.38 \u03bbz/a)', X0 + S/2, Y0 - 6);
+/* graph */
+var L = 300, R = W - 18, T = 18, B = H - 40, um = gRange === 'w' ? UW : UC, mx = 0; for (i=0; i<=400; i++) mx = Math.max(mx, Iu(um*i/400)); mx = Math.max(1.2, mx*1.08);
+function X(u){ return L + u/um*(R - L); } function Y(v){ return B - Math.min(v*(gRange === 'w' ? 1 : 1), mx)/mx*(B - T); }
+if (obj === 'd' && el('geo').checked){ gZ.fillStyle = 'rgba(120,160,220,0.18)'; gZ.fillRect(L, T, Math.min(R, X(1)) - L, B - T); gZ.fillStyle = psA11y.col('dim'); gZ.font = 'italic 11px Calibri, Arial'; gZ.textAlign = 'left'; gZ.fillText('geometric shadow (r < a)', L + 6, T + 12); }
+gZ.strokeStyle = 'rgba(128,128,128,0.35)'; gZ.lineWidth = 1; gZ.fillStyle = ax; gZ.font = '11px Calibri, Arial';
+var ys = mx > 3 ? 1 : 0.5; for (var v = 0; v <= mx; v += ys){ gZ.beginPath(); gZ.moveTo(L, Y(v)); gZ.lineTo(R, Y(v)); gZ.stroke(); gZ.textAlign = 'right'; gZ.fillText(v.toFixed(1), L - 4, Y(v) + 4); }
+var step = Math.pow(10, Math.floor(Math.log(um*a()*1000/5)/Math.LN10)); if (um*a()*1000/step > 10) step *= 2;
+for (var mm = 0; mm <= um*a()*1000 + 1e-9; mm += step){ var xx = X(mm/1000/a()); gZ.beginPath(); gZ.moveTo(xx, T); gZ.lineTo(xx, B); gZ.stroke(); gZ.textAlign = 'center'; gZ.fillText(+mm.toPrecision(3) + '', xx, B + 14); }
+gZ.textAlign = 'center'; gZ.fillText('distance from the axis r (mm)', (L + R)/2, H - 6);
+gZ.save(); gZ.translate(L - 34, (T + B)/2); gZ.rotate(-Math.PI/2); gZ.fillText('I / I\u2080 (no obstacle = 1)', 0, 0); gZ.restore();
+gZ.strokeStyle = ax; gZ.setLineDash([2, 3]); gZ.beginPath(); gZ.moveTo(L, Y(1)); gZ.lineTo(R, Y(1)); gZ.stroke(); gZ.setLineDash([]);
+gZ.save(); gZ.beginPath(); gZ.rect(L, T, R - L, B - T); gZ.clip(); gZ.strokeStyle = rgbS(lam, 0.95); gZ.lineWidth = psA11y.isThick() ? 4 : 2; gZ.beginPath();
+for (i=0; i<=800; i++){ var u = um*i/800, yv = Y(Iu(u)); if (i) gZ.lineTo(X(u), yv); else gZ.moveTo(X(u), yv); } gZ.stroke();
+var mu = MKu*um; gZ.strokeStyle = '#0a84ff'; gZ.lineWidth = 2; gZ.beginPath(); gZ.moveTo(X(mu), T); gZ.lineTo(X(mu), B); gZ.stroke(); gZ.restore(); }
+function verdict(){ var N = NF(), I0 = obj === 'd' ? 1 : 4*Math.pow(Math.sin(Math.PI*N/2), 2), t;
+if (obj === 'd') t = '<b>Centre of the shadow: I = I\u2080</b>, exactly as bright as with no obstacle at all (Fresnel approximation). The bright spot has a radius (to its first dark ring) of 0.383 \u03bbz/a = <b>' + fLen(spotR()) + '</b>, tiny compared with the shadow radius a = ' + fLen(a()) + '. '
++ 'Fresnel number N<sub>F</sub> = a\u00b2/(\u03bbz) = <b>' + N.toFixed(2) + '</b>' + (N < 1 ? ': few zones, the shadow is hardly a shadow.' : N > 20 ? ': the shadow is deep and sharp, but the spot is still there.' : '.');
+else t = '<b>Hole of the same size (Babinet).</b> On the axis I = 4 sin\u00b2(\u03c0N<sub>F</sub>/2) I\u2080 = <b>' + I0.toFixed(2) + ' I\u2080</b>: the centre is bright when the hole uncovers an odd number of Fresnel zones and dark for an even number (N<sub>F</sub> = ' + N.toFixed(2) + '). Fields add: U<sub>hole</sub> + U<sub>disk</sub> = U<sub>no obstacle</sub>.';
+el('verdict').innerHTML = t; }
+function mk(){ var um = gRange === 'w' ? UW : UC, u = MKu*um, I = Iu(u); el('mkVal').textContent = 'r = ' + fLen(u*a()) + ' (' + u.toFixed(3) + ' a)   \u00b7   I/I\u2080 = ' + I.toFixed(3) + (obj === 'd' && u < 1 ? '   \u00b7   inside the geometric shadow' : ''); }
+function all(redo){ if (redo !== false || !tabW) compute(); draw(); drawZ(); verdict(); mk();
+el('DVal').textContent = Dmm.toFixed(1); el('zVal').textContent = z.toFixed(2); el('CVal').textContent = lam; el('DValue').value = Dmm; el('zValue').value = z; el('CValue').value = lam; }
+var pend = false; function later(){ if (pend) return; pend = true; requestAnimationFrame(function(){ pend = false; all(); }); }
+function sayNow(p){ say((p || '') + (obj === 'd' ? 'Disk ' + Dmm.toFixed(1) + ' mm, screen ' + z.toFixed(2) + ' m, ' + lam + ' nm. Fresnel number ' + NF().toFixed(1) + '. The centre of the shadow is as bright as the unobstructed light; the bright spot has a radius of ' + fLen(spotR()) + '.' : 'Hole ' + Dmm.toFixed(1) + ' mm: on the axis the intensity is ' + (4*Math.pow(Math.sin(Math.PI*NF()/2), 2)).toFixed(2) + ' times the incident.')); }
+(function(){ el('mkSl').addEventListener('input', function(){ MKu = this.value/1000; drawZ(); mk(); });
+[].forEach.call(document.getElementsByName('gr'), function(r){ r.addEventListener('change', function(){ gRange = this.value; drawZ(); mk(); }); }); })();
+return { reset:function(){ all(false); },
+showD:function(v, s){ Dmm = +v; later(); if (s) sayNow(); }, showz:function(v, s){ z = +v; later(); if (s) sayNow(); }, showC:function(v, s){ lam = +v; later(); if (s) sayNow(); },
+setC:function(v){ lam = v; all(); sayNow(); }, preset:function(d, zz, l){ Dmm = d; z = zz; lam = l; all(); sayNow(); },
+setObj:function(o){ obj = o; all(); sayNow(o === 'd' ? 'Opaque disk. ' : 'Babinet: the complementary hole. '); }, boost:function(k){ bst = k; all(false); say('Face-on images brightened \u00d7' + k + ' (the graph is not changed).'); },
+_I:Iu, _NF:NF, _set:function(d, zz, l, o){ Dmm = d; z = zz; lam = l; obj = o || 'd'; all(); } };
+};
+</script>
+<script>
+var pois = new poisGen();
+psA11y.init();
+window.setTimeout(function(){ pois.reset(); pois.preset(3, 1, 633); psA11y.narrate('A 3 mm opaque disk in red laser light, screen 1 m away. Look at the very centre of its shadow: a bright spot, as bright as if the disk were not there. Poisson predicted it to ridicule the wave theory; Arago found it.'); }, 0);
+</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc" onclick="mobDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>In 1818 Fresnel submitted his wave theory of light to a prize competition of the French Academy. Poisson, a judge who favoured light as particles, worked out a consequence he found absurd: in the shadow of a round opaque disk, the wave theory predicts a <b>bright spot at the very centre</b>. Arago did the experiment and found the spot. It is now called Poisson&rsquo;s spot, or Arago&rsquo;s spot, and it was a decisive victory for the wave theory.</p>
+<p><b>Why it happens.</b> Every point of the rim of the disk is at the same distance from the centre of the shadow, so the wavelets coming around the edge all arrive there in phase and add up. Here the screen is not &ldquo;far away&rdquo; compared with `a^2/lambda`, so this is <b>Fresnel</b> (near-field) diffraction, not the Fraunhofer pattern of the circular-aperture simulation. The important number is the <b>Fresnel number</b></p>
+<p class="mob_eq">`N_F = a^2/(lambda z)`,</p>
+<p>roughly the number of Fresnel zones covered by the disk (radius `a`, screen distance `z`). On the axis, the calculation gives exactly the intensity of the uncovered wave, `I = I_0`, whatever the size of the disk. Near the axis the spot follows `I ~~ I_0 J_0^2((2 pi a r)/(lambda z))`, so its radius is about `0.38 lambda z/a`: a few hundredths of a millimetre for a millimetre-size disk. Around the edge of the shadow you see Fresnel fringes.</p>
+<p><b>Babinet&rsquo;s principle.</b> A hole and a disk of the same size are complementary: their fields add up to the unobstructed wave. For the hole, the centre is bright or dark depending on whether it uncovers an odd or even number of zones, `I = 4 I_0 sin^2(pi N_F/2)`; the disk always gives a bright centre. In practice the disk must be very round and smooth (a ball bearing works well), and the light must be spatially coherent (a laser). The calculation uses the Fresnel approximation for a plane wave.</p>
+</div>
+</div>
+<script>
+function mobDesc(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return; var open = (d.style.display === 'none');
+d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }
+</script>
+<style>
+#mobp6405 { container-type:inline-size; width:100%; max-width:100%; box-sizing:border-box; }
+@container (max-width:863px) {
+#mobp6405 div, #mobp6405 p, #mobp6405 table { max-width:100%; box-sizing:border-box; }
+#mobp6405 canvas { max-width:100%; height:auto !important; }
+#mobp6405 input[type=range], #mobp6405 select { max-width:100%; min-width:0; }
+#mobp6405 .mk_bar, #mobp6405 .sn_a11y, #mobp6405 .sbbar, #mobp6405 .bbar { flex-wrap:wrap; }
+#mobp6405 .sn_a11y > div, #mobp6405 .sbbar > div, #mobp6405 .bbar > div { min-width:min(100%, 260px); }
+#mobp6405 .tbar, #mobp6405 .mcontent, #mobp6405 .sbbar, #mobp6405 .bbar { height:auto; min-height:0; }
+}
+@media (max-width:883px) {
+#mobp6405 div, #mobp6405 p, #mobp6405 table { max-width:100%; box-sizing:border-box; }
+#mobp6405 canvas { max-width:100%; height:auto !important; }
+#mobp6405 input[type=range], #mobp6405 select { max-width:100%; min-width:0; }
+#mobp6405 .mk_bar, #mobp6405 .sn_a11y, #mobp6405 .sbbar, #mobp6405 .bbar { flex-wrap:wrap; }
+#mobp6405 .sn_a11y > div, #mobp6405 .sbbar > div, #mobp6405 .bbar > div { min-width:min(100%, 260px); }
+#mobp6405 .tbar, #mobp6405 .mcontent, #mobp6405 .sbbar, #mobp6405 .bbar { height:auto; min-height:0; }
+}
+@media (pointer:coarse) {
+#mobp6405 button, #mobp6405 input[type=button] { min-height:40px; }
+#mobp6405 input[type=range] { height:28px; }
+#mobp6405 input[type=checkbox], #mobp6405 input[type=radio] { width:22px; height:22px; }
+}
+#mobp6405 .mob_descwrap { width:100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin:12px 0 6px; }
+#mobp6405 .mob_descbtn { width:auto; padding:8px 18px; font-family:monospace; font-size:.8rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
+#mobp6405 .mob_desc { width:100%; max-width:860px; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; text-align:left; }
+#mobp6405 .mob_desc p { margin:0 0 9px 0; }
+#mobp6405 .mob_eq { text-align:center; font-size:1rem; }
+</style>
+
+</div>
+
+</body>
+</html>

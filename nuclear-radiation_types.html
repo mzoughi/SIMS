@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Nuclear: Types of Nuclear Radiation</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobnucradtypes" class="mob_wrap">
+<div id="rdRoot">
+<div class="rd_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="rd_a11ybtn" id="rdBtnHC" onclick="rdA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="rd_a11ybtn" id="rdBtnDM" onclick="rdA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="rd_a11ybtn" id="rdBtnCB" onclick="rdA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="rd_a11ybtn" id="rdBtnNR" onclick="rdA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+
+<div class="rd_title"><h3>Nuclear Radiation &mdash; What Comes Out, and What Is Left</h3></div>
+<div class="rd_tabs" role="tablist" aria-label="Type of decay">
+<button type="button" role="tab" class="rd_tab" id="rdTa" aria-selected="true">&alpha; Alpha</button>
+<button type="button" role="tab" class="rd_tab" id="rdTb" aria-selected="false">&beta;&#8315; Beta minus</button>
+<button type="button" role="tab" class="rd_tab" id="rdTp" aria-selected="false">&beta;&#8314; Beta plus</button>
+<button type="button" role="tab" class="rd_tab" id="rdTg" aria-selected="false">&gamma; Gamma</button>
+</div>
+<div class="rd_intro" id="rdIntro"></div>
+<div class="rd_view"><canvas id="rdCv" width="800" height="340" role="img" aria-describedby="rdEqT" aria-label="Animation of the decay: the parent nucleus on the left emits the radiation, which flies to the right, and becomes the daughter nucleus."></canvas></div>
+<div class="rd_eqbox">
+<div class="rd_eqrow" id="rdEqN" aria-label="Nuclear equation"></div>
+<div class="rd_eqtext" id="rdEqT"></div>
+<div class="rd_cons" id="rdCons"></div>
+</div>
+<div id="rdNarBar" class="rd_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="rd_transport" role="toolbar" aria-label="Animation">
+<div class="rd_tgroup">
+<button type="button" class="rd_tbtn rd_play" id="rdPlay" aria-label="Play the decay" title="Play the decay"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="rd_tbtn" id="rdRst" aria-label="Back to the parent nucleus" title="Back to the parent nucleus"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 5 A7 7 0 1 1 5.6 9" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M3 4 L9.5 4.5 L5.5 10 Z" fill="currentColor"/></svg></button>
+</div>
+<div class="rd_tgroup rd_tsep" role="group" aria-label="Examples" id="rdEx"></div>
+<div class="rd_tgroup rd_tsep"><button type="button" class="rd_vbtn" id="rdQuiz" aria-pressed="false">Predict first</button></div>
+</div>
+<div class="rd_quiz" id="rdQuizBox" hidden>
+<span>Before playing: what is the daughter nucleus?</span>
+<label>A = <input type="number" id="rdQA" class="rd_num" min="0" max="300"></label>
+<label>Z = <input type="number" id="rdQZ" class="rd_num" min="0" max="120"></label>
+<button type="button" class="rd_bbtn" id="rdQGo">Check &amp; play</button>
+<span id="rdQFb" aria-live="polite"></span>
+</div>
+<div class="rd_panels">
+<div class="rd_panel" role="group" aria-labelledby="rdHdF"><div class="rd_ptitle" id="rdHdF">The radiation</div><div class="rd_pbody"><div class="rd_tblwrap" id="rdFacts"></div></div></div>
+<div class="rd_panel" role="group" aria-labelledby="rdHdW"><div class="rd_ptitle" id="rdHdW">Why it happens &amp; where it moves on the chart</div><div class="rd_pbody"><canvas id="rdChart" width="380" height="230" role="img" aria-label="Small chart of nuclides, N across and Z up, with an arrow from the parent to the daughter."></canvas><div id="rdWhy"></div></div></div>
+</div>
+</div>
+<style>
+:where(#mobnucradtypes) * { margin:0; box-sizing:border-box; }
+#mobnucradtypes { width:100%; max-width:806px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; color:#1d232a; }
+#mobnucradtypes canvas { display:block; width:100%; height:auto; }
+#rdRoot .rd_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#rdRoot .rd_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#rdRoot .rd_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobnucradtypes .rd_title { padding:4px; background-color:#f90; text-align:center; }
+#mobnucradtypes .rd_title h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+#mobnucradtypes .rd_tabs { display:flex; gap:4px; padding:6px 8px 0; background:#14213a; flex-wrap:wrap; }
+#mobnucradtypes .rd_tab { flex:1 1 120px; padding:8px 6px; border:1px solid #2b3d60; border-bottom:0; border-radius:6px 6px 0 0; background:#1d2c4a; color:#bcd0f0; font-weight:bold; cursor:pointer; font-size:.88rem; min-height:40px; }
+#mobnucradtypes .rd_tab[aria-selected="true"] { background:#f3f5f8; color:#14213a; }
+#mobnucradtypes .rd_view { background:#0b1222; }
+#mobnucradtypes .rd_status { color:#222; font-size:.84rem; text-align:center; background:#fff6d9; padding:5px 8px; line-height:1.45; min-height:1.6em; }
+#mobnucradtypes .rd_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+#mobnucradtypes .rd_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+#mobnucradtypes .rd_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { #mobnucradtypes .rd_tsep { padding-left:0; border-left:0; } }
+#mobnucradtypes .rd_tbtn { width:44px; height:38px; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer; border:1px solid #6d8a3a; border-radius:5px; background:#fff; color:#223; }
+#mobnucradtypes .rd_tbtn.rd_play { background:#2e7d32; color:#fff; border-color:#1b5e20; }
+#mobnucradtypes .rd_tbtn.rd_play[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+#mobnucradtypes .rd_vbtn, #mobnucradtypes .rd_bbtn { height:38px; padding:0 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; white-space:nowrap; }
+#mobnucradtypes .rd_vbtn[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobnucradtypes .rd_bbtn { background:#2e7d32; border-color:#1b5e20; color:#fff; font-weight:bold; }
+#mobnucradtypes button:disabled { opacity:.4; cursor:not-allowed; }
+#mobnucradtypes .rd_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:10px; padding:10px; }
+#mobnucradtypes .rd_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+#mobnucradtypes .rd_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+#mobnucradtypes .rd_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; font-size:.86rem; line-height:1.45; }
+#mobnucradtypes .rd_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+#mobnucradtypes .rd_ctrl.rd_off { opacity:.45; }
+#mobnucradtypes .rd_chdr { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+#mobnucradtypes .rd_chdr label { font-size:.82rem; font-weight:bold; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+#mobnucradtypes .rd_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; flex:0 0 auto; min-width:4.5em; text-align:right; }
+#mobnucradtypes .rd_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+#mobnucradtypes select { width:100%; min-height:34px; padding:4px 6px; font-size:.86rem; border:1px solid #8a96a8; border-radius:4px; background:#fff; }
+#mobnucradtypes .rd_checks { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 8px; }
+#mobnucradtypes .rd_chk { display:flex; align-items:center; gap:6px; font-size:.82rem; cursor:pointer; }
+#mobnucradtypes .rd_presets { display:flex; flex-wrap:wrap; gap:5px; }
+#mobnucradtypes .rd_presets button { padding:5px 9px; font-size:.82rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:4px; background:#fff; color:#223; min-height:34px; }
+#mobnucradtypes .rd_presets button[aria-current="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobnucradtypes .rd_card { margin:10px 10px 0; background:#0b1222; border:1px solid #2b3d60; border-radius:6px; overflow:hidden; }
+#mobnucradtypes .rd_ctitle { padding:5px 10px; background:#14213a; color:#dbe7ff; font-size:.78rem; font-weight:bold; }
+#mobnucradtypes .rd_cnote { padding:8px 12px 10px; color:#e3ecfa; font-size:.86rem; line-height:1.5; background:#0d1526; border-top:1px solid #2b3d60; }
+#mobnucradtypes .rd_cnote b { color:#ffd23f; }
+#mobnucradtypes .rd_note { font-size:.78rem; color:#555; font-style:italic; }
+#mobnucradtypes .rd_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:6px 12px; padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; }
+#mobnucradtypes .rd_rl { font-size:.7rem; color:#667; text-transform:uppercase; letter-spacing:.05em; }
+#mobnucradtypes .rd_rv { font-family:monospace; font-size:.95rem; color:#7a3a00; font-weight:bold; }
+#mobnucradtypes .rd_tbl { border-collapse:collapse; width:100%; font-size:.82rem; }
+#mobnucradtypes .rd_tbl th, #mobnucradtypes .rd_tbl td { padding:4px 6px; border-bottom:1px solid #e3e7ee; text-align:center; }
+#mobnucradtypes .rd_tbl th { background:#f1f4f8; font-size:.76rem; }
+#mobnucradtypes .rd_tbl td.rd_l, #mobnucradtypes .rd_tbl th.rd_l { text-align:left; }
+#mobnucradtypes .rd_tblwrap { overflow-x:auto; }
+#mobnucradtypes button:focus-visible, #mobnucradtypes input:focus-visible, #mobnucradtypes select:focus-visible, #mobnucradtypes canvas:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (max-width:420px) { #mobnucradtypes .rd_checks { grid-template-columns:minmax(0,1fr); } }
+@media (pointer:coarse) { #mobnucradtypes .rd_tbtn, #mobnucradtypes .rd_vbtn, #mobnucradtypes .rd_bbtn { height:44px; } #mobnucradtypes .rd_presets button { min-height:42px; } #mobnucradtypes input[type=checkbox] { width:20px; height:20px; } #mobnucradtypes input[type=range] { height:28px; } }
+#mobnucradtypes .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobnucradtypes .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobnucradtypes .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobnucradtypes .mob_desc p { margin:0 0 8px 0; }
+#mobnucradtypes .mob_eq { text-align:center; }
+#mobnucradtypes.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobnucradtypes.a11y_dm canvas, #mobnucradtypes.a11y_dm [aria-label="Display options"], #mobnucradtypes.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobnucradtypes.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobnucradtypes.a11y_hc canvas, #mobnucradtypes.a11y_hc [aria-label="Display options"], #mobnucradtypes.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+
+#mobnucradtypes .rd_intro { padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; font-size:.9rem; line-height:1.5; }
+#mobnucradtypes .rd_eqbox { background:#fff; padding:10px 12px; border-bottom:1px solid #d5dbe4; }
+#mobnucradtypes .rd_eqrow { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:6px 10px; font-size:1.55rem; font-family:'Times New Roman', serif; }
+#mobnucradtypes .rd_nuc { display:inline-flex; align-items:center; }
+#mobnucradtypes .rd_az { display:inline-flex; flex-direction:column; align-items:flex-end; font-size:.55em; line-height:1.05; margin-right:2px; }
+#mobnucradtypes .rd_az .rd_a { color:#1f5fa8; } #mobnucradtypes .rd_az .rd_z { color:#b42318; }
+#mobnucradtypes .rd_lab { display:block; font-family:Arial, sans-serif; font-size:.42em; color:#556; text-align:center; }
+#mobnucradtypes .rd_term { display:inline-flex; flex-direction:column; align-items:center; }
+#mobnucradtypes .rd_op { color:#555; }
+#mobnucradtypes .rd_eqtext { text-align:center; font-size:.92rem; margin-top:6px; line-height:1.45; }
+#mobnucradtypes .rd_cons { display:flex; flex-wrap:wrap; justify-content:center; gap:4px 18px; margin-top:6px; font-size:.84rem; font-family:monospace; }
+#mobnucradtypes .rd_cons b.rd_A { color:#1f5fa8; } #mobnucradtypes .rd_cons b.rd_Z { color:#b42318; }
+#mobnucradtypes .rd_quiz { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px 12px; padding:8px; background:#fff6d9; font-size:.88rem; }
+#mobnucradtypes .rd_num { width:5em; height:34px; padding:3px 6px; font-size:.95rem; border:1px solid #888; border-radius:4px; }
+#mobnucradtypes .rd_ok { color:#1b6e2a; font-weight:bold; } #mobnucradtypes .rd_no { color:#b42318; font-weight:bold; }
+#mobnucradtypes #rdChart { background:#0b1222; border-radius:4px; }
+</style>
+<script>
+var rdA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return;
+  b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobnucradtypes'); if (!W) return;
+  W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc); W.classList.toggle('a11y_cb', states.cb);
+  var nb = document.getElementById('rdNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none';
+  var nr = document.getElementById('rdBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+  styleBtn('rdBtnHC', states.hc); styleBtn('rdBtnDM', states.dm); styleBtn('rdBtnCB', states.cb); styleBtn('rdBtnNR', states.nr);
+  hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return {
+  init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+  toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply();
+    if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: protons orange, neutrons sky blue.'); },
+  altPalette:function(){ return states.hc || states.cb; }, isHC:function(){ return states.hc; },
+  narrate:function(msg){ if (!states.nr) return; var nb = document.getElementById('rdNarBar'); if (nb) nb.textContent = msg; }
+};
+})();
+</script>
+
+<!-- ════════ SIMULATION ════════
+Four decay types, each with real examples (Q values and half-lives rounded):
+ alpha: (A, Z) -> (A - 4, Z - 2) + He-4;  beta-: (A, Z) -> (A, Z + 1) + e- + antineutrino (n -> p + e- + antineutrino)
+ beta+: (A, Z) -> (A, Z - 1) + e+ + neutrino (p -> n + e+ + neutrino);  gamma: excited (A, Z)* -> (A, Z) + photon.
+No dollar signs or backticks in the code.
+-->
+<script>
+var rdGen = function(){
+  var cv = document.getElementById('rdCv'), g = cv.getContext('2d'), cc = document.getElementById('rdChart'), gc = cc.getContext('2d');
+  var W = cv.width, H = cv.height, TAU = 2*Math.PI;
+  function el(id){ return document.getElementById(id); }
+  var NM = { H:'hydrogen', He:'helium', B:'boron', C:'carbon', N:'nitrogen', O:'oxygen', F:'fluorine', Ne:'neon', Na:'sodium', Co:'cobalt', Ni:'nickel', Sr:'strontium', Y:'yttrium', Tc:'technetium', Ba:'barium', Cs:'caesium', Pb:'lead', Po:'polonium', Rn:'radon', Ra:'radium', Th:'thorium', U:'uranium', Np:'neptunium', Am:'americium' };
+  var T = {
+    a:{ name:'Alpha decay', sym:'\u03b1', ex:[
+      { p:['U', 238, 92], d:['Th', 234, 90], Q:'4.27 MeV', t:'4.5 billion years', use:'Most of the uranium in the Earth; it decays this way very slowly.' },
+      { p:['Ra', 226, 88], d:['Rn', 222, 86], Q:'4.87 MeV', t:'1600 years', use:'Radium was studied by Marie and Pierre Curie; its daughter radon is a radioactive gas.' },
+      { p:['Po', 210, 84], d:['Pb', 206, 82], Q:'5.41 MeV', t:'138 days', use:'Ends at lead-206, which is stable.' },
+      { p:['Am', 241, 95], d:['Np', 237, 93], Q:'5.64 MeV', t:'432 years', use:'Used in household smoke detectors: the alpha particles ionize the air.' } ] },
+    b:{ name:'Beta-minus decay', sym:'\u03b2\u207b', ex:[
+      { p:['C', 14, 6], d:['N', 14, 7], Q:'0.156 MeV', t:'5730 years', use:'Carbon dating of once-living things.' },
+      { p:['H', 3, 1], d:['He', 3, 2], Q:'0.019 MeV', t:'12.3 years', use:'Tritium: glowing exit signs and watch dials.' },
+      { p:['Sr', 90, 38], d:['Y', 90, 39], Q:'0.546 MeV', t:'28.8 years', use:'A fission product; its daughter yttrium-90 is also a beta emitter.' },
+      { p:['Co', 60, 27], d:['Ni', 60, 28], Q:'0.318 MeV (then \u03b3)', t:'5.27 years', use:'The nickel-60 is left excited and then emits gamma rays (see the gamma tab).' } ] },
+    p:{ name:'Beta-plus decay (positron emission)', sym:'\u03b2\u207a', ex:[
+      { p:['F', 18, 9], d:['O', 18, 8], Q:'0.634 MeV', t:'110 minutes', use:'PET scans: the positron meets an electron and both turn into two gamma rays.' },
+      { p:['C', 11, 6], d:['B', 11, 5], Q:'0.96 MeV', t:'20.4 minutes', use:'Also used in PET scans.' },
+      { p:['N', 13, 7], d:['C', 13, 6], Q:'1.20 MeV', t:'10.0 minutes', use:'Made in the Sun\u2019s CNO cycle.' },
+      { p:['Na', 22, 11], d:['Ne', 22, 10], Q:'0.546 MeV', t:'2.6 years', use:'A common positron source in labs.' } ] },
+    g:{ name:'Gamma decay', sym:'\u03b3', ex:[
+      { p:['Tc', 99, 43, 'm'], d:['Tc', 99, 43], Q:'0.140 MeV', t:'6.0 hours', use:'The most used medical tracer: the gamma rays are imaged by a camera outside the body.' },
+      { p:['Ba', 137, 56, 'm'], d:['Ba', 137, 56], Q:'0.662 MeV', t:'2.6 minutes', use:'Formed when caesium-137 beta-decays; the gamma rays are what detectors see from caesium sources.' },
+      { p:['Ni', 60, 28, '*'], d:['Ni', 60, 28], Q:'1.17 + 1.33 MeV', t:'less than a picosecond', use:'Left excited by the beta decay of cobalt-60; used in radiotherapy and food irradiation.' } ] } };
+  var FACTS = {
+    a:[['What it is', 'a helium-4 nucleus: 2 protons + 2 neutrons'], ['Symbol', '\u03b1 or \u2074\u2082He'], ['Charge', '+2e'], ['Mass', '\u2248 4 u (about 7300 electron masses)'], ['Typical energy, speed', '4\u20139 MeV, about 5% of the speed of light'], ['Ionizing', 'very strongly: thousands of ion pairs per mm of air'], ['Stopped by', 'a sheet of paper, the dead outer layer of skin, or about 5 cm of air']],
+    b:[['What it is', 'an electron, created in the nucleus (it was not there before)'], ['Symbol', '\u03b2\u207b, e\u207b or \u2070\u208b\u2081e'], ['Charge', '\u2212e'], ['Mass', '\u2248 0.00055 u'], ['Typical energy, speed', 'shared with an antineutrino, so a range of energies up to Q; often over 90% of the speed of light'], ['Ionizing', 'moderately'], ['Stopped by', 'a few mm of aluminium or plastic']],
+    p:[['What it is', 'a positron (anti-electron), created in the nucleus'], ['Symbol', '\u03b2\u207a, e\u207a or \u2070\u208a\u2081e'], ['Charge', '+e'], ['Mass', '\u2248 0.00055 u'], ['Typical energy', 'shared with a neutrino, up to Q'], ['What happens next', 'it soon meets an electron: both annihilate into two 0.511 MeV gamma rays going in opposite directions'], ['Stopped by', 'a few mm of aluminium (then annihilates)']],
+    g:[['What it is', 'a photon: electromagnetic radiation, like light but far more energetic'], ['Symbol', '\u03b3 or \u2070\u2080\u03b3'], ['Charge', 'none'], ['Mass', 'none'], ['Speed', 'the speed of light'], ['Ionizing', 'weakly (indirectly)'], ['Reduced by', 'thick lead or concrete; never stopped completely, only reduced']] };
+  var WHY = {
+    a:'<b>Why:</b> heavy nuclei have so many protons that their Coulomb repulsion is huge. Throwing out a tight, very stable bundle of 2 protons and 2 neutrons lowers the energy. <b>On the chart:</b> 2 down (Z \u2212 2) and 2 left (N \u2212 2).',
+    b:'<b>Why:</b> the nucleus has too many neutrons for its protons. One neutron turns into a proton: <b>n \u2192 p + e\u207b + \u03bd\u0305</b>. The electron and the antineutrino are created and leave. <b>On the chart:</b> one step up and one left (Z + 1, N \u2212 1), toward the stable nuclei; A stays the same.',
+    p:'<b>Why:</b> the nucleus has too many protons. One proton turns into a neutron: <b>p \u2192 n + e\u207a + \u03bd</b>. (A proton is lighter than a neutron, so this can happen only inside a nucleus, using the nucleus\u2019s energy.) <b>On the chart:</b> one step down and one right (Z \u2212 1, N + 1); A stays the same. The same change can also happen by electron capture.',
+    g:'<b>Why:</b> after a decay or a collision, the nucleus is often left in an <b>excited state</b> (marked * or m): its nucleons are in higher energy levels. It drops to its lowest state and the energy leaves as a gamma photon, like an atom emitting light but about a million times more energetic. <b>On the chart:</b> it does not move: A, Z and N are all unchanged.' };
+  var tab = 'a', ex = 0, prog = 0, timer = null, quiz = false;
+  function cur(){ return T[tab].ex[ex]; }
+  function rgbP(){ return frA() ? [213,94,0] : [214,48,49]; } function rgbN(){ return frA() ? [86,180,233] : [150,160,172]; }
+  function frA(){ return rdA11y.altPalette(); }
+  /* ══════════ equations ══════════ */
+  function nucH(A, Z, sym, lab, mark){ return '<span class="rd_term' + '"><span class="rd_nuc' + '"><span class="rd_az' + '"><span class="rd_a' + '">' + A + (mark || '') + '</span><span class="rd_z' + '">' + Z + '</span></span>' + sym + (mark === '*' ? '*' : '') + '</span><span class="rd_lab' + '">' + lab + '</span></span>'; }
+  function op(t){ return '<span class="rd_op' + '">' + t + '</span>'; }
+  function name(q){ return NM[q[0]].charAt(0).toUpperCase() + NM[q[0]].slice(1) + '-' + q[1] + (q[3] === 'm' ? 'm' : q[3] === '*' ? ' (excited)' : ''); }
+  function equation(){ var e = cur(), P = e.p, D = e.d, h = nucH(P[1], P[2], P[0], 'parent: ' + name(P).toLowerCase(), P[3] === 'm' ? 'm' : P[3]) + op('\u2192') + nucH(D[1], D[2], D[0], 'daughter: ' + name(D).toLowerCase()) + op('+'), t, cons;
+    if (tab === 'a'){ h += nucH(4, 2, 'He', '\u03b1 particle'); t = name(P) + ' \u2192 ' + name(D) + ' + an alpha particle (a helium-4 nucleus) + ' + e.Q + ' of energy';
+      cons = [[P[1], D[1] + ' + 4', D[1] + 4], [P[2], D[2] + ' + 2', D[2] + 2]]; }
+    else if (tab === 'b'){ h += nucH(0, '\u22121', 'e', '\u03b2\u207b (electron)') + op('+') + '<span class="rd_term' + '"><span>\u03bd\u0305</span><span class="rd_lab' + '">antineutrino</span></span>'; t = name(P) + ' \u2192 ' + name(D) + ' + an electron (the beta particle) + an antineutrino + ' + e.Q + ' of energy (shared)';
+      cons = [[P[1], D[1] + ' + 0', D[1]], [P[2], D[2] + ' + (\u22121)', D[2] - 1]]; }
+    else if (tab === 'p'){ h += nucH(0, '+1', 'e', '\u03b2\u207a (positron)') + op('+') + '<span class="rd_term' + '"><span>\u03bd</span><span class="rd_lab' + '">neutrino</span></span>'; t = name(P) + ' \u2192 ' + name(D) + ' + a positron (an anti-electron) + a neutrino + ' + e.Q + ' of energy (shared)';
+      cons = [[P[1], D[1] + ' + 0', D[1]], [P[2], D[2] + ' + 1', D[2] + 1]]; }
+    else { h += nucH(0, 0, '\u03b3', 'gamma photon'); t = name(P) + ' \u2192 ' + name(D) + ' (its lowest-energy state) + a gamma photon of ' + e.Q;
+      cons = [[P[1], D[1] + ' + 0', D[1]], [P[2], D[2] + ' + 0', D[2]]]; }
+    el('rdEqN').innerHTML = h; el('rdEqT').innerHTML = '<b>In words:</b> ' + t + '. Half-life of the parent: ' + e.t + '.';
+    el('rdCons').innerHTML = '<span><b class="rd_A' + '">Mass number A</b> (nucleons): ' + cons[0][0] + ' = ' + cons[0][1] + ' \u2713</span><span><b class="rd_Z' + '">Charge Z</b>: ' + cons[1][0] + ' = ' + cons[1][1] + ' \u2713</span>' + (tab === 'b' || tab === 'p' ? '<span>N: ' + (P[1] - P[2]) + ' \u2192 ' + (D[1] - D[2]) + ' (one ' + (tab === 'b' ? 'neutron became a proton' : 'proton became a neutron') + ')</span>' : tab === 'a' ? '<span>N: ' + (P[1] - P[2]) + ' \u2192 ' + (D[1] - D[2]) + '</span>' : '');
+    el('rdEqN').setAttribute('aria-label', 'Nuclear equation: ' + t); }
+  /* ══════════ drawing ══════════ */
+  function balls(cx, cy, A, Z, R, seed, glow){ var n = Math.min(A, 70), zf = Z/A, pts = [], i, rr = R/Math.sqrt(n)*1.05;
+    for (i=0; i<n; i++){ var a = i*2.39996 + seed, r = R*Math.sqrt((i + 0.5)/n)*0.92; pts.push([cx + r*Math.cos(a), cy + r*Math.sin(a)*0.95, ((i*7919 + 13) % 100)/100 < zf]); }
+    if (glow){ var gr = g.createRadialGradient(cx, cy, R*0.3, cx, cy, R*1.9); gr.addColorStop(0, 'rgba(255,230,120,' + 0.55*glow + ')'); gr.addColorStop(1, 'rgba(255,230,120,0)'); g.fillStyle = gr; g.beginPath(); g.arc(cx, cy, R*1.9, 0, TAU); g.fill(); }
+    pts.sort(function(a, b){ return a[1] - b[1]; }).forEach(function(q){ var c = q[2] ? rgbP() : rgbN(), gr2 = g.createRadialGradient(q[0] - rr*0.3, q[1] - rr*0.3, rr*0.1, q[0], q[1], rr); gr2.addColorStop(0, 'rgb(' + c.map(function(v){ return Math.min(255, v*1.4|0); }).join(',') + ')'); gr2.addColorStop(1, 'rgb(' + c.map(function(v){ return v*0.55|0; }).join(',') + ')'); g.fillStyle = gr2; g.beginPath(); g.arc(q[0], q[1], rr, 0, TAU); g.fill(); }); }
+  function lbl(gx, t, x, y, col, size, al){ gx.font = 'bold ' + (size || 12) + 'px Arial'; gx.textAlign = al || 'center'; gx.textBaseline = 'middle'; gx.lineJoin = 'round'; gx.lineWidth = 3.5; gx.strokeStyle = 'rgba(0,0,0,0.85)'; gx.strokeText(t, x, y); gx.fillStyle = col; gx.fillText(t, x, y); }
+  function draw(){ var e = cur(), P = e.p, D = e.d, cx = 210, cy = 175, R = 60 + Math.min(1, P[1]/240)*30, i;
+    var bg = g.createRadialGradient(cx, cy, 20, cx, cy, 520); bg.addColorStop(0, '#13213b'); bg.addColorStop(1, '#05080f'); g.fillStyle = bg; g.fillRect(0, 0, W, H);
+    var em = 0.32, after = prog >= em, f = after ? Math.min(1, (prog - em)/(1 - em)) : 0, shake = !after && prog > 0 ? Math.sin(prog*90)*3*prog/em : 0;
+    var A = after ? D[1] : P[1], Z = after ? D[2] : P[2], glow = tab === 'g' ? (after ? 0 : 1) : (prog > 0 && !after ? prog/em : 0);
+    balls(cx + shake, cy, A, Z, after && tab === 'a' ? R*Math.cbrt(D[1]/P[1]) : R, 1.3, glow);
+    lbl(g, (after ? 'daughter: ' + name(D) : 'parent: ' + name(P)), cx, cy + R + 26, '#e6ecf2', 14);
+    lbl(g, (after ? D : P)[1] + ' nucleons: ' + (after ? D : P)[2] + ' protons, ' + ((after ? D : P)[1] - (after ? D : P)[2]) + ' neutrons' + ((after ? D : P)[1] > 70 ? ' (not all drawn)' : ''), cx, cy + R + 46, '#9aa6b4', 11);
+    if (tab === 'g' && !after) lbl(g, 'excited (extra energy)', cx, cy - R - 18, '#ffd23f', 12);
+    /* the emitted particle */
+    if (after){ var x = cx + R + 20 + f*(W - cx - R - 90), y = cy - 20;
+      if (tab === 'a'){ var pr = rgbP(), nr = rgbN(); [[-7, -7, 1], [7, 7, 1], [7, -7, 0], [-7, 7, 0]].forEach(function(q){ var c = q[2] ? pr : nr; g.fillStyle = 'rgb(' + c.join(',') + ')'; g.beginPath(); g.arc(x + q[0], y + q[1], 9, 0, TAU); g.fill(); g.strokeStyle = 'rgba(0,0,0,.4)'; g.stroke(); }); lbl(g, '\u03b1 (2p + 2n)', x, y - 30, '#ffd23f', 13); }
+      else if (tab === 'b' || tab === 'p'){ g.fillStyle = tab === 'b' ? '#4fc3ff' : '#ff8a3d'; g.beginPath(); g.arc(x, y, 7, 0, TAU); g.fill(); lbl(g, tab === 'b' ? 'e\u207b (\u03b2\u207b)' : 'e\u207a (\u03b2\u207a)', x, y - 20, tab === 'b' ? '#4fc3ff' : '#ff8a3d', 13);
+        var x2 = cx + R + 20 + f*(W - cx - R - 60)*1.05, y2 = cy + 40 + f*30; g.strokeStyle = '#cfd8e6'; g.setLineDash([2, 3]); g.lineWidth = 1.5; g.beginPath(); g.arc(Math.min(x2, W - 20), y2, 5, 0, TAU); g.stroke(); g.setLineDash([]); lbl(g, tab === 'b' ? '\u03bd\u0305 (antineutrino)' : '\u03bd (neutrino)', Math.min(x2, W - 20) - 4, y2 + 18, '#cfd8e6', 11, 'right');
+        if (tab === 'p' && f > 0.7){ var k = (f - 0.7)/0.3, ex2 = W - 70; g.fillStyle = '#4fc3ff'; g.beginPath(); g.arc(ex2 + 10, y, 6, 0, TAU); g.fill(); if (k > 0.5){ for (i=-1; i<=1; i += 2){ g.strokeStyle = '#ffd23f'; g.lineWidth = 2; g.beginPath(); for (var s=0; s<=40; s++){ var yy = y + i*(k - 0.5)*2*80*s/40, xx = ex2 + 5 + 4*Math.sin(s*1.2); if (!s) g.moveTo(xx, y); else g.lineTo(xx, yy); } g.stroke(); } lbl(g, 'annihilation: two 0.511 MeV \u03b3', ex2 - 10, y + 70, '#ffd23f', 11, 'right'); } } }
+      else { g.strokeStyle = '#ffd23f'; g.lineWidth = 3; g.beginPath(); for (var s2=0; s2<=60; s2++){ var xx2 = x - 60 + s2, yy2 = y + 9*Math.sin(s2*0.45 - f*30); if (!s2) g.moveTo(xx2, yy2); else g.lineTo(xx2, yy2); } g.stroke(); lbl(g, '\u03b3 photon (' + e.Q + ')', x - 30, y - 24, '#ffd23f', 13); }
+      lbl(g, 'energy released: ' + e.Q, W - 12, H - 14, '#9aa6b4', 11, 'right'); }
+    /* inside view for beta */
+    if (tab === 'b' || tab === 'p'){ var bx = 560, by = 70; g.fillStyle = 'rgba(255,255,255,0.06)'; g.fillRect(bx - 120, by - 46, 240, 92); g.strokeStyle = 'rgba(255,255,255,0.25)'; g.strokeRect(bx - 120, by - 46, 240, 92);
+      lbl(g, 'inside the nucleus', bx, by - 34, '#9aa6b4', 11); var from = tab === 'b' ? rgbN() : rgbP(), to = tab === 'b' ? rgbP() : rgbN(), c = after ? to : from;
+      g.fillStyle = 'rgb(' + c.join(',') + ')'; g.beginPath(); g.arc(bx - 70, by + 5, 16, 0, TAU); g.fill(); lbl(g, after ? (tab === 'b' ? 'p' : 'n') : (tab === 'b' ? 'n' : 'p'), bx - 70, by + 5, '#fff', 14);
+      lbl(g, tab === 'b' ? 'n \u2192 p + e\u207b + \u03bd\u0305' : 'p \u2192 n + e\u207a + \u03bd', bx + 30, by + 5, '#e6ecf2', 15); lbl(g, after ? 'done: the nucleon changed' : 'one nucleon will change', bx + 30, by + 28, '#9aa6b4', 10); }
+    if (!prog) lbl(g, 'press \u25b6 to watch the decay', W - 12, 16, '#9aa6b4', 11, 'right'); }
+  /* ══════════ chart ══════════ */
+  function drawChart(){ var e = cur(), P = e.p, D = e.d, w = cc.width, h = cc.height, Np = P[1] - P[2], Nd = D[1] - D[2], cz = (P[2] + D[2])/2, cn = (Np + Nd)/2, s = 26;
+    gc.fillStyle = '#0b1222'; gc.fillRect(0, 0, w, h); function X(n){ return w/2 + (n - cn)*s; } function Y(z){ return h/2 - (z - cz)*s; }
+    gc.strokeStyle = 'rgba(150,170,195,0.18)'; gc.lineWidth = 1; for (var n = Math.floor(cn - 8); n <= cn + 8; n++){ gc.beginPath(); gc.moveTo(X(n) - s/2, 0); gc.lineTo(X(n) - s/2, h); gc.stroke(); } for (var z = Math.floor(cz - 5); z <= cz + 5; z++){ gc.beginPath(); gc.moveTo(0, Y(z) + s/2); gc.lineTo(w, Y(z) + s/2); gc.stroke(); }
+    function box(n, z, col, t){ gc.fillStyle = col; gc.fillRect(X(n) - s/2 + 2, Y(z) - s/2 + 2, s - 4, s - 4); lbl(gc, t, X(n), Y(z), '#fff', 10); }
+    box(Np, P[2], '#7a2f45', P[0]); if (tab !== 'g') box(Nd, D[2], '#1f5fa8', D[0]);
+    if (tab === 'g'){ gc.strokeStyle = '#ffd23f'; gc.lineWidth = 2.5; gc.beginPath(); gc.arc(X(Np), Y(P[2]), s*0.75, 0, TAU); gc.stroke(); lbl(gc, 'stays in the same square', X(Np), Y(P[2]) + s + 4, '#ffd23f', 11); }
+    else { var x1 = X(Np), y1 = Y(P[2]), x2 = X(Nd), y2 = Y(D[2]), dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy), ux = dx/L, uy = dy/L; gc.strokeStyle = '#ffd23f'; gc.fillStyle = '#ffd23f'; gc.lineWidth = 3; gc.beginPath(); gc.moveTo(x1 + ux*14, y1 + uy*14); gc.lineTo(x2 - ux*18, y2 - uy*18); gc.stroke(); gc.beginPath(); gc.moveTo(x2 - ux*12, y2 - uy*12); gc.lineTo(x2 - ux*22 - uy*6, y2 - uy*22 + ux*6); gc.lineTo(x2 - ux*22 + uy*6, y2 - uy*22 - ux*6); gc.closePath(); gc.fill(); }
+    lbl(gc, 'N (neutrons) \u2192', w - 8, h - 10, '#9aa6b4', 10, 'right'); lbl(gc, '\u2191 Z (protons)', 8, 12, '#9aa6b4', 10, 'left');
+    lbl(gc, 'parent: Z = ' + P[2] + ', N = ' + Np + (tab !== 'g' ? '   daughter: Z = ' + D[2] + ', N = ' + Nd : ''), w/2, h - 26, '#e6ecf2', 10); }
+  /* ══════════ UI ══════════ */
+  function facts(){ el('rdFacts').innerHTML = '<table class="rd_tbl' + '"><tbody>' + FACTS[tab].map(function(r){ return '<tr><th scope="row" class="rd_l' + '">' + r[0] + '</th><td class="rd_l' + '">' + r[1] + '</td></tr>'; }).join('') + '</tbody></table>'; el('rdWhy').innerHTML = WHY[tab] + '<br><i>' + cur().use + '</i>'; }
+  function intro(){ var s = { a:'In <b>alpha decay</b> a heavy nucleus throws out an <b>alpha particle</b>: 2 protons and 2 neutrons bound together (a helium-4 nucleus). The nucleus loses 4 nucleons and 2 units of charge, so it becomes a <b>different element</b>, two places lower in the periodic table.',
+    b:'In <b>beta-minus decay</b> a neutron inside the nucleus turns into a proton, and an <b>electron</b> (the beta particle) and an antineutrino are created and fly out. The number of nucleons does not change, but there is one more proton: the nucleus becomes the <b>next element up</b>.',
+    p:'In <b>beta-plus decay</b> a proton inside the nucleus turns into a neutron, and a <b>positron</b> (the anti-electron) and a neutrino are created and fly out. The number of nucleons does not change, but there is one proton fewer: the nucleus becomes the <b>element one place lower</b>.',
+    g:'In <b>gamma decay</b> an excited nucleus (one with extra energy, marked * or m) gets rid of that energy as a <b>gamma photon</b>. No particle is lost: the nucleus stays the <b>same element and the same isotope</b>, only calmer.' }[tab];
+    el('rdIntro').innerHTML = s + ' <span class="rd_note' + '">In the equations, the top number (blue) is the mass number A, the number of nucleons; the bottom number (red) is Z, the charge (number of protons). Both must balance.</span>'; }
+  function exButtons(){ el('rdEx').innerHTML = T[tab].ex.map(function(q, i){ return '<button type="button" class="rd_vbtn' + '" data-i="' + i + '" aria-pressed="' + (i === ex ? 'true' : 'false') + '">' + q.p[0] + '-' + q.p[1] + (q.p[3] === 'm' ? 'm' : q.p[3] === '*' ? '*' : '') + '</button>'; }).join('');
+    [].forEach.call(el('rdEx').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ ex = +b.getAttribute('data-i'); refresh(true); }); }); }
+  function refresh(say){ stop(); prog = 0; exButtons(); intro(); facts(); equation(); draw(); drawChart(); el('rdQA').value = ''; el('rdQZ').value = ''; el('rdQFb').textContent = '';
+    ['a', 'b', 'p', 'g'].forEach(function(k){ var t = el('rdT' + k + ''); t.setAttribute('aria-selected', k === tab ? 'true' : 'false'); t.tabIndex = k === tab ? 0 : -1; });
+    if (say) rdA11y.narrate(T[tab].name + ': ' + el('rdEqT').textContent + (quiz ? ' Predict the daughter first.' : ' Press play.')); }
+  var playBtn = el('rdPlay'), PLAYI = playBtn.innerHTML, PAUSEI = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>';
+  function stop(){ if (timer){ clearTimeout(timer); timer = null; } playBtn.innerHTML = PLAYI; playBtn.setAttribute('aria-pressed', 'false'); }
+  function play(){ if (timer){ stop(); return; } if (prog >= 1) prog = 0; playBtn.innerHTML = PAUSEI; playBtn.setAttribute('aria-pressed', 'true'); var said = false;
+    (function tick(){ prog = Math.min(1, prog + 0.012); if (!said && prog >= 0.32){ said = true; rdA11y.narrate(el('rdEqT').textContent.replace('In words: ', '')); } draw(); if (prog < 1) timer = setTimeout(tick, 30); else stop(); })(); }
+  playBtn.addEventListener('click', function(){ if (quiz && prog === 0 && el('rdQFb').textContent === ''){ rdA11y.narrate('Predict first: type the mass number A and charge Z of the daughter, then press Check and play.'); el('rdQA').focus(); return; } play(); });
+  el('rdRst').addEventListener('click', function(){ stop(); prog = 0; draw(); });
+  el('rdQuiz').addEventListener('click', function(){ quiz = !quiz; this.setAttribute('aria-pressed', quiz ? 'true' : 'false'); el('rdQuizBox').hidden = !quiz; el('rdEqN').parentNode.style.display = quiz ? 'none' : ''; refresh(false); rdA11y.narrate(quiz ? 'Predict first: the equation is hidden until you check your prediction.' : 'Equation shown.'); });
+  el('rdQGo').addEventListener('click', function(){ var e = cur(), a = parseInt(el('rdQA').value, 10), z = parseInt(el('rdQZ').value, 10), okA = a === e.d[1], okZ = z === e.d[2];
+    el('rdQFb').innerHTML = (okA ? '<span class="rd_ok' + '">A \u2713</span>' : '<span class="rd_no' + '">A \u2717 (' + e.d[1] + ')</span>') + ' &nbsp; ' + (okZ ? '<span class="rd_ok' + '">Z \u2713</span>' : '<span class="rd_no' + '">Z \u2717 (' + e.d[2] + ')</span>') + ' \u2192 ' + name(e.d);
+    el('rdEqN').parentNode.style.display = ''; play(); rdA11y.narrate((okA && okZ ? 'Correct! ' : 'Not quite. ') + 'The daughter is ' + name(e.d) + ', with A = ' + e.d[1] + ' and Z = ' + e.d[2] + '.'); });
+  [['a', 'rdTa'], ['b', 'rdTb'], ['p', 'rdTp'], ['g', 'rdTg']].forEach(function(q, i, arr){ var t = el(q[1] + ''); t.addEventListener('click', function(){ tab = q[0]; ex = 0; refresh(true); });
+    t.addEventListener('keydown', function(e){ var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!d) return; var n = arr[(i + d + 4) % 4]; tab = n[0]; ex = 0; refresh(true); el(n[1] + '').focus(); e.preventDefault(); }); });
+  rdA11y.onChange(function(){ draw(); drawChart(); });
+  refresh(false); rdA11y.narrate('Four kinds of nuclear radiation, one per tab. Pick an example and press play to watch the parent nucleus decay into the daughter.');
+  return { _set:function(t, i){ tab = t; ex = i; refresh(false); }, _prog:function(v){ prog = v; draw(); } };
+};
+var rdSim = new rdGen();
+</script>
+<script>rdA11y.init();</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>An unstable nucleus can change into a more stable one by emitting radiation. Each tab shows one kind, with real examples. The animation shows the parent nucleus (protons red, neutrons grey) emitting the radiation and becoming the daughter nucleus; the equation is written both in words and in nuclear notation, `\ _Z^A X`, where `A` (top) is the mass number (the number of nucleons) and `Z` (bottom) the atomic number (the number of protons, which sets the element).</p>
+<p>In every decay both <b>A</b> and the <b>charge</b> are conserved: the top numbers and the bottom numbers each add up to the same total on both sides.</p>
+<p class="mob_eq">alpha: `\ _Z^A X -&gt; \ _(Z-2)^(A-4) Y + \ _2^4 He`&nbsp;&nbsp;&nbsp; beta-minus: `\ _Z^A X -&gt; \ _(Z+1)^A Y + \ _(-1)^0 e + bar nu`</p>
+<p class="mob_eq">beta-plus: `\ _Z^A X -&gt; \ _(Z-1)^A Y + \ _(+1)^0 e + nu`&nbsp;&nbsp;&nbsp; gamma: `\ _Z^A X^** -&gt; \ _Z^A X + gamma`</p>
+<p>The &ldquo;Predict first&rdquo; button hides the equation until you have typed the daughter&rsquo;s A and Z. The small chart shows where each decay moves the nucleus: alpha 2 down and 2 left, beta-minus up and left, beta-plus down and right, gamma nowhere. Energies (Q values) and half-lives are rounded.</p>
+</div>
+</div>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+
+</div>
+
+</body>
+</html>
