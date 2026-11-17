@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Waves: The Human Ear</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>  </head>
+<body style=margin:25px>
+<div id="mobhumanear" class="mob_wrap">
+<div class="he_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="he_a11ybtn" id="heBtnHC" onclick="heA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="he_a11ybtn" id="heBtnDM" onclick="heA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="he_a11ybtn" id="heBtnCB" onclick="heA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="he_a11ybtn" id="heBtnNR" onclick="heA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+<div class="he_title"><h3>The Human Ear &mdash; From Sound Wave to Understanding</h3></div>
+<div class="he_tabs" role="tablist" aria-label="Topic">
+<button type="button" role="tab" class="he_tab" id="heT0" aria-selected="true">1. Anatomy</button>
+<button type="button" role="tab" class="he_tab" id="heT1" aria-selected="false">2. Middle ear</button>
+<button type="button" role="tab" class="he_tab" id="heT2" aria-selected="false">3. Cochlea &amp; pitch</button>
+<button type="button" role="tab" class="he_tab" id="heT3" aria-selected="false">4. Hearing loss</button>
+<button type="button" role="tab" class="he_tab" id="heT4" aria-selected="false">5. Noise exposure</button>
+<button type="button" role="tab" class="he_tab" id="heT5" aria-selected="false">6. Processing (APD)</button>
+</div>
+<div id="heNarBar" class="he_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<!-- ═══════ TAB 0: ANATOMY ═══════ -->
+<div id="heP0" role="tabpanel" aria-labelledby="heT0">
+<div class="he_intro">The ear turns tiny pressure changes in the air into electrical signals for the brain. The <b>outer ear</b> collects sound, the <b>middle ear</b> amplifies it mechanically, and the <b>inner ear</b> (cochlea) sorts it by frequency and converts it into nerve signals. Click a part, or send a sound wave through the ear.</div>
+<div class="he_pre" id="heParts" role="group" aria-label="Parts of the ear"></div>
+<div class="he_view"><canvas id="heC0" width="900" height="460" role="img" aria-label="Cross-section of the right ear: the pinna funnels sound into the ear canal, which ends at the eardrum. In the air-filled middle ear, three small bones connect the eardrum to the oval window of the snail-shaped cochlea. The Eustachian tube runs down toward the throat, the semicircular canals sit above the cochlea, and the auditory nerve leaves toward the brain. The selected part is highlighted in yellow."></canvas></div>
+<div class="he_transport" role="toolbar" aria-label="Sound wave">
+<div class="he_tgroup"><button type="button" class="he_vbtn" id="heSend">&#9654; Send a sound wave</button></div>
+<div class="he_tgroup he_tsep" style="flex:1 1 300px"><label for="heF0" style="font-weight:bold">Frequency</label><input type="range" id="heF0" min="200" max="8000" step="100" value="1000" style="flex:1 1 160px"><span class="he_val" id="heF0v">1000 Hz</span></div>
+</div>
+<div class="he_panels">
+<div class="he_panel"><div class="he_ptitle">This part</div><div class="he_pbody" id="heInfo0"></div></div>
+<div class="he_panel"><div class="he_ptitle">Energy along the path</div><div class="he_pbody"><p>Air (pressure wave) &rarr; eardrum (mechanical vibration) &rarr; ossicles (lever) &rarr; oval window &rarr; cochlear fluid (fluid wave) &rarr; hair cells (electrical signal) &rarr; auditory nerve &rarr; brainstem &rarr; auditory cortex.</p><p class="he_note">The ear detects pressure changes as small as about 20 micropascals, about one five-billionth of atmospheric pressure, moving the eardrum by less than the width of an atom.</p></div></div>
+</div>
+</div>
+
+<!-- ═══════ TAB 1: MIDDLE EAR ═══════ -->
+<div id="heP1" role="tabpanel" aria-labelledby="heT1" hidden>
+<div class="he_intro">Sound passing straight from air into the fluid of the cochlea would be mostly reflected. The middle ear is an <b>impedance matcher</b>: a large eardrum pushes a small oval window through a bony lever, raising the pressure. Change the areas and the lever ratio.</div>
+<div class="he_view"><canvas id="heC1" width="900" height="400" role="img" aria-label="Left: a large disk representing the eardrum with an incoming pressure arrow. Middle: a lever with a pivot representing the ossicles, with input and output force arrows. Right: a small disk representing the oval window. A bar chart compares the pressure at the eardrum and at the oval window."></canvas></div>
+<div class="he_transport" role="toolbar" aria-label="Middle ear parameters">
+<div class="he_tgroup" style="flex:1 1 240px"><label for="heAe" style="font-weight:bold">Eardrum area</label><input type="range" id="heAe" min="20" max="90" step="1" value="55" style="flex:1 1 100px"><span class="he_val" id="heAev"></span></div>
+<div class="he_tgroup" style="flex:1 1 240px"><label for="heAo" style="font-weight:bold">Oval window area</label><input type="range" id="heAo" min="1.5" max="8" step="0.1" value="3.2" style="flex:1 1 100px"><span class="he_val" id="heAov"></span></div>
+<div class="he_tgroup" style="flex:1 1 240px"><label for="heLr" style="font-weight:bold">Lever ratio</label><input type="range" id="heLr" min="1" max="2" step="0.05" value="1.3" style="flex:1 1 100px"><span class="he_val" id="heLrv"></span></div>
+</div>
+<div class="he_panels">
+<div class="he_panel"><div class="he_ptitle">The numbers</div><div class="he_pbody" id="heNum1"></div></div>
+<div class="he_panel"><div class="he_ptitle">The physics</div><div class="he_pbody"><div class="he_eq">F&#8321; = P&#8321;A&#8321; &nbsp;&middot;&nbsp; F&#8322; = L F&#8321; &nbsp;&middot;&nbsp; P&#8322; = F&#8322;/A&#8322;</div><div class="he_eq">P&#8322;/P&#8321; = L (A&#8321;/A&#8322;) &nbsp;&middot;&nbsp; gain = 20 log&#8321;&#8320;(P&#8322;/P&#8321;) dB</div><p>Air and water have very different acoustic impedances, so only about 0.1% of the sound power would enter the fluid directly (a loss of about 30 dB). The pressure gain of the middle ear recovers most of that loss.</p><p class="he_note">Two tiny muscles (stapedius and tensor tympani) stiffen the chain in response to loud sounds, giving some protection; the reflex takes tens of milliseconds, too slow for sudden bangs.</p></div></div>
+</div>
+</div>
+
+<!-- ═══════ TAB 2: COCHLEA ═══════ -->
+<div id="heP2" role="tabpanel" aria-labelledby="heT2" hidden>
+<div class="he_intro">Inside the cochlea, the <b>basilar membrane</b> is narrow and stiff at the base and wide and floppy at the apex. Each frequency makes a travelling wave that peaks at its own place: <b>high pitch near the base, low pitch near the apex</b>. Hair cells at the peak send the signal.</div>
+<div class="he_view"><canvas id="heC2" width="900" height="440" role="img" aria-label="Top: the cochlea uncoiled into a tapered strip, base on the left, apex on the right, with an animated travelling wave that grows to a peak at the place matching the chosen frequency and then dies out. A row of hair cells lights up at the peak and a frequency scale runs below. Bottom: the coiled cochlea with a glowing dot at the same place."></canvas></div>
+<div class="he_transport" role="toolbar" aria-label="Frequency">
+<div class="he_tgroup" style="flex:1 1 320px"><label for="heF2" style="font-weight:bold">Frequency</label><input type="range" id="heF2" min="0" max="1000" step="1" value="500" style="flex:1 1 180px"><span class="he_val" id="heF2v"></span></div>
+<div class="he_tgroup he_tsep"><button type="button" class="he_vbtn" id="hePlay2" aria-pressed="false">&#9654; Play tone</button><label class="he_chk"><input type="checkbox" id="heTwo"> second tone</label></div>
+<div class="he_tgroup" style="flex:1 1 320px"><label for="heF2b" style="font-weight:bold">Second</label><input type="range" id="heF2b" min="0" max="1000" step="1" value="800" disabled style="flex:1 1 180px"><span class="he_val" id="heF2bv"></span></div>
+</div>
+<div class="he_panels">
+<div class="he_panel"><div class="he_ptitle">The numbers</div><div class="he_pbody" id="heNum2"></div></div>
+<div class="he_panel"><div class="he_ptitle">How pitch is sorted</div><div class="he_pbody"><p>The uncoiled cochlea is about 35 mm long. The place of the peak follows the Greenwood map, roughly logarithmic in frequency:</p><div class="he_eq">f = 165.4 (10<sup>2.1x</sup> &minus; 0.88) Hz, &nbsp;x = fraction of the length from the apex</div><p>Each octave takes about the same length of membrane, which is why musical pitch feels evenly spaced on a logarithmic scale.</p><p class="he_note">Every sound travels past the base on its way to its own place, so hair cells at the base work hardest. That is one reason high frequencies are lost first. Start the tone with a low volume.</p></div></div>
+</div>
+</div>
+
+<!-- ═══════ TAB 3: AUDIOGRAM ═══════ -->
+<div id="heP3" role="tabpanel" aria-labelledby="heT3" hidden>
+<div class="he_intro">An <b>audiogram</b> plots the quietest tone a person can hear at each frequency. Lower on the chart means a louder sound is needed. Choose a profile to see how different problems show up, or do not show up.</div>
+<div class="he_pre" id="heProf" role="group" aria-label="Hearing profiles"></div>
+<div class="he_view"><canvas id="heC3" width="900" height="460" role="img" aria-label="Audiogram: frequency from 250 to 8000 hertz across, hearing level from minus 10 to 120 decibels downward, with shaded bands from normal to profound. Circles joined by a line show air-conduction thresholds and bracket symbols show bone-conduction thresholds for the chosen profile. An optional banana-shaped region shows where everyday speech sounds fall."></canvas></div>
+<div class="he_transport" role="toolbar" aria-label="Display"><label class="he_chk"><input type="checkbox" id="heBan" checked> show the speech banana</label></div>
+<div class="he_panels">
+<div class="he_panel"><div class="he_ptitle">This profile</div><div class="he_pbody" id="heTxt3"></div></div>
+<div class="he_panel"><div class="he_ptitle">Reading an audiogram</div><div class="he_pbody"><p>&#9675; air conduction (headphones: whole ear). [ bone conduction (vibrator on the skull: bypasses the outer and middle ear).</p><p><b>Conductive:</b> bone normal, air worse (an air&ndash;bone gap): outer or middle ear. <b>Sensorineural:</b> air and bone equally worse: cochlea or nerve. <b>Central (APD):</b> often a normal audiogram: the difficulty is in the brain&rsquo;s processing.</p><table class="he_tbl"><tbody><tr><td>&minus;10 to 25 dB HL</td><td>normal</td></tr><tr><td>26 to 40</td><td>mild</td></tr><tr><td>41 to 55</td><td>moderate</td></tr><tr><td>56 to 70</td><td>moderately severe</td></tr><tr><td>71 to 90</td><td>severe</td></tr><tr><td>above 90</td><td>profound</td></tr></tbody></table></div></div>
+</div>
+</div>
+
+<!-- ═══════ TAB 4: NOISE ═══════ -->
+<div id="heP4" role="tabpanel" aria-labelledby="heT4" hidden>
+<div class="he_intro">Loud sound bends and breaks the delicate stereocilia on the hair cells. Human hair cells do not grow back, so the damage is permanent. Choose a source or set a level to see the intensity and the safe daily exposure.</div>
+<div class="he_pre" id="heSrc" role="group" aria-label="Sound sources"></div>
+<div class="he_view"><canvas id="heC4" width="900" height="420" role="img" aria-label="A vertical decibel scale from 0 to 140 with common sources marked and a marker at the chosen level. On the right, a bar shows the safe daily exposure time on a logarithmic scale, and a magnified hair-cell bundle whose stereocilia bend and break more as the level rises."></canvas></div>
+<div class="he_transport" role="toolbar" aria-label="Level"><div class="he_tgroup" style="flex:1 1 360px"><label for="heL" style="font-weight:bold">Sound level</label><input type="range" id="heL" min="30" max="140" step="1" value="85" style="flex:1 1 200px"><span class="he_val" id="heLv"></span></div></div>
+<div class="he_panels">
+<div class="he_panel"><div class="he_ptitle">The numbers</div><div class="he_pbody" id="heNum4"></div></div>
+<div class="he_panel"><div class="he_ptitle">The physics</div><div class="he_pbody"><div class="he_eq">&beta; = 10 log&#8321;&#8320;(I/I&#8320;), &nbsp;I&#8320; = 10<sup>&minus;12</sup> W/m&sup2;</div><div class="he_eq">safe time T = 8 h / 2<sup>(L &minus; 85)/3</sup> &nbsp;(NIOSH)</div><p>Every 10 dB is ten times the intensity, every 3 dB doubles it, so the safe time halves for every 3 dB above 85 dB.</p><p class="he_note">Ringing (tinnitus) or muffled hearing after loud noise are warning signs. Keep earphones below about 60% volume.</p></div></div>
+</div>
+</div>
+
+<!-- ═══════ TAB 5: APD ═══════ -->
+<div id="heP5" role="tabpanel" aria-labelledby="heT5" hidden>
+<div class="he_intro"><b>Hearing is not the same as listening.</b> In <b>auditory processing disorder</b> (APD, also called central auditory processing disorder, CAPD) the ear usually works normally and the audiogram is often normal, but the brainstem and auditory cortex have difficulty separating, ordering and interpreting sounds, especially speech in noise and fast timing cues.</div>
+<div class="he_pre" id="heMode" role="group" aria-label="Listener"></div>
+<div class="he_view"><canvas id="heC5" width="900" height="500" role="img" aria-label="Top: the auditory pathway as boxes from ear and cochlea to auditory nerve, brainstem, thalamus and auditory cortex; for the APD listener the ear boxes are marked as working normally and the central boxes are highlighted. Middle: two noise bursts separated by a silent gap, with the envelope as processed by the listener and a dashed threshold line; if the processed curve dips below the line the gap is heard. Bottom: a sentence as word blocks; as background noise rises, more words fade."></canvas></div>
+<div class="he_status" id="heStat5" aria-live="polite">Keep the volume low. Headphones work best.</div>
+<div class="he_transport" role="toolbar" aria-label="Gap and noise">
+<div class="he_tgroup" style="flex:1 1 320px"><label for="heGap" style="font-weight:bold">Silent gap</label><input type="range" id="heGap" min="0" max="60" step="1" value="10" style="flex:1 1 160px"><span class="he_val" id="heGapv"></span></div>
+<div class="he_tgroup" style="flex:1 1 320px"><label for="heSnr" style="font-weight:bold">Speech-to-noise</label><input type="range" id="heSnr" min="-10" max="20" step="1" value="5" style="flex:1 1 160px"><span class="he_val" id="heSnrv"></span></div>
+<div class="he_tgroup he_tsep"><button type="button" class="he_vbtn" id="heGapPlay">&#9654; Play gap</button><button type="button" class="he_vbtn" id="heMyst">? Mystery trial</button><button type="button" class="he_vbtn" id="heAns1">I heard ONE</button><button type="button" class="he_vbtn" id="heAns2">I heard TWO</button></div>
+</div>
+<div class="he_panels">
+<div class="he_panel"><div class="he_ptitle">The numbers</div><div class="he_pbody" id="heNum5"></div></div>
+<div class="he_panel"><div class="he_ptitle">The physics: time resolution</div><div class="he_pbody"><p>The auditory system behaves like a detector with a finite integration time &tau;. A silence much shorter than &tau; is smoothed over, and two bursts blend into one, just as a slow sensor cannot resolve two rapid pulses.</p><div class="he_eq">processed envelope: dy/dt = (x &minus; y)/&tau;</div><p>Speech depends on such short events: the silent closure before p, t, k lasts tens of milliseconds, and the voice-onset time that separates &ldquo;ba&rdquo; from &ldquo;pa&rdquo; differs by about 20 to 40 ms.</p><p class="he_note">The time constants and percentages here are illustrative, not clinical values.</p></div></div>
+<div class="he_panel"><div class="he_ptitle">What APD can feel like</div><div class="he_pbody"><p>Hearing that someone is talking but not catching the words in a noisy room or an echoing hallway; losing track of fast speech or long spoken instructions; mixing up similar-sounding words; finding it hard to follow one voice when two people talk at once; difficulty telling where a sound comes from; being tired after a lot of listening.</p></div></div>
+<div class="he_panel"><div class="he_ptitle">Testing and what helps</div><div class="he_pbody"><p>An audiologist first rules out ordinary hearing loss, then uses tests such as <b>gap detection</b>, <b>speech in noise</b>, <b>dichotic listening</b> (different words in each ear at once), <b>pattern tests</b> (order of high and low tones) and <b>localization</b>. A pattern across several tests, not one score, points to APD.</p><p><b>Helps:</b> less background noise and echo, sitting close to and facing the speaker, remote-microphone systems, captions and written instructions, speakers who slow down and pause. Making sound louder alone does not fix it, because loudness is not the problem.</p><p class="he_note">This SIM explains the physics and physiology; it cannot diagnose APD or any hearing condition.</p></div></div>
+</div>
+</div>
+<style>
+:where(#mobhumanear) * { margin:0; box-sizing:border-box; }
+#mobhumanear { width:100%; max-width:900px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; color:#1d232a; }
+#mobhumanear canvas { display:block; width:100%; height:auto; }
+#mobhumanear [hidden] { display:none !important; }
+#mobhumanear .he_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#mobhumanear .he_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#mobhumanear .he_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobhumanear .he_title { padding:4px; background-color:#f90; text-align:center; }
+#mobhumanear .he_title h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+#mobhumanear .he_tabs { display:flex; gap:4px; padding:6px 8px 0; background:#14213a; flex-wrap:wrap; }
+#mobhumanear .he_tab { flex:1 1 120px; padding:8px 6px; border:1px solid #2b3d60; border-bottom:0; border-radius:6px 6px 0 0; background:#1d2c4a; color:#bcd0f0; font-weight:bold; cursor:pointer; font-size:.86rem; min-height:40px; }
+#mobhumanear .he_tab[aria-selected="true"] { background:#f3f5f8; color:#14213a; }
+#mobhumanear .he_intro { padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; font-size:.9rem; line-height:1.5; }
+#mobhumanear .he_view { background:#0b1222; }
+#mobhumanear .he_status { color:#222; font-size:.86rem; text-align:center; background:#fff6d9; padding:5px 8px; line-height:1.45; min-height:1.6em; }
+#mobhumanear .he_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+#mobhumanear .he_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+#mobhumanear .he_tgroup label { font-size:.84rem; }
+#mobhumanear .he_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { #mobhumanear .he_tsep { padding-left:0; border-left:0; } }
+#mobhumanear .he_vbtn { min-height:38px; padding:4px 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; }
+#mobhumanear .he_vbtn[aria-pressed="true"] { background:#c62828; color:#fff; border-color:#8e1b1b; }
+#mobhumanear .he_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(270px, 1fr)); gap:10px; padding:10px; }
+#mobhumanear .he_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+#mobhumanear .he_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+#mobhumanear .he_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; font-size:.87rem; line-height:1.45; }
+#mobhumanear .he_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; min-width:4.5em; text-align:right; }
+#mobhumanear .he_chk { display:flex; align-items:center; gap:6px; font-size:.84rem; cursor:pointer; }
+#mobhumanear .he_note { font-size:.8rem; color:#555; font-style:italic; }
+#mobhumanear .he_eq { font-family:'Times New Roman', serif; font-size:1rem; background:#f6f8fb; border-left:3px solid #1f5fa8; padding:4px 8px; margin:2px 0; overflow-wrap:anywhere; }
+#mobhumanear .he_res { color:#7a3a00; }
+#mobhumanear .he_pre { display:flex; flex-wrap:wrap; gap:5px; padding:8px 10px; background:#eef6dd; }
+#mobhumanear .he_pre button { padding:5px 9px; font-size:.82rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:4px; background:#fff; color:#223; min-height:34px; }
+#mobhumanear .he_pre button[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobhumanear .he_tbl { border-collapse:collapse; width:100%; font-size:.84rem; }
+#mobhumanear .he_tbl td { padding:3px 6px; border-bottom:1px solid #e3e7ee; vertical-align:top; }
+#mobhumanear input[type=range]:disabled { opacity:.45; }
+#mobhumanear button:focus-visible, #mobhumanear input:focus-visible, #mobhumanear select:focus-visible, #mobhumanear canvas:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (pointer:coarse) { #mobhumanear .he_vbtn { min-height:44px; } #mobhumanear input[type=checkbox] { width:20px; height:20px; } #mobhumanear input[type=range] { height:28px; } }
+#mobhumanear .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobhumanear .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobhumanear .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobhumanear .mob_desc p { margin:0 0 8px 0; }
+#mobhumanear.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobhumanear.a11y_dm .he_view, #mobhumanear.a11y_dm [aria-label="Display options"], #mobhumanear.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobhumanear.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobhumanear.a11y_hc .he_view, #mobhumanear.a11y_hc [aria-label="Display options"], #mobhumanear.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+</style>
+<script>
+var heA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return; b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobhumanear'); if (!W) return; W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc);
+var nb = document.getElementById('heNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none'; var nr = document.getElementById('heBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('heBtnHC', states.hc); styleBtn('heBtnDM', states.dm); styleBtn('heBtnCB', states.cb); styleBtn('heBtnNR', states.nr); hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return { init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply(); if (k === 'cb' && states.cb) this.narrate('Colour-blind safe: green and red are replaced by blue and orange; every state is also given in words.'); },
+alt:function(){ return states.hc || states.cb; }, narrate:function(m){ if (!states.nr) return; var nb = document.getElementById('heNarBar'); if (nb) nb.textContent = m; } };
+})();
+</script>
+<!-- ════════ SIMULATION ════════
+Human ear: anatomy, middle-ear pressure gain P2/P1 = L A1/A2, cochlear place map (Greenwood: f = 165.4(10^(2.1x) - 0.88), x from apex, 35 mm),
+audiogram profiles (illustrative), noise exposure (NIOSH 85 dBA / 8 h, 3 dB exchange), auditory processing disorder (APD/CAPD):
+temporal resolution modelled by an exponential envelope integrator (tau 3 ms typical, 25 ms APD illustration), threshold at 50% dip;
+speech in noise by a logistic intelligibility curve (illustrative). Not a diagnostic tool.
+No dollar signs or backticks in the code.
+-->
+<script>
+var heGen = function(){
+  function el(id){ return document.getElementById(id + ''); }
+  function cls(n){ return n + ''; }
+  function say(m){ heA11y.narrate(m); }
+  var TAU = 2*Math.PI;
+  function P(){ var a = heA11y.alt(); return { bg:'#0b1222', ink:'#dbe7ff', mut:'#9fb4d8', acc:'#ffd23f', blue:'#7fb2ff', good:a ? '#56b4e9' : '#4fe39a', bad:a ? '#e69f00' : '#ff8a7a', skull:'#18233a' }; }
+  function lbl(g, t, x, y, col, size, al){ g.font = 'bold ' + (size || 12) + 'px Arial'; g.textAlign = al || 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 3.5; g.strokeStyle = 'rgba(0,0,0,0.85)'; g.strokeText(t, x, y); g.fillStyle = col; g.fillText(t, x, y); g.textBaseline = 'alphabetic'; }
+  function arrow(g, x1, y1, x2, y2, c, w){ g.strokeStyle = c; g.fillStyle = c; g.lineWidth = w; g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); g.stroke(); var a = Math.atan2(y2 - y1, x2 - x1), s = 8 + w; g.beginPath(); g.moveTo(x2, y2); g.lineTo(x2 - s*Math.cos(a - 0.4), y2 - s*Math.sin(a - 0.4)); g.lineTo(x2 - s*Math.cos(a + 0.4), y2 - s*Math.sin(a + 0.4)); g.closePath(); g.fill(); }
+  function rrect(g, x, y, w, h, r){ g.beginPath(); if (g.roundRect) g.roundRect(x, y, w, h, r); else g.rect(x, y, w, h); }
+  function fF(f){ return f >= 1000 ? +(f/1000).toPrecision(3) + ' kHz' : Math.round(f) + ' Hz'; }
+  function pressBtns(box, i){ [].forEach.call(el(box).querySelectorAll('button'), function(b){ b.setAttribute('aria-pressed', +b.getAttribute('data-i') === i ? 'true' : 'false'); }); }
+  function mkBtns(box, list, fn){ el(box).innerHTML = list.map(function(q, i){ return '<button type="button" data-i="' + i + '" aria-pressed="false">' + q + '</button>'; }).join(''); [].forEach.call(el(box).querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ fn(+b.getAttribute('data-i')); }); }); }
+  var AC = null; function ac(){ if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.resume) AC.resume(); return AC; }
+
+  /* ══════════ TAB 0: anatomy ══════════ */
+  var PARTS = [
+    ['pinna', 'Pinna', 'Pinna (auricle): the visible outer ear. It collects sound and funnels it into the canal; its folds change the sound slightly depending on direction, which helps us tell front from back and up from down.'],
+    ['canal', 'Ear canal', 'Ear canal: about 2.5 cm long and closed at one end by the eardrum, so it resonates like a closed pipe at f = v/4L = 343/(4 \u00d7 0.025) \u2248 3.4 kHz, boosting sounds between about 2 and 5 kHz by about 10 dB.'],
+    ['drum', 'Eardrum', 'Eardrum (tympanic membrane): a thin cone-shaped membrane about 0.1 mm thick and 9 mm across. It converts air-pressure variations into mechanical vibration.'],
+    ['oss', 'Ossicles', 'Ossicles: the malleus (hammer), incus (anvil) and stapes (stirrup), the smallest bones in the body. They act as a lever and pass the vibration to the oval window. The stapes is about 3 mm long.'],
+    ['eust', 'Eustachian tube', 'Eustachian tube: connects the air-filled middle ear to the throat and equalizes the pressure on both sides of the eardrum; that is the \u201cpop\u201d you feel in a plane or an elevator.'],
+    ['oval', 'Oval window', 'Oval window: a membrane-covered opening into the cochlea. The footplate of the stapes pushes on it like a piston, creating waves in the cochlear fluid.'],
+    ['coch', 'Cochlea', 'Cochlea: a fluid-filled spiral of about 2.75 turns. The basilar membrane inside sorts sound by frequency, and about 15 000 hair cells convert the motion into nerve signals.'],
+    ['semi', 'Semicircular canals', 'Semicircular canals: part of the inner ear but used for balance, not hearing. Three fluid-filled loops in perpendicular planes sense rotation of the head.'],
+    ['nerve', 'Auditory nerve', 'Auditory nerve: carries the electrical signals from the hair cells to the brainstem, then through the thalamus to the auditory cortex, where they are interpreted. Difficulties along this central pathway, not in the ear, are involved in auditory processing disorder (tab 6).']];
+  var sel0 = 'pinna', an0 = -1, t0 = 0, SEQ = ['pinna', 'canal', 'drum', 'oss', 'oval', 'coch', 'nerve'];
+  var c0 = el('heC0'), g0 = c0.getContext('2d');
+  function part(k){ for (var i=0; i<PARTS.length; i++) if (PARTS[i][0] === k) return i; return 0; }
+  function setPart(k, speak){ sel0 = k; var p = PARTS[part(k)]; pressBtns('heParts', part(k)); el('heInfo0').innerHTML = '<p>' + p[2] + '</p>'; draw0(); if (speak) say(p[2]); }
+  function draw0(){ var g = g0, W = c0.width, H = c0.height, C = P(), fq = +el('heF0').value;
+    function col(k){ return k === sel0 ? C.acc : C.ink; } function fil(k){ return k === sel0 ? 'rgba(255,210,63,0.3)' : 'rgba(0,0,0,0)'; }
+    g.fillStyle = C.bg; g.fillRect(0, 0, W, H); g.fillStyle = C.skull; g.fillRect(300, 40, 600, 380); g.lineWidth = 3;
+    g.beginPath(); g.moveTo(240, 90); g.bezierCurveTo(80, 60, 60, 250, 150, 300); g.bezierCurveTo(200, 340, 180, 400, 250, 390); g.strokeStyle = col('pinna'); g.fillStyle = fil('pinna'); g.fill(); g.stroke();
+    g.strokeStyle = col('canal'); g.fillStyle = fil('canal'); g.beginPath(); g.moveTo(240, 200); g.lineTo(420, 190); g.lineTo(420, 250); g.lineTo(240, 262); g.closePath(); g.fill(); g.stroke();
+    var vib = (an0 >= 0 && t0 > 80) ? Math.sin(t0*fq/2000)*4 : 0, ov = (an0 >= 0 && t0 > 125) ? Math.sin(t0*fq/2000)*3 : 0;
+    g.strokeStyle = col('drum'); g.lineWidth = 5; g.beginPath(); g.moveTo(420, 185); g.quadraticCurveTo(432 + vib, 220, 420, 255); g.stroke();
+    g.strokeStyle = C.mut; g.lineWidth = 1.5; g.setLineDash([5, 4]); g.strokeRect(425, 150, 135, 140); g.setLineDash([]);
+    g.strokeStyle = col('oss'); g.lineWidth = 6; g.beginPath(); g.moveTo(428 + vib, 220); g.lineTo(460, 175); g.stroke(); g.beginPath(); g.moveTo(460, 175); g.lineTo(500, 180); g.lineTo(505, 215); g.stroke(); g.beginPath(); g.moveTo(505, 215); g.lineTo(540 + ov, 215); g.moveTo(540 + ov, 200); g.lineTo(540 + ov, 232); g.stroke();
+    g.strokeStyle = col('oval'); g.lineWidth = 5; g.beginPath(); g.ellipse(560, 216, 6, 18, 0, 0, TAU); g.stroke(); g.lineWidth = 3;
+    g.strokeStyle = col('eust'); g.fillStyle = fil('eust'); g.beginPath(); g.moveTo(470, 290); g.lineTo(520, 290); g.lineTo(600, 410); g.lineTo(560, 410); g.closePath(); g.fill(); g.stroke();
+    var cx = 660, cy = 250, a; g.strokeStyle = col('coch'); g.beginPath(); for (a=0; a<6*Math.PI*0.92; a+=0.05){ var r = 70 - a*3.4; if (a) g.lineTo(cx + r*Math.cos(a + Math.PI), cy + r*Math.sin(a + Math.PI)); else g.moveTo(cx + r*Math.cos(a + Math.PI), cy + r*Math.sin(a + Math.PI)); } g.stroke(); g.beginPath(); g.moveTo(566, 216); g.lineTo(592, 240); g.stroke();
+    g.strokeStyle = col('semi'); [[620, 120, 35], [670, 100, 30], [700, 140, 28]].forEach(function(q){ g.beginPath(); g.arc(q[0], q[1], q[2], 0, TAU); g.stroke(); });
+    g.strokeStyle = col('nerve'); g.lineWidth = 7; g.beginPath(); g.moveTo(700, 240); g.bezierCurveTo(760, 230, 800, 200, 880, 190); g.stroke(); g.lineWidth = 3;
+    [['Pinna', 'pinna', 90, 110], ['Ear canal', 'canal', 300, 175], ['Eardrum', 'drum', 395, 285], ['Ossicles', 'oss', 470, 138], ['Oval window', 'oval', 560, 305], ['Eustachian tube', 'eust', 650, 400], ['Cochlea', 'coch', 700, 345], ['Semicircular canals', 'semi', 660, 52], ['Auditory nerve', 'nerve', 820, 170]].forEach(function(l){ lbl(g, l[0], l[2], l[3], l[1] === sel0 ? C.acc : C.ink, 13); });
+    lbl(g, 'OUTER', 150, 24, C.mut, 12); lbl(g, 'MIDDLE', 490, 24, C.mut, 12); lbl(g, 'INNER', 700, 24, C.mut, 12);
+    if (an0 >= 0 && t0 < 100){ g.strokeStyle = C.blue; g.lineWidth = 2; var n = Math.round(fq/400) + 2, i; for (i=0; i<n; i++){ var x = 20 + ((t0*3 + i*(260/n)) % 380); if (x < 415){ g.beginPath(); g.arc(x - 40, 222, 40, -0.6, 0.6); g.stroke(); } } }
+    if (an0 >= 0 && t0 > 220 && t0 < 300){ var aa = (t0 - 220)/80*6*Math.PI*0.9, rr = 70 - aa*3.4; g.fillStyle = C.blue; g.beginPath(); g.arc(cx + rr*Math.cos(aa + Math.PI), cy + rr*Math.sin(aa + Math.PI), 7, 0, TAU); g.fill(); }
+    if (an0 >= 0 && t0 >= 300){ g.fillStyle = C.acc; for (var k=0; k<5; k++){ var s = ((t0 - 300)*4 + k*40) % 190; g.fillRect(700 + s, 235 - s*0.25, 8, 4); } } }
+  function step0(){ if (an0 < 0) return; t0 += 1; var st = Math.min(SEQ.length - 1, Math.floor(t0/45)); if (SEQ[st] !== sel0) setPart(SEQ[st], false); if (t0 > SEQ.length*45 + 40){ an0 = -1; say('The signal has reached the brain. Click any part to read about it.'); } draw0(); }
+  mkBtns('heParts', PARTS.map(function(p){ return p[1]; }), function(i){ an0 = -1; setPart(PARTS[i][0], true); });
+  el('heSend').addEventListener('click', function(){ an0 = 0; t0 = 0; say('A ' + el('heF0').value + ' hertz sound wave travels through the outer, middle and inner ear.'); });
+  el('heF0').addEventListener('input', function(){ el('heF0v').textContent = this.value + ' Hz'; draw0(); });
+
+  /* ══════════ TAB 1: middle ear ══════════ */
+  var c1 = el('heC1'), g1 = c1.getContext('2d');
+  function draw1(speak){ var A1 = +el('heAe').value, A2 = +el('heAo').value, L = +el('heLr').value, G = L*A1/A2, dB = 20*Math.log10(G), g = g1, W = c1.width, H = c1.height, C = P();
+    el('heAev').textContent = A1 + ' mm\u00b2'; el('heAov').textContent = A2.toFixed(1) + ' mm\u00b2'; el('heLrv').textContent = L.toFixed(2);
+    el('heNum1').innerHTML = '<div class="' + cls('he_eq') + '">A\u2081/A\u2082 = ' + A1 + '/' + A2.toFixed(1) + ' = ' + (A1/A2).toFixed(1) + '</div><div class="' + cls('he_eq') + '">P\u2082/P\u2081 = ' + L.toFixed(2) + ' \u00d7 ' + (A1/A2).toFixed(1) + ' = <b class="' + cls('he_res') + '">' + G.toFixed(1) + '</b></div><div class="' + cls('he_eq') + '">gain = 20 log\u2081\u2080(' + G.toFixed(1) + ') = <b class="' + cls('he_res') + '">' + dB.toFixed(1) + ' dB</b></div><p class="' + cls('he_note') + '">Typical human values (55 mm\u00b2, 3.2 mm\u00b2, 1.3) give about 22\u00d7, or about 27 dB.</p>';
+    g.fillStyle = C.bg; g.fillRect(0, 0, W, H); var r1 = Math.sqrt(A1)*9, r2 = Math.sqrt(A2)*9;
+    g.fillStyle = 'rgba(127,178,255,0.3)'; g.strokeStyle = C.blue; g.lineWidth = 3; g.beginPath(); g.arc(150, 170, r1, 0, TAU); g.fill(); g.stroke(); lbl(g, 'Eardrum A\u2081', 150, 170 + r1 + 20, C.ink, 13);
+    arrow(g, 15, 170, 150 - r1 - 4, 170, C.blue, 5); lbl(g, 'P\u2081', 40, 150, C.blue, 13);
+    g.strokeStyle = C.ink; g.lineWidth = 4; g.beginPath(); g.moveTo(310, 200); g.lineTo(570, 200); g.stroke(); var piv = 310 + 260*L/(1 + L); g.fillStyle = C.ink; g.beginPath(); g.moveTo(piv, 200); g.lineTo(piv - 14, 230); g.lineTo(piv + 14, 230); g.closePath(); g.fill();
+    lbl(g, 'Ossicle lever  L = ' + L.toFixed(2), 440, 255, C.ink, 13); arrow(g, 310, 140, 310, 195, C.blue, 5); arrow(g, 570, 140, 570, 195, C.acc, 3 + 3*L); lbl(g, 'F\u2081', 310, 128, C.blue, 13); lbl(g, 'F\u2082 = L F\u2081', 570, 128, C.acc, 13);
+    g.fillStyle = 'rgba(255,210,63,0.35)'; g.strokeStyle = C.acc; g.lineWidth = 3; g.beginPath(); g.arc(690, 170, r2, 0, TAU); g.fill(); g.stroke(); lbl(g, 'Oval window A\u2082', 690, 170 + Math.max(r2, 10) + 20, C.ink, 13);
+    var bx = 790, base = 370, sc = Math.min(10, 250/G); g.fillStyle = C.blue; g.fillRect(bx, base - sc, 36, sc); g.fillStyle = C.acc; g.fillRect(bx + 50, base - G*sc, 36, G*sc); lbl(g, 'P\u2081', bx + 18, base + 16, C.ink, 12); lbl(g, 'P\u2082', bx + 68, base + 16, C.ink, 12); lbl(g, G.toFixed(1) + '\u00d7', bx + 68, base - G*sc - 10, C.acc, 13);
+    if (speak) say('Pressure gain ' + G.toFixed(1) + ' times, or ' + dB.toFixed(1) + ' decibels.'); }
+  ['heAe', 'heAo', 'heLr'].forEach(function(id){ el(id).addEventListener('input', function(){ draw1(false); }); el(id).addEventListener('change', function(){ draw1(true); }); });
+
+  /* ══════════ TAB 2: cochlea ══════════ */
+  var c2 = el('heC2'), g2 = c2.getContext('2d'), ph2 = 0, osc2 = [];
+  function s2f(s){ return 20*Math.pow(1000, s/1000); }
+  function xApex(f){ return Math.max(0, Math.min(1, Math.log10(f/165.4 + 0.88)/2.1)); }
+  function env(xb, pk){ if (xb <= pk) return pk > 0 ? 0.9*Math.pow(xb/pk, 2) + 0.1*xb/pk : 1; var d = (xb - pk)/0.04; return Math.exp(-d*d); }
+  function tones(){ var C = P(), t = [[s2f(+el('heF2').value), C.acc]]; if (el('heTwo').checked) t.push([s2f(+el('heF2b').value), C.good]); return t; }
+  function text2(speak){ var f = s2f(+el('heF2').value), fb = s2f(+el('heF2b').value), d = 35*(1 - xApex(f)), s;
+    el('heF2v').textContent = fF(f); el('heF2bv').textContent = fF(fb);
+    s = '<div class="' + cls('he_eq') + '">' + fF(f) + ': peak at <b class="' + cls('he_res') + '">' + d.toFixed(1) + ' mm</b> from the base</div>';
+    if (el('heTwo').checked){ var d2 = 35*(1 - xApex(fb)); s += '<div class="' + cls('he_eq') + '">' + fF(fb) + ': peak at <b class="' + cls('he_res') + '">' + d2.toFixed(1) + ' mm</b> &nbsp;\u00b7&nbsp; separation ' + Math.abs(d - d2).toFixed(1) + ' mm</div>'; }
+    s += '<p>' + (d < 10 ? 'Near the base: narrow, stiff membrane, high frequencies.' : d > 25 ? 'Near the apex: wide, floppy membrane, low frequencies.' : 'Middle of the cochlea: the speech range.') + '</p><p class="' + cls('he_note') + '">Try two tones an octave apart in different ranges: the separation stays about 4 to 5 mm.</p>';
+    el('heNum2').innerHTML = s; if (speak) say(fF(f) + ' peaks ' + d.toFixed(1) + ' millimetres from the base of the cochlea.'); }
+  function draw2(){ var g = g2, W = c2.width, H = c2.height, C = P(), x0 = 60, x1 = 860, yc = 120, T = tones(), i;
+    g.fillStyle = C.bg; g.fillRect(0, 0, W, H); g.fillStyle = 'rgba(159,180,216,0.18)'; g.beginPath(); g.moveTo(x0, yc - 12); g.lineTo(x1, yc - 45); g.lineTo(x1, yc + 45); g.lineTo(x0, yc + 12); g.closePath(); g.fill();
+    lbl(g, 'BASE (narrow, stiff): high f', x0, 22, C.ink, 12, 'left'); lbl(g, 'APEX (wide, floppy): low f', x1, 22, C.ink, 12, 'right');
+    T.forEach(function(q, k){ var pk = 1 - xApex(q[0]), kw = 40/(pk + 0.05); g.strokeStyle = q[1]; g.lineWidth = 2.5; g.beginPath(); for (i=0; i<=400; i++){ var xb = i/400, y = yc + env(xb, pk)*55*Math.sin(kw*xb*6 - ph2*(1 + k*0.3)), X = x0 + xb*(x1 - x0); if (i) g.lineTo(X, y); else g.moveTo(X, y); } g.stroke(); });
+    for (i=0; i<=40; i++){ var on = 0; T.forEach(function(q){ on = Math.max(on, env(i/40, 1 - xApex(q[0]))); }); g.fillStyle = on > 0.5 ? C.acc : 'rgba(159,180,216,0.5)'; g.fillRect(x0 + i*(x1 - x0)/40 - 3, yc + 58, 6, 8 + on*6); }
+    lbl(g, 'hair cells', x0 - 6, yc + 64, C.mut, 10, 'right');
+    [20000, 8000, 4000, 2000, 1000, 500, 200, 50].forEach(function(f){ var X = x0 + (1 - xApex(f))*(x1 - x0); g.fillStyle = C.mut; g.fillRect(X, yc + 84, 1, 8); lbl(g, f >= 1000 ? f/1000 + 'k' : String(f), X, yc + 102, C.mut, 10); });
+    lbl(g, '0 mm', x0, yc + 122, C.mut, 10); lbl(g, '35 mm', x1, yc + 122, C.mut, 10);
+    var cx = 450, cy = 340, tot = 2.75*TAU; function Pc(u){ var a = u*tot, r = 80*(1 - u*0.85); return [cx + r*Math.cos(a)*1.6, cy + r*Math.sin(a)*0.9]; }
+    g.strokeStyle = C.ink; g.lineWidth = 2; g.beginPath(); for (i=0; i<=300; i++){ var p = Pc(i/300); if (i) g.lineTo(p[0], p[1]); else g.moveTo(p[0], p[1]); } g.stroke();
+    T.forEach(function(q){ var p = Pc(1 - xApex(q[0])); g.fillStyle = q[1]; g.beginPath(); g.arc(p[0], p[1], 8 + 2*Math.sin(ph2*2), 0, TAU); g.fill(); lbl(g, fF(q[0]), p[0] + 14, p[1] - 12, q[1], 11, 'left'); });
+    lbl(g, 'coiled cochlea (base = outer end)', 160, cy + 70, C.mut, 11); }
+  function stop2(){ osc2.forEach(function(o){ try { o.stop(); } catch (e) {} }); osc2 = []; el('hePlay2').setAttribute('aria-pressed', 'false'); el('hePlay2').innerHTML = '&#9654; Play tone'; }
+  function start2(){ try { var A = ac(); tones().forEach(function(q){ var o = A.createOscillator(), gn = A.createGain(); o.frequency.value = q[0]; gn.gain.value = 0.04; o.connect(gn); gn.connect(A.destination); o.start(); osc2.push(o); }); el('hePlay2').setAttribute('aria-pressed', 'true'); el('hePlay2').innerHTML = '&#9632; Stop tone'; say('Playing. Start with a low volume.'); } catch (e) {} }
+  function retune2(){ if (!osc2.length) return; if (osc2.length !== tones().length){ stop2(); start2(); return; } tones().forEach(function(q, i){ osc2[i].frequency.setTargetAtTime(q[0], AC.currentTime, 0.02); }); }
+  el('hePlay2').addEventListener('click', function(){ if (osc2.length) stop2(); else start2(); });
+  ['heF2', 'heF2b'].forEach(function(id){ el(id).addEventListener('input', function(){ text2(false); retune2(); }); el(id).addEventListener('change', function(){ text2(true); }); });
+  el('heTwo').addEventListener('change', function(){ el('heF2b').disabled = !this.checked; text2(true); retune2(); });
+
+  /* ══════════ TAB 3: audiogram ══════════ */
+  var AF = [250, 500, 1000, 2000, 3000, 4000, 6000, 8000], prof3 = 0, c3 = el('heC3'), g3 = c3.getContext('2d');
+  var PROF = [
+    ['Normal hearing', [5, 5, 10, 5, 10, 10, 10, 15], [5, 5, 5, 5, 10, 10, null, null], 'Thresholds between \u221210 and 25 dB HL at every frequency; air and bone conduction overlap.'],
+    ['Noise-induced', [10, 10, 15, 25, 45, 60, 45, 30], [10, 10, 15, 25, 45, 55, null, null], '<b>Sensorineural.</b> A \u201cnotch\u201d near 3 to 6 kHz with partial recovery at 8 kHz; air and bone match. Hair cells tuned near 4 kHz are damaged, partly because the ear-canal resonance (about 3 kHz) boosts loud noise there.'],
+    ['Age-related', [15, 15, 20, 30, 40, 50, 60, 70], [15, 15, 20, 30, 40, 45, null, null], '<b>Sensorineural (presbycusis).</b> A gradual slope toward the high frequencies, usually the same in both ears. Consonants such as s, f and th fade: \u201cI can hear you but I can\u2019t understand you.\u201d'],
+    ['Conductive', [40, 40, 35, 35, 35, 40, 40, 45], [5, 5, 10, 10, 10, 10, null, null], '<b>Conductive.</b> Bone conduction normal, air conduction about 30 dB worse: an air\u2013bone gap. The cochlea is fine; sound is blocked in the outer or middle ear (wax, fluid, a perforated eardrum). Often treatable.'],
+    ['Otosclerosis', [45, 45, 40, 40, 35, 35, 40, 45], [5, 10, 15, 40, 15, 10, null, null], '<b>Conductive.</b> Bone growth fixes the stapes. A large air\u2013bone gap, worst at low frequencies, and a bone-conduction dip near 2 kHz (the Carhart notch). Treated by replacing the stapes.'],
+    ['APD / CAPD', [5, 10, 5, 10, 5, 10, 10, 15], [5, 5, 5, 10, 5, 10, null, null], '<b>Central: auditory processing disorder.</b> The audiogram is typically <i>normal</i>: quiet tones are detected, because the outer, middle and inner ear work. The difficulty is in how the brainstem and auditory cortex process sound: separating speech from noise, resolving fast timing cues, ordering sounds. A standard hearing test can therefore miss it. Explore it in tab 6.']];
+  function draw3(){ var p = PROF[prof3], g = g3, W = c3.width, H = c3.height, C = P(), L = 80, R = W - 30, T = 34, B = H - 42, d;
+    function X(f){ return L + Math.log2(f/250)/5*(R - L); } function Y(v){ return T + (v + 10)/130*(B - T); }
+    g.fillStyle = C.bg; g.fillRect(0, 0, W, H);
+    [[-10, 25, 'normal'], [25, 40, 'mild'], [40, 55, 'moderate'], [55, 70, 'mod. severe'], [70, 90, 'severe'], [90, 120, 'profound']].forEach(function(q, i){ g.fillStyle = i % 2 ? 'rgba(159,180,216,0.10)' : 'rgba(159,180,216,0.04)'; g.fillRect(L, Y(q[0]), R - L, Y(q[1]) - Y(q[0])); lbl(g, q[2], R - 6, Y(q[0]) + 13, C.mut, 10, 'right'); });
+    g.strokeStyle = 'rgba(150,170,195,0.25)'; g.lineWidth = 1;
+    for (d=-10; d<=120; d+=10){ g.beginPath(); g.moveTo(L, Y(d)); g.lineTo(R, Y(d)); g.stroke(); lbl(g, String(d), L - 8, Y(d), C.mut, 10, 'right'); }
+    AF.forEach(function(f){ g.beginPath(); g.moveTo(X(f), T); g.lineTo(X(f), B); g.stroke(); lbl(g, f >= 1000 ? f/1000 + 'k' : String(f), X(f), B + 14, C.mut, 10); });
+    lbl(g, 'frequency (Hz)', (L + R)/2, H - 8, C.mut, 11); g.save(); g.translate(18, (T + B)/2); g.rotate(-Math.PI/2); lbl(g, 'hearing level (dB HL)', 0, 0, C.mut, 11); g.restore();
+    if (el('heBan').checked){ var top = [[250, 30], [500, 22], [1000, 22], [2000, 25], [4000, 30], [6000, 35]], bot = [[6000, 45], [4000, 55], [2000, 60], [1000, 55], [500, 55], [250, 50]]; g.fillStyle = 'rgba(79,227,154,0.18)'; g.beginPath(); top.concat(bot).forEach(function(q, i){ if (i) g.lineTo(X(q[0]), Y(q[1])); else g.moveTo(X(q[0]), Y(q[1])); }); g.closePath(); g.fill();
+      [['z v', 300, 40], ['m d b', 420, 48], ['u i', 650, 38], ['e a o', 850, 48], ['sh ch', 1700, 48], ['k g', 2300, 36], ['f s th', 4500, 42]].forEach(function(q){ lbl(g, q[0], X(q[1]), Y(q[2]), C.ink, 10); }); }
+    g.strokeStyle = C.bad; g.lineWidth = 2.5; g.beginPath(); AF.forEach(function(f, i){ if (i) g.lineTo(X(f), Y(p[1][i])); else g.moveTo(X(f), Y(p[1][i])); }); g.stroke();
+    AF.forEach(function(f, i){ g.fillStyle = C.bg; g.beginPath(); g.arc(X(f), Y(p[1][i]), 7, 0, TAU); g.fill(); g.stroke(); });
+    AF.forEach(function(f, i){ if (p[2][i] !== null) lbl(g, '[', X(f) - 16, Y(p[2][i]), C.blue, 20); });
+    lbl(g, '\u25cb air conduction    [ bone conduction', L, T - 16, C.ink, 11, 'left');
+    if (prof3 === 5) lbl(g, 'Normal audiogram \u2260 normal listening: the challenge is central, not in the ear.', (L + R)/2, Y(85), C.acc, 15); }
+  function setProf(i, speak){ prof3 = i; pressBtns('heProf', i); el('heTxt3').innerHTML = '<p>' + PROF[i][3] + '</p>'; draw3(); if (speak) say(PROF[i][0] + '. ' + PROF[i][3].replace(/<[^>]+>/g, '').split('. ').slice(0, 2).join('. ') + '.'); }
+  mkBtns('heProf', PROF.map(function(p){ return p[0]; }), function(i){ setProf(i, true); });
+  el('heBan').addEventListener('change', draw3);
+
+  /* ══════════ TAB 4: noise ══════════ */
+  var SRC = [['Quiet library', 35], ['Conversation', 60], ['Busy traffic', 80], ['Hair dryer', 90], ['Lawn mower', 95], ['Subway', 100], ['Earbuds at max', 105], ['Rock concert', 110], ['Chainsaw', 115], ['Siren (close)', 120], ['Firecracker', 140]];
+  var c4 = el('heC4'), g4 = c4.getContext('2d');
+  function fT(h){ if (h >= 24) return 'no practical limit'; if (h >= 1) return h.toFixed(1) + ' h'; var m = h*60; if (m >= 1) return m.toFixed(1) + ' min'; var s = m*60; return s >= 1 ? s.toFixed(0) + ' s' : 'under 1 s'; }
+  function draw4(speak){ var Lv = +el('heL').value, T = 8/Math.pow(2, (Lv - 85)/3), I = 1e-12*Math.pow(10, Lv/10), g = g4, W = c4.width, H = c4.height, C = P();
+    var risk = Lv < 70 ? 'safe' : Lv < 85 ? 'generally safe' : Lv < 100 ? 'hazardous with long exposure' : Lv < 120 ? 'dangerous' : 'painful: immediate damage possible';
+    el('heLv').textContent = Lv + ' dB'; pressBtns('heSrc', -1); SRC.forEach(function(q, i){ if (q[1] === Lv) pressBtns('heSrc', i); });
+    el('heNum4').innerHTML = '<div class="' + cls('he_eq') + '">I = 10<sup>\u221212</sup> \u00d7 10<sup>' + Lv + '/10</sup> = <b class="' + cls('he_res') + '">' + I.toExponential(1) + ' W/m\u00b2</b></div><div class="' + cls('he_eq') + '">' + (Lv <= 70 ? 'no daily limit' : 'T = 8 h / 2<sup>(' + Lv + ' \u2212 85)/3</sup> = <b class="' + cls('he_res') + '">' + fT(T) + '</b>') + '</div><p>' + (+Math.pow(10, (Lv - 60)/10).toPrecision(2)) + ' times the intensity of conversation. Risk: <b>' + risk + '</b>.</p>';
+    g.fillStyle = C.bg; g.fillRect(0, 0, W, H); function Y(d){ return H - 30 - d/140*(H - 60); }
+    var gr = g.createLinearGradient(0, Y(0), 0, Y(140)); gr.addColorStop(0, C.good); gr.addColorStop(0.6, '#f2c200'); gr.addColorStop(1, C.bad); g.fillStyle = gr; g.fillRect(60, Y(140), 26, Y(0) - Y(140));
+    for (var d=0; d<=140; d+=20) lbl(g, String(d), 52, Y(d), C.mut, 10, 'right');
+    SRC.forEach(function(q){ g.fillStyle = C.mut; g.fillRect(86, Y(q[1]), 10, 1); lbl(g, q[0], 100, Y(q[1]), q[1] === Lv ? C.acc : C.mut, 10, 'left'); });
+    g.strokeStyle = C.acc; g.lineWidth = 4; g.beginPath(); g.moveTo(50, Y(Lv)); g.lineTo(240, Y(Lv)); g.stroke(); lbl(g, Lv + ' dB', 250, Y(Lv), C.acc, 13, 'left');
+    var tx = 400, tw = 460, ty = 60, lt = Math.log10(Math.min(24, Lv <= 70 ? 24 : T)*3600), fr = Math.max(0, Math.min(1, lt/Math.log10(86400)));
+    lbl(g, 'safe daily exposure (logarithmic)', tx, ty - 14, C.ink, 12, 'left'); g.strokeStyle = C.mut; g.lineWidth = 1; g.strokeRect(tx, ty, tw, 24); g.fillStyle = fr > 0.6 ? C.good : fr > 0.35 ? '#f2c200' : C.bad; g.fillRect(tx, ty, tw*fr, 24);
+    [['1 s', 1], ['1 min', 60], ['1 h', 3600], ['8 h', 28800]].forEach(function(q){ var x = tx + tw*Math.log10(q[1])/Math.log10(86400); g.fillStyle = C.ink; g.fillRect(x, ty + 24, 1, 6); lbl(g, q[0], x, ty + 40, C.mut, 10); });
+    var bx = 620, by = 330, dmg = Math.max(0, Math.min(1, (Lv - 85)/45)); g.fillStyle = 'rgba(159,180,216,0.35)'; g.fillRect(bx - 70, by, 140, 50); lbl(g, 'hair cell (magnified)', bx, by + 66, C.mut, 11);
+    for (var i=0; i<9; i++){ var h = 40 + i*12, x = bx - 60 + i*15, broken = dmg > 0.15 && ((i*37) % 10)/10 < dmg, lean = dmg*0.9*(i % 2 ? 1 : -0.6); g.strokeStyle = broken ? C.bad : C.blue; g.lineWidth = 5; g.beginPath(); g.moveTo(x, by);
+      if (broken){ g.lineTo(x + Math.sin(lean)*h*0.5, by - h*0.5); g.lineTo(x + Math.sin(lean)*h*0.5 + h*0.3, by - h*0.35); } else g.lineTo(x + Math.sin(lean*0.3)*h, by - h*Math.cos(lean*0.3)); g.stroke(); }
+    lbl(g, 'stereocilia: ' + (dmg === 0 ? 'upright' : dmg < 0.5 ? 'bent, some broken' : 'many broken'), bx + 90, by - 120, dmg ? C.bad : C.good, 12, 'left');
+    if (speak) say(Lv + ' decibels: ' + risk + (Lv > 70 ? '. Safe daily exposure about ' + fT(T) + '.' : '.')); }
+  mkBtns('heSrc', SRC.map(function(q){ return q[0] + ' (' + q[1] + ' dB)'; }), function(i){ el('heL').value = SRC[i][1]; draw4(true); });
+  el('heL').addEventListener('input', function(){ draw4(false); }); el('heL').addEventListener('change', function(){ draw4(true); });
+
+  /* ══════════ TAB 5: APD ══════════ */
+  var MODE = [['Typical auditory processing', 3, -2], ['Auditory processing disorder (APD)', 25, 5]], mode5 = 0, myst = null, THR = 0.5;
+  var SENT = ['Please', 'take', 'the', 'third', 'book', 'from', 'the', 'top', 'shelf', 'before', 'class'];
+  var c5 = el('heC5'), g5 = c5.getContext('2d');
+  function envl(gap, tau){ var dt = 0.25, b = 150, tot = 2*b + gap + 80, raw = [], sm = [], y = 0, t; for (t=0; t<=tot; t+=dt){ var on = (t >= 40 && t < 40 + b) || (t >= 40 + b + gap && t < 40 + 2*b + gap) ? 1 : 0; y += (on - y)*(1 - Math.exp(-dt/tau)); raw.push(on); sm.push(y); } return { raw:raw, sm:sm, dt:dt, tot:tot, b:b }; }
+  function dip(gap, tau){ if (gap <= 0) return 1; var e = envl(gap, tau), m = 1, i, i0 = Math.round((40 + e.b)/e.dt), i1 = Math.round((40 + e.b + gap)/e.dt); for (i=i0; i<=i1; i++) m = Math.min(m, e.sm[i]); return m; }
+  function thrGap(tau){ for (var gp=0; gp<=60; gp+=0.5) if (dip(gp, tau) < THR) return gp; return 60; }
+  function intel(snr, m){ return 1/(1 + Math.exp(-(snr - MODE[m][2])/2)); }
+  function draw5(speak){ var gap = +el('heGap').value, snr = +el('heSnr').value, tau = MODE[mode5][1], two = gap > 0 && dip(gap, tau) < THR, p = intel(snr, mode5), g = g5, W = c5.width, H = c5.height, C = P();
+    el('heGapv').textContent = gap + ' ms'; el('heSnrv').textContent = (snr > 0 ? '+' : '') + snr + ' dB';
+    el('heNum5').innerHTML = '<p>Gap of <b class="' + cls('he_res') + '">' + gap + ' ms</b>: ' + (gap === 0 ? 'one continuous sound.' : two ? 'heard as <b>two</b> sounds.' : 'heard as <b>one</b> sound (the gap is smoothed over).') + '</p>'
+      + '<div class="' + cls('he_eq') + '">model gap-detection threshold: typical \u2248 ' + thrGap(MODE[0][1]) + ' ms &nbsp;\u00b7&nbsp; APD \u2248 ' + thrGap(MODE[1][1]) + ' ms</div>'
+      + '<div class="' + cls('he_eq') + '">words understood at ' + (snr > 0 ? '+' : '') + snr + ' dB: typical ' + Math.round(intel(snr, 0)*100) + '% &nbsp;\u00b7&nbsp; APD ' + Math.round(intel(snr, 1)*100) + '%</div>'
+      + '<p class="' + cls('he_note') + '">Speech-to-noise ratio: positive means the speech is louder than the background; 0 dB means equally loud.</p>';
+    g.fillStyle = C.bg; g.fillRect(0, 0, W, H);
+    var BX = [['Ear &', 'cochlea', 0], ['Auditory', 'nerve', 0], ['Brainstem', '', 1], ['Thalamus', '', 1], ['Auditory', 'cortex', 1]], bw = 140, bh = 54, gx = (W - 40 - 5*bw)/4;
+    BX.forEach(function(q, i){ var x = 20 + i*(bw + gx), y = 26, flag = mode5 === 1 && q[2]; rrect(g, x, y, bw, bh, 8); g.fillStyle = flag ? 'rgba(255,138,122,0.25)' : 'rgba(79,227,154,0.18)'; g.fill(); g.strokeStyle = flag ? C.bad : C.good; g.lineWidth = 2; g.stroke();
+      if (q[1]){ lbl(g, q[0], x + bw/2, y + 20, C.ink, 13); lbl(g, q[1], x + bw/2, y + 38, C.ink, 13); } else lbl(g, q[0], x + bw/2, y + bh/2, C.ink, 13);
+      if (i < 4) arrow(g, x + bw + 4, y + bh/2, x + bw + gx - 4, y + bh/2, C.mut, 2); });
+    lbl(g, mode5 ? 'Ear and nerve work normally; the processing difficulty is along the central pathway (highlighted).' : 'Typical: the ear and the central pathway both process sound quickly.', W/2, 100, C.mut, 12);
+    var e = envl(gap, tau), x0 = 60, x1 = W - 30, yb = 270, hA = 120; function X(t){ return x0 + t/e.tot*(x1 - x0); }
+    lbl(g, 'Two noise bursts with a ' + gap + ' ms silent gap', x0, 134, C.ink, 12, 'left');
+    g.fillStyle = 'rgba(127,178,255,0.3)'; e.raw.forEach(function(v, i){ if (v) g.fillRect(X(i*e.dt), yb - hA, (x1 - x0)*e.dt/e.tot + 0.6, hA); });
+    g.strokeStyle = C.acc; g.lineWidth = 3; g.beginPath(); e.sm.forEach(function(v, i){ if (i) g.lineTo(X(i*e.dt), yb - v*hA); else g.moveTo(X(0), yb - v*hA); }); g.stroke();
+    g.strokeStyle = C.ink; g.lineWidth = 1.5; g.setLineDash([6, 5]); g.beginPath(); g.moveTo(x0, yb - THR*hA); g.lineTo(x1, yb - THR*hA); g.stroke(); g.setLineDash([]); lbl(g, 'threshold', x1, yb - THR*hA - 10, C.ink, 10, 'right');
+    g.fillStyle = 'rgba(127,178,255,0.6)'; g.fillRect(x0, yb + 10, 14, 10); lbl(g, 'actual sound', x0 + 20, yb + 15, C.mut, 11, 'left'); g.fillStyle = C.acc; g.fillRect(x0 + 130, yb + 10, 14, 10); lbl(g, 'as processed (\u03c4 \u2248 ' + tau + ' ms)', x0 + 150, yb + 15, C.mut, 11, 'left');
+    lbl(g, gap === 0 ? 'one continuous sound' : two ? '\u2713 two sounds heard' : '\u2717 heard as ONE sound', x1, 134, gap === 0 ? C.mut : two ? C.good : C.bad, 14, 'right');
+    var yc = 330, xx = x0, yw = yc + 18; lbl(g, 'Speech in noise (' + (snr > 0 ? '+' : '') + snr + ' dB): what reaches understanding', x0, yc, C.ink, 12, 'left'); g.font = 'bold 15px Arial';
+    SENT.forEach(function(w, i){ var got = ((i*73 + 17) % 100)/100 < p, tw = g.measureText(w).width + 14; if (xx + tw > x1){ xx = x0; yw += 38; } rrect(g, xx, yw, tw, 30, 4); g.fillStyle = got ? 'rgba(79,227,154,0.25)' : 'rgba(159,180,216,0.12)'; g.fill();
+      lbl(g, got ? w : w.replace(/[a-z]/gi, function(ch, k){ return k % 2 ? '\u00b7' : ch; }), xx + tw/2, yw + 15, got ? C.ink : C.mut, 15); xx += tw + 6; });
+    var nd = Math.round(Math.max(0, 20 - snr)*6); g.fillStyle = 'rgba(159,180,216,0.5)'; for (var k=0; k<nd; k++) g.fillRect(x0 + ((k*97) % 1000)/1000*(x1 - x0), yw + 40 + ((k*53) % 100)/100*40, 2, 2);
+    lbl(g, 'Faded words reached the ear but were not separated from the noise.', W/2, H - 12, C.mut, 11);
+    if (speak) say((gap === 0 ? 'No gap.' : 'A ' + gap + ' millisecond gap is heard as ' + (two ? 'two sounds' : 'one sound') + ' by this listener.') + ' At ' + snr + ' decibels speech-to-noise, about ' + Math.round(p*100) + ' percent of the words are understood.'); }
+  function setMode(i){ mode5 = i; pressBtns('heMode', i); draw5(false); say(i ? 'APD listener: the ear works normally, but the brain blurs short gaps over a longer time and needs a clearer speech-to-noise ratio.' : 'Typical listener: short gaps of a few milliseconds are resolved.'); }
+  mkBtns('heMode', MODE.map(function(m){ return m[0]; }), setMode);
+  el('heGap').addEventListener('input', function(){ draw5(false); }); el('heGap').addEventListener('change', function(){ draw5(true); });
+  el('heSnr').addEventListener('input', function(){ draw5(false); }); el('heSnr').addEventListener('change', function(){ draw5(true); });
+  function playGap(gms){ try { var A = ac(), sr = A.sampleRate, b = Math.floor(sr*0.15), gs = Math.floor(sr*gms/1000), len = 2*b + gs, buf = A.createBuffer(1, len, sr), d = buf.getChannelData(0), rp = Math.max(1, Math.floor(sr*0.0005)), i;
+    for (i=0; i<len; i++){ var k = i < b ? i : i - b - gs, on = i < b || (i >= b + gs), a = on ? Math.min(1, k/rp, (b - 1 - k)/rp) : 0; d[i] = Math.max(0, a)*(Math.random()*2 - 1)*0.15; }
+    var s = A.createBufferSource(); s.buffer = buf; s.connect(A.destination); s.start(); } catch (e) {} }
+  el('heGapPlay').addEventListener('click', function(){ myst = null; playGap(+el('heGap').value); el('heStat5').textContent = 'Played two noise bursts separated by ' + el('heGap').value + ' ms. Could you hear the break?'; });
+  el('heMyst').addEventListener('click', function(){ var o = [0, 0, 2, 3, 5, 8, 12, 20, 30]; myst = o[Math.floor(Math.random()*o.length)]; playGap(myst); el('heStat5').textContent = 'Mystery trial played: one sound or two?'; });
+  function answer(n){ if (myst === null){ el('heStat5').textContent = 'Press \u201cMystery trial\u201d first.'; return; } var truth = myst === 0 ? 1 : 2, m = (n === truth ? 'Correct! ' : 'Not this time. ') + (myst === 0 ? 'There was no gap.' : 'The gap was ' + myst + ' ms.') + (myst > 0 && myst < 5 && n === 1 ? ' Gaps this short are hard for everyone.' : ''); el('heStat5').textContent = m; say(m); myst = null; }
+  el('heAns1').addEventListener('click', function(){ answer(1); }); el('heAns2').addEventListener('click', function(){ answer(2); });
+
+  /* ══════════ loop & tabs ══════════ */
+  var tab = 0, INTRO = ['Click a part of the ear, or send a sound wave through it.', 'Change the areas and the lever ratio to see the pressure gain of the middle ear.', 'Move the frequency: the travelling wave peaks at a different place along the cochlea.', 'Choose a profile. Notice that the APD audiogram is normal.', 'Choose a source or set a level to see the intensity and the safe daily exposure.', 'Change the gap and the background noise, and compare the typical and the APD listener.'];
+  function drawTab(){ if (tab === 0) draw0(); if (tab === 1) draw1(false); if (tab === 2){ text2(false); draw2(); } if (tab === 3) draw3(); if (tab === 4) draw4(false); if (tab === 5) draw5(false); }
+  function loop(){ if (tab === 0 && an0 >= 0) step0(); if (tab === 2){ ph2 += 0.12; draw2(); } requestAnimationFrame(loop); }
+  function setTab(i){ tab = i; for (var j=0; j<6; j++){ var t = el('heT' + j); t.setAttribute('aria-selected', j === i ? 'true' : 'false'); t.tabIndex = j === i ? 0 : -1; el('heP' + j).hidden = j !== i; } if (i !== 2 && osc2.length) stop2(); an0 = -1; drawTab(); say(INTRO[i]); }
+  [0, 1, 2, 3, 4, 5].forEach(function(i){ var t = el('heT' + i); t.addEventListener('click', function(){ setTab(i); }); t.addEventListener('keydown', function(e){ var n = e.key === 'ArrowRight' ? (i + 1) % 6 : e.key === 'ArrowLeft' ? (i + 5) % 6 : -1; if (n >= 0){ setTab(n); el('heT' + n).focus(); e.preventDefault(); } }); });
+  heA11y.onChange(drawTab);
+  setPart('pinna', false); setProf(5, false); setMode(0); text2(false); setTab(0); requestAnimationFrame(loop);
+  return { setTab:setTab, setProf:setProf, setMode:setMode };
+};
+var heSim = new heGen();
+</script>
+<script>heA11y.init();</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>The ear converts pressure waves in air into nerve signals in three stages. The outer ear collects sound; the ear canal, a pipe about 2.5 cm long closed at one end, resonates near `f = v/(4L) ~~ 3.4` kHz. The middle ear (eardrum and the three ossicles) is an impedance matcher: a large eardrum drives a small oval window through a lever, giving a pressure gain `P_2/P_1 = L A_1/A_2`, about 22 times or 27 dB, which recovers most of the energy that would otherwise be reflected at an air&ndash;fluid boundary.</p>
+<p>In the cochlea, the basilar membrane is narrow and stiff at the base and wide and floppy at the apex, so each frequency produces a travelling wave that peaks at its own place (high frequencies near the base, low near the apex), roughly logarithmically in frequency. Hair cells at the peak convert the motion into nerve signals that travel through the auditory nerve, brainstem and thalamus to the auditory cortex.</p>
+<p>The audiogram tab compares conductive loss (an air&ndash;bone gap), sensorineural loss (noise-induced notch near 4 kHz, age-related high-frequency slope) and auditory processing disorder, which usually shows a normal audiogram. The noise tab uses `beta = 10 log(I/I_0)` and the NIOSH limit `T = 8/2^((L-85)/3)` hours.</p>
+<p>Auditory processing disorder (APD, or CAPD) is a difficulty in how the central auditory system processes sound rather than in detecting it. The APD tab models temporal resolution as a smoothing of the sound envelope with a time constant `tau`: a silent gap is heard only if the smoothed envelope dips below a threshold. It also shows speech understanding falling as background noise rises, sooner for the APD listener. The values are illustrative, not clinical, and the SIM cannot diagnose any hearing condition. Start any sound with a low volume.</p>
+</div>
+</div>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+</div>
+
+</body>
+</html>
