@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Nuclear: The Sound Spectrum</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobsoundspec" class="mob_wrap">
+<div class="ss_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="ss_a11ybtn" id="ssBtnHC" onclick="ssA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="ss_a11ybtn" id="ssBtnDM" onclick="ssA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="ss_a11ybtn" id="ssBtnCB" onclick="ssA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="ss_a11ybtn" id="ssBtnNR" onclick="ssA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+
+<div class="ss_title"><h3>The Sound Spectrum &mdash; From Infrasound to Hypersound</h3></div>
+<div class="ss_tabs" role="tablist" aria-label="Topic">
+<button type="button" role="tab" class="ss_tab" id="ssT0" aria-selected="true">1. Explore the spectrum</button>
+<button type="button" role="tab" class="ss_tab" id="ssT1" aria-selected="false">2. Applications</button>
+</div>
+<div id="ssNarBar" class="ss_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<!-- ═══════ TAB 0 ═══════ -->
+<div id="ssP0" role="tabpanel" aria-labelledby="ssT0">
+<div class="ss_intro">Sound is a mechanical wave: a travelling pattern of compressions and rarefactions. Its <b>frequency</b> decides its pitch and its name: below 20 Hz is <b>infrasound</b>, 20 Hz to 20 kHz is <b>audible sound</b>, above 20 kHz is <b>ultrasound</b>, and above about 1 GHz <b>hypersound</b>. Click the spectrum or drag the slider.</div>
+<div class="ss_view"><canvas id="spCv" width="820" height="470" role="img" aria-label="A logarithmic frequency axis from 0.001 hertz to 10 gigahertz with the named bands, the hearing ranges of humans and animals as horizontal bars, the sources of sound at their frequencies, and a marker at the chosen frequency. Click to choose a frequency."></canvas></div>
+<div class="ss_transport" role="toolbar" aria-label="Frequency">
+<div class="ss_tgroup" style="flex:1 1 360px"><label for="spF" style="font-weight:bold;font-size:.86rem;white-space:nowrap">Frequency</label><input type="range" id="spF" min="0" max="1000" step="1" value="500" style="flex:1 1 220px"><input type="number" id="spFn" class="ss_num" step="any" min="0.001" aria-label="Frequency in hertz"><span style="font-size:.85rem">Hz</span></div>
+<div class="ss_tgroup ss_tsep"><button type="button" class="ss_vbtn" id="spPlay" aria-pressed="false">&#9654; Play tone</button><label class="ss_chk"><input type="checkbox" id="spOct"> step by octaves</label></div>
+</div>
+<div class="ss_pre" id="spPre" role="group" aria-label="Examples"></div>
+<div class="ss_read" id="spRead" aria-live="off"></div>
+<div class="ss_panels">
+<div class="ss_panel"><div class="ss_ptitle">Who can hear it?</div><div class="ss_pbody" id="spHear"></div></div>
+<div class="ss_panel"><div class="ss_ptitle">What makes sound at this frequency?</div><div class="ss_pbody" id="spSrc"></div></div>
+</div>
+<div class="ss_row">
+<div class="ss_card"><div class="ss_ctitle"><span>The wave in air (to scale over 30 cm, or one wavelength)</span><select id="spMed" aria-label="Medium" style="width:auto;min-height:28px;font-size:.78rem"></select></div><canvas id="wvCv" width="420" height="250" role="img" aria-label="Air molecules drawn as dots, bunched in compressions and spread in rarefactions, with the pressure wave drawn above, moving at the speed of sound; the wavelength is marked."></canvas></div>
+<div class="ss_card"><div class="ss_ctitle"><span>Human hearing threshold (and equal loudness)</span></div><canvas id="thCv" width="420" height="250" role="img" aria-label="Graph of the quietest sound a young person can hear, in decibels, against frequency from 20 hertz to 20 kilohertz, most sensitive near 3 to 4 kilohertz; the chosen frequency is marked."></canvas></div>
+</div>
+<div class="ss_panels"><div class="ss_panel"><div class="ss_ptitle">The physics</div><div class="ss_pbody" id="spPhy"></div></div></div>
+</div>
+
+<!-- ═══════ TAB 1 ═══════ -->
+<div id="ssP1" role="tabpanel" aria-labelledby="ssT1" hidden>
+<div class="ss_intro">Every band of the sound spectrum has uses. Choose an application to see where it sits on the spectrum, how it works, and the numbers behind it.</div>
+<div class="ss_pre" id="apList" role="group" aria-label="Applications"></div>
+<div class="ss_view"><canvas id="apCv" width="820" height="360" role="img" aria-label="Animation of the chosen application, and a strip of the frequency spectrum showing the band it uses."></canvas></div>
+<div id="apStatus" class="ss_status"></div>
+<div class="ss_transport" role="toolbar" aria-label="Application controls" id="apCtl"></div>
+<div class="ss_panels">
+<div class="ss_panel"><div class="ss_ptitle">How it works</div><div class="ss_pbody" id="apHow"></div></div>
+<div class="ss_panel"><div class="ss_ptitle">The numbers</div><div class="ss_pbody" id="apNum"></div></div>
+</div>
+</div>
+</div>
+<style>
+:where(#mobsoundspec) * { margin:0; box-sizing:border-box; }
+#mobsoundspec { width:100%; max-width:860px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; color:#1d232a; }
+#mobsoundspec canvas { display:block; width:100%; height:auto; }
+#mobsoundspec [hidden] { display:none !important; }
+#mobsoundspec .ss_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#mobsoundspec .ss_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#mobsoundspec .ss_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobsoundspec .ss_title { padding:4px; background-color:#f90; text-align:center; }
+#mobsoundspec .ss_title h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+#mobsoundspec .ss_tabs { display:flex; gap:4px; padding:6px 8px 0; background:#14213a; flex-wrap:wrap; }
+#mobsoundspec .ss_tab { flex:1 1 130px; padding:8px 6px; border:1px solid #2b3d60; border-bottom:0; border-radius:6px 6px 0 0; background:#1d2c4a; color:#bcd0f0; font-weight:bold; cursor:pointer; font-size:.88rem; min-height:40px; }
+#mobsoundspec .ss_tab[aria-selected="true"] { background:#f3f5f8; color:#14213a; }
+#mobsoundspec .ss_intro { padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; font-size:.9rem; line-height:1.5; }
+#mobsoundspec .ss_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:6px 12px; padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; }
+#mobsoundspec .ss_rl { font-size:.7rem; color:#667; text-transform:uppercase; letter-spacing:.05em; }
+#mobsoundspec .ss_rv { font-family:monospace; font-size:.9rem; color:#7a3a00; font-weight:bold; }
+#mobsoundspec .ss_view { background:#0b1222; }
+#mobsoundspec .ss_status { color:#222; font-size:.86rem; text-align:center; background:#fff6d9; padding:5px 8px; line-height:1.45; min-height:1.6em; }
+#mobsoundspec .ss_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+#mobsoundspec .ss_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+#mobsoundspec .ss_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { #mobsoundspec .ss_tsep { padding-left:0; border-left:0; } }
+#mobsoundspec .ss_tbtn { width:44px; height:38px; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer; border:1px solid #6d8a3a; border-radius:5px; background:#fff; color:#223; }
+#mobsoundspec .ss_tbtn.ss_play { background:#2e7d32; color:#fff; border-color:#1b5e20; }
+#mobsoundspec .ss_tbtn.ss_play[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+#mobsoundspec .ss_vbtn { min-height:38px; padding:4px 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; }
+#mobsoundspec .ss_card { margin:10px 10px 0; background:#0b1222; border:1px solid #2b3d60; border-radius:6px; overflow:hidden; }
+#mobsoundspec .ss_ctitle { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:4px 10px; padding:5px 10px; background:#14213a; color:#dbe7ff; font-size:.8rem; font-weight:bold; }
+#mobsoundspec .ss_row { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:10px; padding:10px 10px 0; }
+#mobsoundspec .ss_row .ss_card { margin:0; }
+#mobsoundspec .ss_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(270px, 1fr)); gap:10px; padding:10px; }
+#mobsoundspec .ss_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+#mobsoundspec .ss_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+#mobsoundspec .ss_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; font-size:.87rem; line-height:1.45; }
+#mobsoundspec .ss_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+#mobsoundspec .ss_chdr { display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; }
+#mobsoundspec .ss_chdr label { font-size:.82rem; font-weight:bold; color:#333; min-width:0; }
+#mobsoundspec .ss_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; min-width:4.5em; text-align:right; }
+#mobsoundspec .ss_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+#mobsoundspec select { width:100%; min-height:34px; padding:4px 6px; font-size:.86rem; border:1px solid #8a96a8; border-radius:4px; background:#fff; }
+#mobsoundspec .ss_checks { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 8px; }
+#mobsoundspec .ss_chk { display:flex; align-items:center; gap:6px; font-size:.84rem; cursor:pointer; }
+#mobsoundspec .ss_note { font-size:.8rem; color:#555; font-style:italic; }
+#mobsoundspec .ss_eq { font-family:'Times New Roman', serif; font-size:1rem; background:#f6f8fb; border-left:3px solid #1f5fa8; padding:4px 8px; margin:2px 0; overflow-wrap:anywhere; }
+#mobsoundspec button:focus-visible, #mobsoundspec input:focus-visible, #mobsoundspec select:focus-visible, #mobsoundspec canvas:focus-visible, #mobsoundspec tr:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (max-width:420px) { #mobsoundspec .ss_checks { grid-template-columns:minmax(0,1fr); } }
+@media (pointer:coarse) { #mobsoundspec .ss_tbtn, #mobsoundspec .ss_vbtn { min-height:44px; } #mobsoundspec input[type=checkbox] { width:20px; height:20px; } #mobsoundspec input[type=range] { height:28px; } }
+#mobsoundspec .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobsoundspec .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobsoundspec .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobsoundspec .mob_desc p { margin:0 0 8px 0; }
+#mobsoundspec.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobsoundspec.a11y_dm .ss_card, #mobsoundspec.a11y_dm .ss_view, #mobsoundspec.a11y_dm [aria-label="Display options"], #mobsoundspec.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobsoundspec.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobsoundspec.a11y_hc .ss_card, #mobsoundspec.a11y_hc .ss_view, #mobsoundspec.a11y_hc [aria-label="Display options"], #mobsoundspec.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+
+#mobsoundspec .ss_view { background:#0b1222; }
+#mobsoundspec #spCv { cursor:crosshair; }
+#mobsoundspec .ss_num { width:7.5em; height:34px; padding:3px 6px; font-size:.95rem; border:1px solid #888; border-radius:4px; }
+#mobsoundspec .ss_pre { display:flex; flex-wrap:wrap; gap:5px; padding:8px 10px; background:#eef6dd; }
+#mobsoundspec .ss_pre button { padding:5px 9px; font-size:.82rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:4px; background:#fff; color:#223; min-height:34px; }
+#mobsoundspec .ss_pre button[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobsoundspec .ss_vbtn[aria-pressed="true"] { background:#c62828; color:#fff; border-color:#8e1b1b; }
+#mobsoundspec .ss_row { align-items:start; }
+#mobsoundspec .ss_hl { display:grid; grid-template-columns:auto 1fr auto; gap:3px 8px; align-items:center; font-size:.85rem; }
+#mobsoundspec .ss_y { color:#1b6e2a; font-weight:bold; } #mobsoundspec .ss_n { color:#9aa3ae; }
+#mobsoundspec .ss_tbl { border-collapse:collapse; width:100%; font-size:.84rem; }
+#mobsoundspec .ss_tbl td { padding:3px 6px; border-bottom:1px solid #e3e7ee; vertical-align:top; }
+#mobsoundspec .ss_res { color:#7a3a00; }
+#mobsoundspec .ss_tgroup label { font-size:.84rem; }
+</style>
+<script>
+var ssA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return; b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobsoundspec'); if (!W) return; W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc);
+var nb = document.getElementById('ssNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none'; var nr = document.getElementById('ssBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('ssBtnHC', states.hc); styleBtn('ssBtnDM', states.dm); styleBtn('ssBtnCB', states.cb); styleBtn('ssBtnNR', states.nr); hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return { init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply(); if (k === 'cb' && states.cb) this.narrate('Colour-blind safe: hearing bars green when the frequency is heard; sources also listed in words.'); },
+alt:function(){ return states.hc || states.cb; }, narrate:function(m){ if (!states.nr) return; var nb = document.getElementById('ssNarBar'); if (nb) nb.textContent = m; } };
+})();
+</script>
+
+<!-- ════════ SIMULATION ════════
+Frequency axis log10 from 1e-3 Hz to 1e10 Hz. Hearing ranges (approximate, at moderate levels; literature values vary):
+human 20-20 000 Hz (adults over 50 lose the top: ~ 12-15 kHz), elephant 14-12 000, pigeon 0.5-12 000 (infrasound detection), whale (baleen) 7-22 000,
+dog 67-45 000, cat 45-64 000, horse 55-33 500, mouse 1 000-91 000, bat 2 000-110 000 (some to 200 kHz), dolphin 75-150 000, moth (greater wax) to 300 000,
+goldfish 20-3 000, chicken 125-2 000, frog 100-3 000, owl 200-12 000. Speeds of sound: air 343, water 1480, steel 5960, tissue 1540, helium 1007.
+Hearing threshold: ISO 226-like curve (Terhardt approximation). Tone playback: Web Audio sine (inaudible frequencies are not played).
+No dollar signs or backticks in the code.
+-->
+<script>
+var ssGen = function(){
+  function el(id){ return document.getElementById(id); }
+  function say(m){ ssA11y.narrate(m); }
+  var TAU = 2*Math.PI, LMIN = -3, LMAX = 10;
+  function lbl(g, t, x, y, col, size, al){ g.font = 'bold ' + (size || 12) + 'px Arial'; g.textAlign = al || 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 3.5; g.strokeStyle = 'rgba(0,0,0,0.85)'; g.strokeText(t, x, y); g.fillStyle = col; g.fillText(t, x, y); g.textBaseline = 'alphabetic'; }
+  function fF(f){ if (f >= 1e9) return +(f/1e9).toPrecision(3) + ' GHz'; if (f >= 1e6) return +(f/1e6).toPrecision(3) + ' MHz'; if (f >= 1e3) return +(f/1e3).toPrecision(3) + ' kHz'; if (f >= 1) return +f.toPrecision(3) + ' Hz'; return +f.toPrecision(2) + ' Hz'; }
+  function fL(m){ if (m >= 1000) return +(m/1000).toPrecision(3) + ' km'; if (m >= 1) return +m.toPrecision(3) + ' m'; if (m >= 0.01) return +(m*100).toPrecision(3) + ' cm'; if (m >= 1e-3) return +(m*1000).toPrecision(3) + ' mm'; if (m >= 1e-6) return +(m*1e6).toPrecision(3) + ' \u00b5m'; return +(m*1e9).toPrecision(3) + ' nm'; }
+  function fT(s){ if (s >= 3600) return +(s/3600).toPrecision(3) + ' h'; if (s >= 60) return +(s/60).toPrecision(3) + ' min'; if (s >= 1) return +s.toPrecision(3) + ' s'; if (s >= 1e-3) return +(s*1e3).toPrecision(3) + ' ms'; if (s >= 1e-6) return +(s*1e6).toPrecision(3) + ' \u00b5s'; return +(s*1e9).toPrecision(3) + ' ns'; }
+  var BANDS = [[-3, Math.log10(20), 'Infrasound', '#3b6fb6'], [Math.log10(20), Math.log10(20000), 'Audible sound', '#2e9b4f'], [Math.log10(20000), 9, 'Ultrasound', '#c46a00'], [9, 10, 'Hypersound', '#8e24aa']];
+  var HEAR = [['Humans (young)', 20, 20000, '\ud83e\uddd1'], ['Humans (over 50)', 20, 12000, '\ud83e\uddd3'], ['Elephants', 14, 12000, '\ud83d\udc18'], ['Pigeons', 0.5, 12000, '\ud83d\udc26'], ['Baleen whales', 7, 22000, '\ud83d\udc0b'], ['Goldfish', 20, 3000, '\ud83d\udc1f'], ['Frogs', 100, 3000, '\ud83d\udc38'], ['Chickens', 125, 2000, '\ud83d\udc14'], ['Owls', 200, 12000, '\ud83e\udd89'], ['Horses', 55, 33500, '\ud83d\udc34'], ['Dogs', 67, 45000, '\ud83d\udc15'], ['Cats', 45, 64000, '\ud83d\udc08'], ['Mice', 1000, 91000, '\ud83d\udc01'], ['Bats', 2000, 110000, '\ud83e\udd87'], ['Dolphins', 75, 150000, '\ud83d\udc2c'], ['Greater wax moth', 1000, 300000, '\ud83e\udd8b']];
+  /* sources: [f low, f high, name, kind] kind: n natural, h human-made, a animal, m music/voice */
+  var SRC = [[0.003, 0.05, 'ocean tides and seiches', 'n'], [0.001, 0.01, 'free oscillations of the Earth (after big earthquakes)', 'n'], [0.01, 0.2, 'meteors entering the atmosphere', 'n'], [0.1, 0.35, 'ocean waves ("microbaroms")', 'n'], [0.01, 1, 'volcanic eruptions', 'n'], [0.05, 20, 'earthquakes', 'n'], [0.5, 10, 'avalanches and severe storms', 'n'], [0.1, 10, 'wind over mountains', 'n'], [1, 15, 'wind turbines (blade passing)', 'h'], [2, 16, 'heavy traffic, ships, engines', 'h'],
+    [0.5, 5, 'human heartbeat (as vibration)', 'n'], [14, 35, 'elephant rumbles', 'a'], [10, 40, 'blue whale calls', 'a'], [20, 60, 'thunder (rumble)', 'n'], [27.5, 4186, 'piano (lowest to highest note)', 'm'], [41, 400, 'bass guitar', 'm'], [85, 180, 'adult male voice (fundamental)', 'm'], [165, 255, 'adult female voice (fundamental)', 'm'], [250, 400, 'child\u2019s voice (fundamental)', 'm'], [440, 440, 'A4: orchestra tuning note', 'm'], [196, 3520, 'violin', 'm'],
+    [300, 3400, 'telephone band (speech)', 'h'], [1000, 4000, 'baby crying (most energy)', 'm'], [2000, 8000, 'consonants s, f, sh, th', 'm'], [3000, 8000, 'birdsong', 'a'], [4000, 10000, 'cricket chirps', 'a'], [16000, 20000, 'mosquito repellent "teen buzz"', 'h'], [15000, 16000, 'old CRT TV whine', 'h'],
+    [20000, 50000, 'dog whistles', 'h'], [40000, 40000, 'parking sensors, rangefinders', 'h'], [20000, 70000, 'ultrasonic cleaners', 'h'], [20000, 120000, 'bat echolocation calls', 'a'], [40000, 150000, 'dolphin echolocation clicks', 'a'], [20000, 100000, 'mouse and rat calls', 'a'], [20000, 40000, 'ultrasonic welding', 'h'], [1e6, 3e6, 'ultrasound therapy', 'h'], [2e6, 15e6, 'medical imaging ultrasound', 'h'], [1e6, 1e7, 'industrial flaw detection', 'h'], [1e7, 5e9, 'acoustic microscopes', 'h'], [1e9, 1e10, 'thermal vibrations of atoms (phonons) in crystals', 'n']];
+  var MED = [['air (20 \u00b0C)', 343], ['helium', 1007], ['water', 1480], ['soft tissue', 1540], ['steel', 5960]];
+  var S = { f:440, med:0, play:false, oct:false };
+  function lf(){ return Math.log10(S.f); }
+  function band(f){ var l = Math.log10(f); for (var i=0; i<BANDS.length; i++) if (l < BANDS[i][1] || i === BANDS.length - 1) return BANDS[i]; }
+  /* hearing threshold (Terhardt), dB SPL */
+  function thr(f){ var k = f/1000; return 3.64*Math.pow(k, -0.8) - 6.5*Math.exp(-0.6*Math.pow(k - 3.3, 2)) + 1e-3*Math.pow(k, 4); }
+  /* note name */
+  function note(f){ if (f < 16 || f > 8000) return null; var n = Math.round(12*Math.log2(f/440)), nm = ['A', 'A\u266f', 'B', 'C', 'C\u266f', 'D', 'D\u266f', 'E', 'F', 'F\u266f', 'G', 'G\u266f'], oct = Math.floor((n + 9)/12) + 4, c = Math.round(1200*Math.log2(f/(440*Math.pow(2, n/12)))); return nm[((n % 12) + 12) % 12] + oct + (c ? ' (' + (c > 0 ? '+' : '') + c + ' cents)' : ''); }
+  /* ══════════ spectrum canvas ══════════ */
+  var cS = el('spCv'), gS = cS.getContext('2d'), L = 30, R = 800;
+  function X(l){ return L + (l - LMIN)/(LMAX - LMIN)*(R - L); }
+  function drawS(){ var W = cS.width, H = cS.height, g = gS, i, l = lf();
+    g.fillStyle = '#0b1222'; g.fillRect(0, 0, W, H);
+    BANDS.forEach(function(b){ g.fillStyle = b[3]; g.globalAlpha = 0.85; g.fillRect(X(b[0]), 22, X(b[1]) - X(b[0]), 26); g.globalAlpha = 0.12; g.fillRect(X(b[0]), 48, X(b[1]) - X(b[0]), H - 80); g.globalAlpha = 1; lbl(g, b[2], (X(b[0]) + X(b[1]))/2, 35, '#fff', 12); });
+    g.fillStyle = '#9aa6b4'; g.font = '10px Arial'; g.textAlign = 'center';
+    for (i=LMIN; i<=LMAX; i++){ g.strokeStyle = 'rgba(150,170,195,0.25)'; g.beginPath(); g.moveTo(X(i), 48); g.lineTo(X(i), H - 30); g.stroke(); var t = i < 0 ? '10' + sup(i) : i < 3 ? String(Math.pow(10, i)) : i < 6 ? Math.pow(10, i - 3) + 'k' : i < 9 ? Math.pow(10, i - 6) + 'M' : Math.pow(10, i - 9) + 'G'; g.fillText(t, X(i), H - 18); }
+    g.fillText('frequency (Hz, logarithmic: each step is 10\u00d7)', (L + R)/2, H - 4); g.fillText('Hz', L - 10, 16);
+    /* hearing bars */ var y0 = 60, dy = 12.5; HEAR.forEach(function(h, k){ var y = y0 + k*dy, on = S.f >= h[1] && S.f <= h[2]; g.fillStyle = on ? '#7fffb0' : 'rgba(127,178,255,0.45)'; g.fillRect(X(Math.log10(h[1])), y, X(Math.log10(h[2])) - X(Math.log10(h[1])), 8); g.font = (on ? 'bold ' : '') + '10px Arial'; g.textAlign = 'right'; g.fillStyle = on ? '#7fffb0' : '#9fb4d8'; g.fillText(h[0], X(Math.log10(h[1])) - 4, y + 8); });
+    /* sources */ var ys = y0 + HEAR.length*dy + 14; g.fillStyle = '#dbe7ff'; g.font = 'bold 11px Arial'; g.textAlign = 'left'; g.fillText('Sources', L, ys - 2);
+    var lanes = [], col = { n:'#7fb2ff', h:'#ffb000', a:'#4fe39a', m:'#ff8ad8' };
+    SRC.slice().sort(function(a, b){ return a[0] - b[0]; }).forEach(function(s){ var x0 = X(Math.log10(s[0])), x1 = Math.max(x0 + 4, X(Math.log10(s[1]))), lane = 0; while (lanes[lane] !== undefined && lanes[lane] > x0 - 2) lane++; lanes[lane] = x1; if (lane > 7) return; var y = ys + 6 + lane*9, on = S.f >= s[0]*0.98 && S.f <= s[1]*1.02;
+      g.fillStyle = on ? '#fff' : col[s[3]]; g.globalAlpha = on ? 1 : 0.7; g.fillRect(x0, y, x1 - x0, 6); g.globalAlpha = 1; });
+    var ky = H - 40; [['natural', 'n'], ['animals', 'a'], ['voice and music', 'm'], ['human-made', 'h']].forEach(function(q, k){ g.fillStyle = col[q[1]]; g.fillRect(L + 150 + k*120, ky - 8, 12, 8); g.fillStyle = '#9fb4d8'; g.font = '10px Arial'; g.textAlign = 'left'; g.fillText(q[0], L + 166 + k*120, ky); });
+    /* marker */ var xm = X(l); g.strokeStyle = '#ffd23f'; g.lineWidth = 2.5; g.beginPath(); g.moveTo(xm, 18); g.lineTo(xm, H - 30); g.stroke(); g.fillStyle = '#ffd23f'; g.beginPath(); g.moveTo(xm, 18); g.lineTo(xm - 7, 6); g.lineTo(xm + 7, 6); g.closePath(); g.fill();
+    lbl(g, fF(S.f), Math.min(R - 40, Math.max(L + 40, xm)), 54, '#ffd23f', 13); }
+  function sup(e){ return String(e).split('').map(function(c){ return c === '-' ? '\u207b' : '\u2070\u00b9\u00b2\u00b3\u2074\u2075\u2076\u2077\u2078\u2079'.charAt(+c); }).join(''); }
+  /* ══════════ wave canvas ══════════ */
+  var cW = el('wvCv'), gW = cW.getContext('2d'), ph = 0, PTS = [];
+  (function(){ for (var i=0; i<700; i++) PTS.push([Math.random(), Math.random()]); })();
+  function drawW(){ var W = cW.width, H = cW.height, g = gW, v = MED[S.med][1], lam = v/S.f, span = lam > 0.3 ? 0.3 : lam*3 > 0.3 ? 0.3 : lam*3, i;
+    if (lam < 1e-4) span = lam*3; g.fillStyle = '#0b1222'; g.fillRect(0, 0, W, H);
+    var k = TAU/lam, A = 0.25*Math.min(lam, span)/TAU*0.6, top = 70, bot = H - 40;
+    g.strokeStyle = '#ffd23f'; g.lineWidth = 2; g.beginPath(); for (i=0; i<=W; i++){ var x = i/W*span, p = Math.sin(k*x - ph); if (i) g.lineTo(i, 40 - 22*p); else g.moveTo(i, 40 - 22*p); } g.stroke();
+    g.fillStyle = '#9aa6b4'; g.font = '10px Arial'; g.textAlign = 'left'; g.fillText('pressure', 4, 12);
+    g.fillStyle = '#7fb2ff'; PTS.forEach(function(q){ var x0 = q[0]*span, dx = -A*Math.cos(k*x0 - ph)*2.2, xp = (x0 + dx)/span*W; g.fillRect(xp, top + q[1]*(bot - top), 2, 2); });
+    if (lam <= span){ var x1 = 20, x2 = 20 + lam/span*W; g.strokeStyle = '#fff'; g.lineWidth = 1.5; g.beginPath(); g.moveTo(x1, bot + 12); g.lineTo(x2, bot + 12); g.moveTo(x1, bot + 6); g.lineTo(x1, bot + 18); g.moveTo(x2, bot + 6); g.lineTo(x2, bot + 18); g.stroke(); lbl(g, '\u03bb = ' + fL(lam), (x1 + x2)/2, bot + 26, '#fff', 11); }
+    else lbl(g, '\u03bb = ' + fL(lam) + ': longer than this window (shown: 30 cm)', W/2, bot + 22, '#fff', 11);
+    lbl(g, 'width shown: ' + fL(span), W - 6, H - 6, '#9aa6b4', 10, 'right'); }
+  /* ══════════ threshold canvas ══════════ */
+  var cTh = el('thCv'), gT = cTh.getContext('2d');
+  function drawT(){ var W = cTh.width, H = cTh.height, g = gT, Lx = 44, Rx = W - 10, T = 14, B = H - 30, f;
+    function Xf(f){ return Lx + (Math.log10(f) - Math.log10(16))/(Math.log10(25000) - Math.log10(16))*(Rx - Lx); } function Yd(d){ return B - (d + 10)/(130 + 10)*(B - T); }
+    g.fillStyle = '#0b1222'; g.fillRect(0, 0, W, H); g.strokeStyle = 'rgba(150,170,195,0.2)'; g.fillStyle = '#9aa6b4'; g.font = '10px Arial'; g.textAlign = 'center';
+    [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000].forEach(function(v){ g.beginPath(); g.moveTo(Xf(v), T); g.lineTo(Xf(v), B); g.stroke(); g.fillText(v >= 1000 ? v/1000 + 'k' : v, Xf(v), B + 12); });
+    [0, 40, 80, 120].forEach(function(d){ g.beginPath(); g.moveTo(Lx, Yd(d)); g.lineTo(Rx, Yd(d)); g.stroke(); g.textAlign = 'right'; g.fillText(d + ' dB', Lx - 4, Yd(d) + 3); }); g.textAlign = 'center'; g.fillText('frequency (Hz)', (Lx + Rx)/2, H - 4);
+    g.fillStyle = 'rgba(255,90,90,0.18)'; g.fillRect(Lx, T, Rx - Lx, Yd(120) - T); lbl(g, 'threshold of pain \u2248 120\u2013130 dB', (Lx + Rx)/2, T + 8, '#ff8a7a', 10);
+    [0, 40, 80].forEach(function(ph2, k){ g.strokeStyle = k ? 'rgba(127,178,255,0.45)' : '#4fe39a'; g.lineWidth = k ? 1.2 : 2.5; g.beginPath(); var first = true; for (f = 20; f <= 20000; f *= 1.03){ var d = thr(f) + ph2*(1 - 0.35*Math.max(0, thr(f) - 20)/80); var y = Yd(Math.min(130, d)); if (first){ g.moveTo(Xf(f), y); first = false; } else g.lineTo(Xf(f), y); } g.stroke(); });
+    lbl(g, 'quietest audible', Xf(60), Yd(thr(60)) - 10, '#4fe39a', 10, 'left'); lbl(g, 'equal-loudness curves (approx.)', Xf(1200), Yd(62), '#7fb2ff', 10);
+    if (S.f >= 16 && S.f <= 25000){ var xm = Xf(S.f); g.strokeStyle = '#ffd23f'; g.lineWidth = 2; g.beginPath(); g.moveTo(xm, T); g.lineTo(xm, B); g.stroke(); if (S.f >= 20 && S.f <= 20000){ g.fillStyle = '#ffd23f'; g.beginPath(); g.arc(xm, Yd(thr(S.f)), 5, 0, TAU); g.fill(); } }
+    else lbl(g, 'your frequency (' + fF(S.f) + ') is outside human hearing', (Lx + Rx)/2, (T + B)/2, '#ffd23f', 12); }
+  /* ══════════ text ══════════ */
+  function texts(){ var f = S.f, b = band(f), v = MED[S.med][1], lam = v/f, T = 1/f, n = note(f);
+    el('spRead').innerHTML = [['band', b[2]], ['period T = 1/f', fT(T)], ['wavelength in ' + MED[S.med][0], fL(lam)], ['wavelength in air', fL(343/f)], ['musical note', n || '\u2014'], ['hearing threshold', f >= 20 && f <= 20000 ? thr(f).toFixed(0) + ' dB SPL' : 'not audible']].map(function(q){ return '<div><div class="ss_rl' + '">' + q[0] + '</div><div class="ss_rv' + '">' + q[1] + '</div></div>'; }).join('');
+    var yes = HEAR.filter(function(h){ return f >= h[1] && f <= h[2]; }), no = HEAR.filter(function(h){ return !(f >= h[1] && f <= h[2]); });
+    el('spHear').innerHTML = '<div class="ss_hl' + '">' + HEAR.map(function(h){ var on = f >= h[1] && f <= h[2]; return '<span aria-hidden="true">' + h[3] + '</span><span class="' + (on ? 'ss_y' : 'ss_n') + '">' + h[0] + '</span><span class="' + (on ? 'ss_y' : 'ss_n') + '">' + (on ? '\u2713 hears' : '\u2717') + ' <span style="font-weight:normal;color:#777">(' + fF(h[1]) + '\u2013' + fF(h[2]) + ')</span></span>'; }).join('') + '</div>'
+      + '<p class="ss_note' + '">' + (yes.length ? yes.length + ' of ' + HEAR.length + ' listed can hear it.' : 'None of the listed animals can hear it.') + (f > 20000 && f < 300000 ? ' Ultrasound for us, ordinary sound for bats, dolphins or moths.' : '') + (f < 20 && f > 0.4 ? ' Infrasound: felt as vibration or pressure by us; elephants, whales and pigeons use it to communicate or navigate over long distances.' : '') + ' Ranges are approximate (at moderate loudness).</p>';
+    var near = SRC.filter(function(s){ return f >= s[0]*0.8 && f <= s[1]*1.25; }), kind = { n:'natural', h:'human-made', a:'animal', m:'voice / music' };
+    if (!near.length){ var best = SRC.slice().sort(function(a, c){ return Math.abs(Math.log10(Math.sqrt(a[0]*a[1])/f)) - Math.abs(Math.log10(Math.sqrt(c[0]*c[1])/f)); }).slice(0, 3); near = best; }
+    el('spSrc').innerHTML = '<table class="ss_tbl' + '"><tbody>' + near.map(function(s){ return '<tr><td><b>' + s[2] + '</b></td><td>' + (s[0] === s[1] ? fF(s[0]) : fF(s[0]) + '\u2013' + fF(s[1])) + '</td><td>' + kind[s[3]] + '</td></tr>'; }).join('') + '</tbody></table>'
+      + '<p class="ss_note' + '">' + (f >= 1e9 ? 'At these frequencies the wavelength is comparable to the spacing of atoms: sound becomes the vibrations (phonons) that carry heat in solids. Hypersound does not travel through air.' : f > 1e6 ? 'Megahertz sound is absorbed quickly in air; it is used in liquids and solids (and in the body).' : 'Any vibrating object produces sound at its own frequency: smaller and stiffer objects vibrate faster.') + '</p>';
+    el('spPhy').innerHTML = '<div class="ss_eq' + '">v = f\u03bb &nbsp;\u2192&nbsp; \u03bb = v/f = (' + v + ' m/s)/(' + fF(f) + ') = <b class="ss_res' + '">' + fL(lam) + '</b> &nbsp;\u00b7&nbsp; T = 1/f = ' + fT(T) + '</div>'
+      + '<p>The speed of sound depends on the medium, not on the frequency: about 343 m/s in air at 20 \u00b0C, 1480 m/s in water, 5960 m/s in steel. So low frequencies have long wavelengths: a 20 Hz bass note is ' + fL(343/20) + ' long, a 20 kHz squeak only ' + fL(343/20000) + '.</p>'
+      + '<p><b>Why it matters:</b> waves bend around objects comparable to their wavelength. Infrasound (wavelengths of kilometres) travels around mountains and across oceans with little loss; ultrasound (millimetres) makes sharp beams and echoes from small objects, which is why bats and scanners use it. High frequencies are also absorbed much faster in air.</p>'
+      + '<p class="ss_note' + '">Pitch doubles every octave: musical notes are spaced on a logarithmic scale, like this axis. Human hearing spans about 10 octaves.' + (f >= 20 && f <= 20000 ? ' Press "Play tone" (headphones help; speakers may not reproduce very low or very high tones).' : '') + '</p>';
+    el('spFn').value = +f.toPrecision(4); el('spF').value = Math.round((Math.log10(f) - LMIN)/(LMAX - LMIN)*1000); el('spF').setAttribute('aria-valuetext', fF(f)); }
+  function all(){ drawS(); drawT(); texts(); tone(); }
+  function setF(f, speak){ S.f = Math.max(1e-3, Math.min(1e10, f)); all(); if (speak) say(fF(S.f) + ': ' + band(S.f)[2] + '. Wavelength in air ' + fL(343/S.f) + '. ' + HEAR.filter(function(h){ return S.f >= h[1] && S.f <= h[2]; }).length + ' of the listed animals can hear it' + (S.f >= 20 && S.f <= 20000 ? ', including young humans.' : '.')); }
+  el('spF').addEventListener('input', function(){ var l = LMIN + (LMAX - LMIN)*this.value/1000; if (S.oct){ var n = Math.round(Math.log2(Math.pow(10, l)/440)); setF(440*Math.pow(2, n)); } else setF(+Math.pow(10, l).toPrecision(3)); });
+  el('spF').addEventListener('change', function(){ setF(S.f, true); });
+  el('spFn').addEventListener('change', function(){ var v = parseFloat(this.value); if (v > 0) setF(v, true); else { this.value = S.f; say('Type a positive frequency.'); } });
+  el('spOct').addEventListener('change', function(){ S.oct = this.checked; });
+  el('spMed').innerHTML = MED.map(function(m, i){ return '<option value="' + i + '">' + m[0] + ' (' + m[1] + ' m/s)</option>'; }).join('');
+  el('spMed').addEventListener('change', function(){ S.med = +this.value; texts(); say('In ' + MED[S.med][0] + ', sound travels at ' + MED[S.med][1] + ' metres per second: the wavelength is ' + fL(MED[S.med][1]/S.f) + '.'); });
+  cS.addEventListener('click', function(e){ var r = cS.getBoundingClientRect(), x = (e.clientX - r.left)*cS.width/r.width; if (x < L || x > R) return; setF(+Math.pow(10, LMIN + (x - L)/(R - L)*(LMAX - LMIN)).toPrecision(3), true); });
+  var PRE = [['Earthquake', 2], ['Elephant rumble', 18], ['Lowest piano note', 27.5], ['Male voice', 120], ['Middle C', 261.6], ['A4 (440 Hz)', 440], ['Most sensitive hearing', 3500], ['Mosquito "teen buzz"', 17400], ['Dog whistle', 25000], ['Bat call', 50000], ['Dolphin click', 120000], ['Medical ultrasound', 5e6], ['Phonons', 3e9]];
+  el('spPre').innerHTML = PRE.map(function(q, i){ return '<button type="button" data-i="' + i + '">' + q[0] + '</button>'; }).join('');
+  [].forEach.call(el('spPre').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ setF(PRE[+b.getAttribute('data-i')][1], true); }); });
+  /* tone */
+  var AC = null, OSC = null, GN = null;
+  function tone(){ if (!S.play){ if (GN) GN.gain.setTargetAtTime(0, AC.currentTime, 0.02); return; } try { if (!AC){ AC = new (window.AudioContext || window.webkitAudioContext)(); OSC = AC.createOscillator(); GN = AC.createGain(); GN.gain.value = 0; OSC.connect(GN); GN.connect(AC.destination); OSC.start(); } if (AC.resume) AC.resume();
+      var ok = S.f >= 20 && S.f <= Math.min(20000, AC.sampleRate/2 - 100); OSC.frequency.setTargetAtTime(ok ? S.f : 440, AC.currentTime, 0.02); var amp = ok ? Math.min(0.25, 0.05*Math.pow(10, Math.max(0, thr(S.f))/40)) : 0; GN.gain.setTargetAtTime(amp, AC.currentTime, 0.03);
+      if (!ok) say('This frequency cannot be played: it is outside the audible range (and your speakers).'); } catch (e) {} }
+  el('spPlay').addEventListener('click', function(){ S.play = !S.play; this.setAttribute('aria-pressed', S.play ? 'true' : 'false'); this.innerHTML = S.play ? '&#9632; Stop tone' : '&#9654; Play tone'; tone(); if (S.play) say('Playing a pure tone. Start the volume low.'); });
+
+  /* ══════════ TAB 1: applications ══════════ */
+  var cA = el('apCv'), gA = cA.getContext('2d'), AP = [
+    { k:'sonar', n:'Sonar & echolocation', f:[2e4, 1.5e5], how:'A short pulse is sent out; its echo returns after a time t. The distance is d = vt/2. Bats (in air, about 20\u2013120 kHz) and dolphins (in water, up to 150 kHz) do this naturally; ships and submarines use sonar at 1\u2013100 kHz. Higher frequencies give a shorter wavelength, so smaller objects can be detected, but they are absorbed sooner.', ctl:[['Distance to the target', 'd', 2, 200, 40, 'm'], ['Medium', 'med', null]] },
+    { k:'park', n:'Parking sensor', f:[4e4, 4e4], how:'A 40 kHz transducer in the bumper pings and times the echo from the obstacle behind the car, d = vt/2 with v = 343 m/s. The beeps get faster as the distance shrinks. Ultrasound is used because it is silent for us and forms a narrow beam.', ctl:[['Distance to the wall', 'd', 0.2, 2.5, 1.2, 'm']] },
+    { k:'nde', n:'Flaw detection (NDT)', f:[1e6, 1e7], how:'A probe pressed on a steel plate sends 5 MHz pulses. The echo from the far side (back wall) and any extra echo from a crack inside show how deep the crack is. Used on aircraft, pipelines, rails and welds without damaging them.', ctl:[['Depth of the crack', 'd', 5, 45, 22, 'mm']] },
+    { k:'clean', n:'Ultrasonic cleaning', f:[2e4, 7e4], how:'At 20\u201370 kHz the pressure swings in the liquid are so strong that tiny bubbles form and collapse violently (cavitation), scrubbing dirt from jewellery, lenses and surgical tools.', ctl:[['Frequency', 'f', 20, 70, 40, 'kHz']] },
+    { k:'medical', n:'Medical imaging & therapy', f:[1e6, 1.5e7], how:'Imaging at 2\u201315 MHz (see the ultrasound simulation). Therapy: focused ultrasound at about 1 MHz heats a small spot (HIFU) to destroy tumors, and shock waves break kidney stones (lithotripsy) without surgery.', ctl:[] },
+    { k:'infra', n:'Infrasound monitoring', f:[0.01, 20], how:'Infrasound travels thousands of kilometres with little absorption. A worldwide network of microbarometer stations listens for volcanic eruptions, meteors and nuclear explosions (Comprehensive Nuclear-Test-Ban Treaty). Elephants use 14\u201335 Hz rumbles to call each other several kilometres away.', ctl:[['Distance to the source', 'd', 10, 5000, 1200, 'km']] },
+    { k:'music', n:'Music & noise cancelling', f:[20, 2e4], how:'Musical instruments produce a fundamental frequency plus harmonics (integer multiples), which give each instrument its timbre. Noise-cancelling headphones record incoming sound and play its inverse: the two waves interfere destructively. This works best for steady low frequencies (engine hum).', ctl:[['Fundamental', 'f', 55, 880, 220, 'Hz']] },
+    { k:'mosquito', n:'Age-related hearing loss', f:[1.2e4, 2e4], how:'The hair cells that detect the highest frequencies wear out first (presbycusis). Most adults over 25 cannot hear above about 17 kHz; over 50, many cannot hear above about 12 kHz. Some "mosquito" devices exploit this with a 17 kHz tone only teenagers can hear.', ctl:[['Age of the listener', 'age', 10, 80, 20, 'years']] } ];
+  var ap = 0, apS = { d:40, med:0, f:40, age:20, t:0, hist:[] };
+  function apDraw(t){ var W = cA.width, H = cA.height, g = gA, a = AP[ap], i;
+    g.fillStyle = '#0b1222'; g.fillRect(0, 0, W, H);
+    /* spectrum strip */ var sy = H - 40, x0 = 30, x1 = W - 30; function Xs(f){ return x0 + (Math.log10(f) - LMIN)/(LMAX - LMIN)*(x1 - x0); }
+    BANDS.forEach(function(b){ g.fillStyle = b[3]; g.globalAlpha = 0.5; g.fillRect(x0 + (b[0] - LMIN)/(LMAX - LMIN)*(x1 - x0), sy, (b[1] - b[0])/(LMAX - LMIN)*(x1 - x0), 14); g.globalAlpha = 1; });
+    g.fillStyle = '#ffd23f'; g.fillRect(Xs(a.f[0]) - 2, sy - 4, Math.max(4, Xs(a.f[1]) - Xs(a.f[0]) + 4), 22); lbl(g, a.f[0] === a.f[1] ? fF(a.f[0]) : fF(a.f[0]) + '\u2013' + fF(a.f[1]), (Xs(a.f[0]) + Xs(a.f[1]))/2, sy + 30, '#ffd23f', 11);
+    g.fillStyle = '#9aa6b4'; g.font = '10px Arial'; g.textAlign = 'left'; g.fillText('infrasound', x0, sy - 6); g.textAlign = 'center'; g.fillText('audible', Xs(600), sy - 6); g.fillText('ultrasound', Xs(1e6), sy - 6);
+    g.save(); g.beginPath(); g.rect(0, 0, W, sy - 20); g.clip(); var S0 = { sonar:sonar, park:park, nde:nde, clean:clean, medical:medical, infra:infra, music:music, mosquito:mosq }[a.k]; S0(g, W, sy - 20, t); g.restore(); }
+  function sonar(g, W, H, t){ var v = apS.med ? 343 : 1500, d = apS.d, rt = 2*d/v, per = Math.max(0.6, rt*1.4), p = (t % per)/per*per, sx = 80, tx = sx + 40 + Math.min(1, d/200)*(W - 200), y = H/2;
+    g.fillStyle = apS.med ? '#14213a' : '#0f2a44'; g.fillRect(0, 0, W, H); lbl(g, apS.med ? '\ud83e\udd87' : '\ud83d\udc2c', sx, y, '#fff', 34); lbl(g, apS.med ? '\ud83e\udd9f' : '\ud83d\udc1f', tx, y, '#fff', 30);
+    var vs = (tx - sx)/(rt/2); if (p < rt/2){ for (var k=0; k<3; k++){ var r = vs*p - k*6; if (r > 0){ g.strokeStyle = 'rgba(255,214,60,' + (0.9 - k*0.25) + ')'; g.lineWidth = 2; g.beginPath(); g.arc(sx, y, r, -0.5, 0.5); g.stroke(); } } }
+    else if (p < rt){ for (var k2=0; k2<3; k2++){ var r2 = vs*(p - rt/2) - k2*6; if (r2 > 0){ g.strokeStyle = 'rgba(127,255,176,' + (0.9 - k2*0.25) + ')'; g.lineWidth = 2; g.beginPath(); g.arc(tx, y, r2, Math.PI - 0.5, Math.PI + 0.5); g.stroke(); } } }
+    lbl(g, 'd = ' + d + ' m', (sx + tx)/2, y + 50, '#fff', 13); lbl(g, 'echo after t = 2d/v = ' + fT(rt), (sx + tx)/2, y + 70, '#ffd23f', 12); }
+  function park(g, W, H, t){ var d = apS.d, rt = 2*d/343, rate = d < 0.3 ? 0 : 0.08 + 0.5*d, y = H/2; g.fillStyle = '#1b2333'; g.fillRect(0, 0, W, H);
+    var wx = 80, cx = wx + 40 + d/2.5*(W - 360); g.fillStyle = '#7f8da6'; g.fillRect(wx - 20, 20, 20, H - 40); lbl(g, 'wall', wx - 10, 14, '#ccc', 11);
+    g.fillStyle = '#c62828'; g.beginPath(); g.roundRect ? g.roundRect(cx, y - 30, 240, 60, 14) : g.rect(cx, y - 30, 240, 60); g.fill(); g.fillStyle = '#222'; g.beginPath(); g.arc(cx + 50, y + 32, 16, 0, TAU); g.arc(cx + 190, y + 32, 16, 0, TAU); g.fill(); g.fillStyle = '#ffd23f'; g.fillRect(cx - 4, y - 6, 6, 12);
+    var p = t % 0.12, r = (cx - wx)*p/0.06; if (p < 0.06){ g.strokeStyle = 'rgba(255,214,60,0.8)'; g.lineWidth = 2; g.beginPath(); g.arc(cx, y, r, Math.PI - 0.4, Math.PI + 0.4); g.stroke(); } else { g.strokeStyle = 'rgba(127,255,176,0.8)'; g.beginPath(); g.arc(wx, y, (cx - wx)*(p - 0.06)/0.06, -0.4, 0.4); g.stroke(); }
+    var beep = rate === 0 ? true : (t % rate) < 0.06; g.fillStyle = beep ? '#ff5a4a' : '#442'; g.beginPath(); g.arc(W - 60, 50, 16, 0, TAU); g.fill(); lbl(g, rate === 0 ? 'STOP (continuous)' : 'beep every ' + rate.toFixed(2) + ' s', W - 60, 84, '#fff', 11);
+    lbl(g, 'distance ' + d.toFixed(2) + ' m \u00b7 echo time ' + fT(rt), (wx + cx)/2, y - 50, '#ffd23f', 12); if (beep && apS.snd) blip(rate === 0 ? 2000 : 2500); }
+  function nde(g, W, H, t){ var thick = 50, cr = apS.d, x0 = 80, pw = 260, top = 40, bot = top + 200, y = function(mm){ return top + mm/thick*(bot - top); };
+    g.fillStyle = '#5f6b80'; g.fillRect(x0, top, pw, bot - top); g.fillStyle = '#3a4250'; g.fillRect(x0 + pw/2 - 20, top - 22, 40, 22); lbl(g, '5 MHz probe', x0 + pw/2, top - 30, '#ccc', 11);
+    g.strokeStyle = '#111'; g.lineWidth = 3; g.beginPath(); g.moveTo(x0 + pw/2 - 30, y(cr)); g.lineTo(x0 + pw/2 + 50, y(cr) + 4); g.stroke(); lbl(g, 'crack', x0 + pw/2 + 60, y(cr), '#ffd23f', 11, 'left');
+    var p = (t % 1.2)/1.2, yy = top + p*2*(bot - top); g.fillStyle = '#ffd23f'; if (p < 0.5) g.fillRect(x0 + pw/2 - 2, top + p*2*(y(cr) - top) , 4, 6);
+    lbl(g, 'steel plate, 50 mm, v = 5960 m/s', x0 + pw/2, bot + 14, '#ccc', 11);
+    var Ax = 400, Aw = W - 430, At = 30, Ab = H - 10; g.strokeStyle = 'rgba(150,170,195,0.3)'; g.strokeRect(Ax, At, Aw, Ab - At); var tb = 2*thick/1000/5960, tc = 2*cr/1000/5960, tm = tb*1.15;
+    g.strokeStyle = '#7fffb0'; g.lineWidth = 1.5; g.beginPath(); for (var i=0; i<=Aw; i++){ var tt = i/Aw*tm, a = Math.exp(-Math.pow(tt/(tm*0.012), 2)) + 0.6*Math.exp(-Math.pow((tt - tc)/(tm*0.012), 2)) + 0.35*Math.exp(-Math.pow((tt - tb)/(tm*0.012), 2)); if (i) g.lineTo(Ax + i, Ab - a*(Ab - At)*0.9); else g.moveTo(Ax + i, Ab - a*(Ab - At)*0.9); } g.stroke();
+    lbl(g, 'crack echo ' + fT(tc), Ax + tc/tm*Aw, At + 0.4*(Ab - At), '#ffd23f', 11); lbl(g, 'back wall ' + fT(tb), Ax + tb/tm*Aw, At + 0.6*(Ab - At), '#ccc', 11); lbl(g, 'A-scan', Ax + Aw/2, At - 10, '#fff', 12); }
+  function clean(g, W, H, t){ var f = apS.f*1000, x0 = 100, w = W - 200, top = 40, bot = H - 20; g.fillStyle = '#9fc5e8'; g.globalAlpha = 0.5; g.fillRect(x0, top, w, bot - top); g.globalAlpha = 1; g.strokeStyle = '#ccc'; g.lineWidth = 3; g.strokeRect(x0, top, w, bot - top);
+    lbl(g, '\ud83d\udc8d', x0 + w/2, (top + bot)/2, '#fff', 40); var n = Math.round(30 + apS.f*1.2); for (var i=0; i<n; i++){ var bx = x0 + 10 + ((i*97) % (w - 20)), by = top + 10 + ((i*53) % (bot - top - 20)), ph2 = (t*apS.f*0.4 + i*0.37) % 1, r = ph2 < 0.85 ? 1 + 6*ph2 : 6*(1 - (ph2 - 0.85)/0.15); g.strokeStyle = ph2 > 0.85 ? '#fff' : 'rgba(255,255,255,0.6)'; g.lineWidth = 1; g.beginPath(); g.arc(bx, by, Math.max(0.5, r*(40/apS.f)), 0, TAU); g.stroke(); if (ph2 > 0.95){ g.fillStyle = '#ffd23f'; g.beginPath(); g.arc(bx, by, 2, 0, TAU); g.fill(); } }
+    lbl(g, 'cavitation bubbles grow and collapse ' + fF(f) + ' times per second; bubble size \u221d 1/f', W/2, 22, '#fff', 12); }
+  function medical(g, W, H, t){ var cx = W/2, top = 30; g.fillStyle = '#e8b4a0'; g.globalAlpha = 0.25; g.fillRect(60, top + 40, W - 120, H - top - 50); g.globalAlpha = 1;
+    g.fillStyle = '#5f6b80'; g.beginPath(); g.arc(cx, top + 40, 120, Math.PI, TAU); g.fill(); lbl(g, 'focused (HIFU) transducer, \u2248 1 MHz', cx, top + 10, '#ccc', 11);
+    var fx = cx, fy = top + 150; for (var k=-6; k<=6; k++){ var a = Math.PI + (k + 6)/12*Math.PI, sx = cx + 118*Math.cos(a), sy = top + 40 + 118*Math.sin(a), p = (t*1.5 + k*0.02) % 1; g.strokeStyle = 'rgba(255,214,60,' + (0.3 + 0.5*p) + ')'; g.lineWidth = 1.5; g.beginPath(); g.moveTo(sx, sy); g.lineTo(sx + (fx - sx)*p, sy + (fy - sy)*p); g.stroke(); }
+    var hot = 0.5 + 0.5*Math.sin(t*3); var gr = g.createRadialGradient(fx, fy, 2, fx, fy, 22); gr.addColorStop(0, 'rgba(255,90,40,' + (0.6 + 0.4*hot) + ')'); gr.addColorStop(1, 'rgba(255,90,40,0)'); g.fillStyle = gr; g.beginPath(); g.arc(fx, fy, 22, 0, TAU); g.fill();
+    lbl(g, 'focus: tissue heated to 60\u201390 \u00b0C in seconds, surrounding tissue barely warmed', cx, fy + 40, '#ffd23f', 12); }
+  function infra(g, W, H, t){ var d = apS.d, v = 0.34, tt = d/v/60, sx = 90, rx = W - 110, y = H/2 + 10; g.fillStyle = '#14213a'; g.fillRect(0, 0, W, H);
+    g.fillStyle = '#5a4a3a'; g.beginPath(); g.moveTo(sx - 50, y + 30); g.lineTo(sx, y - 20); g.lineTo(sx + 50, y + 30); g.closePath(); g.fill(); lbl(g, '\ud83c\udf0b', sx, y - 30, '#fff', 26); lbl(g, '\ud83d\udce1', rx, y, '#fff', 28); lbl(g, 'monitoring station', rx, y + 30, '#ccc', 11);
+    var p = (t % 4)/4; for (var k=0; k<4; k++){ var r = (p + k*0.25) % 1*(rx - sx + 60); g.strokeStyle = 'rgba(127,178,255,' + (1 - r/(rx - sx + 60))*0.8 + ')'; g.lineWidth = 3; g.beginPath(); g.arc(sx, y, r, -0.6, 0.6); g.stroke(); }
+    lbl(g, d + ' km \u00b7 arrives after ' + (tt >= 60 ? (tt/60).toFixed(1) + ' h' : tt.toFixed(0) + ' min') + ' at 340 m/s', (sx + rx)/2, 30, '#ffd23f', 12); lbl(g, 'wavelength at 0.1 Hz: 3.4 km \u2192 hardly absorbed', (sx + rx)/2, H - 10, '#9fb4d8', 11); }
+  function music(g, W, H, t){ var f0 = apS.f, Lx = 50, Rx = W/2 - 20, mid = H/2, i;
+    g.strokeStyle = '#ffd23f'; g.lineWidth = 2; g.beginPath(); for (i=0; i<=Rx - Lx; i++){ var x = i/(Rx - Lx)*4, y = Math.sin(TAU*x - t*3) + 0.5*Math.sin(2*TAU*x - t*6) + 0.3*Math.sin(3*TAU*x - t*9) + 0.2*Math.sin(4*TAU*x - t*12); if (i) g.lineTo(Lx + i, mid - 30*y); else g.moveTo(Lx, mid - 30*y); } g.stroke(); lbl(g, 'instrument: fundamental + harmonics', (Lx + Rx)/2, 20, '#fff', 12);
+    var bx = W/2 + 20, bw = W/2 - 50; [1, 0.5, 0.3, 0.2, 0.12].forEach(function(a, k){ var x = bx + (k + 1)*bw/6; g.fillStyle = '#ffb000'; g.fillRect(x - 8, mid + 60 - a*120, 16, a*120); lbl(g, fF(f0*(k + 1)), x, mid + 74, '#ccc', 10); }); lbl(g, 'spectrum: f, 2f, 3f, \u2026', bx + bw/2, 20, '#fff', 12);
+    var nc = mid + 110; g.strokeStyle = '#7fb2ff'; g.lineWidth = 1.5; g.beginPath(); for (i=0; i<=Rx - Lx; i++){ var y2 = Math.sin(TAU*i/80 - t*4); if (i) g.lineTo(Lx + i, nc - 12*y2); else g.moveTo(Lx, nc - 12*y2); } g.stroke(); g.strokeStyle = '#ff8a7a'; g.beginPath(); for (i=0; i<=Rx - Lx; i++){ var y3 = -Math.sin(TAU*i/80 - t*4); if (i) g.lineTo(Lx + i, nc - 12*y3); else g.moveTo(Lx, nc - 12*y3); } g.stroke();
+    lbl(g, 'noise (blue) + anti-noise (red) = silence', (Lx + Rx)/2, nc + 26, '#ccc', 11); }
+  function mosq(g, W, H, t){ var age = apS.age, top = Math.max(8000, 20000 - Math.max(0, age - 18)*180 - Math.max(0, age - 50)*60), Lx = 60, Rx = W - 40, y = H/2;
+    function Xf(f){ return Lx + (Math.log10(f) - Math.log10(20))/(Math.log10(22000) - Math.log10(20))*(Rx - Lx); }
+    g.fillStyle = '#2e9b4f'; g.fillRect(Xf(20), y - 14, Xf(top) - Xf(20), 28); g.fillStyle = 'rgba(198,40,40,0.5)'; g.fillRect(Xf(top), y - 14, Xf(20000) - Xf(top), 28);
+    [20, 100, 1000, 5000, 10000, 15000, 20000].forEach(function(f){ lbl(g, fF(f), Xf(f), y + 30, '#ccc', 10); });
+    lbl(g, 'age ' + age + ': hears up to about ' + fF(top), (Xf(20) + Xf(top))/2, y, '#fff', 13); var ok = 17400 <= top; lbl(g, '17.4 kHz "mosquito" tone: ' + (ok ? 'heard' : 'not heard'), Xf(17400) + 8, y - 34, ok ? '#7fffb0' : '#ff8a7a', 12, 'right'); g.strokeStyle = '#ffd23f'; g.beginPath(); g.moveTo(Xf(17400), y - 24); g.lineTo(Xf(17400), y + 18); g.stroke(); }
+  var BAC = null; function blip(f){ try { if (!BAC) BAC = new (window.AudioContext || window.webkitAudioContext)(); var o = BAC.createOscillator(), gg = BAC.createGain(); o.frequency.value = f; gg.gain.value = 0.08; o.connect(gg); gg.connect(BAC.destination); o.start(); o.stop(BAC.currentTime + 0.05); } catch (e) {} }
+  function apText(){ var a = AP[ap], s = '', n = '';
+    if (a.k === 'sonar'){ var v = apS.med ? 343 : 1500, f = apS.med ? 50000 : 120000; n = '<div class="ss_eq' + '">t = 2d/v = 2(' + apS.d + ' m)/(' + v + ' m/s) = <b class="ss_res' + '">' + fT(2*apS.d/v) + '</b></div><div class="ss_eq' + '">\u03bb = v/f = ' + v + '/' + fF(f) + ' = ' + fL(v/f) + '</div><p>Objects smaller than about \u03bb are hard to detect: a ' + (apS.med ? 'bat' : 'dolphin') + ' using ' + fF(f) + ' can locate prey ' + fL(v/f) + ' across.</p>'; s = (apS.med ? 'A bat in air' : 'A dolphin in water') + ': the echo returns after ' + fT(2*apS.d/v) + '.'; }
+    if (a.k === 'park'){ n = '<div class="ss_eq' + '">t = 2d/v = 2(' + apS.d.toFixed(2) + ' m)/(343 m/s) = <b class="ss_res' + '">' + fT(2*apS.d/343) + '</b></div><div class="ss_eq' + '">\u03bb = 343/40 000 = 8.6 mm</div><p>The sensor repeats about 15 times per second; the time is converted to distance by d = vt/2.</p>'; s = 'Wall at ' + apS.d.toFixed(2) + ' m.'; }
+    if (a.k === 'nde'){ var tc = 2*apS.d/1000/5960, tb = 2*0.05/5960; n = '<div class="ss_eq' + '">crack: d = vt/2 = (5960 m/s)(' + fT(tc) + ')/2 = <b class="ss_res' + '">' + apS.d + ' mm</b></div><div class="ss_eq' + '">back wall: t = 2(50 mm)/(5960 m/s) = ' + fT(tb) + '</div><div class="ss_eq' + '">\u03bb = 5960/5\u00d710<sup>6</sup> = 1.2 mm</div><p>Gel or water couples the probe to the metal; air would reflect nearly everything.</p>'; s = 'Crack echo at ' + fT(tc) + ', back wall at ' + fT(tb) + '.'; }
+    if (a.k === 'clean'){ n = '<div class="ss_eq' + '">\u03bb in water = 1480/' + apS.f + ' 000 = <b class="ss_res' + '">' + fL(1480/(apS.f*1000)) + '</b></div><p>Lower frequency (\u2248 25 kHz): larger bubbles and more violent collapse, for heavy dirt. Higher frequency (\u2248 70 kHz): smaller bubbles, gentler, for delicate parts.</p>'; s = apS.f + ' kHz cleaner.'; }
+    if (a.k === 'medical'){ n = '<div class="ss_eq' + '">\u03bb in tissue at 1 MHz = 1540/10<sup>6</sup> = 1.5 mm</div><p>Focusing a large curved transducer concentrates the energy at a spot a few millimetres across. Lithotripsy shock waves (\u2248 0.1\u20131 MHz content) shatter kidney stones; physiotherapy uses 1\u20133 MHz for gentle deep heating.</p>'; s = 'High-intensity focused ultrasound.'; }
+    if (a.k === 'infra'){ n = '<div class="ss_eq' + '">t = d/v = (' + apS.d + ' km)/(0.34 km/s) = <b class="ss_res' + '">' + fT(apS.d/0.34) + '</b></div><div class="ss_eq' + '">\u03bb at 0.1 Hz = 343/0.1 = 3.4 km</div><p>The 1883 Krakatoa eruption made pressure waves that circled the Earth several times; the 2022 Hunga Tonga eruption was recorded worldwide.</p>'; s = 'Infrasound reaches the station after ' + fT(apS.d/0.34) + '.'; }
+    if (a.k === 'music'){ n = '<div class="ss_eq' + '">harmonics: ' + [1, 2, 3, 4, 5].map(function(k){ return fF(apS.f*k); }).join(', ') + '</div><div class="ss_eq' + '">\u03bb of the fundamental in air = ' + fL(343/apS.f) + '</div><p>Two instruments playing the same note differ in the strengths of their harmonics. Anti-noise must be exactly half a wavelength out of step; that is easy for long low-frequency waves, hard for short high-frequency ones.</p>'; s = 'Fundamental ' + fF(apS.f) + (note(apS.f) ? ' (' + note(apS.f) + ')' : '') + '.'; }
+    if (a.k === 'mosquito'){ var top = Math.max(8000, 20000 - Math.max(0, apS.age - 18)*180 - Math.max(0, apS.age - 50)*60); n = '<p>Estimated upper limit at age ' + apS.age + ': about <b class="ss_res' + '">' + fF(top) + '</b> (typical trend; individuals vary a lot, and loud-noise exposure speeds the loss).</p><p>Protect your hearing: keep earphones below about 60% volume and limit exposure above 85 dB.</p>'; s = 'At ' + apS.age + ' years: hearing up to about ' + fF(top) + '.'; }
+    el('apHow').innerHTML = '<p>' + a.how + '</p>'; el('apNum').innerHTML = n; el('apStatus').textContent = s; }
+  function apCtl(){ var a = AP[ap], h = '';
+    a.ctl.forEach(function(c){ if (c[1] === 'med') h += '<div class="ss_tgroup' + '"><label><input type="radio" name="apMed" value="0"' + (apS.med ? '' : ' checked') + '> dolphin (water)</label><label><input type="radio" name="apMed" value="1"' + (apS.med ? ' checked' : '') + '> bat (air)</label></div>';
+      else h += '<div class="ss_tgroup' + '" style="flex:1 1 300px"><label for="apC_' + c[1] + '" style="font-weight:bold">' + c[0] + '</label><input type="range" id="apC_' + c[1] + '" min="' + c[2] + '" max="' + c[3] + '" step="' + (c[3] - c[2] > 100 ? 1 : (c[3] - c[2])/100) + '" value="' + c[4] + '" style="flex:1 1 160px"><span class="ss_val' + '" id="apV_' + c[1] + '">' + c[4] + ' ' + c[5] + '</span></div>'; });
+    if (a.k === 'park') h += '<label class="ss_chk' + '"><input type="checkbox" id="apSnd"> beeps</label>';
+    el('apCtl').innerHTML = h || '<span style="font-size:.85rem">No controls: watch the focus.</span>';
+    a.ctl.forEach(function(c){ apS[c[1]] = c[4]; if (c[1] === 'med'){ [].forEach.call(document.getElementsByName('apMed'), function(r){ r.addEventListener('change', function(){ apS.med = +this.value; apText(); say(el('apStatus').textContent); }); }); return; }
+      var r = el('apC_' + c[1] + ''); r.addEventListener('input', function(){ apS[c[1]] = +this.value; el('apV_' + c[1] + '').textContent = (+this.value).toFixed(c[3] - c[2] > 20 ? 0 : 2) + ' ' + c[5]; apText(); }); r.addEventListener('change', function(){ say(el('apStatus').textContent); }); });
+    if (a.k === 'park') el('apSnd').addEventListener('change', function(){ apS.snd = this.checked; }); else apS.snd = false; }
+  function setAp(i){ ap = i; [].forEach.call(el('apList').querySelectorAll('button'), function(b){ b.setAttribute('aria-pressed', +b.getAttribute('data-i') === i ? 'true' : 'false'); }); apCtl(); apText(); say(AP[i].n + '. ' + AP[i].how.split('. ')[0] + '.'); }
+  el('apList').innerHTML = AP.map(function(a, i){ return '<button type="button" data-i="' + i + '" aria-pressed="false">' + a.n + '</button>'; }).join('');
+  [].forEach.call(el('apList').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ setAp(+b.getAttribute('data-i')); }); });
+  /* ══════════ loop & tabs ══════════ */
+  var tab = 0, last = 0;
+  function loop(now){ var dt = last ? Math.min(0.05, (now - last)/1000) : 0; last = now; if (tab === 0){ ph += dt*TAU*0.8; drawW(); } else { apS.t += dt; apDraw(apS.t); } requestAnimationFrame(loop); }
+  function setTab(i){ tab = i; [0, 1].forEach(function(j){ var t = el('ssT' + j + ''); t.setAttribute('aria-selected', j === i ? 'true' : 'false'); t.tabIndex = j === i ? 0 : -1; el('ssP' + j + '').hidden = j !== i; }); if (i === 1){ if (S.play) el('spPlay').click(); setAp(ap); } else { all(); say('Click the spectrum, drag the slider, or type a frequency.'); } }
+  [0, 1].forEach(function(i){ var t = el('ssT' + i + ''); t.addEventListener('click', function(){ setTab(i); }); t.addEventListener('keydown', function(e){ if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){ setTab(1 - i); el('ssT' + (1 - i) + '').focus(); e.preventDefault(); } }); });
+  ssA11y.onChange(function(){ drawS(); drawT(); });
+  setTab(0); requestAnimationFrame(loop);
+  return { setF:setF, S:S, setTab:setTab, setAp:setAp, HEAR:HEAR };
+};
+var ssSim = new ssGen();
+</script>
+<script>ssA11y.init();</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>Sound is a mechanical wave of pressure that needs a medium. Its speed depends on the medium (about 343 m/s in air at 20 &deg;C, 1480 m/s in water, 5960 m/s in steel), and its frequency `f`, wavelength `lambda` and speed `v` are related by `v = f lambda`; the period is `T = 1/f`.</p>
+<p>By frequency, sound is divided into infrasound (below 20 Hz), audible sound (20 Hz to 20 kHz for a young person), ultrasound (above 20 kHz) and hypersound (above about 1 GHz). Hearing ranges differ widely between species: elephants and whales use infrasound, bats, dolphins and some moths ultrasound. Human sensitivity is greatest near 3 to 4 kHz and the upper limit falls with age.</p>
+<p>The applications tab shows uses across the spectrum: echolocation and sonar, parking sensors and flaw detection (distance from echo time, `d = vt/2`), ultrasonic cleaning by cavitation, focused ultrasound therapy, infrasound monitoring, musical harmonics and noise cancelling, and age-related hearing loss. Hearing ranges and source frequencies are approximate and vary between sources and individuals. The tone generator plays only audible frequencies; start with a low volume.</p>
+</div>
+</div>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+
+</div>
+
+</body>
+</html>

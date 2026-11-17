@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Nuclear: Ultrasound Imaging</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobultrasound" class="mob_wrap">
+<div class="us_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="us_a11ybtn" id="usBtnHC" onclick="usA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="us_a11ybtn" id="usBtnDM" onclick="usA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="us_a11ybtn" id="usBtnCB" onclick="usA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="us_a11ybtn" id="usBtnNR" onclick="usA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+
+<div class="us_title"><h3>Ultrasound Imaging &mdash; Echoes, Scans and Doppler</h3></div>
+<div class="us_tabs" role="tablist" aria-label="Topic">
+<button type="button" role="tab" class="us_tab" id="usT0" aria-selected="true">1. How it works (echoes)</button>
+<button type="button" role="tab" class="us_tab" id="usT1" aria-selected="false">2. The scanner: organs, baby, heart</button>
+<button type="button" role="tab" class="us_tab" id="usT2" aria-selected="false">3. Doppler: measuring blood flow</button>
+</div>
+<div id="usNarBar" class="us_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<!-- ═══════ TAB 0: PULSE-ECHO ═══════ -->
+<div id="usP0" role="tabpanel" aria-labelledby="usT0">
+<div class="us_intro">Ultrasound is sound above 20 kHz; medical scanners use about 2 to 15 MHz. A <b>transducer</b> (a piezoelectric crystal) sends a short pulse into the body and then listens. At every boundary between tissues of different <b>acoustic impedance</b> Z = &rho;v, part of the pulse is reflected. Timing each echo gives the depth: <b>d = vt/2</b>, with v &asymp; 1540 m/s in soft tissue. No ionizing radiation is involved.</div>
+<div class="us_read" id="amRead" aria-live="off"></div>
+<div class="us_view"><canvas id="amCv" width="820" height="380" role="img" aria-label="Left: the transducer on top of layers of tissue, with the pulse travelling down and the echoes travelling back up. Right: the A-mode trace, echo strength in decibels against time in microseconds, with each echo labelled with its depth."></canvas></div>
+<div id="amStatus" class="us_status"></div>
+<div class="us_transport" role="toolbar" aria-label="Pulse">
+<div class="us_tgroup">
+<button type="button" class="us_tbtn us_play" id="amPlay" aria-label="Send a pulse" title="Send a pulse"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="us_vbtn" id="amAll">Show the whole trace</button>
+</div>
+<div class="us_tgroup us_tsep" role="group" aria-label="What is under the probe" id="amCfg"></div>
+</div>
+<div class="us_panels">
+<div class="us_panel"><div class="us_ptitle">Settings</div><div class="us_pbody">
+<div class="us_ctrl"><div class="us_chdr"><label for="amF">Frequency</label><span class="us_val" id="amFv"></span></div><input type="range" id="amF" min="1" max="15" step="0.5" value="3.5"></div>
+<div class="us_ctrl" id="amGapC"><div class="us_chdr"><label for="amGap">Gap between the two reflectors</label><span class="us_val" id="amGapv"></span></div><input type="range" id="amGap" min="0.2" max="3" step="0.1" value="1.0"></div>
+<div class="us_checks"><label class="us_chk"><input type="checkbox" id="amGel" checked> coupling gel on the skin</label><label class="us_chk"><input type="checkbox" id="amTgc" checked> time-gain compensation</label></div>
+</div></div>
+<div class="us_panel"><div class="us_ptitle">The echoes</div><div class="us_pbody" id="amTbl" style="overflow-x:auto"></div></div>
+</div>
+<div class="us_panels" style="padding-top:0">
+<div class="us_panel"><div class="us_ptitle">Acoustic properties</div><div class="us_pbody">
+<table class="us_tbl"><thead><tr><th>material</th><th>speed v (m/s)</th><th>Z (10<sup>6</sup> kg/m&sup2;s)</th></tr></thead><tbody>
+<tr><td>air</td><td>331</td><td>0.0004</td></tr><tr><td>fat</td><td>1450</td><td>1.38</td></tr><tr><td>water</td><td>1480</td><td>1.48</td></tr><tr><td>blood</td><td>1570</td><td>1.66</td></tr><tr><td>liver</td><td>1550</td><td>1.65</td></tr><tr><td>muscle</td><td>1580</td><td>1.70</td></tr><tr><td>bone</td><td>4080</td><td>7.80</td></tr></tbody></table>
+<p class="us_note">Values approximate. Scanners assume 1540 m/s everywhere.</p></div></div>
+<div class="us_panel"><div class="us_ptitle">Key ideas</div><div class="us_pbody" id="amKey"></div></div>
+</div>
+</div>
+
+<!-- ═══════ TAB 1: SCANNER ═══════ -->
+<div id="usP1" role="tabpanel" aria-labelledby="usT1" hidden>
+<div class="us_pick" role="group" aria-label="Exam" id="scEx"></div>
+<div class="us_intro" id="scIntro"></div>
+<div class="us_view"><canvas id="scCv" width="820" height="470" role="img" aria-label="Simulated ultrasound image (B-mode) in the fan shape of a sector probe at the top. Brightness shows echo strength: fluid is black, soft tissue grey and grainy, bone, stones and air white with a dark shadow beneath. Optional colour Doppler, labels and measurements."></canvas></div>
+<div id="scStatus" class="us_status"></div>
+<div class="us_card" id="scMC" hidden><div class="us_ctitle"><span>M-mode: the brightness along one line, recorded against time</span><span id="scMR" style="font-weight:normal"></span></div><canvas id="scM" width="820" height="200" role="img" aria-label="M-mode display: depth down, time to the right; moving structures such as heart walls and valves draw wavy lines."></canvas></div>
+<div class="us_card" id="sc3C" hidden><div class="us_ctitle"><span>3D/4D surface rendering</span></div><canvas id="sc3" width="820" height="380" role="img" aria-label="A three-dimensional surface rendering of the baby's face and hand, built from many slices; it moves in real time (4D)."></canvas></div>
+<div class="us_panels">
+<div class="us_panel"><div class="us_ptitle">Image settings</div><div class="us_pbody">
+<div class="us_ctrl"><div class="us_chdr"><label for="scF">Probe frequency</label><span class="us_val" id="scFv"></span></div><input type="range" id="scF" min="2" max="12" step="0.5" value="3.5"></div>
+<div class="us_ctrl"><div class="us_chdr"><label for="scG">Gain</label><span class="us_val" id="scGv"></span></div><input type="range" id="scG" min="-20" max="20" step="1" value="0"></div>
+<div class="us_ctrl"><div class="us_chdr"><label for="scD">Depth</label><span class="us_val" id="scDv"></span></div><input type="range" id="scD" min="6" max="20" step="1" value="16"></div>
+<div class="us_checks"><label class="us_chk"><input type="checkbox" id="scTgc" checked> time-gain compensation</label><label class="us_chk"><input type="checkbox" id="scLab" checked> labels</label><label class="us_chk" id="scDisL"><input type="checkbox" id="scDis"> <span id="scDisT">disease</span></label><label class="us_chk" id="scMeasL"><input type="checkbox" id="scMeas"> measurements</label></div>
+</div></div>
+<div class="us_panel"><div class="us_ptitle">Enhancements</div><div class="us_pbody">
+<div class="us_checks">
+<label class="us_chk"><input type="checkbox" id="scHarm"> tissue harmonic imaging</label>
+<label class="us_chk"><input type="checkbox" id="scComp"> compounding / speckle reduction</label>
+<label class="us_chk"><input type="checkbox" id="scCol"> colour Doppler</label>
+<label class="us_chk"><input type="checkbox" id="scCon"> contrast agent (microbubbles)</label>
+<label class="us_chk" id="scMmL"><input type="checkbox" id="scMm"> M-mode</label>
+<label class="us_chk" id="sc3L"><input type="checkbox" id="sc3d"> 3D/4D rendering</label>
+</div>
+<div class="us_ctrl" id="scScC"><div class="us_chdr"><label for="scSc">Colour Doppler scale (Nyquist)</label><span class="us_val" id="scScv"></span></div><input type="range" id="scSc" min="0.1" max="1.5" step="0.05" value="0.6"></div>
+<div class="us_ctrl" id="scMlC"><div class="us_chdr"><label for="scMl">M-mode line angle</label><span class="us_val" id="scMlv"></span></div><input type="range" id="scMl" min="-35" max="35" step="1" value="12"></div>
+</div></div>
+<div class="us_panel"><div class="us_ptitle">What you are looking at</div><div class="us_pbody" id="scExp"></div></div>
+</div>
+</div>
+
+<!-- ═══════ TAB 2: DOPPLER ═══════ -->
+<div id="usP2" role="tabpanel" aria-labelledby="usT2" hidden>
+<div class="us_intro">Sound reflected by moving blood cells comes back with a slightly different frequency: the <b>Doppler shift</b>, &Delta;f = 2f&#8320;v cos&theta;/c. The shift falls in the audible range, so the machine can also play it as sound. A spectral display shows every velocity in the sample volume against time.</div>
+<div class="us_read" id="dpRead" aria-live="off"></div>
+<div class="us_view"><canvas id="dpCv" width="820" height="460" role="img" aria-label="Top: a linear probe on the skin above a blood vessel, with the Doppler beam at angle theta to the flow and the sample volume in the vessel. Bottom: the spectral Doppler display, velocity against time, scrolling to the right."></canvas></div>
+<div id="dpStatus" class="us_status"></div>
+<div class="us_transport" role="toolbar" aria-label="Doppler">
+<div class="us_tgroup"><button type="button" class="us_tbtn us_play" id="dpRun" aria-label="Pause" aria-pressed="true" title="Run / pause"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg></button><button type="button" class="us_vbtn" id="dpSnd" aria-pressed="false">Doppler sound: off</button></div>
+<div class="us_tgroup us_tsep" role="group" aria-label="Vessel" id="dpVs"></div>
+</div>
+<div class="us_panels">
+<div class="us_panel"><div class="us_ptitle">Beam and machine</div><div class="us_pbody">
+<div class="us_ctrl"><div class="us_chdr"><label for="dpA">Beam angle to the flow &theta;</label><span class="us_val" id="dpAv"></span></div><input type="range" id="dpA" min="0" max="90" step="1" value="60"></div>
+<div class="us_ctrl"><div class="us_chdr"><label for="dpC">Angle correction entered by the operator</label><span class="us_val" id="dpCv"></span></div><input type="range" id="dpC" min="0" max="80" step="1" value="60"></div>
+<div class="us_ctrl"><div class="us_chdr"><label for="dpF">Doppler frequency f&#8320;</label><span class="us_val" id="dpFv"></span></div><input type="range" id="dpF" min="2" max="10" step="0.5" value="5"></div>
+<div class="us_ctrl"><div class="us_chdr"><label for="dpP">Pulse repetition frequency (scale)</label><span class="us_val" id="dpPv"></span></div><input type="range" id="dpP" min="1" max="20" step="0.5" value="10"></div>
+<label class="us_chk"><input type="checkbox" id="dpLock" checked> angle correction follows the beam</label>
+</div></div>
+<div class="us_panel"><div class="us_ptitle">The Doppler equation</div><div class="us_pbody" id="dpEq"></div></div>
+<div class="us_panel"><div class="us_ptitle">Safety</div><div class="us_pbody"><p>Ultrasound uses no ionizing radiation and has no known harmful effects at diagnostic levels. The energy can still warm tissue a little (<b>thermal index</b>) and, at high pressure, make tiny gas bubbles oscillate (<b>mechanical index</b>); both are shown on the scanner screen.</p><p>Doppler uses more energy than plain imaging, so in early pregnancy it is used briefly. The rule is <b>ALARA</b>: As Low As Reasonably Achievable, and only for a medical reason (keepsake 3D videos are discouraged).</p></div></div>
+</div>
+</div>
+</div>
+<style>
+:where(#mobultrasound) * { margin:0; box-sizing:border-box; }
+#mobultrasound { width:100%; max-width:860px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; color:#1d232a; }
+#mobultrasound canvas { display:block; width:100%; height:auto; }
+#mobultrasound [hidden] { display:none !important; }
+#mobultrasound .us_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#mobultrasound .us_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#mobultrasound .us_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobultrasound .us_title { padding:4px; background-color:#f90; text-align:center; }
+#mobultrasound .us_title h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+#mobultrasound .us_tabs { display:flex; gap:4px; padding:6px 8px 0; background:#14213a; flex-wrap:wrap; }
+#mobultrasound .us_tab { flex:1 1 130px; padding:8px 6px; border:1px solid #2b3d60; border-bottom:0; border-radius:6px 6px 0 0; background:#1d2c4a; color:#bcd0f0; font-weight:bold; cursor:pointer; font-size:.88rem; min-height:40px; }
+#mobultrasound .us_tab[aria-selected="true"] { background:#f3f5f8; color:#14213a; }
+#mobultrasound .us_intro { padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; font-size:.9rem; line-height:1.5; }
+#mobultrasound .us_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:6px 12px; padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; }
+#mobultrasound .us_rl { font-size:.7rem; color:#667; text-transform:uppercase; letter-spacing:.05em; }
+#mobultrasound .us_rv { font-family:monospace; font-size:.9rem; color:#7a3a00; font-weight:bold; }
+#mobultrasound .us_view { background:#0b1222; }
+#mobultrasound .us_status { color:#222; font-size:.86rem; text-align:center; background:#fff6d9; padding:5px 8px; line-height:1.45; min-height:1.6em; }
+#mobultrasound .us_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+#mobultrasound .us_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+#mobultrasound .us_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { #mobultrasound .us_tsep { padding-left:0; border-left:0; } }
+#mobultrasound .us_tbtn { width:44px; height:38px; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer; border:1px solid #6d8a3a; border-radius:5px; background:#fff; color:#223; }
+#mobultrasound .us_tbtn.us_play { background:#2e7d32; color:#fff; border-color:#1b5e20; }
+#mobultrasound .us_tbtn.us_play[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+#mobultrasound .us_vbtn { min-height:38px; padding:4px 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; }
+#mobultrasound .us_card { margin:10px 10px 0; background:#0b1222; border:1px solid #2b3d60; border-radius:6px; overflow:hidden; }
+#mobultrasound .us_ctitle { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:4px 10px; padding:5px 10px; background:#14213a; color:#dbe7ff; font-size:.8rem; font-weight:bold; }
+#mobultrasound .us_row { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:10px; padding:10px 10px 0; }
+#mobultrasound .us_row .us_card { margin:0; }
+#mobultrasound .us_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(270px, 1fr)); gap:10px; padding:10px; }
+#mobultrasound .us_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+#mobultrasound .us_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+#mobultrasound .us_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; font-size:.87rem; line-height:1.45; }
+#mobultrasound .us_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+#mobultrasound .us_chdr { display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; }
+#mobultrasound .us_chdr label { font-size:.82rem; font-weight:bold; color:#333; min-width:0; }
+#mobultrasound .us_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; min-width:4.5em; text-align:right; }
+#mobultrasound .us_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+#mobultrasound select { width:100%; min-height:34px; padding:4px 6px; font-size:.86rem; border:1px solid #8a96a8; border-radius:4px; background:#fff; }
+#mobultrasound .us_checks { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 8px; }
+#mobultrasound .us_chk { display:flex; align-items:center; gap:6px; font-size:.84rem; cursor:pointer; }
+#mobultrasound .us_note { font-size:.8rem; color:#555; font-style:italic; }
+#mobultrasound .us_eq { font-family:'Times New Roman', serif; font-size:1rem; background:#f6f8fb; border-left:3px solid #1f5fa8; padding:4px 8px; margin:2px 0; overflow-wrap:anywhere; }
+#mobultrasound button:focus-visible, #mobultrasound input:focus-visible, #mobultrasound select:focus-visible, #mobultrasound canvas:focus-visible, #mobultrasound tr:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (max-width:420px) { #mobultrasound .us_checks { grid-template-columns:minmax(0,1fr); } }
+@media (pointer:coarse) { #mobultrasound .us_tbtn, #mobultrasound .us_vbtn { min-height:44px; } #mobultrasound input[type=checkbox] { width:20px; height:20px; } #mobultrasound input[type=range] { height:28px; } }
+#mobultrasound .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobultrasound .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobultrasound .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobultrasound .mob_desc p { margin:0 0 8px 0; }
+#mobultrasound.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobultrasound.a11y_dm .us_card, #mobultrasound.a11y_dm .us_view, #mobultrasound.a11y_dm [aria-label="Display options"], #mobultrasound.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobultrasound.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobultrasound.a11y_hc .us_card, #mobultrasound.a11y_hc .us_view, #mobultrasound.a11y_hc [aria-label="Display options"], #mobultrasound.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+
+#mobultrasound .us_pick { display:flex; flex-wrap:wrap; gap:5px; padding:8px 10px; background:#df9; }
+#mobultrasound .us_pick button, #mobultrasound .us_tgroup [role=group] button { padding:6px 11px; font-size:.86rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; min-height:36px; font-weight:bold; }
+#mobultrasound .us_pick button[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobultrasound .us_vbtn[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobultrasound .us_tbl { border-collapse:collapse; width:100%; font-size:.82rem; }
+#mobultrasound .us_tbl th, #mobultrasound .us_tbl td { padding:3px 6px; border-bottom:1px solid #e3e7ee; text-align:right; }
+#mobultrasound .us_tbl th { background:#1f5fa8; color:#fff; font-size:.74rem; }
+#mobultrasound .us_tbl td:first-child, #mobultrasound .us_tbl th:first-child { text-align:left; }
+#mobultrasound .us_res { color:#7a3a00; }
+#mobultrasound .us_view { background:#000; }
+</style>
+<script>
+var usA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return; b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobultrasound'); if (!W) return; W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc);
+var nb = document.getElementById('usNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none'; var nr = document.getElementById('usBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('usBtnHC', states.hc); styleBtn('usBtnDM', states.dm); styleBtn('usBtnCB', states.cb); styleBtn('usBtnNR', states.nr); hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return { init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply(); if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: Doppler toward the probe orange, away blue.'); },
+alt:function(){ return states.hc || states.cb; }, narrate:function(m){ if (!states.nr) return; var nb = document.getElementById('usNarBar'); if (nb) nb.textContent = m; } };
+})();
+</script>
+
+<!-- ════════ SIMULATION ════════
+Pulse-echo: amplitude reflection r = (Z2 - Z1)/(Z2 + Z1), intensity R = r^2; transmitted amplitude factor sqrt(1 - R) each way; attenuation
+alpha (dB/cm/MHz) x f x 2d; depth d = c t/2 with c = 1540 m/s; 2-cycle pulse, axial resolution ~ lambda.
+B-mode: sector probe; each ray is marched through a 2D tissue model; echo = transmitted amplitude x (boundary reflection + scattering
+strength x speckle) (speckle: Rayleigh-distributed value noise fixed in the tissue, grain size set by the wavelength, coarser laterally and
+with depth); log compression over 60 dB; time-gain compensation adds back 0.6 dB/cm/MHz round trip. Harmonic imaging: finer grain, no
+near-field haze, slightly less penetration. Compounding: three speckle patterns averaged. Contrast: microbubbles make blood strongly
+echogenic (and a liver lesion enhance). Colour Doppler: velocity component toward the probe, wrapped at the Nyquist scale (aliasing).
+Doppler tab: shift 2 f0 v cos(theta)/c; displayed velocity uses the operator's angle; aliasing above PRF/2. Waveforms are illustrative.
+All anatomy is schematic. No dollar signs or backticks in the code.
+-->
+<script>
+var usGen = function(){
+  function el(id){ return document.getElementById(id); }
+  function say(m){ usA11y.narrate(m); }
+  var TAU = 2*Math.PI, C = 0.154;   /* cm per microsecond */
+  function lbl(g, t, x, y, col, size, al, bg){ g.font = 'bold ' + (size || 12) + 'px Arial'; g.textAlign = al || 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 3.5; g.strokeStyle = bg || 'rgba(0,0,0,0.85)'; g.strokeText(t, x, y); g.fillStyle = col; g.fillText(t, x, y); g.textBaseline = 'alphabetic'; }
+  var PLAYI = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor"/></svg>', PAUSEI = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>';
+  /* ══════════ TAB 0: pulse-echo ══════════ */
+  var AMAT = { gel:['gel', 1.48, 0.05, '#6fa8c8'], air:['air', 0.0004, 40, '#e8f0ff'], skin:['skin', 1.75, 1.5, '#e8b4a0'], fat:['fat', 1.38, 0.6, '#f2dc8c'], muscle:['muscle', 1.70, 1.0, '#c9605a'], liver:['liver', 1.65, 0.6, '#8a4a3a'], kidney:['kidney', 1.62, 0.8, '#a0525e'], bone:['bone', 7.8, 15, '#f4f1e8'], blood:['blood', 1.66, 0.18, '#b0202a'] };
+  var CFG = [['Abdomen', 'abd'], ['Bone under muscle', 'bone'], ['Two close reflectors', 'res']];
+  var am = { cfg:'abd', f:3.5, gel:true, tgc:true, gap:1.0, t:0, run:false, D:12 };
+  function layers(){ var L = [], top = am.gel ? ['gel', 0, 0.1] : ['air', 0, 0.05], d0 = top[2]; L.push(top);
+    function add(m, th){ L.push([m, d0, d0 + th]); d0 += th; }
+    if (am.cfg === 'abd'){ add('skin', 0.2); add('fat', 1.5); add('muscle', 1.0); add('liver', 5.8); add('kidney', 2.6); add('muscle', 12 - d0); }
+    else if (am.cfg === 'bone'){ add('skin', 0.2); add('muscle', 2.3); add('bone', 1.2); add('muscle', 12 - d0); }
+    else { add('skin', 0.2); add('muscle', 2.8); add('fat', am.gap/10); add('muscle', 0.6); add('blood', am.gap/10); add('muscle', 12 - d0); }
+    return L; }
+  function echoes(){ var L = layers(), E = [], T = 1, att = 0, i; for (i=0; i<L.length; i++){ var m = AMAT[L[i][0]];
+      if (i > 0){ var z1 = AMAT[L[i - 1][0]][1], z2 = m[1], r = (z2 - z1)/(z2 + z1), R = r*r, d = L[i][1]; var A = T*Math.abs(r)*Math.pow(10, -att/20); E.push({ d:d, t:2*d/C, r:r, R:R, A:A, m1:AMAT[L[i - 1][0]][0], m2:m[0], z1:z1, z2:z2, Tin:T }); T *= (1 - R); }
+      att += m[2]*am.f*2*(L[i][2] - L[i][1]); if (T < 1e-9) break; } return E; }
+  var cA = el('amCv'), gA = cA.getContext('2d');
+  function env(t, t0, tau){ var u = (t - t0)/tau; return Math.exp(-u*u*4); }
+  function amDraw(){ var W = cA.width, H = cA.height, g = gA, L = layers(), E = echoes(), Tm = 2*am.D/C, tnow = am.t*Tm, i;
+    g.fillStyle = '#0b1222'; g.fillRect(0, 0, W, H);
+    var X0 = 70, X1 = 250, Y0 = 40, Y1 = H - 20, py = (Y1 - Y0)/am.D; function Yd(d){ return Y0 + d*py; }
+    L.forEach(function(l){ var m = AMAT[l[0]]; g.fillStyle = m[3]; g.globalAlpha = 0.55; g.fillRect(X0, Yd(l[1]), X1 - X0, Math.max(1, Yd(Math.min(am.D, l[2])) - Yd(l[1]))); g.globalAlpha = 1;
+      if (Yd(l[2]) - Yd(l[1]) > 14) lbl(g, m[0], (X0 + X1)/2, (Yd(l[1]) + Yd(Math.min(am.D, l[2])))/2, '#fff', 11); });
+    g.fillStyle = '#5f6b80'; g.fillRect(X0 + 40, 6, X1 - X0 - 80, Y0 - 8); g.fillStyle = '#c9a227'; g.fillRect(X0 + 40, Y0 - 6, X1 - X0 - 80, 4); lbl(g, 'transducer', (X0 + X1)/2, 20, '#fff', 11);
+    g.fillStyle = '#9aa6b4'; g.font = '10px Arial'; g.textAlign = 'right'; for (i=0; i<=am.D; i += 2){ g.fillText(i + ' cm', X0 - 4, Yd(i) + 3); }
+    var lam = C/am.f, tau = 2/am.f;
+    function packet(d, A, down){ if (d < 0 || d > am.D) return; var y = Yd(d), h = Math.max(4, 2*lam*py), a = Math.max(0.15, Math.min(1, (20*Math.log10(A + 1e-9) + 60)/60)); g.strokeStyle = down ? 'rgba(255,214,60,' + a + ')' : 'rgba(127,255,176,' + a + ')'; g.lineWidth = 2; g.beginPath();
+      for (var k=0; k<=40; k++){ var yy = y - h + 2*h*k/40, e = Math.exp(-Math.pow((yy - y)/h*1.5, 2)), xx = (X0 + X1)/2 + 14*e*Math.sin((yy - y)/(lam*py)*TAU); if (k) g.lineTo(xx + (down ? -20 : 20), yy); else g.moveTo(xx + (down ? -20 : 20), yy); } g.stroke(); }
+    if (am.run || am.t > 0){ var dd = C*tnow; if (E.length && E[E.length - 1].A === undefined){} var stopD = am.gel ? am.D : 0.05; packet(Math.min(dd, stopD + 0.01) <= stopD ? dd : -1, 1, true);
+      E.forEach(function(e){ var dz = e.d - C*(tnow - e.t/2); if (tnow >= e.t/2 && dz >= 0) packet(dz, e.A, false); }); }
+    /* A-scan */
+    var Ax0 = 310, Ax1 = W - 20, Ay0 = 30, Ay1 = H - 40; function Xt(t){ return Ax0 + t/Tm*(Ax1 - Ax0); } function Ya(db){ return Ay1 - Math.max(0, Math.min(1, (db + 70)/70))*(Ay1 - Ay0); }
+    g.strokeStyle = 'rgba(150,170,195,0.25)'; g.lineWidth = 1; g.fillStyle = '#9aa6b4'; g.font = '10px Arial'; g.textAlign = 'center';
+    for (var tt = 0; tt <= Tm; tt += 20){ g.beginPath(); g.moveTo(Xt(tt), Ay0); g.lineTo(Xt(tt), Ay1); g.stroke(); g.fillText(tt + ' \u00b5s', Xt(tt), Ay1 + 13); }
+    [-60, -40, -20, 0].forEach(function(db){ g.beginPath(); g.moveTo(Ax0, Ya(db)); g.lineTo(Ax1, Ya(db)); g.stroke(); g.textAlign = 'right'; g.fillText(db + ' dB', Ax0 - 3, Ya(db) + 3); });
+    g.textAlign = 'center'; g.fillText('time after the pulse leaves (\u00b5s)  \u00b7  1 cm of depth = 13 \u00b5s', (Ax0 + Ax1)/2, H - 8); lbl(g, 'A-mode: echo strength against time', (Ax0 + Ax1)/2, 14, '#e6ecf2', 12);
+    var tEnd = am.run || am.t > 0 ? tnow : Tm, npx = Ax1 - Ax0; g.beginPath(); g.moveTo(Ax0, Ay1);
+    for (var p=0; p<=npx; p++){ var t = p/npx*Tm; if (t > tEnd) break; var a = 0; E.forEach(function(e){ a += e.A*env(t, e.t, tau); }); if (am.tgc) a *= Math.pow(10, 0.6*am.f*C*t/20); a += 0.0004; g.lineTo(Ax0 + p, Ya(20*Math.log10(a))); }
+    g.strokeStyle = '#7fffb0'; g.lineWidth = 1.6; g.stroke();
+    E.forEach(function(e){ if (e.t > tEnd || e.t > Tm) return; var a = e.A*(am.tgc ? Math.pow(10, 0.6*am.f*e.d*2/20) : 1); lbl(g, e.d.toFixed(e.d < 1 ? 2 : 1) + ' cm', Xt(e.t), Ya(20*Math.log10(a)) - 10, '#ffd23f', 10); }); }
+  function amText(){ var E = echoes(), lam = 0.154/am.f*10, pen = 60/(2*0.5*am.f);
+    el('amRead').innerHTML = [['frequency', am.f + ' MHz'], ['wavelength \u03bb = v/f', lam.toFixed(2) + ' mm'], ['axial resolution \u2248 \u03bb', lam.toFixed(2) + ' mm'], ['penetration \u2248 60 dB/(2 \u00d7 0.5 dB/cm/MHz \u00d7 f)', pen.toFixed(0) + ' cm'], ['echoes received', E.filter(function(e){ return e.t <= 2*am.D/C; }).length]].map(function(q){ return '<div><div class="us_rl' + '">' + q[0] + '</div><div class="us_rv' + '">' + q[1] + '</div></div>'; }).join('');
+    el('amTbl').innerHTML = '<table class="us_tbl' + '"><thead><tr><th>boundary</th><th>depth d</th><th>t = 2d/v</th><th>Z\u2081 \u2192 Z\u2082</th><th>R reflected</th><th>echo</th></tr></thead><tbody>' + E.map(function(e){ return '<tr><td>' + e.m1 + ' \u2192 ' + e.m2 + '</td><td>' + e.d.toFixed(2) + ' cm</td><td>' + (e.t).toFixed(1) + ' \u00b5s</td><td>' + e.z1 + ' \u2192 ' + e.z2 + '</td><td>' + (e.R >= 0.01 ? (100*e.R).toFixed(1) : (100*e.R).toPrecision(2)) + '%</td><td>' + (20*Math.log10(e.A)).toFixed(0) + ' dB</td></tr>'; }).join('') + '</tbody></table><p class="us_note' + '">R = ((Z\u2082 \u2212 Z\u2081)/(Z\u2082 + Z\u2081))\u00b2. Echo levels before time-gain compensation include losses at every boundary above and attenuation on the way down and back.</p>';
+    var s = !am.gel ? 'Without gel, a thin layer of air sits between the transducer and the skin: R \u2248 ' + (100*echoes()[0].R).toFixed(1) + '%. Almost all the sound bounces straight back and nothing gets into the body. That is why gel is used.' : am.cfg === 'bone' ? 'Bone reflects ' + (100*E[2].R).toFixed(0) + '% of the intensity and absorbs most of the rest: almost nothing comes back from below it (an acoustic shadow). Ultrasound cannot image inside adult bone or air-filled lung.' : am.cfg === 'res' ? (am.gap/10 < 0.154/am.f ? 'The two reflectors are ' + am.gap.toFixed(1) + ' mm apart, less than about one wavelength (' + (1.54/am.f).toFixed(2) + ' mm): their echoes merge into one. Raise the frequency to separate them.' : 'The two reflectors (' + am.gap.toFixed(1) + ' mm apart) give two separate echoes: the pulse is short enough to resolve them.') : 'Soft tissues have similar impedances, so each boundary reflects only a tiny fraction (well under 1%); the rest goes on to deeper boundaries. Deeper echoes are also weaker because of attenuation; time-gain compensation amplifies late echoes to make up for it.';
+    el('amStatus').textContent = s;
+    el('amKey').innerHTML = '<div class="us_eq' + '">d = vt/2 &nbsp;\u00b7&nbsp; Z = \u03c1v &nbsp;\u00b7&nbsp; R = ((Z\u2082 \u2212 Z\u2081)/(Z\u2082 + Z\u2081))\u00b2 &nbsp;\u00b7&nbsp; \u03bb = v/f</div><p><b>Frequency trade-off:</b> higher frequency means a shorter wavelength and finer detail, but attenuation grows with frequency (about 0.5 dB per cm per MHz), so it does not reach as deep. Superficial organs (thyroid, breast, tendons) use 7\u201315 MHz; the abdomen and a pregnant uterus about 3\u20135 MHz; the heart 2\u20134 MHz.</p><p>Sweeping the beam across the body and drawing each echo as a bright dot at its depth gives the familiar <b>B-mode</b> (brightness) image of the next tab.</p>';
+    el('amFv').textContent = am.f + ' MHz'; el('amGapv').textContent = am.gap.toFixed(1) + ' mm'; el('amGapC').hidden = am.cfg !== 'res'; }
+  function amAll(){ amText(); amDraw(); }
+  var amB = el('amPlay'), amTimer = null;
+  amB.addEventListener('click', function(){ if (amTimer){ clearTimeout(amTimer); amTimer = null; am.run = false; amB.innerHTML = PLAYI; return; } am.t = 0; am.run = true; amB.innerHTML = PAUSEI; var s0 = performance.now();
+    (function tick(){ am.t = Math.min(1, (performance.now() - s0)/5000); amDraw(); if (am.t < 1) amTimer = setTimeout(tick, 30); else { amTimer = null; am.run = false; am.t = 0; amB.innerHTML = PLAYI; say(el('amStatus').textContent); } })(); });
+  el('amAll').addEventListener('click', function(){ if (amTimer){ clearTimeout(amTimer); amTimer = null; amB.innerHTML = PLAYI; } am.run = false; am.t = 0; amAll(); });
+  el('amCfg').innerHTML = CFG.map(function(q){ return '<button type="button" data-c="' + q[1] + '" aria-pressed="' + (q[1] === am.cfg ? 'true' : 'false') + '">' + q[0] + '</button>'; }).join('');
+  [].forEach.call(el('amCfg').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ am.cfg = b.getAttribute('data-c'); [].forEach.call(el('amCfg').querySelectorAll('button'), function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); amAll(); say(el('amStatus').textContent); }); });
+  el('amF').addEventListener('input', function(){ am.f = +this.value; amAll(); }); el('amF').addEventListener('change', function(){ say(am.f + ' megahertz: wavelength ' + (1.54/am.f).toFixed(2) + ' millimetres, penetration about ' + (60/am.f).toFixed(0) + ' centimetres.'); });
+  el('amGap').addEventListener('input', function(){ am.gap = +this.value; amAll(); }); el('amGap').addEventListener('change', function(){ say(el('amStatus').textContent); });
+  el('amGel').addEventListener('change', function(){ am.gel = this.checked; amAll(); say(el('amStatus').textContent); }); el('amTgc').addEventListener('change', function(){ am.tgc = this.checked; amAll(); });
+
+  /* ══════════ TAB 1: B-mode scanner ══════════ */
+  /* materials: [Z, scatter, attenuation dB/cm/MHz, name] */
+  var M = [[1.48, 0, 0.05, 'gel'], [1.38, 0.25, 0.6, 'fat'], [1.70, 0.45, 1.0, 'muscle'], [1.65, 0.55, 0.6, 'liver'], [1.52, 0.0006, 0.1, 'fluid'], [1.66, 0.001, 0.18, 'blood'], [7.8, 1.0, 15, 'bone'], [6.0, 1.2, 20, 'stone'], [0.0004, 0, 40, 'air'],
+    [1.63, 0.35, 0.8, 'renal cortex'], [1.63, 0.12, 0.8, 'pyramid'], [1.40, 0.95, 0.7, 'renal sinus fat'], [1.70, 0.5, 1.0, 'myocardium'], [1.80, 1.6, 1.0, 'valve'], [1.95, 1.2, 1.2, 'pericardium'], [1.60, 0.75, 0.8, 'placenta'], [1.62, 0.42, 0.8, 'fetal tissue'], [1.58, 0.12, 0.6, 'brain'], [1.65, 0.5, 0.6, 'lesion'], [1.75, 0.8, 1.5, 'skin'], [1.80, 1.0, 1.0, 'diaphragm'], [1.42, 0.75, 0.6, 'perirenal fat']];
+  var EX = { liver:{ n:'Liver & gallbladder', D:16, half:36, dis:'gallstones', f:3.5 }, kidney:{ n:'Kidney', D:14, half:34, dis:'kidney stone + blocked kidney', f:3.5 }, baby:{ n:'Baby (20 weeks)', D:16, half:38, dis:null, f:3.5 }, echo:{ n:'Echocardiogram', D:18, half:40, dis:'leaking mitral valve', f:2.5 } };
+  var S = { ex:'liver', f:3.5, gain:0, D:16, tgc:true, lab:true, dis:false, meas:false, harm:false, comp:false, col:false, con:false, mm:false, td:false, nyq:0.6, mang:12, t:0, run:true };
+  var VX = 0, VY = 0;
+  function ell(x, y, cx, cy, a, b, r){ var dx = x - cx, dy = y - cy; if (r){ var c = Math.cos(r), s = Math.sin(r), u = dx*c + dy*s, v = -dx*s + dy*c; dx = u; dy = v; } return dx*dx/(a*a) + dy*dy/(b*b); }
+  function seg(px, py, ax, ay, bx, by){ var dx = bx - ax, dy = by - ay, L2 = dx*dx + dy*dy, t = Math.max(0, Math.min(1, ((px - ax)*dx + (py - ay)*dy)/L2)); return Math.hypot(px - ax - t*dx, py - ay - t*dy); }
+  function wall(y){ return y < 0.25 ? 19 : y < 1.6 ? 1 : y < 2.6 ? 2 : -1; }
+  /* --- liver & gallbladder --- */
+  function tLiver(x, y, t){ var w = wall(y); if (w >= 0) return w;
+    var yd = 12.8 - 0.025*x*x; if (y > yd + 0.35) return 8; if (y > yd) return 20;
+    var e = ell(x, y, -2.6, 7.2, 2.4, 1.3, 0.35); if (e < 1){ if (S.dis && (ell(x, y, -2.1, 7.95, 0.42, 0.42) < 1 || ell(x, y, -3.0, 7.85, 0.3, 0.3) < 1)) return 7; return 4; } if (e < 1.18) return 20;
+    if (ell(x, y, 2.0, 8.8, 1.15, 0.55, 0.15) < 1){ VX = 0.22; VY = -0.03; return 5; }
+    var d1 = seg(x, y, 4.6, 5.0, 2.6, 11.4); if (d1 < 0.38){ VX = -0.06; VY = 0.18; return 5; }
+    var d2 = seg(x, y, -5.5, 6.0, -1.5, 11.6); if (d2 < 0.32){ VX = 0.1; VY = 0.14; return 5; }
+    if (ell(x, y, 3.4, 4.8, 1.0, 1.0) < 1) return 18;
+    return 3; }
+  /* --- kidney (seen through the liver) --- */
+  function tKidney(x, y, t){ var w = wall(y); if (w >= 0) return w;
+    var c = Math.cos(-0.15), s = Math.sin(-0.15), u = (x - 0)*c + (y - 8.4)*s, v = -(x - 0)*s + (y - 8.4)*c, e = u*u/25 + v*v/6.8;
+    if (e < 1){ if (e > 0.93) return 14;
+      var sin = u*u/(2.9*2.9) + v*v/(0.9*0.9);
+      if (S.dis){ if ((u - 0.8)*(u - 0.8) + (v - 0.15)*(v - 0.15) < 0.12) return 7; if (u*u/(2.3*2.3) + v*v/(0.62*0.62) < 1) return 4; for (var k=-2; k<=2; k++){ if (k !== 0 && ((u - k*1.3)*(u - k*1.3)/0.25 + (v - (k % 2 ? 1.1 : -1.1))*(v - (k % 2 ? 1.1 : -1.1))/0.2) < 1) return 4; } }
+      if (sin < 1){ if (Math.abs(v + 0.15) < 0.13 && Math.abs(u) < 2.6){ VX = 0.35*c; VY = 0.35*s; return 5; } return 11; }
+      for (var j=-3; j<=3; j++){ var pu = j*1.15, pv = (j % 2 ? 1 : -1)*1.55; if ((u - pu)*(u - pu)/0.28 + (v - pv)*(v - pv)/0.24 < 1) return 10; }
+      for (var q=-2; q<=2; q++){ var dd = seg(u, v, q*1.4, 0.4, q*1.6, 1.9), dd2 = seg(u, v, q*1.4, -0.4, q*1.6, -1.9); if (dd < 0.11){ VX = 0.25*(q*0.2*c - s); VY = 0.25*(q*0.2*s + c); return 5; } if (dd2 < 0.11){ VX = 0.25*(q*0.2*c + s); VY = 0.25*(q*0.2*s - c); return 5; } }
+      return 9; }
+    if (e < 1.5) return 21;
+    if (y < 6.0 + 0.12*x) return 3;
+    if (y > 12.3) return 2; return 21; }
+  /* --- baby --- */
+  var CORD = [];
+  function tBaby(x, y, t){ var w = wall(y); if (w >= 0) return w;
+    var ue = ell(x, y, 0, 9.6, 8.2, 7.1); if (ue > 1) return 2; if (ue > 0.86) return 2;
+    var yt = 9.6 - 7.1*0.93*Math.sqrt(Math.max(0, 1 - x*x/(8.2*8.2*0.86))), th = 2.0*Math.max(0, 1 - Math.pow((x + 2.5)/4.6, 2)); if (y < yt + th) return 15;
+    var ox = 0.35*Math.sin(0.5*t), oy = 0.2*Math.sin(0.37*t), X = x - ox, Y = y - oy;
+    var he = ell(X, Y, -2.7, 8.5, 2.75, 2.45); if (he < 1){ if (he > 0.84) return 6; if (Math.abs(X + 2.7) < 0.05 && Math.abs(Y - 8.5) < 1.9) return 14; if (ell(X, Y, -2.7, 8.0, 0.35, 1.0) < 1) return 4; return 17; }
+    var cb = Math.cos(0.15), sb = Math.sin(0.15), bu = (X - 2.6)*cb + (Y - 10.3)*sb, bv = -(X - 2.6)*sb + (Y - 10.3)*cb, be = bu*bu/(3.2*3.2) + bv*bv/(2.3*2.3);
+    if (be < 1){ for (var k=-5; k<=5; k++){ if ((bu - k*0.52)*(bu - k*0.52) + (bv - 1.65)*(bv - 1.65) < 0.05) return 6; }
+      var hp = (t*140/60) % 1, sq = hp < 0.4 ? Math.sin(Math.PI*hp/0.4) : 0, s2 = 1 - 0.25*sq, hu = bu - 0.4, hv = bv + 0.3;
+      if (hu*hu/(1.1*1.1) + hv*hv/(0.95*0.95) < 1){ if ((hu + 0.35)*(hu + 0.35)/(0.38*s2*0.38*s2) + hv*hv/(0.42*s2*0.42*s2) < 1 || (hu - 0.38)*(hu - 0.38)/(0.36*s2*0.36*s2) + hv*hv/(0.4*s2*0.4*s2) < 1){ var f = hp < 0.4 ? 0.5*sq : 0.35*Math.sin(Math.PI*(hp - 0.4)/0.6); VX = f*(hp < 0.4 ? 0.8 : -0.8); VY = f*(hp < 0.4 ? -0.6 : 0.6); return 5; } return 12; }
+      if ((bu + 1.3)*(bu + 1.3) + (bv - 0.2)*(bv - 0.2) < 0.28) return 4;
+      return 16; }
+    var da = seg(X, Y, 0.9, 8.4, -0.4, 6.5); if (da < 0.38) return da < 0.1 ? 6 : 16;
+    var dl = seg(X, Y, 5.1, 9.6, 5.8, 6.9); if (dl < 0.45) return dl < 0.12 ? 6 : 16;
+    if (y < 5.3) { /* cord near the placenta */ }
+    if (x > -2.6 && x < 3.4 && y > 3.6 && y < 9.6) for (var i=0; i<CORD.length - 1; i++){ var d = seg(x, y, CORD[i][0], CORD[i][1], CORD[i + 1][0], CORD[i + 1][1]); if (d < 0.33){ if (d < 0.13){ var tx = CORD[i + 1][0] - CORD[i][0], ty = CORD[i + 1][1] - CORD[i][1], L = Math.hypot(tx, ty), sp = 0.18 + 0.25*Math.max(0, Math.sin(TAU*t*140/60)); VX = tx/L*sp; VY = ty/L*sp; return 5; } return 16; } }
+    return 4; }
+  function cordPts(t){ var ox = 0.35*Math.sin(0.5*t), oy = 0.2*Math.sin(0.37*t), P = []; for (var i=0; i<=24; i++){ var s = i/24, ax = -0.8, ay = 4.3, bx = 1.4 + ox, by = 8.6 + oy; P.push([ax + (bx - ax)*s + 0.9*Math.sin(5.5*s + 0.4*t)*Math.sin(Math.PI*s), ay + (by - ay)*s + 0.4*Math.sin(7*s)*Math.sin(Math.PI*s)]); } CORD = P; }
+  /* --- echocardiogram, apical four-chamber --- */
+  var H = {};
+  function heart(t){ var p = (t/0.857) % 1, sq = p < 0.38 ? Math.sin(Math.PI*p/0.38) : 0, ak = p > 0.8 && p < 0.97 ? Math.sin(Math.PI*(p - 0.8)/0.17) : 0;
+    var oE = p > 0.42 && p < 0.72 ? Math.sin(Math.PI*(p - 0.42)/0.3) : 0, oA = ak, open = Math.max(oE, 0.75*oA), eHalf = p >= 0.38 && p <= 0.42 ? 0 : 0;
+    H = { p:p, sq:sq, sv:1 - 0.2*sq + 0.04*ak, sa:1 + 0.14*sq - 0.12*ak, yav:10.2 - 0.8*sq, open:Math.max(open, p > 0.72 && p <= 0.8 ? 0.45 : 0), E:oE, A:oA }; }
+  function leaf(x, y, ax, ay, sgn){ var o = H.open, cl = S.dis ? 0.85 : 1.0, dx = (1 - o)*sgn*1 + o*sgn*0.22, dy = (1 - o)*0.12 + o*(-1), L = Math.hypot(dx, dy), len = 1.25*(o > 0.05 ? 1 : cl); return seg(x, y, ax, ay, ax + dx/L*len, ay + dy/L*len) < 0.11; }
+  function tEcho(x, y, t){ if (y < 0.25) return 19; if (y < 1.0) return 1; if (y < 2.4) return 2;
+    var env = ell(x, y, 0, 8.7, 5.5, 6.1); if (env > 1){ if (env < 1.08) return 14; if (Math.abs(x) > 4.6 && y < 13) return 8; if (ell(x, y, 2.3, 16.0, 0.9, 0.9) < 1){ VX = 0; VY = 0; return 5; } return 2; }
+    var yav = H.yav, sv = H.sv, sa = H.sa, lvb = (yav - 3.4)/2, rvb = (yav - 4.3)/2;
+    if (leaf(x, y, 2.3 - 1.3, yav, 1) || leaf(x, y, 2.3 + 1.3, yav, -1) || leaf(x, y, -2.4 - 1.1, yav, 1) || leaf(x, y, -2.4 + 1.1, yav, -1)) return 13;
+    var lv = y <= yav && ell(x, y, 2.2, 3.4 + lvb, 1.95*sv, lvb) < 1, rv = y <= yav && ell(x, y, -2.45, 4.3 + rvb, 1.7*sv, rvb) < 1,
+      la = y > yav && ell(x, y, 2.3, yav + 1.85*sa + 0.15, 1.9*sa, 1.85*sa) < 1, ra = y > yav && ell(x, y, -2.35, yav + 1.7*sa + 0.15, 1.8*sa, 1.7*sa) < 1;
+    var valveOpen = Math.abs(y - yav) < 0.18 && ((Math.abs(x - 2.3) < 1.3 && H.open > 0.05) || (Math.abs(x + 2.4) < 1.1 && H.open > 0.05) || (S.dis && Math.abs(x - 2.3) < 0.25));
+    if (lv || rv || la || ra || valveOpen){ VX = 0; VY = 0; var vin = 0.85*H.E + 0.55*H.A;
+      if (vin > 0.02){ var cxv = x > 0 ? 2.3 : -2.4, lat = Math.exp(-Math.pow((x - cxv)/1.0, 2)); if (y <= yav + 0.2) { VY = -vin*lat*Math.exp(-(yav - y)/3.2); VX = 0.05*(x - cxv)*VY; } else VY = -0.35*vin*lat; }
+      if (S.dis && H.sq > 0.05 && y > yav - 0.2 && x > 0){ var dy = y - yav, dx = x - 2.35; if (Math.abs(dx) < 0.2 + 0.32*dy && dy < 3.6){ VY = 4.5*H.sq*Math.exp(-dy/3.5); VX = 0.5*dx*H.sq; } }
+      if (!S.dis && H.sq > 0.05 && lv){ VY = -0.25*H.sq*Math.exp(-Math.pow((x - 1.2)/0.8, 2)); }
+      return 5; }
+    return 12; }
+  var TIS = { liver:tLiver, kidney:tKidney, baby:tBaby, echo:tEcho };
+  /* speckle */
+  function hsh(ix, iy, k){ var h = Math.imul(ix, 374761393) + Math.imul(iy, 668265263) + Math.imul(k, 1442695041); h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0)/4294967296; }
+  var RT = new Float32Array(4096); (function(){ for (var i=0; i<4096; i++) RT[i] = Math.sqrt(-2*Math.log((i + 0.5)/4096))*0.8; })();
+  function ray(u){ return RT[(u*4096) | 0]; }
+  function speck(x, y, cx, cy, k){ var fx = x/cx, fy = y/cy, ix = Math.floor(fx), iy = Math.floor(fy), u = fx - ix, v = fy - iy;
+    return (ray(hsh(ix, iy, k))*(1 - u) + ray(hsh(ix + 1, iy, k))*u)*(1 - v) + (ray(hsh(ix, iy + 1, k))*(1 - u) + ray(hsh(ix + 1, iy + 1, k))*u)*v; }
+  /* geometry */
+  var cS = el('scCv'), gS = cS.getContext('2d'), SW = cS.width, SH = cS.height, NR = 128, NS = 256, AX = 300, AY = 18, PS = 1, MAP = null, IMG = gS.createImageData(SW, SH);
+  var GRAY = new Uint8Array(NR*NS), VEL = new Float32Array(NR*NS), BLD = new Uint8Array(NR*NS), HALF = 36*Math.PI/180;
+  function geom(){ var e = EX[S.ex]; HALF = e.half*Math.PI/180; PS = (SH - AY - 12)/S.D; MAP = new Int32Array(SW*SH);
+    for (var py=0; py<SH; py++) for (var px=0; px<SW; px++){ var x = (px - AX)/PS, y = (py - AY)/PS, r = Math.hypot(x, y), th = Math.atan2(x, y), k = py*SW + px;
+      if (r < S.D && r > 0.05 && Math.abs(th) < HALF && px < 600){ var i = Math.floor((th + HALF)/(2*HALF)*NR), j = Math.floor(r/S.D*NS); MAP[k] = i*NS + j; } else MAP[k] = -1; } }
+  function frame(t){ var tis = TIS[S.ex], f = S.f, dz = S.D/NS, lam = 0.154/f, i, j;
+    if (S.ex === 'echo') heart(t); if (S.ex === 'baby') cordPts(t);
+    var harmF = S.harm ? 1.15 : 1, attF = M.map(function(m){ return Math.pow(10, -(m[2]*f*harmF*dz*2)/20); }), gainL = Math.pow(10, S.gain/20);
+    var tgcF = new Float32Array(NS); for (j=0; j<NS; j++) tgcF[j] = S.tgc ? Math.pow(10, Math.min(70, 0.6*f*harmF*2*(j + 0.5)*dz)/20) : 1;
+    var cy0 = lam*(S.harm ? 0.85 : 1.2), cxs = lam*(S.harm ? 2.3 : 3.0);
+    for (i=0; i<NR; i++){ var th = -HALF + (i + 0.5)/NR*2*HALF, sx = Math.sin(th), sy = Math.cos(th), A = 1, prevZ = 1.48;
+      for (j=0; j<NS; j++){ var r = (j + 0.5)*dz, x = r*sx, y = r*sy; VX = 0; VY = 0; var m = tis(x, y, t), mm = M[m], Z = mm[0], rr = (Z - prevZ)/(Z + prevZ); prevZ = Z;
+        var cx = cxs*(1 + 0.7*r/S.D), sp = S.comp ? (speck(x, y, cx, cy0, 1) + speck(x, y, cx, cy0, 2) + speck(x, y, cx, cy0, 3))/3 : speck(x, y, cx, cy0, 1), sc = mm[1];
+        if (m === 5 && S.con) sc = 1.4; if (m === 18 && S.con) sc = 1.5; if (m === 5 && S.ex === 'echo' && !S.con) sc = 0.02;
+        var echo = A*(Math.abs(rr)*1.6 + sc*sp*0.045);
+        A *= (1 - rr*rr)*attF[m]; echo = echo*tgcF[j]*gainL + 0.0004*Math.random();
+        if (!S.harm && r < 4) echo += 0.004*Math.exp(-r/1.4)*(0.5 + hsh(i, j, 7))*gainL;
+        var v = (20*Math.log10(echo) + 60)/60*255, k = i*NS + j; GRAY[k] = v < 0 ? 0 : v > 255 ? 255 : v; BLD[k] = m === 5 ? 1 : 0;
+        if (m === 5 && S.col){ VEL[k] = -(VX*sx + VY*sy); } else VEL[k] = 0; } } }
+  function colOf(v){ var n = S.nyq; v = ((v + n) % (2*n) + 2*n) % (2*n) - n; var a = Math.min(1, Math.abs(v)/n); if (Math.abs(v) < 0.04*n + 0.02) return null; if (usA11y.alt()) return v > 0 ? [230, 159*a + 60*(1 - a), 0] : [0, 114 + 100*a, 178 + 60*a];
+    return v > 0 ? [120 + 135*a, 30 + 200*a*a, 0] : [0, 60 + 190*a*a, 160 + 95*a]; }
+  var CBOX = { liver:[-0.15, 0.55, 4, 12], kidney:[-0.45, 0.45, 5, 11.5], baby:[-0.35, 0.45, 3.5, 11.5], echo:[-0.25, 0.42, 6, 15] };
+  function draw(){ var d = IMG.data, k, box = CBOX[S.ex], i0 = Math.floor((box[0] + 0.5)*NR), i1 = Math.floor((box[1] + 0.5)*NR), j0 = Math.floor(box[2]/S.D*NS), j1 = Math.floor(Math.min(S.D, box[3])/S.D*NS);
+    for (k=0; k<SW*SH; k++){ var q = MAP[k], o = 4*k; if (q < 0){ d[o] = d[o + 1] = d[o + 2] = 0; d[o + 3] = 255; continue; } var g = GRAY[q]; d[o] = g; d[o + 1] = g; d[o + 2] = g; d[o + 3] = 255;
+      if (S.col && BLD[q]){ var ii = (q/NS) | 0, jj = q % NS; if (ii >= i0 && ii <= i1 && jj >= j0 && jj <= j1){ var c = colOf(VEL[q]); if (c){ d[o] = c[0]; d[o + 1] = c[1]; d[o + 2] = c[2]; } } } }
+    gS.putImageData(IMG, 0, 0);
+    /* depth ticks */ gS.fillStyle = '#ccc'; gS.font = '10px Arial'; gS.textAlign = 'left'; for (var cm=1; cm<S.D; cm++){ var px = AX + Math.sin(HALF)*cm*PS + 6, py = AY + Math.cos(HALF)*cm*PS; gS.fillRect(px - 2, py - 1, cm % 5 ? 3 : 6, 2); if (cm % 5 === 0) gS.fillText(cm + ' cm', px + 6, py + 4); }
+    if (S.col){ var a0 = -HALF + (i0/NR)*2*HALF, a1 = -HALF + ((i1 + 1)/NR)*2*HALF, r0 = j0/NS*S.D*PS, r1 = j1/NS*S.D*PS; gS.strokeStyle = 'rgba(255,255,255,0.6)'; gS.lineWidth = 1; gS.beginPath(); gS.arc(AX, AY, r0, Math.PI/2 - a1, Math.PI/2 - a0); gS.arc(AX, AY, r1, Math.PI/2 - a0, Math.PI/2 - a1, true); gS.closePath(); gS.stroke(); }
+    if (S.mm && (S.ex === 'echo' || S.ex === 'baby')){ var ma = S.mang*Math.PI/180; gS.setLineDash([4, 4]); gS.strokeStyle = '#7fffb0'; gS.beginPath(); gS.moveTo(AX, AY); gS.lineTo(AX + Math.sin(ma)*S.D*PS, AY + Math.cos(ma)*S.D*PS); gS.stroke(); gS.setLineDash([]); }
+    /* screen text like a scanner */
+    gS.fillStyle = '#9fd0ff'; gS.font = '11px monospace'; gS.textAlign = 'left'; var e = EX[S.ex], ti = (0.2 + 0.05*S.f + (S.col ? 0.6 : 0)).toFixed(1), mi = (0.9 - 0.03*S.f + (S.con ? -0.8 : 0)).toFixed(1);
+    [e.n.toUpperCase(), (S.harm ? 'THI ' : '') + S.f + ' MHz', 'Gain ' + (S.gain > 0 ? '+' : '') + S.gain + ' dB', 'Depth ' + S.D + ' cm', 'TGC ' + (S.tgc ? 'auto' : 'off'), 'TIS ' + ti + '  MI ' + Math.max(0.1, +mi).toFixed(1)].forEach(function(l, k2){ gS.fillText(l, 8, 16 + k2*14); });
+    if (S.ex === 'echo'){ gS.fillText('HR 70 bpm', 8, 16 + 6*14); drawECG(); }
+    /* grayscale and colour bars */ var bx = 612; for (var yb=0; yb<120; yb++){ var gv = Math.round(255*(1 - yb/119)); gS.fillStyle = 'rgb(' + gv + ',' + gv + ',' + gv + ')'; gS.fillRect(bx, 40 + yb, 10, 1); }
+    gS.fillStyle = '#ccc'; gS.font = '10px Arial'; gS.fillText('echo', bx - 2, 34);
+    if (S.col){ for (var yc=0; yc<120; yc++){ var vv = S.nyq*(1 - 2*yc/119), c2 = colOf(vv) || [0, 0, 0]; gS.fillStyle = 'rgb(' + c2.map(Math.round).join(',') + ')'; gS.fillRect(bx + 30, 40 + yc, 10, 1); } gS.fillStyle = '#ccc'; gS.fillText('+' + Math.round(S.nyq*100) + ' cm/s', bx + 44, 44); gS.fillText('toward', bx + 44, 58); gS.fillText('away', bx + 44, 150); gS.fillText('\u2212' + Math.round(S.nyq*100), bx + 44, 164); }
+    if (S.lab) labels(); if (S.meas) measures();
+    if (S.con){ lbl(gS, 'CONTRAST', 560, 30, '#ffb000', 12); } }
+  function drawECG(){ var x0 = 612, y0 = SH - 60, w = 200; gS.strokeStyle = '#4fe39a'; gS.lineWidth = 1.5; gS.beginPath(); for (var k=0; k<=w; k++){ var tt = S.t - (w - k)/w*2.0, p = ((tt/0.857) % 1 + 1) % 1, v = 0; v += 0.15*Math.exp(-Math.pow((p - 0.88)/0.025, 2)); v += Math.exp(-Math.pow((p - 0.0)/0.008, 2)) + Math.exp(-Math.pow((p - 1)/0.008, 2)) - 0.25*Math.exp(-Math.pow((p - 0.025)/0.01, 2)); v += 0.25*Math.exp(-Math.pow((p - 0.3)/0.05, 2)); if (k) gS.lineTo(x0 + k, y0 - 30*v); else gS.moveTo(x0 + k, y0 - 30*v); } gS.stroke(); gS.fillStyle = '#4fe39a'; gS.font = '10px Arial'; gS.textAlign = 'left'; gS.fillText('ECG', x0, y0 + 16);
+    var ph = H.p, st = ph < 0.38 ? 'systole: ventricles contract, valves closed' : ph < 0.42 ? 'relaxation' : ph < 0.72 ? 'diastole: E wave, valves open' : ph < 0.8 ? 'diastasis' : 'atrial kick (A wave)'; gS.fillStyle = '#ffd23f'; gS.fillText(st, x0, y0 + 32); }
+  function P(x, y){ return [AX + x*PS, AY + y*PS]; }
+  function tag(x, y, t, tx, ty){ var a = P(x, y), b = P(tx, ty); gS.strokeStyle = 'rgba(255,214,60,0.8)'; gS.lineWidth = 1; gS.beginPath(); gS.moveTo(a[0], a[1]); gS.lineTo(b[0], b[1]); gS.stroke(); gS.fillStyle = '#ffd23f'; gS.beginPath(); gS.arc(a[0], a[1], 2.5, 0, TAU); gS.fill(); lbl(gS, t, b[0], b[1], '#ffd23f', 11, tx > x ? 'left' : 'right'); }
+  function labels(){ var L = { liver:[[1, 4, 'liver', 4.5, 3.2], [-2.6, 7.2, 'gallbladder (bile)', -6, 6], [2, 8.8, 'portal vein', 5.5, 9.5], [3.6, 9, 'hepatic vein', 6, 11], [0, 12.6, 'diaphragm', -4, 13.6], [-3, 0.9, 'fat', -6, 1.5], [0, 2.1, 'muscle', 4, 2.0]].concat(S.dis ? [[-2.1, 7.95, 'stones + shadows', -7.5, 9.5]] : []).concat(S.con ? [[3.4, 4.8, 'lesion (enhancing)', 6.5, 5]] : []),
+      kidney:[[0, 4, 'liver', 4, 3.6], [-3.5, 8.8, 'renal cortex', -7, 7], [1.2, 7.0, 'pyramid', 5.5, 6.3], [0.2, 8.4, S.dis ? 'dilated collecting system' : 'renal sinus (fat)', 5.5, 9.0], [-4.9, 9.3, 'capsule', -7, 11]].concat(S.dis ? [[0.8, 8.5, 'stone + shadow', 6, 11.5]] : []),
+      baby:[[-2.7, 6.2, 'skull', -6.5, 5], [-2.7, 8.5, 'brain', -6.8, 8.6], [2.9, 10, 'heart', 6.8, 12.3], [2.6, 11.9, 'spine', 5.5, 13.5], [-3, 3.6, 'placenta', -6.5, 2.8], [1.0, 6.5, 'umbilical cord', 4.6, 5], [5.5, 8.2, 'leg (femur)', 7.2, 7.5], [-5.5, 11.5, 'amniotic fluid', -7.2, 13.5]],
+      echo:[[2.2, 6.2, 'LV', 5.5, 5.5], [-2.4, 6.6, 'RV', -5.4, 5.5], [2.3, 12, 'LA', 5.4, 13.5], [-2.3, 12, 'RA', -5.4, 13.5], [0, 7, 'septum', 0.7, 4.0], [2.3, 10.0, 'mitral valve', 6.5, 9.8], [-2.4, 10.0, 'tricuspid valve', -6.6, 9.8], [5.6, 9, 'lung (air)', 7.6, 11.5]] }[S.ex];
+    L.forEach(function(q){ tag(q[0], q[1], q[2], q[3], q[4]); }); }
+  function measures(){ var M2 = S.ex === 'baby' ? [[-2.7 + 0.35*Math.sin(0.5*S.t), 6.1, -2.7 + 0.35*Math.sin(0.5*S.t), 10.9, 'BPD 4.8 cm'], [5.1, 9.6, 5.8, 6.9, 'FL 2.8 cm']] : S.ex === 'kidney' ? [[-4.9, 9.1, 4.9, 7.7, 'length 9.9 cm']] : S.ex === 'liver' ? [[-4.8, 6.5, -0.4, 7.9, 'GB 4.6 cm']] : [[0.3, 6.6, 4.1, 6.6, 'LV width ' + (3.9*H.sv).toFixed(1) + ' cm']];
+    M2.forEach(function(q){ var a = P(q[0], q[1]), b = P(q[2], q[3]); gS.strokeStyle = '#7fffb0'; gS.setLineDash([3, 3]); gS.lineWidth = 1.5; gS.beginPath(); gS.moveTo(a[0], a[1]); gS.lineTo(b[0], b[1]); gS.stroke(); gS.setLineDash([]); [a, b].forEach(function(p){ lbl(gS, '+', p[0], p[1], '#7fffb0', 14); }); lbl(gS, q[4], (a[0] + b[0])/2 + 8, (a[1] + b[1])/2, '#7fffb0', 12, 'left'); }); }
+  /* M-mode */
+  var cM = el('scM'), gM = cM.getContext('2d'), MBUF = [], lastPush = 0;
+  function mPush(t){ if (t - lastPush < 0.025) return; lastPush = t; var ma = S.mang*Math.PI/180, i = Math.max(0, Math.min(NR - 1, Math.floor((ma + HALF)/(2*HALF)*NR))), col = new Uint8Array(NS*3);
+    for (var j=0; j<NS; j++){ var q = i*NS + j, g = GRAY[q], c = S.col && BLD[q] ? colOf(VEL[q]) : null; col[3*j] = c ? c[0] : g; col[3*j + 1] = c ? c[1] : g; col[3*j + 2] = c ? c[2] : g; } MBUF.push(col); if (MBUF.length > 360) MBUF.shift(); }
+  function mDraw(){ var W = cM.width, Hh = cM.height, id = gM.createImageData(360, NS), k, j; for (k=0; k<MBUF.length; k++){ var col = MBUF[k], x = 360 - MBUF.length + k; for (j=0; j<NS; j++){ var o = 4*(j*360 + x); id.data[o] = col[3*j]; id.data[o + 1] = col[3*j + 1]; id.data[o + 2] = col[3*j + 2]; id.data[o + 3] = 255; } }
+    var tmp = document.createElement('canvas'); tmp.width = 360; tmp.height = NS; tmp.getContext('2d').putImageData(id, 0, 0); gM.fillStyle = '#000'; gM.fillRect(0, 0, W, Hh); gM.imageSmoothingEnabled = true; gM.drawImage(tmp, 40, 6, W - 50, Hh - 26);
+    gM.fillStyle = '#9aa6b4'; gM.font = '10px Arial'; gM.textAlign = 'right'; for (var cm=0; cm<=S.D; cm += 5) gM.fillText(cm + ' cm', 36, 6 + cm/S.D*(Hh - 26) + 4); gM.textAlign = 'center'; for (var s=0; s<=9; s++) gM.fillText(s === 9 ? 'now' : '\u2212' + (9 - s) + ' s', 40 + s/9*(W - 50), Hh - 6); }
+  /* 3D fetus */
+  var c3 = el('sc3'), g3 = c3.getContext('2d'), R3W = 300, R3H = 220, R3 = g3.createImageData(R3W, R3H);
+  function blob(u, v, cu, cv, a, b, h){ var q = 1 - (u - cu)*(u - cu)/(a*a) - (v - cv)*(v - cv)/(b*b); return q > 0 ? h*Math.sqrt(q) : -1e9; }
+  function render3(t){ var d = R3.data, hm = new Float32Array(R3W*R3H), u, v, k, mo = 0.5 + 0.5*Math.sin(t*1.3), hx = 12*Math.sin(t*0.7), hy = 6*Math.sin(t*0.9);
+    for (v=0; v<R3H; v++) for (u=0; u<R3W; u++){ var U = u - 150, V = v - 110, h = blob(U, V, -5, -10, 78, 88, 70);
+      if (h > 0){ h += Math.max(0, blob(U, V, -5, 18, 10, 14, 14)); h += Math.max(0, blob(U, V, -30, 22, 18, 16, 8)) + Math.max(0, blob(U, V, 20, 22, 18, 16, 8));
+        h -= Math.max(0, blob(U, V, -28, -2, 13, 7, 7)) + Math.max(0, blob(U, V, 18, -2, 13, 7, 7)); h += Math.max(0, blob(U, V, -28, 0, 11, 2.5, 3)) + Math.max(0, blob(U, V, 18, 0, 11, 2.5, 3));
+        h += Math.max(0, blob(U, V, -5, 40, 13, 4, 6)) + Math.max(0, blob(U, V, -5, 49 + 2*mo, 11, 4, 6)); h -= Math.max(0, blob(U, V, -5, 44.5 + mo, 10, 1.5 + 2*mo, 6)); h += Math.max(0, blob(U, V, -5, 64, 22, 14, 6)); h += Math.max(0, blob(U, V, 64, -2, 9, 18, 8)); }
+      var hand = Math.max(blob(U, V, 50 + hx, 58 + hy, 24, 17, 92), blob(U, V, 72 + hx, 70 + hy, 30, 10, 84)); for (k=0; k<4; k++) hand = Math.max(hand, blob(U, V, 33 + hx + k*7, 40 + hy - k*1.5, 3.5, 14, 94));
+      var body = blob(U, V, 40, 150, 110, 70, 40), plac = 8 + 6*Math.sin(U*0.05 + V*0.03); hm[v*R3W + u] = Math.max(h, hand, body, plac); }
+    for (v=1; v<R3H - 1; v++) for (u=1; u<R3W - 1; u++){ var i = v*R3W + u, hh = hm[i], nx = hm[i - 1] - hm[i + 1], ny = hm[i - R3W] - hm[i + R3W], nz = 2, L = Math.hypot(nx, ny, nz), lam = Math.max(0, (nx*-0.4 + ny*-0.5 + nz*0.77)/L), dep = Math.max(0, Math.min(1, hh/90)), o = 4*i;
+      var spec = Math.pow(Math.max(0, (nx*-0.2 + ny*-0.3 + nz*0.93)/L), 30)*0.4, br = (0.15 + 0.85*lam)*(0.35 + 0.65*dep);
+      d[o] = Math.min(255, 255*br + 255*spec); d[o + 1] = Math.min(255, 180*br + 200*spec); d[o + 2] = Math.min(255, 110*br + 150*spec); d[o + 3] = 255; }
+    var tmp = document.createElement('canvas'); tmp.width = R3W; tmp.height = R3H; tmp.getContext('2d').putImageData(R3, 0, 0); g3.fillStyle = '#000'; g3.fillRect(0, 0, c3.width, c3.height); g3.imageSmoothingEnabled = true; var w = c3.height*R3W/R3H; g3.drawImage(tmp, (c3.width - w)/2, 0, w, c3.height);
+    lbl(g3, 'face and hand of a 20-week baby (schematic) \u00b7 live 3D = "4D"', c3.width/2, c3.height - 12, '#ffd9a8', 12); }
+  /* text */
+  function scText(){ var e = EX[S.ex], pen = 60/(2*0.6*S.f*(S.harm ? 1.15 : 1));
+    el('scIntro').innerHTML = { liver:'<b>Abdominal scan</b> with a curved (sector) probe below the right ribs. Fluid such as bile and blood is black (anechoic); the liver is a fine grey speckle; the diaphragm is a bright curve with air-filled lung below it.', kidney:'<b>Kidney scan</b> through the liver, which acts as an acoustic window. The cortex is grey, the pyramids darker, and the central sinus fat bright.', baby:'<b>Obstetric scan</b> at about 20 weeks. Amniotic fluid is black, bone is bright with a shadow behind it. The baby moves, and its heart beats about 140 times a minute.', echo:'<b>Echocardiogram</b>, apical four-chamber view: the probe sits at the apex of the heart, between the ribs. Blood is black, heart muscle grey, and the valves bright, opening and closing. The heart beats at 70 per minute.' }[S.ex];
+    var s = [];
+    if (S.f > 6 && S.D > 10) s.push('At ' + S.f + ' MHz the beam cannot reach the deep parts (\u2248 ' + pen.toFixed(0) + ' cm): the image fades out. Lower the frequency.');
+    if (!S.tgc) s.push('Without time-gain compensation, deep echoes are weaker: the bottom of the image is dark.');
+    if (S.dis && S.ex === 'liver') s.push('Gallstones reflect strongly and absorb the rest: bright dots with a black acoustic shadow behind them.');
+    if (S.dis && S.ex === 'kidney') s.push('A stone (bright, with a shadow) blocks the outflow: the collecting system fills with urine (hydronephrosis, black).');
+    if (S.dis && S.ex === 'echo') s.push(S.col ? 'In systole a high-speed jet (blue and yellow mosaic, aliasing) leaks back from the left ventricle into the left atrium: mitral regurgitation.' : 'Turn on colour Doppler to see the leak.');
+    if (S.col && !S.dis) s.push('Colour Doppler: red is flow toward the probe, blue away (not arteries and veins!). Speeds above the scale wrap around (aliasing).');
+    if (S.con) s.push(S.ex === 'liver' ? 'Microbubbles make the blood bright; the lesion that was invisible fills with contrast, because it has an abnormal blood supply.' : S.ex === 'echo' ? 'Microbubbles fill the heart chambers, showing the inner border of the heart muscle clearly.' : 'Microbubbles (gas bubbles a few micrometres across) make every blood vessel bright.');
+    if (!s.length) s.push(e.n + ' at ' + S.f + ' MHz, depth ' + S.D + ' cm.');
+    el('scStatus').textContent = s.join(' ');
+    el('scExp').innerHTML = '<p>Each line of the fan is one pulse-echo measurement: brightness = echo strength, position = time of the echo. About ' + NR + ' lines make a frame, many frames per second, so the image moves in real time.</p><p><b>Speckle</b> (the grainy texture) is the interference of echoes from tiny scatterers; its grain is finer at higher frequency.</p><p><b>Enhancements:</b> <i>harmonic imaging</i> listens at twice the sent frequency, giving sharper images with less haze; <i>compounding</i> averages views from several angles to smooth speckle; <i>colour Doppler</i> paints flow; <i>contrast agents</i> are harmless gas microbubbles that echo strongly; <i>M-mode</i> follows one line over time to time heart motion; <i>3D/4D</i> combines many slices into a surface.</p>';
+    el('scFv').textContent = S.f + ' MHz'; el('scGv').textContent = (S.gain > 0 ? '+' : '') + S.gain + ' dB'; el('scDv').textContent = S.D + ' cm'; el('scScv').textContent = '\u00b1' + Math.round(S.nyq*100) + ' cm/s'; el('scMlv').textContent = S.mang + '\u00b0';
+    el('scDisL').hidden = !e.dis; el('scDisT').textContent = 'show ' + (e.dis || ''); el('scMmL').hidden = !(S.ex === 'echo' || S.ex === 'baby'); el('sc3L').hidden = S.ex !== 'baby'; el('scScC').hidden = !S.col; el('scMlC').hidden = !S.mm || el('scMmL').hidden;
+    el('scMC').hidden = !S.mm || el('scMmL').hidden; el('sc3C').hidden = !(S.td && S.ex === 'baby');
+    el('scMR').textContent = S.ex === 'echo' ? 'heart rate 70 bpm (0.86 s per beat)' : 'fetal heart rate 140 bpm (0.43 s per beat)'; }
+  function setEx(x){ S.ex = x; var e = EX[x]; S.f = e.f; S.D = e.D; S.dis = false; el('scDis').checked = false; el('scF').value = S.f; el('scD').value = S.D; S.mang = x === 'echo' ? 14 : 22; el('scMl').value = S.mang; MBUF = [];
+    [].forEach.call(el('scEx').querySelectorAll('button'), function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-x') === x ? 'true' : 'false'); }); geom(); scText(); say(el('scIntro').textContent); }
+  el('scEx').innerHTML = Object.keys(EX).map(function(k){ return '<button type="button" data-x="' + k + '" aria-pressed="false">' + EX[k].n + '</button>'; }).join('');
+  [].forEach.call(el('scEx').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ setEx(b.getAttribute('data-x')); }); });
+  [['scF', 'f'], ['scG', 'gain'], ['scSc', 'nyq'], ['scMl', 'mang']].forEach(function(q){ el(q[0]).addEventListener('input', function(){ S[q[1]] = +this.value; if (q[1] === 'mang') MBUF = []; scText(); }); el(q[0]).addEventListener('change', function(){ say(el('scStatus').textContent); }); });
+  el('scD').addEventListener('input', function(){ S.D = +this.value; geom(); scText(); });
+  [['scTgc', 'tgc'], ['scLab', 'lab'], ['scDis', 'dis'], ['scMeas', 'meas'], ['scHarm', 'harm'], ['scComp', 'comp'], ['scCol', 'col'], ['scCon', 'con'], ['scMm', 'mm'], ['sc3d', 'td']].forEach(function(q){ el(q[0]).addEventListener('change', function(){ S[q[1]] = this.checked; if (q[1] === 'mm') MBUF = []; scText(); say(el('scStatus').textContent); }); });
+
+  /* ══════════ TAB 2: Doppler ══════════ */
+  var VS = [['Carotid artery', 'car'], ['Jugular vein', 'jug'], ['Umbilical artery', 'umb'], ['Mitral inflow (heart)', 'mit']];
+  var dp = { v:'car', th:60, thc:60, f:5, prf:10, lock:true, run:true, snd:false, buf:[], t:0 };
+  function vel(t){ var p;
+    if (dp.v === 'car'){ p = (t/0.83) % 1; return 0.25 + 0.75*Math.exp(-Math.pow((p - 0.12)/0.06, 2)) - 0.08*Math.exp(-Math.pow((p - 0.26)/0.03, 2)) + 0.1*Math.exp(-Math.pow((p - 0.33)/0.05, 2)) - 0.1*p; }
+    if (dp.v === 'jug') return -(0.18 + 0.07*Math.sin(TAU*t/4) + 0.05*Math.sin(TAU*t/0.85));
+    if (dp.v === 'umb'){ p = (t/0.43) % 1; return 0.2 + 0.32*Math.exp(-Math.pow((p - 0.15)/0.09, 2)) - 0.08*p; }
+    p = (t/0.857) % 1; return 0.85*Math.exp(-Math.pow((p - 0.52)/0.06, 2)) + 0.55*Math.exp(-Math.pow((p - 0.88)/0.045, 2)); }
+  var cD = el('dpCv'), gD = cD.getContext('2d');
+  function measV(v){ return v*Math.cos(dp.th*Math.PI/180)/Math.cos(dp.thc*Math.PI/180); }
+  function nyqV(){ return (dp.prf*1000/2)*1540/(2*dp.f*1e6*Math.cos(dp.thc*Math.PI/180)); }
+  function dpDraw(){ var W = cD.width, Hh = cD.height, g = gD, i;
+    g.fillStyle = '#0b1222'; g.fillRect(0, 0, W, Hh);
+    /* vessel scene */ var y0 = 120, vy = 120; g.fillStyle = '#3a2a2a'; g.fillRect(0, 20, W, 180); g.fillStyle = '#e8b4a0'; g.fillRect(0, 20, W, 6);
+    var art = dp.v !== 'jug'; g.fillStyle = art ? '#7a1f26' : '#3a2a6a'; g.fillRect(0, vy - 26, W, 52); g.strokeStyle = '#f0c0c0'; g.lineWidth = 2; g.beginPath(); g.moveTo(0, vy - 26); g.lineTo(W, vy - 26); g.moveTo(0, vy + 26); g.lineTo(W, vy + 26); g.stroke();
+    var v = vel(dp.t), dir = v >= 0 ? 1 : -1; for (i=0; i<14; i++){ var yy = vy - 22 + i*44/13, prof = 1 - Math.pow((yy - vy)/26, 2), L = 60*Math.abs(v)*prof + 4, x = (((dp.t*140*Math.abs(v)*prof*dir + i*67) % W) + W) % W; g.strokeStyle = 'rgba(255,220,220,0.8)'; g.lineWidth = 1.5; g.beginPath(); g.moveTo(x, yy); g.lineTo(x + dir*L, yy); g.stroke(); g.fillStyle = '#ffdede'; g.beginPath(); g.moveTo(x + dir*(L + 6), yy); g.lineTo(x + dir*L, yy - 3); g.lineTo(x + dir*L, yy + 3); g.closePath(); g.fill(); }
+    lbl(g, VS.filter(function(q){ return q[1] === dp.v; })[0][0] + ' \u2014 flow ' + (dir > 0 ? '\u2192' : '\u2190'), W - 10, vy + 42, '#ffd9d9', 12, 'right');
+    var a = dp.th*Math.PI/180, px = 330, gx = px + Math.cos(a)*(vy - 30)/Math.max(0.05, Math.sin(a)), gxx = Math.min(W - 30, gx); var bx = Math.cos(a), by = Math.sin(a);
+    g.save(); g.translate(px, 26); g.rotate(-(Math.PI/2 - a)); g.fillStyle = '#5f6b80'; g.fillRect(-40, -18, 80, 18); g.restore(); lbl(g, 'probe', px - 60, 14, '#dbe7ff', 11);
+    g.strokeStyle = '#ffd23f'; g.setLineDash([6, 4]); g.lineWidth = 2; g.beginPath(); g.moveTo(px, 26); var Lb = (vy - 26)/Math.max(0.02, by); g.lineTo(px + bx*Lb*1.15, 26 + by*Lb*1.15); g.stroke(); g.setLineDash([]);
+    var sx = px + bx*Lb, sy = vy; g.strokeStyle = '#7fffb0'; g.lineWidth = 2; g.beginPath(); g.moveTo(sx - 8*by, sy - 8*-bx*0 - 6); g.lineTo(sx + 8, sy - 6); g.moveTo(sx - 8, sy + 6); g.lineTo(sx + 8, sy + 6); g.stroke();
+    g.strokeStyle = '#fff'; g.lineWidth = 1.5; g.beginPath(); g.arc(sx, sy, 34, Math.PI, Math.PI + a, false); g.stroke(); lbl(g, '\u03b8 = ' + dp.th + '\u00b0', sx - 48, sy - 18, '#fff', 12, 'right');
+    if (!dp.lock){ var ac = dp.thc*Math.PI/180; g.strokeStyle = '#ff9a3d'; g.beginPath(); g.moveTo(sx - 40*Math.cos(ac), sy - 40*Math.sin(ac)); g.lineTo(sx + 40*Math.cos(ac), sy + 40*Math.sin(ac)); g.stroke(); lbl(g, 'angle cursor ' + dp.thc + '\u00b0', sx + 46, sy + 30, '#ff9a3d', 11, 'left'); }
+    /* spectrum */ var T0 = 230, B0 = Hh - 24, L0 = 60, R0 = W - 14, nq = nyqV(), mid = (T0 + B0)/2; g.fillStyle = '#000'; g.fillRect(L0, T0, R0 - L0, B0 - T0);
+    var n = dp.buf.length; for (i=0; i<n; i++){ var col = dp.buf[i], x = R0 - (n - i); for (var k=0; k<col.length; k++){ if (!col[k]) continue; var y = mid - (k - 60)/60*(mid - T0); g.fillStyle = 'rgba(255,255,255,' + col[k] + ')'; g.fillRect(x, y, 1, 1.6); } }
+    g.strokeStyle = 'rgba(150,170,195,0.4)'; g.lineWidth = 1; g.beginPath(); g.moveTo(L0, mid); g.lineTo(R0, mid); g.stroke(); g.fillStyle = '#9aa6b4'; g.font = '10px Arial'; g.textAlign = 'right';
+    [-1, -0.5, 0.5, 1].forEach(function(f){ var y = mid - f*(mid - T0); g.fillText((f*nq*100).toFixed(0), L0 - 4, y + 3); g.strokeStyle = 'rgba(150,170,195,0.15)'; g.beginPath(); g.moveTo(L0, y); g.lineTo(R0, y); g.stroke(); });
+    g.save(); g.translate(14, mid); g.rotate(-Math.PI/2); g.textAlign = 'center'; g.fillText('velocity (cm/s) toward probe +', 0, 0); g.restore(); g.textAlign = 'center'; g.fillText('time \u2192 (about 5 s across)', (L0 + R0)/2, Hh - 6);
+    lbl(g, 'spectral Doppler', L0 + 6, T0 + 12, '#e6ecf2', 12, 'left'); }
+  function dpCol(t){ var v = vel(t), mv = measV(v), nq = nyqV(), sign = (dp.th < 90 ? 1 : 0), col = new Float32Array(121), spread = dp.v === 'car' ? 0.25 : 0.4;
+    if (dp.th >= 89.5) mv = 0; var top = Math.abs(mv), lo = top*(1 - spread);
+    for (var k=0; k<=40; k++){ var u = lo + (top - lo)*k/40 + (Math.random() - 0.5)*0.02, s = mv >= 0 ? u : -u; s = ((s + nq) % (2*nq) + 2*nq) % (2*nq) - nq; var b = Math.round(60 + s/nq*60); if (b >= 0 && b <= 120) col[b] = Math.min(1, col[b] + 0.25 + 0.5*k/40); }
+    return col; }
+  function dpText(){ var v = vel(dp.t), fd = 2*dp.f*1e6*Math.abs(v)*Math.cos(dp.th*Math.PI/180)/1540, nq = nyqV(), peak = { car:1.0, jug:0.3, umb:0.52, mit:0.85 }[dp.v], pm = measV(peak), err = 100*(pm/peak - 1);
+    el('dpRead').innerHTML = [['true velocity now', Math.round(Math.abs(v)*100) + ' cm/s'], ['Doppler shift \u0394f', (fd/1000).toFixed(2) + ' kHz (audible)'], ['measured peak', Math.round(Math.abs(pm)*100) + ' cm/s'], ['true peak', Math.round(peak*100) + ' cm/s'], ['error from angle', (dp.th >= 89.5 ? '\u2014' : (err >= 0 ? '+' : '') + err.toFixed(0) + '%')], ['Nyquist limit', '\u00b1' + Math.round(nq*100) + ' cm/s']].map(function(q){ return '<div><div class="us_rl' + '">' + q[0] + '</div><div class="us_rv' + '">' + q[1] + '</div></div>'; }).join('');
+    var s = dp.th >= 85 ? 'At 90\u00b0 the blood moves across the beam, not toward or away from it: cos 90\u00b0 = 0, no Doppler shift. Keep the angle at 60\u00b0 or less.' : Math.abs(pm) > nq ? 'Aliasing: the peak velocity exceeds the Nyquist limit (half the pulse repetition frequency), so the top of the waveform wraps around to the other side. Raise the scale (PRF) or lower f\u2080.' : Math.abs(err) > 5 ? 'The angle cursor does not match the true angle: the computed velocity is wrong by ' + err.toFixed(0) + '%. Small angle errors matter most at large angles.' : { car:'Carotid artery: a sharp systolic peak and continuous forward flow in diastole, because the brain needs blood all the time.', jug:'Jugular vein: slow flow toward the heart (away from this probe, below the baseline), varying with breathing and the heartbeat.', umb:'Umbilical artery of the fetus (140 bpm): forward flow even in diastole shows that the placenta works well; absent or reversed diastolic flow is a warning sign.', mit:'Mitral inflow: the E wave (early filling) and the A wave (atrial kick). Their ratio tells how well the heart relaxes.' }[dp.v];
+    el('dpStatus').textContent = s;
+    el('dpEq').innerHTML = '<div class="us_eq' + '">\u0394f = 2f\u2080v cos\u03b8 / c</div><div class="us_eq' + '">= 2(' + dp.f + '\u00d710<sup>6</sup> Hz)(' + Math.abs(v).toFixed(2) + ' m/s)cos ' + dp.th + '\u00b0 / 1540 m/s = <b class="us_res' + '">' + Math.round(fd) + ' Hz</b></div><p>The factor 2 appears because the moving blood first receives the shifted frequency and then re-emits it shifted again. The machine measures \u0394f and computes v = c\u0394f/(2f\u2080 cos\u03b8), using the angle the operator enters.</p><p>Pulsed Doppler samples the echo once per pulse, so it can measure shifts only up to half the pulse repetition frequency (the <b>Nyquist limit</b>); higher shifts alias.</p>';
+    el('dpAv').textContent = dp.th + '\u00b0'; el('dpCv').textContent = dp.thc + '\u00b0'; el('dpFv').textContent = dp.f + ' MHz'; el('dpPv').textContent = dp.prf + ' kHz'; el('dpC').disabled = dp.lock; }
+  el('dpVs').innerHTML = VS.map(function(q){ return '<button type="button" data-v="' + q[1] + '" aria-pressed="' + (q[1] === dp.v ? 'true' : 'false') + '">' + q[0] + '</button>'; }).join('');
+  [].forEach.call(el('dpVs').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ dp.v = b.getAttribute('data-v'); dp.buf = []; if (dp.v === 'mit'){ dp.th = 5; } [].forEach.call(el('dpVs').querySelectorAll('button'), function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); syncA(); dpText(); say(el('dpStatus').textContent); }); });
+  function syncA(){ if (dp.lock) dp.thc = Math.min(80, dp.th); el('dpA').value = dp.th; el('dpC').value = dp.thc; }
+  el('dpA').addEventListener('input', function(){ dp.th = +this.value; syncA(); dpText(); }); el('dpA').addEventListener('change', function(){ say(el('dpStatus').textContent); });
+  el('dpC').addEventListener('input', function(){ dp.thc = +this.value; dpText(); }); el('dpC').addEventListener('change', function(){ say(el('dpStatus').textContent); });
+  el('dpF').addEventListener('input', function(){ dp.f = +this.value; dpText(); }); el('dpP').addEventListener('input', function(){ dp.prf = +this.value; dpText(); }); el('dpP').addEventListener('change', function(){ say(el('dpStatus').textContent); });
+  el('dpLock').addEventListener('change', function(){ dp.lock = this.checked; syncA(); dpText(); say(dp.lock ? 'Angle correction matches the true beam angle.' : 'Now set the angle cursor yourself: a mismatch gives a wrong velocity.'); });
+  var dRun = el('dpRun'); dRun.addEventListener('click', function(){ dp.run = !dp.run; dRun.innerHTML = dp.run ? PAUSEI : PLAYI; dRun.setAttribute('aria-pressed', dp.run ? 'true' : 'false'); dRun.setAttribute('aria-label', dp.run ? 'Pause' : 'Run'); });
+  var AC = null, NZ = null, BP = null, GN = null;
+  function sound(on){ dp.snd = on; el('dpSnd').setAttribute('aria-pressed', on ? 'true' : 'false'); el('dpSnd').textContent = 'Doppler sound: ' + (on ? 'on' : 'off');
+    try { if (on){ if (!AC){ AC = new (window.AudioContext || window.webkitAudioContext)(); var b = AC.createBuffer(1, AC.sampleRate*2, AC.sampleRate), d = b.getChannelData(0); for (var i=0; i<d.length; i++) d[i] = Math.random()*2 - 1; NZ = AC.createBufferSource(); NZ.buffer = b; NZ.loop = true; BP = AC.createBiquadFilter(); BP.type = 'bandpass'; BP.Q.value = 3; GN = AC.createGain(); GN.gain.value = 0; NZ.connect(BP); BP.connect(GN); GN.connect(AC.destination); NZ.start(); } if (AC.resume) AC.resume(); }
+      else if (GN) GN.gain.value = 0; } catch (e) {} }
+  el('dpSnd').addEventListener('click', function(){ sound(!dp.snd); say(dp.snd ? 'Doppler sound on: the pitch is the Doppler shift. Faster blood, higher pitch.' : 'Sound off.'); });
+  /* ══════════ loop & tabs ══════════ */
+  var tab = 0, last = 0, fcnt = 0;
+  function loop(now){ var dt = last ? Math.min(0.06, (now - last)/1000) : 0; last = now;
+    if (tab === 1 && dt){ S.t += dt; frame(S.t); draw(); if (S.mm && !el('scMC').hidden){ mPush(S.t); mDraw(); } if (S.td && S.ex === 'baby' && (fcnt++ % 2 === 0)) render3(S.t); }
+    if (tab === 2 && dt){ if (dp.run){ dp.t += dt; var n = Math.max(1, Math.round(dt*140)); for (var i=0; i<n; i++){ dp.buf.push(dpCol(dp.t - (n - 1 - i)/140)); } while (dp.buf.length > cD.width - 74) dp.buf.shift(); }
+      dpDraw(); if (fcnt++ % 10 === 0) dpText();
+      if (dp.snd && BP){ var v = Math.abs(measV(vel(dp.t))*Math.cos(dp.thc*Math.PI/180)), fd = 2*dp.f*1e6*v/1540, nq = dp.prf*500; if (fd > nq) fd = 2*nq - fd; BP.frequency.value = Math.max(60, Math.min(12000, fd)); GN.gain.value = dp.run && dp.th < 89 ? Math.min(0.5, 0.15 + v) : 0; } }
+    if (tab !== 2 && GN) GN.gain.value = 0;
+    requestAnimationFrame(loop); }
+  function setTab(i){ tab = i; [0, 1, 2].forEach(function(j){ var t = el('usT' + j + ''); t.setAttribute('aria-selected', j === i ? 'true' : 'false'); t.tabIndex = j === i ? 0 : -1; el('usP' + j + '').hidden = j !== i; });
+    if (i === 0){ amAll(); say('Press play to send a pulse into the body and watch the echoes come back.'); } if (i === 1){ geom(); scText(); say(el('scIntro').textContent); } if (i === 2){ dpText(); say('Spectral Doppler: change the beam angle and watch the measured velocity.'); } }
+  [0, 1, 2].forEach(function(i){ var t = el('usT' + i + ''); t.addEventListener('click', function(){ setTab(i); }); t.addEventListener('keydown', function(e){ var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!d) return; var n = (i + d + 3) % 3; setTab(n); el('usT' + n + '').focus(); e.preventDefault(); }); });
+  usA11y.onChange(function(){ amDraw(); });
+  setEx('liver'); setTab(0); requestAnimationFrame(loop);
+  return { S:S, setEx:setEx, setTab:setTab, frame:frame, draw:draw, echoes:echoes, am:am, dp:dp, GRAY:GRAY, render3:render3, nyqV:nyqV, measV:measV };
+};
+var usSim = new usGen();
+</script>
+<script>usA11y.init();</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>Medical ultrasound uses sound of 2 to 15 MHz. A transducer sends short pulses and records the echoes. At a boundary between materials of acoustic impedances `Z_1` and `Z_2` (with `Z = rho v`), the fraction of the intensity reflected is `R = ((Z_2 - Z_1)/(Z_2 + Z_1))^2`: tiny between soft tissues, large at bone, and almost total at air, which is why gel is used and why lungs and bowel gas block the view. The depth of a reflector follows from the echo time, `d = v t/2`, with `v ~~ 1540` m/s.</p>
+<p>Higher frequencies (shorter wavelengths, `lambda = v/f`) give finer detail but are absorbed more (about 0.5 dB per cm per MHz), so they do not penetrate as deep. Sweeping the beam builds a B-mode image in real time. Fluids are black, soft tissues grey and speckled, bone, stones and air bright with an acoustic shadow behind. Enhancements include harmonic imaging, spatial compounding, contrast microbubbles, M-mode for moving structures, and 3D/4D surface rendering.</p>
+<p>Moving blood shifts the frequency of the echoes by `Delta f = 2 f_0 v cos theta / c`. Colour Doppler paints flow toward the probe red and away blue; spectral Doppler shows the velocities against time and can be heard. The angle `theta` must be known and kept below about 60&deg;, and velocities above the Nyquist limit alias. Ultrasound uses no ionizing radiation; doses are kept As Low As Reasonably Achievable. The anatomy, tissue properties and waveforms in this simulation are schematic.</p>
+</div>
+</div>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+
+</div>
+
+</body>
+</html>
