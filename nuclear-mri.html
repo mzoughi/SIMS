@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Nuclear: NMR and MRI</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobnucmri" class="mob_wrap">
+<div class="mr_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="mr_a11ybtn" id="mrBtnHC" onclick="mrA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="mr_a11ybtn" id="mrBtnDM" onclick="mrA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="mr_a11ybtn" id="mrBtnCB" onclick="mrA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="mr_a11ybtn" id="mrBtnNR" onclick="mrA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+
+<div class="mr_title"><h3>Nuclear Magnetic Resonance and MRI</h3></div>
+<div class="mr_tabs" role="tablist" aria-label="Mode">
+<button type="button" role="tab" class="mr_tab" id="mrT0" aria-selected="true">Simplified NMR</button>
+<button type="button" role="tab" class="mr_tab" id="mrT1" aria-selected="false">Simplified MRI</button>
+</div>
+<div class="mr_intro" id="mrIntro"></div>
+<div class="mr_read" id="mrRead" aria-live="off"></div>
+<div class="mr_view"><canvas id="mrCv" width="820" height="480" role="img" aria-label="The main magnet (gold coils above and below) makes an upward magnetic field, shown by the outline arrows. Nuclei, drawn as small spinning tops with a red arrow, point up (aligned, lower energy) or down (opposed, higher energy). Radio waves enter from the left. In the MRI view a head is inside the magnet, with gradient coils on the left and below, and a detector on the right."></canvas></div>
+<div id="mrStatus" class="mr_status"></div>
+<div id="mrNarBar" class="mr_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="mr_transport" role="toolbar" aria-label="Simulation">
+<div class="mr_tgroup">
+<button type="button" class="mr_tbtn mr_play" id="mrRun" aria-label="Pause" aria-pressed="true" title="Run / pause"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg></button>
+<button type="button" class="mr_tbtn" id="mrRst" aria-label="Reset the nuclei" title="Reset"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 5 A7 7 0 1 1 5.6 9" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M3 4 L9.5 4.5 L5.5 10 Z" fill="currentColor"/></svg></button>
+</div>
+<div class="mr_tgroup mr_tsep" role="group" aria-label="Radio wave picture"><button type="button" class="mr_vbtn" id="mrVW" aria-pressed="false">Wave view</button><button type="button" class="mr_vbtn" id="mrVP" aria-pressed="true">Photon view</button></div>
+<div class="mr_tgroup mr_tsep"><button type="button" class="mr_vbtn" id="mrTune">Tune to resonance</button></div>
+</div>
+
+<div class="mr_panels">
+<div class="mr_panel" role="group" aria-labelledby="mrHdR"><div class="mr_ptitle" id="mrHdR">Radiowave source</div><div class="mr_pbody">
+<div class="mr_ctrl"><div class="mr_chdr"><label for="mrPow">Power</label><span class="mr_val" id="mrPowV"></span></div><input type="range" id="mrPow" min="0" max="100" step="1" value="20"></div>
+<div class="mr_ctrl"><div class="mr_chdr"><label for="mrF">Frequency</label><span><input type="number" id="mrFn" class="mr_num" min="1" max="130" step="0.01" aria-label="Frequency in megahertz"> MHz</span></div><input type="range" id="mrF" min="1" max="130" step="0.5" value="60"></div>
+<div class="mr_ctrl"><div class="mr_chdr"><label for="mrFf">Fine tuning</label><span class="mr_val" id="mrFfV"></span></div><input type="range" id="mrFf" min="-1" max="1" step="0.01" value="0"></div>
+</div></div>
+<div class="mr_panel" role="group" aria-labelledby="mrHdM"><div class="mr_ptitle" id="mrHdM">Main magnet</div><div class="mr_pbody">
+<div class="mr_ctrl"><div class="mr_chdr"><label for="mrB">Field B&#8320;</label><span class="mr_val" id="mrBV"></span></div><input type="range" id="mrB" min="0" max="3" step="0.01" value="0.75"></div>
+<div class="mr_ctrl" id="mrAtC"><div class="mr_chdr"><label for="mrAt">Sample atom</label></div><select id="mrAt"></select></div>
+<div id="mrGrad" hidden>
+<div class="mr_ctrl"><div class="mr_chdr"><label for="mrGx">Horizontal gradient (extra field, left to right)</label><span class="mr_val" id="mrGxV"></span></div><input type="range" id="mrGx" min="-0.08" max="0.08" step="0.001" value="0"></div>
+<div class="mr_ctrl"><div class="mr_chdr"><label for="mrGy">Vertical gradient (extra field, bottom to top)</label><span class="mr_val" id="mrGyV"></span></div><input type="range" id="mrGy" min="-0.08" max="0.08" step="0.001" value="0"></div>
+</div>
+</div></div>
+<div class="mr_panel" role="group" aria-labelledby="mrHdD"><div class="mr_ptitle" id="mrHdD">Display</div><div class="mr_pbody">
+<div class="mr_checks">
+<label class="mr_chk"><input type="checkbox" id="mrShF" checked> magnetic field</label>
+<label class="mr_chk"><input type="checkbox" id="mrShN" checked> atomic nuclei</label>
+<label class="mr_chk" id="mrShHL" hidden><input type="checkbox" id="mrShH" checked> head</label>
+<label class="mr_chk" id="mrShRL" hidden><input type="checkbox" id="mrShR" checked> where resonance happens</label>
+</div>
+<div class="mr_ctrl"><div class="mr_chdr"><label for="mrSp">Simulation speed</label><span class="mr_val" id="mrSpV"></span></div><input type="range" id="mrSp" min="0.25" max="3" step="0.25" value="1"></div>
+<button type="button" class="mr_vbtn" id="mrTum" hidden>Add tumor</button>
+</div></div>
+</div>
+
+<!-- NMR extra -->
+<div id="mrNMR">
+<div class="mr_row">
+<div class="mr_card"><div class="mr_ctitle"><span>Energy levels of the nuclei</span></div><canvas id="mrEl" width="420" height="300" role="img" aria-label="Energy-level diagram: the upper line holds the nuclei whose spins oppose the field, the lower line those aligned with it. The gap is the energy difference. On the left, an arrow shows the energy of one radio photon; it matches the gap at resonance."></canvas></div>
+<div class="mr_panel"><div class="mr_ptitle">The resonance condition</div><div class="mr_pbody" id="mrRes"></div></div>
+</div>
+</div>
+<!-- MRI extra -->
+<div id="mrMRI" hidden>
+<div class="mr_card"><div class="mr_ctitle"><span>Signal against frequency for the present gradients (the spectrum)</span></div><canvas id="mrSpc" width="820" height="190" role="img" aria-label="Graph of the expected signal against radio frequency for the present fields and gradients. Without gradients the whole head resonates at one frequency; with a gradient the peak spreads out and its shape is the amount of hydrogen at each position. A marker shows the present radio frequency."></canvas><div class="mr_cnote" id="mrSpcT"></div></div>
+<div class="mr_row">
+<div class="mr_card"><div class="mr_ctitle"><span>Building the image</span><span><button type="button" class="mr_bbtn" id="mrScan">Scan</button></span></div><canvas id="mrImg" width="420" height="420" role="img" aria-label="The reconstructed MRI image, built up from one gradient direction after another. Brighter means more hydrogen."></canvas></div>
+<div class="mr_panel"><div class="mr_ptitle">How the scan works</div><div class="mr_pbody" id="mrScanT"></div></div>
+</div>
+</div>
+<style>
+:where(#mobnucmri) * { margin:0; box-sizing:border-box; }
+#mobnucmri { width:100%; max-width:860px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; color:#1d232a; }
+#mobnucmri canvas { display:block; width:100%; height:auto; }
+#mobnucmri [hidden] { display:none !important; }
+#mobnucmri .mr_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#mobnucmri .mr_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#mobnucmri .mr_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobnucmri .mr_title { padding:4px; background-color:#f90; text-align:center; }
+#mobnucmri .mr_title h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+#mobnucmri .mr_tabs { display:flex; gap:4px; padding:6px 8px 0; background:#14213a; flex-wrap:wrap; }
+#mobnucmri .mr_tab { flex:1 1 130px; padding:8px 6px; border:1px solid #2b3d60; border-bottom:0; border-radius:6px 6px 0 0; background:#1d2c4a; color:#bcd0f0; font-weight:bold; cursor:pointer; font-size:.88rem; min-height:40px; }
+#mobnucmri .mr_tab[aria-selected="true"] { background:#f3f5f8; color:#14213a; }
+#mobnucmri .mr_intro { padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; font-size:.9rem; line-height:1.5; }
+#mobnucmri .mr_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:6px 12px; padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; }
+#mobnucmri .mr_rl { font-size:.7rem; color:#667; text-transform:uppercase; letter-spacing:.05em; }
+#mobnucmri .mr_rv { font-family:monospace; font-size:.93rem; color:#7a3a00; font-weight:bold; }
+#mobnucmri .mr_view { background:#fff; }
+#mobnucmri .mr_status { color:#222; font-size:.86rem; text-align:center; background:#fff6d9; padding:5px 8px; line-height:1.45; min-height:1.6em; }
+#mobnucmri .mr_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+#mobnucmri .mr_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+#mobnucmri .mr_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { #mobnucmri .mr_tsep { padding-left:0; border-left:0; } }
+#mobnucmri .mr_tbtn { width:44px; height:38px; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer; border:1px solid #6d8a3a; border-radius:5px; background:#fff; color:#223; }
+#mobnucmri .mr_tbtn.mr_play { background:#2e7d32; color:#fff; border-color:#1b5e20; }
+#mobnucmri .mr_tbtn.mr_play[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+#mobnucmri .mr_vbtn, #mobnucmri .mr_bbtn { min-height:38px; padding:4px 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; }
+#mobnucmri .mr_vbtn[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobnucmri .mr_bbtn { background:#2e7d32; border-color:#1b5e20; color:#fff; font-weight:bold; }
+#mobnucmri .mr_card { margin:10px 10px 0; background:#0b1222; border:1px solid #2b3d60; border-radius:6px; overflow:hidden; }
+#mobnucmri .mr_ctitle { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:4px 10px; padding:5px 10px; background:#14213a; color:#dbe7ff; font-size:.8rem; font-weight:bold; }
+#mobnucmri .mr_cnote { padding:8px 12px 10px; color:#e3ecfa; font-size:.86rem; line-height:1.5; background:#0d1526; border-top:1px solid #2b3d60; }
+#mobnucmri .mr_cnote b { color:#ffd23f; }
+#mobnucmri .mr_row { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:10px; padding:10px 10px 0; }
+#mobnucmri .mr_row .mr_card { margin:0; }
+#mobnucmri .mr_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(270px, 1fr)); gap:10px; padding:10px; }
+#mobnucmri .mr_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+#mobnucmri .mr_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+#mobnucmri .mr_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; font-size:.87rem; line-height:1.45; }
+#mobnucmri .mr_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+#mobnucmri .mr_chdr { display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; }
+#mobnucmri .mr_chdr label { font-size:.82rem; font-weight:bold; color:#333; min-width:0; }
+#mobnucmri .mr_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; min-width:4.5em; text-align:right; }
+#mobnucmri .mr_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+#mobnucmri select { width:100%; min-height:34px; padding:4px 6px; font-size:.86rem; border:1px solid #8a96a8; border-radius:4px; background:#fff; }
+#mobnucmri .mr_checks { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 8px; }
+#mobnucmri .mr_chk { display:flex; align-items:center; gap:6px; font-size:.82rem; cursor:pointer; }
+#mobnucmri .mr_note { font-size:.8rem; color:#555; font-style:italic; }
+#mobnucmri .mr_eq { font-family:'Times New Roman', serif; font-size:1rem; background:#f6f8fb; border-left:3px solid #1f5fa8; padding:4px 8px; margin:2px 0; overflow-wrap:anywhere; }
+#mobnucmri .mr_num { width:7em; height:34px; padding:3px 6px; font-size:.95rem; border:1px solid #888; border-radius:4px; }
+#mobnucmri button:focus-visible, #mobnucmri input:focus-visible, #mobnucmri select:focus-visible, #mobnucmri canvas:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (max-width:420px) { #mobnucmri .mr_checks { grid-template-columns:minmax(0,1fr); } }
+@media (pointer:coarse) { #mobnucmri .mr_tbtn, #mobnucmri .mr_vbtn, #mobnucmri .mr_bbtn, #mobnucmri .mr_num { min-height:44px; } #mobnucmri input[type=checkbox] { width:20px; height:20px; } #mobnucmri input[type=range] { height:28px; } }
+#mobnucmri .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobnucmri .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobnucmri .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobnucmri .mob_desc p { margin:0 0 8px 0; }
+#mobnucmri .mob_eq { text-align:center; }
+#mobnucmri.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobnucmri.a11y_dm .mr_card, #mobnucmri.a11y_dm .mr_view, #mobnucmri.a11y_dm [aria-label="Display options"], #mobnucmri.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobnucmri.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobnucmri.a11y_hc .mr_card, #mobnucmri.a11y_hc .mr_view, #mobnucmri.a11y_hc [aria-label="Display options"], #mobnucmri.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+
+#mobnucmri .mr_row { align-items:start; }
+#mobnucmri #mrNMR .mr_card { background:#fff; }
+</style>
+<script>
+var mrA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return; b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobnucmri'); if (!W) return; W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc);
+var nb = document.getElementById('mrNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none'; var nr = document.getElementById('mrBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('mrBtnHC', states.hc); styleBtn('mrBtnDM', states.dm); styleBtn('mrBtnCB', states.cb); styleBtn('mrBtnNR', states.nr); hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return { init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply(); if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: spin arrows vermillion, nuclei sky blue, emitted photons green.'); },
+alt:function(){ return states.hc || states.cb; }, narrate:function(m){ if (!states.nr) return; var nb = document.getElementById('mrNarBar'); if (nb) nb.textContent = m; } };
+})();
+</script>
+
+<!-- ════════ SIMULATION ════════
+Larmor (resonance) frequency f = (gamma/2 pi) B; gamma/2 pi: H-1 42.577, F-19 40.078, P-31 17.235, Na-23 11.262, C-13 10.708 MHz/T.
+Energy gap = photon energy E = h f (h = 4.1357e-15 eV s). Local field B = B0 + Gx u + Gy v, with u, v the position across the magnet (-0.5 to 0.5).
+Absorption probability per close pass: 0.7/(1 + ((f - f_local)/w)^2), w = 0.1 MHz; an excited nucleus hit at resonance gives stimulated emission.
+Relaxation: excited nuclei return after a random time (mean 2.5 s), emitting a photon. Thermal equilibrium: excess of aligned spins EXAGGERATED
+(real: a few per million per tesla). Imaging: projection reconstruction (Lauterbur 1973): with a gradient G at angle theta, the signal at
+frequency f comes from the line u cos(theta) + v sin(theta) = (f/gamma - B0)/G; the projections at many angles are filtered (ramp filter) and
+back-projected. No dollar signs or backticks in the code.
+-->
+<script>
+var mrGen = function(){
+  function el(id){ return document.getElementById(id); }
+  var cv = el('mrCv'), g = cv.getContext('2d'), W = cv.width, H = cv.height, TAU = 2*Math.PI, HEV = 4.1357e-15;
+  var ATOMS = [['hydrogen (\u00b9H)', 42.577], ['fluorine (\u00b9\u2079F)', 40.078], ['phosphorus (\u00b3\u00b9P)', 17.235], ['sodium (\u00b2\u00b3Na)', 11.262], ['carbon-13 (\u00b9\u00b3C)', 10.708]];
+  var S = { mode:'nmr', B0:0.75, f:60, pow:20, gx:0, gy:0, at:0, wave:false, run:true, sp:1, tumor:null, shF:true, shN:true, shH:true, shR:true };
+  var XL = 160, XR = 580, YT = 60, YB = 420, XC = 370, YC = 240, SC = 420, WID = 0.1;
+  var nuc = [], ph = [], det = 0, detHits = [], absorbed = 0, emitted = 0, tAcc = 0, last = 0, scan = null;
+  function say(m){ mrA11y.narrate(m); }
+  function gam(){ return S.mode === 'mri' ? ATOMS[0][1] : ATOMS[S.at][1]; }
+  function uv(x, y){ return [(x - XC)/SC, (YC - y)/SC]; }
+  function Bloc(x, y){ var q = uv(x, y); return S.B0 + (S.mode === 'mri' ? S.gx*q[0] + S.gy*q[1] : 0); }
+  function fres(x, y){ return gam()*Bloc(x, y); }
+  function f0(){ return gam()*S.B0; }
+  function lor(df){ return 1/(1 + Math.pow(df/WID, 2)); }
+  function pUp(){ return 0.5 - 0.18*Math.min(1, S.B0/3); }   /* fraction in the upper (opposed) level at equilibrium: exaggerated */
+  function pal(){ var alt = mrA11y.alt(); return { arrUp:alt ? '#D55E00' : '#e23b2e', body:alt ? '#56B4E9' : '#3cc6d6', photon:alt ? '#0072B2' : '#222', emit:alt ? '#009E73' : '#2e9b4f', res:alt ? 'rgba(240,228,66,0.35)' : 'rgba(255,214,60,0.35)' }; }
+  /* ══════════ geometry ══════════ */
+  function inHead(x, y){ var dx = (x - 370)/115, dy = (y - 215)/150; if (dx*dx + dy*dy <= 1) return 1; var e1 = Math.pow((x - 252)/18, 2) + Math.pow((y - 235)/32, 2), e2 = Math.pow((x - 488)/18, 2) + Math.pow((y - 235)/32, 2); if (e1 <= 1 || e2 <= 1) return 0.8; if (x > 332 && x < 408 && y > 350 && y < 420) return 0.7; return 0; }
+  function inTumor(x, y){ return S.tumor && Math.hypot(x - S.tumor[0], y - S.tumor[1]) < 24; }
+  function build(){ nuc = []; ph = []; var p = pUp();
+    if (S.mode === 'nmr'){ for (var j=0; j<4; j++) for (var i=0; i<5; i++) nuc.push(mk(230 + i*67, 115 + j*85, p)); }
+    else { for (var y=95; y<=410; y += 38) for (var x=196; x<=550; x += 40){ if (inHead(x, y) && !inTumor(x, y)) nuc.push(mk(x, y, p)); }
+      if (S.tumor){ for (var k=0; k<16; k++){ var a = k*2.39996, r = 21*Math.sqrt((k + 0.5)/16); nuc.push(mk(S.tumor[0] + r*Math.cos(a), S.tumor[1] + r*Math.sin(a), p)); } } }
+    absorbed = 0; emitted = 0; det = 0; }
+  function mk(x, y, p){ return { x:x, y:y, up:Math.random() < p, t:0, fl:0 }; }
+  /* ══════════ physics ══════════ */
+  function step(dt){ var i, j, n;
+    /* source photons */
+    tAcc += dt*S.pow*0.45; while (tAcc >= 1){ tAcc -= 1; ph.push({ x:40, y:YT + 12 + Math.random()*(YB - YT - 24), vx:230, vy:0, f:S.f, src:true }); }
+    var keep = [];
+    for (i=0; i<ph.length; i++){ var q = ph[i]; q.x += q.vx*dt; q.y += q.vy*dt; var gone = false;
+      if (q.src && S.shN !== null){ for (j=0; j<nuc.length; j++){ n = nuc[j]; if (Math.abs(n.x - q.x) > 9 || Math.abs(n.y - q.y) > 14 || q.hit === j) continue; q.hit = j;
+          var pr = 0.7*lor(q.f - fres(n.x, n.y)); if (Math.random() >= pr) continue;
+          if (!n.up){ n.up = true; n.t = -Math.log(Math.random() || 1e-6)*2.5; n.fl = 1; absorbed++; gone = true; break; }
+          else { n.up = false; n.fl = 1; emitPh(n, q.vx, q.vy, q.f); break; } } }
+      if (!q.src && q.x >= 640 && q.x <= 662 && q.y > 55 && q.y < 500 && S.mode === 'mri'){ det = Math.min(1, det + 0.25); detHits.push({ y:q.y, t:1, f:q.f }); gone = true; }
+      if (!gone && q.x > -20 && q.x < W + 20 && q.y > -20 && q.y < H + 20) keep.push(q); }
+    ph = keep;
+    var p = pUp(), rate = 0.25;
+    for (j=0; j<nuc.length; j++){ n = nuc[j]; n.fl = Math.max(0, n.fl - dt*2);
+      if (n.up){ n.t -= dt; if (n.t <= 0){ n.up = false; n.fl = 1; var a = Math.random()*TAU; emitPh(n, 200*Math.cos(a), 200*Math.sin(a), fres(n.x, n.y)); } }
+      else if (Math.random() < rate*dt*p/(1 - p)*0.6){ n.up = true; n.t = -Math.log(Math.random() || 1e-6)*2.5; }   /* thermal excitation (no photon) */ }
+    det = Math.max(0, det - dt*0.8); detHits = detHits.filter(function(h){ h.t -= dt*0.7; return h.t > 0; }); }
+  function emitPh(n, vx, vy, f){ var L = Math.hypot(vx, vy) || 1; ph.push({ x:n.x + vx/L*10, y:n.y + vy/L*10, vx:vx/L*200, vy:vy/L*200, f:f, src:false }); emitted++; }
+  /* ══════════ drawing ══════════ */
+  function coil(x, y, w, h, vert){ var gr = vert ? g.createLinearGradient(x, 0, x + w, 0) : g.createLinearGradient(0, y, 0, y + h); gr.addColorStop(0, '#b8860b'); gr.addColorStop(0.5, '#ffd76a'); gr.addColorStop(1, '#b8860b'); g.fillStyle = gr; g.fillRect(x, y, w, h);
+    g.strokeStyle = 'rgba(120,80,0,0.6)'; g.lineWidth = 1; for (var k=1; k<6; k++){ g.beginPath(); if (vert){ g.moveTo(x + k*w/6, y); g.lineTo(x + k*w/6, y + h); } else { g.moveTo(x, y + k*h/6); g.lineTo(x + w, y + k*h/6); } g.stroke(); } }
+  function fieldArrow(x, y, Bl){ var L = Math.max(4, 8 + 7*Bl + (Bl - S.B0)*260); g.strokeStyle = '#8a8f99'; g.fillStyle = '#fff'; g.lineWidth = 1.2;
+    g.beginPath(); g.moveTo(x - 2.5, y + L/2); g.lineTo(x - 2.5, y - L/2 + 5); g.lineTo(x - 6, y - L/2 + 5); g.lineTo(x, y - L/2 - 2); g.lineTo(x + 6, y - L/2 + 5); g.lineTo(x + 2.5, y - L/2 + 5); g.lineTo(x + 2.5, y + L/2); g.closePath(); g.fill(); g.stroke(); }
+  function nucleus(n, P){ var x = n.x, y = n.y, s = n.up ? -1 : 1;
+    if (n.fl > 0){ g.fillStyle = 'rgba(255,230,90,' + 0.6*n.fl + ')'; g.beginPath(); g.arc(x, y, 14, 0, TAU); g.fill(); }
+    g.fillStyle = '#fff'; g.strokeStyle = '#333'; g.lineWidth = 1; g.fillRect(x - 2.5, y + 4*s - 9*(s > 0 ? 0 : 1), 5, 9); g.strokeRect(x - 2.5, y + 4*s - 9*(s > 0 ? 0 : 1), 5, 9);
+    g.fillStyle = P.body; g.beginPath(); g.ellipse(x, y, 7, 4, 0, 0, TAU); g.fill(); g.stroke();
+    g.fillStyle = P.arrUp; g.beginPath(); var ty = y - 13*s; g.moveTo(x, ty - 4*s); g.lineTo(x - 5, ty + 3*s); g.lineTo(x - 2, ty + 3*s); g.lineTo(x - 2, y - 4*s); g.lineTo(x + 2, y - 4*s); g.lineTo(x + 2, ty + 3*s); g.lineTo(x + 5, ty + 3*s); g.closePath(); g.fill(); g.strokeStyle = '#7a1a10'; g.stroke(); }
+  function photon(q, P){ var a = Math.atan2(q.vy, q.vx), c = q.src ? P.photon : P.emit; g.save(); g.translate(q.x, q.y); g.rotate(a); g.strokeStyle = c; g.lineWidth = 1.6;
+    g.beginPath(); for (var k=-16; k<=0; k++){ var yy = 3*Math.sin(k*1.2); if (k === -16) g.moveTo(k, yy); else g.lineTo(k, yy); } g.stroke(); g.fillStyle = c; g.beginPath(); g.arc(2, 0, 3, 0, TAU); g.fill(); g.restore(); }
+  function head(){ g.save(); g.globalAlpha = 0.95;
+    g.fillStyle = '#dcc0a8'; g.beginPath(); g.ellipse(370, 470, 210, 70, 0, Math.PI, TAU); g.fill();
+    g.fillStyle = '#f0d5bd'; g.fillRect(332, 340, 76, 90);
+    [[252, 235], [488, 235]].forEach(function(e){ g.beginPath(); g.ellipse(e[0], e[1], 18, 32, 0, 0, TAU); g.fill(); });
+    var gr = g.createRadialGradient(350, 180, 20, 370, 215, 170); gr.addColorStop(0, '#f7e2cf'); gr.addColorStop(1, '#e4c2a4'); g.fillStyle = gr; g.beginPath(); g.ellipse(370, 215, 115, 150, 0, 0, TAU); g.fill();
+    g.strokeStyle = '#9b7b62'; g.lineWidth = 2; g.stroke();
+    g.strokeStyle = 'rgba(110,80,60,0.6)'; g.lineWidth = 5; g.beginPath(); g.moveTo(310, 180); g.quadraticCurveTo(330, 170, 352, 178); g.moveTo(388, 178); g.quadraticCurveTo(410, 170, 430, 180); g.stroke();
+    g.fillStyle = 'rgba(80,70,70,0.35)'; g.beginPath(); g.ellipse(331, 205, 12, 7, 0, 0, TAU); g.ellipse(409, 205, 12, 7, 0, 0, TAU); g.fill();
+    g.strokeStyle = 'rgba(130,95,75,0.6)'; g.lineWidth = 2; g.beginPath(); g.moveTo(370, 210); g.lineTo(362, 258); g.lineTo(378, 262); g.moveTo(345, 300); g.quadraticCurveTo(370, 312, 395, 300); g.stroke();
+    g.restore(); }
+  function draw(){ var P = pal(), i, x, y;
+    g.fillStyle = '#ffffff'; g.fillRect(0, 0, W, H);
+    /* resonance band (MRI) */
+    if (S.mode === 'mri' && S.shR && S.pow > 0){ for (y=YT; y<YB; y += 6) for (x=XL; x<XR; x += 6){ var L0 = lor(S.f - fres(x + 3, y + 3)); if (L0 > 0.08){ g.fillStyle = 'rgba(255,214,60,' + (0.5*L0) + ')'; g.fillRect(x, y, 6, 6); } } }
+    if (S.mode === 'mri' && S.shH) head();
+    if (S.mode === 'nmr'){ g.strokeStyle = '#333'; g.lineWidth = 1.2; g.strokeRect(195, 70, 350, 350); }
+    /* field arrows */
+    if (S.shF) for (y=YT + 20; y<=YB; y += 58) for (x=XL - 10; x<=XR + 10; x += 72) fieldArrow(x, y, Bloc(x, y));
+    /* coils */
+    coil(XL, 16, XR - XL, 26, false); coil(XL, 438, XR - XL, 26, false);
+    g.strokeStyle = '#333'; g.lineWidth = 1; [20, 28, 442, 450].forEach(function(yy){ g.beginPath(); g.moveTo(0, yy); g.lineTo(XL, yy); g.stroke(); });
+    if (S.mode === 'mri'){ coil(112, 70, 24, 360, true); coil(XL, 410, XR - XL, 18, false); g.fillStyle = '#555'; g.font = '11px Arial'; g.textAlign = 'center'; g.save(); g.translate(104, 250); g.rotate(-Math.PI/2); g.fillText('horizontal gradient coils', 0, 0); g.restore(); g.fillText('vertical gradient coils', XC, 404); }
+    lbl2('main magnet coils', XR + 10, 30, 'left');
+    /* nuclei */
+    if (S.shN) nuc.forEach(function(n){ nucleus(n, P); });
+    /* radio source */
+    g.fillStyle = '#6b7f7a'; g.fillRect(6, YT + 30, 26, YB - YT - 60); g.fillStyle = '#fff'; g.font = 'bold 11px Arial'; g.save(); g.translate(22, YC); g.rotate(-Math.PI/2); g.textAlign = 'center'; g.fillText('radio-wave source', 0, 0); g.restore();
+    if (S.wave && S.pow > 0){ var amp = 4 + 18*S.pow/100, lam = Math.max(6, 900/S.f); g.strokeStyle = 'rgba(30,30,30,0.35)'; g.lineWidth = 1.5; for (var r=0; r<5; r++){ var yb = YT + 40 + r*75; g.beginPath(); for (x=36; x<=XR + 50; x += 2){ var yy2 = yb + amp*Math.sin((x - tw*160)/lam*TAU); if (x === 36) g.moveTo(x, yy2); else g.lineTo(x, yy2); } g.stroke(); } }
+    ph.forEach(function(q){ if (q.src && S.wave) return; photon(q, P); });
+    /* detector */
+    if (S.mode === 'mri'){ g.fillStyle = '#888'; g.strokeStyle = '#333'; g.lineWidth = 2; roundRect(640, 55, 22, 445, 10); g.fill(); g.stroke(); g.save(); g.translate(651, 280); g.rotate(-Math.PI/2); g.fillStyle = '#fff'; g.font = 'bold 13px Arial'; g.textAlign = 'center'; g.fillText('Detector', 0, 4); g.restore();
+      g.fillStyle = '#888'; g.fillRect(662, 268, 16, 14); g.fillStyle = 'rgb(' + Math.round(255 - 30*det) + ',' + Math.round(255 - 10*det) + ',' + Math.round(255 - 200*det) + ')'; roundRect(678, 250, 50, 50, 8); g.fill(); g.stroke();
+      detHits.forEach(function(h){ g.fillStyle = 'rgba(46,155,79,' + h.t + ')'; g.fillRect(636, h.y - 2, 30, 4); });
+      g.fillStyle = '#333'; g.font = '11px Arial'; g.textAlign = 'center'; g.fillText('signal', 703, 316); }
+    if (S.mode === 'nmr'){ g.fillStyle = '#555'; g.font = '12px Arial'; g.textAlign = 'left'; g.fillText('sample of ' + ATOMS[S.at][0].split(' ')[0] + ' nuclei', 200, 436 - 8 - 380 + 380); }
+    if (scan && S.mode === 'mri'){ g.fillStyle = 'rgba(31,95,168,0.9)'; g.font = 'bold 13px Arial'; g.textAlign = 'right'; g.fillText('scanning: gradient angle ' + Math.round(scan.k*180/scan.n) + '\u00b0', W - 10, H - 10); } }
+  function lbl2(t, x, y, al){ g.fillStyle = '#555'; g.font = '11px Arial'; g.textAlign = al || 'left'; g.textBaseline = 'middle'; g.fillText(t, x, y); g.textBaseline = 'alphabetic'; }
+  function roundRect(x, y, w, h, r){ g.beginPath(); g.moveTo(x + r, y); g.lineTo(x + w - r, y); g.quadraticCurveTo(x + w, y, x + w, y + r); g.lineTo(x + w, y + h - r); g.quadraticCurveTo(x + w, y + h, x + w - r, y + h); g.lineTo(x + r, y + h); g.quadraticCurveTo(x, y + h, x, y + h - r); g.lineTo(x, y + r); g.quadraticCurveTo(x, y, x + r, y); g.closePath(); }
+  /* ══════════ energy levels (NMR) ══════════ */
+  var cE = el('mrEl'), ge = cE.getContext('2d');
+  function drawEl(){ var w = cE.width, h = cE.height, P = pal(), gap = 18 + 200*Math.min(1, f0()/130), yl = h/2 + gap/2, yu = h/2 - gap/2, hf = 18 + 200*Math.min(1.1, S.f/130);
+    ge.fillStyle = '#ffffff'; ge.fillRect(0, 0, w, h); ge.strokeStyle = '#333'; ge.lineWidth = 1.5; ge.beginPath(); ge.moveTo(24, h - 14); ge.lineTo(24, 14); ge.stroke(); ge.fillStyle = '#333'; ge.beginPath(); ge.moveTo(24, 8); ge.lineTo(19, 18); ge.lineTo(29, 18); ge.closePath(); ge.fill();
+    ge.save(); ge.translate(12, h/2); ge.rotate(-Math.PI/2); ge.font = '12px Arial'; ge.textAlign = 'center'; ge.fillText('Energy', 0, 0); ge.restore();
+    ge.lineWidth = 3; ge.beginPath(); ge.moveTo(110, yu); ge.lineTo(w - 10, yu); ge.moveTo(110, yl); ge.lineTo(w - 10, yl); ge.stroke();
+    var up = nuc.filter(function(n){ return n.up; }).length, dn = nuc.length - up;
+    function dots(cnt, y, s){ for (var i=0; i<cnt; i++){ var x = 125 + i*14; nucleus({ x:x, y:y - 12, up:s, fl:0 }, P); } }
+    dots(up, yu, true); dots(dn, yl, false);
+    for (var k=0; k<up; k++){ } 
+    ge.fillStyle = '#333'; ge.font = '11px Arial'; ge.textAlign = 'right'; ge.fillText('spin opposed to B: ' + up, w - 12, yu + 16); ge.fillText('spin aligned with B: ' + dn, w - 12, yl + 16);
+    var match = lor(S.f - f0()) > 0.3, col = match ? '#2e9b4f' : '#aaa', y0 = yl, y1 = yl - hf;
+    ge.strokeStyle = col; ge.lineWidth = 3; ge.setLineDash(match ? [] : [4, 3]); ge.beginPath(); ge.moveTo(70, y0); for (var s=0; s<=40; s++){ var yy = y0 - s/40*(hf - 8); ge.lineTo(70 + 5*Math.sin(s*1.3), yy); } ge.stroke(); ge.setLineDash([]);
+    ge.fillStyle = col; ge.beginPath(); ge.moveTo(70, y1); ge.lineTo(63, y1 + 10); ge.lineTo(77, y1 + 10); ge.closePath(); ge.fill();
+    ge.fillStyle = '#333'; ge.font = 'bold 11px Arial'; ge.textAlign = 'center'; ge.fillText('photon hf', 70, Math.min(h - 4, y0 + 14));
+    ge.fillStyle = match ? '#2e9b4f' : '#7a3a00'; ge.font = 'bold 12px Arial'; ge.textAlign = 'left'; ge.fillText(match ? 'hf = \u0394E: resonance!' : (S.f > f0() ? 'hf > \u0394E' : 'hf < \u0394E'), 110, 18);
+    ge.fillStyle = '#333'; ge.font = '11px Arial'; ge.fillText('\u0394E = ' + sci(HEV*f0()*1e6) + ' eV', 110, h - 8);
+    /* draw nuclei on ge: reuse nucleus with ge context */ }
+  /* nucleus() draws on g; make a version that can target ge */
+  var _nuc = nucleus; nucleus = function(n, P){ if (drawingE){ var gg = g; g = ge; _nuc(n, P); g = gg; } else _nuc(n, P); };
+  var drawingE = false; var _drawEl = drawEl; drawEl = function(){ drawingE = true; try { _drawEl(); } finally { drawingE = false; } };
+  function sci(x){ if (x === 0) return '0'; var e = Math.floor(Math.log(Math.abs(x))/Math.LN10); return (x/Math.pow(10, e)).toFixed(2) + '\u00d710' + sup(e); }
+  function sup(e){ return String(e).split('').map(function(c){ return c === '-' ? '\u207b' : '\u2070\u00b9\u00b2\u00b3\u2074\u2075\u2076\u2077\u2078\u2079'.charAt(+c); }).join(''); }
+  function resText(){ var a = ATOMS[S.at];
+    el('mrRes').innerHTML = '<p>In a magnetic field B, a nucleus with spin has two energies: aligned with the field (lower) or opposed (higher). The gap grows in proportion to B:</p>'
+      + '<div class="mr_eq' + '">\u0394E = hf<sub>0</sub>, &nbsp; f<sub>0</sub> = (\u03b3/2\u03c0)B</div>'
+      + '<div class="mr_eq' + '">f<sub>0</sub> = (' + a[1].toFixed(3) + ' MHz/T)(' + S.B0.toFixed(2) + ' T) = <b>' + f0().toFixed(2) + ' MHz</b></div>'
+      + '<div class="mr_eq' + '">\u0394E = (4.136\u00d710<sup>\u221215</sup> eV\u00b7s)(' + f0().toFixed(2) + '\u00d710<sup>6</sup> Hz) = ' + sci(HEV*f0()*1e6).replace(/\u00d710(.*)/, function(m, e){ return '\u00d710<sup>' + e.replace(/[\u2070\u00b9\u00b2\u00b3\u2074\u2075\u2076\u2077\u2078\u2079\u207b]/g, function(c){ return c === '\u207b' ? '\u2212' : String('\u2070\u00b9\u00b2\u00b3\u2074\u2075\u2076\u2077\u2078\u2079'.indexOf(c)); }) + '</sup>'; }) + ' eV</div>'
+      + '<p>A radio photon of frequency f can flip a nucleus to the upper level only if hf = \u0394E, i.e. f = f<sub>0</sub>: <b>resonance</b>. Then the excited nuclei relax back and re-emit photons at the same frequency: that is the NMR signal.</p>'
+      + '<p class="mr_note' + '">The constant \u03b3/2\u03c0 is different for each kind of nucleus, so each resonates at its own frequency. The difference between the two populations is exaggerated here; in reality only a few nuclei per million more are aligned at 1 T.</p>'; }
+  /* ══════════ spectrum and imaging (MRI) ══════════ */
+  var cS = el('mrSpc'), gs = cS.getContext('2d'), cI = el('mrImg'), gi = cI.getContext('2d'), NG = 64, dens = null, img = null;
+  function buildDens(){ dens = new Float32Array(NG*NG); for (var j=0; j<NG; j++) for (var i=0; i<NG; i++){ var x = XC - SC/2 + (i + 0.5)*SC/NG, y = YC - SC/2 + (j + 0.5)*SC/NG, d = inHead(x, y); if (d && inTumor(x, y)) d = 2.4; dens[j*NG + i] = d; } }
+  function spectrum(){ var G = Math.hypot(S.gx, S.gy), span = Math.max(0.6, gam()*G*0.75 + 0.35), fa = f0() - span, fb = f0() + span, nb = 240, arr = new Float32Array(nb), i, j, k, mx = 0;
+    for (j=0; j<NG; j++) for (i=0; i<NG; i++){ var d = dens[j*NG + i]; if (!d) continue; var x = XC - SC/2 + (i + 0.5)*SC/NG, y = YC - SC/2 + (j + 0.5)*SC/NG, fr = fres(x, y), c = Math.round((fr - fa)/(fb - fa)*(nb - 1)); for (k=Math.max(0, c - 12); k<=Math.min(nb - 1, c + 12); k++) arr[k] += d*lor(fa + (fb - fa)*k/(nb - 1) - fr); }
+    for (k=0; k<nb; k++) mx = Math.max(mx, arr[k]); return { fa:fa, fb:fb, a:arr, mx:mx }; }
+  function drawSpec(){ var w = cS.width, h = cS.height, L = 50, R = w - 16, T = 14, B = h - 30, sp = spectrum(), k;
+    gs.fillStyle = '#0b1222'; gs.fillRect(0, 0, w, h); function X(f){ return L + (f - sp.fa)/(sp.fb - sp.fa)*(R - L); }
+    gs.strokeStyle = 'rgba(150,170,195,0.2)'; gs.fillStyle = '#9aa6b4'; gs.font = '10px Arial'; gs.textAlign = 'center';
+    var st = Math.pow(10, Math.floor(Math.log((sp.fb - sp.fa)/5)/Math.LN10)); if ((sp.fb - sp.fa)/st > 12) st *= 2; for (var f = Math.ceil(sp.fa/st)*st; f <= sp.fb; f += st){ gs.beginPath(); gs.moveTo(X(f), T); gs.lineTo(X(f), B); gs.stroke(); gs.fillText(f.toFixed(st < 0.1 ? 2 : 1), X(f), B + 12); }
+    gs.fillText('radio frequency (MHz)', (L + R)/2, h - 4); gs.save(); gs.translate(14, (T + B)/2); gs.rotate(-Math.PI/2); gs.fillText('signal', 0, 0); gs.restore();
+    gs.fillStyle = 'rgba(46,190,120,0.35)'; gs.strokeStyle = '#4fe39a'; gs.lineWidth = 2; gs.beginPath(); gs.moveTo(L, B); for (k=0; k<sp.a.length; k++) gs.lineTo(L + k/(sp.a.length - 1)*(R - L), B - sp.a[k]/(sp.mx || 1)*(B - T)); gs.lineTo(R, B); gs.closePath(); gs.fill(); gs.stroke();
+    if (S.f >= sp.fa && S.f <= sp.fb){ gs.strokeStyle = '#ffd23f'; gs.lineWidth = 2; gs.beginPath(); gs.moveTo(X(S.f), T); gs.lineTo(X(S.f), B); gs.stroke(); gs.fillStyle = '#ffd23f'; gs.textAlign = 'left'; gs.font = 'bold 11px Arial'; gs.fillText('your f = ' + S.f.toFixed(2), X(S.f) + 4, T + 10); }
+    else { gs.fillStyle = '#ffd23f'; gs.font = 'bold 11px Arial'; gs.textAlign = 'right'; gs.fillText('your f = ' + S.f.toFixed(2) + ' MHz is off this range ' + (S.f > sp.fb ? '\u2192' : '\u2190'), R, T + 10); }
+    var G = Math.hypot(S.gx, S.gy);
+    el('mrSpcT').innerHTML = G < 1e-4 ? 'No gradient: the field is the same everywhere, so <b>every</b> hydrogen nucleus in the head resonates at the same frequency, ' + f0().toFixed(2) + ' MHz. The signal tells you how much hydrogen there is, but not <b>where</b> it is.' : 'With a gradient, the field, and so the resonance frequency, changes across the head from ' + (gam()*(S.B0 - 0.5*Math.abs(S.gx) - 0.5*Math.abs(S.gy))).toFixed(2) + ' to ' + (gam()*(S.B0 + 0.5*Math.abs(S.gx) + 0.5*Math.abs(S.gy))).toFixed(2) + ' MHz. Each frequency now comes from one line through the head (yellow band in the picture): the spectrum is a <b>profile</b> of how much hydrogen lies on each line. ' + (S.tumor ? 'The extra hydrogen of the tumor makes a bump.' : ''); }
+  function drawImg(){ var w = cI.width, h = cI.height, k; gi.fillStyle = '#000'; gi.fillRect(0, 0, w, h);
+    if (img){ var mx = 0, mn = 1e9; for (k=0; k<img.length; k++){ mx = Math.max(mx, img[k]); } var id = gi.createImageData(NG, NG); for (k=0; k<NG*NG; k++){ var v = Math.max(0, Math.min(1, img[k]/(mx || 1)*1.15)); id.data[4*k] = id.data[4*k + 1] = id.data[4*k + 2] = Math.round(255*Math.pow(v, 0.9)); id.data[4*k + 3] = 255; }
+      var tmp = document.createElement('canvas'); tmp.width = NG; tmp.height = NG; tmp.getContext('2d').putImageData(id, 0, 0); gi.imageSmoothingEnabled = true; gi.drawImage(tmp, 0, 0, w, h); }
+    else { gi.fillStyle = '#9aa6b4'; gi.font = '13px Arial'; gi.textAlign = 'center'; gi.fillText('Press Scan to build an image.', w/2, h/2); }
+    if (scan){ var th = scan.k*Math.PI/scan.n; gi.strokeStyle = '#ffd23f'; gi.lineWidth = 2; gi.beginPath(); gi.moveTo(w/2 - 180*Math.cos(th), h/2 + 180*Math.sin(th)); gi.lineTo(w/2 + 180*Math.cos(th), h/2 - 180*Math.sin(th)); gi.stroke(); gi.fillStyle = '#ffd23f'; gi.font = 'bold 12px Arial'; gi.textAlign = 'left'; gi.fillText('gradient direction ' + Math.round(th*180/Math.PI) + '\u00b0 (' + scan.k + '/' + scan.n + ')', 8, 16); } }
+  function startScan(){ if (S.mode !== 'mri') return; buildDens(); var n = 60; scan = { k:0, n:n, acc:new Float32Array(NG*NG), G:0.06, g0:[S.gx, S.gy] }; img = null; S.pow = Math.max(S.pow, 20); say('Scanning: the gradient is turned to one direction after another. For each direction the spectrum is a profile of the head; the profiles are combined into an image.'); }
+  var RAMP = (function(){ var M = 64, h = new Float32Array(2*M + 1); for (var k=-M; k<=M; k++) h[k + M] = k === 0 ? 0.25 : (k % 2 ? -1/(Math.PI*Math.PI*k*k) : 0); return h; })();
+  function scanStep(){ var th = scan.k*Math.PI/scan.n, c = Math.cos(th), s = Math.sin(th), nb = 91, prof = new Float32Array(nb), i, j, k;
+    S.gx = +(scan.G*c).toFixed(3); S.gy = +(scan.G*s).toFixed(3);
+    for (j=0; j<NG; j++) for (i=0; i<NG; i++){ var d = dens[j*NG + i]; if (!d) continue; var u = (i + 0.5)/NG - 0.5, v = 0.5 - (j + 0.5)/NG, sc = u*c + v*s, b = (sc + 0.71)/1.42*(nb - 1), b0 = Math.floor(b), fr = b - b0; if (b0 >= 0 && b0 < nb - 1){ prof[b0] += d*(1 - fr); prof[b0 + 1] += d*fr; } }
+    var fp = new Float32Array(nb); for (i=0; i<nb; i++){ var sum = 0; for (k=-64; k<=64; k++){ var ii = i - k; if (ii >= 0 && ii < nb) sum += RAMP[k + 64]*prof[ii]; } fp[i] = sum; }
+    for (j=0; j<NG; j++) for (i=0; i<NG; i++){ var u2 = (i + 0.5)/NG - 0.5, v2 = 0.5 - (j + 0.5)/NG, b2 = ((u2*c + v2*s) + 0.71)/1.42*(nb - 1), q0 = Math.floor(b2), f2 = b2 - q0; if (q0 >= 0 && q0 < nb - 1) scan.acc[j*NG + i] += fp[q0]*(1 - f2) + fp[q0 + 1]*f2; }
+    img = scan.acc; scan.k++; if (scan.k >= scan.n){ var done = scan; scan = null; S.gx = 0; S.gy = 0; ui(); say('Scan complete: ' + done.n + ' gradient directions combined into the image. Brighter regions contain more hydrogen' + (S.tumor ? ': the tumor stands out.' : '. Add a tumor and scan again.')); } ui(); }
+  function scanText(){ el('mrScanT').innerHTML = '<p>To make an image, the scanner must find out <b>where</b> each signal comes from. The trick is the <b>gradient</b> coils, which make the field a little stronger on one side than the other:</p><div class="mr_eq' + '">B(x, y) = B<sub>0</sub> + G<sub>x</sub>x + G<sub>y</sub>y, &nbsp; f(x, y) = (\u03b3/2\u03c0)B(x, y)</div><p>Now position is coded as frequency: each frequency in the spectrum comes from one line across the head. Turning the gradient to many directions gives many profiles; combining them (filtered back-projection, as in the first MRI images by Lauterbur in 1973) rebuilds the picture.</p><p><b>Why a tumor shows:</b> here it simply contains more hydrogen (more water). Real scanners also exploit how quickly the nuclei relax, which differs between tissues.</p><p class="mr_note' + '">Modern scanners use slice selection, frequency encoding and phase encoding instead of turning the gradient, but the principle, field gradient \u2192 frequency \u2192 position, is the same.</p>'; }
+  /* ══════════ UI ══════════ */
+  function ui(){ var a = ATOMS[S.mode === 'mri' ? 0 : S.at], m = lor(S.f - f0());
+    el('mrPowV').textContent = S.pow + '%'; el('mrPow').value = S.pow; el('mrF').value = Math.round(S.f*2)/2; el('mrFf').value = +(S.f - Math.round(S.f*2)/2).toFixed(2); el('mrFfV').textContent = (S.f - Math.round(S.f*2)/2 >= 0 ? '+' : '') + (S.f - Math.round(S.f*2)/2).toFixed(2) + ' MHz';
+    if (document.activeElement !== el('mrFn')) el('mrFn').value = S.f.toFixed(2);
+    el('mrBV').textContent = S.B0.toFixed(2) + ' T'; el('mrB').value = S.B0; el('mrGxV').textContent = S.gx.toFixed(3) + ' T'; el('mrGyV').textContent = S.gy.toFixed(3) + ' T'; el('mrGx').value = S.gx; el('mrGy').value = S.gy; el('mrSpV').textContent = '\u00d7' + S.sp;
+    var rd = [['nucleus', a[0].split(' ')[0]], ['field B\u2080', S.B0.toFixed(2) + ' T'], ['resonance f\u2080 = (\u03b3/2\u03c0)B\u2080', f0().toFixed(2) + ' MHz'], ['radio frequency f', S.f.toFixed(2) + ' MHz'], ['photon energy hf', sci(HEV*S.f*1e6) + ' eV'], [S.mode === 'nmr' ? 'match' : 'detector', S.mode === 'nmr' ? (m > 0.5 ? 'resonance' : m > 0.05 ? 'close' : 'off') : (det > 0.05 ? 'signal!' : 'quiet')]];
+    el('mrRead').innerHTML = rd.map(function(q){ return '<div><div class="mr_rl' + '">' + q[0] + '</div><div class="mr_rv' + '">' + q[1] + '</div></div>'; }).join('');
+    var s;
+    if (S.pow === 0) s = 'The radio source is off. Turn up the power.';
+    else if (S.mode === 'nmr') s = m > 0.5 ? 'Resonance: the photon energy hf equals the gap \u0394E, so nuclei absorb photons and flip, then relax and re-emit (green photons).' : 'No resonance: the photons have ' + (S.f > f0() ? 'too much' : 'too little') + ' energy to flip the nuclei (need f \u2248 ' + f0().toFixed(2) + ' MHz). They pass straight through.';
+    else { var G = Math.hypot(S.gx, S.gy), fmin = gam()*(S.B0 - 0.5*Math.abs(S.gx) - 0.5*Math.abs(S.gy)), fmax = gam()*(S.B0 + 0.5*Math.abs(S.gx) + 0.5*Math.abs(S.gy));
+      s = G < 1e-4 ? (m > 0.5 ? 'Resonance everywhere: the whole head absorbs and re-emits; the detector picks up a signal but cannot tell where it came from.' : 'No resonance: f must equal ' + f0().toFixed(2) + ' MHz.') : (S.f >= fmin - 0.1 && S.f <= fmax + 0.1 ? 'With the gradient, only the nuclei on the yellow band resonate: changing f moves the band across the head.' : 'With this gradient, resonance happens between ' + fmin.toFixed(2) + ' and ' + fmax.toFixed(2) + ' MHz.'); }
+    el('mrStatus').textContent = s;
+    if (S.mode === 'nmr'){ resText(); drawEl(); } else { if (!dens) buildDens(); drawSpec(); drawImg(); } }
+  var tw = 0;
+  function loop(now){ var dt = last ? Math.min(0.05, (now - last)/1000) : 0; last = now;
+    if (S.run && dt > 0){ var d = dt*S.sp; tw += d; step(d); if (scan){ scan.t = (scan.t || 0) + dt; if (scan.t > 0.08){ scan.t = 0; scanStep(); } } draw(); if (S.mode === 'nmr') drawEl(); slow += dt; if (slow > 0.5){ slow = 0; var md = el('mrRead'); if (md) ui(); } }
+    requestAnimationFrame(loop); }
+  var slow = 0;
+  function setMode(m){ S.mode = m; scan = null; S.gx = 0; S.gy = 0; [0, 1].forEach(function(i){ var t = el('mrT' + i + ''), on = (i === 1) === (m === 'mri'); t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; });
+    el('mrNMR').hidden = m !== 'nmr'; el('mrMRI').hidden = m !== 'mri'; el('mrGrad').hidden = m !== 'mri'; el('mrAtC').hidden = m !== 'nmr'; el('mrTum').hidden = m !== 'mri'; el('mrShHL').hidden = m !== 'mri'; el('mrShRL').hidden = m !== 'mri';
+    el('mrIntro').innerHTML = m === 'nmr' ? 'The main magnet makes a uniform field B pointing up. Each nucleus acts like a tiny magnet: aligned with B (red arrow up) it has lower energy, opposed (arrow down) higher. Send in radio waves and look for the frequency at which the nuclei absorb them and flip: <b>nuclear magnetic resonance</b>.' : 'Now a head is inside the magnet. Its hydrogen nuclei (in water and fat) resonate just like the sample. The <b>gradient magnets</b> make the field vary across the head, so that the resonance frequency tells <b>where</b> the signal comes from. Use them to locate a tumor, then let the scanner build an image.';
+    dens = null; img = null; build(); ui(); scanText();
+    say(m === 'nmr' ? 'Simplified NMR: tune the radio frequency until the nuclei absorb the photons.' : 'Simplified MRI: hydrogen nuclei in a head. Use the gradients to find where the signal comes from, or press Scan.'); }
+  el('mrT0').addEventListener('click', function(){ setMode('nmr'); }); el('mrT1').addEventListener('click', function(){ setMode('mri'); });
+  [0, 1].forEach(function(i){ el('mrT' + i + '').addEventListener('keydown', function(e){ if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){ setMode(i ? 'nmr' : 'mri'); el('mrT' + (1 - i) + '').focus(); e.preventDefault(); } }); });
+  el('mrAt').innerHTML = ATOMS.map(function(a, i){ return '<option value="' + i + '">' + a[0] + ' \u2014 ' + a[1] + ' MHz/T</option>'; }).join('');
+  el('mrAt').addEventListener('change', function(){ S.at = +this.value; build(); ui(); say(ATOMS[S.at][0] + ': resonance at ' + f0().toFixed(2) + ' MHz in ' + S.B0.toFixed(2) + ' T.'); });
+  function fSay(){ var m = lor(S.f - f0()); say('Frequency ' + S.f.toFixed(2) + ' MHz. ' + (S.mode === 'nmr' ? (m > 0.5 ? 'Resonance!' : 'Resonance is at ' + f0().toFixed(2) + ' MHz.') : el('mrStatus').textContent)); }
+  el('mrF').addEventListener('input', function(){ S.f = +this.value; ui(); }); el('mrF').addEventListener('change', fSay);
+  el('mrFf').addEventListener('input', function(){ S.f = Math.max(1, Math.round(S.f*2)/2 + +this.value); ui(); }); el('mrFf').addEventListener('change', fSay);
+  el('mrFn').addEventListener('change', function(){ var v = parseFloat(this.value); if (v >= 1 && v <= 130){ S.f = v; ui(); fSay(); } else { this.value = S.f.toFixed(2); say('Type a frequency between 1 and 130 MHz.'); } });
+  el('mrPow').addEventListener('input', function(){ S.pow = +this.value; ui(); });
+  el('mrB').addEventListener('input', function(){ S.B0 = +this.value; ui(); }); el('mrB').addEventListener('change', function(){ say('Field ' + S.B0.toFixed(2) + ' T: resonance now at ' + f0().toFixed(2) + ' MHz. A stronger field means a bigger gap and a higher resonance frequency.'); });
+  el('mrGx').addEventListener('input', function(){ S.gx = +this.value; ui(); }); el('mrGy').addEventListener('input', function(){ S.gy = +this.value; ui(); });
+  ['mrGx', 'mrGy'].forEach(function(id){ el(id).addEventListener('change', function(){ say(el('mrStatus').textContent); }); });
+  el('mrSp').addEventListener('input', function(){ S.sp = +this.value; ui(); });
+  [['mrShF', 'shF'], ['mrShN', 'shN'], ['mrShH', 'shH'], ['mrShR', 'shR']].forEach(function(q){ el(q[0]).addEventListener('change', function(){ S[q[1]] = this.checked; draw(); }); });
+  el('mrTum').addEventListener('click', function(){ if (S.tumor){ S.tumor = null; this.textContent = 'Add tumor'; say('Tumor removed.'); } else { var c = [[320, 140], [420, 130], [400, 250], [310, 270], [370, 180]][Math.floor(Math.random()*5)]; S.tumor = c; this.textContent = 'Remove tumor'; say('A tumor has been added somewhere in the head: a region with more hydrogen. Can you find it with the gradients, or with a scan?'); } dens = null; img = null; build(); ui(); });
+  el('mrScan').addEventListener('click', startScan);
+  el('mrTune').addEventListener('click', function(){ S.f = +f0().toFixed(2); if (S.pow === 0) S.pow = 20; ui(); say('Tuned to the resonance frequency at the centre, ' + S.f.toFixed(2) + ' MHz.'); });
+  var rb = el('mrRun'), PLAYI = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor"/></svg>', PAUSEI = rb.innerHTML;
+  rb.addEventListener('click', function(){ S.run = !S.run; rb.innerHTML = S.run ? PAUSEI : PLAYI; rb.setAttribute('aria-pressed', S.run ? 'true' : 'false'); rb.setAttribute('aria-label', S.run ? 'Pause' : 'Run'); });
+  el('mrRst').addEventListener('click', function(){ build(); ui(); say('Nuclei reset to thermal equilibrium.'); });
+  function setView(w){ S.wave = w; el('mrVW').setAttribute('aria-pressed', w ? 'true' : 'false'); el('mrVP').setAttribute('aria-pressed', w ? 'false' : 'true'); }
+  el('mrVW').addEventListener('click', function(){ setView(true); }); el('mrVP').addEventListener('click', function(){ setView(false); });
+  mrA11y.onChange(function(){ draw(); ui(); });
+  setMode('nmr'); requestAnimationFrame(loop);
+  return { S:S, f0:f0, ui:ui, setMode:setMode, nuc:function(){ return nuc; }, stats:function(){ return { abs:absorbed, em:emitted, up:nuc.filter(function(n){ return n.up; }).length, n:nuc.length, det:det }; }, scan:startScan, scanning:function(){ return !!scan; } };
+};
+var mrSim = new mrGen();
+</script>
+<script>mrA11y.init();</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>Many nuclei, including the proton of hydrogen, have a spin and behave like tiny magnets. In a magnetic field `B` they have two possible energies: lower when aligned with the field, higher when opposed. The energy difference is proportional to the field, `Delta E = h f_0` with `f_0 = (gamma/(2 pi)) B`; for hydrogen `gamma/(2 pi) = 42.58` MHz/T, so `f_0 ~~ 64` MHz at 1.5 T, a radio frequency.</p>
+<p><b>Nuclear magnetic resonance (NMR):</b> radio photons are absorbed, flipping nuclei to the higher level, only when their energy matches the gap, `hf = Delta E`. The excited nuclei then relax back and re-emit radio waves at the same frequency, which a detector picks up. Each kind of nucleus has its own `gamma`, so each resonates at its own frequency.</p>
+<p><b>Magnetic resonance imaging (MRI)</b> uses the hydrogen in the water and fat of the body. Gradient coils add a small field that changes across the body, `B = B_0 + G_x x + G_y y`, so the resonance frequency depends on position: the frequency of the signal tells where it comes from. Repeating the measurement with gradients in many directions and combining the profiles reconstructs an image (projection reconstruction, as in the first MRI images). In this simplified model a tumor shows up because it contains more hydrogen; real scanners also use differences in relaxation times. The excess of aligned nuclei is greatly exaggerated (really a few per million), nuclei are drawn as spinning tops, and the head is not to scale.</p>
+</div>
+</div>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+
+</div>
+
+</body>
+</html>

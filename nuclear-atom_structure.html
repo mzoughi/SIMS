@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Nuclear: Structure of the Atom</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobatomstruct" class="mob_wrap">
+<div class="at_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="at_a11ybtn" id="atBtnHC" onclick="atA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="at_a11ybtn" id="atBtnDM" onclick="atA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="at_a11ybtn" id="atBtnCB" onclick="atA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="at_a11ybtn" id="atBtnNR" onclick="atA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+
+<div class="at_title"><h3>Structure of the Atom &mdash; Nucleus, Electrons, Isotopes and Ions</h3></div>
+<div class="at_pick" role="group" aria-label="Choose the atom">
+<div class="at_ig at_wide"><label for="atEl">Element</label><select id="atEl"></select></div>
+<div class="at_ig"><span class="at_lab">Protons (Z)</span><div class="at_spin"><button type="button" class="at_sb" id="atPm" aria-label="Remove a proton">&minus;</button><output id="atPv" aria-live="off"></output><button type="button" class="at_sb" id="atPp" aria-label="Add a proton">+</button></div></div>
+<div class="at_ig"><span class="at_lab">Neutrons (N)</span><div class="at_spin"><button type="button" class="at_sb" id="atNm" aria-label="Remove a neutron">&minus;</button><output id="atNv" aria-live="off"></output><button type="button" class="at_sb" id="atNp" aria-label="Add a neutron">+</button></div></div>
+<div class="at_ig"><span class="at_lab">Electrons</span><div class="at_spin"><button type="button" class="at_sb" id="atEm" aria-label="Remove an electron">&minus;</button><output id="atEv" aria-live="off"></output><button type="button" class="at_sb" id="atEp" aria-label="Add an electron">+</button></div></div>
+<div class="at_quick" id="atQuick" role="group" aria-label="Examples"></div>
+</div>
+<div class="at_id" id="atId"></div>
+<div id="atNarBar" class="at_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="at_card"><div class="at_ctitle"><span>The atom</span>
+<span class="at_seg" role="group" aria-label="Electron picture"><button type="button" id="atVc" aria-pressed="true">electron cloud</button><button type="button" id="atVs" aria-pressed="false">shells (Bohr model)</button></span></div>
+<canvas id="atCv" width="820" height="440" role="img" aria-label="Left: the whole atom, a tiny nucleus at the centre surrounded by the electrons, drawn as a cloud or as shells. Right: the nucleus magnified, showing its protons and neutrons."></canvas>
+<div class="at_cbar"><label><input type="checkbox" id="atSpin" checked> animate</label><label><input type="checkbox" id="atCmp" checked> compare with the neutral, most common atom</label></div></div>
+<div class="at_panels">
+<div class="at_panel" role="group" aria-labelledby="atHdS"><div class="at_ptitle" id="atHdS">The symbol</div><div class="at_pbody" id="atSym"></div></div>
+<div class="at_panel" role="group" aria-labelledby="atHdC"><div class="at_ptitle" id="atHdC">Counting the particles</div><div class="at_pbody" id="atCnt"></div></div>
+</div>
+<div class="at_panels" style="padding-top:0">
+<div class="at_panel" role="group" aria-labelledby="atHdW"><div class="at_ptitle" id="atHdW">What changed, and what it does</div><div class="at_pbody" id="atWhy"></div></div>
+<div class="at_panel" role="group" aria-labelledby="atHdP"><div class="at_ptitle" id="atHdP">The three particles</div><div class="at_pbody">
+<table class="at_tbl"><thead><tr><th class="at_l" scope="col">particle</th><th scope="col">charge</th><th scope="col">mass (u)</th><th class="at_l" scope="col">where</th></tr></thead><tbody>
+<tr><td class="at_l"><span class="at_dot" id="atKp"></span>proton</td><td>+e</td><td>1.0073</td><td class="at_l">nucleus</td></tr>
+<tr><td class="at_l"><span class="at_dot" id="atKn"></span>neutron</td><td>0</td><td>1.0087</td><td class="at_l">nucleus</td></tr>
+<tr><td class="at_l"><span class="at_dot" id="atKe"></span>electron</td><td>&minus;e</td><td>0.00055</td><td class="at_l">around the nucleus</td></tr></tbody></table>
+<p class="at_note">e = 1.602&times;10<sup>&minus;19</sup> C; 1 u = 1.661&times;10<sup>&minus;27</sup> kg. A proton is about 1836 times heavier than an electron, so almost all the mass of an atom is in its nucleus.</p>
+</div></div>
+</div>
+</div>
+<style>
+:where(#mobatomstruct) * { margin:0; box-sizing:border-box; }
+#mobatomstruct { width:100%; max-width:860px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; color:#1d232a; }
+#mobatomstruct canvas { display:block; width:100%; height:auto; }
+#mobatomstruct .at_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#mobatomstruct .at_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#mobatomstruct .at_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobatomstruct .at_title { padding:4px; background-color:#f90; text-align:center; }
+#mobatomstruct .at_title h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+#mobatomstruct .at_tabs { display:flex; gap:4px; padding:6px 8px 0; background:#14213a; flex-wrap:wrap; }
+#mobatomstruct .at_tab { flex:1 1 140px; padding:8px 6px; border:1px solid #2b3d60; border-bottom:0; border-radius:6px 6px 0 0; background:#1d2c4a; color:#bcd0f0; font-weight:bold; cursor:pointer; font-size:.88rem; min-height:40px; }
+#mobatomstruct .at_tab[aria-selected="true"] { background:#f3f5f8; color:#14213a; }
+#mobatomstruct .at_intro { padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; font-size:.9rem; line-height:1.5; }
+#mobatomstruct .at_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:6px 12px; padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; }
+#mobatomstruct .at_rl { font-size:.7rem; color:#667; text-transform:uppercase; letter-spacing:.05em; }
+#mobatomstruct .at_rv { font-family:monospace; font-size:.93rem; color:#7a3a00; font-weight:bold; }
+#mobatomstruct .at_view { background:#0b1222; }
+#mobatomstruct .at_status { color:#222; font-size:.84rem; text-align:center; background:#fff6d9; padding:5px 8px; line-height:1.45; min-height:1.6em; }
+#mobatomstruct .at_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+#mobatomstruct .at_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+#mobatomstruct .at_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { #mobatomstruct .at_tsep { padding-left:0; border-left:0; } }
+#mobatomstruct .at_tbtn { width:44px; height:38px; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer; border:1px solid #6d8a3a; border-radius:5px; background:#fff; color:#223; }
+#mobatomstruct .at_tbtn.at_play { background:#2e7d32; color:#fff; border-color:#1b5e20; }
+#mobatomstruct .at_tbtn.at_play[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+#mobatomstruct .at_vbtn, #mobatomstruct .at_bbtn { height:38px; padding:0 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; white-space:nowrap; }
+#mobatomstruct .at_vbtn[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobatomstruct .at_bbtn { background:#2e7d32; border-color:#1b5e20; color:#fff; font-weight:bold; }
+#mobatomstruct button:disabled { opacity:.4; cursor:not-allowed; }
+#mobatomstruct .at_card { margin:10px 10px 0; background:#0b1222; border:1px solid #2b3d60; border-radius:6px; overflow:hidden; }
+#mobatomstruct .at_ctitle { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:4px 10px; padding:5px 10px; background:#14213a; color:#dbe7ff; font-size:.8rem; font-weight:bold; }
+#mobatomstruct .at_cnote { padding:8px 12px 10px; color:#e3ecfa; font-size:.86rem; line-height:1.5; background:#0d1526; border-top:1px solid #2b3d60; }
+#mobatomstruct .at_cnote b { color:#ffd23f; }
+#mobatomstruct .at_cbar { display:flex; flex-wrap:wrap; gap:4px 14px; padding:6px 10px; background:#0d1526; color:#dbe7ff; font-size:.8rem; }
+#mobatomstruct .at_cbar label { display:flex; align-items:center; gap:5px; cursor:pointer; }
+#mobatomstruct .at_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:10px; padding:10px; }
+#mobatomstruct .at_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+#mobatomstruct .at_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+#mobatomstruct .at_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; font-size:.87rem; line-height:1.45; }
+#mobatomstruct .at_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+#mobatomstruct .at_ctrl.at_off { opacity:.45; }
+#mobatomstruct .at_chdr { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+#mobatomstruct .at_chdr label { font-size:.82rem; font-weight:bold; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+#mobatomstruct .at_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; flex:0 0 auto; min-width:4.5em; text-align:right; }
+#mobatomstruct .at_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+#mobatomstruct select { width:100%; min-height:34px; padding:4px 6px; font-size:.86rem; border:1px solid #8a96a8; border-radius:4px; background:#fff; }
+#mobatomstruct .at_checks { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 8px; }
+#mobatomstruct .at_chk { display:flex; align-items:center; gap:6px; font-size:.82rem; cursor:pointer; }
+#mobatomstruct .at_presets { display:flex; flex-wrap:wrap; gap:5px; }
+#mobatomstruct .at_presets button { padding:5px 9px; font-size:.82rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:4px; background:#fff; color:#223; min-height:34px; }
+#mobatomstruct .at_presets button[aria-current="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobatomstruct .at_note { font-size:.8rem; color:#555; font-style:italic; }
+#mobatomstruct .at_tblwrap { overflow-x:auto; }
+#mobatomstruct .at_tbl { border-collapse:collapse; width:100%; font-size:.82rem; }
+#mobatomstruct .at_tbl th, #mobatomstruct .at_tbl td { padding:4px 6px; border-bottom:1px solid #e3e7ee; text-align:center; }
+#mobatomstruct .at_tbl th { background:#f1f4f8; font-size:.76rem; }
+#mobatomstruct .at_tbl td.at_l, #mobatomstruct .at_tbl th.at_l { text-align:left; }
+#mobatomstruct .at_eq { font-family:'Times New Roman', serif; font-size:1rem; background:#f6f8fb; border-left:3px solid #1f5fa8; padding:4px 8px; margin:2px 0; overflow-wrap:anywhere; }
+#mobatomstruct b.at_res { color:#7a3a00; }
+#mobatomstruct .at_num { width:5.5em; height:36px; padding:3px 6px; font-size:.95rem; border:1px solid #888; border-radius:4px; }
+#mobatomstruct .at_ok { color:#1b6e2a; font-weight:bold; } #mobatomstruct .at_no { color:#b42318; font-weight:bold; }
+#mobatomstruct button:focus-visible, #mobatomstruct input:focus-visible, #mobatomstruct select:focus-visible, #mobatomstruct canvas:focus-visible, #mobatomstruct tr:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (max-width:420px) { #mobatomstruct .at_checks { grid-template-columns:minmax(0,1fr); } }
+@media (pointer:coarse) { #mobatomstruct .at_tbtn, #mobatomstruct .at_vbtn, #mobatomstruct .at_bbtn, #mobatomstruct .at_num { height:44px; } #mobatomstruct .at_presets button { min-height:42px; } #mobatomstruct input[type=checkbox] { width:20px; height:20px; } #mobatomstruct input[type=range] { height:28px; } }
+#mobatomstruct .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobatomstruct .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobatomstruct .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobatomstruct .mob_desc p { margin:0 0 8px 0; }
+#mobatomstruct .mob_eq { text-align:center; }
+#mobatomstruct.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobatomstruct.a11y_dm .at_card, #mobatomstruct.a11y_dm .at_view, #mobatomstruct.a11y_dm [aria-label="Display options"], #mobatomstruct.a11y_dm .mob_descbtn, #mobatomstruct.a11y_dm .at_meter { filter:hue-rotate(180deg) invert(1); }
+#mobatomstruct.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobatomstruct.a11y_hc .at_card, #mobatomstruct.a11y_hc .at_view, #mobatomstruct.a11y_hc [aria-label="Display options"], #mobatomstruct.a11y_hc .mob_descbtn, #mobatomstruct.a11y_hc .at_meter { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+
+#mobatomstruct .at_pick { display:flex; flex-wrap:wrap; gap:8px 16px; align-items:flex-end; padding:10px 12px; background:#df9; }
+#mobatomstruct .at_ig { display:flex; flex-direction:column; gap:3px; font-size:.84rem; }
+#mobatomstruct .at_wide { flex:1 1 220px; }
+#mobatomstruct .at_lab { font-size:.84rem; }
+#mobatomstruct .at_spin { display:flex; }
+#mobatomstruct .at_spin output { display:inline-flex; align-items:center; justify-content:center; min-width:3.2em; height:38px; font-size:1.1rem; font-weight:bold; background:#fff; border:1px solid #6d8a3a; border-left:0; border-right:0; }
+#mobatomstruct .at_sb { width:38px; height:38px; font-size:1.2rem; font-weight:bold; border:1px solid #6d8a3a; background:#fff; cursor:pointer; }
+#mobatomstruct .at_sb:first-child { border-radius:5px 0 0 5px; } #mobatomstruct .at_sb:last-child { border-radius:0 5px 5px 0; }
+#mobatomstruct .at_quick { flex:1 1 100%; display:flex; flex-wrap:wrap; gap:4px; }
+#mobatomstruct .at_quick button { padding:4px 8px; font-size:.82rem; border:1px solid #4a6aa0; border-radius:4px; background:#fff; cursor:pointer; min-height:32px; }
+#mobatomstruct .at_quick button[aria-current="true"] { background:#1f5fa8; color:#fff; }
+#mobatomstruct .at_quick .at_qh { font-size:.78rem; font-weight:bold; align-self:center; color:#444; }
+#mobatomstruct .at_id { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:4px 18px; padding:8px 10px; background:#14213a; color:#e3ecfa; font-size:.95rem; }
+#mobatomstruct .at_id .at_tag { font-family:monospace; font-size:.86rem; color:#9fb4d8; }
+#mobatomstruct .at_id .at_badge { padding:2px 9px; border-radius:10px; font-size:.82rem; font-weight:bold; }
+#mobatomstruct .at_sy { display:inline-flex; align-items:center; font-family:'Times New Roman', serif; }
+#mobatomstruct .at_az { display:inline-flex; flex-direction:column; align-items:flex-end; line-height:1.0; margin-right:2px; font-size:.5em; }
+#mobatomstruct .at_az .at_a { color:#5aa0ff; } #mobatomstruct .at_az .at_z { color:#ff7a6a; }
+#mobatomstruct .at_ch { align-self:flex-start; font-size:.5em; color:#ffd23f; margin-left:1px; }
+#mobatomstruct .at_big { font-size:3.4rem; text-align:center; margin:2px 0 6px; }
+#mobatomstruct .at_big .at_a { color:#1f5fa8; } #mobatomstruct .at_big .at_z { color:#b42318; } #mobatomstruct .at_big .at_ch { color:#8a5a00; }
+#mobatomstruct .at_seg { display:inline-flex; gap:4px; }
+#mobatomstruct .at_seg button { padding:4px 10px; font-size:.78rem; border:1px solid #5a7ab0; border-radius:4px; background:#1d2c4a; color:#dbe7ff; cursor:pointer; min-height:30px; }
+#mobatomstruct .at_seg button[aria-pressed="true"] { background:#5aa0ff; color:#0b1222; font-weight:bold; }
+#mobatomstruct .at_tbl { border-collapse:collapse; width:100%; font-size:.86rem; }
+#mobatomstruct .at_tbl th, #mobatomstruct .at_tbl td { padding:4px 6px; border-bottom:1px solid #e3e7ee; text-align:center; }
+#mobatomstruct .at_tbl th { background:#f1f4f8; font-size:.78rem; }
+#mobatomstruct .at_tbl .at_l { text-align:left; }
+#mobatomstruct .at_tbl tr.at_chg td { background:#fff3c4; font-weight:bold; }
+#mobatomstruct .at_dot { display:inline-block; width:12px; height:12px; border-radius:50%; margin-right:6px; vertical-align:middle; border:1px solid rgba(0,0,0,.3); }
+#mobatomstruct .at_box { padding:7px 10px; border-left:4px solid #1f5fa8; background:#f6f8fb; border-radius:3px; }
+#mobatomstruct .at_box.at_iso { border-left-color:#2e7d32; } #mobatomstruct .at_box.at_ion { border-left-color:#c46a00; } #mobatomstruct .at_box.at_el { border-left-color:#b42318; }
+#mobatomstruct .at_sb:disabled { opacity:.35; cursor:not-allowed; }
+@media (pointer:coarse) { #mobatomstruct .at_sb, #mobatomstruct .at_spin output { height:44px; } #mobatomstruct .at_sb { width:44px; } #mobatomstruct .at_quick button, #mobatomstruct .at_seg button { min-height:40px; } }
+</style>
+<script>
+var atA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return; b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobatomstruct'); if (!W) return; W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc);
+var nb = document.getElementById('atNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none'; var nr = document.getElementById('atBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('atBtnHC', states.hc); styleBtn('atBtnDM', states.dm); styleBtn('atBtnCB', states.cb); styleBtn('atBtnNR', states.nr); hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return { init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply(); if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: protons orange, neutrons sky blue, electrons yellow.'); },
+alt:function(){ return states.hc || states.cb; }, isHC:function(){ return states.hc; }, narrate:function(m){ if (!states.nr) return; var nb = document.getElementById('atNarBar'); if (nb) nb.textContent = m; } };
+})();
+</script>
+
+<!-- ════════ SIMULATION ════════
+The atom: Z protons and N neutrons in the nucleus (A = Z + N), and n_e electrons around it; charge = (Z - n_e) e.
+Electron shells: filled in the order 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p 7s 5f 6d 7p and grouped by n (a few real exceptions ignored).
+Removing electrons takes them from the outermost shell; adding fills the next free place.
+Atomic radius (drawn): a rough trend for the neutral atom; cations drawn smaller, anions larger. Nucleus radius 1.2 A^(1/3) fm.
+No dollar signs or backticks in the code.
+-->
+<script>
+var atGen = function(){
+  var cv = document.getElementById('atCv'), g = cv.getContext('2d'), W = cv.width, H = cv.height, TAU = 2*Math.PI;
+  function el(id){ return document.getElementById(id); }
+  var SYM = ['','H','He','Li','Be','B','C','N','O','F','Ne','Na','Mg','Al','Si','P','S','Cl','Ar','K','Ca','Sc','Ti','V','Cr','Mn','Fe','Co','Ni','Cu','Zn','Ga','Ge','As','Se','Br','Kr','Rb','Sr','Y','Zr','Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','In','Sn','Sb','Te','I','Xe','Cs','Ba','La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Hf','Ta','W','Re','Os','Ir','Pt','Au','Hg','Tl','Pb','Bi','Po','At','Rn','Fr','Ra','Ac','Th','Pa','U'];
+  var NAME = ['','hydrogen','helium','lithium','beryllium','boron','carbon','nitrogen','oxygen','fluorine','neon','sodium','magnesium','aluminium','silicon','phosphorus','sulfur','chlorine','argon','potassium','calcium','scandium','titanium','vanadium','chromium','manganese','iron','cobalt','nickel','copper','zinc','gallium','germanium','arsenic','selenium','bromine','krypton','rubidium','strontium','yttrium','zirconium','niobium','molybdenum','technetium','ruthenium','rhodium','palladium','silver','cadmium','indium','tin','antimony','tellurium','iodine','xenon','caesium','barium','lanthanum','cerium','praseodymium','neodymium','promethium','samarium','europium','gadolinium','terbium','dysprosium','holmium','erbium','thulium','ytterbium','lutetium','hafnium','tantalum','tungsten','rhenium','osmium','iridium','platinum','gold','mercury','thallium','lead','bismuth','polonium','astatine','radon','francium','radium','actinium','thorium','protactinium','uranium'];
+  /* most common isotope (A), and stable isotopes (A list) for each Z; radioactive isotopes found or used widely */
+  var COMMON = [0,1,4,7,9,11,12,14,16,19,20,23,24,27,28,31,32,35,40,39,40,45,48,51,52,55,56,59,58,63,64,69,74,75,80,79,84,85,88,89,90,93,98,98,102,103,106,107,114,115,120,121,130,127,132,133,138,139,140,141,142,145,152,153,158,159,164,165,166,169,174,175,180,181,184,187,192,193,195,197,202,205,208,209,209,210,222,223,226,227,232,231,238];
+  var STABLE = { 1:[1,2], 2:[3,4], 3:[6,7], 4:[9], 5:[10,11], 6:[12,13], 7:[14,15], 8:[16,17,18], 9:[19], 10:[20,21,22], 11:[23], 12:[24,25,26], 13:[27], 14:[28,29,30], 15:[31], 16:[32,33,34,36], 17:[35,37], 18:[36,38,40], 19:[39,41], 20:[40,42,43,44,46], 26:[54,56,57,58], 29:[63,65], 47:[107,109], 79:[197], 82:[204,206,207,208] };
+  var RADIO = { '1,3':'radioactive (tritium, half-life 12.3 y)', '6,14':'radioactive (carbon-14, half-life 5730 y)', '19,40':'radioactive (half-life 1.25\u00d710\u2079 y), found in nature', '27,60':'radioactive (half-life 5.27 y)', '38,90':'radioactive (half-life 28.8 y)', '53,131':'radioactive (half-life 8.0 d)', '55,137':'radioactive (half-life 30 y)', '86,222':'radioactive (radon gas, half-life 3.8 d)', '88,226':'radioactive (half-life 1600 y)', '92,235':'radioactive (half-life 7.0\u00d710\u2078 y), found in nature', '92,238':'radioactive (half-life 4.5\u00d710\u2079 y), found in nature', '90,232':'radioactive (half-life 1.4\u00d710\u00b9\u2070 y), found in nature', '43,98':'radioactive: technetium has no stable isotope', '61,145':'radioactive: promethium has no stable isotope' };
+  var ION = { 1:[1,-1], 3:[1], 4:[2], 7:[-3], 8:[-2], 9:[-1], 11:[1], 12:[2], 13:[3], 15:[-3], 16:[-2], 17:[-1], 19:[1], 20:[2], 26:[2,3], 29:[1,2], 30:[2], 35:[-1], 47:[1], 53:[-1], 82:[2] };
+  var ORB = [[1,2],[2,2],[2,6],[3,2],[3,6],[4,2],[3,10],[4,6],[5,2],[4,10],[5,6],[6,2],[4,14],[5,10],[6,6],[7,2],[5,14],[6,10],[7,6]];
+  var Z = 6, N = 6, E = 6, view = 'c', phase = 0, timer = null;
+  function shells(n){ if (n < Z){ var s0 = aufbau(Z); for (var r = Z - n; r > 0; r--){ for (var k = s0.length - 1; k >= 0; k--) if (s0[k] > 0){ s0[k]--; break; } } while (s0.length > 1 && !s0[s0.length - 1]) s0.pop(); return s0; } return aufbau(n); }
+  function aufbau(n){ var s = [], left = n; for (var i=0; i<ORB.length && left > 0; i++){ var k = Math.min(left, ORB[i][1]); s[ORB[i][0] - 1] = (s[ORB[i][0] - 1] || 0) + k; left -= k; } for (var j=0; j<s.length; j++) s[j] = s[j] || 0; return s; }
+  function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+  function A(){ return Z + N; } function Q(){ return Z - E; }
+  function chg(q){ return q === 0 ? '' : (Math.abs(q) > 1 ? Math.abs(q) : '') + (q > 0 ? '+' : '\u2212'); }
+  function symH(a, z, s, q){ return '<span class="at_sy' + '"><span class="at_az' + '"><span class="at_a' + '">' + a + '</span><span class="at_z' + '">' + z + '</span></span>' + s + (q ? '<span class="at_ch' + '">' + chg(q) + '</span>' : '') + '</span>'; }
+  function isoStatus(z, a){ var st = STABLE[z]; if (RADIO[z + ',' + a]) return ['radioactive', RADIO[z + ',' + a], '#c46a00']; if (st && st.indexOf(a) >= 0) return ['stable', 'stable', '#2e7d32'];
+    if (st) return ['none', 'not found in nature (unstable)', '#b42318']; var c = COMMON[z]; return Math.abs(a - c) <= 2 ? ['?', 'close to the common isotope', '#5d6878'] : ['none', 'probably unstable', '#b42318']; }
+  function name(){ return cap(NAME[Z]) + '-' + A(); }
+  function pal(){ var alt = atA11y.alt(); return { p:alt ? [213,94,0] : [52,92,200], n:alt ? [86,180,233] : [214,58,58], e:alt ? '#F0E442' : '#7fe6ff', cloud:alt ? [240,228,66] : [90,190,255] }; }
+  function rgb(c, k, a){ return 'rgba(' + c.map(function(v){ return Math.max(0, Math.min(255, Math.round(v*k))); }).join(',') + ',' + (a === undefined ? 1 : a) + ')'; }
+  /* ══════════ drawing ══════════ */
+  function atomR(e){ var sh = shells(Z), n = sh.length; var base = 46 + 30*n - (Z <= 2 ? 6 : 0); var q = Q(); return base*(q > 0 ? Math.pow(0.86, Math.min(q, 4)) : 1 + 0.08*Math.min(-q, 3)); }
+  function drawNucleus(cx, cy, R, z, n, seed){ var p = pal(), a = z + n, k = Math.min(a, 120), br = R/Math.sqrt(k)*1.05, pts = [], pc = 0;
+    for (var i=0; i<k; i++){ var r = R*Math.sqrt((i + 0.5)/k)*0.82, t = i*2.39996 + seed, isP = (pc + 0.5)/(i + 1) <= z/a && pc < Math.round(k*z/a); if (isP) pc++; pts.push([cx + r*Math.cos(t), cy + r*Math.sin(t), isP, Math.sin(i*1.7)]); }
+    pts.sort(function(u, v){ return u[3] - v[3]; }).forEach(function(q){ var c = q[2] ? p.p : p.n, gr = g.createRadialGradient(q[0] - br*0.35, q[1] - br*0.35, br*0.1, q[0], q[1], br); gr.addColorStop(0, rgb(c, 1.5)); gr.addColorStop(0.6, rgb(c, 1)); gr.addColorStop(1, rgb(c, 0.45)); g.fillStyle = gr; g.beginPath(); g.arc(q[0], q[1], br, 0, TAU); g.fill(); }); }
+  function drawAtom(cx, cy, Rmax, z, e, small){ var p = pal(), sh = shells(e), nsh = sh.length, i, j;
+    if (view === 'c'){ var dens = []; for (i=0; i<nsh; i++){ var rr = Rmax*(i + 1)/nsh; dens.push([rr, sh[i]]); }
+      for (i=nsh - 1; i>=0; i--){ var r0 = dens[i][0], gr = g.createRadialGradient(cx, cy, r0*0.15, cx, cy, r0*1.12); var a = Math.min(0.55, 0.12 + 0.04*dens[i][1]); gr.addColorStop(0, rgb(p.cloud, 1, a*0.4)); gr.addColorStop(0.75, rgb(p.cloud, 1, a)); gr.addColorStop(1, rgb(p.cloud, 1, 0)); g.fillStyle = gr; g.beginPath(); g.arc(cx, cy, r0*1.12, 0, TAU); g.fill(); }
+      /* flickering electron positions: a "snapshot" of where the electrons might be found */
+      var seed = Math.floor(phase*6); for (i=0; i<nsh; i++) for (j=0; j<sh[i]; j++){ var h = Math.sin((i*97 + j*13 + seed*7.3)*12.9898)*43758.5453, u = h - Math.floor(h), h2 = Math.sin((i*31 + j*57 + seed*3.1)*78.233)*43758.5453, v = h2 - Math.floor(h2), rr2 = dens[i][0]*(0.55 + 0.5*u), t = v*TAU;
+        g.fillStyle = p.e; g.beginPath(); g.arc(cx + rr2*Math.cos(t), cy + rr2*Math.sin(t), small ? 2 : 2.8, 0, TAU); g.fill(); } }
+    else { for (i=0; i<nsh; i++){ var rs = Rmax*(i + 1)/nsh; g.strokeStyle = 'rgba(180,200,230,0.45)'; g.lineWidth = 1.2; g.beginPath(); g.arc(cx, cy, rs, 0, TAU); g.stroke();
+        for (j=0; j<sh[i]; j++){ var t2 = j*TAU/sh[i] + phase*(0.9 - 0.12*i) + i; g.fillStyle = p.e; g.beginPath(); g.arc(cx + rs*Math.cos(t2), cy + rs*Math.sin(t2), small ? 3 : 4.5, 0, TAU); g.fill(); if (!small){ g.strokeStyle = 'rgba(0,0,0,0.5)'; g.lineWidth = 1; g.stroke(); } }
+        if (!small){ g.fillStyle = '#9fb4d8'; g.font = '11px Arial'; g.textAlign = 'left'; g.fillText('n = ' + (i + 1) + ': ' + sh[i], cx + rs*0.72 + 4, cy - rs*0.72 - 2); } } }
+    g.fillStyle = '#ffd23f'; g.beginPath(); g.arc(cx, cy, small ? 2.5 : 3.5, 0, TAU); g.fill(); }
+  function draw(){ var cmp = el('atCmp').checked && (Q() !== 0 || N !== COMMON[Z] - Z), cx = cmp ? 250 : 270, cy = 225, R = Math.min(185, atomR());
+    var bg = g.createRadialGradient(cx, cy, 10, cx, cy, 420); bg.addColorStop(0, '#13213b'); bg.addColorStop(1, '#05080f'); g.fillStyle = bg; g.fillRect(0, 0, W, H);
+    drawAtom(cx, cy, R, Z, E, false);
+    g.fillStyle = '#e6ecf2'; g.font = 'bold 13px Arial'; g.textAlign = 'center'; g.fillText(name() + (Q() ? ' ion (' + SYM[Z] + chg(Q()) + ')' : ' atom'), cx, 20);
+    g.font = '11px Arial'; g.fillStyle = '#9fb4d8'; g.fillText('size of the atom \u2248 10\u207b\u00b9\u2070 m (drawing not to scale)', cx, H - 10);
+    /* the magnified nucleus */
+    var nx = 680, ny = 150, nR = Math.min(95, 14 + 7.5*Math.cbrt(A())*3);
+    g.strokeStyle = 'rgba(255,210,63,0.6)'; g.setLineDash([4, 4]); g.lineWidth = 1.2; g.beginPath(); g.moveTo(cx + 4, cy - 4); g.lineTo(nx - nR - 14, ny + 10); g.moveTo(cx + 4, cy + 4); g.lineTo(nx - nR - 10, ny + nR*0.8); g.stroke(); g.setLineDash([]);
+    g.strokeStyle = 'rgba(255,210,63,0.6)'; g.beginPath(); g.arc(nx, ny, nR + 12, 0, TAU); g.stroke();
+    drawNucleus(nx, ny, nR, Z, N, phase*0.05);
+    g.fillStyle = '#e6ecf2'; g.font = 'bold 12px Arial'; g.textAlign = 'center'; g.fillText('the nucleus, magnified ~100 000\u00d7', nx, ny - nR - 22); g.font = '11px Arial'; g.fillStyle = '#9fb4d8';
+    g.fillText(Z + ' proton' + (Z === 1 ? '' : 's') + ' + ' + N + ' neutron' + (N === 1 ? '' : 's') + (A() > 120 ? ' (120 drawn)' : ''), nx, ny + nR + 20); g.fillText('radius \u2248 1.2A^(1/3) fm = ' + (1.2*Math.cbrt(A())).toFixed(1) + ' fm (10\u207b\u00b9\u2075 m)', nx, ny + nR + 36);
+    if (cmp){ var c0 = COMMON[Z] - Z, rx = 680, ry = 360, Rs = 58; g.fillStyle = 'rgba(255,255,255,0.05)'; g.fillRect(560, 286, 240, 146);
+      var saveE = E, saveN = N; E = Z; N = c0; drawAtom(rx - 50, ry, Rs*Math.min(1, atomR()/185), Z, Z, true); E = saveE; N = saveN;
+      g.fillStyle = '#e6ecf2'; g.font = 'bold 11px Arial'; g.textAlign = 'left'; g.fillText('neutral ' + cap(NAME[Z]) + '-' + COMMON[Z], rx + 14, ry - 18); g.font = '11px Arial'; g.fillStyle = '#9fb4d8'; g.fillText(Z + ' p, ' + c0 + ' n, ' + Z + ' e\u207b', rx + 14, ry); g.fillText('(for comparison)', rx + 14, ry + 16); }
+    g.font = '11px Arial'; g.textAlign = 'left'; var k = [['proton', rgb(pal().p, 1)], ['neutron', rgb(pal().n, 1)], ['electron', pal().e]]; k.forEach(function(q, i){ g.fillStyle = q[1]; g.beginPath(); g.arc(18, 40 + i*18, 5, 0, TAU); g.fill(); g.fillStyle = '#dbe7ff'; g.fillText(q[0], 28, 44 + i*18); }); }
+  /* ══════════ text ══════════ */
+  function ui(){ var a = A(), q = Q(), st = isoStatus(Z, a), sh = shells(E);
+    el('atPv').textContent = Z; el('atNv').textContent = N; el('atEv').textContent = E; el('atEl').value = Z;
+    el('atPm').disabled = Z <= 1; el('atPp').disabled = Z >= 92; el('atNm').disabled = N <= 0; el('atNp').disabled = N >= 160; el('atEm').disabled = E <= 0; el('atEp').disabled = E >= Z + 3;
+    el('atId').innerHTML = '<span style="font-size:2.1rem">' + symH(a, Z, SYM[Z], q) + '</span><span><b>' + name() + (q ? ' ion' : '') + '</b></span><span class="at_tag' + '">' + Z + ' p \u00b7 ' + N + ' n \u00b7 ' + E + ' e\u207b \u00b7 charge ' + (q > 0 ? '+' : q < 0 ? '\u2212' : '') + (q ? Math.abs(q) : '0') + (q ? 'e' : '') + '</span><span class="at_badge' + '" style="background:' + st[2] + '">nucleus: ' + st[1] + '</span>';
+    el('atSym').innerHTML = '<div class="at_big' + '">' + symH(a, Z, SYM[Z], q) + '</div>'
+      + '<p><b style="color:#1f5fa8">' + a + '</b> (top left): the <b>mass number A</b> = protons + neutrons = ' + Z + ' + ' + N + '.</p>'
+      + '<p><b style="color:#b42318">' + Z + '</b> (bottom left): the <b>atomic number Z</b> = number of protons. It names the element: Z = ' + Z + ' is always ' + NAME[Z] + ' (' + SYM[Z] + ').</p>'
+      + '<p><b style="color:#8a5a00">' + (q ? chg(q) : 'nothing') + '</b> (top right): the <b>charge</b>' + (q ? ' of the ion, (' + Z + ' protons) \u2212 (' + E + ' electrons) = ' + (q > 0 ? '+' : '\u2212') + Math.abs(q) + '.' : ': a neutral atom has as many electrons as protons, so no charge is written.') + '</p>'
+      + '<p class="at_note' + '">Other ways to write it: ' + name() + (q ? ' ion' : '') + ', ' + SYM[Z] + '-' + a + (q ? ' (' + chg(q) + ')' : '') + ', or <sup>' + a + '</sup>' + SYM[Z] + (q ? '<sup>' + chg(q) + '</sup>' : '') + ' (Z is often left out, since the symbol already tells it).</p>';
+    var c0 = COMMON[Z] - Z, rows = [['protons', Z, Z], ['neutrons', N, c0], ['electrons', E, Z]];
+    el('atCnt').innerHTML = '<table class="at_tbl' + '"><thead><tr><th class="at_l' + '" scope="col"></th><th scope="col">this ' + (q ? 'ion' : 'atom') + '</th><th scope="col">neutral ' + SYM[Z] + '-' + COMMON[Z] + '</th></tr></thead><tbody>'
+      + rows.map(function(r){ return '<tr' + (r[1] !== r[2] ? ' class="at_chg' + '"' : '') + '><td class="at_l' + '">' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td></tr>'; }).join('')
+      + '<tr><td class="at_l' + '">mass number A</td><td>' + a + '</td><td>' + COMMON[Z] + '</td></tr><tr><td class="at_l' + '">net charge</td><td>' + (q > 0 ? '+' : q < 0 ? '\u2212' : '') + Math.abs(q) + (q ? 'e' : '') + '</td><td>0</td></tr>'
+      + '<tr><td class="at_l' + '">mass \u2248</td><td>' + (Z*1.0073 + N*1.0087 + E*0.00055).toFixed(2) + ' u</td><td>' + (Z*1.0073 + c0*1.0087 + Z*0.00055).toFixed(2) + ' u</td></tr>'
+      + '<tr><td class="at_l' + '">electron shells</td><td>' + sh.join(', ') + '</td><td>' + shells(Z).join(', ') + '</td></tr></tbody></table>'
+      + '<p class="at_note' + '">The mass is close to A atomic mass units, because protons and neutrons each weigh about 1 u and electrons almost nothing. (The real mass is a little less: see the binding-energy SIM.)</p>';
+    var w = [];
+    if (N !== c0) w.push('<div class="at_box' + ' at_iso' + '"><b>Isotope:</b> this ' + NAME[Z] + ' has ' + N + ' neutrons instead of ' + c0 + ' (A = ' + a + ' instead of ' + COMMON[Z] + '). The number of protons, and so the element, is the same; only the <b>nucleus</b> is ' + (N > c0 ? 'heavier' : 'lighter') + '. The electrons are unchanged, so the <b>chemistry is the same</b>: isotopes of an element react in the same way. What changes: the mass, and the stability of the nucleus: ' + st[1] + '.</div>');
+    if (q !== 0) w.push('<div class="at_box' + ' at_ion' + '"><b>' + (q > 0 ? 'Positive ion (cation)' : 'Negative ion (anion)') + ':</b> the atom has ' + (q > 0 ? 'lost ' + q : 'gained ' + (-q)) + ' electron' + (Math.abs(q) === 1 ? '' : 's') + '. The <b>nucleus is unchanged</b> (same element, same isotope), but the protons and electrons no longer balance: net charge ' + (q > 0 ? '+' : '\u2212') + Math.abs(q) + 'e. ' + (q > 0 ? 'Electrons are removed from the outermost shell, so the ion is smaller than the atom.' : 'The extra electrons join the outer shell and repel each other, so the ion is larger than the atom.') + ' Ions are what chemistry is made of: ' + (q > 0 ? 'metals tend to lose electrons' : 'non-metals tend to gain electrons') + (ION[Z] && ION[Z].indexOf(q) >= 0 ? ', and ' + SYM[Z] + chg(q) + ' is a common ion.' : '; ' + SYM[Z] + chg(q) + (ION[Z] ? ' is not one of its usual ions (' + ION[Z].map(function(v){ return SYM[Z] + chg(v); }).join(', ') + ').' : ' is not a common ion.')) + ' The mass hardly changes: an electron is 1/1836 of a proton.</div>');
+    if (!w.length) w.push('<div class="at_box' + '"><b>Neutral atom of the most common isotope.</b> Try: <b>+ / \u2212 neutron</b> to make an isotope, <b>+ / \u2212 electron</b> to make an ion, or <b>+ / \u2212 proton</b> to see that the element itself changes.</div>');
+    w.push('<p class="at_note' + '"><b>Changing a proton changes the element:</b> one more proton than ' + NAME[Z] + ' is ' + (Z < 92 ? NAME[Z + 1] : '\u2014') + ', one fewer is ' + (Z > 1 ? NAME[Z - 1] : '\u2014') + '. That happens in nuclear reactions, not in chemistry.</p>');
+    el('atWhy').innerHTML = w.join('');
+    quick(); draw(); }
+  /* ══════════ controls ══════════ */
+  var QK = [['Isotopes', null], ['\u00b9H', [1,0,1]], ['\u00b2H (deuterium)', [1,1,1]], ['\u00b3H (tritium)', [1,2,1]], ['\u00b9\u00b2C', [6,6,6]], ['\u00b9\u00b3C', [6,7,6]], ['\u00b9\u2074C', [6,8,6]], ['\u00b3\u2075Cl', [17,18,17]], ['\u00b3\u2077Cl', [17,20,17]], ['\u00b2\u00b3\u2075U', [92,143,92]], ['\u00b2\u00b3\u2078U', [92,146,92]],
+    ['Ions', null], ['H\u207a', [1,0,0]], ['Na\u207a', [11,12,10]], ['Mg\u00b2\u207a', [12,12,10]], ['Al\u00b3\u207a', [13,14,10]], ['O\u00b2\u207b', [8,8,10]], ['Cl\u207b', [17,18,18]], ['Fe\u00b2\u207a', [26,30,24]], ['Fe\u00b3\u207a', [26,30,23]]];
+  function quick(){ el('atQuick').innerHTML = QK.map(function(q, i){ if (!q[1]) return '<span class="at_qh' + '">' + q[0] + ':</span>'; var on = q[1][0] === Z && q[1][1] === N && q[1][2] === E; return '<button type="button" data-i="' + i + '"' + (on ? ' aria-current="true"' : '') + '>' + q[0] + '</button>'; }).join('');
+    [].forEach.call(el('atQuick').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ var q = QK[+b.getAttribute('data-i')][1]; Z = q[0]; N = q[1]; E = q[2]; ui(); sayAll(); }); }); }
+  function say(m){ atA11y.narrate(m); }
+  function sayAll(){ var q = Q(); say(name() + (q ? ' ion, charge ' + (q > 0 ? 'plus ' : 'minus ') + Math.abs(q) : ' atom') + ': ' + Z + ' protons and ' + N + ' neutrons in the nucleus, ' + E + ' electrons around it, in shells of ' + shells(E).join(', ') + '. ' + isoStatus(Z, A())[1] + '.'); }
+  el('atEl').innerHTML = SYM.map(function(s, z){ return z ? '<option value="' + z + '">' + z + ' \u2013 ' + s + ' \u2013 ' + NAME[z] + '</option>' : ''; }).join('');
+  el('atEl').addEventListener('change', function(){ Z = +this.value; N = COMMON[Z] - Z; E = Z; ui(); sayAll(); });
+  el('atPp').addEventListener('click', function(){ var old = NAME[Z]; Z++; E++; ui(); say('One more proton (and one more electron): ' + old + ' has become ' + NAME[Z] + '. The number of protons decides the element.'); });
+  el('atPm').addEventListener('click', function(){ var old = NAME[Z]; Z--; E = Math.max(0, E - 1); ui(); say('One proton fewer (and one electron fewer): ' + old + ' has become ' + NAME[Z] + '.'); });
+  el('atNp').addEventListener('click', function(){ N++; ui(); say('One more neutron: still ' + NAME[Z] + ', now the isotope ' + name() + ' (' + isoStatus(Z, A())[1] + '). Same chemistry, heavier nucleus.'); });
+  el('atNm').addEventListener('click', function(){ N--; ui(); say('One neutron fewer: still ' + NAME[Z] + ', now the isotope ' + name() + ' (' + isoStatus(Z, A())[1] + ').'); });
+  el('atEm').addEventListener('click', function(){ E--; ui(); var q = Q(); say('An electron removed: ' + (q === 0 ? 'neutral again.' : 'now the ion ' + SYM[Z] + chg(q) + ', charge ' + (q > 0 ? 'plus ' : 'minus ') + Math.abs(q) + '. The nucleus has not changed.')); });
+  el('atEp').addEventListener('click', function(){ E++; ui(); var q = Q(); say('An electron added: ' + (q === 0 ? 'neutral again.' : 'now the ion ' + SYM[Z] + chg(q) + ', charge ' + (q > 0 ? 'plus ' : 'minus ') + Math.abs(q) + '. The nucleus has not changed.')); });
+  function setView(v){ view = v; el('atVc').setAttribute('aria-pressed', v === 'c' ? 'true' : 'false'); el('atVs').setAttribute('aria-pressed', v === 's' ? 'true' : 'false'); draw();
+    say(v === 'c' ? 'Electron cloud: electrons have no definite path; the cloud shows where they are likely to be found. The dots are one snapshot.' : 'Shells (Bohr model): a simple picture with the electrons on circles, numbered n = 1, 2, 3, and so on. Inner shells fill first.'); }
+  el('atVc').addEventListener('click', function(){ setView('c'); }); el('atVs').addEventListener('click', function(){ setView('s'); });
+  el('atCmp').addEventListener('change', draw);
+  (function loop(){ if (el('atSpin').checked){ phase += 0.03; draw(); } timer = setTimeout(loop, 60); })();
+  function keys(){ var p = pal(); el('atKp').style.background = rgb(p.p, 1); el('atKn').style.background = rgb(p.n, 1); el('atKe').style.background = p.e; }
+  atA11y.onChange(function(){ keys(); draw(); });
+  keys(); ui(); say('A carbon-12 atom: 6 protons and 6 neutrons in a tiny nucleus, 6 electrons around it. Use the plus and minus buttons, or the examples, to make isotopes and ions.');
+  return { set:function(z, n, e){ Z = z; N = n; E = e; ui(); }, _shells:shells, view:setView };
+};
+var atSim = new atGen();
+</script>
+<script>atA11y.init();</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>An atom has a tiny, dense <b>nucleus</b> made of protons (charge `+e`) and neutrons (no charge), surrounded by much lighter <b>electrons</b> (charge `-e`). The nucleus is about `10^(-15)` m across, the atom about `10^(-10)` m: if the atom were a football stadium, the nucleus would be a pea at the centre. Yet the nucleus holds almost all the mass, since a proton is about 1836 times heavier than an electron.</p>
+<p>An atom is written `\ _Z^A X`: `Z`, the <b>atomic number</b>, is the number of protons and decides the element; `A`, the <b>mass number</b>, is the number of protons plus neutrons, `A = Z + N`. A neutral atom has `Z` electrons.</p>
+<p><b>Isotopes</b> of an element have the same number of protons but different numbers of neutrons, for example `\ _6^12 C`, `\ _6^13 C` and `\ _6^14 C`. Their electrons are the same, so they behave the same way chemically, but their masses differ and some are radioactive. <b>Ions</b> have the same nucleus but a different number of electrons: losing electrons gives a positive ion (`Na^+`), gaining them a negative ion (`Cl^-`); the charge is written at the top right. Changing the number of protons changes the element itself, which only happens in nuclear reactions.</p>
+<p>The electrons are shown either as a <b>cloud</b>, the modern picture, which shows where they are likely to be found, or as <b>shells</b> (the Bohr model), which fill from the inside out (here following the usual filling order; a few elements are exceptions). Sizes are not to scale.</p>
+</div>
+</div>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+
+</div>
+
+</body>
+</html>

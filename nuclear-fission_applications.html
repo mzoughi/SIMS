@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Nuclear: Fission Applications</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobnucfissapp" class="mob_wrap">
+<div class="fa_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="fa_a11ybtn" id="faBtnHC" onclick="faA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="fa_a11ybtn" id="faBtnDM" onclick="faA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="fa_a11ybtn" id="faBtnCB" onclick="faA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="fa_a11ybtn" id="faBtnNR" onclick="faA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+
+<div class="fa_title"><h3>Fission Applications &mdash; The Atomic Bomb and the Nuclear Reactor</h3></div>
+<div class="fa_tabs" role="tablist" aria-label="Application">
+<button type="button" role="tab" class="fa_tab" id="faT0" aria-selected="true">The atomic bomb: uncontrolled</button>
+<button type="button" role="tab" class="fa_tab" id="faT1" aria-selected="false">The nuclear reactor: controlled</button>
+</div>
+<div id="faNarBar" class="fa_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<!-- ═══ BOMB ═══ -->
+<div id="faP0" role="tabpanel" aria-labelledby="faT0">
+<div class="fa_intro">Each piece below is <b>smaller than the critical mass</b>: stray neutrons start short chains that die out because too many neutrons escape. Bringing the pieces together quickly makes a single mass <b>above the critical mass</b>, and the chain reaction runs away. A schematic model only: nuclei exaggerated, nothing to scale.</div>
+<div class="fa_read" id="faBr" aria-live="off"></div>
+<div class="fa_view"><canvas id="faBc" width="820" height="420" role="img" aria-label="Schematic: pieces of fissionable material, each below the critical mass, with stray neutrons causing short chains. When assembled, the pieces form one mass above the critical mass and the chain reaction runs away."></canvas></div>
+<div id="faBs" class="fa_status"></div>
+<div class="fa_transport" role="toolbar" aria-label="Bomb model">
+<div class="fa_tgroup">
+<button type="button" class="fa_tbtn fa_play" id="faBRun" aria-label="Pause" aria-pressed="true" title="Run / pause"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg></button>
+<button type="button" class="fa_tbtn" id="faBRst" aria-label="Reset the pieces" title="Reset"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 5 A7 7 0 1 1 5.6 9" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M3 4 L9.5 4.5 L5.5 10 Z" fill="currentColor"/></svg></button>
+</div>
+<div class="fa_tgroup fa_tsep" role="group" aria-label="Design"><button type="button" class="fa_vbtn" id="faGun" aria-pressed="true">Two pieces (U-235)</button><button type="button" class="fa_vbtn" id="faImp" aria-pressed="false">Pieces around a sphere (Pu-239)</button></div>
+<div class="fa_tgroup fa_tsep"><button type="button" class="fa_bbtn" id="faAsm">Bring the pieces together</button></div>
+</div>
+<div class="fa_card"><div class="fa_ctitle"><span>Number of free neutrons against time (log scale)</span></div><canvas id="faBg" width="820" height="150" role="img" aria-label="Graph of the number of free neutrons on a logarithmic scale: small bursts that die out while the pieces are apart, then exponential growth after assembly."></canvas></div>
+<div class="fa_panels">
+<div class="fa_panel"><div class="fa_ptitle">What the text says</div><div class="fa_pbody" id="faBt"></div></div>
+<div class="fa_panel"><div class="fa_ptitle">Why so much energy?</div><div class="fa_pbody" id="faBe"></div></div>
+</div>
+</div>
+
+<!-- ═══ REACTOR ═══ -->
+<div id="faP1" role="tabpanel" aria-labelledby="faT1" hidden>
+<div class="fa_intro">A <b>pressurized water reactor</b> (Figure 12.6.5) keeps the chain reaction exactly self-sustaining (k = 1). Water slows (moderates) the neutrons and carries the heat away; <b>cadmium control rods</b> absorb neutrons to adjust the rate. The heat makes steam in a second loop, the steam turns a turbine, and the turbine drives a generator.</div>
+<div class="fa_read" id="faRr" aria-live="off"></div>
+<div class="fa_view"><canvas id="faRc" width="820" height="440" role="img" aria-label="Schematic of a pressurized water reactor like Figure 12.6.5: the reactor pressure vessel with fuel and control rods, the primary loop to the steam generator, high-pressure steam to the turbine and generator, the condenser and the cooling tower, inside a containment structure. Glow and flow speeds follow the power."></canvas></div>
+<div id="faRs" class="fa_status"></div>
+<div class="fa_transport" role="toolbar" aria-label="Reactor">
+<div class="fa_tgroup">
+<button type="button" class="fa_tbtn fa_play" id="faRRun" aria-label="Pause" aria-pressed="true" title="Run / pause"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg></button>
+<button type="button" class="fa_tbtn" id="faRRst" aria-label="Restart at full power, steady" title="Restart"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 5 A7 7 0 1 1 5.6 9" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M3 4 L9.5 4.5 L5.5 10 Z" fill="currentColor"/></svg></button>
+</div>
+<div class="fa_tgroup fa_tsep"><button type="button" class="fa_vbtn" id="faPump" aria-pressed="true">Coolant pumps: ON</button><button type="button" class="fa_bbtn fa_scram" id="faScram">SCRAM (drop all rods)</button></div>
+</div>
+<div class="fa_card"><div class="fa_ctitle"><span>Power, temperature and k over the last 2 minutes</span></div><canvas id="faRg" width="820" height="170" role="img" aria-label="Graph against time of the reactor power in percent, the coolant temperature, and the multiplication factor k."></canvas></div>
+<div class="fa_panels">
+<div class="fa_panel"><div class="fa_ptitle">Control</div><div class="fa_pbody">
+<div class="fa_ctrl"><div class="fa_chdr"><label for="faRod">Control rods inserted</label><span class="fa_val" id="faRodV"></span></div><input type="range" id="faRod" min="0" max="100" step="1" value="45"></div>
+<div class="fa_ctrl"><div class="fa_chdr"><label for="faSp">Simulation speed</label><span class="fa_val" id="faSpV"></span></div><input type="range" id="faSp" min="1" max="10" step="1" value="3"></div>
+<div class="fa_presets"><button type="button" id="faEx1">Pull rods out a little</button><button type="button" id="faEx2">Push rods in</button><button type="button" id="faEx3">Loss of pumps</button></div>
+</div></div>
+<div class="fa_panel"><div class="fa_ptitle">What is happening</div><div class="fa_pbody" id="faRt"></div></div>
+</div>
+<div class="fa_panels" style="padding-top:0">
+<div class="fa_panel"><div class="fa_ptitle">Fuel and waste</div><div class="fa_pbody" id="faRf"></div></div>
+<div class="fa_panel"><div class="fa_ptitle">Breeder reactors</div><div class="fa_pbody">
+<p>Some fast neutrons are absorbed by U-238, which turns into fissionable plutonium-239:</p>
+<div class="fa_eq"><sup>1</sup><sub>0</sub>n + <sup>238</sup><sub>92</sub>U &rarr; <sup>239</sup><sub>92</sub>U &rarr; <sup>239</sup><sub>93</sub>Np &rarr; <sup>239</sup><sub>94</sub>Pu</div>
+<p>(two &beta;<sup>&minus;</sup> decays). Since 99.3% of natural uranium is U-238, breeding could stretch the supply of fuel about 100 times. Drawbacks: plutonium is a serious health hazard if released, and it can be used to build bombs (nuclear proliferation).</p>
+</div></div>
+</div>
+</div>
+</div>
+<style>
+:where(#mobnucfissapp) * { margin:0; box-sizing:border-box; }
+#mobnucfissapp { width:100%; max-width:860px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; color:#1d232a; }
+#mobnucfissapp canvas { display:block; width:100%; height:auto; }
+#mobnucfissapp .fa_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#mobnucfissapp .fa_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#mobnucfissapp .fa_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobnucfissapp .fa_title { padding:4px; background-color:#f90; text-align:center; }
+#mobnucfissapp .fa_title h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+#mobnucfissapp .fa_tabs { display:flex; gap:4px; padding:6px 8px 0; background:#14213a; flex-wrap:wrap; }
+#mobnucfissapp .fa_tab { flex:1 1 140px; padding:8px 6px; border:1px solid #2b3d60; border-bottom:0; border-radius:6px 6px 0 0; background:#1d2c4a; color:#bcd0f0; font-weight:bold; cursor:pointer; font-size:.88rem; min-height:40px; }
+#mobnucfissapp .fa_tab[aria-selected="true"] { background:#f3f5f8; color:#14213a; }
+#mobnucfissapp .fa_intro { padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; font-size:.9rem; line-height:1.5; }
+#mobnucfissapp .fa_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:6px 12px; padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; }
+#mobnucfissapp .fa_rl { font-size:.7rem; color:#667; text-transform:uppercase; letter-spacing:.05em; }
+#mobnucfissapp .fa_rv { font-family:monospace; font-size:.93rem; color:#7a3a00; font-weight:bold; }
+#mobnucfissapp .fa_view { background:#0b1222; }
+#mobnucfissapp .fa_status { color:#222; font-size:.84rem; text-align:center; background:#fff6d9; padding:5px 8px; line-height:1.45; min-height:1.6em; }
+#mobnucfissapp .fa_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+#mobnucfissapp .fa_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+#mobnucfissapp .fa_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { #mobnucfissapp .fa_tsep { padding-left:0; border-left:0; } }
+#mobnucfissapp .fa_tbtn { width:44px; height:38px; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer; border:1px solid #6d8a3a; border-radius:5px; background:#fff; color:#223; }
+#mobnucfissapp .fa_tbtn.fa_play { background:#2e7d32; color:#fff; border-color:#1b5e20; }
+#mobnucfissapp .fa_tbtn.fa_play[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+#mobnucfissapp .fa_vbtn, #mobnucfissapp .fa_bbtn { height:38px; padding:0 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; white-space:nowrap; }
+#mobnucfissapp .fa_vbtn[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobnucfissapp .fa_bbtn { background:#2e7d32; border-color:#1b5e20; color:#fff; font-weight:bold; }
+#mobnucfissapp button:disabled { opacity:.4; cursor:not-allowed; }
+#mobnucfissapp .fa_card { margin:10px 10px 0; background:#0b1222; border:1px solid #2b3d60; border-radius:6px; overflow:hidden; }
+#mobnucfissapp .fa_ctitle { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:4px 10px; padding:5px 10px; background:#14213a; color:#dbe7ff; font-size:.8rem; font-weight:bold; }
+#mobnucfissapp .fa_cnote { padding:8px 12px 10px; color:#e3ecfa; font-size:.86rem; line-height:1.5; background:#0d1526; border-top:1px solid #2b3d60; }
+#mobnucfissapp .fa_cnote b { color:#ffd23f; }
+#mobnucfissapp .fa_cbar { display:flex; flex-wrap:wrap; gap:4px 14px; padding:6px 10px; background:#0d1526; color:#dbe7ff; font-size:.8rem; }
+#mobnucfissapp .fa_cbar label { display:flex; align-items:center; gap:5px; cursor:pointer; }
+#mobnucfissapp .fa_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:10px; padding:10px; }
+#mobnucfissapp .fa_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+#mobnucfissapp .fa_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+#mobnucfissapp .fa_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; font-size:.87rem; line-height:1.45; }
+#mobnucfissapp .fa_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+#mobnucfissapp .fa_ctrl.fa_off { opacity:.45; }
+#mobnucfissapp .fa_chdr { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+#mobnucfissapp .fa_chdr label { font-size:.82rem; font-weight:bold; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+#mobnucfissapp .fa_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; flex:0 0 auto; min-width:4.5em; text-align:right; }
+#mobnucfissapp .fa_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+#mobnucfissapp select { width:100%; min-height:34px; padding:4px 6px; font-size:.86rem; border:1px solid #8a96a8; border-radius:4px; background:#fff; }
+#mobnucfissapp .fa_checks { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 8px; }
+#mobnucfissapp .fa_chk { display:flex; align-items:center; gap:6px; font-size:.82rem; cursor:pointer; }
+#mobnucfissapp .fa_presets { display:flex; flex-wrap:wrap; gap:5px; }
+#mobnucfissapp .fa_presets button { padding:5px 9px; font-size:.82rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:4px; background:#fff; color:#223; min-height:34px; }
+#mobnucfissapp .fa_presets button[aria-current="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobnucfissapp .fa_note { font-size:.8rem; color:#555; font-style:italic; }
+#mobnucfissapp .fa_tblwrap { overflow-x:auto; }
+#mobnucfissapp .fa_tbl { border-collapse:collapse; width:100%; font-size:.82rem; }
+#mobnucfissapp .fa_tbl th, #mobnucfissapp .fa_tbl td { padding:4px 6px; border-bottom:1px solid #e3e7ee; text-align:center; }
+#mobnucfissapp .fa_tbl th { background:#f1f4f8; font-size:.76rem; }
+#mobnucfissapp .fa_tbl td.fa_l, #mobnucfissapp .fa_tbl th.fa_l { text-align:left; }
+#mobnucfissapp .fa_eq { font-family:'Times New Roman', serif; font-size:1rem; background:#f6f8fb; border-left:3px solid #1f5fa8; padding:4px 8px; margin:2px 0; overflow-wrap:anywhere; }
+#mobnucfissapp b.fa_res { color:#7a3a00; }
+#mobnucfissapp .fa_num { width:5.5em; height:36px; padding:3px 6px; font-size:.95rem; border:1px solid #888; border-radius:4px; }
+#mobnucfissapp .fa_ok { color:#1b6e2a; font-weight:bold; } #mobnucfissapp .fa_no { color:#b42318; font-weight:bold; }
+#mobnucfissapp button:focus-visible, #mobnucfissapp input:focus-visible, #mobnucfissapp select:focus-visible, #mobnucfissapp canvas:focus-visible, #mobnucfissapp tr:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (max-width:420px) { #mobnucfissapp .fa_checks { grid-template-columns:minmax(0,1fr); } }
+@media (pointer:coarse) { #mobnucfissapp .fa_tbtn, #mobnucfissapp .fa_vbtn, #mobnucfissapp .fa_bbtn, #mobnucfissapp .fa_num { height:44px; } #mobnucfissapp .fa_presets button { min-height:42px; } #mobnucfissapp input[type=checkbox] { width:20px; height:20px; } #mobnucfissapp input[type=range] { height:28px; } }
+#mobnucfissapp .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobnucfissapp .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobnucfissapp .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobnucfissapp .mob_desc p { margin:0 0 8px 0; }
+#mobnucfissapp .mob_eq { text-align:center; }
+#mobnucfissapp.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobnucfissapp.a11y_dm .fa_card, #mobnucfissapp.a11y_dm .fa_view, #mobnucfissapp.a11y_dm [aria-label="Display options"], #mobnucfissapp.a11y_dm .mob_descbtn, #mobnucfissapp.a11y_dm .fa_meter { filter:hue-rotate(180deg) invert(1); }
+#mobnucfissapp.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobnucfissapp.a11y_hc .fa_card, #mobnucfissapp.a11y_hc .fa_view, #mobnucfissapp.a11y_hc [aria-label="Display options"], #mobnucfissapp.a11y_hc .mob_descbtn, #mobnucfissapp.a11y_hc .fa_meter { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+
+#mobnucfissapp .fa_scram { background:#c62828 !important; border-color:#8e1b1b !important; }
+#mobnucfissapp .fa_presets button { min-height:34px; }
+</style>
+<script>
+var faA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return; b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobnucfissapp'); if (!W) return; W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc);
+var nb = document.getElementById('faNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none'; var nr = document.getElementById('faBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('faBtnHC', states.hc); styleBtn('faBtnDM', states.dm); styleBtn('faBtnCB', states.cb); styleBtn('faBtnNR', states.nr); hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return { init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply(); if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: U-235 rings orange, free neutrons yellow; hot coolant vermillion, cool water sky blue.'); },
+alt:function(){ return states.hc || states.cb; }, isHC:function(){ return states.hc; }, narrate:function(m){ if (!states.nr) return; var nb = document.getElementById('faNarBar'); if (nb) nb.textContent = m; } };
+})();
+</script>
+
+<!-- ════════ SIMULATION ════════
+Bomb tab: the shared chain-reaction engine (schematic): a disc of fissionable nuclei cut into 2 pieces (gun type) or 6 pieces (implosion);
+each piece is below the critical size, the assembled disc above it.
+Reactor tab: point kinetics, dP/dt = (rho/Lambda) P + S with an effective generation time Lambda = 0.08 s (including delayed neutrons),
+rho = 0.02 (0.45 - rods) - 0.00015 (T - 300) - 0.03 void, k = 1 + rho. Heat: dT/dt = 5 P - 0.5 (T - 290) flow. Above 345 C the water boils
+(void grows), removing the moderator. 100% = 3000 MW thermal, 1000 MW electric. Fuel: 8.21e13 J per kg of U-235 (Example 12.6.2).
+No dollar signs or backticks in the code.
+-->
+<script>
+var faGen = function(){
+  function el(id){ return document.getElementById(id); }
+  var TAU = 2*Math.PI; function say(m){ faA11y.narrate(m); }
+  function pal(){ var alt = faA11y.alt(); return { p:alt ? '#D55E00' : '#3a5fc8', n:alt ? '#56B4E9' : '#d63a3a', u5:alt ? '#E69F00' : '#ffb000', u8:'#8a94a3', u9:alt ? '#CC79A7' : '#b06cff', neu:alt ? '#F0E442' : '#7fffb0', frag:'#ffd23f', bg:'#0b1222', bg2:'#0b1222', shape:'rgba(200,210,225,0.16)' }; }
+  var PLAYI = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor"/></svg>', PAUSEI = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>';
+  /* ══════════ shared chain-reaction engine (2D, schematic) ══════════
+     Nuclei on a jittered grid inside a disc (radius R px), possibly cut into pieces that move together.
+     U-235: a neutron passing within rI px causes fission with probability pf, releasing 2 or 3 new neutrons (average 2.5).
+     U-238: captures the neutron with probability pc (becomes U-239), otherwise the neutron passes.
+     Neutrons leaving the drawing escape. k = 2.5 x fissions / (fissions + captures + escapes). */
+  function makeChain(cv, opt){
+    var g = cv.getContext('2d'), W = cv.width, H = cv.height, TAU = 2*Math.PI;
+    var S = { sp:opt.sp || 3.0, rI:opt.rI || 5, pf:opt.pf || 0.5, pc:opt.pc || 0.6, cell:12, maxN:opt.maxN || 1500, C:opt.C || [W/2, H/2], s:opt.s || 13 };
+    var pieces = [], nuc = [], neu = [], fx = [], hash = {}, st, hist = [], frame = 0, runaway = false, moving = false, R = 100, mode = 'one', SPR = {};
+    function rs(){ st = { fis:0, cap:0, esc:0, born:0 }; hist = []; frame = 0; runaway = false; fx = []; }
+    rs();
+    function sprites(pal){ var s = Math.ceil(S.s*0.95); function mk(ring, dim, kind){ var c = document.createElement('canvas'); c.width = c.height = s; var x = c.getContext('2d'), r = s/2;
+        var k = 9, br = r*0.32; for (var i=0; i<k; i++){ var rr = r*0.5*Math.sqrt((i + 0.5)/k), a = i*2.4; x.fillStyle = (i % 5 < 2) ? pal.p : pal.n; x.globalAlpha = dim; x.beginPath(); x.arc(r + rr*Math.cos(a), r + rr*Math.sin(a), br, 0, TAU); x.fill(); }
+        x.globalAlpha = 1; x.strokeStyle = ring; x.lineWidth = 1.6; x.beginPath(); x.arc(r, r, r - 1, 0, TAU); x.stroke(); return c; }
+      SPR = { u5:mk(pal.u5, 1), u8:mk(pal.u8, 0.55), u9:mk(pal.u9, 0.55), s:s }; }
+    function build(r, frac, m, D){ R = r; mode = m || 'one'; nuc = []; neu = []; rs(); var sp = S.s, n = Math.ceil(r/sp) + 1;
+      if (mode === 'one') pieces = [{ ox:0, oy:0, tx:0, ty:0 }];
+      else if (mode === 'gun') pieces = [{ ox:-(D || 2.6*r), oy:0, tx:0, ty:0 }, { ox:0, oy:0, tx:0, ty:0 }];
+      else { pieces = []; for (var k=0; k<6; k++){ var a = (k + 0.5)*TAU/6; pieces.push({ ox:Math.cos(a)*(D || 1.6*r), oy:Math.sin(a)*(D || 1.6*r), tx:0, ty:0 }); } }
+      for (var i=-n; i<=n; i++) for (var j=-n; j<=n; j++){ var x = i*sp + (j % 2 ? sp/2 : 0) + (Math.random() - 0.5)*sp*0.35, y = j*sp*0.87 + (Math.random() - 0.5)*sp*0.35; if (x*x + y*y > r*r) continue;
+        var p = 0; if (mode === 'gun') p = x < 0 ? 0 : 1; else if (mode === 'imp'){ var a2 = Math.atan2(y, x); if (a2 < 0) a2 += TAU; p = Math.floor(a2/(TAU/6)) % 6; }
+        nuc.push({ p:p, rx:x, ry:y, t:Math.random() < frac ? 0 : 1, x:0, y:0 }); }
+      rehash(); }
+    function rehash(){ hash = {}; for (var i=0; i<nuc.length; i++){ var n = nuc[i], P = pieces[n.p]; n.x = S.C[0] + P.ox + n.rx; n.y = S.C[1] + P.oy + n.ry; if (n.t > 1) continue; var k = Math.floor(n.x/S.cell) + ',' + Math.floor(n.y/S.cell); (hash[k] = hash[k] || []).push(i); } }
+    function emit(x, y, k){ for (var i=0; i<k; i++){ st.born++; if (neu.length >= S.maxN){ runaway = true; continue; } var a = Math.random()*TAU; neu.push({ x:x, y:y, vx:Math.cos(a)*S.sp, vy:Math.sin(a)*S.sp, last:-1 }); } }
+    function fire(x, y, tx, ty){ var dx = tx - x, dy = ty - y, L = Math.hypot(dx, dy) || 1; neu.push({ x:x, y:y, vx:dx/L*S.sp, vy:dy/L*S.sp, last:-1, src:1 }); }
+    function stray(rate){ if (Math.random() < rate && nuc.length){ var n = nuc[Math.floor(Math.random()*nuc.length)]; if (n.t === 0) emit(n.x, n.y, 1); } }
+    function assemble(){ moving = true; }
+    function step(){ frame++;
+      if (moving){ var any = false; pieces.forEach(function(P){ var dx = P.tx - P.ox, dy = P.ty - P.oy, L = Math.hypot(dx, dy); if (L > 0.5){ var v = Math.min(L, 6); P.ox += dx/L*v; P.oy += dy/L*v; any = true; } else { P.ox = P.tx; P.oy = P.ty; } }); rehash(); if (!any) moving = false; }
+      var keep = [], c = S.cell, r2 = S.rI*S.rI;
+      for (var i=0; i<neu.length; i++){ var q = neu[i]; q.x += q.vx; q.y += q.vy;
+        if (q.x < -10 || q.x > W + 10 || q.y < -10 || q.y > H + 10){ if (!q.src) st.esc++; continue; }
+        var cx = Math.floor(q.x/c), cy = Math.floor(q.y/c), gone = false;
+        for (var a=-1; a<=1 && !gone; a++) for (var b=-1; b<=1 && !gone; b++){ var L = hash[(cx + a) + ',' + (cy + b)]; if (!L) continue;
+          for (var m=0; m<L.length; m++){ var idx = L[m], n = nuc[idx]; if (n.t > 1 || idx === q.last) continue; var dx = n.x - q.x, dy = n.y - q.y; if (dx*dx + dy*dy > r2) continue; q.last = idx;
+            if (n.t === 0){ if (Math.random() < S.pf){ n.t = 2; st.fis++; fx.push({ x:n.x, y:n.y, a:Math.random()*TAU, life:26 }); emit(n.x, n.y, Math.random() < 0.5 ? 2 : 3); gone = true; break; } }
+            else if (Math.random() < S.pc){ n.t = 3; st.cap++; gone = true; break; } } }
+        if (!gone) keep.push(q); }
+      neu = keep; fx = fx.filter(function(f){ return --f.life > 0; });
+      if (frame % 3 === 0){ hist.push(neu.length); if (hist.length > 400) hist.shift(); } }
+    function draw(pal, outline){ g.fillStyle = pal.bg; g.fillRect(0, 0, W, H);
+      if (outline !== false){ g.fillStyle = pal.shape; pieces.forEach(function(P, k){ g.beginPath();
+          if (mode === 'one') g.arc(S.C[0] + P.ox, S.C[1] + P.oy, R + S.s*0.6, 0, TAU);
+          else if (mode === 'gun'){ var x0 = S.C[0] + P.ox, y0 = S.C[1] + P.oy, ang = Math.PI/2; if (k === 0){ g.arc(x0, y0, R + S.s*0.6, ang, TAU - ang); g.closePath(); } else { g.arc(x0, y0, R + S.s*0.6, -ang, ang); g.closePath(); } }
+          else { var x1 = S.C[0] + P.ox, y1 = S.C[1] + P.oy; g.moveTo(x1, y1); g.arc(x1, y1, R + S.s*0.6, k*TAU/6, (k + 1)*TAU/6); g.closePath(); }
+          g.fill(); }); }
+      var s = SPR.s; for (var i=0; i<nuc.length; i++){ var n = nuc[i]; if (n.t === 2) continue; g.drawImage(n.t === 0 ? SPR.u5 : n.t === 1 ? SPR.u8 : SPR.u9, n.x - s/2, n.y - s/2); }
+      fx.forEach(function(f){ var k = 1 - f.life/26, d = 3 + k*14; g.globalAlpha = f.life/26; g.fillStyle = 'rgba(255,230,120,0.6)'; g.beginPath(); g.arc(f.x, f.y, 4 + k*12, 0, TAU); g.fill();
+        g.fillStyle = pal.frag; [1, -1].forEach(function(sg){ g.beginPath(); g.arc(f.x + sg*Math.cos(f.a)*d, f.y + sg*Math.sin(f.a)*d, 3.2, 0, TAU); g.fill(); }); g.globalAlpha = 1; });
+      g.fillStyle = pal.neu; for (var j=0; j<neu.length; j++){ g.beginPath(); g.arc(neu[j].x, neu[j].y, 2.4, 0, TAU); g.fill(); } }
+    function stats(){ var ends = st.fis + st.cap + st.esc; return { fis:st.fis, cap:st.cap, esc:st.esc, born:st.born, alive:neu.length, k:ends > 15 ? 2.5*st.fis/ends : null, runaway:runaway, u5:nuc.filter(function(n){ return n.t === 0; }).length, n5:nuc.filter(function(n){ return n.t === 0 || n.t === 2; }).length, total:nuc.length, hist:hist, moving:moving }; }
+    function drawHist(gc, pal, label){ var w = gc.canvas.width, h = gc.canvas.height, L = 50, Rr = w - 10, T = 10, B = h - 24, i, mx = 1;
+      gc.fillStyle = pal.bg2; gc.fillRect(0, 0, w, h); hist.forEach(function(v){ mx = Math.max(mx, v); }); var lmx = Math.log(Math.max(10, mx*1.3))/Math.LN10;
+      function Y(v){ return B - Math.log(Math.max(1, v))/Math.LN10/lmx*(B - T); }
+      gc.strokeStyle = 'rgba(150,170,195,0.2)'; gc.fillStyle = '#9aa6b4'; gc.font = '10px Arial'; gc.textAlign = 'right'; gc.textBaseline = 'middle';
+      for (var e=0; e<=lmx; e++){ gc.beginPath(); gc.moveTo(L, Y(Math.pow(10, e))); gc.lineTo(Rr, Y(Math.pow(10, e))); gc.stroke(); gc.fillText(String(Math.pow(10, e)), L - 4, Y(Math.pow(10, e))); }
+      gc.textAlign = 'center'; gc.fillText(label || 'time \u2192', (L + Rr)/2, h - 8); gc.save(); gc.translate(12, (T + B)/2); gc.rotate(-Math.PI/2); gc.fillText('neutrons (log)', 0, 0); gc.restore();
+      gc.strokeStyle = pal.neu; gc.lineWidth = 2; gc.beginPath(); hist.forEach(function(v, k){ var x = L + k/400*(Rr - L); if (k) gc.lineTo(x, Y(v)); else gc.moveTo(x, Y(v)); }); gc.stroke();
+      if (runaway){ gc.fillStyle = '#ff6b6b'; gc.font = 'bold 12px Arial'; gc.textAlign = 'right'; gc.fillText('runaway: too many neutrons to draw', Rr - 4, T + 10); } }
+    return { build:build, step:step, draw:draw, fire:fire, stray:stray, assemble:assemble, stats:stats, drawHist:drawHist, sprites:sprites, S:S, R:function(){ return R; }, C:S.C };
+  }
+
+  /* ══════════ BOMB ══════════ */
+  var cb = el('faBc'), bc = makeChain(cb, { C:[600, 210], pf:0.08, pc:0.15 }), gB = el('faBg').getContext('2d'), design = 'gun', brun = true, assembled = false, said = {};
+  function bbuild(){ if (design === 'gun'){ bc.S.pf = 0.08; bc.C[0] = 600; bc.build(200, 1, 'gun', 240); } else { bc.S.pf = 0.14; bc.C[0] = 420; bc.build(115, 1, 'imp', 85); } bc.sprites(pal()); assembled = false; said = {}; btext(); }
+  function btext(){ el('faBt').innerHTML = design === 'gun'
+      ? '<p>The original design used two pieces of U-235, each <b>below the critical mass</b>. One piece, in the form of a bullet, is fired into the other; together they <b>exceed the critical mass</b> and a chain reaction is produced.</p><p>Natural uranium is 99.3% U-238 and does not produce a chain reaction; producing enough U-235 for a critical mass was an important obstacle.</p>'
+      : '<p>Pu-239 is more fissionable than U-235 and needs a smaller critical mass. In this design, pieces of plutonium, each below the critical mass, sit at the edge of a sphere; chemical explosions fire them toward the centre simultaneously, and together they exceed the critical mass.</p><p>Both U-235 and Pu-239 bombs were used in World War II. Whether to develop and use atomic weapons remain two of the most important questions faced by human civilization.</p>';
+    el('faBe').innerHTML = '<p>Each fission releases about 200 MeV. One kilogram of U-235 contains 2.56\u00d710<sup>24</sup> nuclei, so its complete fission would release</p><div class="fa_eq' + '">E = (2.56\u00d710<sup>24</sup>)(200 MeV)(1.60\u00d710<sup>\u221213</sup> J/MeV) = 8.21\u00d710<sup>13</sup> J</div><p>about the energy of 14 000 barrels of crude oil, released in a tiny fraction of a second because each generation of neutrons follows the previous one almost instantly: the number of fissions grows exponentially (log graph).</p>'; }
+  function bstat(){ var s = bc.stats(); el('faBr').innerHTML = [['state', assembled ? (s.moving ? 'assembling\u2026' : 'assembled: one mass') : (design === 'gun' ? 'two separate pieces' : 'six separate pieces')], ['free neutrons', s.alive + (s.runaway ? '+' : '')], ['fissions', s.fis], ['escaped', s.esc], ['fuel used', (100*s.fis/Math.max(1, s.n5)).toFixed(1) + '%']].map(function(q){ return '<div><div class="fa_rl' + '">' + q[0] + '</div><div class="fa_rv' + '">' + q[1] + '</div></div>'; }).join('');
+    var t = !assembled ? 'Each piece is subcritical: stray neutrons start a few fissions, but most neutrons escape and the chains die out.' : s.moving ? 'The pieces are moving together\u2026' : s.runaway || s.alive > 150 ? 'Supercritical: the number of neutrons, and of fissions, grows exponentially.' : s.fis/Math.max(1, s.n5) > 0.5 ? 'Most of the fuel has fissioned.' : 'One mass above the critical mass: the next stray neutron starts a runaway chain.';
+    el('faBs').textContent = t; if (!said[t]){ said[t] = 1; say(t); } }
+  function bloop(){ if (tab === 0 && brun){ bc.stray(assembled ? 0.02 : 0.012); bc.step(); bc.stray(assembled ? 0.02 : 0.012); bc.step(); bc.step(); bc.draw(pal()); var g = cb.getContext('2d'); g.fillStyle = '#dbe7ff'; g.font = '12px Arial'; g.textAlign = 'left'; g.fillText(assembled ? 'above the critical mass' : 'each piece below the critical mass', 10, 18); if (bc.stats().hist.length) bc.drawHist(gB, pal(), 'time \u2192'); bstat(); } }
+  el('faBRun').addEventListener('click', function(){ brun = !brun; this.innerHTML = brun ? PAUSEI : PLAYI; this.setAttribute('aria-pressed', brun ? 'true' : 'false'); this.setAttribute('aria-label', brun ? 'Pause' : 'Run'); });
+  el('faBRst').addEventListener('click', function(){ bbuild(); say('Pieces separated again, each below the critical mass.'); });
+  el('faAsm').addEventListener('click', function(){ if (assembled) return; assembled = true; bc.assemble(); say(design === 'gun' ? 'The bullet piece is fired into the target piece.' : 'The pieces are driven toward the centre simultaneously.'); });
+  function setDesign(d){ design = d; el('faGun').setAttribute('aria-pressed', d === 'gun' ? 'true' : 'false'); el('faImp').setAttribute('aria-pressed', d === 'imp' ? 'true' : 'false'); bbuild(); say(d === 'gun' ? 'Two pieces of U-235, each below the critical mass.' : 'Six pieces of plutonium at the edge of a sphere, each below the critical mass.'); }
+  el('faGun').addEventListener('click', function(){ setDesign('gun'); }); el('faImp').addEventListener('click', function(){ setDesign('imp'); });
+  /* ══════════ REACTOR ══════════ */
+  var cr = el('faRc'), gr = cr.getContext('2d'), gR = el('faRg').getContext('2d'), RW = cr.width, RH = cr.height;
+  var R0 = { P:1, T:300, void:0, rods:0.45, rodT:0.45, pump:true, scram:false, t:0, sp:3, run:true, hist:[], ph:0, tick:0 }, Rs = JSON.parse(JSON.stringify(R0));
+  function rho(){ return 0.02*(0.45 - Rs.rods) - 0.00015*(Rs.T - 300) - 0.03*Rs.void; }
+  function rstep(dt){ Rs.rods += Math.max(-0.05*dt, Math.min(0.05*dt*(Rs.scram ? 8 : 1), Rs.rodT - Rs.rods)); var r = rho(), flow = Rs.pump ? 1 : 0.05;
+    Rs.P = Math.max(1e-7, Rs.P + (r/0.08*Rs.P + 1e-7)*dt); if (Rs.P > 50) Rs.P = 50;
+    Rs.T += (5*Rs.P - 0.5*(Rs.T - 290)*flow)*dt; if (Rs.T < 290 - 1e-6 && Rs.P < 0.01) Rs.T = Math.max(Rs.T, 20);
+    var vt = Rs.T > 345 ? Math.min(1, (Rs.T - 345)/25) : 0; Rs.void += (vt - Rs.void)*Math.min(1, dt*0.8); Rs.t += dt; }
+  function k(){ return 1 + rho(); }
+  function rdraw(){ var g = gr, P = Rs.P, glow = Math.min(1, Math.log(1 + P*20)/Math.log(21)), flow = Rs.pump ? 1 : 0.05, alt = faA11y.alt(), hot = alt ? '#D55E00' : '#d84a3a', cool = alt ? '#56B4E9' : '#6bb6e8', steam = '#cfe8ff';
+    g.fillStyle = '#fbfbf7'; g.fillRect(0, 0, RW, RH);
+    /* containment */
+    g.strokeStyle = '#999'; g.lineWidth = 6; g.beginPath(); g.moveTo(30, RH - 30); g.lineTo(30, 150); g.quadraticCurveTo(30, 40, 245, 40); g.quadraticCurveTo(460, 40, 460, 150); g.lineTo(460, RH - 30); g.stroke();
+    g.fillStyle = '#555'; g.font = '12px Arial'; g.textAlign = 'left'; g.fillText('Containment structure', 40, 30);
+    /* reactor vessel */
+    var vx = 70, vy = 150, vw = 120, vh = 230; g.fillStyle = '#bfc4cc'; g.fillRect(vx - 8, vy - 8, vw + 16, vh + 16); var cg = g.createLinearGradient(vx, 0, vx + vw, 0); cg.addColorStop(0, 'rgba(255,' + Math.round(200 - 120*glow) + ',80,' + (0.25 + 0.7*glow) + ')'); cg.addColorStop(0.5, 'rgba(255,240,180,' + (0.2 + 0.8*glow) + ')'); cg.addColorStop(1, 'rgba(255,' + Math.round(200 - 120*glow) + ',80,' + (0.25 + 0.7*glow) + ')'); g.fillStyle = cg; g.fillRect(vx, vy, vw, vh);
+    if (Rs.void > 0.05){ for (var b=0; b<30*Rs.void; b++){ g.fillStyle = 'rgba(255,255,255,0.8)'; g.beginPath(); g.arc(vx + 10 + ((b*37 + Rs.ph*60) % (vw - 20)), vy + vh - ((b*53 + Rs.ph*120) % vh), 3, 0, TAU); g.fill(); } }
+    for (var i=0; i<7; i++){ var fx = vx + 12 + i*16; g.fillStyle = '#7a5a3a'; g.fillRect(fx, vy + 30, 6, vh - 40); }
+    var rd = vh*Rs.rods; for (var j=0; j<6; j++){ var rx = vx + 20 + j*16; g.fillStyle = '#333'; g.fillRect(rx, vy - 40, 5, 40 + rd); }
+    g.fillStyle = '#333'; g.fillRect(vx + 15, vy - 48, vw - 30, 8);
+    /* neutrons */
+    var nn = Math.round(40*glow); for (var q=0; q<nn; q++){ var hx = Math.sin((q*91 + Math.floor(Rs.ph*8)*7)*12.9898)*43758.5453, hy = Math.sin((q*57 + Math.floor(Rs.ph*8)*3)*78.233)*43758.5453; g.fillStyle = '#2bb673'; g.beginPath(); g.arc(vx + (hx - Math.floor(hx))*vw, vy + (hy - Math.floor(hy))*vh, 2, 0, TAU); g.fill(); }
+    g.fillStyle = '#333'; g.font = '12px Arial'; g.textAlign = 'center'; g.fillText('Reactor', vx + vw/2, vy + vh + 26); g.fillText('pressure vessel', vx + vw/2, vy + vh + 40); g.textAlign = 'left'; g.fillText('Cadmium', vx - 66, vy - 30); g.fillText('control rods', vx - 66, vy - 16);
+    /* primary loop */
+    function pipe(pts, col, w){ g.strokeStyle = col; g.lineWidth = w; g.lineJoin = 'round'; g.beginPath(); pts.forEach(function(p, i){ if (i) g.lineTo(p[0], p[1]); else g.moveTo(p[0], p[1]); }); g.stroke(); }
+    function dots(pts, col, speed){ var L = 0, seg = []; for (var i=1; i<pts.length; i++){ var l = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); seg.push(l); L += l; }
+      var n = Math.floor(L/26), off = (Rs.ph*speed*40) % 26; g.fillStyle = col; for (var d=0; d<n; d++){ var s = d*26 + off, k2 = 0; while (k2 < seg.length && s > seg[k2]){ s -= seg[k2]; k2++; } if (k2 >= seg.length) continue; var a = pts[k2], b2 = pts[k2 + 1], f = s/seg[k2]; g.beginPath(); g.arc(a[0] + (b2[0] - a[0])*f, a[1] + (b2[1] - a[1])*f, 3, 0, TAU); g.fill(); } }
+    var hotT = Math.min(1, Math.max(0, (Rs.T - 290)/60)), hc = 'rgb(' + Math.round(150 + 105*hotT) + ',' + Math.round(140 - 80*hotT) + ',' + Math.round(140 - 90*hotT) + ')';
+    var pl1 = [[vx + vw + 8, vy + 50], [300, vy + 50], [300, 200]], pl2 = [[300, 360], [300, 395], [235, 395], [vx + vw + 8, 395], [vx + vw + 8, vy + vh - 20]];
+    pipe(pl1, hc, 12); pipe(pl2, hc, 12); dots(pl1, '#fff', flow); dots(pl2, '#fff', flow);
+    g.strokeStyle = '#444'; g.lineWidth = 2; g.fillStyle = '#e8edf2'; g.beginPath(); g.arc(235, 395, 13, 0, TAU); g.fill(); g.stroke(); g.save(); g.translate(235, 395); g.rotate(Rs.ph*6*flow); g.beginPath(); g.moveTo(-8, 0); g.lineTo(8, 0); g.moveTo(0, -8); g.lineTo(0, 8); g.stroke(); g.restore();
+    g.fillStyle = '#333'; g.textAlign = 'center'; g.fillText('Primary loop', 245, vy + 80); g.fillText('pump' + (Rs.pump ? '' : ' (OFF)'), 235, 425);
+    /* steam generator */
+    var sx = 300, sy = 170, sw = 90, sh = 200; g.fillStyle = '#d7eaf7'; g.fillRect(sx, sy, sw, sh); g.strokeStyle = '#555'; g.lineWidth = 1.5; g.strokeRect(sx, sy, sw, sh);
+    g.strokeStyle = hc; g.lineWidth = 6; g.beginPath(); g.moveTo(sx, 200); for (var z=0; z<6; z++) g.lineTo(sx + (z % 2 ? 20 : 70), 210 + z*25); g.lineTo(sx, 360); g.stroke();
+    g.fillStyle = '#333'; g.textAlign = 'center'; g.fillText('Steam', sx + sw/2, sy + sh + 24); g.fillText('generator', sx + sw/2, sy + sh + 38);
+    /* steam line to turbine */
+    var st = Math.min(1, P)*(Rs.T > 260 ? 1 : 0), sl = [[sx + sw/2, sy], [sx + sw/2, 60], [540, 60], [540, 80]]; pipe(sl, '#9cc8ea', 10); dots(sl, '#fff', 0.4 + 2*st);
+    g.fillStyle = '#333'; g.textAlign = 'left'; g.fillText('Steam (high pressure)', sx + sw/2 + 10, 110);
+    /* turbine + generator */
+    g.fillStyle = '#c9ced6'; g.fillRect(520, 80, 130, 70); g.strokeStyle = '#555'; g.strokeRect(520, 80, 130, 70); for (var bl=0; bl<8; bl++){ var bx = 530 + bl*14, ph2 = Rs.ph*12*st; g.strokeStyle = '#555'; g.lineWidth = 2; g.beginPath(); g.moveTo(bx + 4*Math.sin(ph2 + bl), 90); g.lineTo(bx - 4*Math.sin(ph2 + bl), 140); g.stroke(); }
+    g.fillStyle = '#e1e5ea'; g.fillRect(660, 85, 100, 60); g.strokeStyle = '#555'; g.lineWidth = 1.5; g.strokeRect(660, 85, 100, 60); g.save(); g.translate(710, 115); g.rotate(Rs.ph*10*st); g.strokeStyle = '#a06000'; g.lineWidth = 3; g.beginPath(); g.moveTo(-18, 0); g.lineTo(18, 0); g.moveTo(0, -18); g.lineTo(0, 18); g.stroke(); g.restore();
+    g.fillStyle = '#333'; g.textAlign = 'center'; g.fillText('Turbine', 585, 72); g.fillText('Generator', 710, 72);
+    var MWe = 1000*Math.min(P, 1.2)*st; g.fillStyle = MWe > 5 ? '#2e7d32' : '#999'; g.font = 'bold 13px Arial'; g.fillText(MWe.toFixed(0) + ' MW electric', 710, 162); g.font = '12px Arial';
+    g.strokeStyle = '#777'; g.lineWidth = 2; g.beginPath(); g.moveTo(760, 115); g.lineTo(800, 115); g.lineTo(800, 40); g.stroke(); g.fillStyle = MWe > 5 ? '#ffd23f' : '#ccc'; g.beginPath(); g.moveTo(796, 30); g.lineTo(806, 30); g.lineTo(798, 44); g.lineTo(808, 44); g.lineTo(792, 60); g.lineTo(799, 46); g.lineTo(790, 46); g.closePath(); g.fill();
+    /* condenser + secondary return + cooling tower */
+    g.fillStyle = '#d7eaf7'; g.fillRect(540, 230, 100, 150); g.strokeStyle = '#555'; g.lineWidth = 1.5; g.strokeRect(540, 230, 100, 150); pipe([[585, 150], [585, 230]], '#9cc8ea', 8); g.fillStyle = '#333'; g.textAlign = 'center'; g.fillText('Steam condenser', 590, 400); g.fillText('(low pressure)', 590, 414);
+    var sec = [[540, 350], [470, 350], [470, 330], [sx + sw, 330]]; pipe(sec, '#4a8fd1', 8); dots(sec, '#fff', 0.4 + 1.5*st); g.fillStyle = '#333'; g.fillText('Secondary loop', 470, 312);
+    var ct = [[640, 300], [700, 300], [700, 360], [640, 360]]; pipe(ct, cool, 6);
+    g.fillStyle = '#e6e9ee'; g.strokeStyle = '#888'; g.beginPath(); g.moveTo(705, 400); g.quadraticCurveTo(728, 330, 712, 250); g.lineTo(782, 250); g.quadraticCurveTo(766, 330, 790, 400); g.closePath(); g.fill(); g.stroke(); g.fillStyle = '#333'; g.fillText('Cooling tower', 748, 420);
+    for (var pf=0; pf<5*st; pf++){ g.fillStyle = 'rgba(255,255,255,0.85)'; g.beginPath(); g.arc(735 + pf*8 + 6*Math.sin(Rs.ph + pf), 240 - ((Rs.ph*20 + pf*14) % 70), 9, 0, TAU); g.fill(); g.strokeStyle = 'rgba(150,160,170,0.5)'; g.lineWidth = 1; g.stroke(); }
+    if (Rs.scram){ g.fillStyle = '#c62828'; g.font = 'bold 16px Arial'; g.textAlign = 'center'; g.fillText('SCRAM', vx + vw/2, 135); } }
+  function rgraph(){ var w = gR.canvas.width, h = gR.canvas.height, L = 50, R = w - 50, T = 12, B = h - 26; gR.fillStyle = '#0b1222'; gR.fillRect(0, 0, w, h);
+    gR.strokeStyle = 'rgba(150,170,195,0.2)'; gR.fillStyle = '#9aa6b4'; gR.font = '10px Arial'; gR.textBaseline = 'middle'; [0, 50, 100, 150].forEach(function(v){ var y = B - v/150*(B - T); gR.beginPath(); gR.moveTo(L, y); gR.lineTo(R, y); gR.stroke(); gR.textAlign = 'right'; gR.fillText(v + '%', L - 4, y); gR.textAlign = 'left'; gR.fillText((250 + v) + '\u00b0C', R + 4, y); });
+    gR.textAlign = 'center'; gR.fillText('last 120 s \u2192 now', (L + R)/2, h - 8);
+    function line(f, col, w){ gR.strokeStyle = col; gR.lineWidth = w; gR.beginPath(); Rs.hist.forEach(function(q, i){ var x = R - (Rs.hist.length - 1 - i)/240*(R - L), y = B - Math.max(0, Math.min(150, f(q)))/150*(B - T); if (i) gR.lineTo(x, y); else gR.moveTo(x, y); }); gR.stroke(); }
+    line(function(q){ return q[0]*100; }, '#ffd23f', 2.5); line(function(q){ return q[1] - 250; }, '#ff6b6b', 1.8); line(function(q){ return 75 + (q[2] - 1)*2500; }, '#7fffb0', 1.5);
+    gR.font = 'bold 11px Arial'; gR.textAlign = 'left'; gR.fillStyle = '#ffd23f'; gR.fillText('power', L + 6, T + 8); gR.fillStyle = '#ff6b6b'; gR.fillText('temperature (right axis)', L + 60, T + 8); gR.fillStyle = '#7fffb0'; gR.fillText('k (75% line = 1.000)', L + 230, T + 8); }
+  function rtext(){ var kk = k(), P = Rs.P;
+    el('faRr').innerHTML = [['k (multiplication)', kk.toFixed(4)], ['state', kk > 1.0003 ? 'supercritical (rising)' : kk < 0.9997 ? 'subcritical (falling)' : 'critical (steady)'], ['thermal power', (P*3000 < 10 ? (P*3000).toFixed(2) : Math.round(P*3000)) + ' MW (' + (P*100).toFixed(P < 0.1 ? 2 : 0) + '%)'], ['coolant temperature', Rs.T.toFixed(0) + ' \u00b0C'], ['steam voids in core', (100*Rs.void).toFixed(0) + '%'], ['rods inserted', Math.round(100*Rs.rods) + '%']].map(function(q){ return '<div><div class="fa_rl' + '">' + q[0] + '</div><div class="fa_rv' + '">' + q[1] + '</div></div>'; }).join('');
+    var s = kk > 1.0003 ? 'k > 1: each generation of neutrons is larger than the last, so the power rises.' : kk < 0.9997 ? 'k < 1: the chain reaction is dying down.' : 'k = 1: exactly one neutron from each fission causes another fission; the power is steady.';
+    if (Rs.void > 0.3) s += ' The water is boiling away: without water to slow (thermalize) the neutrons, the chain reaction stops by itself.'; else if (Rs.T > 320) s += ' The coolant is getting hot; hotter water slows neutrons less well, which pulls k down (a built-in safety feature).';
+    if (Rs.scram) s += ' SCRAM: all cadmium rods dropped fully into the core.';
+    el('faRs').textContent = s;
+    el('faRt').innerHTML = '<p>The <b>control rods</b> (cadmium) absorb neutrons: inserting them lowers k, withdrawing them raises it. The operators keep k = 1 for steady power.</p><p>Heat flows: fission heats the water of the <b>primary loop</b> (kept liquid by high pressure); in the <b>steam generator</b> it boils the water of the <b>secondary loop</b>; high-pressure steam turns the <b>turbine</b>, which drives the <b>generator</b>; the <b>condenser</b> keeps the steam at low pressure on the other side.</p><p>If the pumps fail, the water heats up and boils; with no water to slow the neutrons, the reaction stops. This safety feature can be overwhelmed in extreme circumstances, as at Chernobyl and Fukushima, where the heat of the radioactive fission products still has to be removed.</p>';
+    var day = P*3000e6*86400/8.21e13, fps = P*3000e6/(200*1.6e-13);
+    el('faRf').innerHTML = '<p>Fission rate: ' + (fps > 0 ? (fps/Math.pow(10, Math.floor(Math.log(fps)/Math.LN10))).toFixed(2) + '\u00d710<sup>' + Math.floor(Math.log(fps)/Math.LN10) + '</sup>' : '0') + ' fissions per second (200 MeV each).</p><div class="fa_eq' + '">U-235 used per day = (' + Math.round(P*3000) + ' MW)(86 400 s)/(8.21\u00d710<sup>13</sup> J/kg) = <b class="fa_res' + '">' + day.toFixed(2) + ' kg</b></div><p>Fuel is uranium enriched to a few percent U-235. A reactor does not contain enough U-235 to explode like a bomb. The major drawback is <b>nuclear waste</b>: fission products with long half-lives must be stored safely, for example deep in old salt mines or inside stable mountains.</p>'; }
+  var last = 0, said2 = '';
+  function rloop(now){ var dt = last ? Math.min(0.1, (now - last)/1000) : 0; last = now;
+    if (tab === 1 && Rs.run && dt > 0){ var sub = Rs.sp; for (var i=0; i<sub*4; i++) rstep(dt/4); Rs.ph += dt; Rs.tick += dt*sub; if (Rs.tick > 0.5){ Rs.tick = 0; Rs.hist.push([Rs.P, Rs.T, k()]); if (Rs.hist.length > 240) Rs.hist.shift(); }
+      rdraw(); rgraph(); rtext(); var m = el('faRs').textContent.split(':')[0]; if (m !== said2){ said2 = m; say(el('faRs').textContent); } }
+    if (tab === 0) bloop(); requestAnimationFrame(rloop); }
+  function rods(v){ Rs.rodT = v; el('faRod').value = Math.round(v*100); el('faRodV').textContent = Math.round(v*100) + '%'; }
+  el('faRod').addEventListener('input', function(){ if (Rs.scram) return; rods(this.value/100); });
+  el('faSp').addEventListener('input', function(){ Rs.sp = +this.value; el('faSpV').textContent = '\u00d7' + this.value; });
+  el('faPump').addEventListener('click', function(){ Rs.pump = !Rs.pump; this.setAttribute('aria-pressed', Rs.pump ? 'true' : 'false'); this.textContent = 'Coolant pumps: ' + (Rs.pump ? 'ON' : 'OFF'); say(Rs.pump ? 'Pumps on: coolant flows again.' : 'Pumps off: the heat is no longer carried away. Watch the temperature and k.'); });
+  el('faScram').addEventListener('click', function(){ Rs.scram = true; rods(1); say('SCRAM: all control rods drop into the core. k falls well below 1 and the chain reaction stops.'); });
+  el('faRRst').addEventListener('click', function(){ var sp = Rs.sp; Rs = JSON.parse(JSON.stringify(R0)); Rs.sp = sp; rods(0.45); el('faPump').setAttribute('aria-pressed', 'true'); el('faPump').textContent = 'Coolant pumps: ON'; say('Restarted: steady at full power, k = 1.'); });
+  el('faRRun').addEventListener('click', function(){ Rs.run = !Rs.run; this.innerHTML = Rs.run ? PAUSEI : PLAYI; this.setAttribute('aria-pressed', Rs.run ? 'true' : 'false'); this.setAttribute('aria-label', Rs.run ? 'Pause' : 'Run'); });
+  el('faEx1').addEventListener('click', function(){ if (Rs.scram) return; rods(Math.max(0, Rs.rodT - 0.05)); say('Rods withdrawn a little: k rises above 1 and the power climbs, until the hotter water brings k back to 1 at a higher power.'); });
+  el('faEx2').addEventListener('click', function(){ rods(Math.min(1, Rs.rodT + 0.1)); say('Rods pushed in: k drops below 1 and the power falls.'); });
+  el('faEx3').addEventListener('click', function(){ if (Rs.pump) el('faPump').click(); });
+  /* ══════════ tabs ══════════ */
+  var tab = 0;
+  function setTab(i){ tab = i; [0, 1].forEach(function(j){ var t = el('faT' + j + ''); t.setAttribute('aria-selected', j === i ? 'true' : 'false'); t.tabIndex = j === i ? 0 : -1; el('faP' + j + '').hidden = j !== i; }); last = 0;
+    say(i === 0 ? 'The bomb: pieces below the critical mass are brought together quickly.' : 'The reactor: control rods keep the chain reaction steady at k = 1.'); if (i === 1){ rdraw(); rgraph(); rtext(); } }
+  [0, 1].forEach(function(i){ var t = el('faT' + i + ''); t.addEventListener('click', function(){ setTab(i); }); t.addEventListener('keydown', function(e){ if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){ setTab(1 - i); el('faT' + (1 - i) + '').focus(); e.preventDefault(); } }); });
+  faA11y.onChange(function(){ bc.sprites(pal()); rdraw(); });
+  rods(0.45); el('faSpV').textContent = '\u00d73'; bbuild(); rdraw(); rgraph(); rtext(); requestAnimationFrame(rloop);
+  say('Two applications of fission: the bomb, an uncontrolled chain reaction, and the reactor, a controlled one.');
+  return { setTab:setTab, bc:bc, assemble:function(){ el('faAsm').click(); }, R:function(){ return Rs; }, k:k, setDesign:setDesign };
+};
+var faSim = new faGen();
+</script>
+<script>faA11y.init();</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>A fission chain reaction can proceed uncontrollably, as in an explosion, or in a controlled manner, as in a nuclear reactor at a power plant.</p>
+<p><b>The atomic bomb.</b> The sample must be massive enough that a typical neutron is more likely to induce fission than to escape; the minimum mass is the <b>critical mass</b>. The original design brought together two pieces of U-235, each below the critical mass: one, shaped as a bullet, is fired into the other. Plutonium-239, more fissionable, was used in a design where pieces at the edge of a sphere are driven to the centre simultaneously by chemical explosions. Once above the critical mass, the number of fissions grows exponentially. The bomb tab is a schematic two-dimensional model; nothing is to scale.</p>
+<p><b>The nuclear reactor.</b> In a pressurized water reactor, water slows the neutrons so that they can split U-235, and carries the heat to a steam generator; the steam turns a turbine and a generator. Cadmium control rods absorb neutrons and adjust the rate, keeping the multiplication factor `k = 1`. If the water boils away, the chain reaction stops, because the water is needed to slow the neutrons. Breeder reactors also turn U-238 into fissionable Pu-239. The reactor tab uses a simplified model of the power and temperature (`dP/dt prop (k - 1) P`) chosen for clear, watchable behaviour.</p>
+</div>
+</div>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+
+</div>
+
+</body>
+</html>

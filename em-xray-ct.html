@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Nuclear: X-rays and CT</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobnucxray" class="mob_wrap">
+<div class="xr_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="xr_a11ybtn" id="xrBtnHC" onclick="xrA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="xr_a11ybtn" id="xrBtnDM" onclick="xrA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="xr_a11ybtn" id="xrBtnCB" onclick="xrA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="xr_a11ybtn" id="xrBtnNR" onclick="xrA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+
+<div class="xr_title"><h3>X-rays and CT Scans &mdash; Seeing Inside the Body</h3></div>
+<div class="xr_tabs" role="tablist" aria-label="Mode">
+<button type="button" role="tab" class="xr_tab" id="xrT0" aria-selected="true">X-ray radiograph</button>
+<button type="button" role="tab" class="xr_tab" id="xrT1" aria-selected="false">CT scan</button>
+</div>
+<div id="xrNarBar" class="xr_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<!-- ═══════ TAB 0: X-RAY ═══════ -->
+<div id="xrP0" role="tabpanel" aria-labelledby="xrT0">
+<div class="xr_intro">In an <b>X-ray tube</b>, electrons accelerated through a voltage V slam into a tungsten target. As they are deflected and slowed by the nuclei they emit X-ray photons (<b>bremsstrahlung</b>), plus sharp <b>characteristic</b> lines. The X-rays pass through the patient; tissues that absorb more (bone) let fewer through and appear white on the image: <b>I = I&#8320;e<sup>&minus;&mu;x</sup></b>.</div>
+<div class="xr_read" id="xrRead" aria-live="off"></div>
+<div class="xr_card"><div class="xr_ctitle"><span>The X-ray tube</span></div>
+<canvas id="xrTube" width="820" height="230" role="img" aria-label="Schematic of an X-ray tube: a heated cathode filament on the left emits electrons, which are accelerated by the high voltage toward a tungsten anode on the right; X-ray photons leave the anode downward toward the patient. An inset shows an electron deflected by a tungsten nucleus emitting a photon."></canvas></div>
+<div class="xr_row">
+<div class="xr_card"><div class="xr_ctitle"><span>X-ray spectrum</span></div>
+<canvas id="xrSp" width="420" height="340" role="img" aria-label="Graph of the number of X-ray photons against photon energy: the continuous bremsstrahlung spectrum ending at the maximum energy e times V, tungsten characteristic lines when the voltage is high enough, the spectrum before filtration dashed and, optionally, after passing through the patient."></canvas>
+<div class="xr_cbar"><label><input type="checkbox" id="xrHard" checked> after the patient (beam hardening)</label></div>
+<div class="xr_cnote" id="xrSpT"></div></div>
+<div class="xr_card"><div class="xr_ctitle"><span>The radiograph (click to probe)</span></div>
+<canvas id="xrImg" width="420" height="520" role="img" aria-label="Simulated chest radiograph, front view: bones (ribs, spine, clavicles) appear white, the air-filled lungs dark, the heart and soft tissue grey. Click to read the fraction of X-rays transmitted at that point."></canvas>
+<div class="xr_cnote" id="xrProbe">Click the image to see what the X-rays passed through.</div></div>
+</div>
+<div class="xr_panels">
+<div class="xr_panel" role="group" aria-labelledby="xrHdT"><div class="xr_ptitle" id="xrHdT">Tube settings</div><div class="xr_pbody">
+<div class="xr_ctrl"><div class="xr_chdr"><label for="xrKV">Tube voltage</label><span class="xr_val" id="xrKVv"></span></div><input type="range" id="xrKV" min="20" max="150" step="1" value="80"></div>
+<div class="xr_ctrl"><div class="xr_chdr"><label for="xrMAS">Exposure (tube current &times; time)</label><span class="xr_val" id="xrMASv"></span></div><input type="range" id="xrMAS" min="0" max="1000" step="1" value="560"></div>
+<div class="xr_ctrl"><div class="xr_chdr"><label for="xrAl">Aluminium filter</label><span class="xr_val" id="xrAlv"></span></div><input type="range" id="xrAl" min="0" max="6" step="0.1" value="2.5"></div>
+<div class="xr_presets" id="xrPre"></div>
+</div></div>
+<div class="xr_panel" role="group" aria-labelledby="xrHdP"><div class="xr_ptitle" id="xrHdP">Patient (front chest view)</div><div class="xr_pbody">
+<div class="xr_checks">
+<label class="xr_chk"><input type="checkbox" id="xrNod" checked> small nodule in the lung</label>
+<label class="xr_chk"><input type="checkbox" id="xrCoin"> swallowed coin</label>
+<label class="xr_chk"><input type="checkbox" id="xrIod"> iodine contrast in the heart</label>
+<label class="xr_chk"><input type="checkbox" id="xrNoise" checked> quantum noise</label>
+</div>
+<div id="xrQual"></div>
+</div></div>
+<div class="xr_panel" role="group" aria-labelledby="xrHdA"><div class="xr_ptitle" id="xrHdA">Attenuation</div><div class="xr_pbody" id="xrAtt"></div></div>
+</div>
+</div>
+
+<!-- ═══════ TAB 1: CT ═══════ -->
+<div id="xrP1" role="tabpanel" aria-labelledby="xrT1" hidden>
+<div class="xr_intro">A radiograph squashes the whole body onto one picture: structures in front of and behind each other overlap. In <b>computed tomography</b> (CT) the tube and detector rotate around the patient, recording one projection at each angle. A computer then works backward to the slice that produced all of them, giving a map of the attenuation coefficient &mu; at every point, in <b>Hounsfield units</b>.</div>
+<div class="xr_read" id="ctRead" aria-live="off"></div>
+<div class="xr_view"><canvas id="ctG" width="820" height="380" role="img" aria-label="Left: the CT gantry: the patient slice in the centre, the X-ray tube and the detector rotating around it, with the parallel rays and the measured projection profile. Right: the sinogram, one row per angle, built up as the scan proceeds."></canvas></div>
+<div id="ctStatus" class="xr_status"></div>
+<div class="xr_transport" role="toolbar" aria-label="Scan">
+<div class="xr_tgroup">
+<button type="button" class="xr_tbtn xr_play" id="ctPlay" aria-label="Start the scan" title="Scan"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="xr_tbtn" id="ctStep" aria-label="One more angle" title="One more angle"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="17" y="4" width="3" height="16" fill="currentColor"/><path d="M4 4 L15 12 L4 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="xr_tbtn" id="ctRst" aria-label="Clear the scan" title="Clear"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 5 A7 7 0 1 1 5.6 9" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M3 4 L9.5 4.5 L5.5 10 Z" fill="currentColor"/></svg></button>
+<button type="button" class="xr_vbtn" id="ctAll">Scan all at once</button>
+</div>
+<div class="xr_tgroup xr_tsep" role="group" aria-label="Window"><button type="button" class="xr_vbtn" id="ctWl">Lung window</button><button type="button" class="xr_vbtn" id="ctWs" aria-pressed="true">Soft-tissue window</button><button type="button" class="xr_vbtn" id="ctWb">Bone window</button></div>
+</div>
+<div class="xr_row">
+<div class="xr_card"><div class="xr_ctitle"><span id="ctRT">Reconstruction (click to read HU)</span></div><canvas id="ctR" width="400" height="400" role="img" aria-label="The reconstructed CT slice, displayed with the chosen window. Click a point to read its value in Hounsfield units."></canvas></div>
+<div class="xr_card"><div class="xr_ctitle"><span>The actual slice</span><label style="font-weight:normal"><input type="checkbox" id="ctHide"> hide (guess first)</label></div><canvas id="ctTr" width="400" height="400" role="img" aria-label="The true slice through the chest, shown with the same window, for comparison."></canvas></div>
+</div>
+<div class="xr_card"><div class="xr_cnote" id="ctExp"></div></div>
+<div class="xr_panels">
+<div class="xr_panel" role="group" aria-labelledby="ctHdS"><div class="xr_ptitle" id="ctHdS">Scan settings</div><div class="xr_pbody">
+<div class="xr_ctrl"><div class="xr_chdr"><label for="ctN">Number of angles (over 180&deg;)</label><span class="xr_val" id="ctNv"></span></div><input type="range" id="ctN" min="0" max="7" step="1" value="6"></div>
+<div class="xr_ctrl"><div class="xr_chdr"><label for="ctD">Dose (mAs)</label><span class="xr_val" id="ctDv"></span></div><input type="range" id="ctD" min="0" max="100" step="1" value="60"></div>
+<div class="xr_ctrl"><div class="xr_chdr"><label for="ctF">Reconstruction</label></div><select id="ctF"><option value="ramp">filtered back-projection (ramp filter)</option><option value="sl">filtered back-projection (smoother, Shepp&ndash;Logan)</option><option value="none">simple back-projection (no filter)</option></select></div>
+<div class="xr_ctrl"><div class="xr_chdr"><label for="ctSp">Scan speed</label><span class="xr_val" id="ctSpv"></span></div><input type="range" id="ctSp" min="1" max="10" step="1" value="3"></div>
+</div></div>
+<div class="xr_panel" role="group" aria-labelledby="ctHdP"><div class="xr_ptitle" id="ctHdP">Patient (slice through the chest)</div><div class="xr_pbody">
+<div class="xr_checks">
+<label class="xr_chk"><input type="checkbox" id="ctNod" checked> small lung nodule</label>
+<label class="xr_chk"><input type="checkbox" id="ctIod"> iodine contrast in the blood</label>
+<label class="xr_chk"><input type="checkbox" id="ctMet"> metal screw in the spine</label>
+</div>
+<p class="xr_note">Changing the patient clears the scan.</p>
+<div class="xr_ctrl"><div class="xr_chdr"><label for="ctW">Window width</label><span class="xr_val" id="ctWv"></span></div><input type="range" id="ctW" min="50" max="3000" step="10" value="400"></div>
+<div class="xr_ctrl"><div class="xr_chdr"><label for="ctL">Window level (centre)</label><span class="xr_val" id="ctLv"></span></div><input type="range" id="ctL" min="-1000" max="1500" step="10" value="40"></div>
+</div></div>
+<div class="xr_panel" role="group" aria-labelledby="ctHdH"><div class="xr_ptitle" id="ctHdH">Hounsfield units</div><div class="xr_pbody">
+<div class="xr_eq">HU = 1000 (&mu; &minus; &mu;<sub>water</sub>)/&mu;<sub>water</sub></div>
+<table class="xr_tbl"><tbody>
+<tr><td class="xr_l">air</td><td>&minus;1000</td></tr><tr><td class="xr_l">lung</td><td>&minus;850</td></tr><tr><td class="xr_l">fat</td><td>&minus;100</td></tr><tr><td class="xr_l">water</td><td>0</td></tr><tr><td class="xr_l">muscle, blood, nodule</td><td>30 to 45</td></tr><tr><td class="xr_l">blood with iodine</td><td>&asymp; 280</td></tr><tr><td class="xr_l">spongy bone</td><td>&asymp; 250</td></tr><tr><td class="xr_l">dense bone</td><td>700 to 1000</td></tr></tbody></table>
+<p class="xr_note">The eye sees only about 40 shades of grey, so the display <b>window</b> maps just a range of HU (width W, centred on level L) onto black to white.</p>
+</div></div>
+</div>
+</div>
+</div>
+<style>
+:where(#mobnucxray) * { margin:0; box-sizing:border-box; }
+#mobnucxray { width:100%; max-width:860px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; color:#1d232a; }
+#mobnucxray canvas { display:block; width:100%; height:auto; }
+#mobnucxray [hidden] { display:none !important; }
+#mobnucxray .xr_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#mobnucxray .xr_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#mobnucxray .xr_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobnucxray .xr_title { padding:4px; background-color:#f90; text-align:center; }
+#mobnucxray .xr_title h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+#mobnucxray .xr_tabs { display:flex; gap:4px; padding:6px 8px 0; background:#14213a; flex-wrap:wrap; }
+#mobnucxray .xr_tab { flex:1 1 130px; padding:8px 6px; border:1px solid #2b3d60; border-bottom:0; border-radius:6px 6px 0 0; background:#1d2c4a; color:#bcd0f0; font-weight:bold; cursor:pointer; font-size:.88rem; min-height:40px; }
+#mobnucxray .xr_tab[aria-selected="true"] { background:#f3f5f8; color:#14213a; }
+#mobnucxray .xr_intro { padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; font-size:.9rem; line-height:1.5; }
+#mobnucxray .xr_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:6px 12px; padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; }
+#mobnucxray .xr_rl { font-size:.7rem; color:#667; text-transform:uppercase; letter-spacing:.05em; }
+#mobnucxray .xr_rv { font-family:monospace; font-size:.93rem; color:#7a3a00; font-weight:bold; }
+#mobnucxray .xr_view { background:#fff; }
+#mobnucxray .xr_status { color:#222; font-size:.86rem; text-align:center; background:#fff6d9; padding:5px 8px; line-height:1.45; min-height:1.6em; }
+#mobnucxray .xr_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+#mobnucxray .xr_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+#mobnucxray .xr_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { #mobnucxray .xr_tsep { padding-left:0; border-left:0; } }
+#mobnucxray .xr_tbtn { width:44px; height:38px; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer; border:1px solid #6d8a3a; border-radius:5px; background:#fff; color:#223; }
+#mobnucxray .xr_tbtn.xr_play { background:#2e7d32; color:#fff; border-color:#1b5e20; }
+#mobnucxray .xr_tbtn.xr_play[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+#mobnucxray .xr_vbtn, #mobnucxray .xr_bbtn { min-height:38px; padding:4px 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; }
+#mobnucxray .xr_vbtn[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobnucxray .xr_bbtn { background:#2e7d32; border-color:#1b5e20; color:#fff; font-weight:bold; }
+#mobnucxray .xr_card { margin:10px 10px 0; background:#0b1222; border:1px solid #2b3d60; border-radius:6px; overflow:hidden; }
+#mobnucxray .xr_ctitle { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:4px 10px; padding:5px 10px; background:#14213a; color:#dbe7ff; font-size:.8rem; font-weight:bold; }
+#mobnucxray .xr_cnote { padding:8px 12px 10px; color:#e3ecfa; font-size:.86rem; line-height:1.5; background:#0d1526; border-top:1px solid #2b3d60; }
+#mobnucxray .xr_cnote b { color:#ffd23f; }
+#mobnucxray .xr_row { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:10px; padding:10px 10px 0; }
+#mobnucxray .xr_row .xr_card { margin:0; }
+#mobnucxray .xr_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(270px, 1fr)); gap:10px; padding:10px; }
+#mobnucxray .xr_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+#mobnucxray .xr_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+#mobnucxray .xr_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; font-size:.87rem; line-height:1.45; }
+#mobnucxray .xr_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+#mobnucxray .xr_chdr { display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; }
+#mobnucxray .xr_chdr label { font-size:.82rem; font-weight:bold; color:#333; min-width:0; }
+#mobnucxray .xr_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; min-width:4.5em; text-align:right; }
+#mobnucxray .xr_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+#mobnucxray select { width:100%; min-height:34px; padding:4px 6px; font-size:.86rem; border:1px solid #8a96a8; border-radius:4px; background:#fff; }
+#mobnucxray .xr_checks { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 8px; }
+#mobnucxray .xr_chk { display:flex; align-items:center; gap:6px; font-size:.82rem; cursor:pointer; }
+#mobnucxray .xr_note { font-size:.8rem; color:#555; font-style:italic; }
+#mobnucxray .xr_eq { font-family:'Times New Roman', serif; font-size:1rem; background:#f6f8fb; border-left:3px solid #1f5fa8; padding:4px 8px; margin:2px 0; overflow-wrap:anywhere; }
+#mobnucxray .xr_num { width:7em; height:34px; padding:3px 6px; font-size:.95rem; border:1px solid #888; border-radius:4px; }
+#mobnucxray button:focus-visible, #mobnucxray input:focus-visible, #mobnucxray select:focus-visible, #mobnucxray canvas:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (max-width:420px) { #mobnucxray .xr_checks { grid-template-columns:minmax(0,1fr); } }
+@media (pointer:coarse) { #mobnucxray .xr_tbtn, #mobnucxray .xr_vbtn, #mobnucxray .xr_bbtn, #mobnucxray .xr_num { min-height:44px; } #mobnucxray input[type=checkbox] { width:20px; height:20px; } #mobnucxray input[type=range] { height:28px; } }
+#mobnucxray .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobnucxray .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobnucxray .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobnucxray .mob_desc p { margin:0 0 8px 0; }
+#mobnucxray .mob_eq { text-align:center; }
+#mobnucxray.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobnucxray.a11y_dm .xr_card, #mobnucxray.a11y_dm .xr_view, #mobnucxray.a11y_dm [aria-label="Display options"], #mobnucxray.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobnucxray.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobnucxray.a11y_hc .xr_card, #mobnucxray.a11y_hc .xr_view, #mobnucxray.a11y_hc [aria-label="Display options"], #mobnucxray.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+
+#mobnucxray .xr_row { align-items:start; }
+#mobnucxray .xr_cbar { display:flex; flex-wrap:wrap; gap:4px 14px; padding:6px 10px; background:#0d1526; color:#dbe7ff; font-size:.8rem; }
+#mobnucxray .xr_cbar label { display:flex; align-items:center; gap:5px; cursor:pointer; }
+#mobnucxray .xr_presets { display:flex; flex-wrap:wrap; gap:5px; }
+#mobnucxray .xr_presets button { padding:5px 9px; font-size:.8rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:4px; background:#fff; color:#223; min-height:34px; }
+#mobnucxray .xr_tbl { border-collapse:collapse; width:100%; font-size:.84rem; }
+#mobnucxray .xr_tbl td { padding:3px 6px; border-bottom:1px solid #e3e7ee; text-align:right; font-family:monospace; }
+#mobnucxray .xr_tbl td.xr_l { text-align:left; font-family:Arial, sans-serif; }
+#mobnucxray .xr_ok { color:#1b6e2a; font-weight:bold; } #mobnucxray .xr_no { color:#b42318; font-weight:bold; }
+#mobnucxray #xrImg, #mobnucxray #ctR { cursor:crosshair; }
+</style>
+<script>
+var xrA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return; b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobnucxray'); if (!W) return; W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc);
+var nb = document.getElementById('xrNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none'; var nr = document.getElementById('xrBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('xrBtnHC', states.hc); styleBtn('xrBtnDM', states.dm); styleBtn('xrBtnCB', states.cb); styleBtn('xrBtnNR', states.nr); hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return { init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply(); if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: images in grey, spectrum orange and blue.'); },
+alt:function(){ return states.hc || states.cb; }, narrate:function(m){ if (!states.nr) return; var nb = document.getElementById('xrNarBar'); if (nb) nb.textContent = m; } };
+})();
+</script>
+
+<!-- ════════ SIMULATION ════════
+X-ray spectrum: Kramers bremsstrahlung, photon number per keV n(E) ~ (kVp - E)/E, tungsten K lines (Ka 59 keV, Kb 67 keV) above 69.5 kV,
+filtered by 1 mm (inherent) + chosen Al. Attenuation coefficients mu(E) (cm^-1): tabulated, log-log interpolation (approximate NIST values);
+iodine added at 10 mg/ml with its K-edge at 33.2 keV. Radiograph: chest phantom of ellipsoids and rib tubes; path lengths per material;
+energy-integrating detector S = sum n(E) E exp(-sum mu_m(E) t_m). Quantum noise: sigma(ln S) = 1/sqrt(N), N photons per pixel.
+Doses are rough, scaled to 0.02 mSv for a standard chest X-ray and 7 mSv for a chest CT.
+CT: parallel-beam geometry, monochromatic (70 keV, mu_water = 0.19 cm^-1), 128 detectors over 36 cm, line integrals by sampling;
+noise N = N0 exp(-p) with Poisson-like scatter; filtered back-projection with Ram-Lak or Shepp-Logan kernels.
+No dollar signs or backticks in the code.
+-->
+<script>
+var xrGen = function(){
+  function el(id){ return document.getElementById(id); }
+  function say(m){ xrA11y.narrate(m); }
+  var TAU = 2*Math.PI;
+  function gauss(){ var u = Math.random() || 1e-9, v = Math.random(); return Math.sqrt(-2*Math.log(u))*Math.cos(TAU*v); }
+  /* ══════════ attenuation data (cm^-1) ══════════ */
+  var EB = [20, 30, 40, 50, 60, 80, 100, 150];
+  var MU = { soft:[0.81, 0.38, 0.27, 0.23, 0.21, 0.18, 0.17, 0.15], bone:[7.7, 2.55, 1.28, 0.81, 0.60, 0.43, 0.36, 0.28], steel:[203, 65, 28, 15, 9.5, 4.7, 2.9, 1.5], al:[9.3, 3.04, 1.53, 0.99, 0.75, 0.55, 0.46, 0.37] };
+  function interp(t, E){ var i = 0; if (E <= EB[0]) i = 0; else if (E >= EB[EB.length - 1]) i = EB.length - 2; else while (EB[i + 1] < E) i++;
+    var x0 = Math.log(EB[i]), x1 = Math.log(EB[i + 1]), y0 = Math.log(t[i]), y1 = Math.log(t[i + 1]); return Math.exp(y0 + (y1 - y0)*(Math.log(E) - x0)/(x1 - x0)); }
+  function mu(m, E){ if (m === 'lung') return 0.26*interp(MU.soft, E); if (m === 'iod') return interp(MU.soft, E) + (E < 33.17 ? 0.065 : 0.36)*Math.pow(33.17/E, 2.8); return interp(MU[m], E); }
+  var MATS = ['soft', 'lung', 'bone', 'iod', 'steel'];
+  /* ══════════ X-RAY TAB ══════════ */
+  var X = { kv:80, mas:5, al:2.5, nod:true, coin:false, iod:false, noise:true, probe:null };
+  function masFrom(v){ return +(0.1*Math.pow(10, 2.7*v/1000)).toPrecision(2); } function vMas(m){ return Math.log(m/0.1)/Math.LN10/2.7*1000; }
+  function spectrum(kv, al){ var out = [], Ka = 59.0, Kb = 67.2, chr = kv > 69.5 ? 2.6*Math.pow(kv/69.5 - 1, 1.6) : 0;
+    for (var E = 10.5; E < kv; E += 1){ var n = (kv - E)/E, raw = n; if (Math.abs(E - Ka) < 0.6) raw += chr*1.0; if (Math.abs(E - Kb) < 0.6) raw += chr*0.3;
+      var f = Math.exp(-mu('al', E)*(1 + al)/10); out.push({ E:E, raw:raw, n:raw*f }); } return out; }
+  function bins(sp){ var B = [], k = 0; while (k < sp.length){ var s = 0, se = 0, j; for (j=k; j<Math.min(sp.length, k + 3); j++){ s += sp[j].n; se += sp[j].n*sp[j].E; } if (s > 1e-9) B.push({ E:se/s, n:s }); k += 3; }
+    B.forEach(function(b){ b.w = b.n*b.E; b.mu = MATS.map(function(m){ return mu(m, b.E); }); }); return B; }
+  var REF = (function(){ var sp = spectrum(120, 2.5), ph = 0, en = 0; sp.forEach(function(s){ ph += s.n; en += s.n*s.E; }); return { ph:ph, en:en }; })();
+  /* phantom thickness maps */
+  var NX = 150, NY = 190, X0 = -18, Y0 = -23, DX = 36/NX, DY = 46/NY, T = null;
+  function ellz(x, y, cx, cy, a, b, c){ var u = (x - cx)/a, v = (y - cy)/b, r = 1 - u*u - v*v; return r > 0 ? 2*c*Math.sqrt(r) : 0; }
+  function polyl(pts){ var o = []; for (var i=0; i<pts.length - 1; i++){ var a = pts[i], b = pts[i + 1], L = Math.hypot(b[0] - a[0], b[1] - a[1]), n = Math.ceil(L/0.3); for (var k=0; k<n; k++) o.push([a[0] + (b[0] - a[0])*k/n, a[1] + (b[1] - a[1])*k/n]); } o.push(pts[pts.length - 1]); return o; }
+  var TUBES = (function(){ var t = [], s, k, i;
+    for (s = -1; s <= 1; s += 2){ for (k=0; k<10; k++){ var y0 = 15.5 - k*2.25, P = [], A = []; for (i=0; i<=10; i++){ var u = i/10; P.push([s*(1.2 + 12.6*u), y0 + 1.4*Math.sin(Math.PI*u*0.8) - 3.2*u*u]); }
+        var e = P[P.length - 1]; for (i=1; i<=8; i++){ var u2 = i/8; A.push([s*(13.8 - 8.5*u2), e[1] - 0.6 - 4.2*u2 + 1.5*u2*u2]); }
+        t.push({ p:polyl(P), r:0.5 }); t.push({ p:polyl([e].concat(A)), r:0.42 }); }
+      t.push({ p:polyl([[s*1.6, 17.6], [s*7, 18.4], [s*13.5, 19.6]]), r:0.75 }); }
+    t.forEach(function(q){ var a = 1e9, b = -1e9, c = 1e9, d = -1e9; q.p.forEach(function(p){ a = Math.min(a, p[0]); b = Math.max(b, p[0]); c = Math.min(c, p[1]); d = Math.max(d, p[1]); }); q.bb = [a - 1, b + 1, c - 1, d + 1]; }); return t; })();
+  function buildX(){ var n = NX*NY, M = {}; MATS.forEach(function(m){ M[m] = new Float32Array(n); }); var i, j, k;
+    for (j=0; j<NY; j++) for (i=0; i<NX; i++){ var x = X0 + (i + 0.5)*DX, y = Y0 + (NY - j - 0.5)*DY, id = j*NX + i;
+      var tb = ellz(x, y, 0, -2, 15.5, 22.5, 11) + ellz(x, y, 0, 21.5, 4.8, 5, 4.5), lg = ellz(x, y, -6.8, 5.8, 5.4, 9.8, 7) + ellz(x, y, 6.6, 5.8, 5.0, 9.8, 7), ht = ellz(x, y, 2.2, -1.8, 5.4, 4.8, 5.2), nd = X.nod ? ellz(x, y, -6.2, 8.5, 1.0, 1.0, 1.0) : 0;
+      var lung = Math.max(0, lg - ht - nd), bone = 0, iod = 0;
+      if (Math.abs(x) < 1.7 && y < 23 && y > -24){ var ph = ((y + 40) % 2.6 + 2.6) % 2.6; if (ph > 0.5) bone += 0.65*2*1.6*Math.sqrt(Math.max(0, 1 - (x/1.6)*(x/1.6))); }
+      for (k=0; k<TUBES.length; k++){ var q = TUBES[k], bb = q.bb; if (x < bb[0] || x > bb[1] || y < bb[2] || y > bb[3]) continue; var dmin = 1e9; for (var p=0; p<q.p.length; p++){ var dx = x - q.p[p][0], dy = y - q.p[p][1], d2 = dx*dx + dy*dy; if (d2 < dmin) dmin = d2; } if (dmin < q.r*q.r) bone += 1.15*2*Math.sqrt(q.r*q.r - dmin); }
+      if (tb <= 0) bone = 0;
+      if (X.iod) iod = ellz(x, y, 2.2, -1.8, 4.0, 3.5, 3.8) + ellz(x, y, 0.2, 5.4, 1.4, 2.4, 1.4);
+      M.lung[id] = lung; M.bone[id] = bone; M.iod[id] = iod; M.soft[id] = Math.max(0, tb - lung - bone - iod);
+      M.steel[id] = X.coin && Math.hypot(x - 3.5, y + 12.5) < 1.2 ? 0.17 : 0; }
+    T = M; }
+  function pathAt(i, j){ var id = j*NX + i; return MATS.map(function(m){ return T[m][id]; }); }
+  function S(B, t){ var s = 0; for (var e=0; e<B.length; e++){ var b = B[e], a = 0; for (var m=0; m<5; m++) a += b.mu[m]*t[m]; s += b.w*Math.exp(-a); } return s; }
+  var cI = el('xrImg'), gI = cI.getContext('2d'), LIMG = null, S0 = 1;
+  function computeImg(){ var sp = spectrum(X.kv, X.al), B = bins(sp), n = NX*NY, L = new Float32Array(n), id; S0 = S(B, [0, 0, 0, 0, 0]);
+    var ph = 0; sp.forEach(function(s){ ph += s.n; }); var N0 = 4e4*(X.mas/2)*ph/REF.ph;
+    var t = [0, 0, 0, 0, 0];
+    for (id=0; id<n; id++){ for (var m=0; m<5; m++) t[m] = T[MATS[m]][id]; var s = S(B, t), f = s/S0, l = -Math.log(Math.max(1e-12, f)); if (X.noise){ var Nd = N0*f; l += (Nd > 0.5 ? 1/Math.sqrt(Nd) : 2)*gauss(); } L[id] = l; }
+    LIMG = { L:L, B:B, sp:sp, N0:N0 }; }
+  function drawImg(){ var w = cI.width, h = cI.height, L = LIMG.L, n = NX*NY, arr = [], k;
+    for (k=0; k<n; k += 7) if (!T.steel[k]) arr.push(L[k]); arr.sort(function(a, b){ return a - b; }); var Lmax = Math.max(0.5, arr[Math.floor(arr.length*0.995)]);
+    var id = gI.createImageData(NX, NY); for (k=0; k<n; k++){ var g = Math.max(0, Math.min(1, L[k]/Lmax)); g = Math.pow(g, 1.25); var v = Math.round(255*g); id.data[4*k] = v; id.data[4*k + 1] = v; id.data[4*k + 2] = v; id.data[4*k + 3] = 255; }
+    var tmp = document.createElement('canvas'); tmp.width = NX; tmp.height = NY; tmp.getContext('2d').putImageData(id, 0, 0);
+    gI.fillStyle = '#000'; gI.fillRect(0, 0, w, h); var sc = Math.min(w/NX, h/NY), ox = (w - NX*sc)/2, oy = (h - NY*sc)/2; gI.imageSmoothingEnabled = true; gI.drawImage(tmp, ox, oy, NX*sc, NY*sc);
+    gI.fillStyle = '#9fc5ff'; gI.font = 'bold 13px Arial'; gI.textAlign = 'left'; gI.fillText('R', ox + 8, oy + 20); gI.textAlign = 'right'; gI.fillText('L', ox + NX*sc - 8, oy + 20);
+    gI.font = '11px Arial'; gI.fillStyle = '#9aa6b4'; gI.textAlign = 'center'; gI.fillText(X.kv + ' kV, ' + X.mas + ' mAs, ' + X.al.toFixed(1) + ' mm Al', w/2, h - 6);
+    if (X.probe){ var px = ox + (X.probe[0] + 0.5)*sc, py = oy + (X.probe[1] + 0.5)*sc; gI.strokeStyle = '#ffd23f'; gI.lineWidth = 2; gI.beginPath(); gI.arc(px, py, 8, 0, TAU); gI.moveTo(px - 13, py); gI.lineTo(px - 4, py); gI.moveTo(px + 4, py); gI.lineTo(px + 13, py); gI.stroke(); }
+    IMG = { sc:sc, ox:ox, oy:oy }; }
+  var IMG = null;
+  /* spectrum graph */
+  var cS = el('xrSp'), gS = cS.getContext('2d');
+  function drawSp(){ var w = cS.width, h = cS.height, L = 46, R = w - 12, Tp = 14, B = h - 36, sp = LIMG.sp, mx = 0, i, hard = el('xrHard').checked;
+    sp.forEach(function(s){ mx = Math.max(mx, s.raw > 6 ? 6 : s.raw, s.n); }); mx *= 1.1;
+    function Xp(E){ return L + E/150*(R - L); } function Yp(v){ return B - Math.min(1, v/mx)*(B - Tp); }
+    gS.fillStyle = '#0b1222'; gS.fillRect(0, 0, w, h); gS.strokeStyle = 'rgba(150,170,195,0.2)'; gS.fillStyle = '#9aa6b4'; gS.font = '10px Arial'; gS.textAlign = 'center'; gS.textBaseline = 'alphabetic';
+    for (i=0; i<=150; i += 25){ gS.beginPath(); gS.moveTo(Xp(i), Tp); gS.lineTo(Xp(i), B); gS.stroke(); gS.fillText(String(i), Xp(i), B + 13); }
+    gS.fillText('photon energy (keV)', (L + R)/2, h - 6); gS.save(); gS.translate(13, (Tp + B)/2); gS.rotate(-Math.PI/2); gS.fillText('number of photons', 0, 0); gS.restore();
+    gS.strokeStyle = 'rgba(255,255,255,0.45)'; gS.setLineDash([4, 3]); gS.lineWidth = 1.3; gS.beginPath(); sp.forEach(function(s, k){ var y = Yp(Math.min(s.raw, mx)); if (k) gS.lineTo(Xp(s.E), y); else gS.moveTo(Xp(s.E), y); }); gS.stroke(); gS.setLineDash([]);
+    gS.fillStyle = 'rgba(255,170,60,0.35)'; gS.strokeStyle = '#ffb000'; gS.lineWidth = 2; gS.beginPath(); gS.moveTo(Xp(sp[0] ? sp[0].E : 10), B); sp.forEach(function(s){ gS.lineTo(Xp(s.E), Yp(s.n)); }); gS.lineTo(Xp(X.kv), B); gS.closePath(); gS.fill(); gS.stroke();
+    if (hard){ var mxh = 0, hs = sp.map(function(s){ var v = s.n*Math.exp(-mu('soft', s.E)*20); mxh = Math.max(mxh, v); return v; }), k2 = mxh > 0 ? 0.6*mx/mxh : 1;
+      gS.strokeStyle = '#4fc3ff'; gS.lineWidth = 2; gS.beginPath(); sp.forEach(function(s, k){ var y = Yp(hs[k]*k2); if (k) gS.lineTo(Xp(s.E), y); else gS.moveTo(Xp(s.E), y); }); gS.stroke(); }
+    if (X.kv > 69.5){ gS.fillStyle = '#ffd23f'; gS.font = 'bold 11px Arial'; gS.fillText('K\u03b1', Xp(59), Tp + 10); gS.fillText('K\u03b2', Xp(67.2), Tp + 22); }
+    gS.strokeStyle = '#ff6b6b'; gS.lineWidth = 1.5; gS.beginPath(); gS.moveTo(Xp(X.kv), Tp); gS.lineTo(Xp(X.kv), B); gS.stroke(); gS.fillStyle = '#ff8a7a'; gS.font = 'bold 11px Arial'; gS.textAlign = X.kv > 95 ? 'right' : 'left'; gS.fillText('E\u2098\u2090\u2093 = eV = ' + X.kv + ' keV', Xp(X.kv) + (X.kv > 95 ? -4 : 4), Tp + 34);
+    gS.textAlign = 'left'; gS.font = '10px Arial'; gS.fillStyle = 'rgba(255,255,255,0.75)'; gS.fillText('dashed: before the filter', R - 150, Tp + 50); gS.fillStyle = '#ffb000'; gS.fillText('orange: leaving the tube', R - 150, Tp + 64); if (hard){ gS.fillStyle = '#4fc3ff'; gS.fillText('blue: after 20 cm of tissue', R - 150, Tp + 78); gS.fillText('(scaled up)', R - 150, Tp + 91); } }
+  /* tube schematic */
+  var cT = el('xrTube'), gT = cT.getContext('2d'), tph = 0, eDots = [], xPh = [];
+  function drawTube(){ var w = cT.width, h = cT.height, i;
+    gT.fillStyle = '#0b1222'; gT.fillRect(0, 0, w, h);
+    gT.strokeStyle = 'rgba(180,210,255,0.6)'; gT.lineWidth = 2; gT.fillStyle = 'rgba(160,200,255,0.06)'; gT.beginPath(); gT.ellipse(260, 95, 210, 62, 0, 0, TAU); gT.fill(); gT.stroke();
+    gT.fillStyle = '#9aa6b4'; gT.font = '11px Arial'; gT.textAlign = 'center'; gT.fillText('vacuum glass envelope', 260, 26);
+    var hot = Math.min(1, 0.3 + Math.log(1 + X.mas)/4); gT.fillStyle = '#6b7280'; gT.fillRect(70, 70, 26, 50); gT.strokeStyle = 'rgba(255,' + Math.round(150 + 80*hot) + ',60,' + hot + ')'; gT.lineWidth = 3; gT.beginPath(); for (i=0; i<6; i++){ gT.moveTo(98, 78 + i*7); gT.lineTo(108, 81 + i*7); } gT.stroke();
+    gT.fillStyle = '#e6ecf2'; gT.fillText('cathode (\u2212)', 84, 138); gT.fillText('hot filament', 84, 152);
+    gT.fillStyle = '#8a6b4a'; gT.fillRect(400, 60, 50, 70); gT.fillStyle = '#c0c6cf'; gT.beginPath(); gT.moveTo(400, 60); gT.lineTo(400, 130); gT.lineTo(370, 115); gT.lineTo(370, 75); gT.closePath(); gT.fill(); gT.fillStyle = '#e6ecf2'; gT.fillText('anode (+)', 425, 145); gT.fillText('tungsten target', 425, 159);
+    eDots.forEach(function(d){ gT.fillStyle = '#7fd8ff'; gT.beginPath(); gT.arc(d.x, d.y, 2.5, 0, TAU); gT.fill(); });
+    xPh.forEach(function(q){ gT.strokeStyle = 'rgba(255,214,60,' + q.a + ')'; gT.lineWidth = 1.6; gT.beginPath(); for (var s=0; s<=14; s++){ var xx = q.x + q.vx*s/14*16 + 2.5*Math.sin(s*1.4)*(-q.vy), yy = q.y + q.vy*s/14*16 + 2.5*Math.sin(s*1.4)*q.vx; if (s) gT.lineTo(xx, yy); else gT.moveTo(xx, yy); } gT.stroke(); });
+    gT.fillStyle = '#ffd23f'; gT.font = 'bold 12px Arial'; gT.textAlign = 'left'; gT.fillText('X-rays \u2193 to the patient', 440, 214); gT.textAlign = 'center';
+    gT.strokeStyle = '#ff8a7a'; gT.lineWidth = 2; gT.beginPath(); gT.moveTo(84, 168); gT.lineTo(84, 190); gT.lineTo(470, 190); gT.lineTo(470, 120); gT.lineTo(450, 120); gT.stroke(); gT.fillStyle = '#0b1222'; gT.fillRect(200, 180, 120, 20); gT.fillStyle = '#ff8a7a'; gT.font = 'bold 12px Arial'; gT.fillText('high voltage ' + X.kv + ' kV', 260, 194);
+    gT.fillStyle = '#e6ecf2'; gT.font = '11px Arial'; gT.fillText('electrons: KE = eV = ' + X.kv + ' keV, speed \u2248 ' + vfrac().toFixed(2) + 'c', 235, 52);
+    /* inset */
+    var ix = 520, iy = 18; gT.strokeStyle = '#3a4a68'; gT.lineWidth = 1; gT.strokeRect(ix, iy, 285, 190); gT.fillStyle = '#e6ecf2'; gT.font = 'bold 12px Arial'; gT.textAlign = 'left'; gT.fillText('Inside the target: bremsstrahlung', ix + 8, iy + 16);
+    var nx = ix + 150, ny = iy + 105; gT.fillStyle = '#ff6b6b'; gT.beginPath(); gT.arc(nx, ny, 9, 0, TAU); gT.fill(); gT.fillStyle = '#fff'; gT.font = 'bold 10px Arial'; gT.textAlign = 'center'; gT.fillText('W', nx, ny + 4);
+    gT.strokeStyle = '#7fd8ff'; gT.lineWidth = 2; gT.beginPath(); gT.moveTo(ix + 10, ny - 40); gT.quadraticCurveTo(nx - 20, ny - 34, nx - 4, ny - 26); gT.quadraticCurveTo(nx + 30, ny - 14, ix + 270, ny + 50); gT.stroke();
+    var k = (tph % 3)/3, ex = ix + 10 + k*260, ey = k < 0.55 ? ny - 40 + k*24 : ny - 27 + (k - 0.55)*170; gT.fillStyle = '#7fd8ff'; gT.beginPath(); gT.arc(ex, ey, 3.5, 0, TAU); gT.fill();
+    gT.strokeStyle = '#ffd23f'; gT.lineWidth = 2; gT.beginPath(); for (var s2=0; s2<=30; s2++){ var xx2 = nx + 4 + s2*3, yy2 = ny - 30 - s2*1.8 + 4*Math.sin(s2*1.2); if (s2) gT.lineTo(xx2, yy2); else gT.moveTo(xx2, yy2); } gT.stroke();
+    gT.fillStyle = '#ffd23f'; gT.font = '11px Arial'; gT.textAlign = 'left'; gT.fillText('X-ray photon', nx + 50, ny - 92);
+    gT.fillStyle = '#c9d6ea'; gT.fillText('The electron is deflected and slowed', ix + 8, iy + 160); gT.fillText('by the nucleus; the lost energy leaves', ix + 8, iy + 174); gT.fillText('as a photon (up to eV if it stops).', ix + 8, iy + 188); }
+  function vfrac(){ var g = 1 + X.kv/511; return Math.sqrt(1 - 1/(g*g)); }
+  function stepTube(dt){ tph += dt; var rate = Math.min(30, 3 + 6*Math.log(1 + X.mas)); if (Math.random() < rate*dt) eDots.push({ x:110, y:78 + Math.random()*36 }); var v = 120 + 450*vfrac();
+    eDots = eDots.filter(function(d){ d.x += v*dt; d.y += (95 - d.y)*dt*1.5; if (d.x >= 372){ if (Math.random() < 0.6){ var a = Math.PI/2 + (Math.random() - 0.5)*0.9; xPh.push({ x:378, y:100, vx:Math.cos(a), vy:Math.sin(a), a:1 }); } return false; } return true; });
+    xPh = xPh.filter(function(q){ q.x += q.vx*160*dt; q.y += q.vy*160*dt; q.a -= dt*0.6; return q.a > 0 && q.y < 230; }); }
+  /* readouts and text */
+  function textX(){ var sp = LIMG.sp, ph = 0, en = 0; sp.forEach(function(s){ ph += s.n; en += s.n*s.E; }); var Em = en/ph, ms = mu('soft', Em), dose = 0.02*(X.mas/2)*en/REF.en;
+    var t20 = [20, 0, 0, 0, 0], B = LIMG.B, Cb = Math.log(S(B, t20)/S(B, [19, 0, 1, 0, 0])), Cn = Math.log(S(B, [10, 12, 0, 0, 0])/S(B, [12, 10, 0, 0, 0])), Tn = S(B, [10, 12, 0, 0, 0])/S0, Nn = LIMG.N0*Tn, CNR = Cn*Math.sqrt(Nn);
+    var R = [['E max = eV', X.kv + ' keV'], ['\u03bb min = hc/eV', (1.24/X.kv).toFixed(4) + ' nm'], ['mean photon energy', Em.toFixed(1) + ' keV'], ['bone/tissue contrast (1 cm)', (100*(1 - Math.exp(-Cb))).toFixed(1) + '%'], ['approx. patient dose', dose < 0.1 ? (dose*1000).toPrecision(2) + ' \u00b5Sv' : dose.toPrecision(2) + ' mSv']];
+    el('xrRead').innerHTML = R.map(function(q){ return '<div><div class="xr_rl' + '">' + q[0] + '</div><div class="xr_rv' + '">' + q[1] + '</div></div>'; }).join('');
+    el('xrSpT').innerHTML = 'The continuous spectrum ends sharply at <b>E = eV = ' + X.kv + ' keV</b> (an electron that stops in one go gives all its energy to one photon), so \u03bb<sub>min</sub> = hc/eV = 1240 eV\u00b7nm/(' + X.kv + '000 eV) = ' + (1.24/X.kv).toFixed(4) + ' nm. ' + (X.kv > 69.5 ? 'Above 69.5 kV the electrons can knock out tungsten K-shell electrons: the <b>characteristic lines</b> K\u03b1 (59 keV) and K\u03b2 (67 keV) appear.' : 'Below 69.5 kV the electrons cannot ionize the tungsten K shell: no characteristic K lines.') + ' The aluminium filter removes low-energy photons that would only add dose. The patient removes even more of them (blue): the beam gets &ldquo;harder&rdquo;.';
+    var vis = CNR >= 3;
+    el('xrQual').innerHTML = (X.nod ? '<p>Nodule contrast: ' + (100*(1 - Math.exp(-Cn))).toFixed(1) + '%, noise ' + (100/Math.sqrt(Nn)).toFixed(1) + '% \u2192 contrast-to-noise ratio <b>' + CNR.toFixed(1) + '</b>: ' + (vis ? '<span class="xr_ok' + '">visible</span>' : '<span class="xr_no' + '">lost in the noise</span>') + ' (a detail needs a CNR of about 3 to 5 to be seen).</p>' : '')
+      + '<p class="xr_note' + '">Lower voltage: more contrast, but fewer photons get through (more dose for the same image quality). More mAs: less noise, but more dose. Radiographers balance the two.</p>';
+    el('xrAtt').innerHTML = '<div class="xr_eq' + '">I = I<sub>0</sub>e<sup>\u2212\u03bcx</sup>, &nbsp; half-value layer x<sub>1/2</sub> = ln 2/\u03bc</div><table class="xr_tbl' + '"><tbody><tr><td class="xr_l' + '"><b>at ' + Em.toFixed(0) + ' keV</b></td><td><b>\u03bc (cm\u207b\u00b9)</b></td><td><b>x\u00bd</b></td></tr>'
+      + [['soft tissue', 'soft'], ['lung', 'lung'], ['bone', 'bone'], ['blood + iodine', 'iod'], ['steel', 'steel']].map(function(q){ var m = mu(q[1], Em); return '<tr><td class="xr_l' + '">' + q[0] + '</td><td>' + m.toFixed(m < 1 ? 3 : 1) + '</td><td>' + (Math.LN2/m >= 1 ? (Math.LN2/m).toFixed(1) + ' cm' : (10*Math.LN2/m).toFixed(2) + ' mm') + '</td></tr>'; }).join('') + '</tbody></table><p class="xr_note' + '">Bone absorbs more than tissue mainly through the photoelectric effect, which grows steeply with atomic number (about Z\u00b3) and falls with energy (about 1/E\u00b3). That is why contrast drops at high voltage, and why iodine (Z = 53) and barium make good contrast agents.</p>';
+    el('xrKVv').textContent = X.kv + ' kV'; el('xrMASv').textContent = X.mas + ' mAs'; el('xrAlv').textContent = X.al.toFixed(1) + ' mm';
+    return { CNR:CNR, dose:dose, Em:Em, Cb:Cb }; }
+  function probeText(){ if (!X.probe) return; var i = X.probe[0], j = X.probe[1], t = pathAt(i, j), f = S(LIMG.B, t)/S0, nm = ['soft tissue', 'lung', 'bone', 'blood + iodine', 'steel'], parts = [];
+    t.forEach(function(v, k){ if (v > 0.005) parts.push(nm[k] + ' ' + (v >= 1 ? v.toFixed(1) + ' cm' : (10*v).toFixed(1) + ' mm')); });
+    el('xrProbe').innerHTML = parts.length ? 'Path through: ' + parts.join(', ') + '. Transmitted: <b>' + (f >= 0.01 ? (100*f).toFixed(1) + '%' : (100*f).toExponential(1) + '%') + '</b> of the X-ray energy.' : 'Outside the body: all the X-rays reach the detector (black).'; }
+  function refreshX(rebuild){ if (rebuild || !T) buildX(); computeImg(); drawImg(); drawSp(); var r = textX(); probeText(); return r; }
+  var deb = null; function later(rb){ clearTimeout(deb); deb = setTimeout(function(){ refreshX(rb); }, 40); }
+  el('xrKV').addEventListener('input', function(){ X.kv = +this.value; later(); }); el('xrMAS').addEventListener('input', function(){ X.mas = masFrom(+this.value); later(); }); el('xrAl').addEventListener('input', function(){ X.al = +this.value; later(); });
+  function sayX(){ var r = textX(); say(X.kv + ' kilovolts, ' + X.mas + ' milliampere-seconds. Mean photon energy ' + r.Em.toFixed(0) + ' keV. Bone contrast ' + (100*(1 - Math.exp(-r.Cb))).toFixed(0) + ' percent. ' + (X.nod ? 'Nodule ' + (r.CNR >= 3 ? 'visible' : 'lost in the noise') + ', contrast-to-noise ratio ' + r.CNR.toFixed(1) + '. ' : '') + 'Dose about ' + (r.dose*1000).toPrecision(2) + ' microsieverts.'); }
+  ['xrKV', 'xrMAS', 'xrAl'].forEach(function(id){ el(id).addEventListener('change', sayX); });
+  [['xrNod', 'nod', true], ['xrCoin', 'coin', true], ['xrIod', 'iod', true], ['xrNoise', 'noise', false]].forEach(function(q){ el(q[0]).addEventListener('change', function(){ X[q[1]] = this.checked; refreshX(q[2]); sayX(); }); });
+  el('xrHard').addEventListener('change', drawSp);
+  var XP = [['Chest (120 kV, 2 mAs)', 120, 2, 2.5], ['Low voltage (60 kV, 10 mAs)', 60, 10, 2.5], ['Very low dose (120 kV, 0.2 mAs)', 120, 0.2, 2.5], ['Mammography-like (28 kV)', 28, 50, 0.5], ['No filter (80 kV)', 80, 5, 0]];
+  el('xrPre').innerHTML = XP.map(function(q, i){ return '<button type="button" data-i="' + i + '">' + q[0] + '</button>'; }).join('');
+  [].forEach.call(el('xrPre').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ var q = XP[+b.getAttribute('data-i')]; X.kv = q[1]; X.mas = q[2]; X.al = q[3]; el('xrKV').value = X.kv; el('xrMAS').value = vMas(X.mas); el('xrAl').value = X.al; refreshX(); sayX(); }); });
+  cI.addEventListener('click', function(e){ if (!IMG) return; var r = cI.getBoundingClientRect(), x = (e.clientX - r.left)*cI.width/r.width, y = (e.clientY - r.top)*cI.height/r.height, i = Math.floor((x - IMG.ox)/IMG.sc), j = Math.floor((y - IMG.oy)/IMG.sc); if (i < 0 || j < 0 || i >= NX || j >= NY) return; X.probe = [i, j]; drawImg(); probeText(); say(el('xrProbe').textContent); });
+
+  /* ══════════ CT TAB ══════════ */
+  var NG = 128, FOV = 36, DXC = FOV/NG, MUW = 0.19, NAS = [4, 8, 16, 32, 60, 90, 180, 360];
+  var C = { nod:true, iod:false, met:false, N:180, mas:60, filt:'ramp', W:400, L:40, sp:3, hide:false };
+  function ell(x, y, cx, cy, a, b, r){ var dx = x - cx, dy = y - cy; if (r){ var c = Math.cos(r), s = Math.sin(r), u = dx*c + dy*s, v = -dx*s + dy*c; dx = u; dy = v; } return (dx*dx)/(a*a) + (dy*dy)/(b*b) <= 1; }
+  function hu(x, y){ var h = -1000, k;
+    if (ell(x, y, 0, 0, 16, 11)) h = -100; if (ell(x, y, 0, 0.2, 14.6, 9.6)) h = 40;
+    if (ell(x, y, -6.6, 0.6, 5.6, 7.3, 0.15) || ell(x, y, 6.6, 0.6, 5.2, 7.1, -0.15)) h = -850;
+    if (ell(x, y, 2.2, 2.4, 4.6, 4.0, 0.4)) h = 40; if (ell(x, y, 2.2, 2.4, 3.4, 2.8, 0.4)) h = C.iod ? 280 : 42;
+    if (ell(x, y, -1.6, -4.4, 1.25, 1.25)) h = C.iod ? 280 : 45; if (ell(x, y, 0.2, 5.6, 1.15, 1.15)) h = C.iod ? 280 : 45;
+    if (ell(x, y, 0.4, -2.6, 0.55, 0.45)) h = -900;
+    if (ell(x, y, 0, -6.8, 2.3, 2.0)) h = 900; if (ell(x, y, 0, -6.8, 1.9, 1.6)) h = 250;
+    if (ell(x, y, 0, -9.4, 1.6, 1.6) && y < -8.9) h = 900; if (ell(x, y, 0, -9.4, 0.95, 0.95)) h = 10; if (ell(x, y, 0, -11.6, 0.45, 1.3)) h = 900;
+    [20, 48, 132, 160, 205, 232, 308, 335].forEach(function(a){ var r = a*Math.PI/180, cx = 13.6*Math.cos(r), cy = 8.9*Math.sin(r); if (ell(x, y, cx, cy, 0.85, 0.6, r)) h = 700; });
+    if (ell(x, y, 0, 9.0, 1.6, 0.55)) h = 600; if (ell(x, y, -9, -7.1, 3.4, 0.5, -0.45) || ell(x, y, 9, -7.1, 3.4, 0.5, 0.45)) h = 700;
+    if (C.nod && ell(x, y, -7.6, 3.2, 0.7, 0.7)) h = 30;
+    if (C.met && ell(x, y, 1.0, -6.8, 0.35, 1.4, 0.3)) h = 30000;
+    return h; }
+  var TRUE = null, MUG = null;
+  function buildCT(){ TRUE = new Float32Array(NG*NG); MUG = new Float32Array(NG*NG); for (var j=0; j<NG; j++) for (var i=0; i<NG; i++){ var s = 0; for (var a=0; a<2; a++) for (var b=0; b<2; b++){ var x = -FOV/2 + (i + 0.25 + 0.5*a)*DXC, y = FOV/2 - (j + 0.25 + 0.5*b)*DXC; s += hu(x, y); } s /= 4; TRUE[j*NG + i] = s; MUG[j*NG + i] = Math.max(0, MUW*(1 + s/1000)); } }
+  function muAt(x, y){ var fi = (x + FOV/2)/DXC - 0.5, fj = (FOV/2 - y)/DXC - 0.5, i = Math.floor(fi), j = Math.floor(fj); if (i < 0 || j < 0 || i >= NG - 1 || j >= NG - 1) return 0; var u = fi - i, v = fj - j, k = j*NG + i; return MUG[k]*(1 - u)*(1 - v) + MUG[k + 1]*u*(1 - v) + MUG[k + NG]*(1 - u)*v + MUG[k + NG + 1]*u*v; }
+  var sino = [], recon = null, ang = 0, scanning = false;
+  function N0(){ return 2e3*Math.pow(10, 2.5*C.mas/100); }
+  function project(th){ var c = Math.cos(th), s = Math.sin(th), p = new Float32Array(NG), dt = DXC/2, n0 = N0();
+    for (var k=0; k<NG; k++){ var sv = (k - NG/2 + 0.5)*DXC, sum = 0; for (var t = -FOV/2; t <= FOV/2; t += dt) sum += muAt(sv*c - t*s, sv*s + t*c); sum *= dt;
+      var N = n0*Math.exp(-sum), Nm = Math.max(1, N + Math.sqrt(N)*gauss()); p[k] = -Math.log(Nm/n0); }
+    return p; }
+  function kernel(type){ var M = NG, h = new Float32Array(2*M + 1); for (var n=-M; n<=M; n++){ var v; if (type === 'sl') v = -2/(Math.PI*Math.PI*DXC*DXC*(4*n*n - 1)); else v = n === 0 ? 1/(4*DXC*DXC) : (n % 2 ? -1/(n*n*Math.PI*Math.PI*DXC*DXC) : 0); h[n + M] = v; } return h; }
+  function backproject(p, th){ var q = p, M = NG, i, j;
+    if (C.filt !== 'none'){ var h = kernel(C.filt); q = new Float32Array(NG); for (i=0; i<NG; i++){ var s = 0; for (var k=0; k<NG; k++) s += h[i - k + M]*p[k]; q[i] = s*DXC; } }
+    var c = Math.cos(th), sn = Math.sin(th), dth = Math.PI/C.N;
+    for (j=0; j<NG; j++){ var y = FOV/2 - (j + 0.5)*DXC; for (i=0; i<NG; i++){ var x = -FOV/2 + (i + 0.5)*DXC, sv = x*c + y*sn, f = sv/DXC + NG/2 - 0.5, k0 = Math.floor(f); if (k0 < 0 || k0 >= NG - 1) continue; var u = f - k0; recon[j*NG + i] += (q[k0]*(1 - u) + q[k0 + 1]*u)*dth; } } }
+  function clearScan(){ sino = []; recon = new Float32Array(NG*NG); ang = 0; stopScan(); }
+  function doAngle(){ if (ang >= C.N) return false; var th = ang*Math.PI/C.N, p = project(th); sino.push(p); backproject(p, th); ang++; return true; }
+  function toHU(v){ return 1000*(v - MUW)/MUW; }
+  /* drawing */
+  var cG = el('ctG'), gG = cG.getContext('2d'), cR = el('ctR'), gR = cR.getContext('2d'), cTr = el('ctTr'), gTr = cTr.getContext('2d'), CK = null;
+  function grayHU(h){ var g = (h - (C.L - C.W/2))/C.W; return Math.round(255*Math.max(0, Math.min(1, g))); }
+  function imgFrom(vals, conv){ var id = gG.createImageData(NG, NG); for (var k=0; k<NG*NG; k++){ var v = conv(vals[k]); id.data[4*k] = v; id.data[4*k + 1] = v; id.data[4*k + 2] = v; id.data[4*k + 3] = 255; } var t = document.createElement('canvas'); t.width = NG; t.height = NG; t.getContext('2d').putImageData(id, 0, 0); return t; }
+  function drawTrue(){ var w = cTr.width; gTr.fillStyle = '#000'; gTr.fillRect(0, 0, w, w); if (C.hide){ gTr.fillStyle = '#9aa6b4'; gTr.font = '14px Arial'; gTr.textAlign = 'center'; gTr.fillText('Hidden: what do you think is there?', w/2, w/2); return; } gTr.imageSmoothingEnabled = true; gTr.drawImage(imgFrom(TRUE, grayHU), 0, 0, w, w); winLabel(gTr, w); }
+  function winLabel(g, w){ g.fillStyle = '#9fc5ff'; g.font = '11px Arial'; g.textAlign = 'left'; g.fillText('window W ' + C.W + ', L ' + C.L + ' HU', 6, w - 6); g.textAlign = 'right'; g.fillText('anterior \u2191 \u00b7 patient\u2019s left \u2192', w - 6, 14); }
+  function drawRecon(){ var w = cR.width; gR.fillStyle = '#000'; gR.fillRect(0, 0, w, w); if (!ang){ gR.fillStyle = '#9aa6b4'; gR.font = '14px Arial'; gR.textAlign = 'center'; gR.fillText('Press play to scan.', w/2, w/2); return; }
+    var conv; if (C.filt === 'none'){ var mx = 0; for (var k=0; k<NG*NG; k++) mx = Math.max(mx, recon[k]); conv = function(v){ return Math.round(255*Math.max(0, v/(mx || 1))); }; } else conv = function(v){ return grayHU(toHU(v)); };
+    gR.imageSmoothingEnabled = true; gR.drawImage(imgFrom(recon, conv), 0, 0, w, w); winLabel(gR, w);
+    if (CK){ var px = (CK[0] + 0.5)*w/NG, py = (CK[1] + 0.5)*w/NG; gR.strokeStyle = '#ffd23f'; gR.lineWidth = 2; gR.beginPath(); gR.arc(px, py, 7, 0, TAU); gR.stroke(); }
+    el('ctRT').textContent = C.filt === 'none' ? 'Simple back-projection (not in HU: values only relative)' : 'Reconstruction: ' + ang + ' of ' + C.N + ' angles (click to read HU)'; }
+  function drawGantry(){ var W = cG.width, H = cG.height, cx = 190, cy = 190, sc = 9.6, th = ang > 0 ? (ang - 1)*Math.PI/C.N : 0;
+    gG.fillStyle = '#0b1222'; gG.fillRect(0, 0, W, H);
+    gG.strokeStyle = '#3a4a68'; gG.lineWidth = 16; gG.beginPath(); gG.arc(cx, cy, 182, 0, TAU); gG.stroke();
+    gG.globalAlpha = 0.85; gG.imageSmoothingEnabled = true; var sz = FOV*sc; gG.drawImage(imgFrom(TRUE, function(h){ return Math.round(255*Math.max(0, Math.min(1, (h + 1000)/1600))); }), cx - sz/2, cy - sz/2, sz, sz); gG.globalAlpha = 1;
+    var c = Math.cos(th), s = Math.sin(th);
+    function P(sv, t){ return [cx + (sv*c - t*s)*sc, cy - (sv*s + t*c)*sc]; }
+    gG.strokeStyle = 'rgba(255,214,60,0.28)'; gG.lineWidth = 1; for (var r = -16; r <= 16; r += 2){ var a = P(r, -18.6), b = P(r, 18.6); gG.beginPath(); gG.moveTo(a[0], a[1]); gG.lineTo(b[0], b[1]); gG.stroke(); }
+    var t1 = P(-17, -19), t2 = P(17, -19); gG.strokeStyle = '#ff8a5b'; gG.lineWidth = 9; gG.beginPath(); gG.moveTo(t1[0], t1[1]); gG.lineTo(t2[0], t2[1]); gG.stroke();
+    var d1 = P(-17, 19), d2 = P(17, 19); gG.strokeStyle = '#7fb2ff'; gG.lineWidth = 9; gG.beginPath(); gG.moveTo(d1[0], d1[1]); gG.lineTo(d2[0], d2[1]); gG.stroke();
+    var tl = P(0, -21.5), dl = P(0, 21.5); lbl(gG, 'X-ray tube', tl[0], tl[1], '#ff8a5b'); lbl(gG, 'detectors', dl[0], dl[1], '#7fb2ff');
+    if (sino.length){ var p = sino[sino.length - 1]; gG.strokeStyle = '#4fe39a'; gG.lineWidth = 2; gG.beginPath(); for (var k=0; k<NG; k++){ var sv = (k - NG/2 + 0.5)*DXC, q = P(sv, 19.4 + p[k]*0.55); if (k) gG.lineTo(q[0], q[1]); else gG.moveTo(q[0], q[1]); } gG.stroke(); }
+    /* sinogram */
+    var L = 420, T = 30, SW = 384, SH = 310; gG.fillStyle = '#e6ecf2'; gG.font = 'bold 12px Arial'; gG.textAlign = 'left'; gG.fillText('Sinogram: one row per angle (each row is one projection)', L, 18);
+    gG.fillStyle = '#000'; gG.fillRect(L, T, SW, SH);
+    if (sino.length){ var id = gG.createImageData(NG, C.N); for (var a2=0; a2<sino.length; a2++) for (var k2=0; k2<NG; k2++){ var v = Math.round(255*Math.min(1, sino[a2][k2]/7)), o = 4*(a2*NG + k2); id.data[o] = v; id.data[o + 1] = v; id.data[o + 2] = v; id.data[o + 3] = 255; }
+      var tmp = document.createElement('canvas'); tmp.width = NG; tmp.height = C.N; tmp.getContext('2d').putImageData(id, 0, 0); gG.imageSmoothingEnabled = C.N > 30; gG.drawImage(tmp, L, T, SW, SH);
+      var yr = T + (sino.length - 0.5)/C.N*SH; gG.strokeStyle = '#4fe39a'; gG.lineWidth = 1.5; gG.strokeRect(L - 1, yr - SH/C.N/2, SW + 2, Math.max(2, SH/C.N)); }
+    gG.fillStyle = '#9aa6b4'; gG.font = '11px Arial'; gG.textAlign = 'center'; gG.fillText('detector position \u2192', L + SW/2, T + SH + 16); gG.textAlign = 'right'; gG.fillText('0\u00b0', L - 4, T + 10); gG.fillText('180\u00b0', L - 4, T + SH); gG.fillText('angle \u2193', L - 4, T + SH/2);
+    lbl(gG, 'angle ' + (th*180/Math.PI).toFixed(1) + '\u00b0', cx, 14, '#e6ecf2'); }
+  function lbl(g, t, x, y, col){ g.font = 'bold 12px Arial'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 3.5; g.strokeStyle = 'rgba(0,0,0,0.85)'; g.strokeText(t, x, y); g.fillStyle = col; g.fillText(t, x, y); g.textBaseline = 'alphabetic'; }
+  function roiStats(){ if (C.filt === 'none' || ang < C.N) return null; var vals = []; for (var j=0; j<NG; j++) for (var i=0; i<NG; i++){ var x = -FOV/2 + (i + 0.5)*DXC, y = FOV/2 - (j + 0.5)*DXC; if (Math.hypot(x - 4.3, y + 8.0) < 0.75) vals.push(toHU(recon[j*NG + i])); } if (!vals.length) return null; var m = vals.reduce(function(a, b){ return a + b; }, 0)/vals.length, sd = Math.sqrt(vals.reduce(function(a, b){ return a + (b - m)*(b - m); }, 0)/vals.length); return { m:m, sd:sd }; }
+  function textCT(){ var dose = 7*(N0()/2e3/Math.pow(10, 1.5))*1, ro = roiStats();
+    var R = [['angles', ang + ' / ' + C.N], ['dose (approx.)', dose.toPrecision(2) + ' mSv'], ['vs chest X-ray', '\u2248 ' + Math.round(dose/0.02) + '\u00d7'], ['noise in muscle', ro ? '\u00b1' + ro.sd.toFixed(0) + ' HU' : '\u2014']];
+    if (CK){ var k = CK[1]*NG + CK[0]; R.push(['HU at the cursor', (C.filt === 'none' || !ang ? '\u2014' : Math.round(toHU(recon[k]))) + ' (true ' + Math.round(TRUE[k]) + ')']); }
+    el('ctRead').innerHTML = R.map(function(q){ return '<div><div class="xr_rl' + '">' + q[0] + '</div><div class="xr_rv' + '">' + q[1] + '</div></div>'; }).join('');
+    el('ctNv').textContent = C.N + ' angles'; el('ctDv').textContent = (N0()/2e3*1).toPrecision(2) + ' \u00d7'; el('ctWv').textContent = C.W + ' HU'; el('ctLv').textContent = C.L + ' HU'; el('ctSpv').textContent = '\u00d7' + C.sp;
+    var s = !ang ? 'Ready. Each angle measures how much the X-rays are attenuated along every line through the slice.' : ang < Math.min(6, C.N) ? 'With so few angles the picture is a set of smeared streaks: each projection is spread back along the direction it came from.' : ang < C.N ? 'Each new angle adds its back-projection; the streaks cancel and the slice emerges.' : 'Scan complete.';
+    if (ang >= C.N){ if (C.filt === 'none') s += ' Without the filter, simple back-projection gives a blurred image: every point is smeared into a 1/r halo.'; else if (C.N < 32) s += ' Too few angles: streak artifacts remain.'; else if (C.met) s += ' The metal screw blocks almost all X-rays along some lines: those projections are very noisy, causing bright and dark streaks (metal artifacts).'; else s += ' Compare with the true slice. Lower the dose to see the noise grow.'; }
+    el('ctStatus').textContent = s;
+    el('ctExp').innerHTML = '<b>How it works.</b> At each angle the detector measures, for every ray, ln(I<sub>0</sub>/I) = \u222b\u03bc dx along the ray (a projection; a radiograph is just one of them, which is why structures overlap). The sinogram stacks the projections; a single point in the slice traces a sine curve in it. <b>Back-projection</b> spreads each projection back across the image along its rays. Filtering each projection first (multiplying high spatial frequencies, the &ldquo;ramp&rdquo; filter) removes the blur: <b>filtered back-projection</b>, the method used in most scanners since Hounsfield and Cormack (Nobel Prize 1979). Simplified: a parallel-beam scanner with a single X-ray energy; real scanners use a fan or cone beam, a polychromatic spectrum and spiral motion.'; }
+  function redrawCT(){ drawGantry(); drawRecon(); drawTrue(); textCT(); }
+  var pB = el('ctPlay'), PLAYI = pB.innerHTML, PAUSEI = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>';
+  function stopScan(){ scanning = false; pB.innerHTML = PLAYI; pB.setAttribute('aria-pressed', 'false'); pB.setAttribute('aria-label', 'Start the scan'); }
+  var lastSaid = -1;
+  function scanTick(){ var n = Math.max(1, Math.round(C.sp*C.N/180)); for (var i=0; i<n; i++) if (!doAngle()) break; redrawCT();
+    var milestones = [1, 4, 16]; if (milestones.indexOf(ang) >= 0 && ang !== lastSaid){ lastSaid = ang; say(ang === 1 ? 'One projection back-projected: a smear of streaks along the ray direction. A radiograph contains only this much information.' : ang + ' angles: the slice begins to appear.'); }
+    if (ang >= C.N){ stopScan(); var ro = roiStats(); say('Scan complete: ' + C.N + ' angles.' + (ro ? ' Muscle reads ' + Math.round(ro.m) + ' HU with noise of plus or minus ' + Math.round(ro.sd) + ' HU.' : '') + ' Click the image to read Hounsfield units.'); } }
+  pB.addEventListener('click', function(){ if (scanning){ stopScan(); return; } if (ang >= C.N) clearScan(); scanning = true; pB.innerHTML = PAUSEI; pB.setAttribute('aria-pressed', 'true'); pB.setAttribute('aria-label', 'Pause the scan'); });
+  el('ctStep').addEventListener('click', function(){ stopScan(); doAngle(); redrawCT(); say('Angle ' + ang + ' of ' + C.N + '.'); });
+  el('ctRst').addEventListener('click', function(){ clearScan(); CK = null; redrawCT(); say('Scan cleared.'); });
+  el('ctAll').addEventListener('click', function(){ stopScan(); while (doAngle()); redrawCT(); scanTick(); });
+  function newPatient(){ buildCT(); clearScan(); redrawCT(); }
+  [['ctNod', 'nod'], ['ctIod', 'iod'], ['ctMet', 'met']].forEach(function(q){ el(q[0]).addEventListener('change', function(){ C[q[1]] = this.checked; newPatient(); say(q[1] === 'iod' ? (C.iod ? 'Iodine contrast: the blood in the heart and aorta now reads about 280 HU.' : 'No contrast: blood and muscle look almost the same (about 40 HU).') : q[1] === 'met' ? (C.met ? 'A metal screw in the vertebra. Scan to see metal artifacts.' : 'Metal removed.') : (C.nod ? 'A small nodule has been placed in the right lung.' : 'Nodule removed.')); }); });
+  el('ctN').addEventListener('input', function(){ C.N = NAS[+this.value]; clearScan(); redrawCT(); }); el('ctN').addEventListener('change', function(){ say(C.N + ' angles per scan.'); });
+  el('ctD').addEventListener('input', function(){ C.mas = +this.value; clearScan(); redrawCT(); }); el('ctD').addEventListener('change', function(){ say('Dose about ' + (7*N0()/2e3/Math.pow(10, 1.5)).toPrecision(2) + ' millisieverts. Lower dose means more noise.'); });
+  el('ctF').addEventListener('change', function(){ C.filt = this.value; var p = sino.slice(); recon = new Float32Array(NG*NG); for (var a=0; a<p.length; a++) backproject(p[a], a*Math.PI/C.N); redrawCT(); say(C.filt === 'none' ? 'Simple back-projection, without the filter: the same data, but blurred.' : 'Filtered back-projection.'); });
+  el('ctSp').addEventListener('input', function(){ C.sp = +this.value; textCT(); });
+  function setWin(w, l, name){ C.W = w; C.L = l; el('ctW').value = w; el('ctL').value = l; ['ctWl', 'ctWs', 'ctWb'].forEach(function(id){ el(id).setAttribute('aria-pressed', id === name ? 'true' : 'false'); }); redrawCT(); }
+  el('ctWl').addEventListener('click', function(){ setWin(1500, -600, 'ctWl'); say('Lung window: W 1500, L minus 600. The lung details and the nodule are visible; soft tissue is all white.'); });
+  el('ctWs').addEventListener('click', function(){ setWin(400, 40, 'ctWs'); say('Soft-tissue window: W 400, L 40. Muscle, fat and blood are distinguished; lungs are black, bone white.'); });
+  el('ctWb').addEventListener('click', function(){ setWin(1800, 400, 'ctWb'); say('Bone window: W 1800, L 400. Bone structure is visible.'); });
+  el('ctW').addEventListener('input', function(){ C.W = +this.value; setWin(C.W, C.L, ''); }); el('ctL').addEventListener('input', function(){ C.L = +this.value; setWin(C.W, C.L, ''); });
+  el('ctHide').addEventListener('change', function(){ C.hide = this.checked; drawTrue(); });
+  cR.addEventListener('click', function(e){ var r = cR.getBoundingClientRect(), i = Math.floor((e.clientX - r.left)/r.width*NG), j = Math.floor((e.clientY - r.top)/r.height*NG); if (i < 0 || j < 0 || i >= NG || j >= NG) return; CK = [i, j]; redrawCT(); var k = j*NG + i; say(ang && C.filt !== 'none' ? 'Measured ' + Math.round(toHU(recon[k])) + ' Hounsfield units; true value ' + Math.round(TRUE[k]) + '.' : 'True value ' + Math.round(TRUE[k]) + ' Hounsfield units. Scan with filtering to measure it.'); });
+  /* ══════════ loop & tabs ══════════ */
+  var tab = 0, last = 0;
+  function loop(now){ var dt = last ? Math.min(0.05, (now - last)/1000) : 0; last = now; if (tab === 0){ stepTube(dt); drawTube(); } else if (scanning) scanTick(); requestAnimationFrame(loop); }
+  function setTab(i){ tab = i; [0, 1].forEach(function(j){ var t = el('xrT' + j + ''); t.setAttribute('aria-selected', j === i ? 'true' : 'false'); t.tabIndex = j === i ? 0 : -1; el('xrP' + j + '').hidden = j !== i; }); if (i === 1){ if (!TRUE) newPatient(); else redrawCT(); say('CT scan: press play to rotate the tube and detector around the patient.'); } else { stopScan(); say('X-ray radiograph: change the tube voltage, exposure and filter, and click the image.'); } }
+  [0, 1].forEach(function(i){ var t = el('xrT' + i + ''); t.addEventListener('click', function(){ setTab(i); }); t.addEventListener('keydown', function(e){ if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){ setTab(1 - i); el('xrT' + (1 - i) + '').focus(); e.preventDefault(); } }); });
+  xrA11y.onChange(function(){ if (tab === 0){ drawImg(); drawSp(); } else redrawCT(); });
+  el('xrMAS').value = vMas(X.mas); refreshX(true); setTab(0); requestAnimationFrame(loop);
+  return { X:X, C:C, refreshX:refreshX, setTab:setTab, scanAll:function(){ el('ctAll').click(); }, roi:roiStats, ang:function(){ return ang; }, recon:function(){ return recon; }, truth:function(){ return TRUE; }, toHU:toHU, mu:mu };
+};
+var xrSim = new xrGen();
+</script>
+<script>xrA11y.init();</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p><b>X-ray production.</b> In an X-ray tube, electrons from a hot cathode are accelerated through a potential difference `V` and strike a tungsten anode. Decelerated by the nuclei, they emit bremsstrahlung X-rays with a continuous spectrum up to the maximum photon energy `E_(max) = eV`, i.e. a minimum wavelength `lambda_(min) = hc/(eV)`. Electrons with enough energy (over 69.5 keV for tungsten) also knock out inner-shell electrons, producing characteristic lines (`K_alpha` at 59 keV, `K_beta` at 67 keV). A filter removes the low-energy photons, which would only add dose.</p>
+<p><b>Radiography.</b> X-rays passing through a thickness `x` of material are attenuated as `I = I_0 e^(-mu x)`. The attenuation coefficient `mu` is much larger for bone (higher atomic number, through the photoelectric effect) than for soft tissue, and very small for the air-filled lungs, so bone appears white and lungs dark. Lower voltages give more contrast but more dose; fewer photons (lower mAs) give more quantum noise, which can hide small details.</p>
+<p><b>Computed tomography.</b> A radiograph superimposes everything along each ray. A CT scanner measures projections `ln(I_0/I) = int mu\ dx` at many angles around the patient (the sinogram) and reconstructs the attenuation map of a slice by filtered back-projection. Values are expressed in Hounsfield units, `HU = 1000 (mu - mu_(water))/mu_(water)`, from &minus;1000 for air to about +1000 for dense bone, and displayed through a window. A chest CT gives a dose of several millisieverts, hundreds of times a chest radiograph. The simulation uses simplified physics (approximate attenuation data, parallel-beam monochromatic CT); doses are rough estimates.</p>
+</div>
+</div>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+
+</div>
+
+</body>
+</html>

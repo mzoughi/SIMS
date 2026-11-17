@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Nuclear: Radioactive Decay Series</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobnucseries" class="mob_wrap">
+<div class="ds_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="ds_a11ybtn" id="dsBtnHC" onclick="dsA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="ds_a11ybtn" id="dsBtnDM" onclick="dsA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="ds_a11ybtn" id="dsBtnCB" onclick="dsA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="ds_a11ybtn" id="dsBtnNR" onclick="dsA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+
+<div class="ds_title"><h3>Radioactive Decay Series &mdash; From Thorium and Uranium Down to Lead</h3></div>
+<div class="ds_tabs" role="tablist" aria-label="Decay series">
+<button type="button" role="tab" class="ds_tab" id="dsT0" aria-selected="true">Thorium-232 (4n)</button>
+<button type="button" role="tab" class="ds_tab" id="dsT1" aria-selected="false">Uranium-238 (4n + 2)</button>
+<button type="button" role="tab" class="ds_tab" id="dsT2" aria-selected="false">Neptunium-237 (4n + 1)</button>
+<button type="button" role="tab" class="ds_tab" id="dsT3" aria-selected="false">Uranium-235 (4n + 3)</button>
+</div>
+<div class="ds_intro" id="dsIntro"></div>
+<div class="ds_view"><canvas id="dsCv" width="820" height="560" role="img" aria-label="Graph of the neutron number N (up) against the atomic number Z (across), like Figures 12.5.3 to 12.5.5: each nucleus of the series is a dot, alpha decays are red arrows going down and to the left, beta decays are blue arrows going down and to the right, labelled with the half-lives. The present step is highlighted. Click a nucleus to jump to it."></canvas></div>
+<div class="ds_eqbox">
+<div class="ds_eqrow" id="dsEqN"></div>
+<div class="ds_eqtext" id="dsEqT"></div>
+<div class="ds_cons" id="dsCons"></div>
+</div>
+<div id="dsNarBar" class="ds_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="ds_transport" role="toolbar" aria-label="Step through the series">
+<div class="ds_tgroup">
+<button type="button" class="ds_tbtn ds_play" id="dsPlay" aria-label="Play the whole series" title="Play the whole series"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="ds_tbtn" id="dsBack" aria-label="Previous decay" title="Previous decay"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="4" y="4" width="3" height="16" fill="currentColor"/><path d="M20 4 L9 12 L20 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="ds_tbtn" id="dsStep" aria-label="Next decay" title="Next decay"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="17" y="4" width="3" height="16" fill="currentColor"/><path d="M4 4 L15 12 L4 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="ds_tbtn" id="dsRst" aria-label="Back to the start of the series" title="Back to the start"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 5 A7 7 0 1 1 5.6 9" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M3 4 L9.5 4.5 L5.5 10 Z" fill="currentColor"/></svg></button>
+</div>
+<div class="ds_tgroup ds_tsep">
+<button type="button" class="ds_vbtn" id="dsAll" aria-pressed="false">Show the whole series</button>
+<button type="button" class="ds_vbtn" id="dsBr" aria-pressed="false">Show branches</button>
+<button type="button" class="ds_vbtn" id="dsQuiz" aria-pressed="false">Predict first</button>
+</div>
+</div>
+<div class="ds_quiz" id="dsQuizBox" hidden>
+<span id="dsQPrompt">Next decay: what is the daughter?</span>
+<label>A = <input type="number" id="dsQA" class="ds_num" min="0" max="300"></label>
+<label>Z = <input type="number" id="dsQZ" class="ds_num" min="0" max="120"></label>
+<button type="button" class="ds_bbtn" id="dsQGo">Check &amp; decay</button>
+<span id="dsQFb" aria-live="polite"></span>
+</div>
+<div class="ds_panels">
+<div class="ds_panel" role="group" aria-labelledby="dsHdT"><div class="ds_ptitle" id="dsHdT">The series, step by step</div><div class="ds_pbody"><div class="ds_tblwrap" id="dsTbl"></div></div></div>
+<div class="ds_panel" role="group" aria-labelledby="dsHdC"><div class="ds_ptitle" id="dsHdC">Counting the decays</div><div class="ds_pbody" id="dsCount"></div></div>
+</div>
+</div>
+<style>
+:where(#mobnucseries) * { margin:0; box-sizing:border-box; }
+#mobnucseries { width:100%; max-width:860px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; color:#1d232a; }
+#mobnucseries canvas { display:block; width:100%; height:auto; }
+#mobnucseries .ds_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#mobnucseries .ds_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#mobnucseries .ds_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobnucseries .ds_title { padding:4px; background-color:#f90; text-align:center; }
+#mobnucseries .ds_title h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+#mobnucseries .ds_tabs { display:flex; gap:4px; padding:6px 8px 0; background:#14213a; flex-wrap:wrap; }
+#mobnucseries .ds_tab { flex:1 1 140px; padding:8px 6px; border:1px solid #2b3d60; border-bottom:0; border-radius:6px 6px 0 0; background:#1d2c4a; color:#bcd0f0; font-weight:bold; cursor:pointer; font-size:.88rem; min-height:40px; }
+#mobnucseries .ds_tab[aria-selected="true"] { background:#f3f5f8; color:#14213a; }
+#mobnucseries .ds_intro { padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; font-size:.9rem; line-height:1.5; }
+#mobnucseries .ds_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:6px 12px; padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; }
+#mobnucseries .ds_rl { font-size:.7rem; color:#667; text-transform:uppercase; letter-spacing:.05em; }
+#mobnucseries .ds_rv { font-family:monospace; font-size:.93rem; color:#7a3a00; font-weight:bold; }
+#mobnucseries .ds_view { background:#0b1222; }
+#mobnucseries .ds_status { color:#222; font-size:.84rem; text-align:center; background:#fff6d9; padding:5px 8px; line-height:1.45; min-height:1.6em; }
+#mobnucseries .ds_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+#mobnucseries .ds_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+#mobnucseries .ds_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { #mobnucseries .ds_tsep { padding-left:0; border-left:0; } }
+#mobnucseries .ds_tbtn { width:44px; height:38px; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer; border:1px solid #6d8a3a; border-radius:5px; background:#fff; color:#223; }
+#mobnucseries .ds_tbtn.ds_play { background:#2e7d32; color:#fff; border-color:#1b5e20; }
+#mobnucseries .ds_tbtn.ds_play[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+#mobnucseries .ds_vbtn, #mobnucseries .ds_bbtn { height:38px; padding:0 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; white-space:nowrap; }
+#mobnucseries .ds_vbtn[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobnucseries .ds_bbtn { background:#2e7d32; border-color:#1b5e20; color:#fff; font-weight:bold; }
+#mobnucseries button:disabled { opacity:.4; cursor:not-allowed; }
+#mobnucseries .ds_card { margin:10px 10px 0; background:#0b1222; border:1px solid #2b3d60; border-radius:6px; overflow:hidden; }
+#mobnucseries .ds_ctitle { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:4px 10px; padding:5px 10px; background:#14213a; color:#dbe7ff; font-size:.8rem; font-weight:bold; }
+#mobnucseries .ds_cnote { padding:8px 12px 10px; color:#e3ecfa; font-size:.86rem; line-height:1.5; background:#0d1526; border-top:1px solid #2b3d60; }
+#mobnucseries .ds_cnote b { color:#ffd23f; }
+#mobnucseries .ds_cbar { display:flex; flex-wrap:wrap; gap:4px 14px; padding:6px 10px; background:#0d1526; color:#dbe7ff; font-size:.8rem; }
+#mobnucseries .ds_cbar label { display:flex; align-items:center; gap:5px; cursor:pointer; }
+#mobnucseries .ds_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:10px; padding:10px; }
+#mobnucseries .ds_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+#mobnucseries .ds_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+#mobnucseries .ds_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; font-size:.87rem; line-height:1.45; }
+#mobnucseries .ds_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+#mobnucseries .ds_ctrl.ds_off { opacity:.45; }
+#mobnucseries .ds_chdr { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+#mobnucseries .ds_chdr label { font-size:.82rem; font-weight:bold; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+#mobnucseries .ds_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; flex:0 0 auto; min-width:4.5em; text-align:right; }
+#mobnucseries .ds_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+#mobnucseries select { width:100%; min-height:34px; padding:4px 6px; font-size:.86rem; border:1px solid #8a96a8; border-radius:4px; background:#fff; }
+#mobnucseries .ds_checks { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 8px; }
+#mobnucseries .ds_chk { display:flex; align-items:center; gap:6px; font-size:.82rem; cursor:pointer; }
+#mobnucseries .ds_presets { display:flex; flex-wrap:wrap; gap:5px; }
+#mobnucseries .ds_presets button { padding:5px 9px; font-size:.82rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:4px; background:#fff; color:#223; min-height:34px; }
+#mobnucseries .ds_presets button[aria-current="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobnucseries .ds_note { font-size:.8rem; color:#555; font-style:italic; }
+#mobnucseries .ds_tblwrap { overflow-x:auto; }
+#mobnucseries .ds_tbl { border-collapse:collapse; width:100%; font-size:.82rem; }
+#mobnucseries .ds_tbl th, #mobnucseries .ds_tbl td { padding:4px 6px; border-bottom:1px solid #e3e7ee; text-align:center; }
+#mobnucseries .ds_tbl th { background:#f1f4f8; font-size:.76rem; }
+#mobnucseries .ds_tbl td.ds_l, #mobnucseries .ds_tbl th.ds_l { text-align:left; }
+#mobnucseries .ds_eq { font-family:'Times New Roman', serif; font-size:1rem; background:#f6f8fb; border-left:3px solid #1f5fa8; padding:4px 8px; margin:2px 0; overflow-wrap:anywhere; }
+#mobnucseries b.ds_res { color:#7a3a00; }
+#mobnucseries .ds_num { width:5.5em; height:36px; padding:3px 6px; font-size:.95rem; border:1px solid #888; border-radius:4px; }
+#mobnucseries .ds_ok { color:#1b6e2a; font-weight:bold; } #mobnucseries .ds_no { color:#b42318; font-weight:bold; }
+#mobnucseries button:focus-visible, #mobnucseries input:focus-visible, #mobnucseries select:focus-visible, #mobnucseries canvas:focus-visible, #mobnucseries tr:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (max-width:420px) { #mobnucseries .ds_checks { grid-template-columns:minmax(0,1fr); } }
+@media (pointer:coarse) { #mobnucseries .ds_tbtn, #mobnucseries .ds_vbtn, #mobnucseries .ds_bbtn, #mobnucseries .ds_num { height:44px; } #mobnucseries .ds_presets button { min-height:42px; } #mobnucseries input[type=checkbox] { width:20px; height:20px; } #mobnucseries input[type=range] { height:28px; } }
+#mobnucseries .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobnucseries .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobnucseries .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobnucseries .mob_desc p { margin:0 0 8px 0; }
+#mobnucseries .mob_eq { text-align:center; }
+#mobnucseries.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobnucseries.a11y_dm .ds_card, #mobnucseries.a11y_dm .ds_view, #mobnucseries.a11y_dm [aria-label="Display options"], #mobnucseries.a11y_dm .mob_descbtn, #mobnucseries.a11y_dm .ds_meter { filter:hue-rotate(180deg) invert(1); }
+#mobnucseries.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobnucseries.a11y_hc .ds_card, #mobnucseries.a11y_hc .ds_view, #mobnucseries.a11y_hc [aria-label="Display options"], #mobnucseries.a11y_hc .mob_descbtn, #mobnucseries.a11y_hc .ds_meter { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+
+#mobnucseries .ds_eqbox { background:#fff; padding:10px 12px; border-bottom:1px solid #d5dbe4; }
+#mobnucseries .ds_eqrow { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:6px 10px; font-size:1.55rem; font-family:'Times New Roman', serif; }
+#mobnucseries .ds_nuc { display:inline-flex; align-items:center; }
+#mobnucseries .ds_az { display:inline-flex; flex-direction:column; align-items:flex-end; font-size:.55em; line-height:1.05; margin-right:2px; }
+#mobnucseries .ds_a { color:#1f5fa8; } #mobnucseries .ds_z { color:#b42318; }
+#mobnucseries .ds_lab { display:block; font-family:Arial, sans-serif; font-size:.42em; color:#556; text-align:center; }
+#mobnucseries .ds_term { display:inline-flex; flex-direction:column; align-items:center; }
+#mobnucseries .ds_op { color:#555; }
+#mobnucseries .ds_eqtext { text-align:center; font-size:.92rem; margin-top:6px; line-height:1.45; }
+#mobnucseries .ds_cons { display:flex; flex-wrap:wrap; justify-content:center; gap:4px 18px; margin-top:6px; font-size:.84rem; font-family:monospace; }
+#mobnucseries .ds_cons b.ds_A { color:#1f5fa8; } #mobnucseries .ds_cons b.ds_Z { color:#b42318; }
+#mobnucseries .ds_quiz { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px 12px; padding:8px; background:#fff6d9; font-size:.88rem; }
+#mobnucseries .ds_tbl tr[data-k] { cursor:pointer; }
+#mobnucseries .ds_tbl tr.ds_cur td { background:#fff3c4; font-weight:bold; }
+#mobnucseries .ds_tbl tr.ds_fut td { color:#999; }
+#mobnucseries .ds_ma { color:#c0392b; font-weight:bold; } #mobnucseries .ds_mb { color:#0d7f86; font-weight:bold; }
+</style>
+<script>
+var dsA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return; b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobnucseries'); if (!W) return; W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc);
+var nb = document.getElementById('dsNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none'; var nr = document.getElementById('dsBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('dsBtnHC', states.hc); styleBtn('dsBtnDM', states.dm); styleBtn('dsBtnCB', states.cb); styleBtn('dsBtnNR', states.nr); hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return { init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply(); if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: alpha arrows vermillion, beta arrows blue; protons orange, neutrons sky blue.'); },
+alt:function(){ return states.hc || states.cb; }, isHC:function(){ return states.hc; }, narrate:function(m){ if (!states.nr) return; var nb = document.getElementById('dsNarBar'); if (nb) nb.textContent = m; } };
+})();
+</script>
+
+<!-- ════════ SIMULATION ════════
+Four natural decay series (half-lives as in Figures 12.5.3-12.5.5 where shown, otherwise rounded literature values).
+Alpha: (A, Z) -> (A - 4, Z - 2), on the N-Z graph down 2 and left 2. Beta-minus: (A, Z) -> (A, Z + 1), down 1 and right 1.
+A changes only by 4 (alpha) or 0 (beta), so A mod 4 is the same for the whole series (4n, 4n + 1, 4n + 2, 4n + 3).
+Number of decays: n_alpha = (A_start - A_end)/4, n_beta = Z_end - Z_start + 2 n_alpha.
+No dollar signs or backticks in the code.
+-->
+<script>
+var dsGen = function(){
+  var cv = document.getElementById('dsCv'), g = cv.getContext('2d'), W = cv.width, H = cv.height, TAU = 2*Math.PI;
+  function el(id){ return document.getElementById(id); }
+  var SY = { 80:'Hg', 81:'Tl', 82:'Pb', 83:'Bi', 84:'Po', 85:'At', 86:'Rn', 87:'Fr', 88:'Ra', 89:'Ac', 90:'Th', 91:'Pa', 92:'U', 93:'Np' };
+  var NM = { 80:'mercury', 81:'thallium', 82:'lead', 83:'bismuth', 84:'polonium', 85:'astatine', 86:'radon', 87:'francium', 88:'radium', 89:'actinium', 90:'thorium', 91:'protactinium', 92:'uranium', 93:'neptunium' };
+  /* chain: [A, Z, mode of decay ('a', 'b' or '' = stable), half-life]; branches: [A, Z, mode, half-life, percent, [daughter chain until it rejoins]] */
+  var S = [
+    { name:'Thorium-232', fam:'4n', fig:'Figure 12.5.3', chain:[[232,90,'a','1.39\u00d710\u00b9\u2070 y'],[228,88,'b','5.76 y'],[228,89,'b','6.15 h'],[228,90,'a','1.91 y'],[224,88,'a','3.66 d'],[220,86,'a','55.6 s'],[216,84,'a','0.15 s'],[212,82,'b','10.6 h'],[212,83,'b','60.6 min'],[212,84,'a','0.30\u00d710\u207b\u2076 s'],[208,82,'','stable']],
+      br:[{ from:8, mode:'a', pc:'36%', path:[[208,81,'b','3.05 min']], to:10 }],
+      note:'Thorium-232 has the longest half-life of the series, 1.39\u00d710\u00b9\u2070 years, longer than the age of the Universe; that is why it is still found in nature.' },
+    { name:'Uranium-238', fam:'4n + 2', fig:'Figure 12.5.4', chain:[[238,92,'a','4.46\u00d710\u2079 y'],[234,90,'b','24.1 d'],[234,91,'b','6.66 h'],[234,92,'a','2.48\u00d710\u2075 y'],[230,90,'a','7.54\u00d710\u2074 y'],[226,88,'a','1600 y'],[222,86,'a','3.82 d'],[218,84,'a','3.05 min'],[214,82,'b','26 min'],[214,83,'b','19.9 min'],[214,84,'a','1.64\u00d710\u207b\u2074 s'],[210,82,'b','22.6 y'],[210,83,'b','5.01 d'],[210,84,'a','138 d'],[206,82,'','stable']],
+      br:[{ from:9, mode:'a', pc:'0.02%', path:[[210,81,'b','1.30 min']], to:11 }],
+      note:'Uranium-238 (half-life 4.46\u00d710\u2079 years, about the age of the Earth) produces radium-226 and radon-222 along the way: the radon in houses comes from this series.' },
+    { name:'Neptunium-237', fam:'4n + 1', fig:'Figure 12.5.5', chain:[[237,93,'a','2.14\u00d710\u2076 y'],[233,91,'b','27.0 d'],[233,92,'a','1.59\u00d710\u2075 y'],[229,90,'a','7900 y'],[225,88,'b','14.8 d'],[225,89,'a','10.0 d'],[221,87,'a','4.8 min'],[217,85,'a','0.032 s'],[213,83,'b','45.6 min'],[213,84,'a','4\u00d710\u207b\u2076 s'],[209,82,'b','3.25 h'],[209,83,'','stable']],
+      br:[{ from:8, mode:'a', pc:'2%', path:[[209,81,'b','2.2 min']], to:10 }],
+      note:'Neptunium is a transuranic element (Z = 93 > 92). Its longest-lived member, 2.14\u00d710\u2076 years, is far shorter than the age of the Earth, so this series has died out in nature; it is made in the laboratory. It ends at bismuth-209, not lead.' },
+    { name:'Uranium-235', fam:'4n + 3', fig:'(the actinium series, not shown in the text)', chain:[[235,92,'a','7.04\u00d710\u2078 y'],[231,90,'b','25.5 h'],[231,91,'a','3.28\u00d710\u2074 y'],[227,89,'b','21.8 y'],[227,90,'a','18.7 d'],[223,88,'a','11.4 d'],[219,86,'a','3.96 s'],[215,84,'a','1.78\u00d710\u207b\u00b3 s'],[211,82,'b','36.1 min'],[211,83,'a','2.14 min'],[207,81,'b','4.77 min'],[207,82,'','stable']],
+      br:[{ from:3, mode:'a', pc:'1.4%', path:[[223,87,'b','22 min']], to:5 }, { from:9, mode:'b', pc:'0.3%', path:[[211,84,'a','0.52 s']], to:11 }],
+      note:'Uranium-235, the fissile isotope used in reactors, heads the fourth natural series. Its member bismuth-211 is the nucleus of Example 12.5.2: it decays by \u03b1 to thallium-207 or (rarely) by \u03b2\u207b to polonium-211.' } ];
+  var si = 0, k = 0, showAll = false, showBr = false, quiz = false, timer = null, hit = [];
+  function ser(){ return S[si]; }
+  function sy(z){ return SY[z]; } function nm(z){ return NM[z]; }
+  function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+  function nmA(a, z){ return cap(nm(z)) + '-' + a; }
+  function pal(){ var alt = dsA11y.alt(); return { a:alt ? '#D55E00' : '#e8573f', b:alt ? '#0072B2' : '#17a3ac', dot:'#2a3a5a', cur:'#ffd23f', txt:'#1d232a', dim:'#8a94a3', p:alt ? [213,94,0] : [52,92,200], n:alt ? [86,180,233] : [214,58,58] }; }
+  /* ══════════ graph ══════════ */
+  var Z0 = 80, Z1 = 93, N0 = 122, N1 = 148, L = 62, R = W - 20, T = 20, B = H - 52;
+  function X(z){ return L + (z - Z0 + 0.5)/(Z1 - Z0 + 1)*(R - L); } function Y(n){ return B - (n - N0)/(N1 - N0)*(B - T); }
+  function arrow(x1, y1, x2, y2, col, w, dash){ var dx = x2 - x1, dy = y2 - y1, Ln = Math.hypot(dx, dy), ux = dx/Ln, uy = dy/Ln, s1 = 7, s2 = 9;
+    g.strokeStyle = col; g.fillStyle = col; g.lineWidth = w; g.setLineDash(dash || []); g.beginPath(); g.moveTo(x1 + ux*s1, y1 + uy*s1); g.lineTo(x2 - ux*(s2 + 6), y2 - uy*(s2 + 6)); g.stroke(); g.setLineDash([]);
+    g.beginPath(); g.moveTo(x2 - ux*s2, y2 - uy*s2); g.lineTo(x2 - ux*(s2 + 12) - uy*6, y2 - uy*(s2 + 12) + ux*6); g.lineTo(x2 - ux*(s2 + 12) + uy*6, y2 - uy*(s2 + 12) - ux*6); g.closePath(); g.fill(); }
+  function label(t, x, y, col, size, al, bold){ g.font = (bold === false ? '' : 'bold ') + (size || 12) + 'px Arial'; g.textAlign = al || 'left'; g.textBaseline = 'middle'; g.fillStyle = col; g.fillText(t, x, y); }
+  function nucLabel(a, z, x, y, col){ g.font = 'bold 9px Arial'; var w1 = g.measureText(String(a)).width; g.font = 'bold 13px Arial'; var w2 = g.measureText(sy(z)).width;
+    var x0 = x - w1 - w2; g.fillStyle = col; g.textAlign = 'left'; g.textBaseline = 'middle'; g.font = 'bold 9px Arial'; g.fillText(String(a), x0, y - 5); g.font = 'bold 13px Arial'; g.fillText(sy(z), x0 + w1, y); }
+  function draw(){ var p = pal(), s = ser(), c = s.chain, i, z, n; hit = [];
+    g.fillStyle = '#ffffff'; g.fillRect(0, 0, W, H);
+    g.strokeStyle = '#e3e7ee'; g.lineWidth = 1; for (z = Z0; z <= Z1; z++){ g.beginPath(); g.moveTo(X(z), T); g.lineTo(X(z), B); g.stroke(); } for (n = N0; n <= N1; n += 2){ g.beginPath(); g.moveTo(L, Y(n)); g.lineTo(R, Y(n)); g.stroke(); }
+    g.strokeStyle = '#333'; g.beginPath(); g.moveTo(L, T); g.lineTo(L, B); g.lineTo(R, B); g.stroke();
+    for (z = Z0; z <= Z1; z++){ if (z % 2 === 0) label(String(z), X(z), B + 12, '#333', 11, 'center', false); label(sy(z), X(z), B + 26, '#333', 11, 'center', false); }
+    label('Atomic number Z', (L + R)/2, H - 10, '#333', 12, 'center');
+    for (n = N0; n <= N1; n += 2) label(String(n), L - 6, Y(n), '#333', 11, 'right', false);
+    g.save(); g.translate(16, (T + B)/2); g.rotate(-Math.PI/2); label('Neutron number N = A \u2212 Z', 0, 0, '#333', 12, 'center'); g.restore();
+    /* legend */
+    var lx = L + 14, ly = T + 40; arrow(lx + 110, ly - 8, lx + 60, ly + 14, p.a, 3); label('\u03b1 decay', lx, ly + 2, '#333', 12); arrow(lx + 60, ly + 34, lx + 110, ly + 52, p.b, 3); label('\u03b2\u207b decay', lx, ly + 44, '#333', 12);
+    /* branches */
+    if (showBr) s.br.forEach(function(b){ var f = c[b.from], pts = [[f[0], f[1]]].concat(b.path.map(function(q){ return [q[0], q[1]]; })).concat([[c[b.to][0], c[b.to][1]]]), modes = [b.mode].concat(b.path.map(function(q){ return q[2]; })), hls = [f[3]].concat(b.path.map(function(q){ return q[3]; }));
+      for (var j=0; j<pts.length - 1; j++){ var a1 = pts[j], a2 = pts[j + 1]; arrow(X(a1[1]), Y(a1[0] - a1[1]), X(a2[1]), Y(a2[0] - a2[1]), modes[j] === 'a' ? p.a : p.b, 2, [5, 4]); if (j){ label(hls[j], (X(a1[1]) + X(a2[1]))/2 + 8, (Y(a1[0] - a1[1]) + Y(a2[0] - a2[1]))/2 + 12, '#555', 10, 'left', false); } }
+      b.path.forEach(function(q){ g.fillStyle = '#fff'; g.strokeStyle = '#555'; g.lineWidth = 1.5; g.beginPath(); g.arc(X(q[1]), Y(q[0] - q[1]), 4, 0, TAU); g.fill(); g.stroke(); nucLabel(q[0], q[1], X(q[1]) - 7, Y(q[0] - q[1]), '#555'); hit.push({ x:X(q[1]), y:Y(q[0] - q[1]), br:true }); });
+      label(b.pc, X(f[1]) + (b.mode === 'a' ? -36 : 10), Y(f[0] - f[1]) + (b.mode === 'a' ? 16 : 18), '#555', 10, 'left', false); });
+    /* main chain */
+    for (i=0; i<c.length - 1; i++){ var q = c[i], r = c[i + 1], done = i < k, show = done || showAll, x1 = X(q[1]), y1 = Y(q[0] - q[1]), x2 = X(r[1]), y2 = Y(r[0] - r[1]);
+      if (!show) continue; g.globalAlpha = done ? 1 : 0.25; arrow(x1, y1, x2, y2, q[2] === 'a' ? p.a : p.b, i === k - 1 ? 4.5 : 3);
+      var mx = (x1 + x2)/2, my = (y1 + y2)/2; label(q[3], mx + (q[2] === 'a' ? 6 : -6), my + (q[2] === 'a' ? -12 : 12), '#333', 10.5, q[2] === 'a' ? 'left' : 'right', false); g.globalAlpha = 1; }
+    for (i=0; i<c.length; i++){ var q2 = c[i], x = X(q2[1]), y = Y(q2[0] - q2[1]), vis = i <= k || showAll;
+      if (!vis) continue; g.globalAlpha = i <= k ? 1 : 0.3; g.fillStyle = q2[2] === '' ? '#111' : p.dot; g.beginPath(); g.arc(x, y, i === c.length - 1 ? 6 : 4.5, 0, TAU); g.fill();
+      nucLabel(q2[0], q2[1], x - 8, y - 2 + (i === c.length - 1 ? 14 : 0), '#1d232a'); g.globalAlpha = 1; hit.push({ x:x, y:y, k:i }); }
+    var cur = c[k], cx = X(cur[1]), cy = Y(cur[0] - cur[1]); g.strokeStyle = '#c99a00'; g.lineWidth = 3; g.beginPath(); g.arc(cx, cy, 11, 0, TAU); g.stroke(); g.fillStyle = 'rgba(255,210,63,0.35)'; g.fill();
+    /* small nucleus picture of the present nucleus */
+    nucleusPic(R - 72, B - 80, 44, cur[0], cur[1]);
+    label(nmA(cur[0], cur[1]) + (cur[2] === '' ? ' (stable)' : ''), R - 72, B - 18, '#1d232a', 11, 'center');
+    label('start: ' + nmA(c[0][0], c[0][1]) + ' at (Z, N) = (' + c[0][1] + ', ' + (c[0][0] - c[0][1]) + ')', L + 8, T + 10, '#555', 11, 'left', false); }
+  function nucleusPic(cx, cy, R, A, Z){ var p = pal(), n = 60, br = R/Math.sqrt(n)*1.05, pc = 0;
+    for (var i=0; i<n; i++){ var r = R*Math.sqrt((i + 0.5)/n)*0.8, a = i*2.39996, isP = (pc + 0.5)/(i + 1) <= Z/A && pc < Math.round(n*Z/A); if (isP) pc++; var col = isP ? p.p : p.n;
+      g.fillStyle = 'rgb(' + col.join(',') + ')'; g.beginPath(); g.arc(cx + r*Math.cos(a), cy + r*Math.sin(a), br, 0, TAU); g.fill(); g.strokeStyle = 'rgba(0,0,0,0.25)'; g.lineWidth = 0.6; g.stroke(); }
+    label(Z + ' p, ' + (A - Z) + ' n', cx, cy + R + 10, '#555', 10, 'center', false); }
+  /* ══════════ equation ══════════ */
+  function nucH(A, Z, s, lab){ return '<span class="ds_term' + '"><span class="ds_nuc' + '"><span class="ds_az' + '"><span class="ds_a' + '">' + A + '</span><span class="ds_z' + '">' + Z + '</span></span>' + s + '</span><span class="ds_lab' + '">' + lab + '</span></span>'; }
+  function op(t){ return '<span class="ds_op' + '">' + t + '</span>'; }
+  function eq(){ var c = ser().chain, cur = c[k];
+    if (cur[2] === ''){ el('dsEqN').innerHTML = nucH(cur[0], cur[1], sy(cur[1]), 'stable: the end of the series'); el('dsEqT').innerHTML = '<b>' + nmA(cur[0], cur[1]) + ' is stable.</b> The series ends here, after ' + k + ' decays.'; el('dsCons').innerHTML = ''; return; }
+    var nx = c[k + 1], P = cur, D = nx, h = nucH(P[0], P[1], sy(P[1]), 'parent: ' + nmA(P[0], P[1]).toLowerCase()) + op('\u2192') + nucH(D[0], D[1], sy(D[1]), 'daughter: ' + nmA(D[0], D[1]).toLowerCase()) + op('+'), t, cons;
+    var hide = quiz && !revealed;
+    if (P[2] === 'a'){ h += nucH(4, 2, 'He', '\u03b1 particle'); t = nmA(P[0], P[1]) + ' emits an alpha particle (a helium-4 nucleus) and becomes ' + nmA(D[0], D[1]) + '. Z drops by 2 and A by 4; on the graph the arrow goes 2 down and 2 left.'; cons = [[P[0], D[0] + ' + 4'], [P[1], D[1] + ' + 2']]; }
+    else { h += nucH(0, '\u22121', 'e', '\u03b2\u207b (electron)') + op('+') + '<span class="ds_term' + '"><span>\u03bd\u0305</span><span class="ds_lab' + '">antineutrino</span></span>'; t = 'In ' + nmA(P[0], P[1]) + ' a neutron turns into a proton (n \u2192 p + e\u207b + \u03bd\u0305): it becomes ' + nmA(D[0], D[1]) + '. Z rises by 1 and A stays the same; on the graph the arrow goes 1 down and 1 right.'; cons = [[P[0], D[0] + ' + 0'], [P[1], D[1] + ' + (\u22121)']]; }
+    if (hide){ el('dsEqN').innerHTML = nucH(P[0], P[1], sy(P[1]), 'parent: ' + nmA(P[0], P[1]).toLowerCase()) + op('\u2192') + '<span class="ds_term' + '"><span>?</span><span class="ds_lab' + '">daughter</span></span>' + op('+') + (P[2] === 'a' ? nucH(4, 2, 'He', '\u03b1 particle') : nucH(0, '\u22121', 'e', '\u03b2\u207b')); el('dsEqT').innerHTML = nmA(P[0], P[1]) + ' decays by ' + (P[2] === 'a' ? '\u03b1' : '\u03b2\u207b') + ' emission (half-life ' + P[3] + '). Predict the daughter below.'; el('dsCons').innerHTML = ''; return; }
+    el('dsEqN').innerHTML = h; el('dsEqT').innerHTML = '<b>Step ' + (k + 1) + ' of ' + (c.length - 1) + ':</b> ' + t + ' Half-life of ' + nmA(P[0], P[1]) + ': ' + P[3] + '.';
+    el('dsCons').innerHTML = '<span><b class="ds_A' + '">A</b>: ' + cons[0][0] + ' = ' + cons[0][1] + ' \u2713</span><span><b class="ds_Z' + '">Z</b>: ' + cons[1][0] + ' = ' + cons[1][1] + ' \u2713</span><span>N: ' + (P[0] - P[1]) + ' \u2192 ' + (D[0] - D[1]) + '</span><span>(Z, N): (' + P[1] + ', ' + (P[0] - P[1]) + ') \u2192 (' + D[1] + ', ' + (D[0] - D[1]) + ')</span>'; }
+  var revealed = false;
+  /* ══════════ table and counting ══════════ */
+  function table(){ var c = ser().chain;
+    el('dsTbl').innerHTML = '<table class="ds_tbl' + '"><thead><tr><th scope="col">#</th><th class="ds_l' + '" scope="col">nucleus</th><th scope="col">Z</th><th scope="col">N</th><th scope="col">decay</th><th scope="col">half-life</th></tr></thead><tbody>'
+      + c.map(function(q, i){ return '<tr tabindex="0" data-k="' + i + '" class="' + (i === k ? 'ds_cur' + '' : i > k && !showAll ? 'ds_fut' + '' : '') + '"><td>' + i + '</td><td class="ds_l' + '"><sup>' + q[0] + '</sup>' + sy(q[1]) + ' (' + nm(q[1]) + ')</td><td>' + q[1] + '</td><td>' + (q[0] - q[1]) + '</td><td>' + (q[2] === 'a' ? '<span class="ds_ma' + '">\u03b1</span>' : q[2] === 'b' ? '<span class="ds_mb' + '">\u03b2\u207b</span>' : 'stable') + '</td><td>' + q[3] + '</td></tr>'; }).join('') + '</tbody></table>'
+      + '<p class="ds_note' + '">Click a row (or a dot on the graph) to jump to that nucleus.' + (ser().br.length ? ' Branches (dashed on the graph when shown): ' + ser().br.map(function(b){ var f = c[b.from]; return '<sup>' + f[0] + '</sup>' + sy(f[1]) + ' also decays by ' + (b.mode === 'a' ? '\u03b1' : '\u03b2\u207b') + ' (' + b.pc + ')'; }).join('; ') + '; both routes end at the same nucleus.' : '') + '</p>';
+    [].forEach.call(el('dsTbl').querySelectorAll('tr[data-k]'), function(tr){ function go(){ jump(+tr.getAttribute('data-k')); } tr.addEventListener('click', go); tr.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' '){ go(); e.preventDefault(); } }); }); }
+  function counting(){ var c = ser().chain, a0 = c[0][0], z0 = c[0][1], ae = c[c.length - 1][0], ze = c[c.length - 1][1], na = 0, nb = 0, sa = 0, sb = 0, i;
+    c.forEach(function(q, j){ if (q[2] === 'a'){ na++; if (j < k) sa++; } if (q[2] === 'b'){ nb++; if (j < k) sb++; } });
+    var ca = (a0 - ae)/4, cb = ze - z0 + 2*ca;
+    el('dsCount').innerHTML = '<p>Only \u03b1 decays change A (by 4 each), and \u03b1 lowers Z by 2 while \u03b2\u207b raises it by 1. So the start and the end of the series are enough to count the decays:</p>'
+      + '<div class="ds_eq' + '">n<sub>\u03b1</sub> = (A<sub>start</sub> \u2212 A<sub>end</sub>)/4 = (' + a0 + ' \u2212 ' + ae + ')/4 = <b class="ds_res' + '">' + ca + '</b></div>'
+      + '<div class="ds_eq' + '">Z<sub>end</sub> = Z<sub>start</sub> \u2212 2n<sub>\u03b1</sub> + n<sub>\u03b2</sub> \u21d2 n<sub>\u03b2</sub> = ' + ze + ' \u2212 ' + z0 + ' + 2(' + ca + ') = <b class="ds_res' + '">' + cb + '</b></div>'
+      + '<p>Counted along the chain: ' + na + ' \u03b1 and ' + nb + ' \u03b2\u207b decays \u2713. So far: <b>' + sa + ' \u03b1</b>, <b>' + sb + ' \u03b2\u207b</b>.</p>'
+      + '<p><b>Family ' + ser().fam + ':</b> every mass number in this series leaves the remainder ' + (a0 % 4) + ' when divided by 4 (' + a0 + ' = 4\u00d7' + Math.floor(a0/4) + (a0 % 4 ? ' + ' + (a0 % 4) : '') + '). That is why there are exactly four natural series, which never mix.</p>'
+      + '<p class="ds_note' + '">' + ser().note + '</p>'; }
+  function intro(){ var s = ser(); el('dsIntro').innerHTML = 'Nuclei with Z &gt; 82 are unstable. When a heavy nucleus decays, its daughter can be unstable too and become the parent of the next decay, and so on: a <b>decay series</b>, which ends with a stable nucleus. This is the <b>' + s.name + ' series</b> ' + s.fig + ': ' + (s.chain.length - 1) + ' decays from ' + nmA(s.chain[0][0], s.chain[0][1]) + ' to stable ' + nmA(s.chain[s.chain.length - 1][0], s.chain[s.chain.length - 1][1]) + '. Step through it, or play it all.'; }
+  function all(){ draw(); eq(); table(); counting(); }
+  function say(m){ dsA11y.narrate(m); }
+  function sayStep(){ var c = ser().chain, cur = c[k]; if (cur[2] === '') say(nmA(cur[0], cur[1]) + ' is stable: the end of the ' + ser().name + ' series.'); else say('Now ' + nmA(cur[0], cur[1]) + ', Z ' + cur[1] + ', N ' + (cur[0] - cur[1]) + '. It decays by ' + (cur[2] === 'a' ? 'alpha' : 'beta minus') + ' emission, half-life ' + cur[3] + (quiz ? '. Predict the daughter.' : '.')); }
+  function jump(i){ stop(); k = Math.max(0, Math.min(ser().chain.length - 1, i)); revealed = false; qReset(); all(); sayStep(); }
+  /* ══════════ controls ══════════ */
+  var playBtn = el('dsPlay'), PLAYI = playBtn.innerHTML, PAUSEI = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>';
+  function stop(){ if (timer){ clearTimeout(timer); timer = null; } playBtn.innerHTML = PLAYI; playBtn.setAttribute('aria-pressed', 'false'); playBtn.setAttribute('aria-label', 'Play the whole series'); }
+  function next(){ var c = ser().chain; if (k >= c.length - 1) return false; if (quiz && !revealed){ say('Predict first: type A and Z of the daughter and press Check.'); el('dsQA').focus(); return false; } k++; revealed = false; qReset(); all(); sayStep(); return true; }
+  playBtn.addEventListener('click', function(){ if (timer){ stop(); return; } if (quiz){ quiz = false; qUI(); } if (k >= ser().chain.length - 1) k = 0; playBtn.innerHTML = PAUSEI; playBtn.setAttribute('aria-pressed', 'true'); playBtn.setAttribute('aria-label', 'Pause');
+    (function tick(){ if (!next()){ stop(); return; } if (k >= ser().chain.length - 1){ stop(); return; } timer = setTimeout(tick, 1300); })(); });
+  el('dsStep').addEventListener('click', function(){ stop(); next(); });
+  el('dsBack').addEventListener('click', function(){ jump(k - 1); });
+  el('dsRst').addEventListener('click', function(){ jump(0); });
+  el('dsAll').addEventListener('click', function(){ showAll = !showAll; this.setAttribute('aria-pressed', showAll ? 'true' : 'false'); all(); say(showAll ? 'The whole series is shown faintly; the steps you have gone through are bold.' : 'Only the steps you have gone through are shown.'); });
+  el('dsBr').addEventListener('click', function(){ showBr = !showBr; this.setAttribute('aria-pressed', showBr ? 'true' : 'false'); all(); say(showBr ? 'Branches shown as dashed arrows: some nuclei can decay either by alpha or by beta emission; both routes lead to the same nucleus.' : 'Branches hidden.'); });
+  function qUI(){ el('dsQuiz').setAttribute('aria-pressed', quiz ? 'true' : 'false'); el('dsQuizBox').hidden = !quiz; revealed = false; qReset(); all(); }
+  function qReset(){ el('dsQA').value = ''; el('dsQZ').value = ''; el('dsQFb').innerHTML = ''; }
+  el('dsQuiz').addEventListener('click', function(){ stop(); quiz = !quiz; qUI(); say(quiz ? 'Predict first: before each decay, type the mass number and atomic number of the daughter.' : 'Predictions off.'); });
+  el('dsQGo').addEventListener('click', function(){ var c = ser().chain; if (k >= c.length - 1) return; var D = c[k + 1], a = parseInt(el('dsQA').value, 10), z = parseInt(el('dsQZ').value, 10), ok = a === D[0] && z === D[1];
+    el('dsQFb').innerHTML = (a === D[0] ? '<span class="ds_ok' + '">A \u2713</span>' : '<span class="ds_no' + '">A \u2717 (' + D[0] + ')</span>') + ' ' + (z === D[1] ? '<span class="ds_ok' + '">Z \u2713</span>' : '<span class="ds_no' + '">Z \u2717 (' + D[1] + ')</span>') + ' \u2192 ' + nmA(D[0], D[1]);
+    var fb = el('dsQFb').innerHTML; revealed = true; k++; revealed = false; all(); el('dsQFb').innerHTML = fb; el('dsQA').value = ''; el('dsQZ').value = '';
+    say((ok ? 'Correct! ' : 'Not quite. ') + 'The daughter is ' + nmA(D[0], D[1]) + '. ' + (k < c.length - 1 ? 'Next: ' + nmA(D[0], D[1]) + ' decays by ' + (D[2] === 'a' ? 'alpha' : 'beta') + ' emission.' : 'It is stable: the series is complete.')); });
+  [0, 1, 2, 3].forEach(function(i){ var t = el('dsT' + i + ''); t.addEventListener('click', function(){ setSeries(i); });
+    t.addEventListener('keydown', function(e){ var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!d) return; var n = (i + d + 4) % 4; setSeries(n); el('dsT' + n + '').focus(); e.preventDefault(); }); });
+  function setSeries(i){ stop(); si = i; k = 0; revealed = false; qReset(); [0, 1, 2, 3].forEach(function(j){ var t = el('dsT' + j + ''); t.setAttribute('aria-selected', j === si ? 'true' : 'false'); t.tabIndex = j === si ? 0 : -1; }); intro(); all();
+    say('The ' + ser().name + ' series: ' + (ser().chain.length - 1) + ' decays, ending at ' + nmA(ser().chain[ser().chain.length - 1][0], ser().chain[ser().chain.length - 1][1]) + '. ' + ser().note); }
+  cv.addEventListener('click', function(evt){ var r = cv.getBoundingClientRect(), x = (evt.clientX - r.left)*W/r.width, y = (evt.clientY - r.top)*H/r.height, best = null, bd = 16;
+    hit.forEach(function(h){ if (h.br) return; var d = Math.hypot(h.x - x, h.y - y); if (d < bd){ bd = d; best = h; } }); if (best) jump(best.k); });
+  dsA11y.onChange(function(){ draw(); });
+  setSeries(0);
+  return { jump:jump, setSeries:setSeries, _k:function(){ return k; }, _S:S };
+};
+var dsSim = new dsGen();
+</script>
+<script>dsA11y.init();</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>Nuclei with `Z &gt; 82` are unstable and decay naturally. When a heavy nucleus decays to a lighter one, the daughter nucleus can become the parent of the next decay, and so on. This produces a long chain of decays called a <b>decay series</b>, which ends with a stable nucleus.</p>
+<p>As in Figures 12.5.3 to 12.5.5, the neutron number `N = A - Z` is plotted upward and the atomic number `Z` across. An alpha decay, `\ _Z^A X -&gt; \ _(Z-2)^(A-4) X' + \ _2^4 He`, lowers both `Z` and `N` by 2: a red arrow going down and to the left. A beta decay, `\ _Z^A X -&gt; \ _(Z+1)^A X' + \ _(-1)^0 e + bar nu`, raises `Z` by 1 and lowers `N` by 1: a blue arrow going down and to the right.</p>
+<p>Because only alpha decay changes the mass number, and by exactly 4, the mass numbers of a series all leave the same remainder when divided by 4. There are therefore four series: thorium-232 (`4n`, ending at Pb-208), neptunium-237 (`4n + 1`, ending at Bi-209), uranium-238 (`4n + 2`, ending at Pb-206) and uranium-235 (`4n + 3`, ending at Pb-207). The numbers of decays follow from the two ends: `n_alpha = (A_(start) - A_(end))/4` and `n_beta = Z_(end) - Z_(start) + 2 n_alpha`. Thorium-232 and uranium-238 have half-lives comparable to or longer than the age of the Earth, so their series are still found in nature; neptunium-237 has decayed away and is made in the laboratory. Some nuclei can decay by either alpha or beta emission (branches); both routes lead to the same end. Half-lives are those of the figures, rounded.</p>
+</div>
+</div>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+
+</div>
+
+</body>
+</html>

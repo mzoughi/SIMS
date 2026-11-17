@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Nuclear: Nuclear Fission</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobnucfission" class="mob_wrap">
+<div class="fi_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="fi_a11ybtn" id="fiBtnHC" onclick="fiA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="fi_a11ybtn" id="fiBtnDM" onclick="fiA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="fi_a11ybtn" id="fiBtnCB" onclick="fiA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="fi_a11ybtn" id="fiBtnNR" onclick="fiA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+
+<div class="fi_title"><h3>Nuclear Fission &mdash; Splitting Uranium, Energy and Chain Reactions</h3></div>
+<div class="fi_tabs" role="tablist" aria-label="Topic">
+<button type="button" role="tab" class="fi_tab" id="fiT0" aria-selected="true">1. Splitting a nucleus</button>
+<button type="button" role="tab" class="fi_tab" id="fiT1" aria-selected="false">2. Fragments &amp; binding energy</button>
+<button type="button" role="tab" class="fi_tab" id="fiT2" aria-selected="false">3. Chain reaction &amp; critical mass</button>
+</div>
+<div id="fiNarBar" class="fi_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<!-- ═══ TAB 0 ═══ -->
+<div id="fiP0" role="tabpanel" aria-labelledby="fiT0">
+<div class="fi_intro">In the <b>liquid drop model</b> (Bohr and Wheeler), a neutron striking U-235 makes U-236, which vibrates like a disturbed water droplet. If the vibration is violent enough, the nucleus stretches, pinches and splits into two smaller nuclei, releasing two or three neutrons and a large amount of energy (Figure 12.6.3).</div>
+<div class="fi_view"><canvas id="fiAn" width="820" height="320" role="img" aria-label="Animation like Figure 12.6.3: a neutron strikes a uranium-235 nucleus, which becomes unstable uranium-236, stretches, splits into two fission fragments, and releases neutrons and energy."></canvas></div>
+<div class="fi_eqbox"><div class="fi_eqrow" id="fiEq"></div><div class="fi_eqtext" id="fiEqT"></div></div>
+<div class="fi_transport" role="toolbar" aria-label="Animation">
+<div class="fi_tgroup">
+<button type="button" class="fi_tbtn fi_play" id="fiPlay" aria-label="Play the fission" title="Play the fission"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="fi_tbtn" id="fiRst" aria-label="Back to the start" title="Back to the start"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 5 A7 7 0 1 1 5.6 9" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M3 4 L9.5 4.5 L5.5 10 Z" fill="currentColor"/></svg></button>
+</div>
+<div class="fi_tgroup fi_tsep" role="group" aria-label="Reaction" id="fiRx"></div>
+</div>
+<div class="fi_panels">
+<div class="fi_panel" role="group" aria-labelledby="fiHdQ"><div class="fi_ptitle" id="fiHdQ">Energy released Q (like Example 12.6.1)</div><div class="fi_pbody" id="fiQ"></div></div>
+<div class="fi_panel" role="group" aria-labelledby="fiHdK"><div class="fi_ptitle" id="fiHdK">Energy from a mass of fuel (like Example 12.6.2)</div><div class="fi_pbody">
+<div class="fi_chdr"><label for="fiKg">Mass of U-235</label><span><input type="number" id="fiKg" class="fi_num" value="1.00" min="0" step="any"> kg</span></div>
+<div class="fi_chdr"><label for="fiMeV">Energy per fission</label><span><input type="number" id="fiMeV" class="fi_num" value="200" min="0" step="any"> MeV</span></div>
+<div id="fiKgOut"></div></div></div>
+</div>
+</div>
+
+<!-- ═══ TAB 1 ═══ -->
+<div id="fiP1" role="tabpanel" aria-labelledby="fiT1" hidden>
+<div class="fi_intro">U-235 does not always split the same way: fission is a statistical process. The fragments are usually unequal, one near A &asymp; 95 and the other near A &asymp; 137 (Figure 12.6.2). Click the yield graph to choose a fragment. The energy comes from the <b>binding energy per nucleon</b>: the fragments lie closer to the iron peak, so their nucleons are more tightly bound than those of uranium.</div>
+<div class="fi_card"><div class="fi_ctitle"><span>Percent yield of U-235 fission fragments (like Figure 12.6.2)</span><span id="fiPair" style="font-weight:normal"></span></div>
+<canvas id="fiY" width="820" height="280" role="img" aria-label="Graph of the percent yield, on a logarithmic scale, against the mass number of the fission fragment, with two peaks near A = 95 and A = 137 and a deep valley near A = 118. The chosen pair of fragments is marked. Click to choose a fragment."></canvas></div>
+<div class="fi_card"><div class="fi_ctitle"><span>Where the energy comes from: binding energy per nucleon</span></div>
+<canvas id="fiB" width="820" height="300" role="img" aria-label="Binding energy per nucleon against mass number: uranium-236 near 7.6 MeV, the two fragments higher, near 8.4 to 8.7 MeV. Arrows show the climb, and the energy released is computed."></canvas>
+<div class="fi_cnote" id="fiBx"></div></div>
+</div>
+
+<!-- ═══ TAB 2 ═══ -->
+<div id="fiP2" role="tabpanel" aria-labelledby="fiT2" hidden>
+<div class="fi_intro">Neutrons from one fission can split more U-235 nuclei: a <b>chain reaction</b> (Figure 12.6.4). If the sample is too small, too many neutrons escape through the surface before they cause fission and the chain dies out. The minimum mass for a self-sustaining chain reaction is the <b>critical mass</b>; reaching it is called <b>criticality</b>. U-238, 99.3% of natural uranium, absorbs neutrons without splitting, so natural uranium cannot sustain a chain reaction.</div>
+<div class="fi_read" id="fiCr" aria-live="off"></div>
+<div class="fi_view"><canvas id="fiCh" width="820" height="420" role="img" aria-label="A ball of uranium nuclei: U-235 with orange rings, U-238 with grey rings. A neutron gun on the left. When a neutron hits U-235 it flashes, splits into two fragments and releases new neutrons; U-238 captures neutrons and turns purple (U-239). Neutrons leaving the ball escape."></canvas></div>
+<div id="fiChS" class="fi_status"></div>
+<div class="fi_transport" role="toolbar" aria-label="Chain reaction">
+<div class="fi_tgroup">
+<button type="button" class="fi_tbtn fi_play" id="fiCRun" aria-label="Pause" aria-pressed="true" title="Run / pause"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg></button>
+<button type="button" class="fi_tbtn" id="fiCRst" aria-label="New sample" title="New sample"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 5 A7 7 0 1 1 5.6 9" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M3 4 L9.5 4.5 L5.5 10 Z" fill="currentColor"/></svg></button>
+</div>
+<div class="fi_tgroup fi_tsep"><button type="button" class="fi_bbtn" id="fiFire">Fire a neutron</button><button type="button" class="fi_vbtn" id="fiFire5">Fire 5</button></div>
+<div class="fi_tgroup fi_tsep" role="group" aria-label="Examples"><button type="button" class="fi_vbtn" id="fiExS">Too small</button><button type="button" class="fi_vbtn" id="fiExL">Above critical</button><button type="button" class="fi_vbtn" id="fiExN">Natural uranium</button></div>
+</div>
+<div class="fi_card"><div class="fi_ctitle"><span>Number of free neutrons against time (log scale)</span></div><canvas id="fiChG" width="820" height="150" role="img" aria-label="Graph of the number of free neutrons against time on a logarithmic scale: it dies out below critical and grows exponentially above it."></canvas></div>
+<div class="fi_panels">
+<div class="fi_panel" role="group" aria-labelledby="fiHdC"><div class="fi_ptitle" id="fiHdC">Sample</div><div class="fi_pbody">
+<div class="fi_ctrl"><div class="fi_chdr"><label for="fiR">Size of the sample (radius)</label><span class="fi_val" id="fiRV"></span></div><input type="range" id="fiR" min="30" max="200" step="5" value="160"></div>
+<div class="fi_ctrl"><div class="fi_chdr"><label for="fiF">Concentration of U-235</label><span class="fi_val" id="fiFV"></span></div><input type="range" id="fiF" min="0" max="100" step="0.5" value="100"></div>
+<div class="fi_checks"><label class="fi_chk"><input type="checkbox" id="fiMod"> moderator (slow neutrons)</label><label class="fi_chk"><input type="checkbox" id="fiStray" checked> stray neutrons</label></div>
+</div></div>
+<div class="fi_panel" role="group" aria-labelledby="fiHdW"><div class="fi_ptitle" id="fiHdW">Why size matters</div><div class="fi_pbody" id="fiWhy"></div></div>
+</div>
+</div>
+</div>
+<style>
+:where(#mobnucfission) * { margin:0; box-sizing:border-box; }
+#mobnucfission { width:100%; max-width:860px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; color:#1d232a; }
+#mobnucfission canvas { display:block; width:100%; height:auto; }
+#mobnucfission .fi_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#mobnucfission .fi_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#mobnucfission .fi_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobnucfission .fi_title { padding:4px; background-color:#f90; text-align:center; }
+#mobnucfission .fi_title h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+#mobnucfission .fi_tabs { display:flex; gap:4px; padding:6px 8px 0; background:#14213a; flex-wrap:wrap; }
+#mobnucfission .fi_tab { flex:1 1 140px; padding:8px 6px; border:1px solid #2b3d60; border-bottom:0; border-radius:6px 6px 0 0; background:#1d2c4a; color:#bcd0f0; font-weight:bold; cursor:pointer; font-size:.88rem; min-height:40px; }
+#mobnucfission .fi_tab[aria-selected="true"] { background:#f3f5f8; color:#14213a; }
+#mobnucfission .fi_intro { padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; font-size:.9rem; line-height:1.5; }
+#mobnucfission .fi_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:6px 12px; padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; }
+#mobnucfission .fi_rl { font-size:.7rem; color:#667; text-transform:uppercase; letter-spacing:.05em; }
+#mobnucfission .fi_rv { font-family:monospace; font-size:.93rem; color:#7a3a00; font-weight:bold; }
+#mobnucfission .fi_view { background:#0b1222; }
+#mobnucfission .fi_status { color:#222; font-size:.84rem; text-align:center; background:#fff6d9; padding:5px 8px; line-height:1.45; min-height:1.6em; }
+#mobnucfission .fi_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+#mobnucfission .fi_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+#mobnucfission .fi_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { #mobnucfission .fi_tsep { padding-left:0; border-left:0; } }
+#mobnucfission .fi_tbtn { width:44px; height:38px; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer; border:1px solid #6d8a3a; border-radius:5px; background:#fff; color:#223; }
+#mobnucfission .fi_tbtn.fi_play { background:#2e7d32; color:#fff; border-color:#1b5e20; }
+#mobnucfission .fi_tbtn.fi_play[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+#mobnucfission .fi_vbtn, #mobnucfission .fi_bbtn { height:38px; padding:0 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; white-space:nowrap; }
+#mobnucfission .fi_vbtn[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobnucfission .fi_bbtn { background:#2e7d32; border-color:#1b5e20; color:#fff; font-weight:bold; }
+#mobnucfission button:disabled { opacity:.4; cursor:not-allowed; }
+#mobnucfission .fi_card { margin:10px 10px 0; background:#0b1222; border:1px solid #2b3d60; border-radius:6px; overflow:hidden; }
+#mobnucfission .fi_ctitle { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:4px 10px; padding:5px 10px; background:#14213a; color:#dbe7ff; font-size:.8rem; font-weight:bold; }
+#mobnucfission .fi_cnote { padding:8px 12px 10px; color:#e3ecfa; font-size:.86rem; line-height:1.5; background:#0d1526; border-top:1px solid #2b3d60; }
+#mobnucfission .fi_cnote b { color:#ffd23f; }
+#mobnucfission .fi_cbar { display:flex; flex-wrap:wrap; gap:4px 14px; padding:6px 10px; background:#0d1526; color:#dbe7ff; font-size:.8rem; }
+#mobnucfission .fi_cbar label { display:flex; align-items:center; gap:5px; cursor:pointer; }
+#mobnucfission .fi_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:10px; padding:10px; }
+#mobnucfission .fi_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+#mobnucfission .fi_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+#mobnucfission .fi_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; font-size:.87rem; line-height:1.45; }
+#mobnucfission .fi_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+#mobnucfission .fi_ctrl.fi_off { opacity:.45; }
+#mobnucfission .fi_chdr { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+#mobnucfission .fi_chdr label { font-size:.82rem; font-weight:bold; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+#mobnucfission .fi_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; flex:0 0 auto; min-width:4.5em; text-align:right; }
+#mobnucfission .fi_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+#mobnucfission select { width:100%; min-height:34px; padding:4px 6px; font-size:.86rem; border:1px solid #8a96a8; border-radius:4px; background:#fff; }
+#mobnucfission .fi_checks { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 8px; }
+#mobnucfission .fi_chk { display:flex; align-items:center; gap:6px; font-size:.82rem; cursor:pointer; }
+#mobnucfission .fi_presets { display:flex; flex-wrap:wrap; gap:5px; }
+#mobnucfission .fi_presets button { padding:5px 9px; font-size:.82rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:4px; background:#fff; color:#223; min-height:34px; }
+#mobnucfission .fi_presets button[aria-current="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobnucfission .fi_note { font-size:.8rem; color:#555; font-style:italic; }
+#mobnucfission .fi_tblwrap { overflow-x:auto; }
+#mobnucfission .fi_tbl { border-collapse:collapse; width:100%; font-size:.82rem; }
+#mobnucfission .fi_tbl th, #mobnucfission .fi_tbl td { padding:4px 6px; border-bottom:1px solid #e3e7ee; text-align:center; }
+#mobnucfission .fi_tbl th { background:#f1f4f8; font-size:.76rem; }
+#mobnucfission .fi_tbl td.fi_l, #mobnucfission .fi_tbl th.fi_l { text-align:left; }
+#mobnucfission .fi_eq { font-family:'Times New Roman', serif; font-size:1rem; background:#f6f8fb; border-left:3px solid #1f5fa8; padding:4px 8px; margin:2px 0; overflow-wrap:anywhere; }
+#mobnucfission b.fi_res { color:#7a3a00; }
+#mobnucfission .fi_num { width:5.5em; height:36px; padding:3px 6px; font-size:.95rem; border:1px solid #888; border-radius:4px; }
+#mobnucfission .fi_ok { color:#1b6e2a; font-weight:bold; } #mobnucfission .fi_no { color:#b42318; font-weight:bold; }
+#mobnucfission button:focus-visible, #mobnucfission input:focus-visible, #mobnucfission select:focus-visible, #mobnucfission canvas:focus-visible, #mobnucfission tr:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (max-width:420px) { #mobnucfission .fi_checks { grid-template-columns:minmax(0,1fr); } }
+@media (pointer:coarse) { #mobnucfission .fi_tbtn, #mobnucfission .fi_vbtn, #mobnucfission .fi_bbtn, #mobnucfission .fi_num { height:44px; } #mobnucfission .fi_presets button { min-height:42px; } #mobnucfission input[type=checkbox] { width:20px; height:20px; } #mobnucfission input[type=range] { height:28px; } }
+#mobnucfission .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobnucfission .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobnucfission .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobnucfission .mob_desc p { margin:0 0 8px 0; }
+#mobnucfission .mob_eq { text-align:center; }
+#mobnucfission.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobnucfission.a11y_dm .fi_card, #mobnucfission.a11y_dm .fi_view, #mobnucfission.a11y_dm [aria-label="Display options"], #mobnucfission.a11y_dm .mob_descbtn, #mobnucfission.a11y_dm .fi_meter { filter:hue-rotate(180deg) invert(1); }
+#mobnucfission.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobnucfission.a11y_hc .fi_card, #mobnucfission.a11y_hc .fi_view, #mobnucfission.a11y_hc [aria-label="Display options"], #mobnucfission.a11y_hc .mob_descbtn, #mobnucfission.a11y_hc .fi_meter { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+
+#mobnucfission .fi_eqbox { background:#fff; padding:10px 12px; border-bottom:1px solid #d5dbe4; }
+#mobnucfission .fi_eqrow { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:6px 10px; font-size:1.45rem; font-family:'Times New Roman', serif; }
+#mobnucfission .fi_nuc { display:inline-flex; align-items:center; }
+#mobnucfission .fi_az { display:inline-flex; flex-direction:column; align-items:flex-end; font-size:.55em; line-height:1.05; margin-right:2px; }
+#mobnucfission .fi_a { color:#1f5fa8; } #mobnucfission .fi_z { color:#b42318; }
+#mobnucfission .fi_eqtext { text-align:center; font-size:.9rem; margin-top:6px; line-height:1.45; }
+#mobnucfission .fi_chdr { flex-wrap:wrap; }
+</style>
+<script>
+var fiA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return; b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobnucfission'); if (!W) return; W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc);
+var nb = document.getElementById('fiNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none'; var nr = document.getElementById('fiBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('fiBtnHC', states.hc); styleBtn('fiBtnDM', states.dm); styleBtn('fiBtnCB', states.cb); styleBtn('fiBtnNR', states.nr); hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return { init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply(); if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: U-235 rings orange, neutrons yellow, protons orange, neutrons in nuclei sky blue.'); },
+alt:function(){ return states.hc || states.cb; }, isHC:function(){ return states.hc; }, narrate:function(m){ if (!states.nr) return; var nb = document.getElementById('fiNarBar'); if (nb) nb.textContent = m; } };
+})();
+</script>
+
+<!-- ════════ SIMULATION ════════
+Q = (sum of reactant masses - sum of product masses) c^2, 1 u = 931.5 MeV/c^2 (atomic masses, rounded; Example 12.6.1 uses the text's values).
+Fragment yield: two Gaussian peaks (A ~ 95 and ~ 139, width 6) plus a valley floor, to reproduce Figure 12.6.2 schematically.
+Binding energies: liquid-drop (Weizsacker) formula along the line of stability (an estimate).
+Chain reaction: shared engine below (schematic, 2D); with a moderator, fission per encounter rises and U-238 capture falls.
+No dollar signs or backticks in the code.
+-->
+<script>
+var fiGen = function(){
+  function el(id){ return document.getElementById(id); }
+  var TAU = 2*Math.PI, MN = 1.008665, UMEV = 931.494;
+  function say(m){ fiA11y.narrate(m); }
+  function pal(){ var alt = fiA11y.alt(); return { p:alt ? '#D55E00' : '#3a5fc8', n:alt ? '#56B4E9' : '#d63a3a', u5:alt ? '#E69F00' : '#ffb000', u8:'#8a94a3', u9:alt ? '#CC79A7' : '#b06cff', neu:alt ? '#F0E442' : '#7fffb0', frag:'#ffd23f', bg:'#0b1222', bg2:'#0b1222', shape:'rgba(200,210,225,0.14)' }; }
+  /* ══════════ TAB 0: the fission animation ══════════ */
+  var RX = [
+    { lab:'\u00b9\u2074\u00b9Ba + \u2079\u00b2Kr + 3n', ind:true, P:[235, 92, 'U', 235.043930], F1:[141, 56, 'Ba', 140.914411], F2:[92, 36, 'Kr', 91.926156], nu:3 },
+    { lab:'\u00b9\u2074\u2070Xe + \u2079\u2074Sr + 2n', ind:true, P:[235, 92, 'U', 235.043930], F1:[140, 54, 'Xe', 139.921640], F2:[94, 38, 'Sr', 93.915361], nu:2 },
+    { lab:'\u00b9\u00b3\u00b2Sn + \u00b9\u2070\u00b9Mo + 3n', ind:true, P:[235, 92, 'U', 235.043930], F1:[132, 50, 'Sn', 131.917816], F2:[101, 42, 'Mo', 100.910347], nu:3 },
+    { lab:'Example 12.6.1: \u00b2\u00b3\u2078U spontaneous', ind:false, P:[238, 92, 'U', 238.050784], F1:[140, 54, 'Xe', 139.921610], F2:[95, 38, 'Sr', 94.919388], nu:3 } ];
+  var rx = 0, an = el('fiAn'), ga = an.getContext('2d'), prog = 0, atimer = null;
+  function cluster(g, cx, cy, R, A, Z, sx, sy, seed){ var p = pal(), k = Math.min(A, 110), br = R/Math.sqrt(k)*1.08, pc = 0, pts = [];
+    for (var i=0; i<k; i++){ var r = R*Math.sqrt((i + 0.5)/k)*0.82, a = i*2.39996 + (seed || 0), isP = (pc + 0.5)/(i + 1) <= Z/A && pc < Math.round(k*Z/A); if (isP) pc++; pts.push([cx + r*Math.cos(a)*sx, cy + r*Math.sin(a)*sy, isP, Math.sin(i*1.3)]); }
+    pts.sort(function(a, b){ return a[3] - b[3]; }).forEach(function(q){ var gr = g.createRadialGradient(q[0] - br*0.3, q[1] - br*0.3, br*0.1, q[0], q[1], br); gr.addColorStop(0, '#fff'); gr.addColorStop(0.25, q[2] ? p.p : p.n); gr.addColorStop(1, 'rgba(0,0,0,0.6)'); g.fillStyle = gr; g.beginPath(); g.arc(q[0], q[1], br, 0, TAU); g.fill(); }); }
+  function lbl(g, t, x, y, col, size, al){ g.font = 'bold ' + (size || 13) + 'px Arial'; g.textAlign = al || 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 3.5; g.strokeStyle = 'rgba(0,0,0,0.85)'; g.strokeText(t, x, y); g.fillStyle = col; g.fillText(t, x, y); }
+  function drawAn(){ var W = an.width, H = an.height, r = RX[rx], p = pal(), cx = 330, cy = 160, R = 62, t = prog;
+    ga.fillStyle = '#0b1222'; ga.fillRect(0, 0, W, H);
+    function neutron(x, y){ var gr = ga.createRadialGradient(x - 2, y - 2, 1, x, y, 8); gr.addColorStop(0, '#fff'); gr.addColorStop(0.3, p.n); gr.addColorStop(1, 'rgba(0,0,0,0.6)'); ga.fillStyle = gr; ga.beginPath(); ga.arc(x, y, 8, 0, TAU); ga.fill(); }
+    if (t < 0.25){ var nx = r.ind ? 40 + (t/0.25)*(cx - R - 50) : -50; if (r.ind){ neutron(nx, cy); lbl(ga, 'neutron', nx, cy + 22, '#e6ecf2', 12); } cluster(ga, cx, cy, R, r.P[0], r.P[1], 1, 1, 0); lbl(ga, r.P[0] + r.P[2], cx, cy + R + 20, '#e6ecf2', 14); if (!r.ind) lbl(ga, 'spontaneous fission: no neutron needed (rare)', cx, 24, '#ffd23f', 12); return; }
+    var A = r.P[0] + (r.ind ? 1 : 0);
+    if (t < 0.5){ var w = (t - 0.25)/0.25, sx = 1 + 0.18*Math.sin(w*TAU*2)*(1 - w*0.3) + 0.25*w, sy = 1/Math.sqrt(sx); cluster(ga, cx, cy, R, A, r.P[1], sx, sy, 0); lbl(ga, A + r.P[2] + (r.ind ? ' (unstable): vibrates' : ': vibrates'), cx, cy + R + 22, '#ffd23f', 14); return; }
+    if (t < 0.66){ var w2 = (t - 0.5)/0.16, d = 18 + 30*w2, r1 = R*Math.cbrt(r.F1[0]/A)*1.05, r2 = R*Math.cbrt(r.F2[0]/A)*1.05; cluster(ga, cx + d, cy, r1, r.F1[0], r.F1[1], 1.05, 0.95, 1); cluster(ga, cx - d, cy, r2, r.F2[0], r.F2[1], 1.05, 0.95, 2); lbl(ga, 'stretches and pinches', cx, cy + R + 22, '#ffd23f', 14); return; }
+    var w3 = (t - 0.66)/0.34, k = Math.min(1, w3*1.3), r1b = R*Math.cbrt(r.F1[0]/A), r2b = R*Math.cbrt(r.F2[0]/A);
+    var g2 = ga.createRadialGradient(cx, cy, 5, cx, cy, 120); g2.addColorStop(0, 'rgba(255,230,120,' + (0.9*(1 - w3)) + ')'); g2.addColorStop(1, 'rgba(255,230,120,0)'); ga.fillStyle = g2; ga.beginPath(); ga.arc(cx, cy, 120, 0, TAU); ga.fill();
+    if (w3 < 0.6) lbl(ga, 'Energy', cx, cy, '#5a3a00', 16);
+    var x1 = cx + 60 + k*180, y1 = cy - 30 - k*80, x2 = cx - 40 + k*200, y2 = cy + 30 + k*80; cluster(ga, x1, y1, r1b, r.F1[0], r.F1[1], 1, 1, 1); cluster(ga, x2, y2, r2b, r.F2[0], r.F2[1], 1, 1, 2);
+    lbl(ga, r.F1[0] + r.F1[2] + ' (fission fragment)', x1, y1 + r1b + 16, '#e6ecf2', 13); lbl(ga, r.F2[0] + r.F2[2] + ' (fission fragment)', x2, y2 + r2b + 16, '#e6ecf2', 13);
+    for (var i=0; i<r.nu; i++){ var ang = (-0.35 + 0.35*i - (r.nu === 2 ? -0.17 : 0)), L = 40 + k*330; neutron(cx + Math.cos(ang)*L, cy + Math.sin(ang)*L); }
+    lbl(ga, r.nu + ' neutrons', cx + Math.cos(0.35)*(40 + k*330), cy + 30 + Math.sin(0.35)*(40 + k*330), '#e6ecf2', 12);
+    if (w3 > 0.95) lbl(ga, 'Q = ' + Q(r).toFixed(1) + ' MeV released, mostly as kinetic energy of the fragments', W/2, H - 16, '#ffd23f', 13); }
+  function Q(r){ var mi = r.P[3] + (r.ind ? MN : 0), mf = r.F1[3] + r.F2[3] + r.nu*MN; return (mi - mf)*UMEV; }
+  function nucH(A, Z, s){ return '<span class="fi_nuc' + '"><span class="fi_az' + '"><span class="fi_a' + '">' + A + '</span><span class="fi_z' + '">' + Z + '</span></span>' + s + '</span>'; }
+  function eqUI(){ var r = RX[rx], nu = r.nu;
+    el('fiEq').innerHTML = (r.ind ? nucH(1, 0, 'n') + ' + ' : '') + nucH(r.P[0], r.P[1], r.P[2]) + ' \u2192 ' + nucH(r.F1[0], r.F1[1], r.F1[2]) + ' + ' + nucH(r.F2[0], r.F2[1], r.F2[2]) + ' + ' + nu + ' ' + nucH(1, 0, 'n') + ' + Q';
+    el('fiEqT').innerHTML = '<b>Check:</b> A: ' + (r.P[0] + (r.ind ? 1 : 0)) + ' = ' + r.F1[0] + ' + ' + r.F2[0] + ' + ' + nu + ' \u2713 &nbsp; Z: ' + r.P[1] + ' = ' + r.F1[1] + ' + ' + r.F2[1] + ' \u2713. ' + (r.ind ? 'The same U-235 can split in many different ways.' : 'A rare spontaneous fission of U-238.');
+    var mi = r.P[3] + (r.ind ? MN : 0), mf = r.F1[3] + r.F2[3] + nu*MN, dm = mi - mf;
+    el('fiQ').innerHTML = '<div class="fi_eq' + '">m<sub>before</sub> = ' + (r.ind ? '1.008665 u + ' : '') + r.P[3].toFixed(6) + ' u = ' + mi.toFixed(6) + ' u</div>'
+      + '<div class="fi_eq' + '">m<sub>after</sub> = ' + r.F1[3].toFixed(6) + ' u + ' + r.F2[3].toFixed(6) + ' u + ' + nu + '(1.008665 u) = ' + mf.toFixed(6) + ' u</div>'
+      + '<div class="fi_eq' + '">\u0394m = ' + mi.toFixed(6) + ' u \u2212 ' + mf.toFixed(6) + ' u = <b class="fi_res' + '">' + dm.toFixed(6) + ' u</b></div>'
+      + '<div class="fi_eq' + '">Q = (\u0394m)c\u00b2 = (' + dm.toFixed(6) + ' u)(931.5 MeV/c\u00b2 per u)c\u00b2 = <b class="fi_res' + '">' + (dm*931.5).toFixed(1) + ' MeV</b></div>'
+      + '<p class="fi_note' + '">The products are lighter than the reactants, so fission is exothermic (Q &gt; 0). The energy is carried away as kinetic energy of the fragments and the neutrons. A chemical reaction releases a few eV: this is about 50 million times more.</p>'; }
+  function kg(){ var m = parseFloat(el('fiKg').value), e = parseFloat(el('fiMeV').value); if (!(m > 0 && e > 0)){ el('fiKgOut').innerHTML = '<p class="fi_note' + '">Type positive values.</p>'; return; }
+    var mol = m*1000/235.04, N = mol*6.02e23, E = N*e*1.60e-13;
+    function sc(x){ var ex = Math.floor(Math.log(x)/Math.LN10); return (x/Math.pow(10, ex)).toFixed(2) + '\u00d710<sup>' + ex + '</sup>'; }
+    el('fiKgOut').innerHTML = '<div class="fi_eq' + '">n = (' + (m*1000) + ' g)/(235.04 g/mol) = ' + mol.toFixed(2) + ' mol</div><div class="fi_eq' + '">N = (' + mol.toFixed(2) + ' mol)(6.02\u00d710<sup>23</sup>/mol) = ' + sc(N) + ' nuclei</div>'
+      + '<div class="fi_eq' + '">E = (' + sc(N) + ')(' + e + ' MeV)(1.60\u00d710<sup>\u221213</sup> J/MeV) = <b class="fi_res' + '">' + sc(E) + ' J</b></div>'
+      + '<p class="fi_note' + '">About ' + Math.round(E/5.86e9).toLocaleString() + ' barrels of crude oil, or ' + Math.round(E/1.32e8).toLocaleString() + ' gallons of gasoline (1.00 kg gives about 14 000 barrels).</p>'; }
+  el('fiRx').innerHTML = RX.map(function(r, i){ return '<button type="button" class="fi_vbtn' + '" data-i="' + i + '" aria-pressed="' + (i === rx ? 'true' : 'false') + '">' + r.lab + '</button>'; }).join('');
+  [].forEach.call(el('fiRx').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ rx = +b.getAttribute('data-i'); [].forEach.call(el('fiRx').querySelectorAll('button'), function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); stopA(); prog = 0; eqUI(); drawAn(); say(el('fiEqT').textContent + ' Q = ' + Q(RX[rx]).toFixed(1) + ' MeV.'); }); });
+  var pBtn = el('fiPlay'), PLAYI = pBtn.innerHTML, PAUSEI = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>';
+  function stopA(){ if (atimer){ clearTimeout(atimer); atimer = null; } pBtn.innerHTML = PLAYI; pBtn.setAttribute('aria-pressed', 'false'); }
+  pBtn.addEventListener('click', function(){ if (atimer){ stopA(); return; } if (prog >= 1) prog = 0; pBtn.innerHTML = PAUSEI; pBtn.setAttribute('aria-pressed', 'true'); var stage = -1;
+    (function tick(){ prog = Math.min(1, prog + 0.006); var s = prog < 0.25 ? 0 : prog < 0.5 ? 1 : prog < 0.66 ? 2 : 3; if (s !== stage){ stage = s; say(['A neutron approaches the uranium-235 nucleus.', 'It is absorbed: uranium-236 is unstable and vibrates like a water drop.', 'The nucleus stretches into a peanut shape and pinches in the middle.', 'It splits into two fission fragments and ' + RX[rx].nu + ' neutrons, releasing about ' + Q(RX[rx]).toFixed(0) + ' MeV.'][s]); } drawAn(); if (prog < 1) atimer = setTimeout(tick, 30); else stopA(); })(); });
+  el('fiRst').addEventListener('click', function(){ stopA(); prog = 0; drawAn(); });
+  el('fiKg').addEventListener('input', kg); el('fiMeV').addEventListener('input', kg);
+  /* ══════════ TAB 1: yields and BEN ══════════ */
+  var cY = el('fiY'), gy = cY.getContext('2d'), cB = el('fiB'), gb = cB.getContext('2d'), Asel = 95, NU = 2;
+  function yld(A){ return 6.4*(Math.exp(-Math.pow(A - 95, 2)/(2*5.5*5.5)) + Math.exp(-Math.pow(A - 138.5, 2)/(2*5.5*5.5))) + 0.006 + 0.004*Math.exp(-Math.pow(A - 118, 2)/50); }
+  function Zst(a){ return a/(1.98 + 0.0155*Math.pow(a, 2/3)); }
+  function BEN(a){ var z = Zst(a), n = a - z; return (15.75*a - 17.8*Math.pow(a, 2/3) - 0.711*z*(z - 1)/Math.pow(a, 1/3) - 23.7*(n - z)*(n - z)/a)/a; }
+  function drawY(){ var W = cY.width, H = cY.height, L = 64, R = W - 20, T = 16, B = H - 42, i;
+    function X(a){ return L + (a - 70)/(170 - 70)*(R - L); } function Y(v){ return B - (Math.log(v)/Math.LN10 + 3.3)/(1 + 3.3)*(B - T); }
+    gy.fillStyle = '#ffffff'; gy.fillRect(0, 0, W, H); gy.strokeStyle = '#333'; gy.lineWidth = 1; gy.beginPath(); gy.moveTo(L, T); gy.lineTo(L, B); gy.lineTo(R, B); gy.stroke();
+    gy.fillStyle = '#333'; gy.font = '11px Arial'; gy.textBaseline = 'middle'; [[10, '10'], [1, '1'], [0.1, '0.1'], [0.01, '0.01'], [0.001, '0.001']].forEach(function(q){ gy.textAlign = 'right'; gy.fillText(q[1], L - 6, Y(q[0])); gy.strokeStyle = '#e3e7ee'; gy.beginPath(); gy.moveTo(L, Y(q[0])); gy.lineTo(R, Y(q[0])); gy.stroke(); });
+    for (i=70; i<=170; i += 20){ gy.textAlign = 'center'; gy.fillText(String(i), X(i), B + 12); } gy.font = 'bold 12px Arial'; gy.fillText('Mass number A of fission fragment', (L + R)/2, H - 10);
+    gy.save(); gy.translate(16, (T + B)/2); gy.rotate(-Math.PI/2); gy.fillText('Percent yield %', 0, 0); gy.restore();
+    gy.fillStyle = 'rgba(120,200,190,0.55)'; gy.strokeStyle = '#2a8a80'; gy.lineWidth = 1.5; gy.beginPath(); gy.moveTo(X(72), B); for (i=72; i<=166; i += 0.5) gy.lineTo(X(i), Y(Math.max(0.0006, yld(i)*(i < 76 ? (i - 72)/4 : i > 162 ? (166 - i)/4 : 1)))); gy.lineTo(X(166), B); gy.closePath(); gy.fill(); gy.stroke();
+    gy.fillStyle = '#1d232a'; gy.font = 'bold 12px Arial'; gy.textAlign = 'center'; gy.fillText('A \u2248 95', X(95), T + 4); gy.fillText('A \u2248 137', X(138), T + 4); gy.fillText('A \u2248 118', X(118), Y(0.01) + 18); gy.font = '12px Arial'; gy.fillText('\u00b2\u00b3\u2075U fission fragments', X(118), Y(0.002));
+    var A2 = 236 - NU - Asel; [[Asel, '#d63a3a'], [A2, '#3a5fc8']].forEach(function(q){ if (q[0] < 72 || q[0] > 166) return; gy.strokeStyle = q[1]; gy.lineWidth = 2.5; gy.beginPath(); gy.moveTo(X(q[0]), B); gy.lineTo(X(q[0]), Y(yld(q[0]))); gy.stroke(); gy.fillStyle = q[1]; gy.beginPath(); gy.arc(X(q[0]), Y(yld(q[0])), 5, 0, TAU); gy.fill(); });
+    el('fiPair').textContent = 'chosen: A = ' + Asel + ' and A = ' + A2 + ' (+ ' + NU + ' neutrons), yield about ' + yld(Asel).toPrecision(2) + '% each'; }
+  function drawB(){ var W = cB.width, H = cB.height, L = 60, R = W - 20, T = 16, B = H - 40, i, A2 = 236 - NU - Asel;
+    function X(a){ return L + a/250*(R - L); } function Y(b){ return B - (b - 6.5)/(9 - 6.5)*(B - T); }
+    gb.fillStyle = '#0b1222'; gb.fillRect(0, 0, W, H); gb.strokeStyle = 'rgba(150,170,195,0.2)'; gb.fillStyle = '#9aa6b4'; gb.font = '11px Arial'; gb.textBaseline = 'middle';
+    for (i=0; i<=250; i += 25){ gb.beginPath(); gb.moveTo(X(i), T); gb.lineTo(X(i), B); gb.stroke(); gb.textAlign = 'center'; gb.fillText(String(i), X(i), B + 12); }
+    for (var b=6.5; b<=9.01; b += 0.5){ gb.beginPath(); gb.moveTo(L, Y(b)); gb.lineTo(R, Y(b)); gb.stroke(); gb.textAlign = 'right'; gb.fillText(b.toFixed(1), L - 4, Y(b)); }
+    gb.textAlign = 'center'; gb.fillStyle = '#dbe7ff'; gb.font = 'bold 12px Arial'; gb.fillText('Mass number A', (L + R)/2, H - 8); gb.save(); gb.translate(14, (T + B)/2); gb.rotate(-Math.PI/2); gb.fillText('BEN (MeV per nucleon)', 0, 0); gb.restore();
+    gb.strokeStyle = '#2bb5a8'; gb.lineWidth = 2.2; gb.beginPath(); for (i=20; i<=250; i++){ if (i === 20) gb.moveTo(X(i), Y(BEN(i))); else gb.lineTo(X(i), Y(BEN(i))); } gb.stroke();
+    var bu = BEN(236), b1 = BEN(Asel), b2 = BEN(A2);
+    [[236, bu, '#ffd23f', '\u00b2\u00b3\u2076U'], [Asel, b1, '#ff6a5a', 'A = ' + Asel], [A2, b2, '#7fb2ff', 'A = ' + A2]].forEach(function(q){ gb.fillStyle = q[2]; gb.beginPath(); gb.arc(X(q[0]), Y(q[1]), 6, 0, TAU); gb.fill(); lbl(gb, q[3] + ': ' + q[1].toFixed(2), X(q[0]), Y(q[1]) + (q[0] === 236 ? 18 : -16), q[2], 12); });
+    [[Asel, b1], [A2, b2]].forEach(function(q){ gb.strokeStyle = 'rgba(255,255,255,0.6)'; gb.setLineDash([5, 4]); gb.lineWidth = 1.5; gb.beginPath(); gb.moveTo(X(236), Y(bu)); gb.quadraticCurveTo((X(236) + X(q[0]))/2, Y(bu) - 30, X(q[0]), Y(q[1])); gb.stroke(); gb.setLineDash([]); });
+    gb.fillStyle = '#9aa6b4'; gb.font = '11px Arial'; gb.textAlign = 'left'; gb.fillText('Fe-56 peak', X(56) + 6, Y(BEN(56)) - 12);
+    var E = Asel*b1 + A2*b2 - 236*bu;
+    el('fiBx').innerHTML = 'Binding energies (liquid-drop estimates): uranium-236, ' + bu.toFixed(2) + ' MeV per nucleon \u00d7 236 = ' + (236*bu).toFixed(0) + ' MeV; the fragments, ' + b1.toFixed(2) + ' \u00d7 ' + Asel + ' + ' + b2.toFixed(2) + ' \u00d7 ' + A2 + ' = ' + (Asel*b1 + A2*b2).toFixed(0) + ' MeV. The difference, <b>about ' + E.toFixed(0) + ' MeV</b>, is released (close to the 200 MeV of Example 12.6.2). Each nucleon gains only about ' + (E/236).toFixed(2) + ' MeV of binding, but there are 236 of them. Splitting into two <i>equal</i> halves is rare (A \u2248 117 has a very low yield), even though it would release slightly more energy.'; }
+  cY.addEventListener('click', function(e){ var r = cY.getBoundingClientRect(), x = (e.clientX - r.left)*cY.width/r.width, a = Math.round(70 + (x - 64)/(cY.width - 84)*100); if (a < 74 || a > 162) return; Asel = a; drawY(); drawB(); say('Fragment A = ' + a + ' with its partner A = ' + (236 - NU - a) + ': yield about ' + yld(a).toPrecision(2) + ' percent. ' + el('fiBx').textContent.split('. ')[1] + '.'); });
+  /* ══════════ TAB 2: chain reaction ══════════ */
+  /* ══════════ shared chain-reaction engine (2D, schematic) ══════════
+     Nuclei on a jittered grid inside a disc (radius R px), possibly cut into pieces that move together.
+     U-235: a neutron passing within rI px causes fission with probability pf, releasing 2 or 3 new neutrons (average 2.5).
+     U-238: captures the neutron with probability pc (becomes U-239), otherwise the neutron passes.
+     Neutrons leaving the drawing escape. k = 2.5 x fissions / (fissions + captures + escapes). */
+  function makeChain(cv, opt){
+    var g = cv.getContext('2d'), W = cv.width, H = cv.height, TAU = 2*Math.PI;
+    var S = { sp:opt.sp || 3.0, rI:opt.rI || 5, pf:opt.pf || 0.5, pc:opt.pc || 0.6, cell:12, maxN:opt.maxN || 1500, C:opt.C || [W/2, H/2], s:opt.s || 13 };
+    var pieces = [], nuc = [], neu = [], fx = [], hash = {}, st, hist = [], frame = 0, runaway = false, moving = false, R = 100, mode = 'one', SPR = {};
+    function rs(){ st = { fis:0, cap:0, esc:0, born:0 }; hist = []; frame = 0; runaway = false; fx = []; }
+    rs();
+    function sprites(pal){ var s = Math.ceil(S.s*0.95); function mk(ring, dim, kind){ var c = document.createElement('canvas'); c.width = c.height = s; var x = c.getContext('2d'), r = s/2;
+        var k = 9, br = r*0.32; for (var i=0; i<k; i++){ var rr = r*0.5*Math.sqrt((i + 0.5)/k), a = i*2.4; x.fillStyle = (i % 5 < 2) ? pal.p : pal.n; x.globalAlpha = dim; x.beginPath(); x.arc(r + rr*Math.cos(a), r + rr*Math.sin(a), br, 0, TAU); x.fill(); }
+        x.globalAlpha = 1; x.strokeStyle = ring; x.lineWidth = 1.6; x.beginPath(); x.arc(r, r, r - 1, 0, TAU); x.stroke(); return c; }
+      SPR = { u5:mk(pal.u5, 1), u8:mk(pal.u8, 0.55), u9:mk(pal.u9, 0.55), s:s }; }
+    function build(r, frac, m, D){ R = r; mode = m || 'one'; nuc = []; neu = []; rs(); var sp = S.s, n = Math.ceil(r/sp) + 1;
+      if (mode === 'one') pieces = [{ ox:0, oy:0, tx:0, ty:0 }];
+      else if (mode === 'gun') pieces = [{ ox:-(D || 2.6*r), oy:0, tx:0, ty:0 }, { ox:0, oy:0, tx:0, ty:0 }];
+      else { pieces = []; for (var k=0; k<6; k++){ var a = (k + 0.5)*TAU/6; pieces.push({ ox:Math.cos(a)*(D || 1.6*r), oy:Math.sin(a)*(D || 1.6*r), tx:0, ty:0 }); } }
+      for (var i=-n; i<=n; i++) for (var j=-n; j<=n; j++){ var x = i*sp + (j % 2 ? sp/2 : 0) + (Math.random() - 0.5)*sp*0.35, y = j*sp*0.87 + (Math.random() - 0.5)*sp*0.35; if (x*x + y*y > r*r) continue;
+        var p = 0; if (mode === 'gun') p = x < 0 ? 0 : 1; else if (mode === 'imp'){ var a2 = Math.atan2(y, x); if (a2 < 0) a2 += TAU; p = Math.floor(a2/(TAU/6)) % 6; }
+        nuc.push({ p:p, rx:x, ry:y, t:Math.random() < frac ? 0 : 1, x:0, y:0 }); }
+      rehash(); }
+    function rehash(){ hash = {}; for (var i=0; i<nuc.length; i++){ var n = nuc[i], P = pieces[n.p]; n.x = S.C[0] + P.ox + n.rx; n.y = S.C[1] + P.oy + n.ry; if (n.t > 1) continue; var k = Math.floor(n.x/S.cell) + ',' + Math.floor(n.y/S.cell); (hash[k] = hash[k] || []).push(i); } }
+    function emit(x, y, k){ for (var i=0; i<k; i++){ st.born++; if (neu.length >= S.maxN){ runaway = true; continue; } var a = Math.random()*TAU; neu.push({ x:x, y:y, vx:Math.cos(a)*S.sp, vy:Math.sin(a)*S.sp, last:-1 }); } }
+    function fire(x, y, tx, ty){ var dx = tx - x, dy = ty - y, L = Math.hypot(dx, dy) || 1; neu.push({ x:x, y:y, vx:dx/L*S.sp, vy:dy/L*S.sp, last:-1, src:1 }); }
+    function stray(rate){ if (Math.random() < rate && nuc.length){ var n = nuc[Math.floor(Math.random()*nuc.length)]; if (n.t === 0) emit(n.x, n.y, 1); } }
+    function assemble(){ moving = true; }
+    function step(){ frame++;
+      if (moving){ var any = false; pieces.forEach(function(P){ var dx = P.tx - P.ox, dy = P.ty - P.oy, L = Math.hypot(dx, dy); if (L > 0.5){ var v = Math.min(L, 6); P.ox += dx/L*v; P.oy += dy/L*v; any = true; } else { P.ox = P.tx; P.oy = P.ty; } }); rehash(); if (!any) moving = false; }
+      var keep = [], c = S.cell, r2 = S.rI*S.rI;
+      for (var i=0; i<neu.length; i++){ var q = neu[i]; q.x += q.vx; q.y += q.vy;
+        if (q.x < -10 || q.x > W + 10 || q.y < -10 || q.y > H + 10){ if (!q.src) st.esc++; continue; }
+        var cx = Math.floor(q.x/c), cy = Math.floor(q.y/c), gone = false;
+        for (var a=-1; a<=1 && !gone; a++) for (var b=-1; b<=1 && !gone; b++){ var L = hash[(cx + a) + ',' + (cy + b)]; if (!L) continue;
+          for (var m=0; m<L.length; m++){ var idx = L[m], n = nuc[idx]; if (n.t > 1 || idx === q.last) continue; var dx = n.x - q.x, dy = n.y - q.y; if (dx*dx + dy*dy > r2) continue; q.last = idx;
+            if (n.t === 0){ if (Math.random() < S.pf){ n.t = 2; st.fis++; fx.push({ x:n.x, y:n.y, a:Math.random()*TAU, life:26 }); emit(n.x, n.y, Math.random() < 0.5 ? 2 : 3); gone = true; break; } }
+            else if (Math.random() < S.pc){ n.t = 3; st.cap++; gone = true; break; } } }
+        if (!gone) keep.push(q); }
+      neu = keep; fx = fx.filter(function(f){ return --f.life > 0; });
+      if (frame % 3 === 0){ hist.push(neu.length); if (hist.length > 400) hist.shift(); } }
+    function draw(pal, outline){ g.fillStyle = pal.bg; g.fillRect(0, 0, W, H);
+      if (outline !== false){ g.fillStyle = pal.shape; pieces.forEach(function(P, k){ g.beginPath();
+          if (mode === 'one') g.arc(S.C[0] + P.ox, S.C[1] + P.oy, R + S.s*0.6, 0, TAU);
+          else if (mode === 'gun'){ var x0 = S.C[0] + P.ox, y0 = S.C[1] + P.oy, ang = Math.PI/2; if (k === 0){ g.arc(x0, y0, R + S.s*0.6, ang, TAU - ang); g.closePath(); } else { g.arc(x0, y0, R + S.s*0.6, -ang, ang); g.closePath(); } }
+          else { var x1 = S.C[0] + P.ox, y1 = S.C[1] + P.oy; g.moveTo(x1, y1); g.arc(x1, y1, R + S.s*0.6, k*TAU/6, (k + 1)*TAU/6); g.closePath(); }
+          g.fill(); }); }
+      var s = SPR.s; for (var i=0; i<nuc.length; i++){ var n = nuc[i]; if (n.t === 2) continue; g.drawImage(n.t === 0 ? SPR.u5 : n.t === 1 ? SPR.u8 : SPR.u9, n.x - s/2, n.y - s/2); }
+      fx.forEach(function(f){ var k = 1 - f.life/26, d = 3 + k*14; g.globalAlpha = f.life/26; g.fillStyle = 'rgba(255,230,120,0.6)'; g.beginPath(); g.arc(f.x, f.y, 4 + k*12, 0, TAU); g.fill();
+        g.fillStyle = pal.frag; [1, -1].forEach(function(sg){ g.beginPath(); g.arc(f.x + sg*Math.cos(f.a)*d, f.y + sg*Math.sin(f.a)*d, 3.2, 0, TAU); g.fill(); }); g.globalAlpha = 1; });
+      g.fillStyle = pal.neu; for (var j=0; j<neu.length; j++){ g.beginPath(); g.arc(neu[j].x, neu[j].y, 2.4, 0, TAU); g.fill(); } }
+    function stats(){ var ends = st.fis + st.cap + st.esc; return { fis:st.fis, cap:st.cap, esc:st.esc, born:st.born, alive:neu.length, k:ends > 15 ? 2.5*st.fis/ends : null, runaway:runaway, u5:nuc.filter(function(n){ return n.t === 0; }).length, n5:nuc.filter(function(n){ return n.t === 0 || n.t === 2; }).length, total:nuc.length, hist:hist, moving:moving }; }
+    function drawHist(gc, pal, label){ var w = gc.canvas.width, h = gc.canvas.height, L = 50, Rr = w - 10, T = 10, B = h - 24, i, mx = 1;
+      gc.fillStyle = pal.bg2; gc.fillRect(0, 0, w, h); hist.forEach(function(v){ mx = Math.max(mx, v); }); var lmx = Math.log(Math.max(10, mx*1.3))/Math.LN10;
+      function Y(v){ return B - Math.log(Math.max(1, v))/Math.LN10/lmx*(B - T); }
+      gc.strokeStyle = 'rgba(150,170,195,0.2)'; gc.fillStyle = '#9aa6b4'; gc.font = '10px Arial'; gc.textAlign = 'right'; gc.textBaseline = 'middle';
+      for (var e=0; e<=lmx; e++){ gc.beginPath(); gc.moveTo(L, Y(Math.pow(10, e))); gc.lineTo(Rr, Y(Math.pow(10, e))); gc.stroke(); gc.fillText(String(Math.pow(10, e)), L - 4, Y(Math.pow(10, e))); }
+      gc.textAlign = 'center'; gc.fillText(label || 'time \u2192', (L + Rr)/2, h - 8); gc.save(); gc.translate(12, (T + B)/2); gc.rotate(-Math.PI/2); gc.fillText('neutrons (log)', 0, 0); gc.restore();
+      gc.strokeStyle = pal.neu; gc.lineWidth = 2; gc.beginPath(); hist.forEach(function(v, k){ var x = L + k/400*(Rr - L); if (k) gc.lineTo(x, Y(v)); else gc.moveTo(x, Y(v)); }); gc.stroke();
+      if (runaway){ gc.fillStyle = '#ff6b6b'; gc.font = 'bold 12px Arial'; gc.textAlign = 'right'; gc.fillText('runaway: too many neutrons to draw', Rr - 4, T + 10); } }
+    return { build:build, step:step, draw:draw, fire:fire, stray:stray, assemble:assemble, stats:stats, drawHist:drawHist, sprites:sprites, S:S, R:function(){ return R; }, C:S.C };
+  }
+
+  var cc = el('fiCh'), ch = makeChain(cc, { C:[500, 210], pf:0.12, pc:0.15 }), cg = el('fiChG').getContext('2d'), crun = true, R = 160, F = 1, mod = false;
+  function params(){ ch.S.pf = mod ? 0.5 : 0.12; ch.S.pc = mod ? 0.012 : 0.15; }
+  function rebuild(){ params(); ch.sprites(pal()); ch.build(R, F, 'one'); el('fiRV').textContent = R + ' px'; el('fiFV').textContent = (100*F).toFixed(1) + '%'; why(); }
+  function why(){ var kinf = mod ? 2.5*F*0.5/(F*0.5 + (1 - F)*0.012) : 2.5*F*0.12/(F*0.12 + (1 - F)*0.15);
+    el('fiWhy').innerHTML = '<p>Each fission releases 2 or 3 neutrons (2.5 on average). For the chain to continue, on average at least one of them must cause another fission: the multiplication factor <b>k \u2265 1</b>.</p>'
+      + '<p>In an endless sample, a neutron ends either in fission of U-235 or capture by U-238: here <b>k<sub>\u221e</sub> \u2248 ' + kinf.toFixed(2) + '</b>' + (kinf < 1 ? ', below 1: <b>no chain reaction, whatever the size</b>' + (F < 0.02 ? ' (natural uranium).' : '. Increase the U-235 concentration' + (mod ? '.' : ' or add a moderator.')) : '. In a finite sample some neutrons also <b>escape through the surface</b>, so k is smaller.') + '</p>'
+      + '<p>A small object has a large surface compared to its volume, so a larger fraction of neutrons escape. Doubling the radius doubles the distance a neutron must travel to escape, while the amount of fuel grows faster than the surface. Above the <b>critical size</b> (critical mass) the chain sustains itself.</p>'
+      + '<p class="fi_note' + '">' + (mod ? 'With a moderator, neutrons are slowed down; slow neutrons split U-235 much more readily and are rarely captured by U-238, so uranium enriched to a few percent can sustain a chain reaction (as in a reactor).' : 'Fast neutrons (no moderator) need highly enriched U-235.') + ' Schematic: a 2D model with exaggerated nuclei; sizes and numbers are not to scale.</p>'; }
+  function cstat(){ var s = ch.stats(); el('fiCr').innerHTML = [['free neutrons', s.alive + (s.runaway ? '+' : '')], ['fissions', s.fis], ['captured by U-238', s.cap], ['escaped', s.esc], ['U-235 left', s.u5 + ' of ' + s.n5], ['k (measured)', s.k === null ? '\u2014' : s.k.toFixed(2)]].map(function(q){ return '<div><div class="fi_rl' + '">' + q[0] + '</div><div class="fi_rv' + '">' + q[1] + '</div></div>'; }).join('');
+    var t = s.k === null ? 'Fire a neutron into the sample.' : s.alive === 0 ? (s.fis < 0.1*s.n5 ? 'The chain died out: subcritical. Most neutrons escaped' + (s.cap > s.esc ? ' or were captured by U-238.' : '.') : 'The chain reaction used up most of the U-235.') : s.runaway ? 'Runaway: the number of neutrons grows exponentially (supercritical).' : 'Chain in progress\u2026';
+    el('fiChS').textContent = t; }
+  var lastAlive = 0, lastSay = '';
+  function loop(){ if (tab === 2 && crun){ if (el('fiStray').checked) ch.stray(0.004); ch.step(); ch.step(); ch.step(); ch.draw(pal()); var g = ch.C;
+      var gc = cc.getContext('2d'); gc.fillStyle = '#5b6370'; gc.fillRect(8, g[1] - 12, 34, 24); gc.fillStyle = '#9aa6b4'; gc.font = '11px Arial'; gc.textAlign = 'left'; gc.fillText('neutron gun', 6, g[1] + 26);
+      gc.fillStyle = '#dbe7ff'; gc.font = '12px Arial'; gc.textAlign = 'right'; gc.fillText('orange ring: U-235 \u00b7 grey: U-238 \u00b7 purple: U-239 (captured) \u00b7 green dots: neutrons', cc.width - 8, cc.height - 8);
+      if (ch.stats().hist.length) ch.drawHist(cg, pal(), 'time \u2192'); cstat(); var s = ch.stats(); var msg = el('fiChS').textContent; if (msg !== lastSay && (s.alive === 0 || s.runaway)){ lastSay = msg; say(msg); } }
+    requestAnimationFrame(loop); }
+  var rb = el('fiCRun'); rb.addEventListener('click', function(){ crun = !crun; rb.innerHTML = crun ? PAUSEI : PLAYI; rb.setAttribute('aria-pressed', crun ? 'true' : 'false'); rb.setAttribute('aria-label', crun ? 'Pause' : 'Run'); });
+  el('fiCRst').addEventListener('click', function(){ rebuild(); lastSay = ''; say('New sample: radius ' + R + ' px, ' + (100*F).toFixed(1) + ' percent U-235.'); });
+  function fire(k){ for (var i=0; i<k; i++) ch.fire(30, ch.C[1] + (i - (k - 1)/2)*12, ch.C[0], ch.C[1] + (i - (k - 1)/2)*12); lastSay = ''; }
+  el('fiFire').addEventListener('click', function(){ fire(1); }); el('fiFire5').addEventListener('click', function(){ fire(5); });
+  el('fiR').addEventListener('input', function(){ R = +this.value; rebuild(); }); el('fiF').addEventListener('input', function(){ F = this.value/100; rebuild(); });
+  el('fiMod').addEventListener('change', function(){ mod = this.checked; rebuild(); say(mod ? 'Moderator on: slow neutrons. Few-percent U-235 can now sustain the chain.' : 'Moderator off: fast neutrons. Only highly enriched U-235 sustains the chain.'); });
+  function ex(r, f, m){ R = r; F = f; mod = m; el('fiR').value = r; el('fiF').value = f*100; el('fiMod').checked = m; rebuild(); fire(3); }
+  el('fiExS').addEventListener('click', function(){ ex(70, 1, false); say('A small sphere of pure U-235: most neutrons escape through the surface before causing fission.'); });
+  el('fiExL').addEventListener('click', function(){ ex(180, 1, false); say('A larger sphere of pure U-235, above the critical size: the chain grows.'); });
+  el('fiExN').addEventListener('click', function(){ ex(190, 0.007, false); say('Natural uranium, 0.7 percent U-235: U-238 captures the neutrons; no chain reaction.'); });
+  /* ══════════ tabs ══════════ */
+  var tab = 0;
+  function setTab(i){ tab = i; [0, 1, 2].forEach(function(j){ var t = el('fiT' + j + ''); t.setAttribute('aria-selected', j === i ? 'true' : 'false'); t.tabIndex = j === i ? 0 : -1; el('fiP' + j + '').hidden = j !== i; }); stopA();
+    if (i === 0){ drawAn(); say('A neutron splits uranium-235. Press play.'); } if (i === 1){ drawY(); drawB(); say('Click the yield graph to choose a fragment; the binding-energy graph shows where the energy comes from.'); } if (i === 2) say('Fire a neutron into the uranium. Change the size and the concentration of U-235 to find the critical size.'); }
+  [0, 1, 2].forEach(function(i){ var t = el('fiT' + i + ''); t.addEventListener('click', function(){ setTab(i); }); t.addEventListener('keydown', function(e){ var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!d) return; var n = (i + d + 3) % 3; setTab(n); el('fiT' + n + '').focus(); e.preventDefault(); }); });
+  fiA11y.onChange(function(){ ch.sprites(pal()); drawAn(); drawY(); drawB(); });
+  eqUI(); kg(); drawAn(); drawY(); drawB(); rebuild(); requestAnimationFrame(loop);
+  say('Fission: a neutron splits a uranium nucleus. Three tabs: the splitting itself, the fragments and binding energy, and the chain reaction with critical mass.');
+  return { setTab:setTab, ch:ch, _Q:function(i){ return Q(RX[i]); }, ex:ex };
+};
+var fiSim = new fiGen();
+</script>
+<script>fiA11y.init();</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>The splitting of a nucleus is called <b>fission</b>. A neutron absorbed by `\ ^235 U` forms `\ ^236 U`, which splits into two smaller nuclei and two or three neutrons, for example `\ _0^1 n + \ _92^235 U -&gt; \ _56^141 Ba + \ _36^92 Kr + 3\ _0^1 n + Q`. The products are lighter than the reactants, so the reaction is exothermic: `Q = (Delta m) c^2 ~~ 200` MeV, carried away mostly as kinetic energy of the fragments. The fragments vary from one fission to the next, with peaks near `A ~~ 95` and `A ~~ 137`.</p>
+<p>The energy release can be understood from the binding energy per nucleon: uranium lies below the fragments, which are closer to the iron peak, so the nucleons of the fragments are more tightly bound. In the <b>liquid drop model</b>, the neutron sets the nucleus vibrating; if the vibration is violent enough, it splits.</p>
+<p>The neutrons released can cause further fissions: a <b>chain reaction</b>. If the sample is too small, too many neutrons escape through its surface; the minimum mass for a self-sustaining chain reaction is the <b>critical mass</b>. U-238 absorbs neutrons without splitting, so natural uranium (0.7% U-235) cannot sustain a chain reaction; with a moderator that slows the neutrons, uranium enriched to a few percent can. The chain-reaction model is schematic and two-dimensional: the nuclei are exaggerated and the numbers are not to scale.</p>
+</div>
+</div>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+
+</div>
+
+</body>
+</html>

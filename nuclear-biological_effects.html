@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Nuclear: Biological Effects of Radiation</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobnucbio" class="mob_wrap">
+<div class="rb_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="rb_a11ybtn" id="rbBtnHC" onclick="rbA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="rb_a11ybtn" id="rbBtnDM" onclick="rbA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="rb_a11ybtn" id="rbBtnCB" onclick="rbA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="rb_a11ybtn" id="rbBtnNR" onclick="rbA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+
+<div class="rb_title"><h3>Biological Effects of Nuclear Radiation</h3></div>
+<div class="rb_tabs" role="tablist" aria-label="Topic">
+<button type="button" role="tab" class="rb_tab" id="rbT0" aria-selected="true">1. Damage in cells</button>
+<button type="button" role="tab" class="rb_tab" id="rbT1" aria-selected="false">2. Dose: rad, rem, Sv</button>
+<button type="button" role="tab" class="rb_tab" id="rbT2" aria-selected="false">3. Effects on the body</button>
+<button type="button" role="tab" class="rb_tab" id="rbT3" aria-selected="false">4. Your yearly dose</button>
+</div>
+<div id="rbNarBar" class="rb_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<!-- ═══ TAB 0: CELLS ═══ -->
+<div id="rbP0" role="tabpanel" aria-labelledby="rbT0">
+<div class="rb_intro">Nuclear radiation damages cells by <b>ionizing</b> atoms as it passes through them (Figure 12.8.5). The DNA in each cell can repair most damage, but damage that is close together is much harder to repair. A cell that cannot repair its DNA may become dormant (<b>senescence</b>), commit suicide (<b>programmed cell death</b>), or divide out of control, possibly leading to <b>cancer</b>.</div>
+<div class="rb_read" id="clRead" aria-live="off"></div>
+<div class="rb_view"><canvas id="clCv" width="820" height="420" role="img" aria-label="Two rows of cells like Figure 12.8.5. A track of radiation crosses each row: gamma rays leave sparse ionizations (low ionization density), alpha particles leave dense ionizations (high ionization density). Each ionization is a plus and minus pair; breaks in a cell's DNA are marked, and the cells' fate after repair is shown."></canvas></div>
+<div id="clStatus" class="rb_status"></div>
+<div class="rb_transport" role="toolbar" aria-label="Radiation">
+<div class="rb_tgroup"><button type="button" class="rb_bbtn" id="clFire">Send one particle per row</button><button type="button" class="rb_vbtn" id="clRep">Let the cells repair</button><button type="button" class="rb_vbtn" id="clRst">New cells</button></div>
+</div>
+<div class="rb_panels">
+<div class="rb_panel"><div class="rb_ptitle">Choose the radiation</div><div class="rb_pbody">
+<div class="rb_ctrl"><div class="rb_chdr"><label for="clTop">Top row</label></div><select id="clTop"></select></div>
+<div class="rb_ctrl"><div class="rb_chdr"><label for="clBot">Bottom row</label></div><select id="clBot"></select></div>
+<p class="rb_note">Both tracks deposit the same energy along the row; only how closely the ionizations are packed differs.</p>
+</div></div>
+<div class="rb_panel"><div class="rb_ptitle">Why closely packed damage is worse</div><div class="rb_pbody" id="clWhy"></div></div>
+</div>
+</div>
+
+<!-- ═══ TAB 1: DOSE UNITS ═══ -->
+<div id="rbP1" role="tabpanel" aria-labelledby="rbT1" hidden>
+<div class="rb_intro">The <b>absorbed dose</b> is the energy deposited per kilogram: 1 rad = 0.01 J/kg (the SI unit is the gray, 1 Gy = 1 J/kg = 100 rad). To account for how damaging each kind of radiation is, the dose is multiplied by the <b>relative biological effectiveness</b> (RBE), giving the dose in <b>rem</b>; in SI units, the <b>sievert</b>, 1 Sv = 100 rem.</div>
+<div class="rb_panels">
+<div class="rb_panel"><div class="rb_ptitle">Calculator (like the text&rsquo;s 50.0-kg example)</div><div class="rb_pbody">
+<div class="rb_chdr"><label for="dsE">Energy absorbed</label><span><input type="number" id="dsE" class="rb_num" value="1.00" min="0" step="any"> J</span></div>
+<div class="rb_chdr"><label for="dsM">Mass of tissue</label><span><input type="number" id="dsM" class="rb_num" value="50.0" min="0" step="any"> kg</span></div>
+<div class="rb_ctrl"><div class="rb_chdr"><label for="dsR">Type of radiation (Table 12.8.2)</label></div><select id="dsR"></select></div>
+<div class="rb_ctrl" id="dsRC"><div class="rb_chdr"><label for="dsRBE">RBE in the range given</label><span class="rb_val" id="dsRBEv"></span></div><input type="range" id="dsRBE" min="0" max="1" step="0.01" value="1"></div>
+<div id="dsOut"></div>
+</div></div>
+<div class="rb_panel"><div class="rb_ptitle">Table 12.8.2: Relative biological effectiveness</div><div class="rb_pbody" id="dsTbl"></div></div>
+</div>
+<div class="rb_card"><div class="rb_ctitle"><span>Same energy, different harm: rem for 2.00 rad of each radiation</span></div><canvas id="dsBar" width="820" height="260" role="img" aria-label="Bar chart: the dose in rem produced by 2.00 rad of each type of radiation, from 2 rem for X-rays and gamma rays up to 40 rem for alpha particles."></canvas></div>
+<div class="rb_panels">
+<div class="rb_panel"><div class="rb_ptitle">Converting units</div><div class="rb_pbody" id="dsConv"></div></div>
+</div>
+</div>
+
+<!-- ═══ TAB 2: EFFECTS ═══ -->
+<div id="rbP2" role="tabpanel" aria-labelledby="rbT2" hidden>
+<div class="rb_intro">The immediate effects of a <b>single whole-body dose</b> (adults; Table 12.8.3). Move the dose: rapidly dividing cells are hurt first (blood cells, then the lining of the gut and hair follicles), so the first sign is a change in blood count. Below 100 mSv is a <b>low dose</b>, 0.1 to 1 Sv <b>moderate</b>, above 1 Sv <b>high</b>.</div>
+<div class="rb_read" id="efRead" aria-live="off"></div>
+<div class="rb_view"><canvas id="efCv" width="820" height="400" role="img" aria-label="Left: a person; the organs affected at the chosen dose are highlighted. Right: a logarithmic dose scale from 0.01 millisieverts to 50 sieverts with everyday and medical doses and the effect bands of Table 12.8.3, and a marker at the chosen dose."></canvas></div>
+<div class="rb_transport"><div class="rb_tgroup" style="flex:1 1 400px"><label for="efD" style="font-weight:bold;font-size:.86rem;white-space:nowrap">Whole-body dose</label><input type="range" id="efD" min="0" max="1000" step="1" value="400" style="flex:1 1 220px"><span class="rb_val" id="efDv"></span></div></div>
+<div class="rb_panels">
+<div class="rb_panel"><div class="rb_ptitle">What happens at this dose</div><div class="rb_pbody" id="efTxt"></div></div>
+<div class="rb_panel"><div class="rb_ptitle">Table 12.8.3: Immediate effects (click a row)</div><div class="rb_pbody" id="efTbl"></div></div>
+</div>
+<div class="rb_panels" style="padding-top:0"><div class="rb_panel"><div class="rb_ptitle">Example 12.8.1: What mass of Cs-137 escaped Chernobyl?</div><div class="rb_pbody">
+<div class="rb_chdr"><label for="chA">Initial activity</label><span><input type="number" id="chA" class="rb_num" value="6.0" min="0" step="any"> MCi</span></div>
+<div class="rb_chdr"><label for="chT">Half-life of Cs-137</label><span><input type="number" id="chT" class="rb_num" value="30.2" min="0" step="any"> y</span></div>
+<div id="chOut"></div></div></div></div>
+</div>
+
+<!-- ═══ TAB 3: YEARLY DOSE ═══ -->
+<div id="rbP3" role="tabpanel" aria-labelledby="rbT3" hidden>
+<div class="rb_intro">Everyone is exposed to <b>background radiation</b>: cosmic rays, radioactive isotopes in soil and buildings, radon gas, and K-40, C-14 and Ra-226 inside our own bodies. Medical exams add to it. Build a year of exposure (Tables 12.8.4 and 12.8.5).</div>
+<div class="rb_read" id="yrRead" aria-live="off"></div>
+<div class="rb_row">
+<div class="rb_card"><div class="rb_ctitle"><span>Your dose this year</span></div><canvas id="yrPie" width="420" height="340" role="img" aria-label="Pie chart of your yearly dose by source, with the total in the centre."></canvas></div>
+<div class="rb_card"><div class="rb_ctitle"><span>Compared with Table 12.8.4</span></div><canvas id="yrBar" width="420" height="340" role="img" aria-label="Stacked bars of the average yearly dose by source in Australia, Germany, the US and the world, and your total."></canvas></div>
+</div>
+<div class="rb_panels">
+<div class="rb_panel"><div class="rb_ptitle">Natural background</div><div class="rb_pbody">
+<div class="rb_ctrl"><div class="rb_chdr"><label for="yrC">Country (Table 12.8.4)</label></div><select id="yrC"><option value="0">Australia</option><option value="1">Germany</option><option value="2" selected>US</option><option value="3">World</option></select></div>
+<div class="rb_ctrl"><div class="rb_chdr"><label for="yrAlt">Altitude where you live</label><span class="rb_val" id="yrAltv"></span></div><input type="range" id="yrAlt" min="0" max="4000" step="50" value="300"></div>
+<div class="rb_ctrl"><div class="rb_chdr"><label for="yrRn">Radon in your home (&times; average)</label><span class="rb_val" id="yrRnv"></span></div><input type="range" id="yrRn" min="0.1" max="10" step="0.1" value="1"></div>
+<div class="rb_ctrl"><div class="rb_chdr"><label for="yrFl">Hours flying this year</label><span class="rb_val" id="yrFlv"></span></div><input type="range" id="yrFl" min="0" max="800" step="5" value="10"></div>
+</div></div>
+<div class="rb_panel"><div class="rb_ptitle">Medical exams this year (Table 12.8.5 and nuclear medicine)</div><div class="rb_pbody" id="yrMed"></div></div>
+</div>
+</div>
+</div>
+<style>
+:where(#mobnucbio) * { margin:0; box-sizing:border-box; }
+#mobnucbio { width:100%; max-width:860px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; color:#1d232a; }
+#mobnucbio canvas { display:block; width:100%; height:auto; }
+#mobnucbio [hidden] { display:none !important; }
+#mobnucbio .rb_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#mobnucbio .rb_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#mobnucbio .rb_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobnucbio .rb_title { padding:4px; background-color:#f90; text-align:center; }
+#mobnucbio .rb_title h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+#mobnucbio .rb_tabs { display:flex; gap:4px; padding:6px 8px 0; background:#14213a; flex-wrap:wrap; }
+#mobnucbio .rb_tab { flex:1 1 130px; padding:8px 6px; border:1px solid #2b3d60; border-bottom:0; border-radius:6px 6px 0 0; background:#1d2c4a; color:#bcd0f0; font-weight:bold; cursor:pointer; font-size:.88rem; min-height:40px; }
+#mobnucbio .rb_tab[aria-selected="true"] { background:#f3f5f8; color:#14213a; }
+#mobnucbio .rb_intro { padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; font-size:.9rem; line-height:1.5; }
+#mobnucbio .rb_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:6px 12px; padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; }
+#mobnucbio .rb_rl { font-size:.7rem; color:#667; text-transform:uppercase; letter-spacing:.05em; }
+#mobnucbio .rb_rv { font-family:monospace; font-size:.9rem; color:#7a3a00; font-weight:bold; }
+#mobnucbio .rb_view { background:#0b1222; }
+#mobnucbio .rb_status { color:#222; font-size:.86rem; text-align:center; background:#fff6d9; padding:5px 8px; line-height:1.45; min-height:1.6em; }
+#mobnucbio .rb_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+#mobnucbio .rb_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+#mobnucbio .rb_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { #mobnucbio .rb_tsep { padding-left:0; border-left:0; } }
+#mobnucbio .rb_tbtn { width:44px; height:38px; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer; border:1px solid #6d8a3a; border-radius:5px; background:#fff; color:#223; }
+#mobnucbio .rb_tbtn.rb_play { background:#2e7d32; color:#fff; border-color:#1b5e20; }
+#mobnucbio .rb_tbtn.rb_play[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+#mobnucbio .rb_vbtn { min-height:38px; padding:4px 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; }
+#mobnucbio .rb_card { margin:10px 10px 0; background:#0b1222; border:1px solid #2b3d60; border-radius:6px; overflow:hidden; }
+#mobnucbio .rb_ctitle { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:4px 10px; padding:5px 10px; background:#14213a; color:#dbe7ff; font-size:.8rem; font-weight:bold; }
+#mobnucbio .rb_row { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:10px; padding:10px 10px 0; }
+#mobnucbio .rb_row .rb_card { margin:0; }
+#mobnucbio .rb_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(270px, 1fr)); gap:10px; padding:10px; }
+#mobnucbio .rb_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+#mobnucbio .rb_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+#mobnucbio .rb_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; font-size:.87rem; line-height:1.45; }
+#mobnucbio .rb_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+#mobnucbio .rb_chdr { display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; }
+#mobnucbio .rb_chdr label { font-size:.82rem; font-weight:bold; color:#333; min-width:0; }
+#mobnucbio .rb_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; min-width:4.5em; text-align:right; }
+#mobnucbio .rb_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+#mobnucbio select { width:100%; min-height:34px; padding:4px 6px; font-size:.86rem; border:1px solid #8a96a8; border-radius:4px; background:#fff; }
+#mobnucbio .rb_checks { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 8px; }
+#mobnucbio .rb_chk { display:flex; align-items:center; gap:6px; font-size:.84rem; cursor:pointer; }
+#mobnucbio .rb_note { font-size:.8rem; color:#555; font-style:italic; }
+#mobnucbio .rb_eq { font-family:'Times New Roman', serif; font-size:1rem; background:#f6f8fb; border-left:3px solid #1f5fa8; padding:4px 8px; margin:2px 0; overflow-wrap:anywhere; }
+#mobnucbio button:focus-visible, #mobnucbio input:focus-visible, #mobnucbio select:focus-visible, #mobnucbio canvas:focus-visible, #mobnucbio tr:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (max-width:420px) { #mobnucbio .rb_checks { grid-template-columns:minmax(0,1fr); } }
+@media (pointer:coarse) { #mobnucbio .rb_tbtn, #mobnucbio .rb_vbtn { min-height:44px; } #mobnucbio input[type=checkbox] { width:20px; height:20px; } #mobnucbio input[type=range] { height:28px; } }
+#mobnucbio .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobnucbio .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobnucbio .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobnucbio .mob_desc p { margin:0 0 8px 0; }
+#mobnucbio.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobnucbio.a11y_dm .rb_card, #mobnucbio.a11y_dm .rb_view, #mobnucbio.a11y_dm [aria-label="Display options"], #mobnucbio.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobnucbio.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobnucbio.a11y_hc .rb_card, #mobnucbio.a11y_hc .rb_view, #mobnucbio.a11y_hc [aria-label="Display options"], #mobnucbio.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+
+#mobnucbio .rb_row { align-items:start; }
+#mobnucbio .rb_bbtn { min-height:38px; padding:4px 12px; font-size:.85rem; cursor:pointer; border:1px solid #1b5e20; border-radius:5px; background:#2e7d32; color:#fff; font-weight:bold; }
+#mobnucbio .rb_num { width:6.5em; height:34px; padding:3px 6px; font-size:.95rem; border:1px solid #888; border-radius:4px; }
+#mobnucbio .rb_tbl { border-collapse:collapse; width:100%; font-size:.84rem; }
+#mobnucbio .rb_tbl th, #mobnucbio .rb_tbl td { padding:4px 6px; border-bottom:1px solid #e3e7ee; text-align:left; vertical-align:top; }
+#mobnucbio .rb_tbl th { background:#1f5fa8; color:#fff; font-size:.78rem; }
+#mobnucbio .rb_tbl tr[data-i] { cursor:pointer; }
+#mobnucbio .rb_tbl tr.rb_cur td { background:#fff3c4; font-weight:bold; }
+#mobnucbio .rb_med { display:grid; grid-template-columns:1fr auto auto; gap:4px 8px; align-items:center; font-size:.85rem; }
+#mobnucbio .rb_med button { width:30px; height:30px; font-weight:bold; border:1px solid #6d8a3a; background:#fff; border-radius:4px; cursor:pointer; }
+#mobnucbio .rb_med output { font-family:monospace; min-width:2.5em; text-align:center; display:inline-block; }
+#mobnucbio .rb_res { color:#7a3a00; }
+@media (pointer:coarse) { #mobnucbio .rb_med button { width:40px; height:40px; } #mobnucbio .rb_bbtn, #mobnucbio .rb_num { min-height:44px; } }
+</style>
+<script>
+var rbA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return; b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobnucbio'); if (!W) return; W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc);
+var nb = document.getElementById('rbNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none'; var nr = document.getElementById('rbBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('rbBtnHC', states.hc); styleBtn('rbBtnDM', states.dm); styleBtn('rbBtnCB', states.cb); styleBtn('rbBtnNR', states.nr); hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return { init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply(); if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours are used in the charts; the dose bands are also labelled in words.'); },
+alt:function(){ return states.hc || states.cb; }, narrate:function(m){ if (!states.nr) return; var nb = document.getElementById('rbNarBar'); if (nb) nb.textContent = m; } };
+})();
+</script>
+
+<!-- ════════ SIMULATION ════════
+Cells: tracks deposit the same energy; ionizations per cell ~ track density (gamma ~1.5, beta ~3, neutron ~8, alpha ~16, illustrative).
+DNA damage: each ionization near the nucleus makes a lesion; lesions closer than 1 unit in the same nucleus form a cluster (hard to repair).
+Repair: isolated lesions repaired with p = 0.97; a cluster repaired with p = 0.3; unrepaired cells: senescence 45%, death 45%, mutation 10%.
+Dose: rad = 0.01 J/kg, rem = rad x RBE, Sv = 100 rem, Gy = 100 rad. RBE values from Table 12.8.2.
+Background: Table 12.8.4; cosmic dose doubles about every 1500 m of altitude; flying ~0.005 mSv per hour. Medical doses Table 12.8.5,
+plus typical CT chest 7, nuclear medicine 1-5 (text). No dollar signs or backticks in the code.
+-->
+<script>
+var rbGen = function(){
+  function el(id){ return document.getElementById(id); }
+  function say(m){ rbA11y.narrate(m); }
+  var TAU = 2*Math.PI;
+  function lbl(g, t, x, y, col, size, al){ g.font = 'bold ' + (size || 12) + 'px Arial'; g.textAlign = al || 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 3.5; g.strokeStyle = 'rgba(0,0,0,0.85)'; g.strokeText(t, x, y); g.fillStyle = col; g.fillText(t, x, y); g.textBaseline = 'alphabetic'; }
+  function fD(sv){ if (sv >= 1) return +sv.toPrecision(3) + ' Sv'; if (sv >= 1e-3) return +(sv*1000).toPrecision(3) + ' mSv'; return +(sv*1e6).toPrecision(3) + ' \u00b5Sv'; }
+  /* ══════════ TAB 0: cells ══════════ */
+  var RAD = [['\u03b3 rays', 1.5, '#b06cff', 1], ['X-rays', 1.5, '#7fb2ff', 1], ['\u03b2 rays (fast electrons)', 3, '#4fc3ff', 1], ['neutrons, fast', 8, '#9aa6b4', 10], ['protons (1\u201310 MeV)', 9, '#ff9a3d', 10], ['\u03b1 rays from decay', 16, '#ff5a4a', 20]];
+  var cC = el('clCv'), gC = cC.getContext('2d'), NC = 8, rows = [], fired = false, repaired = false, stats = { ion:[0, 0], les:[0, 0], cl:[0, 0], fate:[[0, 0, 0, 0], [0, 0, 0, 0]] };
+  function newCells(){ rows = [0, 1].map(function(r){ var cells = []; for (var i=0; i<NC; i++){ var cx = 70 + i*96, cy = 120 + r*190; cells.push({ cx:cx, cy:cy, nx:cx + (Math.random() - 0.5)*14, ny:cy + (Math.random() - 0.5)*10, ion:[], les:[], fate:'' , rot:Math.random()*TAU }); } return { cells:cells, type:+el(r ? 'clBot' : 'clTop').value, y:0 }; }); fired = false; repaired = false; tally(); draw0(); }
+  function fire(){ newCellsKeep(); rows.forEach(function(R){ var t = RAD[R.type], y0 = R.cells[0].cy + (Math.random() - 0.5)*12;
+      R.y = y0; R.cells.forEach(function(c){ var n = 6 + Math.round((Math.random()*2 - 1)*2), spread = 90/t[1]; for (var k=0; k<n; k++){ var x = c.cx - 40 + Math.random()*80, y = y0 + (Math.random() - 0.5)*Math.min(90, spread*1.4); if (t[1] < 6 && Math.random() < 0.6) y = c.cy + (Math.random() - 0.5)*90; c.ion.push([x, y]);
+          var dx = x - c.nx, dy = y - c.ny; if (dx*dx/(26*26) + dy*dy/(20*20) <= 1 && Math.random() < 0.55) c.les.push([x, y]); } }); });
+    fired = true; repaired = false; tally(); draw0(); say(el('clStatus').textContent); }
+  function newCellsKeep(){ rows.forEach(function(R, r){ R.type = +el(r ? 'clBot' : 'clTop').value; R.cells.forEach(function(c){ c.ion = []; c.les = []; c.fate = ''; }); }); }
+  function clustered(c){ for (var i=0; i<c.les.length; i++) for (var j=i + 1; j<c.les.length; j++) if (Math.hypot(c.les[i][0] - c.les[j][0], c.les[i][1] - c.les[j][1]) < 9) return true; return false; }
+  function repair(){ if (!fired) return; rows.forEach(function(R){ R.cells.forEach(function(c){ if (!c.les.length){ c.fate = 'ok'; return; } var cl = clustered(c), ok = cl ? Math.random() < 0.3 : Math.pow(0.97, c.les.length) > Math.random();
+      if (ok) c.fate = 'rep'; else { var u = Math.random(); c.fate = u < 0.45 ? 'sen' : u < 0.9 ? 'die' : 'mut'; } }); }); repaired = true; tally(); draw0(); say(el('clStatus').textContent); }
+  function tally(){ var s = { ion:[0, 0], les:[0, 0], cl:[0, 0], bad:[0, 0] }; rows.forEach(function(R, r){ R.cells.forEach(function(c){ s.ion[r] += c.ion.length; s.les[r] += c.les.length; if (clustered(c)) s.cl[r]++; if (c.fate && c.fate !== 'ok' && c.fate !== 'rep') s.bad[r]++; }); });
+    el('clRead').innerHTML = [0, 1].map(function(r){ var t = RAD[rows[r].type]; return '<div><div class="rb_rl' + '">' + (r ? 'bottom' : 'top') + ' row: ' + t[0] + '</div><div class="rb_rv' + '">' + s.ion[r] + ' ionizations, ' + s.les[r] + ' DNA breaks, ' + s.cl[r] + ' clustered' + (repaired ? ', ' + s.bad[r] + ' cells not repaired' : '') + '</div></div>'; }).join('');
+    el('clStatus').textContent = !fired ? 'Send a particle through each row of cells.' : !repaired ? 'Both rows receive about the same number of ionizations (same energy). The ' + RAD[rows[1].type][0] + ' (bottom) packs them along one narrow track, while sparsely ionizing radiation spreads them through the cells (mostly through the electrons it knocks out): ' + s.cl[1] + ' cells with clustered DNA breaks, against ' + s.cl[0] + ' on top. Now let the cells repair.' : 'After repair: ' + s.bad[0] + ' damaged cells on top, ' + s.bad[1] + ' at the bottom. Isolated breaks are almost always repaired; clustered breaks often are not.';
+    var t0 = RAD[rows[0].type], t1 = RAD[rows[1].type];
+    el('clWhy').innerHTML = '<p>The cell\u2019s repair system fixes single breaks in one strand of DNA easily, using the other strand as a template. When several ionizations hit the same stretch of DNA, both strands can break close together and the template is lost.</p><p>A track that ionizes densely (\u03b1 particles, protons, the recoil nuclei produced by neutrons) is therefore more harmful per joule than one that ionizes sparsely (\u03b3 rays, X-rays, fast electrons). That is what the <b>RBE</b> measures: here ' + t1[0] + ' has RBE \u2248 ' + t1[3] + ', ' + t0[0] + ' RBE \u2248 ' + t0[3] + '.</p><p class="rb_note' + '">Each row receives the same energy; ionization counts and repair odds are illustrative.</p>'; }
+  function draw0(){ var W = cC.width, H = cC.height, g = gC;
+    g.fillStyle = '#f7f9fc'; g.fillRect(0, 0, W, H);
+    rows.forEach(function(R, r){ var t = RAD[R.type];
+      g.fillStyle = '#333'; g.font = 'bold 13px Arial'; g.textAlign = 'left'; g.fillText((t[1] > 6 ? 'High' : 'Low') + ' ionization density: ' + t[0], 14, R.cells[0].cy - 66);
+      R.cells.forEach(function(c){ var f = c.fate;
+        g.fillStyle = f === 'die' ? '#e0d6cf' : f === 'sen' ? '#e9e2c8' : f === 'mut' ? '#f6c9c4' : '#f6dcc0'; g.strokeStyle = f === 'mut' ? '#c62828' : '#b68b5d'; g.lineWidth = 2; g.beginPath(); g.ellipse(c.cx, c.cy, 44, 52, 0, 0, TAU); g.fill(); g.stroke();
+        if (f === 'die'){ g.setLineDash([4, 3]); g.stroke(); g.setLineDash([]); }
+        g.fillStyle = '#d07a3a'; for (var m=0; m<3; m++){ var a = c.rot + m*2.1; g.beginPath(); g.ellipse(c.cx + 28*Math.cos(a), c.cy + 32*Math.sin(a), 7, 3.5, a, 0, TAU); g.fill(); }
+        g.fillStyle = '#c4b8e8'; g.strokeStyle = '#6a5aa8'; g.lineWidth = 1.5; g.beginPath(); g.ellipse(c.nx, c.ny, 26, 20, 0, 0, TAU); g.fill(); g.stroke();
+        g.strokeStyle = '#3a3a8a'; g.lineWidth = 1.3; for (var s=0; s<2; s++){ g.beginPath(); for (var k=0; k<=30; k++){ var x = c.nx - 20 + k*40/30, y = c.ny + 6*Math.sin(k*0.6 + s*Math.PI + c.rot); if (k) g.lineTo(x, y); else g.moveTo(x, y); } g.stroke(); }
+        c.les.forEach(function(L){ var fixed = f === 'rep' || f === 'ok'; g.fillStyle = fixed ? '#2e9b4f' : '#111'; g.save(); g.translate(L[0], L[1]); for (var q=0; q<8; q++){ g.rotate(Math.PI/4); g.fillRect(0, -1, fixed ? 4 : 7, 2); } g.restore(); });
+        if (f){ var tx = { ok:'unharmed', rep:'repaired', sen:'senescence', die:'cell death', mut:'mutation \u2192 cancer?' }[f]; lbl(g, tx, c.cx, c.cy + 64, f === 'mut' ? '#ff6b6b' : f === 'die' || f === 'sen' ? '#e0b040' : '#4fe39a', 10); }
+        c.ion.forEach(function(p){ g.font = 'bold 10px Arial'; g.fillStyle = '#b42318'; g.textAlign = 'center'; g.fillText('+', p[0] - 3, p[1] - 5); g.fillStyle = '#1f5fa8'; g.fillText('\u2212', p[0] + 3, p[1] + 9); }); });
+      if (fired){ g.strokeStyle = t[2]; g.lineWidth = t[1] > 6 ? 3 : 2; g.beginPath(); g.moveTo(10, R.y); g.lineTo(W - 22, R.y); g.stroke(); g.fillStyle = t[2]; g.beginPath(); g.moveTo(W - 10, R.y); g.lineTo(W - 24, R.y - 7); g.lineTo(W - 24, R.y + 7); g.closePath(); g.fill(); lbl(g, t[0].split(' ')[0], W - 14, R.y - 16, t[2], 13, 'right'); } });
+    g.fillStyle = '#555'; g.font = '11px Arial'; g.textAlign = 'left'; g.fillText('+ \u2212 : ionization  \u00b7  \u2731 : DNA break (black: unrepaired, green: repaired)  \u00b7  purple: nucleus with DNA', 14, H - 8); }
+  el('clTop').innerHTML = RAD.map(function(r, i){ return '<option value="' + i + '"' + (i === 0 ? ' selected' : '') + '>' + r[0] + '</option>'; }).join('');
+  el('clBot').innerHTML = RAD.map(function(r, i){ return '<option value="' + i + '"' + (i === 5 ? ' selected' : '') + '>' + r[0] + '</option>'; }).join('');
+  el('clFire').addEventListener('click', fire); el('clRep').addEventListener('click', repair); el('clRst').addEventListener('click', function(){ newCells(); say('A fresh row of cells.'); });
+  ['clTop', 'clBot'].forEach(function(id){ el(id).addEventListener('change', function(){ newCells(); }); });
+  /* ══════════ TAB 1: dose units ══════════ */
+  var RBE = [['X-rays', 1, 1], ['\u03b3 rays', 1, 1], ['\u03b2 rays greater than 32 keV', 1, 1], ['\u03b2 rays less than 32 keV', 1.7, 1.7], ['neutrons, thermal to slow (< 20 keV)', 2, 5], ['neutrons, fast (1\u201310 MeV), body', 10, 10], ['neutrons, fast (1\u201310 MeV), eyes', 32, 32], ['protons (1\u201310 MeV), body', 10, 10], ['protons (1\u201310 MeV), eyes', 32, 32], ['\u03b1 rays from radioactive decay', 10, 20], ['heavy ions from accelerators', 10, 20]];
+  var ds = { r:9, f:1 };
+  function rbe(){ var q = RBE[ds.r]; return q[1] + (q[2] - q[1])*ds.f; }
+  function dsCalc(){ var E = parseFloat(el('dsE').value), m = parseFloat(el('dsM').value), q = RBE[ds.r], R = rbe();
+    el('dsRC').hidden = q[1] === q[2]; el('dsRBEv').textContent = R.toFixed(1);
+    if (!(E >= 0 && m > 0)){ el('dsOut').innerHTML = '<p class="rb_note' + '">Type a positive energy and mass.</p>'; return; }
+    var Jkg = E/m, rad = Jkg/0.01, rem = rad*R, sv = rem/100;
+    var band = sv < 0.1 ? 'a low dose' : sv <= 1 ? 'a moderate dose' : 'a high dose';
+    el('dsOut').innerHTML = '<div class="rb_eq' + '">dose = E/m = (' + E + ' J)/(' + m + ' kg) = ' + +Jkg.toPrecision(3) + ' J/kg = <b class="rb_res' + '">' + +rad.toPrecision(3) + ' rad</b> (' + +(Jkg).toPrecision(3) + ' Gy)</div>'
+      + '<div class="rb_eq' + '">dose in rem = rad \u00d7 RBE = (' + +rad.toPrecision(3) + ')(' + +R.toPrecision(3) + ') = <b class="rb_res' + '">' + +rem.toPrecision(3) + ' rem</b> = ' + fD(sv) + '</div>'
+      + '<p>That is <b>' + band + '</b> (low &lt; 100 mSv \u2264 moderate \u2264 1 Sv &lt; high). ' + (q[1] > 1 ? 'The same energy as X-rays would have given only ' + fD(sv/R) + '.' : '') + '</p>';
+    dsBar(); }
+  el('dsR').innerHTML = RBE.map(function(q, i){ return '<option value="' + i + '"' + (i === ds.r ? ' selected' : '') + '>' + q[0] + ' \u2014 RBE ' + (q[1] === q[2] ? q[1] : q[1] + '\u2013' + q[2]) + '</option>'; }).join('');
+  el('dsTbl').innerHTML = '<table class="rb_tbl' + '"><thead><tr><th>Type and energy of radiation</th><th>RBE</th></tr></thead><tbody>' + [['X-rays', '1'], ['\u03b3 rays', '1'], ['\u03b2 rays > 32 keV', '1'], ['\u03b2 rays < 32 keV', '1.7'], ['Neutrons, thermal to slow (< 20 keV)', '2\u20135'], ['Neutrons, fast (1\u201310 MeV)', '10 (body), 32 (eyes)'], ['Protons (1\u201310 MeV)', '10 (body), 32 (eyes)'], ['\u03b1 rays from radioactive decay', '10\u201320'], ['Heavy ions from accelerators', '10\u201320']].map(function(r){ return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>'; }).join('') + '</tbody></table><p class="rb_note' + '">Values approximate, difficult to determine. Neutrons are neutral and penetrating like \u03b3 rays, but cause more damage through the charged particles (recoil protons) they knock out: secondary radiation.</p>';
+  var cB = el('dsBar'), gB = cB.getContext('2d');
+  function dsBar(){ var W = cB.width, H = cB.height, L = 210, R = W - 50, T = 14, B = H - 26, items = [['X-rays', 1], ['\u03b3 rays', 1], ['\u03b2 > 32 keV', 1], ['\u03b2 < 32 keV', 1.7], ['slow neutrons', 3.5], ['fast neutrons / protons', 10], ['\u03b1 rays', 20]], bh = (B - T)/items.length;
+    gB.fillStyle = '#0b1222'; gB.fillRect(0, 0, W, H); function X(v){ return L + v/42*(R - L); }
+    gB.strokeStyle = 'rgba(150,170,195,0.2)'; gB.fillStyle = '#9aa6b4'; gB.font = '10px Arial'; for (var v=0; v<=40; v += 10){ gB.beginPath(); gB.moveTo(X(v), T); gB.lineTo(X(v), B); gB.stroke(); gB.textAlign = 'center'; gB.fillText(v + ' rem', X(v), B + 13); }
+    items.forEach(function(it, k){ var y = T + k*bh + bh/2, rem = 2*it[1]; gB.fillStyle = it[1] >= 10 ? '#ff6b5a' : it[1] > 1 ? '#ffb000' : '#4fc3ff'; gB.fillRect(L, y - bh*0.32, X(rem) - L, bh*0.64); gB.fillStyle = '#dbe7ff'; gB.font = '12px Arial'; gB.textAlign = 'right'; gB.fillText(it[0] + ' (RBE ' + it[1] + ')', L - 6, y + 4); gB.textAlign = 'left'; gB.fillText(+rem.toPrecision(3) + ' rem', X(rem) + 4, y + 4); });
+    lbl(gB, 'each bar: 2.00 rad deposited', R, T + 6, '#ffd23f', 11, 'right'); }
+  el('dsConv').innerHTML = '<table class="rb_tbl' + '"><thead><tr><th>quantity</th><th>older unit</th><th>SI unit</th><th>relation</th></tr></thead><tbody><tr><td>activity</td><td>curie (Ci)</td><td>becquerel (Bq)</td><td>1 Ci = 3.7\u00d710<sup>10</sup> Bq</td></tr><tr><td>absorbed dose</td><td>rad</td><td>gray (Gy)</td><td>1 rad = 0.01 J/kg; 1 Gy = 100 rad</td></tr><tr><td>effective (biological) dose</td><td>rem = rad \u00d7 RBE</td><td>sievert (Sv)</td><td>1 Sv = 100 rem</td></tr></tbody></table><p class="rb_note' + '">The activity tells how many decays per second a source produces (like the power of a light bulb, Exercise 12.8.1); the dose tells how much of that energy a kilogram of tissue absorbs and how harmful it is.</p>';
+  el('dsE').addEventListener('input', dsCalc); el('dsM').addEventListener('input', dsCalc);
+  el('dsR').addEventListener('change', function(){ ds.r = +this.value; ds.f = 1; el('dsRBE').value = 1; dsCalc(); say(RBE[ds.r][0] + ': RBE ' + rbe().toFixed(1) + '. ' + el('dsOut').textContent.split('rem')[1].split('=')[0]); });
+  el('dsRBE').addEventListener('input', function(){ ds.f = +this.value; dsCalc(); });
+  /* ══════════ TAB 2: effects ══════════ */
+  var EFF = [[0, 0.1, 'No observable effect.'], [0.1, 1, 'Slight to moderate decrease in white blood cell counts.'], [0.5, 0.5, 'Temporary sterility; 0.35 Sv for women, 0.50 Sv for men.'], [1, 2, 'Significant reduction in blood cell counts, brief nausea and vomiting. Rarely fatal.'], [2, 5, 'Nausea, vomiting, hair loss, severe blood damage, hemorrhage, fatalities.'], [4.5, 4.5, 'Lethal to 50% of the population within 32 days after exposure if not treated.'], [5, 20, 'Worst effects due to malfunction of small intestine and blood systems. Limited survival.'], [20, 1e9, 'Fatal within hours due to collapse of central nervous system.']];
+  var MARK = [[1e-5, 'dental X-ray'], [2e-5, 'chest X-ray'], [4e-5, 'flight across the US'], [4e-4, 'mammogram'], [3.5e-3, 'US yearly background (Table 12.8.4)'], [1e-2, 'CT abdomen'], [5e-2, 'radiation-worker yearly limit'], [1, 'Chernobyl patients: 1\u201316 Sv'], [4.5, 'LD50: half die without treatment']];
+  var ef = { d:0.01 }, cE = el('efCv'), gE = cE.getContext('2d');
+  function dFrom(v){ return Math.pow(10, -5 + 6.7*v/1000); } function vD(d){ return (Math.log(d)/Math.LN10 + 5)/6.7*1000; }
+  function band(d){ return d < 0.1 ? ['low dose', '#2e9b4f'] : d <= 1 ? ['moderate dose', '#e0a020'] : ['high dose', '#c62828']; }
+  function drawE(){ var W = cE.width, H = cE.height, g = gE, d = ef.d, i;
+    g.fillStyle = '#0b1222'; g.fillRect(0, 0, W, H);
+    /* person */ var px = 150, py = 40, hot = function(on, col){ return on ? col : 'rgba(200,210,225,0.18)'; };
+    g.fillStyle = '#2a3348'; g.beginPath(); g.ellipse(px, py + 30, 26, 32, 0, 0, TAU); g.fill(); g.fillRect(px - 42, py + 70, 84, 150); g.fillRect(px - 62, py + 72, 18, 130); g.fillRect(px + 44, py + 72, 18, 130); g.fillRect(px - 38, py + 220, 30, 120); g.fillRect(px + 8, py + 220, 30, 120);
+    g.fillStyle = hot(d >= 2, '#ffd23f'); for (i=0; i<9; i++){ g.beginPath(); g.moveTo(px - 22 + i*5.5, py + 2); g.lineTo(px - 24 + i*5.5, py - 8); g.lineWidth = 2; g.strokeStyle = d >= 2 ? (i % 2 ? 'rgba(255,210,63,0.3)' : '#ffd23f') : '#566079'; g.stroke(); }
+    g.fillStyle = hot(d >= 20, '#ff5a4a'); g.beginPath(); g.ellipse(px, py + 24, 17, 15, 0, 0, TAU); g.fill();
+    g.fillStyle = hot(d >= 0.1, '#ff8a8a'); g.beginPath(); g.ellipse(px, py + 118, 22, 34, 0, 0, TAU); g.fill(); [[-28, 175], [28, 175], [0, 260]].forEach(function(b){ g.beginPath(); g.ellipse(px + b[0], py + b[1], 7, 26, 0, 0, TAU); g.fill(); });
+    g.fillStyle = hot(d >= 1, '#ffb000'); g.beginPath(); g.ellipse(px, py + 185, 26, 22, 0, 0, TAU); g.fill();
+    g.fillStyle = hot(d >= 0.35, '#c78cff'); g.beginPath(); g.arc(px - 12, py + 212, 6, 0, TAU); g.arc(px + 12, py + 212, 6, 0, TAU); g.fill();
+    var labs = [[0.1, 'blood-forming marrow', py + 118], [0.35, 'reproductive organs', py + 212], [1, 'gut lining', py + 185], [2, 'hair follicles', py - 4], [20, 'central nervous system', py + 24]];
+    labs.forEach(function(q){ g.fillStyle = d >= q[0] ? '#ffd23f' : '#566079'; g.font = '11px Arial'; g.textAlign = 'left'; g.fillText((d >= q[0] ? '\u25cf ' : '\u25cb ') + q[1], 238, q[2] + 4); g.strokeStyle = d >= q[0] ? 'rgba(255,210,63,0.6)' : 'rgba(86,96,121,0.5)'; g.lineWidth = 1; g.beginPath(); g.moveTo(px + 30, q[2]); g.lineTo(234, q[2]); g.stroke(); });
+    var b = band(d); lbl(g, b[0], px, H - 20, b[1], 15);
+    /* scale */ var L = 420, R = W - 20, T = 20, B = H - 30; function Y(v){ return B - (Math.log(v)/Math.LN10 + 5)/6.7*(B - T); }
+    [[1e-5, 0.1, 'rgba(46,155,79,0.25)'], [0.1, 1, 'rgba(224,160,32,0.25)'], [1, 50, 'rgba(198,40,40,0.28)']].forEach(function(z){ g.fillStyle = z[2]; g.fillRect(L, Y(Math.min(50, z[1])), 26, Y(z[0]) - Y(Math.min(50, z[1]))); });
+    g.fillStyle = '#9aa6b4'; g.font = '10px Arial'; g.textAlign = 'right'; [[1e-5, '10 \u00b5Sv'], [1e-4, '0.1 mSv'], [1e-3, '1 mSv'], [1e-2, '10 mSv'], [0.1, '100 mSv'], [1, '1 Sv'], [10, '10 Sv']].forEach(function(q){ g.fillText(q[1], L - 4, Y(q[0]) + 3); g.strokeStyle = 'rgba(150,170,195,0.25)'; g.beginPath(); g.moveTo(L, Y(q[0])); g.lineTo(R, Y(q[0])); g.stroke(); });
+    MARK.forEach(function(m, k){ var y = Y(m[0]); g.fillStyle = '#7fb2ff'; g.beginPath(); g.arc(L + 13, y, 3, 0, TAU); g.fill(); g.fillStyle = '#c9d6ea'; g.font = '11px Arial'; g.textAlign = 'left'; g.fillText(m[1], L + 34 + (k % 2)*0, y + 4); });
+    var yd = Y(d); g.strokeStyle = '#ffd23f'; g.lineWidth = 2.5; g.beginPath(); g.moveTo(L - 6, yd); g.lineTo(R, yd); g.stroke(); g.fillStyle = '#ffd23f'; g.beginPath(); g.moveTo(L - 6, yd); g.lineTo(L - 16, yd - 7); g.lineTo(L - 16, yd + 7); g.closePath(); g.fill(); lbl(g, fD(d) + ' = ' + +(d*100).toPrecision(3) + ' rem', R, yd - 10, '#ffd23f', 12, 'right'); }
+  function efText(){ var d = ef.d, rows = EFF.map(function(e, i){ var on = e[0] === e[1] ? Math.abs(Math.log(d/e[0])) < 0.12 : d >= e[0] && d < e[1]; return [i, on]; });
+    var cur = EFF.filter(function(e){ return e[0] === e[1] ? false : d >= e[0] && d < e[1]; }).map(function(e){ return e[2]; }), pts = EFF.filter(function(e){ return e[0] === e[1] && d >= e[0]; }).map(function(e){ return e[2]; });
+    var b = band(d);
+    el('efTxt').innerHTML = '<p><b style="color:' + b[1] + '">' + fD(d) + ' (' + +(d*100).toPrecision(3) + ' rem): ' + b[0] + '.</b></p><p>' + cur.join(' ') + '</p>' + (pts.length ? '<p>Also above: ' + pts.join(' ') + '</p>' : '')
+      + '<p class="rb_note' + '">' + (d < 0.01 ? 'It is difficult even to determine whether a person has received less than 10 mSv. ' : '') + 'These are immediate effects of a single exposure. Doses spread over time are less harmful, because cells repair in between; the main long-term risk of moderate and low doses is a small increase in the chance of cancer.</p>';
+    el('efTbl').innerHTML = '<table class="rb_tbl' + '"><thead><tr><th>Dose (Sv)</th><th>Effect</th></tr></thead><tbody>' + EFF.map(function(e, i){ var on = rows[i][1]; return '<tr data-i="' + i + '"' + (on ? ' class="rb_cur' + '"' : '') + '><td>' + (e[0] === e[1] ? e[0] : e[1] > 1e8 ? '> 20' : e[0] + '\u2013' + e[1]) + '</td><td>' + e[2] + '</td></tr>'; }).join('') + '</tbody></table><p class="rb_note' + '">Multiply by 100 to obtain dose in rem.</p>';
+    [].forEach.call(el('efTbl').querySelectorAll('tr[data-i]'), function(r){ r.addEventListener('click', function(){ var e = EFF[+r.getAttribute('data-i')], v = e[0] === e[1] ? e[0] : e[1] > 1e8 ? 30 : Math.sqrt(Math.max(e[0], 0.01)*e[1]); setD(v); say(fD(v) + ': ' + e[2]); }); });
+    el('efRead').innerHTML = [['dose', fD(d)], ['in rem', +(d*100).toPrecision(3) + ' rem'], ['in rad (\u03b3 rays, RBE 1)', +(d*100).toPrecision(3) + ' rad'], ['energy in a 70-kg person', +(d*70).toPrecision(3) + ' J'], ['\u2248 chest X-rays', Math.round(d/2e-5).toLocaleString()]].map(function(q){ return '<div><div class="rb_rl' + '">' + q[0] + '</div><div class="rb_rv' + '">' + q[1] + '</div></div>'; }).join(''); }
+  function setD(v){ ef.d = Math.max(1e-5, Math.min(50, v)); el('efD').value = vD(ef.d); el('efDv').textContent = fD(ef.d); el('efD').setAttribute('aria-valuetext', fD(ef.d)); drawE(); efText(); }
+  el('efD').addEventListener('input', function(){ setD(dFrom(+this.value)); }); el('efD').addEventListener('change', function(){ say(fD(ef.d) + ', ' + band(ef.d)[0] + '. ' + el('efTxt').textContent.split('.').slice(2, 3).join('.') + '.'); });
+  function chCalc(){ var A = parseFloat(el('chA').value), T = parseFloat(el('chT').value); if (!(A > 0 && T > 0)){ el('chOut').innerHTML = '<p class="rb_note' + '">Type positive values.</p>'; return; }
+    var N = A*1e6*3.7e10*T*3.156e7/0.693, m = 137*N/6.02e23;
+    function sc(x){ var e = Math.floor(Math.log(x)/Math.LN10); return (x/Math.pow(10, e)).toFixed(1) + '\u00d710<sup>' + e + '</sup>'; }
+    el('chOut').innerHTML = '<div class="rb_eq' + '">N = At<sub>1/2</sub>/0.693 = (' + A + '\u00d710<sup>6</sup> Ci)(3.7\u00d710<sup>10</sup> Bq/Ci)(' + T + ' y)(3.16\u00d710<sup>7</sup> s/y)/0.693 = <b class="rb_res' + '">' + sc(N) + '</b></div><div class="rb_eq' + '">m = (137 g/6.02\u00d710<sup>23</sup>)(' + sc(N) + ') = <b class="rb_res' + '">' + (m >= 1000 ? +(m/1000).toPrecision(2) + ' kg' : +m.toPrecision(2) + ' g') + '</b></div><p>A small amount of material compared with the fuel of a reactor. About 250 people received 1 to 16 Sv and suffered acute radiation syndrome; the eventual death toll is estimated at around 4000, mostly from radiation-induced cancer.</p>'; }
+  el('chA').addEventListener('input', chCalc); el('chT').addEventListener('input', chCalc);
+  /* ══════════ TAB 3: yearly dose ══════════ */
+  var CT = [['Australia', [0.30, 0.40, 0.90, 0.24, 0.80], 2.6], ['Germany', [0.28, 0.40, 1.1, 0.28, 0.90], 3.0], ['US', [0.30, 0.30, 2.0, 0.40, 0.53], 3.5], ['World', [0.39, 0.48, 1.2, 0.29, 0.40], 2.8]];
+  var SRC = [['cosmic rays', '#7fb2ff'], ['soil, building materials', '#b08a5a'], ['radon gas', '#c78cff'], ['inside the body (K-40, C-14, Ra-226)', '#4fe39a'], ['medical and dental', '#ffb000'], ['flying', '#5ad1ff']];
+  var MED = [['Chest X-ray', 0.02], ['Dental X-ray', 0.01], ['Skull X-ray', 0.07], ['Leg X-ray', 0.02], ['Mammogram', 0.40], ['Barium enema', 7.0], ['Upper GI', 3.0], ['CT head', 2.0], ['CT abdomen', 10.0], ['Nuclear medicine scan (1\u20135)', 3.0]];
+  var yr = { c:2, alt:300, rn:1, fl:10, n:MED.map(function(){ return 0; }) };
+  function parts(){ var b = CT[yr.c][1], cos = b[0]*Math.pow(2, yr.alt/1500), med = 0; MED.forEach(function(m, i){ med += m[1]*yr.n[i]; }); return [cos, b[1], b[2]*yr.rn, b[3], med, yr.fl*0.005]; }
+  var cP = el('yrPie'), gP = cP.getContext('2d'), cBr = el('yrBar'), gBr = cBr.getContext('2d');
+  function drawY(){ var p = parts(), tot = p.reduce(function(a, b){ return a + b; }, 0), W = cP.width, H = cP.height, cx = 140, cy = H/2, R = 115, a = -Math.PI/2;
+    gP.fillStyle = '#0b1222'; gP.fillRect(0, 0, W, H);
+    p.forEach(function(v, i){ if (v <= 0) return; var da = v/tot*TAU; gP.fillStyle = SRC[i][1]; gP.beginPath(); gP.moveTo(cx, cy); gP.arc(cx, cy, R, a, a + da); gP.closePath(); gP.fill(); gP.strokeStyle = '#0b1222'; gP.lineWidth = 2; gP.stroke(); a += da; });
+    gP.fillStyle = '#0b1222'; gP.beginPath(); gP.arc(cx, cy, 52, 0, TAU); gP.fill(); lbl(gP, +tot.toPrecision(3) + ' mSv', cx, cy - 6, '#ffd23f', 16); lbl(gP, 'per year', cx, cy + 14, '#9aa6b4', 11);
+    p.forEach(function(v, i){ var y = 40 + i*44; gP.fillStyle = SRC[i][1]; gP.fillRect(270, y - 10, 14, 14); gP.fillStyle = '#dbe7ff'; gP.font = '11px Arial'; gP.textAlign = 'left'; var words = SRC[i][0].split(' ('); gP.fillText(words[0], 290, y); if (words[1]) gP.fillText('(' + words[1], 290, y + 13); gP.fillStyle = '#ffd23f'; gP.fillText(+v.toPrecision(2) + ' mSv (' + Math.round(100*v/tot) + '%)', 290, y + (words[1] ? 26 : 13)); });
+    var W2 = cBr.width, H2 = cBr.height, L = 70, T = 20, B = H2 - 40, mx = Math.max(6, tot*1.1), bars = CT.map(function(c){ return [c[0], c[1].concat([0])]; }).concat([['You', p]]), bw = (W2 - L - 20)/bars.length;
+    gBr.fillStyle = '#0b1222'; gBr.fillRect(0, 0, W2, H2); function Y(v){ return B - v/mx*(B - T); }
+    gBr.strokeStyle = 'rgba(150,170,195,0.2)'; gBr.fillStyle = '#9aa6b4'; gBr.font = '10px Arial'; gBr.textAlign = 'right'; var st = mx > 20 ? 5 : 1; for (var v=0; v<=mx; v += st){ gBr.beginPath(); gBr.moveTo(L, Y(v)); gBr.lineTo(W2 - 10, Y(v)); gBr.stroke(); gBr.fillText(v + ' mSv', L - 4, Y(v) + 3); }
+    bars.forEach(function(br, k){ var x = L + k*bw + bw*0.18, w = bw*0.64, acc = 0; br[1].forEach(function(v, i){ gBr.fillStyle = SRC[i][1]; gBr.fillRect(x, Y(acc + v), w, Y(acc) - Y(acc + v)); acc += v; });
+      gBr.fillStyle = k === 4 ? '#ffd23f' : '#dbe7ff'; gBr.font = (k === 4 ? 'bold ' : '') + '11px Arial'; gBr.textAlign = 'center'; gBr.fillText(br[0], x + w/2, B + 14); gBr.fillText(+acc.toPrecision(2), x + w/2, Y(acc) - 4); });
+    el('yrRead').innerHTML = [['your total', +tot.toPrecision(3) + ' mSv/y = ' + +(tot*100).toPrecision(3) + ' mrem/y'], ['natural background', +(tot - p[4] - p[5]).toPrecision(3) + ' mSv'], ['medical', +p[4].toPrecision(3) + ' mSv'], ['band', tot < 100 ? 'low dose' : 'moderate dose'], ['\u2248 chest X-rays', Math.round(tot/0.02).toLocaleString()]].map(function(q){ return '<div><div class="rb_rl' + '">' + q[0] + '</div><div class="rb_rv' + '">' + q[1] + '</div></div>'; }).join(''); }
+  function medUI(){ el('yrMed').innerHTML = '<div class="rb_med' + '">' + MED.map(function(m, i){ return '<span>' + m[0] + ' (' + m[1] + ' mSv)</span><span><button type="button" data-i="' + i + '" data-d="-1" aria-label="one fewer ' + m[0] + '">\u2212</button> <output>' + yr.n[i] + '</output> <button type="button" data-i="' + i + '" data-d="1" aria-label="one more ' + m[0] + '">+</button></span><span>' + +(m[1]*yr.n[i]).toPrecision(3) + ' mSv</span>'; }).join('') + '</div><p class="rb_note' + '">Medical doses are usually localized to the tissue imaged; medical use is chosen only when the benefit outweighs the risk. Nuclear-medicine scans give 1 to 5 mSv (3 used here).</p>';
+    [].forEach.call(el('yrMed').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ var i = +b.getAttribute('data-i'); yr.n[i] = Math.max(0, Math.min(20, yr.n[i] + +b.getAttribute('data-d'))); medUI(); drawY(); say(MED[i][0] + ': ' + yr.n[i] + '. Your total is ' + parts().reduce(function(a, c){ return a + c; }, 0).toPrecision(3) + ' millisieverts per year.'); }); }); }
+  function yrUI(){ el('yrAltv').textContent = yr.alt + ' m'; el('yrRnv').textContent = '\u00d7' + yr.rn.toFixed(1); el('yrFlv').textContent = yr.fl + ' h'; drawY(); }
+  el('yrC').addEventListener('change', function(){ yr.c = +this.value; yrUI(); say(CT[yr.c][0] + ': average ' + CT[yr.c][2] + ' millisieverts per year.'); });
+  el('yrAlt').addEventListener('input', function(){ yr.alt = +this.value; yrUI(); }); el('yrAlt').addEventListener('change', function(){ say('At ' + yr.alt + ' metres, cosmic rays give ' + parts()[0].toPrecision(2) + ' millisieverts per year: less atmosphere above you to absorb them.'); });
+  el('yrRn').addEventListener('input', function(){ yr.rn = +this.value; yrUI(); }); el('yrRn').addEventListener('change', function(){ say('Radon: ' + parts()[2].toPrecision(2) + ' millisieverts per year. Radon levels vary by a factor of 10 from place to place.'); });
+  el('yrFl').addEventListener('input', function(){ yr.fl = +this.value; yrUI(); });
+  /* ══════════ tabs ══════════ */
+  function setTab(i){ [0, 1, 2, 3].forEach(function(j){ var t = el('rbT' + j + ''); t.setAttribute('aria-selected', j === i ? 'true' : 'false'); t.tabIndex = j === i ? 0 : -1; el('rbP' + j + '').hidden = j !== i; });
+    if (i === 0) draw0(); if (i === 1) dsCalc(); if (i === 2){ drawE(); efText(); chCalc(); } if (i === 3){ medUI(); yrUI(); }
+    say(['Send gamma rays and alpha particles through cells and compare the damage.', 'Calculate a dose in rad, rem and sieverts.', 'Move the dose to see its effects on the body.', 'Add up your yearly dose from natural and medical sources.'][i]); }
+  [0, 1, 2, 3].forEach(function(i){ var t = el('rbT' + i + ''); t.addEventListener('click', function(){ setTab(i); }); t.addEventListener('keydown', function(e){ var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!d) return; var n = (i + d + 4) % 4; setTab(n); el('rbT' + n + '').focus(); e.preventDefault(); }); });
+  rbA11y.onChange(function(){ draw0(); dsBar(); drawE(); drawY(); });
+  newCells(); el('efD').value = vD(0.01); ef.d = 0.01; el('efDv').textContent = fD(0.01); setTab(0);
+  return { setTab:setTab, fire:fire, repair:repair, rows:function(){ return rows; }, setD:setD, parts:parts, yr:yr, dsCalc:dsCalc };
+};
+var rbSim = new rbGen();
+</script>
+<script>rbA11y.init();</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>Nuclear radiation damages cells by ionizing atoms as it passes through them, which can alter the DNA. Cells repair most damage; if repair fails, a cell may become dormant (senescence), die (programmed cell death), or divide without control, possibly leading to cancer. Radiation that ionizes densely, such as alpha particles, concentrates its damage and is harder to repair than sparsely ionizing gamma rays.</p>
+<p>The absorbed dose is measured in rad, `1 text( rad) = 0.01 text( J/kg)`. Multiplying by the relative biological effectiveness gives the dose in rem, `text(rem) = text(rad) xx RBE`, and `1 text( Sv) = 100 text( rem)`. Below 100 mSv is a low dose, 0.1 to 1 Sv moderate, above 1 Sv high. The immediate effects of a single whole-body dose range from none (below 0.1 Sv) through blood changes, nausea and hair loss to death (4.5 Sv kills half of those exposed without treatment).</p>
+<p>Everyone receives a few millisieverts per year from natural background radiation (cosmic rays, soil and building materials, radon, and isotopes inside the body) and from medical exams. The cell model is illustrative: ionization counts and repair probabilities are chosen to show the trend, not measured values. Altitude and flight doses are rough estimates.</p>
+</div>
+</div>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+
+</div>
+
+</body>
+</html>

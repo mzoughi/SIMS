@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Nuclear: Carbon-14 Dating</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobnuccarbon" class="mob_wrap">
+<div class="cd_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="cd_a11ybtn" id="cdBtnHC" onclick="cdA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="cd_a11ybtn" id="cdBtnDM" onclick="cdA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="cd_a11ybtn" id="cdBtnCB" onclick="cdA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="cd_a11ybtn" id="cdBtnNR" onclick="cdA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+
+<div class="cd_title"><h3>Carbon-14 Dating</h3></div>
+<div class="cd_read" aria-live="off">
+<div><div class="cd_rl">time since death</div><div class="cd_rv" id="cdRt"></div></div>
+<div><div class="cd_rl">C-14 left N/N&#8320;</div><div class="cd_rv" id="cdRf"></div></div>
+<div><div class="cd_rl">activity per kg of carbon</div><div class="cd_rv" id="cdRa"></div></div>
+<div><div class="cd_rl">half-lives elapsed</div><div class="cd_rv" id="cdRh"></div></div>
+</div>
+<div class="cd_view"><canvas id="cdSc" width="820" height="320" role="img" aria-label="Left: while alive, the tree exchanges carbon with the atmosphere, where cosmic rays turn nitrogen-14 into carbon-14. Right: after death, the carbon-14 nuclei in the sample decay one by one into nitrogen-14 and are not replaced."></canvas></div>
+<div id="cdNarBar" class="cd_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="cd_transport" role="toolbar" aria-label="Time since death">
+<div class="cd_tgroup">
+<button type="button" class="cd_tbtn cd_play" id="cdPlay" aria-label="Play" title="Play / pause"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="cd_tbtn" id="cdRst" aria-label="Back to the moment of death" title="Back to the moment of death"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 5 A7 7 0 1 1 5.6 9" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M3 4 L9.5 4.5 L5.5 10 Z" fill="currentColor"/></svg></button>
+</div>
+<div class="cd_tgroup cd_tsep" style="flex:1 1 300px"><label for="cdT" style="font-size:.84rem;font-weight:bold;white-space:nowrap">Years since death</label><input type="range" id="cdT" min="0" max="60000" step="10" value="0" style="flex:1 1 200px"></div>
+</div>
+<div class="cd_card"><div class="cd_ctitle">Fraction of the original C-14 left against age</div>
+<canvas id="cdGr" width="820" height="280" role="img" aria-label="Graph of the fraction of carbon-14 remaining against the age in years, with the half-lives marked, the present time and your measurement read across to its age."></canvas>
+<div class="cd_cnote" id="cdGx"></div></div>
+<div class="cd_panels">
+<div class="cd_panel" role="group" aria-labelledby="cdHdM"><div class="cd_ptitle" id="cdHdM">Date a sample</div><div class="cd_pbody">
+<div class="cd_ctrl"><label for="cdKind" style="font-size:.82rem;font-weight:bold">You measured</label><select id="cdKind"><option value="f">the fraction of C-14 left, N/N&#8320; (%)</option><option value="a">the activity per kg of carbon (Bq/kg)</option><option value="d">decays per minute per gram of carbon</option></select></div>
+<div class="cd_chdr"><label for="cdVal" id="cdValL">N/N&#8320; (%)</label><input type="number" id="cdVal" class="cd_num" value="79" step="any" min="0"></div>
+<div class="cd_ctrl"><div class="cd_chdr"><label for="cdUnc">Measurement uncertainty</label><span class="cd_val" id="cdUncV">&plusmn;1%</span></div><input type="range" id="cdUnc" min="0" max="10" step="0.5" value="1"></div>
+<div class="cd_presets" id="cdPre"></div>
+<div id="cdSol"></div>
+</div></div>
+<div class="cd_panel" role="group" aria-labelledby="cdHdL"><div class="cd_ptitle" id="cdHdL">Living tissue (Example 12.4.4)</div><div class="cd_pbody" id="cdLive"></div></div>
+<div class="cd_panel" role="group" aria-labelledby="cdHdQ"><div class="cd_ptitle" id="cdHdQ">Mystery sample</div><div class="cd_pbody">
+<button type="button" class="cd_bbtn" id="cdNew">New mystery sample</button>
+<div id="cdQ"><p class="cd_note">Press the button: a laboratory measures the C-14 activity of an artifact. Find its age.</p></div>
+<div class="cd_chdr"><label for="cdGuess">Your age (years)</label><span><input type="number" id="cdGuess" class="cd_num" step="any"> <button type="button" class="cd_vbtn" id="cdChk">Check</button></span></div>
+<div id="cdQfb" aria-live="polite"></div>
+</div></div>
+</div>
+<style>
+:where(#mobnuccarbon) * { margin:0; box-sizing:border-box; }
+#mobnuccarbon { width:100%; max-width:860px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; color:#1d232a; }
+#mobnuccarbon canvas { display:block; width:100%; height:auto; }
+#mobnuccarbon .cd_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#mobnuccarbon .cd_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#mobnuccarbon .cd_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobnuccarbon .cd_title { padding:4px; background-color:#f90; text-align:center; }
+#mobnuccarbon .cd_title h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+#mobnuccarbon .cd_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:6px 12px; padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; }
+#mobnuccarbon .cd_rl { font-size:.7rem; color:#667; text-transform:uppercase; letter-spacing:.05em; }
+#mobnuccarbon .cd_rv { font-family:monospace; font-size:.93rem; color:#7a3a00; font-weight:bold; }
+#mobnuccarbon .cd_view { background:#0b1222; }
+#mobnuccarbon .cd_status { color:#222; font-size:.84rem; text-align:center; background:#fff6d9; padding:5px 8px; line-height:1.45; min-height:1.6em; }
+#mobnuccarbon .cd_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+#mobnuccarbon .cd_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+#mobnuccarbon .cd_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { #mobnuccarbon .cd_tsep { padding-left:0; border-left:0; } }
+#mobnuccarbon .cd_tbtn { width:44px; height:38px; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer; border:1px solid #6d8a3a; border-radius:5px; background:#fff; color:#223; }
+#mobnuccarbon .cd_tbtn.cd_play { background:#2e7d32; color:#fff; border-color:#1b5e20; }
+#mobnuccarbon .cd_tbtn.cd_play[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+#mobnuccarbon .cd_vbtn, #mobnuccarbon .cd_bbtn { height:38px; padding:0 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; white-space:nowrap; }
+#mobnuccarbon .cd_bbtn { background:#2e7d32; border-color:#1b5e20; color:#fff; font-weight:bold; }
+#mobnuccarbon .cd_card { margin:10px 10px 0; background:#0b1222; border:1px solid #2b3d60; border-radius:6px; overflow:hidden; }
+#mobnuccarbon .cd_ctitle { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:4px 10px; padding:5px 10px; background:#14213a; color:#dbe7ff; font-size:.8rem; font-weight:bold; }
+#mobnuccarbon .cd_cnote { padding:8px 12px 10px; color:#e3ecfa; font-size:.86rem; line-height:1.5; background:#0d1526; border-top:1px solid #2b3d60; }
+#mobnuccarbon .cd_cnote b { color:#ffd23f; }
+#mobnuccarbon .cd_cbar { display:flex; flex-wrap:wrap; gap:4px 14px; padding:6px 10px; background:#0d1526; color:#dbe7ff; font-size:.8rem; }
+#mobnuccarbon .cd_cbar label { display:flex; align-items:center; gap:5px; cursor:pointer; }
+#mobnuccarbon .cd_sw { display:inline-block; width:16px; height:4px; border-radius:2px; }
+#mobnuccarbon .cd_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:10px; padding:10px; }
+#mobnuccarbon .cd_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+#mobnuccarbon .cd_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+#mobnuccarbon .cd_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; font-size:.87rem; line-height:1.45; }
+#mobnuccarbon .cd_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+#mobnuccarbon .cd_chdr { display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; }
+#mobnuccarbon .cd_chdr label { font-size:.82rem; font-weight:bold; color:#333; min-width:0; }
+#mobnuccarbon .cd_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; min-width:4.5em; text-align:right; }
+#mobnuccarbon .cd_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+#mobnuccarbon select { width:100%; min-height:34px; padding:4px 6px; font-size:.86rem; border:1px solid #8a96a8; border-radius:4px; background:#fff; }
+#mobnuccarbon .cd_note { font-size:.8rem; color:#555; font-style:italic; }
+#mobnuccarbon .cd_eq { font-family:'Times New Roman', serif; font-size:1rem; background:#f6f8fb; border-left:3px solid #1f5fa8; padding:4px 8px; margin:2px 0; overflow-wrap:anywhere; }
+#mobnuccarbon b.cd_res { color:#7a3a00; }
+#mobnuccarbon .cd_num { width:7em; height:36px; padding:3px 6px; font-size:.95rem; border:1px solid #888; border-radius:4px; }
+#mobnuccarbon .cd_ok { color:#1b6e2a; font-weight:bold; } #mobnuccarbon .cd_no { color:#b42318; font-weight:bold; }
+#mobnuccarbon button:focus-visible, #mobnuccarbon input:focus-visible, #mobnuccarbon select:focus-visible, #mobnuccarbon canvas:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (pointer:coarse) { #mobnuccarbon .cd_tbtn, #mobnuccarbon .cd_vbtn, #mobnuccarbon .cd_bbtn, #mobnuccarbon .cd_num { height:44px; } #mobnuccarbon input[type=checkbox] { width:20px; height:20px; } #mobnuccarbon input[type=range] { height:28px; } }
+#mobnuccarbon .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobnuccarbon .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobnuccarbon .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobnuccarbon .mob_desc p { margin:0 0 8px 0; }
+#mobnuccarbon .mob_eq { text-align:center; }
+#mobnuccarbon.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobnuccarbon.a11y_dm .cd_card, #mobnuccarbon.a11y_dm .cd_view, #mobnuccarbon.a11y_dm [aria-label="Display options"], #mobnuccarbon.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobnuccarbon.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobnuccarbon.a11y_hc .cd_card, #mobnuccarbon.a11y_hc .cd_view, #mobnuccarbon.a11y_hc [aria-label="Display options"], #mobnuccarbon.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+
+#mobnuccarbon .cd_presets { display:flex; flex-wrap:wrap; gap:4px; }
+#mobnuccarbon .cd_presets button { padding:4px 8px; font-size:.8rem; border:1px solid #4a6aa0; border-radius:4px; background:#fff; cursor:pointer; min-height:32px; }
+</style>
+<script>
+var cdA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return; b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobnuccarbon'); if (!W) return; W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc);
+var nb = document.getElementById('cdNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none'; var nr = document.getElementById('cdBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('cdBtnHC', states.hc); styleBtn('cdBtnDM', states.dm); styleBtn('cdBtnCB', states.cb); styleBtn('cdBtnNR', states.nr); hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return { init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply(); if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: carbon-14 orange, nitrogen-14 sky blue.'); },
+alt:function(){ return states.hc || states.cb; }, narrate:function(m){ if (!states.nr) return; var nb = document.getElementById('cdNarBar'); if (nb) nb.textContent = m; } };
+})();
+</script>
+
+<!-- ════════ SIMULATION ════════
+C-14: T = 5730 y, lambda = 0.693/5730 = 1.21e-4 per year = 3.83e-12 per s. Living carbon: 1.3e-12 C-14 per C-12 nucleus.
+1 kg of carbon: N(C-12) = 1000/12 x 6.022e23 = 5.02e25; N(C-14) = 6.52e13; A = lambda N = 250 Bq (Example 12.4.4).
+Age from N/N0: t = -ln(N/N0)/lambda (Example 12.4.5). The 60 nuclei in the jar have random lifetimes (exponential law).
+No dollar signs or backticks in the code.
+-->
+<script>
+var cdGen = function(){
+  var cS = document.getElementById('cdSc'), gS = cS.getContext('2d'), cG = document.getElementById('cdGr'), gG = cG.getContext('2d');
+  var T = 5730, LAM = Math.LN2/T, LAMS = Math.LN2/(T*3.156e7), NC14 = 1000/12*6.022e23*1.3e-12, A_LIVE = LAMS*NC14, DPM = A_LIVE*60/1000, TAU = 2*Math.PI, TM = 50000;
+  var t = 0, life = [], pos = [], timer = null, myst = null, NJ = 60;
+  function el(id){ return document.getElementById(id); }
+  function say(m){ cdA11y.narrate(m); }
+  function fy(y){ return Math.round(y).toLocaleString() + ' y'; }
+  function sci(x, d){ var e = Math.floor(Math.log(Math.abs(x))/Math.LN10); if (e >= -2 && e <= 4) return x.toPrecision(d || 3); return (x/Math.pow(10, e)).toFixed((d || 3) - 1) + '\u00d710<sup>' + e + '</sup>'; }
+  function newJar(){ life = []; pos = []; for (var i=0; i<NJ; i++){ life.push(-Math.log(Math.random() || 1e-12)/LAM); var c = i % 10, r = Math.floor(i/10); pos.push([500 + c*30 + (Math.random() - 0.5)*10, 92 + r*30 + (Math.random() - 0.5)*10]); } }
+  /* ══════════ pictorial nucleus ══════════ */
+  function pal(){ var alt = cdA11y.alt(); return { p:alt ? [213,94,0] : [52,92,200], n:alt ? [86,180,233] : [214,58,58], c14:alt ? '#E69F00' : '#ffb000', n14:alt ? '#56B4E9' : '#5ad1ff' }; }
+  function rgb(c, k){ return 'rgb(' + c.map(function(v){ return Math.max(0, Math.min(255, Math.round(v*k))); }).join(',') + ')'; }
+  function nuc(g, cx, cy, R, Z, A, ring){ var p = pal(), k = A, br = R/Math.sqrt(k)*1.05, pc = 0;
+    for (var i=0; i<k; i++){ var r = R*Math.sqrt((i + 0.5)/k)*0.75, a = i*2.39996, isP = (pc + 0.5)/(i + 1) <= Z/A && pc < Z; if (isP) pc++; g.fillStyle = rgb(isP ? p.p : p.n, 1); g.beginPath(); g.arc(cx + r*Math.cos(a), cy + r*Math.sin(a), br, 0, TAU); g.fill(); }
+    g.strokeStyle = ring; g.lineWidth = 1.5; g.beginPath(); g.arc(cx, cy, R*1.05, 0, TAU); g.stroke(); }
+  /* ══════════ scene ══════════ */
+  function drawScene(){ var W = cS.width, H = cS.height, p = pal(), i, frac = Math.exp(-LAM*t);
+    var bg = gS.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, '#0d1e3a'); bg.addColorStop(1, '#0b1222'); gS.fillStyle = bg; gS.fillRect(0, 0, W, H);
+    /* left: atmosphere and organism */
+    gS.fillStyle = '#e6ecf2'; gS.font = 'bold 13px Arial'; gS.textAlign = 'center'; gS.fillText(t === 0 ? 'While alive' : 'Before death', 210, 20);
+    gS.font = '11px Arial'; gS.fillStyle = '#9fb4d8'; gS.fillText('upper atmosphere: cosmic-ray neutrons', 210, 40); gS.fillText('n + \u00b9\u2074N \u2192 \u00b9\u2074C + p', 210, 56);
+    gS.strokeStyle = '#ffd23f'; gS.lineWidth = 1.5; for (i=0; i<4; i++){ var x0 = 70 + i*85; gS.beginPath(); gS.moveTo(x0, 64); gS.lineTo(x0 + 18, 90); gS.stroke(); } nuc(gS, 120, 100, 9, 6, 14, p.c14); nuc(gS, 300, 98, 9, 6, 14, p.c14);
+    gS.fillStyle = '#c9d6ea'; gS.fillText('C-14 joins CO\u2082: 1.3 C-14 per 10\u00b9\u00b2 carbon atoms', 210, 128);
+    /* tree */
+    var alive = t === 0; gS.fillStyle = '#6b4a2b'; gS.fillRect(196, 210, 28, 80); gS.fillStyle = alive ? '#2e8b3d' : '#5d5a4a'; [[210, 175, 52], [180, 195, 34], [240, 195, 34]].forEach(function(q){ gS.beginPath(); gS.arc(q[0], q[1], q[2], 0, TAU); gS.fill(); });
+    gS.strokeStyle = alive ? '#7fe08a' : '#55607a'; gS.lineWidth = 2; gS.setLineDash(alive ? [] : [4, 4]);
+    gS.beginPath(); gS.moveTo(150, 140); gS.lineTo(170, 160); gS.stroke(); gS.beginPath(); gS.moveTo(270, 160); gS.lineTo(290, 140); gS.stroke(); gS.setLineDash([]);
+    gS.fillStyle = alive ? '#7fe08a' : '#ff8a7a'; gS.font = 'bold 11px Arial'; gS.fillText(alive ? 'exchanges carbon: C-14 is constantly replaced' : 'dead: no more exchange, C-14 is not replaced', 210, 305);
+    /* divider and jar */
+    gS.strokeStyle = 'rgba(255,255,255,0.15)'; gS.beginPath(); gS.moveTo(430, 10); gS.lineTo(430, H - 10); gS.stroke();
+    gS.fillStyle = '#e6ecf2'; gS.font = 'bold 13px Arial'; gS.fillText('The C-14 in the sample', 640, 20);
+    gS.font = '11px Arial'; gS.fillStyle = '#9fb4d8'; gS.fillText('60 nuclei shown (a real gram of carbon has about 6\u00d710\u00b9\u2070)', 640, 38);
+    gS.strokeStyle = '#7f8da6'; gS.lineWidth = 2; gS.strokeRect(478, 70, 324, 196);
+    var left = 0; for (i=0; i<NJ; i++){ var on = life[i] > t, q = pos[i]; nuc(gS, q[0], q[1], 9, on ? 6 : 7, 14, on ? p.c14 : p.n14); if (on) left++;
+      var d = t - life[i]; if (d >= 0 && d < 400 && timer){ gS.fillStyle = '#7fd8ff'; gS.beginPath(); gS.arc(q[0] + 12 + d/20, q[1] - 6 - d/40, 2.5, 0, TAU); gS.fill(); } }
+    gS.font = 'bold 12px Arial'; gS.textAlign = 'left'; gS.fillStyle = p.c14; gS.fillText('\u25cb C-14 (6p, 8n): ' + left, 480, 288); gS.fillStyle = p.n14; gS.fillText('\u25cb N-14 (7p, 7n): ' + (NJ - left), 640, 288);
+    gS.fillStyle = '#9aa6b4'; gS.font = '11px Arial'; gS.fillText('\u00b9\u2074C \u2192 \u00b9\u2074N + e\u207b + \u03bd\u0305 (\u03b2\u207b decay, T\u00bd = 5730 y)', 480, 306);
+    gS.textAlign = 'right'; gS.fillText('expected left: ' + (NJ*frac).toFixed(1), 800, 58); }
+  /* ══════════ graph ══════════ */
+  function measFrac(){ var k = el('cdKind').value, v = parseFloat(el('cdVal').value); if (!(v > 0)) return null; return k === 'f' ? v/100 : k === 'a' ? v/A_LIVE : v/DPM; }
+  function age(f){ return -Math.log(f)/LAM; }
+  function drawGraph(){ var W = cG.width, H = cG.height, L = 58, R = W - 16, Tp = 16, B = H - 38, i, p = pal();
+    function X(y){ return L + y/TM*(R - L); } function Y(f){ return B - f*(B - Tp); }
+    gG.fillStyle = '#0b1222'; gG.fillRect(0, 0, W, H); gG.strokeStyle = 'rgba(150,170,195,0.2)'; gG.lineWidth = 1; gG.fillStyle = '#9aa6b4'; gG.font = '10px Arial'; gG.textBaseline = 'alphabetic';
+    for (i=0; i<=TM; i += 5000){ gG.beginPath(); gG.moveTo(X(i), Tp); gG.lineTo(X(i), B); gG.stroke(); gG.textAlign = 'center'; gG.fillText((i/1000) + (i ? 'k' : ''), X(i), B + 13); }
+    for (i=0; i<=4; i++){ gG.beginPath(); gG.moveTo(L, Y(i/4)); gG.lineTo(R, Y(i/4)); gG.stroke(); gG.textAlign = 'right'; gG.fillText((25*i) + '%', L - 4, Y(i/4) + 3); }
+    gG.textAlign = 'center'; gG.fillText('age (years since death)', (L + R)/2, H - 6); gG.save(); gG.translate(13, (Tp + B)/2); gG.rotate(-Math.PI/2); gG.fillText('C-14 left, N/N\u2080', 0, 0); gG.restore();
+    for (i=1; i*T <= TM; i++){ gG.strokeStyle = 'rgba(255,255,255,0.25)'; gG.setLineDash([2, 4]); gG.beginPath(); gG.moveTo(X(i*T), Y(Math.pow(0.5, i))); gG.lineTo(X(i*T), B); gG.stroke(); gG.setLineDash([]); gG.fillStyle = '#fff'; gG.beginPath(); gG.arc(X(i*T), Y(Math.pow(0.5, i)), 3, 0, TAU); gG.fill(); if (i <= 4){ gG.fillStyle = '#c9d6ea'; gG.textAlign = 'left'; gG.fillText(i + ' T\u00bd', X(i*T) + 3, Y(Math.pow(0.5, i)) - 6); } }
+    gG.fillStyle = 'rgba(255,90,90,0.12)'; gG.fillRect(X(TM*0.9), Tp, R - X(TM*0.9), B - Tp); gG.fillStyle = '#ff9a8a'; gG.textAlign = 'right'; gG.fillText('limit of the method (~50 000 y)', R - 4, Tp + 12);
+    gG.strokeStyle = p.c14; gG.lineWidth = 2.6; gG.beginPath(); for (i=0; i<=400; i++){ var y = TM*i/400; if (!i) gG.moveTo(X(y), Y(Math.exp(-LAM*y))); else gG.lineTo(X(y), Y(Math.exp(-LAM*y))); } gG.stroke();
+    var f = measFrac(), u = +el('cdUnc').value/100;
+    if (f !== null && f <= 1.2){ var a = f < 1 ? age(f) : 0, aHi = f*(1 - u) > 0 ? age(f*(1 - u)) : TM, aLo = f*(1 + u) < 1 ? age(f*(1 + u)) : 0; gG.fillStyle = 'rgba(90,209,255,0.18)'; gG.fillRect(X(Math.min(TM, aLo)), Tp, X(Math.min(TM, aHi)) - X(Math.min(TM, aLo)), B - Tp);
+      gG.strokeStyle = p.n14; gG.lineWidth = 1.8; gG.setLineDash([6, 4]); gG.beginPath(); gG.moveTo(L, Y(Math.min(1, f))); gG.lineTo(X(Math.min(TM, a)), Y(Math.min(1, f))); gG.lineTo(X(Math.min(TM, a)), B); gG.stroke(); gG.setLineDash([]);
+      gG.fillStyle = p.n14; gG.font = 'bold 12px Arial'; gG.textAlign = a > TM*0.6 ? 'right' : 'left'; gG.fillText('measured ' + (100*f).toPrecision(3) + '% \u2192 ' + fy(a), X(Math.min(TM, a)) + (a > TM*0.6 ? -8 : 8), Y(Math.min(1, f)) - 8); }
+    gG.fillStyle = '#ffffff'; gG.beginPath(); gG.arc(X(Math.min(TM, t)), Y(Math.exp(-LAM*t)), 6, 0, TAU); gG.fill(); }
+  /* ══════════ text ══════════ */
+  function readouts(){ var f = Math.exp(-LAM*t); el('cdRt').textContent = fy(t); el('cdRf').textContent = (100*f).toPrecision(3) + '%'; el('cdRa').textContent = (A_LIVE*f).toPrecision(3) + ' Bq'; el('cdRh').textContent = (t/T).toFixed(2);
+    el('cdGx').innerHTML = 'A living organism keeps the same C-14 fraction as the atmosphere. After death, N = N\u2080e<sup>\u2212\u03bbt</sup> with \u03bb = 0.693/5730 y = 1.21\u00d710<sup>\u22124</sup> y<sup>\u22121</sup>: half is gone after 5730 years, three-quarters after 11 460, and so on (white dots). Read a measurement across to the curve and down to the age. Beyond about 50 000 years so little C-14 is left (under 0.3%) that it cannot be measured reliably; the method is most accurate for younger samples. White dot: the time on the slider.'; }
+  function solve(){ var f = measFrac(), u = +el('cdUnc').value/100, k = el('cdKind').value, v = parseFloat(el('cdVal').value), s = '';
+    if (f === null){ el('cdSol').innerHTML = '<p class="cd_note' + '">Type a positive value.</p>'; return; }
+    if (k !== 'f') s += '<div class="cd_eq' + '">N/N\u2080 = A/A\u2080 = ' + v + ' / ' + (k === 'a' ? A_LIVE.toFixed(0) + ' Bq/kg' : DPM.toFixed(1) + ' per min per g') + ' = ' + f.toFixed(4) + '</div>';
+    if (f >= 1){ el('cdSol').innerHTML = s + '<p>That is as much C-14 as living tissue: the sample is modern (age about 0).</p>'; return; }
+    var a = age(f), aLo = f*(1 + u) < 1 ? age(f*(1 + u)) : 0, aHi = f*(1 - u) > 0 ? age(f*(1 - u)) : Infinity;
+    s += '<div class="cd_eq' + '">N = N\u2080e<sup>\u2212\u03bbt</sup> \u21d2 ln(N/N\u2080) = \u2212\u03bbt \u21d2 t = \u2212ln(N/N\u2080)/\u03bb</div>'
+      + '<div class="cd_eq' + '">\u03bb = 0.693/T\u00bd = 0.693/5730 y = 1.21\u00d710<sup>\u22124</sup> y<sup>\u22121</sup></div>'
+      + '<div class="cd_eq' + '">t = \u2212ln(' + f.toFixed(4) + ')/(1.21\u00d710<sup>\u22124</sup> y<sup>\u22121</sup>) = ' + (-Math.log(f)).toFixed(4) + '/(1.21\u00d710<sup>\u22124</sup> y<sup>\u22121</sup>) = <b class="cd_res' + '">' + fy(a) + '</b></div>'
+      + (u > 0 ? '<p>With N/N\u2080 uncertain by \u00b1' + (100*u) + '% of its value, the age lies between <b>' + fy(aLo) + '</b> and <b>' + (isFinite(aHi) ? fy(aHi) : 'any age') + '</b>' + (a > 30000 ? ': old samples have little C-14 left, so the same uncertainty gives a much wider range.' : '.') + ' Such dates are checked by other means, such as historical records or tree rings.</p>' : '')
+      + (a > 50000 ? '<p class="cd_no' + '">Beyond the reliable range of the method.</p>' : '');
+    el('cdSol').innerHTML = s; drawGraph(); }
+  el('cdLive').innerHTML = '<p>1 kg of carbon (one mole = 12.0 g):</p><div class="cd_eq' + '">N(<sup>12</sup>C) = (1000 g)(6.02\u00d710<sup>23</sup>/mol)/(12.0 g/mol) = 5.02\u00d710<sup>25</sup></div>'
+    + '<div class="cd_eq' + '">N(<sup>14</sup>C) = (5.02\u00d710<sup>25</sup>)(1.3\u00d710<sup>\u221212</sup>) = 6.52\u00d710<sup>13</sup></div>'
+    + '<div class="cd_eq' + '">\u03bb = 0.693/(5730 y)(3.156\u00d710<sup>7</sup> s/y) = 3.83\u00d710<sup>\u221212</sup> s<sup>\u22121</sup></div>'
+    + '<div class="cd_eq' + '">A\u2080 = \u03bbN = <b class="cd_res' + '">' + A_LIVE.toFixed(0) + ' Bq</b> = ' + sci(A_LIVE/3.7e10, 3) + ' Ci, or ' + DPM.toFixed(1) + ' decays per minute per gram</div>'
+    + '<p class="cd_note' + '">Hundreds of C-14 decays take place in the body every second. A dead sample\u2019s activity, compared with this value, gives N/N\u2080.</p>';
+  /* presets */
+  var PRE = [['Example 12.4.5: wood furniture, 79%', 'f', 79], ['Dead Sea Scrolls (~2000 y)', 'f', 78.5], ['\u00d6tzi the Iceman (~5300 y)', 'f', 52.6], ['Charcoal, 150 Bq/kg', 'a', 150], ['Mammoth bone, 2.6%', 'f', 2.6], ['Living wood, 15.3 /min/g', 'd', 15.3]];
+  el('cdPre').innerHTML = PRE.map(function(q, i){ return '<button type="button" data-i="' + i + '">' + q[0] + '</button>'; }).join('');
+  [].forEach.call(el('cdPre').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ var q = PRE[+b.getAttribute('data-i')]; el('cdKind').value = q[1]; kindUI(); el('cdVal').value = q[2]; solve(); var f = measFrac(); say(q[0] + ': about ' + (f < 1 ? fy(age(f)) : '0 y') + ' old.'); }); });
+  function kindUI(){ var k = el('cdKind').value; el('cdValL').innerHTML = k === 'f' ? 'N/N\u2080 (%)' : k === 'a' ? 'activity (Bq per kg of carbon)' : 'decays per minute per gram'; }
+  el('cdKind').addEventListener('change', function(){ var f = measFrac(); kindUI(); var k = this.value; if (f !== null) el('cdVal').value = +(k === 'f' ? 100*f : k === 'a' ? f*A_LIVE : f*DPM).toPrecision(3); solve(); });
+  el('cdVal').addEventListener('input', solve); el('cdUnc').addEventListener('input', function(){ el('cdUncV').textContent = '\u00b1' + this.value + '%'; solve(); });
+  /* mystery */
+  el('cdNew').addEventListener('click', function(){ var a = 500 + Math.random()*39500, f = Math.exp(-LAM*a)*(1 + 0.01*(Math.random()*2 - 1)), m = 5 + Math.round(Math.random()*20), act = f*A_LIVE*m/1000, kind = Math.random() < 0.5;
+    myst = { a:-Math.log(f)/LAM };
+    el('cdQ').innerHTML = kind ? '<p>A ' + m + ' g sample of carbon from an ancient campfire shows an activity of <b>' + act.toPrecision(3) + ' Bq</b>. Living carbon has ' + A_LIVE.toFixed(0) + ' Bq per kg. How old is the charcoal?</p>' : '<p>A piece of bone contains <b>' + (100*f).toPrecision(3) + '%</b> of the C-14 found in living bone. How long ago did the animal die?</p>';
+    el('cdQfb').innerHTML = ''; el('cdGuess').value = ''; say(el('cdQ').textContent); });
+  el('cdChk').addEventListener('click', function(){ if (!myst){ say('Press New mystery sample first.'); return; } var g = parseFloat(el('cdGuess').value); if (!isFinite(g)){ el('cdQfb').innerHTML = 'Type an age in years.'; return; }
+    var ok = Math.abs(g - myst.a) <= Math.max(50, 0.03*myst.a); el('cdQfb').innerHTML = (ok ? '<span class="cd_ok' + '">\u2713 Correct.</span>' : '<span class="cd_no' + '">\u2717 Not quite.</span>') + ' The age is about ' + fy(myst.a) + ' (' + (myst.a/T).toFixed(2) + ' half-lives). Use t = \u2212ln(N/N\u2080)/\u03bb' + (ok ? '.' : ', with N/N\u2080 = A/A\u2080 for the same mass of carbon.');
+    say(el('cdQfb').textContent); });
+  /* time */
+  var playBtn = el('cdPlay'), PLAYI = playBtn.innerHTML, PAUSEI = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>';
+  function stop(){ if (timer){ clearTimeout(timer); timer = null; } playBtn.innerHTML = PLAYI; playBtn.setAttribute('aria-pressed', 'false'); playBtn.setAttribute('aria-label', 'Play'); }
+  function setT(v){ t = Math.max(0, Math.min(60000, v)); el('cdT').value = t; el('cdT').setAttribute('aria-valuetext', Math.round(t) + ' years since death'); drawScene(); drawGraph(); readouts(); }
+  var said = 0;
+  playBtn.addEventListener('click', function(){ if (timer){ stop(); return; } if (t >= 59990){ newJar(); setT(0); } said = Math.floor(t/T); playBtn.innerHTML = PAUSEI; playBtn.setAttribute('aria-pressed', 'true'); playBtn.setAttribute('aria-label', 'Pause');
+    (function tick(){ setT(t + 60); var k = Math.floor(t/T); if (k > said){ said = k; say(k + ' half-li' + (k === 1 ? 'fe' : 'ves') + ' (' + fy(k*T) + '): about ' + (100*Math.pow(0.5, k)).toPrecision(3) + '% of the C-14 is left.'); } if (t >= 60000){ stop(); return; } timer = setTimeout(tick, 30); })(); });
+  el('cdRst').addEventListener('click', function(){ stop(); newJar(); setT(0); say('Back to the moment of death, with a new set of 60 C-14 nuclei.'); });
+  el('cdT').addEventListener('input', function(){ stop(); setT(+this.value); });
+  el('cdT').addEventListener('change', function(){ say(fy(t) + ' after death: ' + (100*Math.exp(-LAM*t)).toPrecision(3) + '% of the C-14 is left, an activity of ' + (A_LIVE*Math.exp(-LAM*t)).toPrecision(3) + ' Bq per kg of carbon.'); });
+  cdA11y.onChange(function(){ drawScene(); drawGraph(); });
+  newJar(); setT(0); solve(); say('While the tree lives, its C-14 is constantly replaced. Move the slider or press play to follow the C-14 after death, and use the panel below to date a sample.');
+  return { setT:setT, _age:age, _A:function(){ return A_LIVE; } };
+};
+var cdSim = new cdGen();
+</script>
+<script>cdA11y.init();</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p><b>Radioactive dating</b> uses naturally occurring radioactivity to find the age of a material: estimate the original number of nuclei `N_0` and the present number `N`, then use the decay law `N = N_0 e^(-lambda t)` with the known decay constant to find the time.</p>
+<p>In <b>carbon-14 dating</b>, carbon-14 nuclei are produced when high-energy cosmic radiation strikes `\ ^14 N` nuclei in the upper atmosphere; they decay with a half-life of 5730 years. Radioactive carbon has the same chemistry as stable carbon, so it becomes part of every living organism, with an abundance of 1.3 parts per trillion of normal carbon. When the organism dies, carbon exchange with the environment stops and the `\ ^14 C` is no longer replenished as it decays. Comparing the `\ ^14 C` in an artifact with that in living tissue gives the time since death:</p>
+<p class="mob_eq">`t = -ln(N/N_0)/lambda`,&nbsp;&nbsp; `lambda = 0.693/T_(1/2) = 1.21 xx 10^(-4)` y`^(-1)`.</p>
+<p>Since the activity is proportional to the number of nuclei, `N/N_0` can be found from the activity: living carbon has about 250 Bq per kilogram (Example 12.4.4). Carbon-14 dating can be used for biological tissue as old as about 50 000 years, but is most accurate for younger samples, which still contain more `\ ^14 C`. The 60 nuclei in the jar decay at random times; the totals follow the decay law.</p>
+</div>
+</div>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+
+</div>
+
+</body>
+</html>

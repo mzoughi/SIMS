@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Nuclear: Nuclear Fusion</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobnucfusion" class="mob_wrap">
+<div class="fu_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="fu_a11ybtn" id="fuBtnHC" onclick="fuA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="fu_a11ybtn" id="fuBtnDM" onclick="fuA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="fu_a11ybtn" id="fuBtnCB" onclick="fuA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="fu_a11ybtn" id="fuBtnNR" onclick="fuA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+
+<div class="fu_title"><h3>Nuclear Fusion &mdash; Joining Light Nuclei</h3></div>
+<div class="fu_tabs" role="tablist" aria-label="Topic">
+<button type="button" role="tab" class="fu_tab" id="fuT0" aria-selected="true">1. The concept</button>
+<button type="button" role="tab" class="fu_tab" id="fuT1" aria-selected="false">2. Fusion in the Sun</button>
+<button type="button" role="tab" class="fu_tab" id="fuT2" aria-selected="false">3. Nucleosynthesis</button>
+<button type="button" role="tab" class="fu_tab" id="fuT3" aria-selected="false">4. The H-bomb</button>
+<button type="button" role="tab" class="fu_tab" id="fuT4" aria-selected="false">5. Fusion reactor</button>
+</div>
+<div id="fuNarBar" class="fu_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<!-- ═══════ TAB 0: CONCEPT ═══════ -->
+<div id="fuP0" role="tabpanel" aria-labelledby="fuT0">
+<div class="fu_intro">In <b>fusion</b>, two light nuclei combine into a heavier one. The product is lighter than the reactants, so energy is released, Q = (&Delta;m)c&sup2;. But both nuclei are positive: they repel, and must get within a few femtometres of each other (the <b>Coulomb barrier</b>) before the attractive strong force can take over. That takes temperatures of millions of kelvin, and even then the nuclei get through only by quantum <b>tunneling</b>.</div>
+<div class="fu_eqbox"><div class="fu_eqrow" id="fuEq"></div></div>
+<div class="fu_transport" role="toolbar" aria-label="Reaction"><div class="fu_tgroup" id="fuRx" role="group" aria-label="Choose the reaction"></div></div>
+<div class="fu_view"><canvas id="fuCol" width="820" height="230" role="img" aria-label="Two nuclei approach each other head-on. If they get close enough they fuse, with a flash, into the products; otherwise they are pushed back by the Coulomb repulsion."></canvas></div>
+<div id="fuColS" class="fu_status"></div>
+<div class="fu_transport" role="toolbar" aria-label="Collisions">
+<div class="fu_tgroup"><button type="button" class="fu_bbtn" id="fuShoot">Collide one pair</button><button type="button" class="fu_vbtn" id="fuShoot100">Try 1 000 000 pairs</button></div>
+<div class="fu_tgroup fu_tsep" role="group" aria-label="How the nuclei get their energy"><button type="button" class="fu_vbtn" id="fuMT" aria-pressed="true">Hot gas at temperature T</button><button type="button" class="fu_vbtn" id="fuMB" aria-pressed="false">Accelerator beam of energy E</button></div>
+</div>
+<div class="fu_panels" style="padding-bottom:0">
+<div class="fu_panel"><div class="fu_pbody">
+<div class="fu_ctrl" id="fuTC"><div class="fu_chdr"><label for="fuTemp">Temperature T</label><span class="fu_val" id="fuTempV"></span></div><input type="range" id="fuTemp" min="0" max="1000" step="1" value="560"></div>
+<div class="fu_ctrl" id="fuEC" hidden><div class="fu_chdr"><label for="fuE">Beam energy E (relative motion)</label><span class="fu_val" id="fuEV"></span></div><input type="range" id="fuE" min="0" max="1000" step="1" value="500"></div>
+<div class="fu_presets" id="fuTP"></div>
+</div></div></div>
+<div class="fu_card"><div class="fu_ctitle"><span>Potential energy of the pair against separation: the Coulomb barrier</span></div>
+<canvas id="fuBar" width="820" height="260" role="img" aria-label="Potential energy against separation in femtometres: the Coulomb hill rising as the nuclei approach, the deep strong-force well inside about 3 fm, the energy of the nuclei as a horizontal line, and the classical turning point."></canvas>
+<div class="fu_cnote" id="fuBarT"></div></div>
+<div class="fu_panels">
+<div class="fu_panel"><div class="fu_ptitle">Energy released Q</div><div class="fu_pbody" id="fuQ"></div></div>
+<div class="fu_panel"><div class="fu_ptitle">Per kilogram: fusion against fission</div><div class="fu_pbody" id="fuKg"></div></div>
+</div>
+</div>
+
+<!-- ═══════ TAB 1: SUN ═══════ -->
+<div id="fuP1" role="tabpanel" aria-labelledby="fuT1" hidden>
+<div class="fu_intro">The Sun is powered by the <b>proton&ndash;proton chain</b>. In its core (15 million K, about 150 times the density of water), four protons are turned, step by step, into one helium-4 nucleus. Step through the chain.</div>
+<div class="fu_view"><canvas id="fuSun" width="820" height="440" role="img" aria-label="Left: a cutaway of the Sun showing the core, the radiative zone and the convective zone. Right: the proton-proton chain as a tree: two branches each fuse two protons into a deuteron, add a proton to make helium-3, then the two helium-3 nuclei fuse into helium-4 and release two protons. The current step is highlighted."></canvas></div>
+<div class="fu_eqbox"><div class="fu_eqrow" id="fuSEq"></div><div class="fu_eqtext" id="fuSEqT"></div></div>
+<div class="fu_transport" role="toolbar" aria-label="Proton-proton chain">
+<div class="fu_tgroup">
+<button type="button" class="fu_tbtn fu_play" id="fuSPlay" aria-label="Play the chain" title="Play the chain"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="fu_tbtn" id="fuSBack" aria-label="Previous step" title="Previous step"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="4" y="4" width="3" height="16" fill="currentColor"/><path d="M20 4 L9 12 L20 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="fu_tbtn" id="fuSStep" aria-label="Next step" title="Next step"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="17" y="4" width="3" height="16" fill="currentColor"/><path d="M4 4 L15 12 L4 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="fu_tbtn" id="fuSRst" aria-label="Back to the start" title="Back to the start"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 5 A7 7 0 1 1 5.6 9" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M3 4 L9.5 4.5 L5.5 10 Z" fill="currentColor"/></svg></button>
+</div></div>
+<div class="fu_panels">
+<div class="fu_panel"><div class="fu_ptitle">The overall reaction</div><div class="fu_pbody" id="fuSNet"></div></div>
+<div class="fu_panel"><div class="fu_ptitle">How much hydrogen does the Sun burn?</div><div class="fu_pbody">
+<div class="fu_chdr"><label for="fuL">Luminosity of the star</label><span><input type="number" id="fuL" class="fu_num" value="3.85e26" step="any" min="0"> W</span></div>
+<div id="fuSCalc"></div></div></div>
+</div>
+</div>
+
+<!-- ═══════ TAB 2: NUCLEOSYNTHESIS ═══════ -->
+<div id="fuP2" role="tabpanel" aria-labelledby="fuT2" hidden>
+<div class="fu_intro"><b>Nucleosynthesis</b> is the making of the elements. Hydrogen and most helium come from the Big Bang. Everything else up to iron was made by fusion inside stars, each stage burning the &ldquo;ash&rdquo; of the previous one at a higher temperature. Fusion stops at iron, the top of the binding-energy curve; heavier elements are made by neutron capture, mostly in supernovae and neutron-star mergers.</div>
+<div class="fu_transport" role="toolbar" aria-label="Stage"><div class="fu_tgroup" id="fuNS" role="group" aria-label="Stage of nucleosynthesis"></div>
+<div class="fu_tgroup fu_tsep" role="group" aria-label="Star"><button type="button" class="fu_vbtn" id="fuM1" aria-pressed="false">Sun-like star</button><button type="button" class="fu_vbtn" id="fuM25" aria-pressed="true">25 solar masses</button></div></div>
+<div class="fu_view"><canvas id="fuOn" width="820" height="360" role="img" aria-label="Left: the star as an onion of burning shells, the innermost being the current stage. Right: the reaction of the current stage drawn with nuclei."></canvas></div>
+<div class="fu_eqbox"><div class="fu_eqrow" id="fuNEq"></div><div class="fu_eqtext" id="fuNEqT"></div></div>
+<div class="fu_card"><div class="fu_ctitle"><span>Climbing the binding-energy curve</span></div>
+<canvas id="fuBen" width="820" height="280" role="img" aria-label="Binding energy per nucleon against mass number, with the fuel and product of the current stage marked and an arrow climbing toward the iron peak."></canvas>
+<div class="fu_cnote" id="fuBenT"></div></div>
+<div class="fu_panels"><div class="fu_panel"><div class="fu_ptitle">The stages of a massive star</div><div class="fu_pbody" id="fuNTbl" style="overflow-x:auto"></div></div></div>
+</div>
+
+<!-- ═══════ TAB 3: H-BOMB ═══════ -->
+<div id="fuP3" role="tabpanel" aria-labelledby="fuT3" hidden>
+<div class="fu_intro">The <b>hydrogen bomb</b> (thermonuclear weapon) uses an uncontrolled fusion reaction. Fusion needs extreme temperature and pressure; in the bomb these are produced by a fission explosion. The fusion fuel is usually solid <b>lithium-6 deuteride</b>: neutrons turn lithium into tritium, which fuses with the deuterium. Unlike a fission bomb, there is no critical mass for the fusion fuel, so the yield can be made far larger. Schematic only.</div>
+<div class="fu_view"><canvas id="fuHb" width="820" height="300" role="img" aria-label="Schematic of a two-stage thermonuclear weapon: a fission stage and a fusion stage of lithium-6 deuteride in a casing. The animation shows the fission stage exploding, the energy reaching the fusion fuel, and the fusion stage igniting."></canvas></div>
+<div id="fuHbS" class="fu_status"></div>
+<div class="fu_transport" role="toolbar" aria-label="Animation"><div class="fu_tgroup">
+<button type="button" class="fu_tbtn fu_play" id="fuHPlay" aria-label="Play" title="Play"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor"/></svg></button>
+<button type="button" class="fu_tbtn" id="fuHRst" aria-label="Back to the start" title="Back to the start"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 5 A7 7 0 1 1 5.6 9" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M3 4 L9.5 4.5 L5.5 10 Z" fill="currentColor"/></svg></button></div></div>
+<div class="fu_panels">
+<div class="fu_panel"><div class="fu_ptitle">The fusion fuel cycle</div><div class="fu_pbody" id="fuHRx"></div></div>
+<div class="fu_panel"><div class="fu_ptitle">Energy from lithium deuteride</div><div class="fu_pbody">
+<div class="fu_chdr"><label for="fuHkg">Mass of Li-6 D that fuses</label><span><input type="number" id="fuHkg" class="fu_num" value="1" step="any" min="0"> kg</span></div><div id="fuHCalc"></div></div></div>
+</div>
+<div class="fu_card"><div class="fu_ctitle"><span>Explosive yields compared (logarithmic scale, kilotons of TNT)</span></div>
+<canvas id="fuHy" width="820" height="250" role="img" aria-label="Bar chart on a logarithmic scale of the yields of historical explosions, from a conventional bomb to the largest thermonuclear test, with your calculated yield marked."></canvas>
+<div class="fu_cnote">1 kiloton of TNT = 4.184&times;10<sup>12</sup> J. The first thermonuclear test (Ivy Mike, 1952) yielded about 10 megatons, roughly 700 times the Hiroshima fission bomb. The 1963 Partial Test Ban Treaty ended atmospheric testing by its signatories; the effects of these weapons, blast, heat, radiation and fallout, are why their control remains a central question.</div></div>
+</div>
+
+<!-- ═══════ TAB 4: REACTOR ═══════ -->
+<div id="fuP4" role="tabpanel" aria-labelledby="fuT4" hidden>
+<div class="fu_intro">A fusion power plant must heat a D&ndash;T plasma to about 150 million K and hold it long enough for many fusions. Electricity is spent to heat the plasma; the fusion power is turned into heat and then electricity; part of that electricity is <b>recirculated</b> to keep the plasma hot. Follow the power flow (like the Fusion Energy Base power-plant simulator).</div>
+<div class="fu_read" id="fuRr" aria-live="off"></div>
+<div class="fu_view"><canvas id="fuSk" width="820" height="440" role="img" aria-label="Power-flow diagram: the heating system sends heating power into the plasma in the vacuum vessel; fusion power and the heating power leave the plasma to the conversion to electricity; rejected heat leaves the heating system and the conversion; gross electricity is split into net electricity to the grid and recirculating electricity, which feeds the house load and the heating system. Arrow widths are proportional to power."></canvas></div>
+<div id="fuRs" class="fu_status"></div>
+<div class="fu_panels">
+<div class="fu_panel"><div class="fu_ptitle">Controls</div><div class="fu_pbody">
+<div class="fu_ctrl"><div class="fu_chdr"><label for="fuPh">Heating power</label><span class="fu_val" id="fuPhV"></span></div><input type="range" id="fuPh" min="1" max="1000" step="1" value="398"></div>
+<div class="fu_ctrl"><div class="fu_chdr"><label for="fuQs">Scientific gain Q<sub>sci</sub> = P<sub>fusion</sub>/P<sub>heating</sub></label><span class="fu_val" id="fuQsV"></span></div><input type="range" id="fuQs" min="0" max="1000" step="1" value="650"></div>
+<div class="fu_ctrl"><div class="fu_chdr"><label for="fuEc">Conversion to electricity efficiency</label><span class="fu_val" id="fuEcV"></span></div><input type="range" id="fuEc" min="0" max="60" step="1" value="33"></div>
+<div class="fu_ctrl"><div class="fu_chdr"><label for="fuEh">Heating system efficiency</label><span class="fu_val" id="fuEhV"></span></div><input type="range" id="fuEh" min="1" max="100" step="1" value="50"></div>
+<div class="fu_ctrl"><div class="fu_chdr"><label for="fuHl">House load</label><span class="fu_val" id="fuHlV"></span></div><input type="range" id="fuHl" min="0" max="200" step="1" value="20"></div>
+<div class="fu_presets" id="fuRP"></div>
+</div></div>
+<div class="fu_panel"><div class="fu_ptitle">Display</div><div class="fu_pbody"><table class="fu_tbl" id="fuRT"></table><p class="fu_note">Engineering Q = (net electricity)/(recirculating electricity). Net &gt; 0 is needed for a power plant; Q<sub>sci</sub> = 1 is &ldquo;scientific break-even&rdquo;.</p></div></div>
+</div>
+<div class="fu_panels" style="padding-top:0">
+<div class="fu_panel"><div class="fu_ptitle">Inside the plasma</div><div class="fu_pbody" id="fuPl"></div></div>
+<div class="fu_panel"><div class="fu_ptitle">Fuel: deuterium and tritium</div><div class="fu_pbody" id="fuFuel"></div></div>
+</div>
+</div>
+</div>
+<style>
+:where(#mobnucfusion) * { margin:0; box-sizing:border-box; }
+#mobnucfusion { width:100%; max-width:860px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; color:#1d232a; }
+#mobnucfusion canvas { display:block; width:100%; height:auto; }
+#mobnucfusion .fu_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#mobnucfusion .fu_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#mobnucfusion .fu_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobnucfusion .fu_title { padding:4px; background-color:#f90; text-align:center; }
+#mobnucfusion .fu_title h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+#mobnucfusion .fu_tabs { display:flex; gap:4px; padding:6px 8px 0; background:#14213a; flex-wrap:wrap; }
+#mobnucfusion .fu_tab { flex:1 1 130px; padding:8px 6px; border:1px solid #2b3d60; border-bottom:0; border-radius:6px 6px 0 0; background:#1d2c4a; color:#bcd0f0; font-weight:bold; cursor:pointer; font-size:.86rem; min-height:40px; }
+#mobnucfusion .fu_tab[aria-selected="true"] { background:#f3f5f8; color:#14213a; }
+#mobnucfusion .fu_intro { padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; font-size:.9rem; line-height:1.5; }
+#mobnucfusion .fu_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:6px 12px; padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; }
+#mobnucfusion .fu_rl { font-size:.7rem; color:#667; text-transform:uppercase; letter-spacing:.05em; }
+#mobnucfusion .fu_rv { font-family:monospace; font-size:.93rem; color:#7a3a00; font-weight:bold; }
+#mobnucfusion .fu_view { background:#0b1222; }
+#mobnucfusion .fu_status { color:#222; font-size:.84rem; text-align:center; background:#fff6d9; padding:5px 8px; line-height:1.45; min-height:1.6em; }
+#mobnucfusion .fu_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+#mobnucfusion .fu_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+#mobnucfusion .fu_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { #mobnucfusion .fu_tsep { padding-left:0; border-left:0; } }
+#mobnucfusion .fu_tbtn { width:44px; height:38px; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer; border:1px solid #6d8a3a; border-radius:5px; background:#fff; color:#223; }
+#mobnucfusion .fu_tbtn.fu_play { background:#2e7d32; color:#fff; border-color:#1b5e20; }
+#mobnucfusion .fu_tbtn.fu_play[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+#mobnucfusion .fu_vbtn, #mobnucfusion .fu_bbtn { min-height:38px; padding:4px 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; }
+#mobnucfusion .fu_vbtn[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobnucfusion .fu_bbtn { background:#2e7d32; border-color:#1b5e20; color:#fff; font-weight:bold; }
+#mobnucfusion button:disabled { opacity:.4; cursor:not-allowed; }
+#mobnucfusion .fu_card { margin:10px 10px 0; background:#0b1222; border:1px solid #2b3d60; border-radius:6px; overflow:hidden; }
+#mobnucfusion .fu_ctitle { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:4px 10px; padding:5px 10px; background:#14213a; color:#dbe7ff; font-size:.8rem; font-weight:bold; }
+#mobnucfusion .fu_cnote { padding:8px 12px 10px; color:#e3ecfa; font-size:.86rem; line-height:1.5; background:#0d1526; border-top:1px solid #2b3d60; }
+#mobnucfusion .fu_cnote b { color:#ffd23f; }
+#mobnucfusion .fu_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:10px; padding:10px; }
+#mobnucfusion .fu_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+#mobnucfusion .fu_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+#mobnucfusion .fu_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; font-size:.87rem; line-height:1.45; }
+#mobnucfusion .fu_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+#mobnucfusion .fu_chdr { display:flex; justify-content:space-between; align-items:baseline; gap:8px; flex-wrap:wrap; }
+#mobnucfusion .fu_chdr label { font-size:.82rem; font-weight:bold; color:#333; min-width:0; }
+#mobnucfusion .fu_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; min-width:4.5em; text-align:right; }
+#mobnucfusion .fu_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+#mobnucfusion select { width:100%; min-height:34px; padding:4px 6px; font-size:.86rem; border:1px solid #8a96a8; border-radius:4px; background:#fff; }
+#mobnucfusion .fu_presets { display:flex; flex-wrap:wrap; gap:5px; }
+#mobnucfusion .fu_presets button { padding:5px 9px; font-size:.82rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:4px; background:#fff; color:#223; min-height:34px; }
+#mobnucfusion .fu_presets button[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobnucfusion .fu_note { font-size:.8rem; color:#555; font-style:italic; }
+#mobnucfusion .fu_tbl { border-collapse:collapse; width:100%; font-size:.84rem; }
+#mobnucfusion .fu_tbl th, #mobnucfusion .fu_tbl td { padding:4px 6px; border-bottom:1px solid #e3e7ee; text-align:right; }
+#mobnucfusion .fu_tbl th { background:#f1f4f8; font-size:.76rem; }
+#mobnucfusion .fu_tbl .fu_l { text-align:left; }
+#mobnucfusion .fu_eq { font-family:'Times New Roman', serif; font-size:1rem; background:#f6f8fb; border-left:3px solid #1f5fa8; padding:4px 8px; margin:2px 0; overflow-wrap:anywhere; }
+#mobnucfusion b.fu_res { color:#7a3a00; }
+#mobnucfusion .fu_num { width:6.5em; height:36px; padding:3px 6px; font-size:.95rem; border:1px solid #888; border-radius:4px; }
+#mobnucfusion button:focus-visible, #mobnucfusion input:focus-visible, #mobnucfusion select:focus-visible, #mobnucfusion canvas:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (pointer:coarse) { #mobnucfusion .fu_tbtn, #mobnucfusion .fu_vbtn, #mobnucfusion .fu_bbtn, #mobnucfusion .fu_num { min-height:44px; } #mobnucfusion .fu_presets button { min-height:42px; } #mobnucfusion input[type=checkbox] { width:20px; height:20px; } #mobnucfusion input[type=range] { height:28px; } }
+#mobnucfusion .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobnucfusion .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobnucfusion .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobnucfusion .mob_desc p { margin:0 0 8px 0; }
+#mobnucfusion .mob_eq { text-align:center; }
+#mobnucfusion.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobnucfusion.a11y_dm .fu_card, #mobnucfusion.a11y_dm .fu_view, #mobnucfusion.a11y_dm [aria-label="Display options"], #mobnucfusion.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobnucfusion.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobnucfusion.a11y_hc .fu_card, #mobnucfusion.a11y_hc .fu_view, #mobnucfusion.a11y_hc [aria-label="Display options"], #mobnucfusion.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+
+#mobnucfusion [hidden] { display:none !important; }
+#mobnucfusion .fu_eqbox { background:#fff; padding:8px 12px; border-bottom:1px solid #d5dbe4; }
+#mobnucfusion .fu_eqrow { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:4px 9px; font-size:1.4rem; font-family:'Times New Roman', serif; }
+#mobnucfusion .fu_nuc { display:inline-flex; align-items:center; }
+#mobnucfusion .fu_az { display:inline-flex; flex-direction:column; align-items:flex-end; font-size:.55em; line-height:1.05; margin-right:2px; }
+#mobnucfusion .fu_a { color:#1f5fa8; } #mobnucfusion .fu_z { color:#b42318; }
+#mobnucfusion .fu_eqtext { text-align:center; font-size:.9rem; margin-top:5px; line-height:1.45; }
+#mobnucfusion .fu_tbl td:first-child, #mobnucfusion .fu_tbl th:first-child { text-align:left; }
+#mobnucfusion .fu_dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:5px; vertical-align:middle; }
+#mobnucfusion tr.fu_cur td { background:#fff3c4; font-weight:bold; }
+</style>
+<script>
+var fuA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return; b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobnucfusion'); if (!W) return; W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc);
+var nb = document.getElementById('fuNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none'; var nr = document.getElementById('fuBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('fuBtnHC', states.hc); styleBtn('fuBtnDM', states.dm); styleBtn('fuBtnCB', states.cb); styleBtn('fuBtnNR', states.nr); hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return { init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply(); if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: protons orange, neutrons sky blue; power flows in the colour-blind palette.'); },
+alt:function(){ return states.hc || states.cb; }, narrate:function(m){ if (!states.nr) return; var nb = document.getElementById('fuNarBar'); if (nb) nb.textContent = m; } };
+})();
+</script>
+
+<!-- ════════ SIMULATION ════════
+Masses: atomic masses in u (rounded). Q = (sum reactants - sum products) x 931.5 MeV; for p + p use 2 m(H-1) - m(H-2) - 2 m_e.
+Coulomb barrier: U = 1.44 Z1 Z2/r MeV (r in fm) outside R = 1.2 (A1^(1/3) + A2^(1/3)) fm; a -30 MeV well inside (schematic).
+Tunneling probability (Gamow factor): P = exp(-sqrt(E_G/E)), E_G = 2 mu c^2 (pi alpha Z1 Z2)^2. Thermal energies sampled from the
+Maxwell distribution (Gamma(3/2, kT)), kT = 8.617e-8 keV/K x T. Reactor: P_fus = Q_sci P_heat; thermal = P_fus + P_heat;
+gross = eta_conv x thermal; recirc = P_heat/eta_heat + house; net = gross - recirc; Q_eng = net/recirc.
+No dollar signs or backticks in the code.
+-->
+<script>
+var fuGen = function(){
+  function el(id){ return document.getElementById(id); }
+  var TAU = 2*Math.PI, U = 931.494, ME = 0.000549, KB = 8.617e-8, MEVJ = 1.602e-13, UKG = 1.6605e-27;
+  function say(m){ fuA11y.narrate(m); }
+  function pal(){ var alt = fuA11y.alt(); return { p:alt ? '#D55E00' : '#3a5fc8', n:alt ? '#56B4E9' : '#d63a3a', hot:'#ffd23f', txt:'#e6ecf2', dim:'#9aa6b4' }; }
+  function rgbA(h, a){ var c = parseInt(h.slice(1), 16); return 'rgba(' + (c >> 16) + ',' + ((c >> 8) & 255) + ',' + (c & 255) + ',' + a + ')'; }
+  var M = { n:1.008665, H:1.007825, D:2.014102, T:3.016049, He3:3.016029, He4:4.002603, Li6:6.015123, C12:12, O16:15.994915, Ne20:19.992440, Na23:22.989769, Mg24:23.985042, Si28:27.976927, S32:31.972071, Ni56:55.942132, Fe56:55.934936 };
+  var NUC = { n:[1,0,'n'], H:[1,1,'H'], p:[1,1,'H'], D:[2,1,'H'], T:[3,1,'H'], He3:[3,2,'He'], He4:[4,2,'He'], Li6:[6,3,'Li'], C12:[12,6,'C'], O16:[16,8,'O'], Ne20:[20,10,'Ne'], Mg24:[24,12,'Mg'], Si28:[28,14,'Si'], S32:[32,16,'S'], Ni56:[56,28,'Ni'], Fe56:[56,26,'Fe'], Be8:[8,4,'Be'] };
+  function nh(k){ if (k === 'e+') return '<span class="fu_nuc' + '"><span class="fu_az' + '"><span class="fu_a' + '">0</span><span class="fu_z' + '">+1</span></span>e</span>'; if (k === 'nu') return '\u03bd'; if (k === 'g') return '\u03b3';
+    var q = NUC[k]; return '<span class="fu_nuc' + '"><span class="fu_az' + '"><span class="fu_a' + '">' + q[0] + '</span><span class="fu_z' + '">' + q[1] + '</span></span>' + q[2] + '</span>'; }
+  function eqH(l, r, Q){ return l.map(nh).join(' + ') + ' \u2192 ' + r.map(nh).join(' + ') + (Q !== undefined ? ' + ' + Q.toFixed(2) + ' MeV' : ''); }
+  function sc(x, d){ if (!isFinite(x) || x === 0) return '0'; var e = Math.floor(Math.log(Math.abs(x))/Math.LN10); if (e >= -2 && e <= 4) return x.toPrecision(d || 3); return (x/Math.pow(10, e)).toFixed((d || 3) - 1) + '\u00d710<sup>' + e + '</sup>'; }
+  function scT(x, d){ return sc(x, d).replace(/<sup>(-?\d+)<\/sup>/, function(m, e){ return '^' + e; }); }
+  function lbl(g, t, x, y, col, size, al){ g.font = 'bold ' + (size || 12) + 'px Arial'; g.textAlign = al || 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 3.5; g.strokeStyle = 'rgba(0,0,0,0.85)'; g.strokeText(t, x, y); g.fillStyle = col; g.fillText(t, x, y); }
+  function cluster(g, cx, cy, R, A, Z){ var p = pal(), k = Math.max(1, Math.min(A, 60)), br = A === 1 ? R : R/Math.sqrt(k)*1.1, pc = 0;
+    for (var i=0; i<k; i++){ var r = A === 1 ? 0 : R*Math.sqrt((i + 0.5)/k)*0.78, a = i*2.39996, isP = (pc + 0.5)/(i + 1) <= Z/A && pc < Math.round(k*Z/A); if (isP) pc++;
+      var gr = g.createRadialGradient(cx + r*Math.cos(a) - br*0.3, cy + r*Math.sin(a) - br*0.3, br*0.1, cx + r*Math.cos(a), cy + r*Math.sin(a), br); gr.addColorStop(0, '#fff'); gr.addColorStop(0.3, isP ? p.p : p.n); gr.addColorStop(1, 'rgba(0,0,0,0.6)'); g.fillStyle = gr; g.beginPath(); g.arc(cx + r*Math.cos(a), cy + r*Math.sin(a), br, 0, TAU); g.fill(); } }
+  function nucR(A){ return 7 + 5.2*Math.cbrt(A); }
+  function Qof(l, r, extra){ var s = 0; l.forEach(function(k){ s += M[k]; }); r.forEach(function(k){ if (M[k]) s -= M[k]; }); return (s - (extra || 0))*U; }
+  var PLAYI = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor"/></svg>', PAUSEI = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>';
+
+  /* ═════════════════ TAB 0: concept ═════════════════ */
+  var RX = [
+    { lab:'D + T', a:'D', b:'T', prod:['He4', 'n'], light:'n', heavy:'He4', note:'the easiest reaction, used in fusion reactors and H-bombs' },
+    { lab:'D + D \u2192 \u00b3He + n', a:'D', b:'D', prod:['He3', 'n'], light:'n', heavy:'He3', note:'one of the two equally likely D\u2013D branches' },
+    { lab:'D + D \u2192 T + p', a:'D', b:'D', prod:['T', 'H'], light:'H', heavy:'T', note:'the other D\u2013D branch' },
+    { lab:'D + \u00b3He', a:'D', b:'He3', prod:['He4', 'H'], light:'H', heavy:'He4', note:'releases no neutron, but its barrier is twice as high' },
+    { lab:'p + p (Sun)', a:'H', b:'H', prod:['D', 'e+', 'nu'], light:'D', heavy:'D', pp:true, note:'the first step in the Sun; it needs the weak force, so it is extremely slow' } ];
+  var rx = 0, mode = 'T', Tk = 1.5e7, Eb = 0.5, col = null, ctimer = null, cC = el('fuCol'), gc = cC.getContext('2d'), cB = el('fuBar'), gb = cB.getContext('2d');
+  function R(){ return RX[rx]; }
+  function Zs(){ return [NUC[R().a][1], NUC[R().b][1]]; }
+  function Rt(){ return 1.2*(Math.cbrt(NUC[R().a][0]) + Math.cbrt(NUC[R().b][0])); }
+  function Ubar(){ var z = Zs(); return 1.44*z[0]*z[1]/Rt(); }
+  function mu(){ var a = M[R().a], b = M[R().b]; return a*b/(a + b)*U; }
+  function EG(){ var z = Zs(); return 2*mu()*Math.pow(Math.PI*z[0]*z[1]/137.036, 2); }
+  function Ptun(E){ if (E >= Ubar()) return 1; return Math.exp(-Math.sqrt(EG()/E)); }
+  function kT(){ return KB*Tk/1000; }   /* MeV */
+  function gam(){ /* Gamma(3/2, kT): sum of an exponential and half a squared normal */ var u = Math.random() || 1e-9, v = Math.random() || 1e-9, w = Math.random(); var n = Math.sqrt(-2*Math.log(v))*Math.cos(TAU*w); return kT()*(-Math.log(u) + 0.5*n*n); }
+  function Qrx(){ var r = R(); return r.pp ? (2*M.H - M.D - 2*ME)*U : Qof([r.a, r.b], r.prod); }
+  function fT(t){ return t >= 1e9 ? (t/1e9).toPrecision(3) + ' billion K' : t >= 1e6 ? (t/1e6).toPrecision(3) + ' million K' : Math.round(t).toLocaleString() + ' K'; }
+  function fE(e){ return e >= 1 ? e.toFixed(2) + ' MeV' : e >= 1e-3 ? (e*1000).toPrecision(3) + ' keV' : (e*1e6).toPrecision(3) + ' eV'; }
+  function avgP(){ /* average tunneling probability over the Maxwell distribution (numerical) */ var s = 0, w = 0, k = kT(); for (var i=1; i<=400; i++){ var E = k*i*0.05, f = Math.sqrt(E)*Math.exp(-E/k); s += f*Ptun(E); w += f; } return s/w; }
+  function drawCol(){ var W = cC.width, H = cC.height, p = pal(), r = R(), y = H/2;
+    gc.fillStyle = '#0b1222'; gc.fillRect(0, 0, W, H);
+    var A1 = NUC[r.a][0], A2 = NUC[r.b][0], R1 = nucR(A1), R2 = nucR(A2), cx = W/2, sep = 330, s = 1;
+    if (col){ var t = col.t;
+      if (col.fuse){ if (t < 0.45){ sep = 330*(1 - t/0.45) + (R1 + R2)*0.7*(t/0.45); } else sep = -1; }
+      else { var tm = 0.45, closest = Math.max(R1 + R2 + 6, Math.min(320, 40 + (col.rt/Rt())*12)); sep = t < tm ? 330 - (330 - closest)*Math.sin(t/tm*Math.PI/2) : closest + (330 - closest)*Math.sin((t - tm)/(1 - tm)*Math.PI/2); } }
+    if (sep >= 0){ cluster(gc, cx - sep/2, y, R1, A1, NUC[r.a][1]); cluster(gc, cx + sep/2, y, R2, A2, NUC[r.b][1]);
+      lbl(gc, nameOf(r.a), cx - sep/2, y + R1 + 14, p.txt, 12); lbl(gc, nameOf(r.b), cx + sep/2, y + R2 + 14, p.txt, 12);
+      if (!col || col.t < 0.45){ gc.strokeStyle = '#ffd23f'; gc.lineWidth = 2; [[-1, cx - sep/2 - R1 - 6], [1, cx + sep/2 + R2 + 6]].forEach(function(q){ gc.beginPath(); gc.moveTo(q[1], y); gc.lineTo(q[1] - q[0]*24, y); gc.stroke(); }); } }
+    else { var k2 = (col.t - 0.45)/0.55, g2 = gc.createRadialGradient(cx, y, 5, cx, y, 110); g2.addColorStop(0, 'rgba(255,240,150,' + (1 - k2) + ')'); g2.addColorStop(1, 'rgba(255,240,150,0)'); gc.fillStyle = g2; gc.beginPath(); gc.arc(cx, y, 110, 0, TAU); gc.fill();
+      var prods = r.prod.filter(function(x){ return NUC[x]; }), mh = M[prods[0]], ml = M[prods[1]] || 0.000549, d1 = 40 + k2*300*(ml/(mh + ml)), d2 = 40 + k2*300*(mh/(mh + ml));
+      cluster(gc, cx - d1, y - 10, nucR(NUC[prods[0]][0]), NUC[prods[0]][0], NUC[prods[0]][1]); lbl(gc, nameOf(prods[0]), cx - d1, y + nucR(NUC[prods[0]][0]) + 6, p.txt, 12);
+      if (prods[1]){ cluster(gc, cx + d2, y + 10, nucR(NUC[prods[1]][0]), NUC[prods[1]][0], NUC[prods[1]][1]); lbl(gc, nameOf(prods[1]), cx + d2, y + 10 + nucR(NUC[prods[1]][0]) + 14, p.txt, 12); }
+      if (r.pp){ gc.fillStyle = '#ffd23f'; gc.beginPath(); gc.arc(cx + d2, y + 10, 4, 0, TAU); gc.fill(); lbl(gc, 'e\u207a + \u03bd', cx + d2, y + 30, p.txt, 12); }
+      if (k2 < 0.6) lbl(gc, Qrx().toFixed(2) + ' MeV', cx, y - 50, '#ffd23f', 15); }
+    lbl(gc, mode === 'T' ? 'T = ' + fT(Tk) + ' (average kinetic energy \u2248 ' + fE(1.5*kT()) + ')' : 'beam energy E = ' + fE(Eb), 10, 16, p.dim, 12, 'left');
+    lbl(gc, 'Coulomb barrier \u2248 ' + fE(Ubar()), W - 10, 16, '#ff8a7a', 12, 'right'); }
+  function nameOf(k){ return { n:'n', H:'p', D:'D', T:'T', He3:'\u00b3He', He4:'\u2074He', e:'e' }[k] || k; }
+  function drawBar(){ var W = cB.width, H = cB.height, L = 60, Rr = W - 20, T = 16, B = H - 36, p = pal(), z = Zs(), Rn = Rt(), Ub = Ubar(), i, Emax = Ub*1.25, Emin = -Ub*0.5;
+    function X(r){ return L + r/40*(Rr - L); } function Y(e){ return B - (e - Emin)/(Emax - Emin)*(B - T); }
+    gb.fillStyle = '#0b1222'; gb.fillRect(0, 0, W, H); gb.strokeStyle = 'rgba(150,170,195,0.2)'; gb.fillStyle = p.dim; gb.font = '11px Arial'; gb.textBaseline = 'middle';
+    for (i=0; i<=40; i += 5){ gb.beginPath(); gb.moveTo(X(i), T); gb.lineTo(X(i), B); gb.stroke(); gb.textAlign = 'center'; gb.fillText(String(i), X(i), B + 12); }
+    gb.strokeStyle = 'rgba(255,255,255,0.5)'; gb.beginPath(); gb.moveTo(L, Y(0)); gb.lineTo(Rr, Y(0)); gb.stroke(); gb.textAlign = 'right'; gb.fillText('0', L - 4, Y(0)); gb.fillText(fE(Ub), L - 4, Y(Ub));
+    gb.textAlign = 'center'; gb.fillStyle = '#dbe7ff'; gb.font = 'bold 12px Arial'; gb.fillText('separation r (fm)', (L + Rr)/2, H - 8); gb.save(); gb.translate(14, (T + B)/2); gb.rotate(-Math.PI/2); gb.fillText('potential energy', 0, 0); gb.restore();
+    gb.strokeStyle = '#ff8a7a'; gb.lineWidth = 2.6; gb.beginPath(); gb.moveTo(X(0.2), B); gb.lineTo(X(0.2), Y(Emin)); gb.lineTo(X(Rn), Y(Emin)); gb.lineTo(X(Rn), Y(Ub)); for (i=0; i<=200; i++){ var rr = Rn + (40 - Rn)*i/200; gb.lineTo(X(rr), Y(1.44*z[0]*z[1]/rr)); } gb.stroke();
+    lbl(gb, 'strong-force well', X(Rn/2), Y(Emin) - 12, '#7fffb0', 11); lbl(gb, 'Coulomb repulsion U = kq\u2081q\u2082/r', X(Rn + 8), Y(Ub*0.75), '#ff8a7a', 11, 'left');
+    var E = mode === 'T' ? 1.5*kT() : Eb, ye = Y(Math.min(E, Emax*0.98)), rt = 1.44*z[0]*z[1]/E;
+    gb.strokeStyle = '#ffd23f'; gb.setLineDash([6, 4]); gb.lineWidth = 2; gb.beginPath(); gb.moveTo(Rr, ye); gb.lineTo(X(Math.max(Rn, Math.min(40, rt))), ye); gb.stroke(); gb.setLineDash([]);
+    if (E < Ub){ if (rt < 40){ gb.fillStyle = '#ffd23f'; gb.beginPath(); gb.arc(X(rt), ye, 5, 0, TAU); gb.fill(); lbl(gb, 'turning point ' + rt.toFixed(1) + ' fm', X(rt), ye - 14, '#ffd23f', 11); }
+      gb.strokeStyle = 'rgba(127,255,176,0.8)'; gb.setLineDash([2, 4]); gb.beginPath(); gb.moveTo(X(Math.min(39.5, rt)), ye); gb.lineTo(X(Rn), ye); gb.stroke(); gb.setLineDash([]); lbl(gb, 'tunneling', X((Rn + Math.min(39.5, rt))/2), ye + 12, '#7fffb0', 11); }
+    lbl(gb, (mode === 'T' ? 'average energy ' : 'beam energy ') + fE(E) + (rt > 40 ? ' (turning point at ' + Math.round(rt).toLocaleString() + ' fm, off the graph)' : ''), Rr - 4, ye - 12, '#ffd23f', 11, 'right');
+    var ap = avgP(), s = 'Barrier height \u2248 1.44 Z\u2081Z\u2082/r = 1.44(' + z[0] + ')(' + z[1] + ')/' + Rn.toFixed(1) + ' fm \u2248 <b>' + fE(Ub) + '</b>. ';
+    if (mode === 'T'){ var Tneed = Ub/(1.5*KB/1000); s += 'At ' + fT(Tk) + ', the average kinetic energy (3/2)kT is only ' + fE(1.5*kT()) + '; classically the nuclei would need about <b>' + fT(Tneed) + '</b>. They fuse anyway thanks to <b>tunneling</b> and the fast tail of the energy distribution: the chance per close collision is about <b>' + sc(ap, 2) + '</b>.'; }
+    else s += 'A beam of ' + fE(Eb) + (Eb >= Ub ? ' goes over the barrier: every head-on pair fuses (classically).' : ' must tunnel: probability \u2248 ' + sc(Ptun(Eb), 2) + ' per head-on collision. (Beams are not used for power: most particles just scatter and lose their energy.)');
+    if (R().pp) s += ' For p + p, even after tunneling only about 1 in 10<sup>25</sup> encounters turns a proton into a neutron (weak force): a proton in the Sun waits billions of years.';
+    el('fuBarT').innerHTML = s; }
+  function qPanel(){ var r = R(), Q = Qrx(), pr = r.prod.filter(function(k){ return NUC[k] && k !== 'nu'; });
+    var left = r.pp ? '2m(\u00b9H)' : nameOf(r.a) === nameOf(r.b) ? '2m(' + nameOf(r.a) + ')' : 'm(' + nameOf(r.a) + ') + m(' + nameOf(r.b) + ')';
+    var lsum = M[r.a] + M[r.b], rsum = r.pp ? M.D + 2*ME : M[pr[0]] + M[pr[1]];
+    el('fuEq').innerHTML = eqH([r.a, r.b], r.prod) + ' + Q';
+    var s = '<div class="fu_eq' + '">' + left + ' = ' + lsum.toFixed(6) + ' u</div><div class="fu_eq' + '">' + (r.pp ? 'm(D) + 2m<sub>e</sub> = ' + M.D.toFixed(6) + ' + 0.001098' : pr.map(function(k){ return 'm(' + nameOf(k) + ')'; }).join(' + ') + ' = ' + pr.map(function(k){ return M[k].toFixed(6); }).join(' + ')) + ' = ' + rsum.toFixed(6) + ' u</div>'
+      + '<div class="fu_eq' + '">\u0394m = ' + (lsum - rsum).toFixed(6) + ' u &nbsp; Q = (\u0394m)(931.5 MeV/u) = <b class="fu_res' + '">' + Q.toFixed(2) + ' MeV</b></div>';
+    if (!r.pp){ var mh = M[r.heavy], ml = M[r.light]; s += '<p>Momentum is conserved, so the lighter product carries most of the energy: <b>' + nameOf(r.light) + '</b> gets Q\u00b7m<sub>heavy</sub>/(m<sub>heavy</sub> + m<sub>light</sub>) = <b>' + (Q*mh/(mh + ml)).toFixed(1) + ' MeV</b>, ' + nameOf(r.heavy) + ' gets ' + (Q*ml/(mh + ml)).toFixed(1) + ' MeV.' + (r.light === 'n' ? ' The neutron, having no charge, escapes the plasma.' : '') + '</p>'; }
+    s += '<p class="fu_note' + '">' + r.note + '.</p>'; el('fuQ').innerHTML = s;
+    var mfuel = (M[r.a] + M[r.b])*UKG, J = Q*MEVJ/mfuel;
+    el('fuKg').innerHTML = '<div class="fu_eq' + '">E per kg = Q/(m<sub>' + nameOf(r.a) + '</sub> + m<sub>' + nameOf(r.b) + '</sub>) = (' + Q.toFixed(2) + ' MeV)(1.60\u00d710<sup>\u221213</sup> J/MeV)/(' + (M[r.a] + M[r.b]).toFixed(3) + ' u \u00d7 1.66\u00d710<sup>\u221227</sup> kg/u) = <b class="fu_res' + '">' + sc(J) + ' J/kg</b></div>'
+      + '<p>Fission of U-235: 8.21\u00d710<sup>13</sup> J/kg (Example 12.6.2). ' + (r.a === 'D' && r.b === 'T' ? '<b>D\u2013T fusion gives about ' + (J/8.21e13).toFixed(1) + ' times more per kilogram</b>, even though each reaction releases only about a tenth of the 200 MeV of a fission: there are far more light nuclei in a kilogram.' : 'This reaction gives ' + (J/8.21e13).toFixed(2) + ' times as much per kilogram.') + '</p><p class="fu_note' + '">Deuterium is plentiful: about 1 in 6 400 hydrogen atoms in sea water. Tritium is radioactive (12.3 y) and must be made from lithium.</p>'; }
+  function tUI(){ el('fuTempV').textContent = fT(Tk); el('fuEV').textContent = fE(Eb); el('fuTemp').setAttribute('aria-valuetext', fT(Tk)); el('fuE').setAttribute('aria-valuetext', fE(Eb)); }
+  function conceptAll(){ tUI(); drawCol(); drawBar(); qPanel(); }
+  function shoot(){ if (ctimer) return; var E = mode === 'T' ? gam() : Eb, z = Zs(), rt = 1.44*z[0]*z[1]/E, p = Ptun(E), fuse = Math.random() < p;
+    col = { t:0, fuse:fuse, rt:rt, E:E };
+    var msg = 'Collision energy ' + fE(E) + ': ' + (E >= Ubar() ? 'over the barrier, they fuse! ' : fuse ? 'below the barrier, but they tunneled through and fused! ' : 'pushed back at ' + (rt > 1000 ? Math.round(rt).toLocaleString() : rt.toFixed(1)) + ' fm (the nuclei touch at ' + Rt().toFixed(1) + ' fm). ') + (E < Ubar() ? 'Tunneling chance ' + scT(p, 2) + '.' : '');
+    el('fuColS').textContent = msg; say(msg);
+    (function tick(){ col.t = Math.min(1, col.t + 0.012); drawCol(); if (col.t < 1) ctimer = setTimeout(tick, 25); else { ctimer = null; col = null; drawCol(); } })(); }
+  function many(){ var N = 1e6, hits = 0, i; if (mode === 'B'){ var pB = Ptun(Eb); hits = pB >= 1 ? N : Math.round(N*pB); }
+    else { var ap = avgP(); hits = ap*N < 30 ? (function(){ var c = 0; for (i=0; i<N; i++){ var E = gam(); if (Math.random() < Ptun(E)) c++; } return c; })() : Math.round(N*ap); }
+    var m = '1 000 000 head-on collisions: ' + hits.toLocaleString() + ' fusion' + (hits === 1 ? '' : 's') + ' (' + (100*hits/N).toPrecision(2) + '%). ' + (hits === 0 ? 'Not one! A real plasma has about 10\u00b2\u2070 particles per cubic metre colliding constantly, so even this tiny chance adds up.' : '');
+    el('fuColS').textContent = m; say(m); }
+  function Tfrom(v){ return Math.pow(10, 4 + 5*v/1000); } function vT(T){ return (Math.log(T)/Math.LN10 - 4)/5*1000; }
+  function Efrom(v){ return Math.pow(10, -3 + 4*v/1000); } function vE(E){ return (Math.log(E)/Math.LN10 + 3)/4*1000; }
+  el('fuRx').innerHTML = RX.map(function(r, i){ return '<button type="button" class="fu_vbtn' + '" data-i="' + i + '" aria-pressed="' + (i === rx ? 'true' : 'false') + '">' + r.lab + '</button>'; }).join('');
+  [].forEach.call(el('fuRx').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ rx = +b.getAttribute('data-i'); [].forEach.call(el('fuRx').querySelectorAll('button'), function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); conceptAll(); say(RX[rx].lab + ': Q = ' + Qrx().toFixed(2) + ' MeV. Coulomb barrier about ' + fE(Ubar()) + '.'); }); });
+  var TP = [['Room temperature', 293], ['Sun\u2019s surface', 5800], ['Sun\u2019s core', 1.5e7], ['Fusion reactor', 1.5e8], ['H-bomb fireball', 3e8]];
+  el('fuTP').innerHTML = TP.map(function(q, i){ return '<button type="button" data-i="' + i + '">' + q[0] + '</button>'; }).join('');
+  [].forEach.call(el('fuTP').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ var q = TP[+b.getAttribute('data-i')]; Tk = q[1]; el('fuTemp').value = vT(Tk); conceptAll(); say(q[0] + ': ' + fT(Tk) + '. ' + el('fuBarT').textContent.split('. ').slice(1, 3).join('. ') + '.'); }); });
+  el('fuTemp').addEventListener('input', function(){ Tk = Tfrom(+this.value); conceptAll(); });
+  el('fuE').addEventListener('input', function(){ Eb = Efrom(+this.value); conceptAll(); });
+  el('fuTemp').addEventListener('change', function(){ say(fT(Tk) + '. Average energy ' + fE(1.5*kT()) + '.'); }); el('fuE').addEventListener('change', function(){ say('Beam energy ' + fE(Eb) + '.'); });
+  function setMode(m){ mode = m; el('fuMT').setAttribute('aria-pressed', m === 'T' ? 'true' : 'false'); el('fuMB').setAttribute('aria-pressed', m === 'B' ? 'true' : 'false'); el('fuTC').hidden = m !== 'T'; el('fuEC').hidden = m !== 'B'; el('fuTP').hidden = m !== 'T'; conceptAll(); }
+  el('fuMT').addEventListener('click', function(){ setMode('T'); }); el('fuMB').addEventListener('click', function(){ setMode('B'); });
+  el('fuShoot').addEventListener('click', shoot); el('fuShoot100').addEventListener('click', many);
+  el('fuTemp').value = vT(Tk); el('fuE').value = vE(Eb);
+
+  /* ═════════════════ TAB 1: Sun ═════════════════ */
+  var cS = el('fuSun'), gs = cS.getContext('2d'), sk = 0, stimer = null;
+  var SST = [
+    { t:'Start: four protons (hydrogen nuclei) in the hot, dense core.', eq:null },
+    { t:'Two protons fuse; one turns into a neutron (weak force), emitting a positron and a neutrino: a deuteron forms. This happens twice. It is by far the slowest step.', l:['H', 'H'], r:['D', 'e+', 'nu'], Q:(2*M.H - M.D - 2*ME)*U, tw:true },
+    { t:'Each positron meets an electron and both annihilate into gamma rays.', ann:true, Q:2*ME*U, tw:true },
+    { t:'A third proton fuses with each deuteron, forming helium-3 and a gamma ray. Twice.', l:['H', 'D'], r:['He3', 'g'], Q:Qof(['H', 'D'], ['He3']), tw:true },
+    { t:'The two helium-3 nuclei fuse into helium-4, releasing two protons, which can start the chain again.', l:['He3', 'He3'], r:['He4', 'H', 'H'], Q:Qof(['He3', 'He3'], ['He4', 'H', 'H']) },
+    { t:'Net: four protons have become one helium-4 nucleus; 26.7 MeV has been released (about 0.5 MeV of it carried away by the two neutrinos).', net:true } ];
+  function drawSun(){ var W = cS.width, H = cS.height, p = pal(), i;
+    gs.fillStyle = '#05080f'; gs.fillRect(0, 0, W, H);
+    var cx = 150, cy = 225, R = 135;
+    var g1 = gs.createRadialGradient(cx, cy, 10, cx, cy, R*1.35); g1.addColorStop(0, 'rgba(255,220,120,0.35)'); g1.addColorStop(1, 'rgba(255,160,40,0)'); gs.fillStyle = g1; gs.beginPath(); gs.arc(cx, cy, R*1.35, 0, TAU); gs.fill();
+    [[1, '#e8761e'], [0.71, '#f2a23a'], [0.25, '#fff3b0']].forEach(function(q){ gs.fillStyle = q[1]; gs.beginPath(); gs.arc(cx, cy, R*q[0], 0, TAU); gs.fill(); });
+    gs.strokeStyle = 'rgba(90,50,0,0.4)'; gs.lineWidth = 1; [0.25, 0.71].forEach(function(f){ gs.beginPath(); gs.arc(cx, cy, R*f, 0, TAU); gs.stroke(); });
+    gs.fillStyle = '#4a2a00'; gs.textAlign = 'center'; gs.textBaseline = 'middle'; gs.font = 'bold 12px Arial'; gs.fillText('core', cx, cy - 6); gs.font = '10px Arial'; gs.fillText('15 million K', cx, cy + 10); gs.font = 'bold 11px Arial'; gs.fillText('radiative zone', cx, cy - R*0.48); gs.fillText('convective zone', cx, cy - R*0.85);
+    lbl(gs, 'surface 5800 K', cx, cy + R + 18, p.dim, 11); lbl(gs, 'The Sun (layers)', cx, 22, p.txt, 13);
+    gs.strokeStyle = '#ffd23f'; gs.setLineDash([3, 3]); gs.beginPath(); gs.moveTo(cx + R*0.25, cy - 10); gs.lineTo(345, 70); gs.stroke(); gs.setLineDash([]);
+    /* the chain tree */
+    var X0 = 360, y0 = 60, dy = 92, cols = [430, 560, 690], st = sk;
+    function nb(x, y, k, dim){ var q = NUC[k]; gs.globalAlpha = dim ? 0.45 : 1; cluster(gs, x, y, k === 'H' ? 9 : nucR(q[0])*0.85, q[0], q[1]); gs.globalAlpha = 1; }
+    function arrow(x1, y1, x2, y2, on){ gs.strokeStyle = on ? '#ffd23f' : 'rgba(255,255,255,0.25)'; gs.lineWidth = on ? 2.5 : 1.5; gs.beginPath(); gs.moveTo(x1, y1); gs.lineTo(x2, y2); gs.stroke(); var a = Math.atan2(y2 - y1, x2 - x1); gs.fillStyle = gs.strokeStyle; gs.beginPath(); gs.moveTo(x2, y2); gs.lineTo(x2 - 9*Math.cos(a - 0.4), y2 - 9*Math.sin(a - 0.4)); gs.lineTo(x2 - 9*Math.cos(a + 0.4), y2 - 9*Math.sin(a + 0.4)); gs.closePath(); gs.fill(); }
+    var BR = [470, 720];
+    BR.forEach(function(bx){ /* row 1: p + p */ nb(bx - 40, y0, 'H', st > 1); nb(bx - 15, y0, 'H', st > 1); nb(bx + 40, y0, 'H', st > 3);
+      arrow(bx - 28, y0 + 14, bx - 28, y0 + dy - 22, st === 1); if (st >= 1) lbl(gs, 'e\u207a + \u03bd', bx - 70, y0 + dy/2, st === 1 ? '#7fd8ff' : p.dim, 11, 'right');
+      if (st >= 1) nb(bx - 28, y0 + dy, 'D', st > 3);
+      if (st >= 2){ lbl(gs, 'e\u207a + e\u207b \u2192 2\u03b3', bx - 70, y0 + dy + 22, st === 2 ? '#ffd23f' : p.dim, 11, 'right'); }
+      arrow(bx + 40, y0 + 14, bx + 4, y0 + 2*dy - 26, st === 3); arrow(bx - 28, y0 + dy + 16, bx - 6, y0 + 2*dy - 26, st === 3);
+      if (st >= 3){ nb(bx, y0 + 2*dy, 'He3', st > 4); lbl(gs, '\u03b3', bx + 34, y0 + 2*dy - 20, st === 3 ? '#ffd23f' : p.dim, 14); } });
+    if (st >= 4){ arrow(BR[0] + 14, y0 + 2*dy + 22, 590, y0 + 3*dy - 30, st === 4); arrow(BR[1] - 14, y0 + 2*dy + 22, 600, y0 + 3*dy - 30, st === 4); nb(595, y0 + 3*dy, 'He4', false); nb(530, y0 + 3*dy + 4, 'H', false); nb(660, y0 + 3*dy + 4, 'H', false);
+      lbl(gs, '\u2074He', 595, y0 + 3*dy + 30, p.txt, 13); lbl(gs, 'p', 530, y0 + 3*dy + 26, p.txt, 11); lbl(gs, 'p', 660, y0 + 3*dy + 26, p.txt, 11); }
+    if (st === 5){ gs.fillStyle = 'rgba(255,210,63,0.12)'; gs.fillRect(370, y0 + 3*dy + 45, 430, 34); lbl(gs, '4 \u00b9H \u2192 \u2074He + 2e\u207a + 2\u03bd \u2026  Q = 26.7 MeV', 585, y0 + 3*dy + 62, '#ffd23f', 14); }
+    lbl(gs, 'step ' + st + ' of 5', W - 10, H - 12, p.dim, 11, 'right'); }
+  function sunText(){ var s = SST[sk], eq = '', tx = s.t;
+    if (s.l) eq = eqH(s.l, s.r, s.Q) + (s.tw ? ' &nbsp;(\u00d72)' : ''); else if (s.ann) eq = 'e\u207a + e\u207b \u2192 2\u03b3 + ' + s.Q.toFixed(2) + ' MeV &nbsp;(\u00d72)'; else if (s.net) eq = '4 ' + nh('H') + ' \u2192 ' + nh('He4') + ' + 2' + nh('e+') + ' + 2\u03bd + 26.7 MeV (with the two positrons annihilated)'; else eq = '4 ' + nh('H');
+    el('fuSEq').innerHTML = eq; el('fuSEqT').textContent = tx; drawSun(); say(tx); }
+  function sunCalc(){ var L = parseFloat(el('fuL').value); if (!(L > 0)){ el('fuSCalc').innerHTML = '<p class="fu_note' + '">Type a positive value.</p>'; return; }
+    var Qn = (4*M.H - M.He4)*U, per = Qn*MEVJ, rate = L/per, dm = L/9e16, mH = rate*4*M.H*UKG;
+    el('fuSCalc').innerHTML = '<div class="fu_eq' + '">reactions per second = L/Q = (' + sc(L) + ' W)/(26.7 MeV \u00d7 1.60\u00d710<sup>\u221213</sup> J/MeV) = <b class="fu_res' + '">' + sc(rate) + '</b> s<sup>\u22121</sup></div>'
+      + '<div class="fu_eq' + '">hydrogen used = 4 \u00d7 ' + sc(rate) + ' \u00d7 m(\u00b9H) = <b class="fu_res' + '">' + sc(mH) + ' kg/s</b></div>'
+      + '<div class="fu_eq' + '">mass turned into energy = L/c\u00b2 = <b class="fu_res' + '">' + sc(dm) + ' kg/s</b> (' + (100*dm/mH).toFixed(2) + '% of the hydrogen burned)</div>'
+      + '<p class="fu_note' + '">The Sun (2\u00d710<sup>30</sup> kg, about 70% hydrogen) burns roughly a tenth of its hydrogen during its main life; at this rate that takes about ' + (0.1*0.7*2e30/mH/3.156e7/1e9).toFixed(0) + ' billion years.</p>'; }
+  el('fuSNet').innerHTML = '<div class="fu_eq' + '">\u0394m = 4m(\u00b9H) \u2212 m(\u2074He) = 4(1.007825) \u2212 4.002603 = 0.028697 u</div><div class="fu_eq' + '">Q = (0.028697 u)(931.5 MeV/u) = <b class="fu_res' + '">26.7 MeV</b></div><p>Using atomic masses counts the electrons: the 4 electrons of the hydrogen atoms end as the 2 of helium plus the 2 that annihilated the positrons. About 0.7% of the mass of the hydrogen becomes energy.</p><p class="fu_note' + '">The first step is so slow (a typical proton waits about 10<sup>10</sup> years) that the Sun burns steadily for billions of years instead of exploding. Stars heavier than about 1.3 Suns mostly use the CNO cycle, where carbon acts as a catalyst for the same net reaction.</p>';
+  var sB = el('fuSPlay');
+  function sStop(){ if (stimer){ clearTimeout(stimer); stimer = null; } sB.innerHTML = PLAYI; sB.setAttribute('aria-pressed', 'false'); }
+  sB.addEventListener('click', function(){ if (stimer){ sStop(); return; } if (sk >= 5) sk = 0; sB.innerHTML = PAUSEI; sB.setAttribute('aria-pressed', 'true'); (function tick(){ sk++; sunText(); if (sk < 5) stimer = setTimeout(tick, 2600); else sStop(); })(); });
+  el('fuSStep').addEventListener('click', function(){ sStop(); if (sk < 5){ sk++; sunText(); } }); el('fuSBack').addEventListener('click', function(){ sStop(); if (sk > 0){ sk--; sunText(); } });
+  el('fuSRst').addEventListener('click', function(){ sStop(); sk = 0; sunText(); }); el('fuL').addEventListener('input', sunCalc);
+
+  /* ═════════════════ TAB 2: nucleosynthesis ═════════════════ */
+  var cO = el('fuOn'), go = cO.getContext('2d'), cN = el('fuBen'), gn = cN.getContext('2d'), ns = 1, big = true;
+  var NS = [
+    { k:'Big Bang', T:'10\u2079 K (first minutes)', d25:'3 minutes', l:['H', 'n'], r:['D', 'g'], fuel:['H', 1], ash:['He4', 4], col:'#cfe3ff', text:'In the first few minutes after the Big Bang, protons and neutrons fused into deuterium and then helium-4. The universe cooled too fast to go further: about 75% hydrogen and 25% helium by mass, with traces of lithium.', Q:Qof(['H', 'n'], ['D']) },
+    { k:'H burning', T:'15 million K', d25:'7 million y', d1:'10 billion y', l:['H', 'H', 'H', 'H'], r:['He4'], fuel:['H', 1], ash:['He4', 4], col:'#ffe08a', text:'Hydrogen fuses into helium, by the proton\u2013proton chain (as in the Sun) or the CNO cycle in heavier stars. This is the longest stage: the main sequence.', Q:(4*M.H - M.He4)*U, net:'4 \u00b9H \u2192 \u2074He' },
+    { k:'He burning', T:'100 million K', d25:'500 000 y', d1:'100 million y', l:['He4', 'He4', 'He4'], r:['C12'], fuel:['He4', 4], ash:['C12', 12], col:'#ffb36b', text:'When the core runs out of hydrogen it contracts and heats up. Three helium-4 nuclei fuse into carbon-12 (the triple-alpha process, via unstable beryllium-8); some carbon captures another helium to make oxygen-16. The star becomes a red giant.', Q:Qof(['He4', 'He4', 'He4'], ['C12']), extra:'\u00b9\u00b2C + \u2074He \u2192 \u00b9\u2076O + ' + Qof(['C12', 'He4'], ['O16']).toFixed(2) + ' MeV' },
+    { k:'C burning', T:'600 million K', d25:'600 y', l:['C12', 'C12'], r:['Ne20', 'He4'], fuel:['C12', 12], ash:['Ne20', 20], col:'#ff8a5b', text:'Only stars of more than about 8 solar masses get hot enough. Carbon nuclei fuse into neon, sodium and magnesium. A Sun-like star stops before this, leaving a carbon\u2013oxygen white dwarf.', Q:Qof(['C12', 'C12'], ['Ne20', 'He4']), heavy:true },
+    { k:'Ne burning', T:'1.2 billion K', d25:'1 y', l:['Ne20', 'Ne20'], r:['O16', 'Mg24'], fuel:['Ne20', 20], ash:['Mg24', 24], col:'#f2606b', text:'Gamma rays knock helium out of some neon nuclei; other neon nuclei capture it to become magnesium.', Q:Qof(['Ne20', 'Ne20'], ['O16', 'Mg24']), heavy:true },
+    { k:'O burning', T:'2 billion K', d25:'6 months', l:['O16', 'O16'], r:['Si28', 'He4'], fuel:['O16', 16], ash:['Si28', 28], col:'#d1508f', text:'Oxygen nuclei fuse into silicon, sulfur and phosphorus.', Q:Qof(['O16', 'O16'], ['Si28', 'He4']), heavy:true },
+    { k:'Si burning', T:'3 billion K', d25:'1 day', l:['Si28', 'He4', 'He4', 'He4', 'He4', 'He4', 'He4', 'He4'], r:['Ni56'], fuel:['Si28', 28], ash:['Fe56', 56], col:'#8a63d2', text:'Silicon captures helium nuclei step by step up to nickel-56, which decays (\u03b2\u207a, half-lives 6 d and 77 d) to cobalt-56 and then iron-56. The iron core grows in about a day.', Q:Qof(['Si28', 'He4', 'He4', 'He4', 'He4', 'He4', 'He4', 'He4'], ['Ni56']), heavy:true },
+    { k:'Supernova', T:'> 5 billion K', d25:'seconds', l:['Fe56', 'n'], r:['Fe56'], fuel:['Fe56', 56], ash:['Fe56', 56], col:'#5aa0ff', text:'Iron sits at the top of the binding-energy curve: fusing iron nuclei with each other releases no energy. The core can no longer support itself; it collapses into a neutron star in less than a second and the star explodes as a supernova. Elements heavier than iron are made by rapid neutron capture (followed by \u03b2\u207b decays) in supernovae and neutron-star mergers, and by slow neutron capture in giant stars. The explosion spreads the elements into space, where they become part of new stars, planets and us.', heavy:true, sn:true } ];
+  function BEN(k){ var q = NUC[k]; return q[0] === 1 ? 0 : (q[1]*M.H + (q[0] - q[1])*M.n - M[k])*U/q[0]; }
+  function drawOnion(){ var W = cO.width, H = cO.height, p = pal(), s = NS[ns], cx = 190, cy = 185, Rm = 165, i;
+    go.fillStyle = '#05080f'; go.fillRect(0, 0, W, H);
+    var last = big ? ns : Math.min(ns, 2), layers = []; for (i=1; i<=Math.max(1, last); i++) layers.push(NS[i]);
+    if (ns === 0){ var g0 = go.createRadialGradient(cx, cy, 5, cx, cy, Rm); g0.addColorStop(0, '#fff6d0'); g0.addColorStop(1, 'rgba(255,200,120,0)'); go.fillStyle = g0; go.beginPath(); go.arc(cx, cy, Rm, 0, TAU); go.fill(); for (i=0; i<60; i++){ var a = i*2.39996, r = Rm*Math.sqrt((i + 0.5)/60)*0.9; go.fillStyle = i % 4 ? '#3a5fc8' : '#d63a3a'; go.beginPath(); go.arc(cx + r*Math.cos(a), cy + r*Math.sin(a), 3, 0, TAU); go.fill(); } lbl(go, 'the early universe', cx, 22, p.txt, 13); }
+    else if (s.sn && big){ for (i=0; i<40; i++){ var a2 = i*TAU/40; go.strokeStyle = 'rgba(255,' + (150 + i*2) + ',80,0.7)'; go.lineWidth = 3; go.beginPath(); go.moveTo(cx + 30*Math.cos(a2), cy + 30*Math.sin(a2)); go.lineTo(cx + (Rm + 10*Math.sin(i*3))*Math.cos(a2), cy + (Rm + 10*Math.sin(i*3))*Math.sin(a2)); go.stroke(); } go.fillStyle = '#9fc5ff'; go.beginPath(); go.arc(cx, cy, 10, 0, TAU); go.fill(); lbl(go, 'neutron star', cx, cy + 22, p.txt, 11); lbl(go, 'core collapse \u2192 supernova', cx, 22, p.txt, 13); }
+    else { var n = layers.length; for (i=0; i<n; i++){ var rr = Rm*(1 - i/(n + 0.5)); go.fillStyle = layers[i].col; go.beginPath(); go.arc(cx, cy, rr, 0, TAU); go.fill(); }
+      if (big && ns === 6){ go.fillStyle = '#7f8da6'; go.beginPath(); go.arc(cx, cy, Rm*0.08, 0, TAU); go.fill(); }
+      for (i=0; i<n; i++){ var rr2 = Rm*(1 - (i + 0.5)/(n + 0.5)); var fuelN = layers[i].k.replace(' burning', ''); lbl(go, fuelN, cx + rr2*Math.cos(-0.8), cy + rr2*Math.sin(-0.8), '#3a2000', n > 5 ? 9 : 11); }
+      lbl(go, big ? '25-solar-mass star (layers not to scale)' : (ns > 2 ? 'a Sun-like star stops here: white dwarf' : 'Sun-like star'), cx, 22, p.txt, 12); }
+    /* the reaction on the right */
+    var x = 430, y = 170, k; lbl(go, s.k + (s.T ? ' \u2014 ' + s.T : ''), 610, 30, '#ffd23f', 14);
+    var Ls = s.l.slice(0, 8), dx = Math.min(54, 170/Math.max(1, Ls.length - 1));
+    for (k=0; k<Ls.length; k++){ var q = NUC[Ls[k]], xx = x + k*dx*(Ls.length > 3 ? 1 : 1.2); cluster(go, xx, y + (k % 2 ? -14 : 14)*(Ls.length > 3 ? 1 : 0), nucR(q[0])*0.8, q[0], q[1]); }
+    go.fillStyle = '#ffd23f'; go.beginPath(); go.moveTo(650, y - 8); go.lineTo(680, y); go.lineTo(650, y + 8); go.closePath(); go.fill(); go.fillRect(615, y - 3, 36, 6);
+    var Rs2 = s.r.filter(function(a){ return NUC[a]; }); for (k=0; k<Rs2.length; k++){ var q2 = NUC[Rs2[k]]; cluster(go, 735 + k*50, y, nucR(q2[0])*0.8, q2[0], q2[1]); }
+    if (s.Q) lbl(go, (s.net ? s.net + ': ' : '') + 'Q = ' + s.Q.toFixed(2) + ' MeV', 610, 290, '#ffd23f', 13);
+    var dur = big ? s.d25 : s.d1; if (dur && (big || ns <= 2)) lbl(go, 'lasts about ' + dur + (big ? ' in a 25-solar-mass star' : ' in the Sun'), 610, 316, p.dim, 12);
+    if (!big && ns > 2) lbl(go, 'not reached in a Sun-like star', 610, 316, '#ff8a7a', 12); }
+  function drawBen(){ var W = cN.width, H = cN.height, L = 60, Rr = W - 20, T = 16, B = H - 36, p = pal(), i, s = NS[ns];
+    function X(a){ return L + a/80*(Rr - L); } function Y(b){ return B - b/9.5*(B - T); }
+    gn.fillStyle = '#0b1222'; gn.fillRect(0, 0, W, H); gn.strokeStyle = 'rgba(150,170,195,0.2)'; gn.fillStyle = p.dim; gn.font = '11px Arial'; gn.textBaseline = 'middle';
+    for (i=0; i<=80; i += 10){ gn.beginPath(); gn.moveTo(X(i), T); gn.lineTo(X(i), B); gn.stroke(); gn.textAlign = 'center'; gn.fillText(String(i), X(i), B + 12); } for (i=0; i<=9; i += 3){ gn.beginPath(); gn.moveTo(L, Y(i)); gn.lineTo(Rr, Y(i)); gn.stroke(); gn.textAlign = 'right'; gn.fillText(String(i), L - 4, Y(i)); }
+    gn.textAlign = 'center'; gn.fillStyle = '#dbe7ff'; gn.font = 'bold 12px Arial'; gn.fillText('mass number A', (L + Rr)/2, H - 8); gn.save(); gn.translate(14, (T + B)/2); gn.rotate(-Math.PI/2); gn.fillText('BEN (MeV)', 0, 0); gn.restore();
+    var keys = ['D', 'He3', 'He4', 'Li6', 'C12', 'O16', 'Ne20', 'Mg24', 'Si28', 'S32', 'Fe56', 'Ni56'].sort(function(a, b){ return NUC[a][0] - NUC[b][0]; });
+    gn.strokeStyle = '#2bb5a8'; gn.lineWidth = 1.5; gn.beginPath(); ['D', 'He3', 'He4', 'Li6', 'C12', 'O16', 'Ne20', 'Mg24', 'Si28', 'S32', 'Fe56'].forEach(function(k, j){ if (j) gn.lineTo(X(NUC[k][0]), Y(BEN(k))); else gn.moveTo(X(NUC[k][0]), Y(BEN(k))); }); gn.stroke();
+    keys.forEach(function(k){ gn.fillStyle = '#7f8da6'; gn.beginPath(); gn.arc(X(NUC[k][0]), Y(BEN(k)), 3.5, 0, TAU); gn.fill(); lbl(gn, NUC[k][0] + NUC[k][2], X(NUC[k][0]) + (k === 'Ni56' ? -6 : 6), Y(BEN(k)) + (k === 'Ni56' ? 12 : -10), p.dim, 10, k === 'Ni56' ? 'right' : 'left'); });
+    var f = s.fuel[0], a = s.ash[0], bf = BEN(f), ba = BEN(a);
+    if (f !== a){ gn.strokeStyle = '#ffd23f'; gn.lineWidth = 3; gn.beginPath(); gn.moveTo(X(NUC[f][0]), Y(bf)); gn.quadraticCurveTo((X(NUC[f][0]) + X(NUC[a][0]))/2, Y(Math.max(bf, ba)) - 30, X(NUC[a][0]), Y(ba)); gn.stroke(); }
+    [[f, '#ff8a7a'], [a, '#ffd23f']].forEach(function(q){ gn.fillStyle = q[1]; gn.beginPath(); gn.arc(X(NUC[q[0]][0]), Y(BEN(q[0])), 7, 0, TAU); gn.fill(); });
+    lbl(gn, 'iron peak: fusion stops here', X(56), Y(BEN('Fe56')) - 26, '#ffd23f', 11);
+    var t = s.sn ? 'At iron the curve is at its top: no fusion between nuclei releases further energy. Heavier elements need neutron capture.' : 'Fuel ' + NUC[f][0] + NUC[f][2] + ' (BEN ' + bf.toFixed(2) + ' MeV) \u2192 ash ' + NUC[a][0] + NUC[a][2] + ' (BEN ' + ba.toFixed(2) + ' MeV): each nucleon gains about <b>' + (ba - bf).toFixed(2) + ' MeV</b> of binding. ' + (ns > 2 ? 'Each step up the curve releases less energy per nucleon than hydrogen burning (' + (BEN('He4')).toFixed(2) + ' MeV), so each stage is shorter.' : 'Hydrogen to helium is the biggest jump on the whole curve: that is why the hydrogen stage lasts longest.');
+    el('fuBenT').innerHTML = t; }
+  function nsText(){ var s = NS[ns]; el('fuNEq').innerHTML = s.net ? s.net.replace('4 \u00b9H', '4 ' + nh('H')).replace('\u2074He', nh('He4')) + ' + ' + s.Q.toFixed(2) + ' MeV' : s.sn ? nh('Fe56') + ' + n \u2192 \u2026 (neutron capture, then \u03b2\u207b decays)' : eqH(s.l.length > 4 ? ['Si28'] : s.l, s.r, s.Q).replace(nh('Si28') + ' \u2192', nh('Si28') + ' + 7' + nh('He4') + ' \u2192');
+    el('fuNEqT').innerHTML = s.text + (s.extra ? ' Also: ' + s.extra + '.' : ''); drawOnion(); drawBen(); tbl(); }
+  function tbl(){ el('fuNTbl').innerHTML = '<table class="fu_tbl' + '"><thead><tr><th scope="col">stage</th><th scope="col">fuel \u2192 main products</th><th scope="col">temperature</th><th scope="col">duration (25 M\u2609)</th></tr></thead><tbody>' + NS.slice(1).map(function(s, i){ return '<tr' + (i + 1 === ns ? ' class="fu_cur' + '"' : '') + '><td>' + s.k + '</td><td>' + ({ 1:'H \u2192 He', 2:'He \u2192 C, O', 3:'C \u2192 Ne, Na, Mg', 4:'Ne \u2192 O, Mg', 5:'O \u2192 Si, S', 6:'Si \u2192 Fe, Ni', 7:'n capture \u2192 heavy elements' })[i + 1] + '</td><td>' + s.T + '</td><td>' + s.d25 + '</td></tr>'; }).join('') + '</tbody></table><p class="fu_note' + '">Temperatures and durations are typical rounded values from stellar models.</p>'; }
+  el('fuNS').innerHTML = NS.map(function(s, i){ return '<button type="button" class="fu_vbtn' + '" data-i="' + i + '" aria-pressed="' + (i === ns ? 'true' : 'false') + '">' + s.k + '</button>'; }).join('');
+  function setNS(i){ ns = i; [].forEach.call(el('fuNS').querySelectorAll('button'), function(b){ b.setAttribute('aria-pressed', +b.getAttribute('data-i') === i ? 'true' : 'false'); }); nsText(); say(NS[ns].k + '. ' + NS[ns].text); }
+  [].forEach.call(el('fuNS').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ setNS(+b.getAttribute('data-i')); }); });
+  function setBig(v){ big = v; el('fuM1').setAttribute('aria-pressed', v ? 'false' : 'true'); el('fuM25').setAttribute('aria-pressed', v ? 'true' : 'false'); nsText(); say(v ? 'A 25-solar-mass star goes through every stage up to iron, then explodes as a supernova.' : 'A Sun-like star burns hydrogen, then helium, and ends as a carbon\u2013oxygen white dwarf.'); }
+  el('fuM1').addEventListener('click', function(){ setBig(false); }); el('fuM25').addEventListener('click', function(){ setBig(true); });
+
+  /* ═════════════════ TAB 3: H-bomb ═════════════════ */
+  var cH = el('fuHb'), gh = cH.getContext('2d'), hp = 0, htimer = null, cY = el('fuHy'), gy = cY.getContext('2d'), myKt = 64;
+  function drawHB(){ var W = cH.width, H = cH.height, p = pal(), t = hp;
+    gh.fillStyle = '#0b1222'; gh.fillRect(0, 0, W, H);
+    gh.fillStyle = '#5b6370'; gh.beginPath(); gh.moveTo(120, 60); gh.lineTo(700, 60); gh.quadraticCurveTo(760, 60, 760, 150); gh.quadraticCurveTo(760, 240, 700, 240); gh.lineTo(120, 240); gh.quadraticCurveTo(60, 240, 60, 150); gh.quadraticCurveTo(60, 60, 120, 60); gh.fill();
+    gh.fillStyle = '#1a2233'; gh.fillRect(80, 75, 660, 150);
+    var f1 = t > 0.1 ? Math.min(1, (t - 0.1)/0.15) : 0, f2 = t > 0.45 ? Math.min(1, (t - 0.45)/0.2) : 0;
+    gh.fillStyle = '#b07a3a'; gh.beginPath(); gh.arc(200, 150, 55, 0, TAU); gh.fill(); gh.fillStyle = '#d9a35c'; gh.beginPath(); gh.arc(200, 150, 28, 0, TAU); gh.fill();
+    gh.fillStyle = '#7fa3c7'; gh.beginPath(); gh.ellipse(520, 150, 160, 58, 0, 0, TAU); gh.fill(); gh.fillStyle = '#a9c4de'; gh.beginPath(); gh.ellipse(520, 150, 150, 48, 0, 0, TAU); gh.fill();
+    if (f1 > 0){ var g1 = gh.createRadialGradient(200, 150, 5, 200, 150, 60 + 300*Math.min(1, t)); g1.addColorStop(0, 'rgba(255,250,200,' + (0.95*f1) + ')'); g1.addColorStop(0.5, 'rgba(255,170,60,' + (0.6*f1) + ')'); g1.addColorStop(1, 'rgba(255,120,40,0)'); gh.fillStyle = g1; gh.beginPath(); gh.arc(200, 150, 60 + 300*Math.min(1, t), 0, TAU); gh.fill(); }
+    if (t > 0.25 && t < 0.6){ var k = (t - 0.25)/0.35; gh.strokeStyle = 'rgba(255,255,255,' + (0.8*(1 - k)) + ')'; gh.lineWidth = 2; for (var i=0; i<12; i++){ var yy = 80 + i*12; gh.beginPath(); gh.moveTo(260, yy); gh.lineTo(260 + k*220, 150 + (yy - 150)*(1 - k*0.6)); gh.stroke(); } }
+    if (f2 > 0){ var g2 = gh.createRadialGradient(520, 150, 5, 520, 150, 80 + 400*f2); g2.addColorStop(0, 'rgba(255,255,255,' + f2 + ')'); g2.addColorStop(0.4, 'rgba(255,220,120,' + (0.9*f2) + ')'); g2.addColorStop(1, 'rgba(255,140,40,0)'); gh.fillStyle = g2; gh.beginPath(); gh.arc(520, 150, 80 + 400*f2, 0, TAU); gh.fill(); }
+    if (t < 0.5){ lbl(gh, 'fission stage', 200, 228, p.txt, 13); lbl(gh, 'fusion stage: lithium-6 deuteride', 520, 228, p.txt, 13); lbl(gh, 'casing', 410, 48, p.dim, 12); }
+    var st = t === 0 ? 'Two stages in a casing (schematic, not to scale).' : t < 0.25 ? 'The fission stage explodes: an uncontrolled fission chain reaction, as in an atomic bomb.' : t < 0.45 ? 'Its energy and neutrons reach the fusion fuel within millionths of a second, heating and compressing it to hundreds of millions of kelvin.' : t < 0.7 ? 'Fusion ignites: neutrons turn lithium-6 into tritium, which fuses with the deuterium; the fusion releases more neutrons and energy.' : 'The fusion stage releases most of the energy, far more than the fission stage that started it.';
+    el('fuHbS').textContent = st; return st; }
+  function hCalc(){ var m = parseFloat(el('fuHkg').value); if (!(m > 0)){ el('fuHCalc').innerHTML = '<p class="fu_note' + '">Type a positive mass.</p>'; return; }
+    var Q = (M.Li6 + M.D - 2*M.He4)*U, mol = m*1000/(M.Li6 + M.D), E = mol*6.022e23*Q*MEVJ; myKt = E/4.184e12;
+    el('fuHCalc').innerHTML = '<div class="fu_eq' + '">molecules = (' + m*1000 + ' g)/(' + (M.Li6 + M.D).toFixed(3) + ' g/mol) \u00d7 6.02\u00d710<sup>23</sup> = ' + sc(mol*6.022e23) + '</div><div class="fu_eq' + '">E = (' + sc(mol*6.022e23) + ')(' + Q.toFixed(1) + ' MeV)(1.60\u00d710<sup>\u221213</sup> J/MeV) = <b class="fu_res' + '">' + sc(E) + ' J</b></div><div class="fu_eq' + '">= ' + sc(E) + ' J / (4.184\u00d710<sup>12</sup> J/kt) = <b class="fu_res' + '">' + (myKt >= 1000 ? (myKt/1000).toPrecision(3) + ' megatons' : myKt.toPrecision(3) + ' kilotons') + '</b> of TNT</div><p class="fu_note' + '">If all of it fused; in practice only part of the fuel burns.</p>'; drawY(); }
+  el('fuHRx').innerHTML = '<div class="fu_eq' + '">' + eqH(['n', 'Li6'], ['T', 'He4'], Qof(['n', 'Li6'], ['T', 'He4'])) + '</div><div class="fu_eq' + '">' + eqH(['D', 'T'], ['He4', 'n'], Qof(['D', 'T'], ['He4', 'n'])) + '</div><p>The neutron from the second reaction makes more tritium in the first: a cycle. Adding them, the net result is</p><div class="fu_eq' + '">' + eqH(['Li6', 'D'], ['He4', 'He4'], Qof(['Li6', 'D'], ['He4', 'He4'])) + '</div><p class="fu_note' + '">Lithium deuteride is a stable solid, easier to handle than tritium, which is radioactive and must be produced.</p>';
+  function drawY(){ var W = cY.width, H = cY.height, L = 210, Rr = W - 30, T = 14, B = H - 30, p = pal(), i, D = [['Largest conventional bomb (GBU-43)', 0.011], ['Hiroshima (fission, U-235)', 15], ['Nagasaki (fission, Pu-239)', 21], ['Ivy Mike, 1952 (first thermonuclear)', 10400], ['Castle Bravo, 1954', 15000], ['Tsar Bomba, 1961 (largest ever)', 50000], ['Your calculation', myKt]];
+    function X(v){ return L + (Math.log(Math.max(0.001, v))/Math.LN10 + 2)/(5 + 2)*(Rr - L); }
+    gy.fillStyle = '#0b1222'; gy.fillRect(0, 0, W, H); gy.font = '10px Arial'; gy.textBaseline = 'middle';
+    for (i=-2; i<=5; i++){ gy.strokeStyle = 'rgba(150,170,195,0.2)'; gy.beginPath(); gy.moveTo(X(Math.pow(10, i)), T); gy.lineTo(X(Math.pow(10, i)), B); gy.stroke(); gy.fillStyle = p.dim; gy.textAlign = 'center'; gy.fillText(i < 0 ? Math.pow(10, i).toString() : i < 3 ? String(Math.pow(10, i)) + ' kt' : Math.pow(10, i - 3) + ' Mt', X(Math.pow(10, i)), B + 12); }
+    var bh = (B - T)/D.length;
+    D.forEach(function(d, k){ var y = T + k*bh + bh/2; gy.fillStyle = k === 6 ? '#ffd23f' : k >= 3 && k <= 5 ? '#ff8a5b' : k === 0 ? '#8a94a3' : '#f2a23a'; gy.fillRect(L, y - bh*0.32, Math.max(2, X(d[1]) - L), bh*0.64); gy.fillStyle = '#dbe7ff'; gy.font = '11px Arial'; gy.textAlign = 'right'; gy.fillText(d[0], L - 6, y); gy.textAlign = 'left'; gy.fillText(d[1] >= 1000 ? (d[1]/1000).toPrecision(3) + ' Mt' : d[1] >= 1 ? d[1].toPrecision(3) + ' kt' : (d[1]*1000).toPrecision(2) + ' t', X(d[1]) + 4, y); }); }
+  var hB = el('fuHPlay');
+  function hStop(){ if (htimer){ clearTimeout(htimer); htimer = null; } hB.innerHTML = PLAYI; hB.setAttribute('aria-pressed', 'false'); }
+  hB.addEventListener('click', function(){ if (htimer){ hStop(); return; } if (hp >= 1) hp = 0; hB.innerHTML = PAUSEI; hB.setAttribute('aria-pressed', 'true'); var last = '';
+    (function tick(){ hp = Math.min(1, hp + 0.006); var s = drawHB(); if (s !== last){ last = s; say(s); } if (hp < 1) htimer = setTimeout(tick, 30); else hStop(); })(); });
+  el('fuHRst').addEventListener('click', function(){ hStop(); hp = 0; drawHB(); }); el('fuHkg').addEventListener('input', hCalc);
+
+  /* ═════════════════ TAB 4: reactor ═════════════════ */
+  var cK = el('fuSk'), gk = cK.getContext('2d'), RP = { ph:398, qs:20.5, ec:0.33, eh:0.50, hl:20 };
+  function Qs(v){ return v <= 0 ? 0 : Math.pow(10, -2 + 4*v/1000); } function vQ(q){ return q <= 0 ? 0 : (Math.log(q)/Math.LN10 + 2)/4*1000; }
+  function flows(){ var ph = RP.ph, fus = RP.qs*ph, th = fus + ph, gross = RP.ec*th, rejC = th - gross, rec = ph/RP.eh + RP.hl, rejH = ph/RP.eh - ph, net = gross - rec; return { ph:ph, fus:fus, th:th, gross:gross, rejC:rejC, rec:rec, rejH:rejH, hl:RP.hl, net:net, qe:rec > 0 ? net/rec : 0, toHeat:ph/RP.eh }; }
+  function fP(mw){ var a = Math.abs(mw); return (mw < 0 ? '\u2212' : '') + (a >= 1000 ? (a/1000).toFixed(2) + ' GW' : a >= 10 ? a.toFixed(0) + ' MW' : a.toFixed(1) + ' MW'); }
+  function drawSk(){ var W = cK.width, H = cK.height, F = flows(), mx = Math.max(F.th, F.rec, 200), s = 120/mx, alt = fuA11y.alt();
+    var C = { heat:alt ? '#E69F00' : '#e8a35b', fus:alt ? '#56B4E9' : '#5cc3e6', rej:alt ? '#CC79A7' : '#d98080', gross:alt ? '#0072B2' : '#5eb2c4', net:alt ? '#009E73' : '#62c49a', rec:alt ? '#E69F00' : '#e2c08a' };
+    function w(mw){ return Math.max(1.5, mw*s); }
+    gk.fillStyle = '#f0f0f0'; gk.fillRect(0, 0, W, H);
+    function lab(t1, t2, x, y, c, al){ gk.textAlign = al || 'center'; gk.textBaseline = 'middle'; gk.fillStyle = c; gk.font = 'bold 13px Arial'; gk.fillText(t1, x, y); gk.font = '12px Arial'; if (t2) gk.fillText(t2, x, y + 15); }
+    function box(x, y, ww, hh, t, pct){ gk.fillStyle = '#e4e4e4'; gk.strokeStyle = '#bbb'; gk.lineWidth = 1; gk.fillRect(x, y, ww, hh); gk.strokeRect(x, y, ww, hh); gk.fillStyle = '#555'; gk.font = '12px Arial'; gk.textAlign = 'center'; t.split('\n').forEach(function(l, i){ gk.fillText(l, x + ww/2, y + 26 + 15*i); }); if (pct) gk.fillText(pct, x + ww/2, y + hh - 26); }
+    function arr(x1, y1, x2, y2, wd, c){ var dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy), ux = dx/L, uy = dy/L, hl = Math.min(18, wd*0.6 + 8); gk.strokeStyle = c; gk.lineWidth = wd; gk.lineCap = 'butt'; gk.beginPath(); gk.moveTo(x1, y1); gk.lineTo(x2 - ux*hl, y2 - uy*hl); gk.stroke(); gk.fillStyle = c; gk.beginPath(); gk.moveTo(x2, y2); gk.lineTo(x2 - ux*hl - uy*(wd/2 + 6), y2 - uy*hl + ux*(wd/2 + 6)); gk.lineTo(x2 - ux*hl + uy*(wd/2 + 6), y2 - uy*hl - ux*(wd/2 + 6)); gk.closePath(); gk.fill(); }
+    var px = 340, py = 210, pr = 125;
+    gk.strokeStyle = '#aaa'; gk.setLineDash([5, 5]); gk.lineWidth = 1.2; gk.beginPath(); gk.arc(px, py, pr + 18, 0, TAU); gk.stroke(); gk.setLineDash([]); gk.fillStyle = '#888'; gk.font = '12px Arial'; gk.textAlign = 'center'; gk.fillText('Vacuum vessel', px, py - pr - 28);
+    var pg = gk.createRadialGradient(px, py, 10, px, py, pr); pg.addColorStop(0, 'rgba(200,225,255,1)'); pg.addColorStop(1, 'rgba(160,195,235,1)'); gk.fillStyle = pg; gk.beginPath(); gk.arc(px, py, pr, 0, TAU); gk.fill(); gk.fillStyle = '#4a72a8'; gk.font = 'bold 14px Arial'; gk.fillText('Plasma', px - 20, py);
+    gk.font = '11px Arial'; gk.fillStyle = '#4a72a8'; gk.fillText('D + T \u2192 \u2074He + n', px - 20, py + 20);
+    /* heating system box */
+    box(40, 230, 70, 120, 'Heating\nsystem', Math.round(RP.eh*100) + '%');
+    /* conversion box */
+    box(600, 200, 90, 180, 'Conversion\nto electricity', Math.round(RP.ec*100) + '%');
+    /* heating in */ var wh = w(F.ph); arr(110, 300, px - pr - 4, 300, wh, C.heat); lab(fP(F.ph), 'Heating power (entering)', 175, 300 - wh/2 - 26, C.heat);
+    /* rejected heat from heating system */ var wr = w(F.rejH); arr(75, 230, 75, 160, wr, C.rej); lab(fP(F.rejH), 'Rejected heat', 75, 130, C.rej);
+    /* fusion power out */ var wf = w(F.fus); gk.fillStyle = C.fus; gk.beginPath(); gk.moveTo(px + pr*0.6, py - pr*0.8); gk.lineTo(590, 230 - 10); gk.lineTo(600, 230 - 10 + wf/2); gk.lineTo(590, 230 - 10 + wf); gk.lineTo(px + pr*0.6, 230 - 10 + wf + 4); gk.closePath(); gk.globalAlpha = 0.9; gk.fill(); gk.globalAlpha = 1;
+    lab(fP(F.fus), 'Fusion power', 490, 200, '#2b8fb5');
+    /* heating exiting */ var wx = w(F.ph); arr(px + pr*0.85, 360, 598, 360, wx, C.heat); lab('Heating power (exiting) ' + fP(F.ph), '', 520, 360 - wx/2 - 12, C.heat);
+    /* rejected heat from conversion */ var wrc = w(F.rejC); arr(645, 200, 645, 120, Math.min(80, wrc), C.rej); lab(fP(F.rejC), 'Rejected heat', 645, 92, C.rej);
+    /* gross and net */ var wg = w(F.gross), wn = w(Math.max(0, F.net)), wre = w(F.rec);
+    arr(690, 290, 760, 290, wg, C.gross); lab(fP(F.gross), 'Gross electricity', 728, 290 - wg/2 - 30, '#2b8fb5');
+    if (F.net > 0){ arr(760, 290 - wg/2 + wn/2, 812, 290 - wg/2 + wn/2, wn, C.net); lab(fP(F.net), 'Net to grid', 770, 290 - wg/2 - 70, '#2e8a5a'); }
+    else lab('no net electricity', 'deficit ' + fP(-F.net), 770, 200, '#c62828');
+    /* recirculating loop */ var ry = 405; gk.strokeStyle = C.rec; gk.lineWidth = Math.min(wre, 40); gk.beginPath(); gk.moveTo(770, 290 + wg/2 - Math.min(wg, wre)/2); gk.lineTo(770, ry); gk.lineTo(75, ry); gk.lineTo(75, 350 + 12); gk.stroke(); arr(75, 380, 75, 350, Math.min(wre, 40), C.rec);
+    lab('Recirculating electricity ' + fP(F.rec), '', 470, ry + Math.min(wre, 40)/2 + 12, '#b07a20');
+    var whl = w(F.hl); arr(220, ry, 220, ry - 0.1, 0.1, C.rej); gk.strokeStyle = C.rej; gk.lineWidth = Math.max(1.5, whl); gk.beginPath(); gk.moveTo(220, ry); gk.lineTo(220, ry + 14); gk.stroke(); lab('House load ' + fP(F.hl), '', 220, ry + Math.min(wre, 40)/2 + 12, C.rej);
+    gk.fillStyle = '#777'; gk.font = '11px Arial'; gk.textAlign = 'left'; gk.fillText('line width: ' + fP(1/s*40) + ' per 40 px', 10, 16); }
+  function rText(){ var F = flows(), alpha = F.fus/5;
+    el('fuRr').innerHTML = [['Q (scientific)', RP.qs.toPrecision(3)], ['fusion power', fP(F.fus)], ['net electricity', fP(F.net)], ['engineering Q', F.qe.toFixed(2)]].map(function(q){ return '<div><div class="fu_rl' + '">' + q[0] + '</div><div class="fu_rv' + '">' + q[1] + '</div></div>'; }).join('');
+    var D = [['heat', 'Heating power', F.ph], ['fus', 'Fusion power', F.fus], ['rej', 'Rejected heat (conversion)', F.rejC], ['rej', 'Rejected heat (heating system)', F.rejH], ['rej', 'House load', F.hl], ['heat', 'Recirculating electricity', F.rec], ['gross', 'Gross electricity', F.gross], ['net', 'Net electricity to grid', F.net]];
+    var cc = { heat:'#e8a35b', fus:'#5cc3e6', rej:'#d98080', gross:'#5eb2c4', net:'#62c49a' };
+    el('fuRT').innerHTML = '<tbody>' + D.map(function(d){ return '<tr><td><span class="fu_dot' + '" style="background:' + cc[d[0]] + '"></span>' + d[1] + '</td><td><b>' + fP(d[2]) + '</b></td></tr>'; }).join('') + '<tr><td>Engineering Q = ' + fP(F.net) + '/' + fP(F.rec) + '</td><td><b style="color:' + (F.net > 0 ? '#2e8a5a' : '#c62828') + '">' + F.qe.toFixed(2) + '</b></td></tr></tbody>';
+    var s = RP.qs < 1 ? 'Q_sci < 1: the plasma gives back less fusion power than the heating put in. No fusion experiment ran steadily above 1 until recently.' : RP.qs < 5 ? 'Q_sci > 1: more fusion power than heating power, but not nearly enough to run a power plant.' : F.net <= 0 ? 'Plenty of fusion, but the losses in heating and conversion eat it: no net electricity.' : 'A net producer of electricity: ' + fP(F.net) + ' to the grid.';
+    if (alpha >= F.ph) s += ' The alpha particles (1/5 of the fusion power) now heat the plasma more than the external heating: a burning plasma.';
+    el('fuRs').textContent = s;
+    el('fuPl').innerHTML = '<div class="fu_eq' + '">' + eqH(['D', 'T'], ['He4', 'n'], 17.59) + '</div><p>The <b>alpha particle</b> (3.5 MeV) is charged and stays in the magnetic field, heating the plasma: alpha heating = P<sub>fus</sub>/5 = ' + fP(alpha) + '. The <b>neutron</b> (14.1 MeV) escapes to the surrounding blanket, where its energy becomes heat.</p><p>Fusion rate: ' + sc(F.fus*1e6/(17.59*MEVJ)) + ' reactions per second. <b>Ignition</b> is when alpha heating alone keeps the plasma hot (Q<sub>sci</sub> \u2192 \u221e); it needs the Lawson triple product n T \u03c4 &gt; about 3\u00d710<sup>21</sup> keV\u00b7s/m\u00b3.</p><p class="fu_note' + '">Plasma at about 150 million K is held by strong magnetic fields (tokamak, stellarator) or compressed by lasers (inertial confinement).</p>';
+    var kgd = F.fus*1e6*86400/(17.59*MEVJ)*(M.D + M.T)*UKG;
+    el('fuFuel').innerHTML = '<div class="fu_eq' + '">fuel burned per day = (' + fP(F.fus) + ')(86 400 s)/(17.6 MeV) \u00d7 5.03 u = <b class="fu_res' + '">' + (kgd < 1 ? (kgd*1000).toPrecision(3) + ' g' : kgd.toPrecision(3) + ' kg') + '</b></div><p>Tritium is bred in a lithium blanket by the escaping neutrons: ' + eqH(['n', 'Li6'], ['T', 'He4']) + '. Products are not long-lived radioactive waste, though neutrons make the reactor structure radioactive. A fusion reactor cannot run away: if anything fails, the plasma cools and fusion stops within seconds.</p>'; }
+  function rUI(){ el('fuPhV').textContent = fP(RP.ph); el('fuQsV').textContent = RP.qs.toPrecision(3); el('fuEcV').textContent = Math.round(RP.ec*100) + '%'; el('fuEhV').textContent = Math.round(RP.eh*100) + '%'; el('fuHlV').textContent = fP(RP.hl);
+    el('fuPh').value = RP.ph; el('fuQs').value = vQ(RP.qs); el('fuEc').value = Math.round(RP.ec*100); el('fuEh').value = Math.round(RP.eh*100); el('fuHl').value = RP.hl; drawSk(); rText(); }
+  [['fuPh', function(v){ RP.ph = +v; }], ['fuQs', function(v){ RP.qs = +Qs(+v).toPrecision(3); }], ['fuEc', function(v){ RP.ec = v/100; }], ['fuEh', function(v){ RP.eh = v/100; }], ['fuHl', function(v){ RP.hl = +v; }]].forEach(function(q){ el(q[0]).addEventListener('input', function(){ q[1](this.value); rUI(); }); el(q[0]).addEventListener('change', function(){ say(el('fuRs').textContent + ' Net ' + fP(flows().net) + ', engineering Q ' + flows().qe.toFixed(2) + '.'); }); });
+  var RPRE = [['Snapshot example', { ph:398, qs:20.5, ec:0.33, eh:0.50, hl:20 }, 'The example from the Fusion Energy Base simulator.'], ['JET record (1997)', { ph:24, qs:0.67, ec:0, eh:0.4, hl:100 }, 'JET produced 16 MW of fusion power for 24 MW of heating: Q_sci about 0.67. An experiment: no electricity is generated.'], ['NIF laser shot (2022)', { ph:2.05, qs:1.54, ec:0, eh:0.01, hl:0 }, 'NIF: 2.05 MJ of laser energy produced 3.15 MJ of fusion energy (Q_sci 1.5), shown here as if repeated every second. The lasers drew about 300 MJ from the grid: wall-plug efficiency under 1%.'], ['ITER goal', { ph:50, qs:10, ec:0, eh:0.4, hl:110 }, 'ITER aims for 500 MW of fusion power from 50 MW of heating, Q_sci = 10. It will not produce electricity.'], ['Break-even (Q = 1)', { ph:100, qs:1, ec:0.33, eh:0.5, hl:20 }, 'Scientific break-even: as much fusion power as heating power. Far from enough for a power plant.'], ['Commercial goal', { ph:100, qs:30, ec:0.40, eh:0.6, hl:50 }, 'A possible commercial plant: Q_sci about 30, efficient heating and conversion.']];
+  el('fuRP').innerHTML = RPRE.map(function(q, i){ return '<button type="button" data-i="' + i + '">' + q[0] + '</button>'; }).join('');
+  [].forEach.call(el('fuRP').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ var q = RPRE[+b.getAttribute('data-i')]; for (var k in q[1]) RP[k] = q[1][k]; rUI(); say(q[2] + ' ' + el('fuRs').textContent); }); });
+
+  /* ═════════════════ tabs ═════════════════ */
+  var tab = 0;
+  function setTab(i){ tab = i; [0, 1, 2, 3, 4].forEach(function(j){ var t = el('fuT' + j + ''); t.setAttribute('aria-selected', j === i ? 'true' : 'false'); t.tabIndex = j === i ? 0 : -1; el('fuP' + j + '').hidden = j !== i; });
+    if (i === 0){ conceptAll(); say('Two positive nuclei must overcome their Coulomb repulsion to fuse. Choose a reaction and a temperature, then collide a pair.'); }
+    if (i === 1){ sunText(); sunCalc(); } if (i === 2){ nsText(); say('Choose a stage of nucleosynthesis.'); } if (i === 3){ drawHB(); hCalc(); say('The hydrogen bomb: a fission explosion ignites fusion.'); } if (i === 4){ rUI(); say('Fusion power plant: adjust the heating power and the gain, and follow the power flow.'); } }
+  [0, 1, 2, 3, 4].forEach(function(i){ var t = el('fuT' + i + ''); t.addEventListener('click', function(){ setTab(i); }); t.addEventListener('keydown', function(e){ var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!d) return; var n = (i + d + 5) % 5; setTab(n); el('fuT' + n + '').focus(); e.preventDefault(); }); });
+  fuA11y.onChange(function(){ conceptAll(); drawSun(); drawOnion(); drawBen(); drawHB(); drawY(); drawSk(); });
+  setTab(0);
+  return { setTab:setTab, _Q:Qrx, _Ub:Ubar, _avgP:avgP, setRx:function(i){ rx = i; conceptAll(); }, setT:function(t){ Tk = t; conceptAll(); }, flows:flows, RP:RP, rUI:rUI, setNS:setNS, _BEN:BEN };
+};
+var fuSim = new fuGen();
+</script>
+<script>fuA11y.init();</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p><b>Nuclear fusion</b> is the process in which light nuclei combine into a heavier nucleus. The product nucleus lies higher on the binding-energy-per-nucleon curve than the reactants, so mass is lost and energy released: `Q = (Delta m) c^2`. For example `\ _1^2 H + \ _1^3 H -&gt; \ _2^4 He + \ _0^1 n + 17.6` MeV. Because both nuclei are positive, they must be brought close enough (a few fm) for the strong force to act, against the Coulomb barrier `U = k q_1 q_2 /r`. This requires temperatures of millions of kelvin, and even then the nuclei usually get through by quantum tunneling.</p>
+<p><b>The Sun</b> is powered by the proton&ndash;proton chain, whose net effect is `4\ _1^1 H -&gt; \ _2^4 He + 2e^+ + 2 nu` with a release of 26.7 MeV. <b>Nucleosynthesis</b>: hydrogen and helium come from the Big Bang; heavier elements up to iron are made by fusion in stars, in successive burning stages; elements beyond iron are made by neutron capture in supernovae and neutron-star mergers.</p>
+<p>A <b>hydrogen bomb</b> uses an uncontrolled fusion reaction ignited by a fission explosion; it has no critical-mass limit, so its yield can be very large (the fourth tab is a schematic only). A <b>fusion reactor</b> must heat a deuterium&ndash;tritium plasma to about `1.5 xx 10^8` K and confine it. The power-flow tab follows the energy: fusion power `P_(fus) = Q_(sci) P_(heat)`, part of the electricity produced is recirculated to heat the plasma, and the plant is useful only if the net electricity is positive. Per kilogram, D&ndash;T fusion releases about four times as much energy as U-235 fission. Masses are rounded atomic masses; tunneling probabilities use the Gamow factor; historical data are approximate.</p>
+</div>
+</div>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+
+</div>
+
+</body>
+</html>

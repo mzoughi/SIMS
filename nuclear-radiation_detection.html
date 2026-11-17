@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Nuclear: Detecting Nuclear Radiation</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobnucpenetr" class="mob_wrap">
+<div class="pn_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="pn_a11ybtn" id="pnBtnHC" onclick="pnA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="pn_a11ybtn" id="pnBtnDM" onclick="pnA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="pn_a11ybtn" id="pnBtnCB" onclick="pnA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="pn_a11ybtn" id="pnBtnNR" onclick="pnA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+
+<div class="pn_title"><h3>Detecting Nuclear Radiation &mdash; Penetration &amp; Magnetic Deflection</h3></div>
+<div class="pn_tabs" role="tablist" aria-label="Experiment">
+<button type="button" role="tab" class="pn_tab" id="pnTabP" aria-selected="true" aria-controls="pnPaneP">Penetration &amp; Geiger counter</button>
+<button type="button" role="tab" class="pn_tab" id="pnTabM" aria-selected="false" aria-controls="pnPaneM">Effect of a magnetic field</button>
+</div>
+<div id="pnNarBar" class="pn_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<!-- ═════════ TAB 1: penetration ═════════ -->
+<div id="pnPaneP" role="tabpanel" aria-labelledby="pnTabP">
+<div class="pn_view"><canvas id="pnCv" width="800" height="300" role="img" aria-label="Side view: the radioactive source on the left, an absorber in the middle, and the Geiger counter on the right, with the radiation drawn as it travels and is stopped."></canvas></div>
+<div class="pn_meter" aria-live="off">
+<div class="pn_dial"><div class="pn_rl2">count rate</div><div class="pn_big" id="pnRate">0</div><div class="pn_rl2">counts per second</div></div>
+<div class="pn_dial"><div class="pn_rl2">total counts</div><div class="pn_big" id="pnTot">0</div><div class="pn_rl2" id="pnTime">in 0.0 s</div></div>
+<div class="pn_dial"><div class="pn_rl2">10-second count</div><div class="pn_big" id="pnTen">&mdash;</div><div class="pn_rl2" id="pnTenS">press &ldquo;Count 10 s&rdquo;</div></div>
+</div>
+<div id="pnStatus" class="pn_status"></div>
+<div class="pn_transport" role="toolbar" aria-label="Counter">
+<div class="pn_tgroup">
+<button type="button" class="pn_tbtn pn_play" id="pnRun" aria-label="Turn the counter off" aria-pressed="true" title="Counter on / off"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg></button>
+<button type="button" class="pn_vbtn" id="pnSnd" aria-pressed="false">Sound: off</button>
+<button type="button" class="pn_vbtn" id="pnZero">Reset total</button>
+</div>
+<div class="pn_tgroup pn_tsep">
+<button type="button" class="pn_bbtn" id="pnTen10">Count 10 s</button>
+<button type="button" class="pn_vbtn" id="pnRec" disabled>Record</button>
+</div>
+</div>
+<div class="pn_card"><div class="pn_ctitle">Count rate over the last 30 seconds</div><canvas id="pnGr" width="800" height="150" role="img" aria-label="Bar graph of the counts in each second for the last 30 seconds."></canvas></div>
+<div class="pn_panels">
+<div class="pn_panel" role="group" aria-labelledby="pnHdS"><div class="pn_ptitle" id="pnHdS">Source &amp; distance</div><div class="pn_pbody">
+<div class="pn_ctrl"><div class="pn_chdr"><label for="pnSrc">Radioactive source</label></div><select id="pnSrc"></select></div>
+<div class="pn_ctrl"><div class="pn_chdr"><label for="pnD">Distance source &rarr; counter</label><span class="pn_val" id="pnDVal"></span></div><input type="range" id="pnD" min="1" max="30" step="0.5" value="3"></div>
+<div class="pn_checks"><label class="pn_chk"><input type="checkbox" id="pnBg" checked>Background radiation</label><label class="pn_chk"><input type="checkbox" id="pnRays" checked>Show the radiation</label></div>
+</div></div>
+<div class="pn_panel" role="group" aria-labelledby="pnHdA"><div class="pn_ptitle" id="pnHdA">Absorber (between source and counter)</div><div class="pn_pbody">
+<div class="pn_presets" id="pnMat" role="group" aria-label="Material"></div>
+<div class="pn_ctrl" id="pnThC"><div class="pn_chdr"><label for="pnTh" id="pnThL">Thickness</label><span class="pn_val" id="pnThVal"></span></div><input type="range" id="pnTh" min="0" max="10" step="1" value="1"></div>
+</div></div>
+</div>
+<div class="pn_card2"><div class="pn_ctitle2">Your measurements</div><div class="pn_tblwrap2" id="pnTbl"></div></div>
+<div class="pn_card2"><div class="pn_ctitle2">What stops what (Figure 12.5.1)</div><div class="pn_tblwrap2">
+<table class="pn_tbl"><thead><tr><th class="pn_l" scope="col">radiation</th><th scope="col">range in air</th><th scope="col">paper</th><th scope="col">aluminium</th><th scope="col">lead</th><th class="pn_l" scope="col">why</th></tr></thead><tbody>
+<tr><td class="pn_l"><b>&alpha;</b> (He nucleus)</td><td>a few cm</td><td>stopped</td><td>stopped</td><td>stopped</td><td class="pn_l">heavy, charge +2: ionizes everything it meets and loses its energy fast</td></tr>
+<tr><td class="pn_l"><b>&beta;</b> (electron)</td><td>about a metre</td><td>mostly passes</td><td>stopped by about 3 mm</td><td>stopped by about 1 mm</td><td class="pn_l">light, charge &minus;1: ionizes less, travels further</td></tr>
+<tr><td class="pn_l"><b>&gamma;</b> (photon)</td><td>very far</td><td>passes</td><td>mostly passes</td><td>reaches 2 cm or more; halved every ~1.2 cm (Co-60)</td><td class="pn_l">no charge: interacts only now and then; it is reduced, never fully stopped</td></tr>
+</tbody></table></div></div>
+</div>
+
+<!-- ═════════ TAB 2: magnetic field ═════════ -->
+<div id="pnPaneM" role="tabpanel" aria-labelledby="pnTabM" hidden>
+<div class="pn_intro">The beam from a source inside a lead block passes through a uniform magnetic field (like Figure 12.5.2). The force on a moving charge is <b>F = qv &times; B</b>: with B into the page and the beam moving to the right, positive charges are pushed <b>up</b>, negative charges <b>down</b>, and uncharged radiation goes <b>straight</b>. Each charged particle follows a circular arc of radius <b>r = p/(|q|B)</b>.</div>
+<div class="pn_view"><canvas id="pmCv" width="820" height="420" role="img" aria-label="Side view like Figure 12.5.2: a lead block with a radioactive source, a beam going to the right into a uniform magnetic field shown by crosses (into the page) or dots (out of the page), alpha particles curving up, beta-minus particles curving down, gamma rays going straight, and a detector screen on the right where the hits are marked."></canvas></div>
+<div class="pn_read" id="pmRead" aria-live="off"></div>
+<div class="pn_transport" role="toolbar" aria-label="Beam">
+<div class="pn_tgroup">
+<button type="button" class="pn_tbtn pn_play" id="pmRun" aria-label="Stop the beam" aria-pressed="true" title="Beam on / off"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg></button>
+<button type="button" class="pn_vbtn" id="pmClr">Clear the screen</button>
+</div>
+<div class="pn_tgroup pn_tsep" role="group" aria-label="Examples">
+<button type="button" class="pn_vbtn" id="pmFig">Like Figure 12.5.2</button>
+<button type="button" class="pn_vbtn" id="pmTrue">True proportions</button>
+<button type="button" class="pn_vbtn" id="pmFlip">Reverse B</button>
+</div>
+</div>
+<div class="pn_card2 pn_cm"><div class="pn_ctitle2">The particles in this field</div><div class="pn_tblwrap2" id="pmTbl"></div><div class="pn_cnote2" id="pmWhy"></div></div>
+<div class="pn_panels">
+<div class="pn_panel" role="group" aria-labelledby="pmHdF"><div class="pn_ptitle" id="pmHdF">Field and source</div><div class="pn_pbody">
+<div class="pn_ctrl"><div class="pn_chdr"><label for="pmB">Magnetic field B</label><span class="pn_val" id="pmBV"></span></div><input type="range" id="pmB" min="0" max="200" step="1" value="40"></div>
+<div class="pn_ctrl"><div class="pn_chdr"><label for="pmDir">Direction of B</label></div><select id="pmDir"><option value="in">into the page (&times;), as in the figure</option><option value="out">out of the page (&bull;)</option></select></div>
+<div class="pn_ctrl"><div class="pn_chdr"><label for="pmSrc">Source</label></div><select id="pmSrc"></select></div>
+</div></div>
+<div class="pn_panel" role="group" aria-labelledby="pmHdE"><div class="pn_ptitle" id="pmHdE">Energies and display</div><div class="pn_pbody">
+<div class="pn_ctrl"><div class="pn_chdr"><label for="pmKa">&alpha; kinetic energy</label><span class="pn_val" id="pmKaV"></span></div><input type="range" id="pmKa" min="4" max="9" step="0.05" value="5.3"></div>
+<div class="pn_ctrl"><div class="pn_chdr"><label for="pmKb">&beta; kinetic energy (maximum)</label><span class="pn_val" id="pmKbV"></span></div><input type="range" id="pmKb" min="0.05" max="3" step="0.05" value="1"></div>
+<div class="pn_checks">
+<label class="pn_chk"><input type="checkbox" id="pmSpec" checked>&beta; energy spread (real spectrum)</label>
+<label class="pn_chk"><input type="checkbox" id="pmExag" checked>Exaggerate the &alpha; bend</label>
+<label class="pn_chk"><input type="checkbox" id="pmForce" checked>Show the forces</label>
+<label class="pn_chk"><input type="checkbox" id="pmTrail" checked>Show the paths</label>
+</div>
+</div></div>
+</div>
+</div>
+</div>
+<style>
+:where(#mobnucpenetr) * { margin:0; box-sizing:border-box; }
+#mobnucpenetr { width:100%; max-width:860px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; color:#1d232a; }
+#mobnucpenetr canvas { display:block; width:100%; height:auto; }
+#mobnucpenetr .pn_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#mobnucpenetr .pn_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#mobnucpenetr .pn_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobnucpenetr .pn_title { padding:4px; background-color:#f90; text-align:center; }
+#mobnucpenetr .pn_title h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+#mobnucpenetr .pn_tabs { display:flex; gap:4px; padding:6px 8px 0; background:#14213a; flex-wrap:wrap; }
+#mobnucpenetr .pn_tab { flex:1 1 140px; padding:8px 6px; border:1px solid #2b3d60; border-bottom:0; border-radius:6px 6px 0 0; background:#1d2c4a; color:#bcd0f0; font-weight:bold; cursor:pointer; font-size:.88rem; min-height:40px; }
+#mobnucpenetr .pn_tab[aria-selected="true"] { background:#f3f5f8; color:#14213a; }
+#mobnucpenetr .pn_intro { padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; font-size:.9rem; line-height:1.5; }
+#mobnucpenetr .pn_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:6px 12px; padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; }
+#mobnucpenetr .pn_rl { font-size:.7rem; color:#667; text-transform:uppercase; letter-spacing:.05em; }
+#mobnucpenetr .pn_rv { font-family:monospace; font-size:.93rem; color:#7a3a00; font-weight:bold; }
+#mobnucpenetr .pn_view { background:#0b1222; }
+#mobnucpenetr .pn_status { color:#222; font-size:.84rem; text-align:center; background:#fff6d9; padding:5px 8px; line-height:1.45; min-height:1.6em; }
+#mobnucpenetr .pn_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+#mobnucpenetr .pn_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+#mobnucpenetr .pn_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { #mobnucpenetr .pn_tsep { padding-left:0; border-left:0; } }
+#mobnucpenetr .pn_tbtn { width:44px; height:38px; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer; border:1px solid #6d8a3a; border-radius:5px; background:#fff; color:#223; }
+#mobnucpenetr .pn_tbtn.pn_play { background:#2e7d32; color:#fff; border-color:#1b5e20; }
+#mobnucpenetr .pn_tbtn.pn_play[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+#mobnucpenetr .pn_vbtn, #mobnucpenetr .pn_bbtn { height:38px; padding:0 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; white-space:nowrap; }
+#mobnucpenetr .pn_vbtn[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobnucpenetr .pn_bbtn { background:#2e7d32; border-color:#1b5e20; color:#fff; font-weight:bold; }
+#mobnucpenetr button:disabled { opacity:.4; cursor:not-allowed; }
+#mobnucpenetr .pn_card { margin:10px 10px 0; background:#0b1222; border:1px solid #2b3d60; border-radius:6px; overflow:hidden; }
+#mobnucpenetr .pn_ctitle { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:4px 10px; padding:5px 10px; background:#14213a; color:#dbe7ff; font-size:.8rem; font-weight:bold; }
+#mobnucpenetr .pn_cnote { padding:8px 12px 10px; color:#e3ecfa; font-size:.86rem; line-height:1.5; background:#0d1526; border-top:1px solid #2b3d60; }
+#mobnucpenetr .pn_cnote b { color:#ffd23f; }
+#mobnucpenetr .pn_cbar { display:flex; flex-wrap:wrap; gap:4px 14px; padding:6px 10px; background:#0d1526; color:#dbe7ff; font-size:.8rem; }
+#mobnucpenetr .pn_cbar label { display:flex; align-items:center; gap:5px; cursor:pointer; }
+#mobnucpenetr .pn_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:10px; padding:10px; }
+#mobnucpenetr .pn_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+#mobnucpenetr .pn_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+#mobnucpenetr .pn_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; font-size:.87rem; line-height:1.45; }
+#mobnucpenetr .pn_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+#mobnucpenetr .pn_ctrl.pn_off { opacity:.45; }
+#mobnucpenetr .pn_chdr { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+#mobnucpenetr .pn_chdr label { font-size:.82rem; font-weight:bold; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+#mobnucpenetr .pn_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; flex:0 0 auto; min-width:4.5em; text-align:right; }
+#mobnucpenetr .pn_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+#mobnucpenetr select { width:100%; min-height:34px; padding:4px 6px; font-size:.86rem; border:1px solid #8a96a8; border-radius:4px; background:#fff; }
+#mobnucpenetr .pn_checks { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 8px; }
+#mobnucpenetr .pn_chk { display:flex; align-items:center; gap:6px; font-size:.82rem; cursor:pointer; }
+#mobnucpenetr .pn_presets { display:flex; flex-wrap:wrap; gap:5px; }
+#mobnucpenetr .pn_presets button { padding:5px 9px; font-size:.82rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:4px; background:#fff; color:#223; min-height:34px; }
+#mobnucpenetr .pn_presets button[aria-current="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobnucpenetr .pn_note { font-size:.8rem; color:#555; font-style:italic; }
+#mobnucpenetr .pn_tblwrap { overflow-x:auto; }
+#mobnucpenetr .pn_tbl { border-collapse:collapse; width:100%; font-size:.82rem; }
+#mobnucpenetr .pn_tbl th, #mobnucpenetr .pn_tbl td { padding:4px 6px; border-bottom:1px solid #e3e7ee; text-align:center; }
+#mobnucpenetr .pn_tbl th { background:#f1f4f8; font-size:.76rem; }
+#mobnucpenetr .pn_tbl td.pn_l, #mobnucpenetr .pn_tbl th.pn_l { text-align:left; }
+#mobnucpenetr .pn_eq { font-family:'Times New Roman', serif; font-size:1rem; background:#f6f8fb; border-left:3px solid #1f5fa8; padding:4px 8px; margin:2px 0; overflow-wrap:anywhere; }
+#mobnucpenetr b.pn_res { color:#7a3a00; }
+#mobnucpenetr .pn_num { width:5.5em; height:36px; padding:3px 6px; font-size:.95rem; border:1px solid #888; border-radius:4px; }
+#mobnucpenetr .pn_ok { color:#1b6e2a; font-weight:bold; } #mobnucpenetr .pn_no { color:#b42318; font-weight:bold; }
+#mobnucpenetr button:focus-visible, #mobnucpenetr input:focus-visible, #mobnucpenetr select:focus-visible, #mobnucpenetr canvas:focus-visible, #mobnucpenetr tr:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (max-width:420px) { #mobnucpenetr .pn_checks { grid-template-columns:minmax(0,1fr); } }
+@media (pointer:coarse) { #mobnucpenetr .pn_tbtn, #mobnucpenetr .pn_vbtn, #mobnucpenetr .pn_bbtn, #mobnucpenetr .pn_num { height:44px; } #mobnucpenetr .pn_presets button { min-height:42px; } #mobnucpenetr input[type=checkbox] { width:20px; height:20px; } #mobnucpenetr input[type=range] { height:28px; } }
+#mobnucpenetr .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobnucpenetr .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobnucpenetr .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobnucpenetr .mob_desc p { margin:0 0 8px 0; }
+#mobnucpenetr .mob_eq { text-align:center; }
+#mobnucpenetr.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobnucpenetr.a11y_dm .pn_card, #mobnucpenetr.a11y_dm .pn_view, #mobnucpenetr.a11y_dm [aria-label="Display options"], #mobnucpenetr.a11y_dm .mob_descbtn, #mobnucpenetr.a11y_dm .pn_meter { filter:hue-rotate(180deg) invert(1); }
+#mobnucpenetr.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobnucpenetr.a11y_hc .pn_card, #mobnucpenetr.a11y_hc .pn_view, #mobnucpenetr.a11y_hc [aria-label="Display options"], #mobnucpenetr.a11y_hc .mob_descbtn, #mobnucpenetr.a11y_hc .pn_meter { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+
+#mobnucpenetr .pn_meter { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:8px; padding:8px 10px; background:#1b2333; }
+#mobnucpenetr .pn_dial { background:#0e1520; border:2px solid #3a4a62; border-radius:8px; padding:6px; text-align:center; }
+#mobnucpenetr .pn_big { font-family:'Courier New', monospace; font-size:1.7rem; font-weight:bold; color:#7dff9a; text-shadow:0 0 6px rgba(125,255,154,.5); line-height:1.2; }
+#mobnucpenetr .pn_rl2 { font-size:.7rem; color:#9fb0c8; text-transform:uppercase; letter-spacing:.05em; }
+#mobnucpenetr .pn_card2 { margin:0 10px 10px; background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; }
+#mobnucpenetr .pn_cm { margin-top:10px; }
+#mobnucpenetr .pn_ctitle2 { padding:5px 10px; background:#883355; color:#fff; font-size:.74rem; font-weight:bold; letter-spacing:.08em; text-transform:uppercase; }
+#mobnucpenetr .pn_tblwrap2 { padding:6px 8px 8px; overflow-x:auto; }
+#mobnucpenetr .pn_cnote2 { padding:6px 12px 10px; font-size:.86rem; line-height:1.5; }
+#mobnucpenetr .pn_x { background:none; border:1px solid #c66; color:#b42318; border-radius:3px; cursor:pointer; min-width:28px; min-height:28px; }
+#mobnucpenetr .pn_sw { display:inline-block; width:11px; height:11px; border-radius:50%; vertical-align:middle; margin-right:4px; }
+@media (max-width:480px) { #mobnucpenetr .pn_big { font-size:1.25rem; } }
+</style>
+<script>
+var pnA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return; b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobnucpenetr'); if (!W) return; W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc);
+var nb = document.getElementById('pnNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none'; var nr = document.getElementById('pnBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('pnBtnHC', states.hc); styleBtn('pnBtnDM', states.dm); styleBtn('pnBtnCB', states.cb); styleBtn('pnBtnNR', states.nr); hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return { init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply(); if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: alpha vermillion, beta sky blue, positrons pink, gamma yellow.'); },
+alt:function(){ return states.hc || states.cb; }, isHC:function(){ return states.hc; }, narrate:function(m){ if (!states.nr) return; var nb = document.getElementById('pnNarBar'); if (nb) nb.textContent = m; } };
+})();
+</script>
+
+<!-- ════════ SIMULATION 1: penetration ════════
+Count rate at the counter = background + sum over the source's emissions of S x (2 cm / d)^2 x transmission.
+Transmission (simplified, to show the right behaviour):
+ alpha (5 MeV): range in air 3.9 cm (smooth edge); any paper, aluminium or lead stops it.
+ beta (Sr-90/Y-90, up to 2.28 MeV): paper exp(-0.05 per sheet); aluminium exp(-x/1.0 mm), zero beyond 5 mm; lead exp(-x/0.25 mm), zero beyond 1.3 mm.
+ gamma (Co-60): aluminium exp(-0.016 x/mm); lead exp(-0.058 x/mm) (half-value layer about 12 mm); paper none.
+Counts are random (Poisson). Background about 0.5 counts per second.
+════════ SIMULATION 2: magnetic field ════════
+Relativistic momentum p = sqrt(K^2 + 2 K m c^2)/c; v/c = pc/(K + mc^2); radius r = p/(|q| B), with p in MeV/c: r (m) = p/(299.79 |q/e| B).
+Force F = |q| v B. Paths integrated in small steps; the field fills the region right of the lead block up to the screen (20 cm).
+Beta spectrum (option): K sampled from N(K) ~ p E (Q - K)^2. The "exaggerate" option multiplies the alpha curvature by a stated factor.
+No dollar signs or backticks in the code.
+-->
+<script>
+var pnGen = function(){
+  var cv = document.getElementById('pnCv'), g = cv.getContext('2d'), cG = document.getElementById('pnGr'), gG = cG.getContext('2d'), W = cv.width, H = cv.height, TAU = 2*Math.PI;
+  function el(id){ return document.getElementById(id); }
+  var tab = 'p';
+  var SRC = [['Polonium-210 (\u03b1)', { a:260 }], ['Strontium-90 (\u03b2)', { b:300 }], ['Cobalt-60 (\u03b3)', { g:70 }], ['Americium-241 (\u03b1 and weak \u03b3)', { a:220, g:6 }], ['Radium-226 with its daughters (\u03b1, \u03b2, \u03b3)', { a:180, b:150, g:40 }], ['Unknown source A', null], ['Unknown source B', null], ['No source (background only)', {}]];
+  var UNK = [{ b:220, g:50 }, { a:240, b:180 }, { a:200, g:60 }, { g:90 }, { b:260 }];
+  var unkA = UNK[Math.floor(Math.random()*UNK.length)], unkB; do { unkB = UNK[Math.floor(Math.random()*UNK.length)]; } while (unkB === unkA);
+  var MAT = [['none', 'No absorber'], ['paper', 'Paper'], ['al', 'Aluminium'], ['pb', 'Lead']];
+  var S = { src:0, d:3, mat:'none', th:{ paper:1, al:1, pb:5 }, bg:true, rays:true, on:true, snd:false };
+  var total = 0, elapsed = 0, perSec = [], curSec = 0, secT = 0, ten = null, recs = [], last = 0, parts = [], flash = 0, ac = null, lastTen = null;
+  function emits(){ var s = SRC[S.src]; return s[1] === null ? (S.src === 5 ? unkA : unkB) : s[1]; }
+  function thick(){ return S.mat === 'none' ? 0 : S.th[S.mat]; }
+  function thText(){ var t = thick(); return S.mat === 'paper' ? t + ' sheet' + (t === 1 ? '' : 's') + ' (' + (t*0.1).toFixed(1) + ' mm)' : S.mat === 'none' ? '\u2014' : t + ' mm'; }
+  function trans(kind){ var m = S.mat, x = thick(), d = S.d;
+    if (kind === 'a'){ var air = d < 3.4 ? 1 : d > 4.4 ? 0 : (4.4 - d); if (m !== 'none' && x > 0) return 0; return air; }
+    var airB = kind === 'b' ? Math.exp(-0.004*d) : 1;
+    if (m === 'none' || x === 0) return airB;
+    if (kind === 'b'){ if (m === 'paper') return airB*Math.exp(-0.05*x); if (m === 'al') return x > 5 ? 0 : airB*Math.exp(-x/1.0); if (m === 'pb') return x > 1.3 ? 0 : airB*Math.exp(-x/0.25); }
+    if (kind === 'g'){ if (m === 'paper') return 1; if (m === 'al') return Math.exp(-0.016*x); if (m === 'pb') return Math.exp(-0.058*x); } return 1; }
+  function geo(){ return Math.pow(2/Math.max(1, S.d), 2); }
+  function rates(){ var e = emits(), r = { a:0, b:0, g:0 }; ['a', 'b', 'g'].forEach(function(k){ if (e[k]) r[k] = e[k]*geo()*trans(k); }); r.bg = S.bg ? 0.5 : 0; r.tot = r.a + r.b + r.g + r.bg; return r; }
+  function poisson(l){ if (l > 30) return Math.max(0, Math.round(l + Math.sqrt(l)*gauss())); var L = Math.exp(-l), k = 0, p = 1; do { k++; p *= Math.random(); } while (p > L); return k - 1; }
+  function gauss(){ var u = Math.random() || 1e-9, v = Math.random(); return Math.sqrt(-2*Math.log(u))*Math.cos(TAU*v); }
+  function click(){ if (!S.snd || tab !== 'p') return; try { if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)(); var n = ac.createBufferSource(), b = ac.createBuffer(1, 220, ac.sampleRate), d = b.getChannelData(0); for (var i=0; i<220; i++) d[i] = (Math.random()*2 - 1)*Math.exp(-i/25); n.buffer = b; var gn = ac.createGain(); gn.gain.value = 0.5; n.connect(gn); gn.connect(ac.destination); n.start(); } catch (e) {} }
+  function K(){ return Math.min(110, 560/Math.max(S.d, 5)); } function X(cm){ return 80 + cm*K(); } var CY = 150;
+  function barrierX(){ return (X(0) + X(S.d))/2; }
+  function barrierW(){ var x = thick(); if (S.mat === 'paper') return Math.max(3, x*1.5); if (S.mat === 'al') return Math.max(3, x*3); if (S.mat === 'pb') return Math.max(4, x*1.3); return 0; }
+  function stopX(kind){ var bx = barrierX(), bw = barrierW(), x = thick(), m = S.mat;
+    if (kind === 'a'){ var r = 3.4 + Math.random(); if (m !== 'none' && x > 0 && X(r) > bx - bw/2) return bx - bw/2 + Math.random()*2; if (r < S.d) return X(r); return null; }
+    if (m !== 'none' && x > 0){ var T = trans(kind)/(kind === 'b' ? Math.exp(-0.004*S.d) : 1); if (Math.random() > T) return bx - bw/2 + Math.random()*bw; }
+    if (kind === 'b' && Math.random() > Math.exp(-0.004*S.d)) return X(Math.random()*S.d); return null; }
+  function pal(){ var alt = pnA11y.alt(); return { a:alt ? '#D55E00' : '#ff5a4a', b:alt ? '#56B4E9' : '#4fc3ff', bp:alt ? '#CC79A7' : '#ff9a3d', g:alt ? '#F0E442' : '#c58cff' }; }
+  function lbl(gx, t, x, y, col, size, al){ gx.font = 'bold ' + (size || 12) + 'px Arial'; gx.textAlign = al || 'center'; gx.textBaseline = 'middle'; gx.lineJoin = 'round'; gx.lineWidth = 3.5; gx.strokeStyle = 'rgba(0,0,0,0.85)'; gx.strokeText(t, x, y); gx.fillStyle = col; gx.fillText(t, x, y); }
+  function draw(){ var p = pal(), i;
+    g.fillStyle = '#0b1222'; g.fillRect(0, 0, W, H);
+    g.strokeStyle = 'rgba(150,170,195,0.25)'; g.fillStyle = '#9aa6b4'; g.font = '10px monospace'; g.textAlign = 'center'; g.textBaseline = 'alphabetic'; g.lineWidth = 1;
+    var maxc = Math.floor((W - 20 - X(0))/K()), lab = K() > 40 ? 1 : 5; for (i=0; i<=maxc; i++){ var x = X(i); g.beginPath(); g.moveTo(x, H - 30); g.lineTo(x, H - (i % lab ? 25 : 20)); g.stroke(); if (i % lab === 0) g.fillText(i + ' cm', x, H - 8); }
+    g.beginPath(); g.moveTo(X(0), H - 30); g.lineTo(X(maxc), H - 30); g.stroke();
+    if (S.rays) parts.forEach(function(q){ var col = p[q.k]; if (q.k === 'g'){ g.strokeStyle = col; g.lineWidth = 2; g.beginPath(); for (var s=0; s<=14; s++){ var xx = q.x - 14 + s, yy = q.y + (q.x - 14 + s - X(0))*q.s + 3*Math.sin((q.x + s)*0.9); if (!s) g.moveTo(xx, yy); else g.lineTo(xx, yy); } g.stroke(); }
+      else { g.fillStyle = col; g.beginPath(); g.arc(q.x, q.y + (q.x - X(0))*q.s, q.k === 'a' ? 4.5 : 2.6, 0, TAU); g.fill(); } });
+    g.fillStyle = '#5b6370'; g.fillRect(X(0) - 44, CY - 26, 44, 52); g.fillStyle = '#c9a227'; g.beginPath(); g.arc(X(0) - 2, CY, 9, 0, TAU); g.fill();
+    g.fillStyle = '#111'; for (i=0; i<3; i++){ g.beginPath(); g.moveTo(X(0) - 22, CY); g.arc(X(0) - 22, CY, 12, i*TAU/3 - 0.5, i*TAU/3 + 0.5); g.closePath(); g.fill(); } g.fillStyle = '#c9a227'; g.beginPath(); g.arc(X(0) - 22, CY, 3, 0, TAU); g.fill();
+    lbl(g, 'source', X(0) - 22, CY + 40, '#e6ecf2', 11);
+    if (S.mat !== 'none' && thick() > 0){ var bx = barrierX(), bw = barrierW(), col = S.mat === 'paper' ? '#f2efe6' : S.mat === 'al' ? '#b9c3cf' : '#5f6875'; g.fillStyle = col; g.fillRect(bx - bw/2, CY - 75, bw, 150); g.strokeStyle = 'rgba(0,0,0,0.5)'; g.strokeRect(bx - bw/2, CY - 75, bw, 150);
+      lbl(g, { paper:'paper', al:'aluminium', pb:'lead' }[S.mat] + ' ' + thText(), bx, CY - 88, '#e6ecf2', 11); }
+    var gx = X(S.d); g.fillStyle = '#c8ccd2'; g.fillRect(gx, CY - 14, 120, 28); g.fillStyle = '#7d858f'; g.fillRect(gx + 120, CY - 18, 30, 36); g.fillStyle = '#2b2f36'; g.fillRect(gx - 3, CY - 14, 4, 28);
+    if (flash > 0){ g.fillStyle = 'rgba(125,255,154,' + flash + ')'; g.beginPath(); g.arc(gx + 135, CY - 26, 5, 0, TAU); g.fill(); }
+    g.strokeStyle = '#7d858f'; g.lineWidth = 3; g.beginPath(); g.moveTo(gx + 150, CY); g.quadraticCurveTo(gx + 175, CY + 50, Math.min(W - 10, gx + 190), CY + 70); g.stroke();
+    lbl(g, 'Geiger\u2013M\u00fcller tube', gx + 60, CY + 30, '#e6ecf2', 11); lbl(g, '\u2190 thin window', gx + 4, CY - 30, '#9aa6b4', 9, 'left');
+    lbl(g, 'd = ' + S.d + ' cm', (X(0) + gx)/2, H - 46, '#ffd23f', 11);
+    var e = emits(), ks = []; if (e.a) ks.push('\u03b1'); if (e.b) ks.push('\u03b2'); if (e.g) ks.push('\u03b3'); if (SRC[S.src][1] === null) ks = ['?'];
+    lbl(g, 'emits: ' + (ks.length ? ks.join(' + ') : 'nothing'), 10, 16, '#e6ecf2', 12, 'left'); lbl(g, '\u03b1 red \u00b7 \u03b2 blue \u00b7 \u03b3 violet wave (only some of the radiation is drawn)', W - 10, 16, '#9aa6b4', 10, 'right'); }
+  function drawGraph(){ var w = cG.width, h = cG.height, L = 44, R = w - 10, T = 10, B = h - 24, arr = perSec.slice(-30), mx = 5, i;
+    arr.forEach(function(v){ mx = Math.max(mx, v); }); mx = Math.ceil(mx*1.15);
+    gG.fillStyle = '#0b1222'; gG.fillRect(0, 0, w, h); gG.strokeStyle = 'rgba(150,170,195,0.2)'; gG.fillStyle = '#9aa6b4'; gG.font = '10px monospace'; gG.textBaseline = 'alphabetic';
+    [0, 0.5, 1].forEach(function(f){ var y = B - f*(B - T); gG.beginPath(); gG.moveTo(L, y); gG.lineTo(R, y); gG.stroke(); gG.textAlign = 'right'; gG.fillText(String(Math.round(f*mx)), L - 4, y + 3); });
+    var bw = (R - L)/30; gG.fillStyle = '#7dff9a'; for (i=0; i<arr.length; i++){ var hh = arr[i]/mx*(B - T); gG.fillRect(R - (arr.length - i)*bw + 1, B - hh, bw - 2, hh); }
+    var r = rates(); gG.strokeStyle = '#ffffff'; gG.setLineDash([5, 4]); gG.beginPath(); gG.moveTo(L, B - Math.min(1, r.tot/mx)*(B - T)); gG.lineTo(R, B - Math.min(1, r.tot/mx)*(B - T)); gG.stroke(); gG.setLineDash([]);
+    gG.textAlign = 'center'; gG.fillText('seconds ago (30 \u2192 now); dashed: the average expected rate', (L + R)/2, h - 6); gG.save(); gG.translate(11, (T + B)/2); gG.rotate(-Math.PI/2); gG.fillText('counts', 0, 0); gG.restore(); }
+  function loop(now){ var dt = last ? Math.min(0.1, (now - last)/1000) : 0; last = now;
+    if (tab === 'p'){
+      if (S.on && dt > 0){ var r = rates(), n = poisson(r.tot*dt), i; for (i=0; i<n; i++){ setTimeout(click, Math.random()*dt*1000); } if (n) flash = 1;
+        total += n; elapsed += dt; curSec += n; secT += dt; if (secT >= 1){ perSec.push(curSec); if (perSec.length > 60) perSec.shift(); curSec = 0; secT -= 1; drawGraph(); el('pnRate').textContent = perSec[perSec.length - 1]; }
+        if (ten){ ten.c += n; ten.t += dt; el('pnTen').textContent = ten.c; el('pnTenS').textContent = ten.t >= 10 ? 'in 10 s = ' + (ten.c/10).toFixed(1) + ' per second' : 'counting\u2026 ' + ten.t.toFixed(1) + ' s'; if (ten.t >= 10){ var res = ten; ten = null; el('pnRec').disabled = false; lastTen = res; pnA11y.narrate('10-second count: ' + res.c + ' counts, ' + (res.c/10).toFixed(1) + ' per second.'); } }
+        el('pnTot').textContent = total; el('pnTime').textContent = 'in ' + elapsed.toFixed(1) + ' s';
+        var e = emits(); ['a', 'b', 'g'].forEach(function(k){ if (!e[k] || !S.rays) return; var m = poisson(Math.min(40, e[k]*0.12)*dt); for (var j=0; j<m; j++) parts.push({ k:k, x:X(0) + 2, y:CY + (Math.random() - 0.5)*10, s:(Math.random() - 0.5)*0.18, v:{ a:120, b:300, g:520 }[k]*K()/22, stop:stopX(k) }); });
+        parts = parts.filter(function(q){ q.x += q.v*dt; if (q.stop !== null && q.x >= q.stop) return false; return q.x < X(S.d) + 4 && Math.abs(q.y + (q.x - X(0))*q.s - CY) < 120; }); }
+      flash = Math.max(0, flash - dt*6); draw(); }
+    else if (tab === 'm') M.frame(dt);
+    requestAnimationFrame(loop); }
+  function explain(){ var r = rates(), e = emits(), s = [], unk = SRC[S.src][1] === null;
+    if (!e.a && !e.b && !e.g) s.push('No source: the counter still clicks now and then. That is <b>background radiation</b> (cosmic rays, radon in the air, rocks), about 0.5 counts per second here.');
+    else if (unk) s.push('<b>Mystery source.</b> Find out what it emits: compare the count rate with no absorber, with paper, with a few mm of aluminium and with lead, and at distances above and below 4 cm. (The magnetic-field tab offers another way to tell the radiations apart.)');
+    else { if (e.a) s.push(r.a > 0.05 ? '\u03b1 particles reach the counter.' : (thick() > 0 && S.mat !== 'none' ? 'The \u03b1 particles are stopped by the ' + { paper:'paper', al:'aluminium', pb:'lead' }[S.mat] + '.' : 'The \u03b1 particles are stopped by about 4 cm of air.'));
+      if (e.b) s.push(r.b > 0.5 ? '\u03b2 particles get through' + (S.mat === 'al' || S.mat === 'pb' ? ' but are reduced to ' + (100*trans('b')).toFixed(0) + '%' : '') + '.' : '\u03b2 particles are stopped by the ' + { paper:'paper', al:'aluminium', pb:'lead' }[S.mat] + '.');
+      if (e.g) s.push('\u03b3 rays get through' + (S.mat === 'pb' && thick() > 0 ? ', reduced to ' + (100*trans('g')).toFixed(0) + '% (about halved every 12 mm of lead)' : S.mat === 'al' ? ', barely reduced' : '') + '.'); }
+    if (!unk && (e.a || e.b || e.g)) s.push('Expected rate: ' + r.tot.toFixed(1) + ' counts per second' + (S.bg ? ' (including 0.5 background)' : '') + '. Counts are random, so each second differs.');
+    el('pnStatus').innerHTML = s.join(' '); el('pnDVal').textContent = S.d + ' cm'; el('pnD').setAttribute('aria-valuetext', S.d + ' centimetres'); }
+  function tableUI(){ el('pnTbl').innerHTML = recs.length ? '<table class="pn_tbl' + '"><thead><tr><th scope="col">#</th><th class="pn_l' + '" scope="col">source</th><th scope="col">absorber</th><th scope="col">distance</th><th scope="col">counts in 10 s</th><th scope="col">rate (per s)</th><th scope="col">rate \u2212 background</th><th scope="col"><span style="position:absolute;left:-9999px">delete</span></th></tr></thead><tbody>' + recs.map(function(q, i){ return '<tr><td>' + (i + 1) + '</td><td class="pn_l' + '">' + q.src + '</td><td>' + q.abs + '</td><td>' + q.d + ' cm</td><td>' + q.c + '</td><td>' + (q.c/10).toFixed(1) + '</td><td>' + Math.max(0, q.c/10 - (q.bg ? 0.5 : 0)).toFixed(1) + '</td><td><button type="button" class="pn_x' + '" data-i="' + i + '" aria-label="delete row ' + (i + 1) + '">\u00d7</button></td></tr>'; }).join('') + '</tbody></table>' : '<p class="pn_note' + '">Press &ldquo;Count 10 s&rdquo;, then &ldquo;Record&rdquo; to keep the result here. Background (if on) is about 0.5 per second.</p>';
+    [].forEach.call(el('pnTbl').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ recs.splice(+b.getAttribute('data-i'), 1); tableUI(); }); }); }
+  el('pnSrc').innerHTML = SRC.map(function(q, i){ return '<option value="' + i + '">' + q[0] + '</option>'; }).join('');
+  el('pnMat').innerHTML = MAT.map(function(q){ return '<button type="button" data-m="' + q[0] + '" aria-pressed="' + (q[0] === S.mat ? 'true' : 'false') + '"' + (q[0] === S.mat ? ' aria-current="true"' : '') + '>' + q[1] + '</button>'; }).join('');
+  function matUI(){ [].forEach.call(el('pnMat').querySelectorAll('button'), function(b){ var on = b.getAttribute('data-m') === S.mat; b.setAttribute('aria-pressed', on ? 'true' : 'false'); if (on) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current'); });
+    var r = el('pnTh'), none = S.mat === 'none'; el('pnThC').classList.toggle('pn_off' + '', none); r.disabled = none;
+    if (S.mat === 'paper'){ r.min = 1; r.max = 10; r.step = 1; el('pnThL').textContent = 'Number of sheets'; } else if (S.mat === 'al'){ r.min = 0; r.max = 10; r.step = 0.5; el('pnThL').textContent = 'Thickness'; } else if (S.mat === 'pb'){ r.min = 0; r.max = 50; r.step = 1; el('pnThL').textContent = 'Thickness'; }
+    if (!none) r.value = S.th[S.mat]; el('pnThVal').textContent = thText(); r.setAttribute('aria-valuetext', thText()); }
+  [].forEach.call(el('pnMat').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ S.mat = b.getAttribute('data-m'); matUI(); changed(); pnA11y.narrate((S.mat === 'none' ? 'Absorber removed. ' : MAT.filter(function(q){ return q[0] === S.mat; })[0][1] + ', ' + thText() + ', placed between source and counter. ') + el('pnStatus').textContent); }); });
+  el('pnTh').addEventListener('input', function(){ if (S.mat === 'none') return; S.th[S.mat] = +this.value; matUI(); changed(); });
+  el('pnTh').addEventListener('change', function(){ pnA11y.narrate(thText() + '. ' + el('pnStatus').textContent); });
+  el('pnD').addEventListener('input', function(){ S.d = +this.value; changed(); });
+  el('pnD').addEventListener('change', function(){ pnA11y.narrate('Distance ' + S.d + ' cm. ' + el('pnStatus').textContent); });
+  el('pnSrc').addEventListener('change', function(){ S.src = +this.value; changed(); pnA11y.narrate(SRC[S.src][0] + '. ' + el('pnStatus').textContent); });
+  el('pnBg').addEventListener('change', function(){ S.bg = this.checked; changed(); }); el('pnRays').addEventListener('change', function(){ S.rays = this.checked; parts = []; });
+  function changed(){ el('pnSrc').value = S.src; el('pnD').value = S.d; el('pnBg').checked = S.bg; parts = []; ten = null; el('pnTen').textContent = '\u2014'; el('pnTenS').textContent = 'press \u201cCount 10 s\u201d'; el('pnRec').disabled = true; lastTen = null; explain(); drawGraph(); }
+  var PLAYI = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor"/></svg>', PAUSEI = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>';
+  var runBtn = el('pnRun');
+  runBtn.addEventListener('click', function(){ S.on = !S.on; runBtn.innerHTML = S.on ? PAUSEI : PLAYI; runBtn.setAttribute('aria-pressed', S.on ? 'true' : 'false'); runBtn.setAttribute('aria-label', S.on ? 'Turn the counter off' : 'Turn the counter on'); });
+  el('pnSnd').addEventListener('click', function(){ S.snd = !S.snd; this.setAttribute('aria-pressed', S.snd ? 'true' : 'false'); this.textContent = S.snd ? 'Sound: on' : 'Sound: off'; if (S.snd){ try { if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)(); if (ac.resume) ac.resume(); } catch (e) {} } });
+  el('pnZero').addEventListener('click', function(){ total = 0; elapsed = 0; el('pnTot').textContent = '0'; el('pnTime').textContent = 'in 0.0 s'; });
+  el('pnTen10').addEventListener('click', function(){ if (!S.on) runBtn.click(); ten = { c:0, t:0 }; el('pnRec').disabled = true; pnA11y.narrate('Counting for 10 seconds\u2026'); });
+  el('pnRec').addEventListener('click', function(){ if (!lastTen) return; recs.push({ src:SRC[S.src][0].split(' (')[0], abs:S.mat === 'none' ? 'none' : MAT.filter(function(q){ return q[0] === S.mat; })[0][1].toLowerCase() + ' ' + thText(), d:S.d, c:lastTen.c, bg:S.bg }); lastTen = null; this.disabled = true; tableUI(); pnA11y.narrate('Recorded as row ' + recs.length + '.'); });
+
+  /* ═════════════════════════ MAGNETIC FIELD ═════════════════════════ */
+  var M = (function(){
+    var c = document.getElementById('pmCv'), m = c.getContext('2d'), MW = c.width, MH = c.height;
+    var ME = 0.51100, MA = 3727.38, LF = 20, X0 = 230, X1 = 770, YC = 210, PXCM = (X1 - X0)/LF;   /* field from the lead (x = 0) to the screen (x = 20 cm) */
+    var SR = [['Mixed source (\u03b1, \u03b2\u207b, \u03b3), like the figure', { a:1, b:1, g:1 }], ['Polonium-210: \u03b1 only (5.30 MeV)', { a:1, ka:5.30 }], ['Strontium-90/Yttrium-90: \u03b2\u207b only (up to 2.28 MeV)', { b:1, kb:2.28 }], ['Cobalt-60: \u03b2\u207b (0.32 MeV) and \u03b3', { b:1, g:1, kb:0.32 }], ['Sodium-22: \u03b2\u207a (0.55 MeV) and \u03b3', { bp:1, g:1, kb:0.55 }], ['Americium-241: \u03b1 (5.49 MeV) and weak \u03b3', { a:1, g:1, ka:5.49 }]];
+    var P = { B:0.015, dir:1, src:0, ka:5.3, kb:1.0, spec:true, exag:true, force:true, trail:true, on:true };
+    var flying = [], hits = [], trails = { a:null, b:[], bp:[], g:null }, emitAcc = 0, said = false;
+    function q(k){ return k === 'a' ? 2 : k === 'b' ? -1 : k === 'bp' ? 1 : 0; } function mass(k){ return k === 'a' ? MA : (k === 'b' || k === 'bp') ? ME : 0; }
+    function mom(k, K){ var mm = mass(k); return k === 'g' ? K : Math.sqrt(K*K + 2*K*mm); }   /* MeV/c */
+    function beta(k, K){ var mm = mass(k); return k === 'g' ? 1 : mom(k, K)/(K + mm); }
+    function radius(k, K){ if (!q(k) || P.B <= 0) return Infinity; return mom(k, K)/(299.792*Math.abs(q(k))*P.B); }   /* m */
+    function exagK(){ if (!P.exag || P.B <= 0) return 1; var r = radius('a', P.ka)*100; var want = LF*2.6; return r <= want ? 1 : Math.round(r/want); }
+    function sampleKb(){ if (!P.spec) return P.kb; var Q = P.kb; for (var i=0; i<200; i++){ var K = Math.random()*Q, p = Math.sqrt(K*K + 2*K*ME), w = p*(K + ME)*(Q - K)*(Q - K), wmax = Math.sqrt(Q*Q + 2*Q*ME)*(Q + ME)*Q*Q*0.6; if (Math.random()*wmax < w) return K; } return Q/3; }
+    function path(k, K){ /* returns { pts:[[x,y] cm], hit:y or null } */ var r = radius(k, K)*100, kk = k === 'a' ? exagK() : 1; if (isFinite(r)) r /= kk;
+      var s = q(k)*P.dir > 0 ? 1 : -1, x = 0, y = 0, th = 0, ds = isFinite(r) ? Math.max(0.01, Math.min(0.2, r/60)) : 0.5, pts = [[0, 0]], steps = 0;
+      while (steps++ < 40000){ if (isFinite(r)) th += s*ds/r; x += ds*Math.cos(th); y += ds*Math.sin(th); if (steps % 4 === 0) pts.push([x, y]);
+        if (x >= LF){ pts.push([LF, y]); return { pts:pts, hit:Math.abs(y) <= 7.8 ? y : null, dl:4*ds }; } if (x < -0.1 || Math.abs(y) > 8.2) { pts.push([x, y]); return { pts:pts, hit:null, dl:4*ds }; } }
+      return { pts:pts, hit:null, dl:4*ds }; }
+    function XP(x){ return X0 + x*PXCM; } function YP(y){ return YC - y*PXCM; }
+    function emits(){ return SR[P.src][1]; }
+    function ka(){ return emits().ka || P.ka; } function kb(){ return emits().kb || P.kb; }
+    function rebuild(){ var e = emits(); if (e.ka){ P.ka = e.ka; } if (e.kb){ P.kb = e.kb; } trails = { a:e.a ? path('a', P.ka) : null, g:e.g ? path('g', 1) : null, b:[], bp:[] };
+      var n = P.spec ? 9 : 1; for (var i=0; i<n; i++){ var K = P.spec ? P.kb*(i + 0.5)/n : P.kb; if (e.b) trails.b.push(path('b', K)); if (e.bp) trails.bp.push(path('bp', K)); }
+      flying = []; ui(); }
+    function pal2(){ var alt = pnA11y.alt(); return { a:alt ? '#D55E00' : '#ff7a33', b:alt ? '#56B4E9' : '#1fb0b8', bp:alt ? '#CC79A7' : '#ff5ad1', g:alt ? '#F0E442' : '#a55cff' }; }
+    function polyline(pts, col, w, a){ m.globalAlpha = a; m.strokeStyle = col; m.lineWidth = w; m.beginPath(); pts.forEach(function(p, i){ if (i) m.lineTo(XP(p[0]), YP(p[1])); else m.moveTo(XP(p[0]), YP(p[1])); }); m.stroke(); m.globalAlpha = 1; }
+    function arrowM(x1, y1, x2, y2, col, w){ var dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy); if (L < 2) return; var ux = dx/L, uy = dy/L; m.strokeStyle = col; m.fillStyle = col; m.lineWidth = w; m.beginPath(); m.moveTo(x1, y1); m.lineTo(x2 - ux*10, y2 - uy*10); m.stroke(); m.beginPath(); m.moveTo(x2, y2); m.lineTo(x2 - ux*12 - uy*6, y2 - uy*12 + ux*6); m.lineTo(x2 - ux*12 + uy*6, y2 - uy*12 - ux*6); m.closePath(); m.fill(); }
+    function draw(){ var p = pal2(), e = emits(), i, j;
+      m.fillStyle = '#fbfbf7'; m.fillRect(0, 0, MW, MH);
+      /* field marks */
+      m.fillStyle = '#ff4d6d'; m.strokeStyle = '#ff4d6d'; m.lineWidth = 2; m.font = 'bold 16px Arial'; m.textAlign = 'center'; m.textBaseline = 'middle';
+      if (P.B > 0) for (i=0; i<7; i++) for (j=0; j<6; j++){ var fx = X0 + 40 + i*72, fy = 40 + j*68; if (P.dir > 0){ m.beginPath(); m.moveTo(fx - 5, fy - 5); m.lineTo(fx + 5, fy + 5); m.moveTo(fx + 5, fy - 5); m.lineTo(fx - 5, fy + 5); m.stroke(); } else { m.beginPath(); m.arc(fx, fy, 6, 0, TAU); m.stroke(); m.beginPath(); m.arc(fx, fy, 2, 0, TAU); m.fill(); } }
+      m.fillStyle = '#1d232a'; m.font = 'bold 15px Arial'; m.textAlign = 'right'; m.fillText(P.B > 0 ? 'B = ' + P.B.toFixed(3) + ' T ' + (P.dir > 0 ? '(into the page)' : '(out of the page)') : 'B = 0 (no field)', MW - 60, 18);
+      /* lead block */
+      m.fillStyle = '#c8c8c8'; m.strokeStyle = '#555'; m.lineWidth = 1.5; m.beginPath(); m.moveTo(20, 20); m.lineTo(X0, 20); m.lineTo(X0, YC - 22); m.lineTo(X0 - 120, YC - 22); m.lineTo(X0 - 120, YC + 22); m.lineTo(X0, YC + 22); m.lineTo(X0, MH - 20); m.lineTo(20, MH - 20); m.closePath(); m.fill(); m.stroke();
+      m.fillStyle = '#333'; m.font = '15px Arial'; m.textAlign = 'center'; m.fillText('Lead', 110, 60); m.fillText('Radioactive', 92, YC + 70); m.fillText('source', 92, YC + 88);
+      m.strokeStyle = '#333'; m.lineWidth = 1.2; m.beginPath(); m.moveTo(92, YC + 58); m.quadraticCurveTo(100, YC + 20, X0 - 112, YC + 4); m.stroke();
+      m.fillStyle = '#3d5aa8'; m.beginPath(); m.arc(X0 - 106, YC, 9, 0, TAU); m.fill(); m.fillStyle = 'rgba(61,90,168,0.8)'; m.fillRect(X0 - 106, YC - 5, 106, 10);
+      /* screen */
+      m.fillStyle = '#d9f2d9'; m.fillRect(X1, YP(7.8), 14, YP(-7.8) - YP(7.8)); m.strokeStyle = '#4c8a4c'; m.strokeRect(X1, YP(7.8), 14, YP(-7.8) - YP(7.8)); m.fillStyle = '#333'; m.font = '12px Arial'; m.textAlign = 'center'; m.fillText('detector', X1 + 7, YP(7.8) - 18); m.fillText('screen', X1 + 7, YP(7.8) - 5);
+      for (var cm = -6; cm <= 6; cm += 2){ m.fillStyle = '#555'; m.font = '10px Arial'; m.textAlign = 'left'; m.fillText((cm > 0 ? '+' : '') + cm, X1 + 18, YP(cm)); }
+      m.fillStyle = '#555'; m.font = '11px Arial'; m.textAlign = 'center'; m.fillText('field region: 20 cm long', (X0 + X1)/2, MH - 8);
+      /* paths */
+      if (P.trail){ if (trails.g) polyline(trails.g.pts, p.g, 3, 0.55); if (trails.a) polyline(trails.a.pts, p.a, 3.5, 0.55); trails.b.forEach(function(t){ polyline(t.pts, p.b, P.spec ? 1.5 : 3, P.spec ? 0.4 : 0.55); }); trails.bp.forEach(function(t){ polyline(t.pts, p.bp, P.spec ? 1.5 : 3, P.spec ? 0.4 : 0.55); }); }
+      /* hits */
+      hits.forEach(function(h){ m.fillStyle = p[h.k]; m.fillRect(X1 + 1, YP(h.y) - 1, 12, 2); });
+      /* flying particles */
+      flying.forEach(function(f){ var pt = f.pts[Math.min(f.pts.length - 1, Math.floor(f.i))]; m.fillStyle = p[f.k]; if (f.k === 'g'){ m.fillRect(XP(pt[0]) - 5, YP(pt[1]) - 1.5, 10, 3); } else { m.beginPath(); m.arc(XP(pt[0]), YP(pt[1]), f.k === 'a' ? 5 : 3, 0, TAU); m.fill(); } });
+      /* labels at the end of the paths */
+      function endLab(t, txt, col){ if (!t) return; var pt = t.pts[t.pts.length - 1], x = Math.min(MW - 30, XP(pt[0]) - 14), y = Math.max(28, Math.min(MH - 26, YP(pt[1]))); lbl(m, txt, x, y + (pt[1] >= 0 ? -12 : 12), col, 16, 'right'); }
+      endLab(trails.a, '\u03b1', p.a); endLab(trails.g, '\u03b3', p.g); if (trails.b.length) endLab(trails.b[trails.b.length - 1], '\u03b2\u207b', p.b); if (trails.bp.length) endLab(trails.bp[trails.bp.length - 1], '\u03b2\u207a', p.bp);
+      /* forces at the entry */
+      if (P.force && P.B > 0){ var fx0 = X0 + 22;
+        if (e.a){ arrowM(fx0, YC - 8, fx0, YC - 8 - 70*P.dir, '#2b6cb0', 3); lbl(m, 'F\u03b1 = q\u03b1vB', fx0 + 8, YC - 8 - 70*P.dir + (P.dir > 0 ? 6 : -6), '#2b6cb0', 13, 'left'); }
+        if (e.b){ arrowM(fx0 + 4, YC + 8, fx0 + 4, YC + 8 + 70*P.dir, '#2b6cb0', 3); lbl(m, 'F\u03b2 = q\u03b2vB', fx0 + 12, YC + 8 + 70*P.dir + (P.dir > 0 ? -6 : 6), '#2b6cb0', 13, 'left'); }
+        if (e.bp){ arrowM(fx0 + 4, YC - 8, fx0 + 4, YC - 8 - 70*P.dir, '#2b6cb0', 3); lbl(m, 'F\u03b2\u207a = qvB', fx0 + 12, YC - 8 - 70*P.dir + (P.dir > 0 ? 6 : -6), '#2b6cb0', 13, 'left'); } }
+      var kx = exagK(); if (e.a && kx > 1) lbl(m, '\u03b1 bend drawn \u00d7' + kx + ' (really ' + (radius('a', P.ka)*100 >= 1000 ? (radius('a', P.ka)).toFixed(1) + ' m' : (radius('a', P.ka)*100).toFixed(0) + ' cm') + ' radius)', X0 + 10, 30, '#b05000', 12, 'left'); }
+    function lbl(gx, t, x, y, col, size, al){ gx.font = 'bold ' + (size || 12) + 'px Arial'; gx.textAlign = al || 'center'; gx.textBaseline = 'middle'; gx.lineJoin = 'round'; gx.lineWidth = 3.5; gx.strokeStyle = 'rgba(255,255,255,0.9)'; gx.strokeText(t, x, y); gx.fillStyle = col; gx.fillText(t, x, y); }
+    function frame(dt){ if (P.on && dt > 0){ var e = emits(), kinds = []; if (e.a) kinds.push('a'); if (e.b) kinds.push('b'); if (e.bp) kinds.push('bp'); if (e.g) kinds.push('g');
+        emitAcc += dt*14; while (emitAcc >= 1){ emitAcc -= 1; var k = kinds[Math.floor(Math.random()*kinds.length)], K = k === 'a' ? P.ka : k === 'g' ? 1 : sampleKb(), pt = (k === 'a' ? trails.a : k === 'g' ? trails.g : path(k, K));
+          var sp = (k === 'a' ? 9 : k === 'g' ? 30 : 22)*(1 + 0.1*Math.random()); flying.push({ k:k, pts:pt.pts, hit:pt.hit, i:0, sp:sp, dl:pt.dl }); }
+        flying = flying.filter(function(f){ var len = f.pts.length; f.i += f.sp*dt/f.dl; if (f.i >= len - 1){ if (f.hit !== null && f.hit !== undefined){ hits.push({ k:f.k, y:f.hit }); if (hits.length > 600) hits.shift(); } return false; } return true; }); }
+      draw(); }
+    function fmtR(r){ if (!isFinite(r)) return '\u221e (straight)'; return r >= 1 ? r.toFixed(2) + ' m' : (r*100).toFixed(r < 0.1 ? 2 : 1) + ' cm'; }
+    function ui(){ var e = emits(), rows = [], mev = 1.602e-13;
+      function row(k, name, K, ch, ms){ var p = mom(k, K), b = beta(k, K), F = Math.abs(q(k))*1.602e-19*b*2.998e8*P.B, r = radius(k, K), side = !q(k) || P.B <= 0 ? 'straight' : (q(k)*P.dir > 0 ? 'up' : 'down');
+        rows.push('<tr><td class="pn_l' + '"><span class="pn_sw' + '" style="background:' + pal2()[k] + '"></span>' + name + '</td><td>' + ch + '</td><td>' + ms + '</td><td>' + K.toFixed(2) + ' MeV' + (k === 'b' || k === 'bp' ? (P.spec ? ' (max)' : '') : '') + '</td><td>' + b.toFixed(3) + 'c</td><td>' + p.toFixed(k === 'a' ? 0 : 2) + ' MeV/c</td><td>' + (q(k) ? F.toExponential(2).replace(/e([+-]\d+)/, function(m0, x){ return '\u00d710<sup>' + (+x) + '</sup>'; }) + ' N' : '0') + '</td><td>' + fmtR(r) + '</td><td>' + side + '</td></tr>'); }
+      if (e.a) row('a', '\u03b1 (\u2074He nucleus)', P.ka, '+2e', '4.00 u');
+      if (e.b) row('b', '\u03b2\u207b (electron)', P.kb, '\u2212e', '0.00055 u');
+      if (e.bp) row('bp', '\u03b2\u207a (positron)', P.kb, '+e', '0.00055 u');
+      if (e.g) row('g', '\u03b3 (photon)', 1.0, '0', '0');
+      el('pmTbl').innerHTML = '<table class="pn_tbl' + '"><thead><tr><th class="pn_l' + '" scope="col">radiation</th><th scope="col">charge q</th><th scope="col">mass</th><th scope="col">kinetic energy</th><th scope="col">speed v</th><th scope="col">momentum p</th><th scope="col">force F = |q|vB</th><th scope="col">radius r = p/(|q|B)</th><th scope="col">bends</th></tr></thead><tbody>' + rows.join('') + '</tbody></table>';
+      var s = '<b>Direction:</b> F = qv \u00d7 B. With v to the right and B ' + (P.dir > 0 ? 'into' : 'out of') + ' the page, the force on a positive charge points ' + (P.dir > 0 ? 'up' : 'down') + ' and on a negative charge ' + (P.dir > 0 ? 'down' : 'up') + '; \u03b3 rays have no charge and go straight. The force is always perpendicular to the velocity, so it changes the direction, not the speed: the path is a circle.';
+      if (e.a && (e.b || e.bp)){ var ra = radius('a', P.ka), rb = radius(e.b ? 'b' : 'bp', P.kb); s += ' <b>Size of the bend:</b> r = p/(|q|B). The \u03b1 particle carries twice the charge, but its momentum is about ' + Math.round(mom('a', P.ka)/mom('b', P.kb)) + ' times larger, so its radius is about ' + (isFinite(ra) ? Math.round(ra/rb) : '\u2014') + ' times larger: it is barely deflected, while the light electrons curl sharply.' + (exagK() > 1 ? ' To make the \u03b1 deflection visible, its bend is drawn \u00d7' + exagK() + ' (untick &ldquo;Exaggerate&rdquo; for true proportions).' : ''); }
+      else if (e.b || e.bp) s += ' <b>Energy spread:</b> in \u03b2 decay the energy is shared with a (anti)neutrino, so the electrons come out with a range of energies: slower ones curl more, faster ones less, and the beam fans out' + (P.spec ? '.' : ' (tick &ldquo;\u03b2 energy spread&rdquo; to see it).');
+      else if (e.a) s += ' All \u03b1 particles from one decay have the same energy, so they follow a single path.';
+      el('pmWhy').innerHTML = s;
+      el('pmBV').textContent = P.B.toFixed(3) + ' T'; el('pmB').setAttribute('aria-valuetext', P.B.toFixed(3) + ' tesla'); el('pmKaV').textContent = P.ka.toFixed(2) + ' MeV'; el('pmKbV').textContent = P.kb.toFixed(2) + ' MeV';
+      el('pmKa').value = P.ka; el('pmKb').value = P.kb; el('pmB').value = Math.round(P.B*1000/5); el('pmDir').value = P.dir > 0 ? 'in' : 'out';
+      el('pmKa').disabled = !e.a; el('pmKa').parentNode.classList.toggle('pn_off' + '', !e.a); el('pmKb').disabled = !(e.b || e.bp); el('pmKb').parentNode.classList.toggle('pn_off' + '', !(e.b || e.bp));
+      var reads = []; if (e.a) reads.push(['\u03b1 radius', fmtR(radius('a', P.ka))]); if (e.b) reads.push(['\u03b2\u207b radius (at ' + P.kb.toFixed(2) + ' MeV)', fmtR(radius('b', P.kb))]); if (e.bp) reads.push(['\u03b2\u207a radius (at ' + P.kb.toFixed(2) + ' MeV)', fmtR(radius('bp', P.kb))]); if (e.g) reads.push(['\u03b3', 'not deflected']);
+      reads.push(['field', P.B.toFixed(3) + ' T ' + (P.dir > 0 ? '\u2297' : '\u2299')]);
+      el('pmRead').innerHTML = reads.map(function(r0){ return '<div><div class="pn_rl' + '">' + r0[0] + '</div><div class="pn_rv' + '">' + r0[1] + '</div></div>'; }).join(''); }
+    el('pmSrc').innerHTML = SR.map(function(s0, i){ return '<option value="' + i + '">' + s0[0] + '</option>'; }).join('');
+    function say(t){ pnA11y.narrate(t); }
+    function summary(){ var e = emits(), t = []; if (P.B <= 0) return 'No field: all the radiation goes straight.'; if (e.a) t.push('alpha particles bend ' + (P.dir > 0 ? 'up' : 'down') + ' on a circle of radius ' + fmtR(radius('a', P.ka))); if (e.b) t.push('beta-minus electrons bend ' + (P.dir > 0 ? 'down' : 'up') + ', radius ' + fmtR(radius('b', P.kb)) + ' at ' + P.kb.toFixed(2) + ' MeV'); if (e.bp) t.push('positrons bend ' + (P.dir > 0 ? 'up' : 'down') + ', radius ' + fmtR(radius('bp', P.kb))); if (e.g) t.push('gamma rays go straight'); return 'B = ' + P.B.toFixed(3) + ' T: ' + t.join('; ') + '.'; }
+    el('pmB').addEventListener('input', function(){ P.B = this.value*5/1000; hits = []; rebuild(); });
+    el('pmB').addEventListener('change', function(){ say(summary()); });
+    el('pmDir').addEventListener('change', function(){ P.dir = this.value === 'in' ? 1 : -1; hits = []; rebuild(); say('B now points ' + (P.dir > 0 ? 'into' : 'out of') + ' the page: every deflection reverses. ' + summary()); });
+    el('pmSrc').addEventListener('change', function(){ P.src = +this.value; hits = []; rebuild(); say(SR[P.src][0] + '. ' + summary()); });
+    el('pmKa').addEventListener('input', function(){ P.ka = +this.value; rebuild(); }); el('pmKa').addEventListener('change', function(){ say(summary()); });
+    el('pmKb').addEventListener('input', function(){ P.kb = +this.value; hits = []; rebuild(); }); el('pmKb').addEventListener('change', function(){ say(summary()); });
+    el('pmSpec').addEventListener('change', function(){ P.spec = this.checked; hits = []; rebuild(); say(P.spec ? 'Real beta spectrum: the electrons have a range of energies, so the beta beam fans out.' : 'All beta particles drawn with the same energy, as in the schematic figure.'); });
+    el('pmExag').addEventListener('change', function(){ P.exag = this.checked; hits = []; rebuild(); say(P.exag ? 'The alpha bend is exaggerated so it can be seen.' : 'True proportions: the alpha particles are barely deflected, because of their large momentum.'); });
+    el('pmForce').addEventListener('change', function(){ P.force = this.checked; }); el('pmTrail').addEventListener('change', function(){ P.trail = this.checked; });
+    el('pmClr').addEventListener('click', function(){ hits = []; });
+    var rb = el('pmRun'); rb.addEventListener('click', function(){ P.on = !P.on; rb.innerHTML = P.on ? PAUSEI : PLAYI; rb.setAttribute('aria-pressed', P.on ? 'true' : 'false'); rb.setAttribute('aria-label', P.on ? 'Stop the beam' : 'Start the beam'); });
+    el('pmFig').addEventListener('click', function(){ P.src = 0; P.B = 0.015; P.dir = 1; P.ka = 5.3; P.kb = 1.0; P.spec = false; P.exag = true; el('pmSrc').value = 0; el('pmSpec').checked = false; el('pmExag').checked = true; hits = []; rebuild(); say('As in Figure 12.5.2: B into the page; alpha up (bend exaggerated), beta-minus down, gamma straight. ' + summary()); });
+    el('pmTrue').addEventListener('click', function(){ P.exag = false; P.spec = true; el('pmExag').checked = false; el('pmSpec').checked = true; hits = []; rebuild(); say('True proportions, with the real beta spectrum. ' + summary()); });
+    el('pmFlip').addEventListener('click', function(){ P.dir = -P.dir; hits = []; rebuild(); say('B reversed: now ' + (P.dir > 0 ? 'into' : 'out of') + ' the page. ' + summary()); });
+    rebuild();
+    return { frame:frame, draw:draw, rebuild:rebuild, summary:summary, _P:P, _r:radius, _hits:function(){ return hits; } };
+  })();
+
+  /* ═════════ tabs ═════════ */
+  function setTab(t){ tab = t; el('pnTabP').setAttribute('aria-selected', t === 'p' ? 'true' : 'false'); el('pnTabM').setAttribute('aria-selected', t === 'm' ? 'true' : 'false'); el('pnTabP').tabIndex = t === 'p' ? 0 : -1; el('pnTabM').tabIndex = t === 'm' ? 0 : -1;
+    el('pnPaneP').hidden = t !== 'p'; el('pnPaneM').hidden = t !== 'm'; last = 0;
+    pnA11y.narrate(t === 'p' ? 'Penetration: put absorbers between the source and the Geiger counter.' : 'Magnetic field: the beam from a lead-shielded source passes through a uniform magnetic field. ' + M.summary()); }
+  el('pnTabP').addEventListener('click', function(){ setTab('p'); }); el('pnTabM').addEventListener('click', function(){ setTab('m'); });
+  [['pnTabP', 'm'], ['pnTabM', 'p']].forEach(function(q){ el(q[0]).addEventListener('keydown', function(e){ if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){ setTab(q[1]); el(q[1] === 'p' ? 'pnTabP' : 'pnTabM').focus(); e.preventDefault(); } }); });
+  pnA11y.onChange(function(){ draw(); drawGraph(); M.draw(); M.rebuild(); });
+  matUI(); explain(); tableUI(); drawGraph(); requestAnimationFrame(loop);
+  pnA11y.narrate('A polonium-210 alpha source 3 cm from a Geiger counter. Turn the sound on to hear the clicks, then try absorbers and distances. The second tab shows the effect of a magnetic field.');
+  return { _rates:rates, _S:S, _set:function(o){ for (var k in o) S[k] = o[k]; matUI(); changed(); }, _status:function(){ return el('pnStatus').textContent; }, setTab:setTab, M:M };
+};
+var pnSim = new pnGen();
+</script>
+<script>pnA11y.init();</script>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>Early experiments revealed three types of nuclear radiation, alpha (`alpha`), beta (`beta`) and gamma (`gamma`), told apart by how far they penetrate matter and by how they behave in a magnetic field.</p>
+<p><b>Penetration.</b> A radioactive source sends radiation toward a <b>Geiger&ndash;M&uuml;ller counter</b>; each ionizing particle or photon entering its tube makes it <b>click</b>. Alpha radiation is barely able to pass through a thin sheet of paper (or a few centimetres of air); beta radiation passes paper but penetrates aluminium only to about 3 mm; gamma radiation penetrates lead to 2 cm or more and is only gradually reduced. Because decays are random, the count varies from second to second (typical error `sqrt(N)`); the counter also picks up <b>background radiation</b>, about 0.5 counts per second here. Moving the counter away lowers the rate roughly as `1/d^2`.</p>
+<p><b>Magnetic field.</b> The force on a moving charge is `vec F = q vec v xx vec B`. With `vec B` into the page and the beam moving to the right, positively charged particles are deflected upward, negatively charged ones downward, and uncharged radiation passes undeflected. This identified alpha rays as helium nuclei (charge +2e), beta rays as electrons (and positrons, `+e`), and gamma rays as photons. Since the force is perpendicular to the velocity, each particle moves on a circle of radius `r = p/(|q|B)`. Alpha particles have twice the charge of an electron but a far larger momentum, so they are deflected much less: like Figure 12.5.2, the display can exaggerate their bend (the factor is shown), and the table gives the true radii. Beta particles share their energy with a neutrino, so they emerge with a range of energies and the beta beam fans out. The transmissions in the first tab are simplified models chosen to give realistic behaviour.</p>
+</div>
+</div>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+
+</div>
+
+</body>
+</html>
