@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Optics: Pepper's Ghost in 3D</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, pupil,learning, teaching, teach, learn, optics, reflection, plane mirror, glass, virtual image, Pepper's ghost, illusion, theatre, hologram, pyramid, phone, beam splitter, 3D, lesson, scientific">
+<meta name="description" content="Interactive 3D Pepper's ghost: a plane mirror and a glass pane at normal incidence, the classical theatre illusion, the phone pyramid, and how to lay out the video.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico> </head>
+<body style=margin:25px>
+<main class="page">
+<div id="pgRoot" class="pg_root" role="region" aria-label="Pepper's ghost simulator in 3D: a plane mirror and a glass pane, the classical theatre illusion, the phone pyramid, and how to make the video">
+<div class="pg_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="pg_a11ybtn" id="pgBtnHC" onclick="pgSim.theme('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="pg_a11ybtn" id="pgBtnLM" onclick="pgSim.theme('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="pg_a11ybtn" id="pgBtnCB" onclick="pgSim.theme('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="pg_a11ybtn pg_a11yon" id="pgBtnNR" onclick="pgSim.theme('nr')" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div class="pg_header"><p class="pg_h1">Pepper's Ghost: Reflections That Look Real</p><p class="pg_sub">a partly reflecting pane adds a virtual image to the scene behind it</p></div>
+<div class="pg_tabs" role="tablist" aria-label="Situations">
+<button type="button" role="tab" class="pg_tab" id="pgT0" aria-selected="true" onclick="pgSim.tab(0)">1. Mirror and glass</button>
+<button type="button" role="tab" class="pg_tab" id="pgT1" aria-selected="false" onclick="pgSim.tab(1)">2. The theatre ghost</button>
+<button type="button" role="tab" class="pg_tab" id="pgT2" aria-selected="false" onclick="pgSim.tab(2)">3. Phone pyramid</button>
+<button type="button" role="tab" class="pg_tab" id="pgT3" aria-selected="false" onclick="pgSim.tab(3)">4. Making the video</button>
+</div>
+<div class="pg_diag"><div class="pg_dlabel"><b id="pgLab">MIRROR AND GLASS</b><span id="pgHint"></span></div>
+<canvas id="pgCv" width="780" height="470" tabindex="0" role="img" aria-label="Three-dimensional optics scene. Drag, or use the arrow keys, to turn the view; plus and minus keys zoom." aria-describedby="pgStatus"></canvas></div>
+<div class="pg_status" id="pgStatus"></div>
+<div class="pg_bbar">
+<button type="button" class="pg_btn" id="pgVStd">Standard view</button>
+<button type="button" class="pg_btn" id="pgVEye">Viewer's view</button>
+<button type="button" class="pg_btn" id="pgVTop">From above</button>
+<label>zoom <input type="range" id="pgZm" min="0.6" max="2.2" step="0.05" value="1" style="width:90px"></label>
+<label><input type="checkbox" id="pgRay" checked> rays</label>
+<label><input type="checkbox" id="pgLbl" checked> labels</label>
+<button type="button" class="pg_btn" id="pgDsc">Describe</button>
+</div>
+<div class="pg_read" id="pgRead" aria-label="Readout"></div>
+<div class="pg_panels"><div class="pg_panel"><div class="pg_ptitle" id="pgTA">The setup</div><div class="pg_pbody" id="pgCtlA"></div></div>
+<div class="pg_panel"><div class="pg_ptitle" id="pgTB">The lighting</div><div class="pg_pbody" id="pgCtlB"></div></div></div>
+<div class="pg_steps" id="pgSteps" style="display:none">
+<p class="pg_stitle">How to make the video for the phone pyramid</p>
+<ol>
+<li><b>Black background.</b> Film or render the subject against pure black. Black sends no light to the panels, so it reflects nothing and the subject seems to float.</li>
+<li><b>Four views if you can.</b> Record the subject from the front, right, back and left (turn it 90&deg; between takes, or use four cameras in 3D software). One view copied four times also works, but then every viewer sees the same side.</li>
+<li><b>Square layout.</b> Use a square canvas, as tall as the screen is wide. Leave an empty black square in the centre, the size of the small end of the pyramid.</li>
+<li><b>Feet toward the centre.</b> Put one view on each side of the centre square, with the feet toward the centre and the head toward the edge. The front view goes on the side nearest the front viewer.</li>
+<li><b>Flip, don't just rotate.</b> Each panel is a mirror and reverses the picture. Mirror each view (flip it) before placing it. With rotated copies only, text and right-hand/left-hand details come out backwards: try it with the P.</li>
+<li><b>Play it right.</b> Keep the four views in step, export, and play full screen at maximum brightness in a darkened room.</li>
+</ol></div>
+<div class="pg_eqs" id="pgEq"></div>
+<div id="pgNar" class="pg_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="pg_descwrap">
+<button type="button" class="pg_descbtn" id="pgDescBtn" aria-expanded="false" aria-controls="pgDesc" onclick="pgSim.toggleDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="pg_desc" id="pgDesc" role="region" aria-labelledby="pgDescBtn" style="display:none">
+<p>Pepper's ghost is not a hologram. A clear pane lets you see the scene behind it and, at the same time, reflects a little light from a brightly lit object hidden from direct view. Your eye adds the two: the reflection, a virtual image, seems to stand among the real objects behind the pane. Drag the scene, or use the arrow keys, to look at it from any side.</p>
+<p><b>1. Mirror and glass.</b> You look straight at the pane, along its normal. A letter P stands in front of it; its front is orange and its back is blue. A plane mirror forms a virtual image as far behind the pane as the object is in front of it,</p>
+<p class="pg_eq">`d_i = d_o`,&nbsp;&nbsp; `m = h_i/h_o = +1`.</p>
+<p>The image is upright and the same size, but reversed front to back: the pane shows the side of the P that faces it. A ray that hits the pane along the normal comes straight back. A silvered mirror reflects about 90% of the light and hides everything behind it. Clear glass, at normal incidence, reflects only</p>
+<p class="pg_eq">`R = ((n-1)/(n+1))^2 ~~ 0.04`</p>
+<p>at each surface (`n ~~ 1.5`), about 8% in all, and transmits the rest, `T = 1 - R`. The image forms in exactly the same place, only fainter, and the plant behind the glass shows through. How visible the image is depends on the light: a simple measure is the share of the light reaching the eye along that direction that comes from the reflection,</p>
+<p class="pg_eq">`V = (R I_(obj))/(R I_(obj) + T I_(behind))`.</p>
+<p>A bright object and a dark space behind the glass make a convincing ghost.</p>
+<p><b>2. The theatre ghost.</b> A large sheet of glass stands between the audience and the stage, turned at about 45&deg;. Beside the stage, out of the audience's sight, is a dark booth. When a lamp lights the actor in the booth, the glass reflects a faint image of the actor, and the audience sees a ghost on the stage, as far behind the glass as the actor is in front of it. Turning the lamp off makes the ghost vanish; moving the actor moves the ghost. The ghost is a mirror image: the lantern held in the actor's right hand is in the ghost's left. In the original 19th-century version the hidden room was below the front of the stage and the glass leaned toward the audience; the optics are the same.</p>
+<p><b>3. The phone pyramid.</b> Four clear plastic trapezoids form an upside-down, truncated pyramid on a phone screen. Each panel, tilted at `alpha` to the screen, is a plane mirror for the picture next to it. The image of the flat picture is turned through `2 alpha`; at 45&deg; it stands upright, floating in the middle. Each viewer sees the image formed by the panel facing them. It is four flat reflections, not a three-dimensional image.</p>
+<p><b>4. Making the video.</b> Four views of the subject are arranged around an empty black centre, feet toward the centre. Because each panel reverses its picture, each view must be flipped (mirrored), not only rotated. With four camera views, walking around the pyramid shows the subject from different sides.</p>
+<p>The scene is drawn in 3D with flat shaded polygons. Reflected images are computed by reflecting every point of the object across the plane of the pane or panel. The visibility measure is a simple model that ignores absorption, multiple reflections and the response of the eye.</p>
+</div></div>
+</div><!-- #pgRoot -->
+<style>
+#pgRoot { --c-chassis:#1a1c1f; --c-panel:#22262b; --c-hi:#2c3138; --c-lo:#14161a; --c-bd:#3a4048; --c-bd2:#525c66; --c-text:#c8d0d8; --c-dim:#8a94a3; --c-accent:#e8a020; --c-green:#3ad08f; --c-val:#ffdd66; --c-nbg:#2a2410; --c-nbd:#e0b040; --c-ntx:#f0e2b8;
+  background:var(--c-chassis); background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
+  color:var(--c-text); font-family:Arial, sans-serif; padding:14px 10px 18px; border-radius:6px; box-sizing:border-box; width:100%; max-width:860px; margin:0 auto 10px; display:flex; flex-direction:column; gap:10px; }
+#pgRoot * { box-sizing:border-box; }
+#pgRoot.pg_lm { --c-chassis:#e9edf1; --c-panel:#ffffff; --c-hi:#f1f4f7; --c-lo:#f4f6f9; --c-bd:#c3cad3; --c-bd2:#9aa3ae; --c-text:#1d232a; --c-dim:#556070; --c-accent:#a8620a; --c-green:#12805a; --c-val:#8a4a00; --c-nbg:#ffefc0; --c-ntx:#333; background-image:none; }
+#pgRoot.pg_hc { --c-chassis:#000; --c-panel:#000; --c-hi:#111; --c-lo:#000; --c-bd:#fff; --c-bd2:#fff; --c-text:#fff; --c-dim:#e0e0e0; --c-accent:#ffd700; --c-green:#00ff88; --c-val:#ffff00; --c-nbg:#000; --c-nbd:#ffd700; --c-ntx:#fff; background-image:none; }
+#pgRoot .pg_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+#pgRoot .pg_a11ybtn { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-dim); min-height:30px; }
+#pgRoot .pg_a11yon { background:rgba(58,208,143,.14); border-color:var(--c-green); color:var(--c-green); font-weight:bold; }
+#pgRoot .pg_header { text-align:center; }
+#pgRoot .pg_h1 { margin:0; font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--c-accent); }
+#pgRoot .pg_sub { margin:3px 0 0; font-size:.7rem; color:var(--c-dim); letter-spacing:.08em; text-transform:uppercase; }
+#pgRoot .pg_tabs { display:flex; gap:4px; flex-wrap:wrap; }
+#pgRoot .pg_tab { flex:1 1 170px; padding:8px 6px; border:1px solid var(--c-bd2); background:var(--c-hi); color:var(--c-text); border-radius:4px; cursor:pointer; font-family:monospace; font-size:.76rem; letter-spacing:.06em; text-transform:uppercase; min-height:38px; }
+#pgRoot .pg_tab[aria-selected="true"] { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#pgRoot .pg_diag { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+#pgRoot .pg_dlabel { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--c-dim); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+#pgRoot .pg_dlabel b { color:var(--c-accent); }
+#pgRoot canvas { display:block; width:100%; height:auto; touch-action:none; cursor:grab; }
+#pgRoot .pg_bbar { display:flex; flex-wrap:wrap; gap:6px 12px; justify-content:center; align-items:center; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:6px; padding:8px 10px; font-size:.8rem; }
+#pgRoot .pg_bbar label, #pgRoot .pg_chk { display:flex; align-items:center; gap:5px; color:var(--c-dim); font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; cursor:pointer; }
+#pgRoot .pg_btn { padding:7px 12px; font-family:monospace; font-size:.72rem; letter-spacing:.04em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-text); border-radius:3px; text-transform:uppercase; min-height:34px; }
+#pgRoot .pg_btn:hover { border-color:var(--c-accent); }
+#pgRoot .pg_btnon { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#pgRoot .pg_panels { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#pgRoot .pg_panel { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; box-shadow:0 4px 20px rgba(0,0,0,.3); overflow:hidden; }
+#pgRoot .pg_ptitle { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--c-dim); }
+#pgRoot .pg_pbody { padding:9px 12px; display:flex; flex-direction:column; gap:8px; }
+#pgRoot .pg_ctrl { display:flex; flex-direction:column; gap:3px; }
+#pgRoot .pg_ctrlhdr { display:flex; justify-content:space-between; align-items:baseline; gap:6px; }
+#pgRoot .pg_ctrlname { font-size:.72rem; font-weight:600; color:var(--c-dim); text-transform:uppercase; letter-spacing:.04em; }
+#pgRoot .pg_sval { font-family:monospace; font-size:.76rem; color:var(--c-val); white-space:nowrap; }
+#pgRoot .pg_brow { display:flex; flex-wrap:wrap; gap:5px; }
+#pgRoot .pg_note { margin:0; font-size:.74rem; color:var(--c-dim); line-height:1.4; }
+#pgRoot input[type=range] { width:100%; -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; cursor:pointer; background:var(--c-lo); border:1px solid var(--c-bd); }
+#pgRoot input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#pgRoot input[type=range]::-moz-range-thumb { width:12px; height:12px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#pgRoot input[type=checkbox] { accent-color:var(--c-accent); width:16px; height:16px; }
+#pgRoot .pg_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:6px 10px; background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; padding:8px 12px; }
+#pgRoot .pg_flabel { font-family:monospace; font-size:.62rem; color:var(--c-dim); letter-spacing:.08em; text-transform:uppercase; }
+#pgRoot .pg_fvalue { font-family:monospace; font-size:.9rem; color:var(--c-val); font-variant-numeric:tabular-nums; }
+#pgRoot .pg_eqs { background:var(--c-lo); border:1px solid var(--c-bd); border-left:4px solid var(--c-accent); border-radius:4px; padding:8px 14px; font-family:monospace; font-size:.74rem; color:var(--c-dim); line-height:1.7; }
+#pgRoot .pg_eqs b { color:var(--c-val); }
+#pgRoot .pg_steps { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; padding:8px 14px; font-size:.84rem; line-height:1.45; }
+#pgRoot .pg_steps ol { margin:4px 0 2px; padding-left:22px; }
+#pgRoot .pg_steps li { margin-bottom:4px; }
+#pgRoot .pg_steps b { color:var(--c-accent); }
+#pgRoot .pg_stitle { margin:0; font-family:monospace; font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; color:var(--c-dim); }
+#pgRoot .pg_status { width:100%; padding:8px 12px; border-radius:4px; background:var(--c-panel); border:1px solid var(--c-bd); font-size:.86rem; line-height:1.4; color:var(--c-text); }
+#pgRoot .pg_narbar { min-height:30px; padding:6px 12px; background:var(--c-nbg); border-left:4px solid var(--c-nbd); color:var(--c-ntx); font-size:.84rem; font-style:italic; line-height:1.45; border-radius:3px; }
+#pgRoot .pg_descwrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+#pgRoot .pg_descbtn { padding:8px 18px; font-family:monospace; font-size:.74rem; letter-spacing:.08em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-accent); color:var(--c-accent); border-radius:3px; font-weight:bold; min-height:40px; }
+#pgRoot .pg_desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid var(--c-accent); border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; }
+#pgRoot .pg_desc p { margin:0 0 9px; }
+#pgRoot .pg_eq { text-align:center; font-size:1rem; }
+#pgRoot button:focus-visible, #pgRoot input:focus-visible, #pgRoot canvas:focus-visible { outline:2px solid var(--c-accent); outline-offset:2px; }
+@media (max-width:640px) { #pgRoot .pg_panels { grid-template-columns:minmax(0,1fr); } #pgRoot .pg_tab { font-size:.68rem; padding:8px 3px; } }
+@media (pointer:coarse) { #pgRoot input[type=range] { height:8px; } #pgRoot input[type=range]::-webkit-slider-thumb { width:26px; height:26px; } #pgRoot input[type=range]::-moz-range-thumb { width:24px; height:24px; } #pgRoot .pg_a11ybtn { min-height:40px; } #pgRoot input[type=checkbox] { width:22px; height:22px; } }
+</style>
+<!-- ════════ SIMULATION ════════
+Pepper's ghost in 3D. Every object is a list of flat polygons; reflected images are made by reflecting each vertex
+across the plane of the pane: p' = p - 2((p - P0).n) n. Polygons are shaded and drawn back to front (painter's algorithm),
+in passes: floors first, flat screen pictures in their own order, then everything else.
+Image visibility: V = R I_obj / (R I_obj + T I_behind + small dark level), T = 1 - R.
+Phone pyramid: the picture for the viewer on side o (right-hand direction r) is placed at o (b + gap + v) + r u (flipped,
+correct) or o (b + gap + v) - r u (rotated copy, appears reversed). Each panel reflects only its own picture.
+No dollar signs or backticks in the code.
+-->
+<script>
+var pgSim = (function(){
+var SX = '';
+function el(id){ return document.getElementById(id + SX); }
+var ROOT = el('pgRoot'), cv = el('pgCv'), g = cv.getContext('2d'), W = cv.width, H = cv.height, DPR = window.devicePixelRatio || 1;
+cv.width = W*DPR; cv.height = H*DPR; g.scale(DPR, DPR);
+var DEG = Math.PI/180, TAU = 2*Math.PI;
+/* ══════════ vectors ══════════ */
+function add(a, b){ return [a[0] + b[0], a[1] + b[1], a[2] + b[2]]; } function sub(a, b){ return [a[0] - b[0], a[1] - b[1], a[2] - b[2]]; }
+function mul(a, k){ return [a[0]*k, a[1]*k, a[2]*k]; } function dot(a, b){ return a[0]*b[0] + a[1]*b[1] + a[2]*b[2]; }
+function cross(a, b){ return [a[1]*b[2] - a[2]*b[1], a[2]*b[0] - a[0]*b[2], a[0]*b[1] - a[1]*b[0]]; }
+function len(a){ return Math.sqrt(dot(a, a)); } function nrm(a){ var l = len(a) || 1; return [a[0]/l, a[1]/l, a[2]/l]; }
+function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+function rotY(p, a){ var c = Math.cos(a), s = Math.sin(a); return [p[0]*c + p[2]*s, p[1], -p[0]*s + p[2]*c]; }
+function reflectP(p, P0, n){ var d = dot(sub(p, P0), n); return sub(p, mul(n, 2*d)); }
+function hitPlane(A, B, P0, n){ var den = dot(sub(B, A), n); if (Math.abs(den) < 1e-9) return null; return add(A, mul(sub(B, A), dot(sub(P0, A), n)/den)); }
+function sc(c, k){ return [c[0]*k, c[1]*k, c[2]*k]; }
+function ghostVis(R, Io, Ib){ var a = R*Io, b = (1 - R)*Ib; return a < 1e-6 ? 0 : a/(a + b + 0.02); }
+/* ══════════ state ══════════ */
+var th = { hc:false, lm:false, cb:false, nr:true };
+var CAM = [{ T:[0, 2, 1], s:40, D:40, yaw:-32, pitch:16, eye:[14, 6, 90], top:[0, 88] },
+           { T:[0.6, 1, -0.8], s:50, D:30, yaw:35, pitch:24, eye:[0, 6, 0], top:[0, 88] },
+           { T:[0, 1.4, 0], s:36, D:60, yaw:-30, pitch:20, eye:[0, 12, 0], top:[0, 88] },
+           { T:[0, 0.8, 0], s:28, D:60, yaw:0, pitch:88, eye:[0, 12, 0], top:[0, 88] }];
+var U = { tab:0, yaw:-32, pitch:16, zoom:1, rays:true, labels:true };
+var A0 = { surf:'mirror', d:2.5, x:-1.2, face:0, R:8, Lo:90, Lb:60 };
+var A1 = { ang:45, ax:2.8, R:10, spot:90, stage:15, glass:true };
+var A2 = { ang:45, flip:true, four:true, scr:100, room:15, spin:false, spd:30, pyr:true, sa:0 };
+var A3 = { ang:45, flip:true, four:true, scr:100, room:15, spin:true, spd:30, pyr:true, sa:0 };
+function PH(){ return U.tab === 3 ? A3 : A2; }
+var RP = 0.09;                 /* reflectance of a clear plastic panel (two surfaces) */
+var SIDES = [[0, 0, 1], [1, 0, 0], [0, 0, -1], [-1, 0, 0]], SNAME = ['FRONT', 'RIGHT', 'BACK', 'LEFT'];
+/* ══════════ colours ══════════ */
+function pal(){ var cb = th.cb, hc = th.hc, lm = th.lm;
+  return { bg:hc ? '#000' : (lm ? '#eef2f6' : '#0b0e14'), grid:hc ? 'rgba(255,255,255,0.45)' : (lm ? 'rgba(0,0,0,0.16)' : 'rgba(120,140,170,0.22)'),
+    pF:cb ? [230, 159, 0] : [235, 128, 40], pB:cb ? [0, 114, 178] : [60, 118, 232], pS:[150, 155, 165],
+    ray:hc ? '#ffff00' : (cb ? '#f0e442' : '#ffd23f'), nrm:cb ? '#cc79a7' : '#ff6fae', trans:cb ? '#56b4e9' : '#5ad1ff', edge:hc ? '#ffffff' : (lm ? '#2f7fa8' : '#9fe3ff'),
+    lab:hc ? '#ffffff' : '#e8eef4', glass:[170, 215, 240], mirror:[205, 215, 228] }; }
+/* ══════════ models: lists of flat polygons in local coordinates ══════════ */
+function mBox(a, x0, x1, y0, y1, z0, z1, cF, cB, cS){
+  a.push({ p:[[x0, y0, z1], [x1, y0, z1], [x1, y1, z1], [x0, y1, z1]], c:cF }); a.push({ p:[[x1, y0, z0], [x0, y0, z0], [x0, y1, z0], [x1, y1, z0]], c:cB });
+  a.push({ p:[[x1, y0, z1], [x1, y0, z0], [x1, y1, z0], [x1, y1, z1]], c:cS }); a.push({ p:[[x0, y0, z0], [x0, y0, z1], [x0, y1, z1], [x0, y1, z0]], c:cS });
+  a.push({ p:[[x0, y1, z1], [x1, y1, z1], [x1, y1, z0], [x0, y1, z0]], c:cS }); a.push({ p:[[x0, y0, z0], [x1, y0, z0], [x1, y0, z1], [x0, y0, z1]], c:cS }); }
+function mEll(a, c, rx, ry, rz, col, nu, nv){
+  function P(u, v){ return [c[0] + rx*Math.sin(v)*Math.cos(u), c[1] + ry*Math.cos(v), c[2] + rz*Math.sin(v)*Math.sin(u)]; }
+  for (var j=0; j<nv; j++) for (var i=0; i<nu; i++){ var u0 = TAU*i/nu, u1 = TAU*(i + 1)/nu, v0 = Math.PI*j/nv, v1 = Math.PI*(j + 1)/nv; a.push({ p:[P(u0, v0), P(u1, v0), P(u1, v1), P(u0, v1)], c:col }); } }
+function modelP(){ var p = pal(), a = [], F = p.pF, B = p.pB, S = p.pS;   /* the letter P: 4 tall, front (+z) orange, back blue */
+  mBox(a, -1.25, -0.55, 0, 4, -0.35, 0.35, F, B, S); mBox(a, -0.55, 0.75, 3.35, 4, -0.35, 0.35, F, B, S);
+  mBox(a, -0.55, 0.75, 1.9, 2.55, -0.35, 0.35, F, B, S); mBox(a, 0.75, 1.35, 1.9, 4, -0.35, 0.35, F, B, S); return a; }
+function modelPerson(shirt){ var a = [], skin = [228, 188, 158], tr = [55, 60, 88];   /* faces +z, 1.76 m tall, lantern in the right hand */
+  mEll(a, [0.11, 0.45, 0], 0.09, 0.45, 0.1, tr, 8, 5); mEll(a, [-0.11, 0.45, 0], 0.09, 0.45, 0.1, tr, 8, 5);
+  mEll(a, [0, 1.15, 0], 0.22, 0.36, 0.14, shirt, 10, 6);
+  mEll(a, [0.31, 1.12, 0.02], 0.06, 0.32, 0.06, shirt, 6, 5); mEll(a, [-0.31, 1.12, 0.02], 0.06, 0.32, 0.06, shirt, 6, 5);
+  mEll(a, [0, 1.64, 0], 0.12, 0.13, 0.12, skin, 10, 6); mEll(a, [0, 1.64, 0.12], 0.03, 0.03, 0.04, skin, 5, 3);
+  mEll(a, [-0.33, 0.74, 0.07], 0.08, 0.1, 0.08, [255, 205, 70], 6, 4); return a; }
+function modelPlant(){ var a = []; mBox(a, -0.6, 0.6, 0, 1, -0.6, 0.6, [165, 95, 55], [165, 95, 55], [140, 80, 45]); mEll(a, [0, 1.7, 0], 0.95, 0.8, 0.95, [60, 170, 80], 10, 6); return a; }
+/* ══════════ the 3D renderer: shaded polygons drawn back to front ══════════ */
+var polys = [], labels = [], cam = {};
+function setCam(){ var C = CAM[U.tab], a = U.yaw*DEG, e = U.pitch*DEG; cam = { ca:Math.cos(a), sa:Math.sin(a), ce:Math.cos(e), se:Math.sin(e), s:C.s*U.zoom, D:C.D, T:C.T }; }
+function view(p){ var x0 = p[0] - cam.T[0], y0 = p[1] - cam.T[1], z0 = p[2] - cam.T[2], x1 = x0*cam.ca + z0*cam.sa, z1 = -x0*cam.sa + z0*cam.ca; return [x1, y0*cam.ce - z1*cam.se, y0*cam.se + z1*cam.ce]; }
+function proj(v){ var f = cam.D/Math.max(0.6, cam.D - v[2]); return [W/2 + v[0]*cam.s*f, H*0.52 - v[1]*cam.s*f]; }
+function scr(p){ return proj(view(p)); }
+function poly(pts, col, alpha){ polys.push({ p:pts, c:col, a:alpha === undefined ? 1 : alpha }); }
+function drawModel(m, X, a, lf){ for (var i=0; i<m.length; i++) poly(m[i].p.map(X), sc(m[i].c, lf), a); }
+var LIGHT = nrm([-0.35, 0.65, 0.68]), HALF = nrm(add(LIGHT, [0, 0, 1]));
+function flush(keep){   /* keep: draw in the given order (flat pictures on the screen) */
+  var list = polys.map(function(q){ var v = q.p.map(view), z = 0; v.forEach(function(t){ z += t[2]; }); return { v:v, z:z/v.length, c:q.c, a:q.a }; });
+  if (!keep) list.sort(function(A, B){ return A.z - B.z; });
+  list.forEach(function(q){
+    var n = nrm(cross(sub(q.v[1], q.v[0]), sub(q.v[2], q.v[0]))); if (n[2] < 0) n = mul(n, -1);
+    var k = 0.4 + 0.6*Math.max(0, dot(n, LIGHT)), spec = Math.pow(Math.max(0, dot(n, HALF)), 24)*0.25*(q.a >= 1 ? 1 : 0.4);
+    var r = Math.min(255, Math.round(q.c[0]*k + 255*spec)), gg = Math.min(255, Math.round(q.c[1]*k + 255*spec)), b = Math.min(255, Math.round(q.c[2]*k + 255*spec));
+    g.fillStyle = 'rgba(' + r + ',' + gg + ',' + b + ',' + q.a.toFixed(3) + ')'; g.strokeStyle = g.fillStyle; g.lineWidth = 0.6;
+    g.beginPath(); q.v.forEach(function(t, i){ var s2 = proj(t); if (i) g.lineTo(s2[0], s2[1]); else g.moveTo(s2[0], s2[1]); }); g.closePath(); g.fill(); if (q.a >= 1) g.stroke(); });
+  polys = []; }
+function grid(x0, x1, z0, z1, y, st, col){ g.strokeStyle = col; g.lineWidth = 1; g.beginPath();
+  for (var x=x0; x<=x1 + 1e-9; x+=st){ var a = scr([x, y, z0]), b = scr([x, y, z1]); g.moveTo(a[0], a[1]); g.lineTo(b[0], b[1]); }
+  for (var z=z0; z<=z1 + 1e-9; z+=st){ var c = scr([x0, y, z]), d = scr([x1, y, z]); g.moveTo(c[0], c[1]); g.lineTo(d[0], d[1]); } g.stroke(); }
+function seg(a, b, col, w, dash, arr){ if (!a || !b) return; var A = scr(a), B = scr(b);
+  g.strokeStyle = col; g.lineWidth = w; g.setLineDash(dash ? [6, 5] : []); g.beginPath(); g.moveTo(A[0], A[1]); g.lineTo(B[0], B[1]); g.stroke(); g.setLineDash([]);
+  if (arr){ var mx = (A[0] + B[0])/2, my = (A[1] + B[1])/2, dx = B[0] - A[0], dy = B[1] - A[1], l = Math.hypot(dx, dy) || 1; dx /= l; dy /= l;
+    g.fillStyle = col; g.beginPath(); g.moveTo(mx + dx*8, my + dy*8); g.lineTo(mx - dx*5 - dy*5, my - dy*5 + dx*5); g.lineTo(mx - dx*5 + dy*5, my - dy*5 - dx*5); g.closePath(); g.fill(); } }
+function lab(p, t, col){ labels.push({ p:p, t:t, c:col }); }
+function drawLabels(){ if (U.labels) labels.forEach(function(l){ var s2 = scr(l.p); g.font = 'bold 13px Arial, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.lineWidth = 4; g.strokeStyle = 'rgba(0,0,0,0.75)'; g.strokeText(l.t, s2[0], s2[1]); g.fillStyle = l.c; g.fillText(l.t, s2[0], s2[1]); }); labels = []; g.textBaseline = 'alphabetic'; }
+function eye(E, dir, r){ var a = []; mEll(a, E, r, r*0.75, r, [240, 240, 240], 10, 6); mEll(a, add(E, mul(nrm(dir), r*0.75)), r*0.42, r*0.42, r*0.42, [30, 40, 70], 8, 5); drawModel(a, function(q){ return q; }, 1, 1); }
+/* ══════════ tab 1: plane mirror or glass, viewed along the normal (1 unit = 10 cm) ══════════ */
+function t0geo(){ var s = A0, mir = s.surf === 'mirror', R = mir ? 0.9 : s.R/100, T = mir ? 0 : 1 - R, lo = s.Lo/100, lb = s.Lb/100;
+  var V = mir ? (lo > 0 ? 0.9*lo/(0.9*lo + 0.02) : 0) : ghostVis(R, lo, lb);
+  var pos = [s.x, 0, s.d], rot = s.face ? Math.PI : 0;
+  function XO(q){ return add(pos, rotY(mul(q, 0.9), rot)); }
+  function XI(q){ var w = XO(q); return [w[0], w[1], -w[2]]; }
+  return { mir:mir, R:R, T:T, lo:lo, lb:lb, V:V, XO:XO, XI:XI, E:[0, 2.2, 11], B:[1.8, 0, -3.6] }; }
+function drawT0(p){
+  var G = t0geo(), s = A0, M = modelP(), lfo = 0.2 + 0.8*G.lo;
+  grid(-6, 6, -6, 12, 0, 1, p.grid);
+  if (!G.mir) drawModel(modelPlant(), function(q){ return add(G.B, q); }, 1, 0.12 + 0.88*G.lb*G.T);
+  if (G.V > 0.01) drawModel(M, G.XI, clamp(1.3*G.V, 0, 0.92), lfo);
+  drawModel(M, G.XO, 1, lfo);
+  var fr = [], dk = [62, 66, 74];
+  mBox(fr, -3.62, -3.5, 0, 5.1, -0.08, 0.06, dk, dk, dk); mBox(fr, 3.5, 3.62, 0, 5.1, -0.08, 0.06, dk, dk, dk); mBox(fr, -3.62, 3.62, 5, 5.12, -0.08, 0.06, dk, dk, dk);
+  mBox(fr, -3.9, 3.9, 0, 0.22, -0.9, -0.08, dk, dk, dk);
+  drawModel(fr, function(q){ return q; }, 1, 1);
+  poly([[-3.5, 0.22, 0], [3.5, 0.22, 0], [3.5, 5, 0], [-3.5, 5, 0]], G.mir ? p.mirror : p.glass, G.mir ? 0.42 : 0.12);
+  if (!eyeCam()) eye(G.E, [0, 0, -1], 0.35);
+  flush();
+  if (U.rays){
+    [[-0.9, 3.85, 0], [1.05, 2.2, 0]].forEach(function(lp, i){ var P = G.XO(lp), I = [P[0], P[1], -P[2]], Q = hitPlane(I, G.E, [0, 0, 0], [0, 0, 1]), w = 1 + 3*G.R;
+      seg(P, Q, p.ray, w, false, true); seg(Q, G.E, p.ray, w, false, true); seg(Q, I, p.ray, 1.3, true, false);
+      if (i === 0){ var N = [P[0], P[1], 0], o = [0, 0.18, 0]; seg(P, N, p.nrm, 2, false, true); seg(add(N, o), add(P, o), p.nrm, 2, false, true); } });
+    if (!G.mir) seg(add(G.B, [0, 1.7, 0]), G.E, p.trans, 1 + 3*G.T*G.lb, false, true);
+  }
+  lab(G.XO([0, 4.8, 0]), 'object', p.lab); lab(G.XI([0, 4.8, 0]), G.mir ? 'virtual image' : 'faint virtual image', p.lab);
+  lab([3.5, 5.6, 0], G.mir ? 'plane mirror' : 'clear glass', p.lab); lab(add(G.E, [0, 0.8, 0]), 'your eye', p.lab);
+  if (!G.mir) lab(add(G.B, [0, 2.9, 0]), 'plant behind the glass', p.lab); }
+/* ══════════ tab 2: the theatre (1 unit = 1 m) ══════════ */
+function t1geo(){ var s = A1, phi = s.ang*DEG, n = [Math.sin(phi), 0, Math.cos(phi)], u = [Math.cos(phi), 0, -Math.sin(phi)], R = s.R/100, lg = s.spot/100, ls = s.stage/100;
+  function XA(q){ return add([s.ax, 0, 0], rotY(q, -90*DEG)); }
+  function XG(q){ return reflectP(XA(q), [0, 0, 0], n); }
+  function XS(q){ return add([-2.4, 0, -3.8], q); }
+  return { n:n, u:u, R:R, lg:lg, ls:ls, V:ghostVis(R, lg, ls), XA:XA, XG:XG, XS:XS, E:[0, 1.6, 5.6] }; }
+function drawT1(p){
+  var G = t1geo(), s = A1, lst = 0.18 + 0.82*G.ls, lfa = 0.08 + 0.92*G.lg, man = modelPerson([215, 215, 240]), act = modelPerson([60, 150, 95]);
+  poly([[-5, 0, -5.5], [5, 0, -5.5], [5, 0, 1.6], [-5, 0, 1.6]], sc([100, 68, 45], lst));
+  poly([[2.1, 0.01, -1.5], [4.4, 0.01, -1.5], [4.4, 0.01, 1.5], [2.1, 0.01, 1.5]], [24, 24, 28]);
+  flush();
+  grid(-5, 5, 1.6, 7, 0, 1, p.grid);
+  poly([[-5, 0, -5.5], [5, 0, -5.5], [5, 4, -5.5], [-5, 4, -5.5]], sc([135, 25, 38], lst));
+  var b = [], bk = [30, 30, 36], tb = sc([125, 88, 58], lst);
+  mBox(b, 4.4, 4.5, 0, 2.6, -1.5, 1.5, bk, bk, bk); mBox(b, 2.1, 4.5, 0, 2.6, -1.6, -1.5, bk, bk, bk);
+  drawModel(b, function(q){ return q; }, 1, 1);
+  var fw = []; mBox(fw, 2.1, 4.5, 0, 2.6, 1.5, 1.6, bk, bk, bk); drawModel(fw, function(q){ return q; }, 0.35, 1);
+  var t = []; mBox(t, 1.0, 1.9, 0.7, 0.78, -3.4, -2.6, tb, tb, tb); mBox(t, 1.05, 1.15, 0, 0.7, -3.35, -3.25, tb, tb, tb); mBox(t, 1.75, 1.85, 0, 0.7, -2.75, -2.65, tb, tb, tb);
+  drawModel(t, function(q){ return q; }, 1, 1);
+  var lamp = []; mEll(lamp, [3.7, 2.45, 0.6], 0.14, 0.1, 0.14, G.lg > 0.02 ? [255, 225, 130] : [70, 70, 70], 8, 5); drawModel(lamp, function(q){ return q; }, 1, 1);
+  var seats = []; [3.4, 4.4, 5.4].forEach(function(z){ mBox(seats, -3, 3, 0, 0.45, z, z + 0.5, [75, 75, 88], [75, 75, 88], [65, 65, 78]); }); drawModel(seats, function(q){ return q; }, 1, 1);
+  drawModel(act, G.XS, 1, lst);
+  drawModel(man, G.XA, 1, lfa);
+  if (G.V > 0.01) drawModel(man, G.XG, clamp(1.5*G.V, 0, 0.9), lfa);
+  var L = 3.1, a0 = mul(G.u, -L), a1 = mul(G.u, L);
+  poly([a0, a1, add(a1, [0, 3.2, 0]), add(a0, [0, 3.2, 0])], p.glass, s.glass ? 0.13 : 0.03);
+  if (!eyeCam()) eye(G.E, [0, -0.1, -1], 0.18);
+  flush();
+  if (s.glass){ seg(a0, a1, p.edge, 1.5); seg(add(a0, [0, 3.2, 0]), add(a1, [0, 3.2, 0]), p.edge, 1.5); seg(a0, add(a0, [0, 3.2, 0]), p.edge, 1.5); seg(a1, add(a1, [0, 3.2, 0]), p.edge, 1.5); }
+  if (U.rays){ var A = G.XA([0, 1.64, 0]), Ag = G.XG([0, 1.64, 0]), Q = hitPlane(Ag, G.E, [0, 0, 0], G.n), w = 1 + 3*G.R*G.lg/0.3;
+    if (G.lg > 0.02){ seg(A, Q, p.ray, clamp(w, 1, 4), false, true); seg(Q, G.E, p.ray, clamp(w, 1, 4), false, true); seg(Q, Ag, p.ray, 1.3, true); }
+    seg(G.XS([0, 1.64, 0]), G.E, p.trans, 1 + 2.5*G.ls, false, true); }
+  lab(G.XA([0, 2.05, 0]), 'hidden actor', p.lab); lab(G.XG([0, 2.05, 0]), 'ghost', p.lab);
+  lab(G.XS([0, 2.05, 0]), 'actor on stage', p.lab); lab(add(mul(G.u, -L), [0, 3.45, 0]), 'glass plate', p.lab);
+  lab([3.3, 2.95, 1.6], 'dark booth (front wall cut away)', p.lab); lab(add(G.E, [0, 0.45, 0]), 'audience', p.lab); }
+/* ══════════ tabs 3 and 4: the phone pyramid (1 unit = 1 cm) ══════════ */
+var YS = 0.82, BB = 0.5, HP = 3.2, GAP = 0.15, SCO = 0.55;
+function face(k, s){ var a = s.ang*DEG, o = SIDES[k], r = cross(mul(o, -1), [0, 1, 0]), bt = BB + HP/Math.tan(a);
+  var P0 = add([0, YS, 0], mul(o, BB)), Pt = add([0, YS + HP, 0], mul(o, bt));
+  return { o:o, r:r, P0:P0, Pt:Pt, bt:bt, n:nrm(cross(r, sub(Pt, P0))) }; }
+function sprites(k, s, M){   /* the flat picture for side k, as polygons lying on the screen */
+  var F = face(k, s), ov = s.four ? F.o : SIDES[0], rv = s.four ? F.r : cross(mul(SIDES[0], -1), [0, 1, 0]), sg = s.flip ? 1 : -1;
+  var L = M.map(function(q){ var w = q.p.map(function(pt){ return mul(rotY(pt, s.sa), SCO); }), d = 0; w.forEach(function(t){ d += dot(t, ov); }); return { w:w, c:q.c, d:d/w.length }; });
+  L.sort(function(A, B){ return A.d - B.d; });
+  return L.map(function(q, rank){ return { p:q.w.map(function(w){ return add(add([0, YS + 0.004 + 0.0004*rank, 0], mul(F.o, BB + GAP + w[1])), mul(F.r, sg*dot(w, rv))); }), c:q.c }; }); }
+function eyeCam(){ return Math.abs(U.yaw) < 8 && U.pitch < 14; }
+function camDir(){ return [-Math.sin(U.yaw*DEG), 0, Math.cos(U.yaw*DEG)]; }
+function seenSide(){ var c = camDir(), best = 0, bd = -2; for (var k=0; k<4; k++){ var d = dot(SIDES[k], c); if (d > bd){ bd = d; best = k; } } return best; }
+function drawPhone(p){
+  var s = PH(), M = modelP(), lsc = s.scr/100, V = ghostVis(RP, lsc, s.room/100), lf = 0.12 + 0.88*lsc, k;
+  grid(-12, 12, -12, 12, 0, 2, p.grid);
+  var ph = [], dk = [40, 42, 48]; mBox(ph, -3.6, 3.6, 0, 0.8, -7.4, 7.4, dk, dk, dk); drawModel(ph, function(q){ return q; }, 1, 1);
+  poly([[-3.3, YS - 0.01, -7.0], [3.3, YS - 0.01, -7.0], [3.3, YS - 0.01, 7.0], [-3.3, YS - 0.01, 7.0]], [8, 8, 11]);
+  flush();
+  var SP = []; for (k=0; k<4; k++){ SP.push(sprites(k, s, M)); SP[k].forEach(function(q){ poly(q.p, sc(q.c, lf), 1); }); }
+  flush(true);
+  var see = seenSide(), all = U.pitch > 60;
+  for (k=0; k<4; k++){ var F = face(k, s);
+    if (V > 0.01 && (all || k === see)) SP[k].forEach(function(q){ poly(q.p.map(function(t){ return reflectP(t, F.P0, F.n); }), sc(q.c, lf), clamp(V*1.8, 0, 0.9)); });
+    if (s.pyr) poly([sub(F.P0, mul(F.r, BB)), add(F.P0, mul(F.r, BB)), add(F.Pt, mul(F.r, F.bt)), sub(F.Pt, mul(F.r, F.bt))], p.glass, 0.1); }
+  for (k=0; k<4; k++) if (!(eyeCam() && k === see)) eye(add([0, YS + 1.8, 0], mul(SIDES[k], 9)), mul(SIDES[k], -1), 0.5);
+  flush();
+  if (s.pyr) for (k=0; k<4; k++){ var F2 = face(k, s), c = [sub(F2.P0, mul(F2.r, BB)), add(F2.P0, mul(F2.r, BB)), add(F2.Pt, mul(F2.r, F2.bt)), sub(F2.Pt, mul(F2.r, F2.bt))];
+    for (var i=0; i<4; i++) seg(c[i], c[(i + 1) % 4], p.edge, 1.2); }
+  if (U.tab === 3){ var q0 = [[-BB, YS, -BB], [BB, YS, -BB], [BB, YS, BB], [-BB, YS, BB]]; for (var j=0; j<4; j++) seg(q0[j], q0[(j + 1) % 4], p.nrm, 1.5, true); }
+  if (U.rays && !(U.tab === 3 && U.pitch > 60)){ var F0 = face(see, s), E = add([0, YS + 1.8, 0], mul(SIDES[see], 9));
+    [[0, 4*SCO*0.97], [0, 0.05]].forEach(function(uv){ var S = add(add([0, YS, 0], mul(F0.o, BB + GAP + uv[1])), mul(F0.r, uv[0])), Si = reflectP(S, F0.P0, F0.n), Q = hitPlane(Si, E, F0.P0, F0.n);
+      seg(S, Q, p.ray, 2, false, true); seg(Q, E, p.ray, 2, false, true); seg(Q, Si, p.ray, 1.2, true); }); }
+  for (k=0; k<4; k++){ var Fk = face(k, s); lab(add([0, YS + 0.2, 0], mul(Fk.o, BB + GAP + 4*SCO + 0.8)), (U.tab === 3 ? SNAME[k] + ' view' : (k === see ? 'picture for this side' : '')), p.lab); }
+  var Fs = face(see, s); lab(add(reflectP(add([0, YS, 0], mul(Fs.o, BB + GAP + 4*SCO)), Fs.P0, Fs.n), [0, 0.6, 0]), 'floating image', p.lab);
+  lab(add([0, YS + 3.4, 0], mul(SIDES[see], 9)), SNAME[see].toLowerCase() + ' viewer', p.lab);
+  if (U.tab === 3) lab([0, YS + 0.1, 0], 'empty centre', p.lab); }
+/* ══════════ drawing ══════════ */
+function draw(){ var p = pal(); setCam(); g.fillStyle = p.bg; g.fillRect(0, 0, W, H);
+  if (U.tab === 0) drawT0(p); else if (U.tab === 1) drawT1(p); else drawPhone(p);
+  drawLabels(); el('pgHint').textContent = 'drag or arrow keys to turn \u00B7 + / \u2212 to zoom'; }
+/* ══════════ readout, status, narration ══════════ */
+function f(v, k){ return (Math.abs(v) < 0.5*Math.pow(10, -k) ? 0 : v).toFixed(k); }
+function pct(v){ return f(100*v, 0) + ' %'; }
+function info(){
+  var cells = [], st = '', eq = '', t = U.tab;
+  if (t === 0){ var G = t0geo(), s = A0, dcm = f(s.d*10, 0);
+    cells = [['SURFACE', G.mir ? 'plane mirror' : 'clear glass'], ['REFLECTED R \u00B7 PASSED T', pct(G.R) + ' \u00B7 ' + pct(G.T)], ['OBJECT DISTANCE d\u2092', dcm + ' cm'], ['IMAGE DISTANCE d\u1D62', dcm + ' cm behind'], ['MAGNIFICATION m', '+1 (upright, same size)'], ['IMAGE VISIBILITY V', pct(G.V)]];
+    st = (G.mir ? 'Plane mirror: about 90% of the light comes back and nothing behind the mirror shows. ' : 'Clear glass: only ' + pct(G.R) + ' of the light is reflected, so the image is faint, and the plant behind the glass shows through it. ')
+      + 'The image is ' + dcm + ' cm behind the pane, as far as the P is in front, upright and the same size. '
+      + (s.face ? 'The orange front of the P faces the pane, so the image shows the front, reversed: it reads backwards, like a page held up to a mirror.' : 'You see the orange front of the P directly but its blue back in the pane: the pane shows the side that faces it.')
+      + (G.lo < 0.05 ? ' The P is in the dark: there is no light to reflect, so there is no image.' : (!G.mir && G.V < 0.3 ? ' The space behind the glass is bright and swamps the weak reflection.' : ''));
+    eq = 'Plane pane at normal incidence: <b>d\u1D62 = d\u2092</b>, <b>m = +1</b>; the ray along the normal comes straight back. Glass: <b>R = ((n\u22121)/(n+1))\u00B2 \u2248 4%</b> per surface for n = 1.5, <b>T = 1 \u2212 R</b>. Visibility <b>V = R\u00B7I\u2092 / (R\u00B7I\u2092 + T\u00B7I_behind)</b> = ' + pct(G.V) + '.';
+  } else if (t === 1){ var G1 = t1geo(), s1 = A1, A = G1.XA([0, 1, 0]), dA = Math.abs(dot(A, G1.n)), Gp = G1.XG([0, 0, 0]);
+    cells = [['PLATE ANGLE \u03C6', s1.ang + '\u00B0'], ['REFLECTED R \u00B7 PASSED T', pct(G1.R) + ' \u00B7 ' + pct(1 - G1.R)], ['ACTOR TO GLASS', f(dA, 2) + ' m'], ['GHOST BEHIND GLASS', f(dA, 2) + ' m'], ['GHOST ON STAGE AT', 'x ' + f(Gp[0], 1) + ' m, z ' + f(Gp[2], 1) + ' m'], ['GHOST VISIBILITY V', pct(G1.V)]];
+    st = G1.lg < 0.03 ? 'The booth is dark: no light leaves the hidden actor, so the glass has nothing to reflect and the ghost vanishes, although the actor is still there.'
+      : 'The audience sees the stage through the glass and, in the same glass, the reflection of the brightly lit hidden actor. The ghost stands ' + f(dA, 2) + ' m behind the glass, exactly as far as the actor is in front of it.'
+        + (G1.V < 0.3 ? ' The stage is bright: the light coming through the glass swamps the weak reflection.' : '') + (Math.abs(s1.ang - 45) > 2 ? ' Away from 45\u00B0 the ghost moves and turns away from the audience.' : ' It is a mirror image: the actor holds the lantern in the right hand, the ghost in the left.');
+    eq = 'The ghost is the plane-mirror image of the actor: reflect each point across the glass, <b>d_ghost = d_actor</b>. Glass reflects only <b>R \u2248 ' + pct(G1.R) + '</b>, so the actor must be lit brightly and the stage kept dim: <b>V = R\u00B7I_actor / (R\u00B7I_actor + T\u00B7I_stage)</b> = ' + pct(G1.V) + '.';
+  } else { var s2 = PH(), V = ghostVis(RP, s2.scr/100, s2.room/100), tilt = Math.abs(2*s2.ang - 90);
+    cells = [['PANEL ANGLE \u03B1', s2.ang + '\u00B0'], ['IMAGE TILT FROM VERTICAL', f(tilt, 0) + '\u00B0'], ['PICTURES', s2.four ? 'four camera views' : 'one view, copied'], ['PREPARED BY', s2.flip ? 'flipping (mirroring)' : 'rotating only'], ['THE P READS', s2.flip ? 'correctly' : 'backwards'], ['GHOST VISIBILITY V', pct(V)]];
+    st = (t === 2 ? 'The panel facing you reflects the picture next to it; the image of the flat picture stands ' + (tilt < 1 ? 'upright' : 'tilted ' + f(tilt, 0) + '\u00B0 from upright') + ' in the middle of the pyramid. Turn the view to see the image formed for each side. '
+        : 'From above: four pictures around an empty black centre, feet toward the centre. ' + (s2.four ? 'Each is a different camera view, so each viewer sees a different side of the spinning P. ' : 'All four are the same view, so every viewer sees the same side. '))
+      + (s2.flip ? 'Each picture is flipped, so after the reflection the P reads correctly.' : 'The pictures are only rotated: the reflection reverses them and the P reads backwards.')
+      + (s2.room > 50 ? ' The room is bright: light passing through the panels washes the image out.' : '');
+    eq = 'Each panel is a plane mirror tilted at <b>\u03B1</b> to the screen: the flat picture\u2019s image is turned through <b>2\u03B1</b>, so at <b>\u03B1 = 45\u00B0</b> it stands upright. A reflection reverses the picture: place each view <b>flipped</b>, head outward. Plastic reflects R \u2248 ' + pct(RP) + '; V = ' + pct(V) + '.';
+  }
+  el('pgRead').innerHTML = cells.map(function(c){ return '<div><div class="pg_flabel' + SX + '">' + c[0] + '</div><div class="pg_fvalue' + SX + '">' + c[1] + '</div></div>'; }).join('');
+  el('pgStatus').textContent = st; el('pgEq').innerHTML = eq; return st; }
+function narrate(m){ if (!th.nr) return; el('pgNar').textContent = m; }
+var lt = null; function later(){ clearTimeout(lt); lt = setTimeout(function(){ narrate(info()); }, 600); }
+var DESC = ['A flat pane stands upright on a table, and you look straight at it along its normal. In front of it stands a thick letter P, orange in front and blue at the back. Its image appears behind the pane, at the same distance. Yellow rays go from the P to the pane and on to your eye; dashed lines continue them back to the image. A pink ray hits the pane along the normal and comes straight back. ',
+  'A theatre stage with a dark red curtain, a table and an actor in green. A large, nearly invisible glass plate stands at an angle between the stage and the rows of seats. To the right of the stage is a dark booth, its front wall cut away, where a pale actor holding a lantern stands under a lamp, facing the glass. A faint copy of this actor, the ghost, appears on the stage. Yellow rays go from the hidden actor to the glass and on to the audience; the blue ray is light from the stage passing through the glass. ',
+  'A phone lies flat with a small upside-down pyramid of four clear panels on its screen. Around the pyramid the screen shows four small pictures of the letter P. Inside the pyramid floats an upright image of the P, the reflection of the picture on the side facing you. An eye on each side marks the four viewers. ',
+  'Seen from above, the phone screen shows four pictures of the spinning letter P arranged in a cross around an empty dashed square, each with its feet toward the centre and its head toward the edge. The panels of the pyramid are outlined over them. '];
+function describe(){ narrate(DESC[U.tab] + info()); }
+/* ══════════ controls ══════════ */
+function row(id, label, min, max, step, val, txt){ return '<div class="pg_ctrl' + SX + '"><div class="pg_ctrlhdr' + SX + '"><label class="pg_ctrlname' + SX + '" for="' + id + SX + '">' + label + '</label><span class="pg_sval' + SX + '" id="' + id + 'v' + SX + '">' + txt + '</span></div><input type="range" id="' + id + SX + '" min="' + min + '" max="' + max + '" step="' + step + '" value="' + val + '"></div>'; }
+function btn(id, label, act){ return '<button type="button" class="pg_btn' + SX + (act ? ' pg_btnon' + SX : '') + '" id="' + id + SX + '"' + (act === undefined ? '' : ' aria-pressed="' + (act ? 'true' : 'false') + '"') + '>' + label + '</button>'; }
+function brow(h){ return '<div class="pg_brow' + SX + '">' + h + '</div>'; }
+function note(t){ return '<p class="pg_note' + SX + '">' + t + '</p>'; }
+function chk(id, label, v){ return '<label class="pg_chk' + SX + '"><input type="checkbox" id="' + id + SX + '"' + (v ? ' checked' : '') + '> ' + label + '</label>'; }
+function on(id, ev, fn){ var e = el(id); if (e) e.addEventListener(ev, fn); }
+function build(){ var A = '', B = '', t = U.tab, TA = 'The setup', TB = 'The lighting';
+  if (t === 0){ var s = A0, mir = s.surf === 'mirror';
+    A = brow(btn('pgSM', 'Plane mirror', mir) + btn('pgSG', 'Clear glass', !mir))
+      + row('pgD', 'object distance d\u2092', 5, 40, 1, Math.round(s.d*10), Math.round(s.d*10) + ' cm') + row('pgX', 'sideways position', -20, 20, 1, Math.round(s.x*10), Math.round(s.x*10) + ' cm')
+      + brow(btn('pgF0', 'P faces you', s.face === 0) + btn('pgF1', 'P faces the pane', s.face === 1))
+      + (mir ? note('A silvered mirror reflects about 90% of the light and lets none through.') : row('pgR', 'reflectance of the glass R', 4, 50, 1, s.R, s.R + ' %'));
+    B = row('pgLo', 'light on the object', 0, 100, 1, s.Lo, s.Lo + ' %') + row('pgLb', 'light behind the pane', 0, 100, 1, s.Lb, s.Lb + ' %')
+      + brow(btn('pgDk', 'Dark behind the pane') + btn('pgBr', 'Bright behind the pane'))
+      + note('Plain glass reflects about 4% at each of its two surfaces. A partly silvered (beam-splitter) coating raises R. The light behind the pane only matters for glass.');
+  } else if (t === 1){ var s1 = A1;
+    TA = 'The glass and the actor';
+    A = row('pgAn', 'glass angle to the line of sight \u03C6', 30, 60, 1, s1.ang, s1.ang + '\u00B0') + row('pgAx', 'hidden actor\u2019s distance from the stage centre', 23, 40, 1, Math.round(s1.ax*10), f(s1.ax, 1) + ' m')
+      + row('pgR1', 'reflectance of the glass R', 4, 30, 1, s1.R, s1.R + ' %') + chk('pgGl', 'outline the glass', s1.glass)
+      + note('In a real show the glass is invisible to the audience: its edges are hidden and it is kept spotless.');
+    B = row('pgSp', 'lamp on the hidden actor', 0, 100, 1, s1.spot, s1.spot + ' %') + row('pgSt', 'stage lighting', 0, 100, 1, s1.stage, s1.stage + ' %')
+      + brow(btn('pgOff', 'Booth lamp off') + btn('pgOn', 'Booth lamp on') + btn('pgHu', 'Bright stage'))
+      + note('Fading the booth lamp up or down makes the ghost appear or vanish.');
+  } else { var s2 = PH();
+    TA = 'The pyramid and the pictures'; TB = 'Screen and room';
+    A = row('pgPa', 'panel angle to the screen \u03B1', 35, 55, 1, s2.ang, s2.ang + '\u00B0')
+      + brow(btn('pgFl', 'Flipped pictures', s2.flip) + btn('pgRo', 'Rotated only', !s2.flip))
+      + brow(btn('pgV4', 'Four camera views', s2.four) + btn('pgV1', 'One view, copied', !s2.four))
+      + chk('pgSpin', 'spin the P', s2.spin) + row('pgSs', 'spin rate', 5, 90, 1, s2.spd, s2.spd + '\u00B0/s') + chk('pgPy', 'show the pyramid', s2.pyr);
+    B = row('pgSc', 'screen brightness', 0, 100, 1, s2.scr, s2.scr + ' %') + row('pgRm', 'room light', 0, 100, 1, s2.room, s2.room + ' %')
+      + note('The image you see comes from the panel facing you; turn the view to change sides. Viewed from above, all four images show. Pyramid: 1 cm square at the bottom, 3.2 cm tall.');
+  }
+  el('pgTA').textContent = TA; el('pgTB').textContent = TB; el('pgCtlA').innerHTML = A; el('pgCtlB').innerHTML = B; bind(); }
+function slide(id, obj, key, k, unit, dec){ on(id, 'input', function(){ obj[key] = +this.value/k; el(id + 'v').textContent = (dec === undefined ? this.value : f(+this.value/k, dec)) + unit; later(); }); }
+function bind(){
+  on('pgSM', 'click', function(){ A0.surf = 'mirror'; build(); narrate('A silvered mirror: a bright image, but nothing behind the mirror can be seen. ' + info()); });
+  on('pgSG', 'click', function(){ A0.surf = 'glass'; build(); narrate('Clear glass: the image forms in the same place but is faint, and the plant behind the glass shows through. This is the heart of Pepper\u2019s ghost. ' + info()); });
+  slide('pgD', A0, 'd', 10, ' cm'); slide('pgX', A0, 'x', 10, ' cm');
+  on('pgF0', 'click', function(){ A0.face = 0; build(); later(); }); on('pgF1', 'click', function(){ A0.face = 1; build(); later(); });
+  slide('pgR', A0, 'R', 1, ' %'); slide('pgLo', A0, 'Lo', 1, ' %'); slide('pgLb', A0, 'Lb', 1, ' %');
+  on('pgDk', 'click', function(){ A0.Lb = 5; build(); later(); }); on('pgBr', 'click', function(){ A0.Lb = 100; build(); later(); });
+  slide('pgAn', A1, 'ang', 1, '\u00B0'); slide('pgAx', A1, 'ax', 10, ' m', 1); slide('pgR1', A1, 'R', 1, ' %');
+  on('pgGl', 'change', function(){ A1.glass = this.checked; });
+  slide('pgSp', A1, 'spot', 1, ' %'); slide('pgSt', A1, 'stage', 1, ' %');
+  on('pgOff', 'click', function(){ A1.spot = 0; build(); later(); }); on('pgOn', 'click', function(){ A1.spot = 90; build(); later(); }); on('pgHu', 'click', function(){ A1.stage = 90; build(); later(); });
+  var P = PH(); slide('pgPa', P, 'ang', 1, '\u00B0');
+  on('pgFl', 'click', function(){ P.flip = true; build(); later(); }); on('pgRo', 'click', function(){ P.flip = false; build(); later(); });
+  on('pgV4', 'click', function(){ P.four = true; build(); later(); }); on('pgV1', 'click', function(){ P.four = false; build(); later(); });
+  on('pgSpin', 'change', function(){ P.spin = this.checked; }); slide('pgSs', P, 'spd', 1, '\u00B0/s'); on('pgPy', 'change', function(){ P.pyr = this.checked; });
+  slide('pgSc', P, 'scr', 1, ' %'); slide('pgRm', P, 'room', 1, ' %'); }
+function setView(k){ var C = CAM[U.tab]; if (k === 'std'){ U.yaw = C.yaw; U.pitch = C.pitch; } else if (k === 'eye'){ U.yaw = C.eye[0]; U.pitch = C.eye[1]; } else { U.yaw = C.top[0]; U.pitch = C.top[1]; } }
+on('pgVStd', 'click', function(){ setView('std'); }); on('pgVEye', 'click', function(){ setView('eye'); narrate(U.tab === 1 ? 'From the audience: the glass is hardly visible and the ghost stands on the stage.' : (U.tab === 0 ? 'Looking straight at the pane, along its normal, as your eye does.' : 'At eye level, as the front viewer sees it.')); }); on('pgVTop', 'click', function(){ setView('top'); });
+on('pgZm', 'input', function(){ U.zoom = +this.value; });
+on('pgRay', 'change', function(){ U.rays = this.checked; }); on('pgLbl', 'change', function(){ U.labels = this.checked; });
+on('pgDsc', 'click', describe);
+/* drag (mouse or finger) or the arrow keys turn the view; + and - zoom */
+var drag = null;
+cv.addEventListener('pointerdown', function(e){ drag = { x:e.clientX, y:e.clientY, yaw:U.yaw, pitch:U.pitch }; try { cv.setPointerCapture(e.pointerId); } catch (err) {} cv.style.cursor = 'grabbing'; });
+cv.addEventListener('pointermove', function(e){ if (!drag) return; var r = cv.getBoundingClientRect(), k = W/r.width; U.yaw = drag.yaw + (e.clientX - drag.x)*k*0.45; U.pitch = clamp(drag.pitch + (e.clientY - drag.y)*k*0.35, -10, 89); });
+function endDrag(){ drag = null; cv.style.cursor = 'grab'; } cv.addEventListener('pointerup', endDrag); cv.addEventListener('pointercancel', endDrag);
+cv.addEventListener('keydown', function(e){ var k = e.key;
+  if (k === 'ArrowLeft'){ U.yaw -= 5; } else if (k === 'ArrowRight'){ U.yaw += 5; } else if (k === 'ArrowUp'){ U.pitch = clamp(U.pitch + 5, -10, 89); } else if (k === 'ArrowDown'){ U.pitch = clamp(U.pitch - 5, -10, 89); }
+  else if (k === '+' || k === '='){ U.zoom = clamp(U.zoom + 0.1, 0.6, 2.2); el('pgZm').value = U.zoom; } else if (k === '-' || k === '_'){ U.zoom = clamp(U.zoom - 0.1, 0.6, 2.2); el('pgZm').value = U.zoom; } else return; e.preventDefault(); });
+var INTRO = ['A plane mirror at normal incidence: you look straight at the pane, along its normal. The letter P is orange in front and blue at the back. Switch to clear glass and compare: the image stays in the same place but becomes faint, and the plant behind the glass shows through.',
+  'The theatre ghost: the audience watches the stage through a large sheet of glass set at 45\u00B0. A brightly lit actor, hidden in a dark booth beside the stage, is reflected by the glass and appears as a ghost on the stage. Try turning the booth lamp off, or moving the hidden actor.',
+  'The phone version: four clear panels form an upside-down pyramid on the screen. Each panel reflects the picture next to it, so each viewer sees an upright image floating in the middle. Turn the view to walk around it.',
+  'Making the video, seen from above: four pictures of the subject around an empty black centre, feet toward the centre. The P spins; with four camera views each side shows a different face of it. Compare flipped and rotated pictures, then read the steps below.'];
+var LABS = ['MIRROR AND GLASS AT NORMAL INCIDENCE', 'THE THEATRE: GLASS, STAGE AND HIDDEN BOOTH', 'THE PHONE PYRAMID', 'LAYING OUT THE VIDEO'];
+function tab(i){ U.tab = i;
+  for (var k=0; k<4; k++) el('pgT' + k).setAttribute('aria-selected', k === i ? 'true' : 'false');
+  el('pgLab').textContent = LABS[i]; el('pgSteps').style.display = i === 3 ? '' : 'none';
+  U.zoom = 1; el('pgZm').value = 1; setView('std'); build(); info(); narrate(INTRO[i]); }
+function theme(k){ th[k] = !th[k]; if (k === 'hc' && th.hc) th.lm = false; if (k === 'lm' && th.lm) th.hc = false;
+  ROOT.classList.toggle('pg_hc' + SX, th.hc); ROOT.classList.toggle('pg_lm' + SX, th.lm);
+  [['hc', 'pgBtnHC'], ['lm', 'pgBtnLM'], ['cb', 'pgBtnCB'], ['nr', 'pgBtnNR']].forEach(function(q){ var b = el(q[1]); b.classList.toggle('pg_a11yon' + SX, th[q[0]]); b.setAttribute('aria-pressed', th[q[0]] ? 'true' : 'false'); });
+  el('pgBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('pgNar').style.display = th.nr ? '' : 'none'; }
+function toggleDesc(){ var b = el('pgDescBtn'), d = el('pgDesc'), open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+  if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }
+/* ══════════ the loop ══════════ */
+var last = 0, tick = 0;
+function loop(t){ var rdt = last ? Math.min(0.05, (t - last)/1000) : 0; last = t;
+  if (U.tab >= 2){ var s = PH(); if (s.spin) s.sa = (s.sa + rdt*s.spd*DEG) % TAU; }
+  draw(); if (++tick % 15 === 0) info();
+  requestAnimationFrame(loop); }
+tab(0);
+requestAnimationFrame(loop);
+return { tab:tab, theme:theme, toggleDesc:toggleDesc, describe:describe, _info:info, _U:U, _draw:draw };
+})();
+</script>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+// Configure MathJax to load the AsciiMath input component
+window.MathJax = {
+loader: { load: ['input/asciimath', 'output/chtml'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Optics: The Mirascope in 3D</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics,Taha, Mzoughi, optics, mirascope, mirage, parabolic mirror, concave mirror, real image, focal length, 3D, simulation">
+<meta name="description" content="Interactive 3D mirascope: two facing parabolic mirrors form a real image of a small toy floating in the hole.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:860px; max-width:100%; margin:0 auto; overflow-x:auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico> </head>
+<body style=margin:25px>
+<main class="page">
+<div id="mgRoot" class="mg_root" role="region" aria-label="Mirascope simulator in 3D: two facing parabolic mirrors make a real image of a small toy float above the hole">
+<div class="mg_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="mg_a11ybtn" id="mgBtnHC" onclick="mgSim.theme('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="mg_a11ybtn" id="mgBtnLM" onclick="mgSim.theme('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="mg_a11ybtn" id="mgBtnCB" onclick="mgSim.theme('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="mg_a11ybtn mg_a11yon" id="mgBtnNR" onclick="mgSim.theme('nr')" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div class="mg_header"><p class="mg_h1">The Mirascope: A Toy That Floats</p><p class="mg_sub">two facing parabolic mirrors form a real image of the toy above the hole</p></div>
+<div class="mg_tabs" role="tablist" aria-label="Views">
+<button type="button" role="tab" class="mg_tab" id="mgT0" aria-selected="true" onclick="mgSim.tab(0)">1. The illusion</button>
+<button type="button" role="tab" class="mg_tab" id="mgT1" aria-selected="false" onclick="mgSim.tab(1)">2. Inside: the rays</button>
+</div>
+<div class="mg_diag"><div class="mg_dlabel"><b id="mgLab">THE ILLUSION</b><span id="mgHint"></span></div>
+<canvas id="mgCv" width="780" height="470" tabindex="0" role="img" aria-label="Three-dimensional mirascope. Drag, or use the arrow keys, to turn the view; plus and minus keys zoom." aria-describedby="mgStatus"></canvas></div>
+<div class="mg_status" id="mgStatus"></div>
+<div class="mg_bbar">
+<button type="button" class="mg_btn" id="mgVStd">Standard view</button>
+<button type="button" class="mg_btn" id="mgVEye">Look into the hole</button>
+<button type="button" class="mg_btn" id="mgVLow">Low, from the side</button>
+<button type="button" class="mg_btn" id="mgVTop">From above</button>
+<label>zoom <input type="range" id="mgZm" min="0.6" max="3" step="0.05" value="1" style="width:90px"></label>
+<label><input type="checkbox" id="mgRay"> rays</label>
+<label><input type="checkbox" id="mgLbl" checked> labels</label>
+<button type="button" class="mg_btn" id="mgDsc">Describe</button>
+</div>
+<div class="mg_read" id="mgRead" aria-label="Readout"></div>
+<div class="mg_panels"><div class="mg_panel"><div class="mg_ptitle" id="mgTA">The mirrors</div><div class="mg_pbody" id="mgCtlA"></div></div>
+<div class="mg_panel"><div class="mg_ptitle" id="mgTB">The toy</div><div class="mg_pbody" id="mgCtlB"></div></div></div>
+<div class="mg_eqs" id="mgEq"></div>
+<div id="mgNar" class="mg_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="mg_descwrap">
+<button type="button" class="mg_descbtn" id="mgDescBtn" aria-expanded="false" aria-controls="mgDesc" onclick="mgSim.toggleDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="mg_desc" id="mgDesc" role="region" aria-labelledby="mgDescBtn" style="display:none">
+<p>A mirascope (sold as the &ldquo;Mirage&rdquo;) is made of two identical concave parabolic mirrors facing each other. The top mirror has a hole in its centre. A small toy, such as a ladybug, a pig, a frog or a tiger cub, sits on the bottom mirror. Looking in from above, you see a solid-looking toy sitting in the hole. Reach for it and your fingers pass through: it is a real image, formed by light that really does converge there.</p>
+<p><b>The mirrors.</b> Each mirror is a paraboloid, `y = r^2/(4f)`, where `f` is its focal length. In the commercial toy the separation of the vertices equals the focal length, `c = f`, so each mirror's focus lies at the vertex of the other: the toy sits at the focus of the top mirror and the hole is at the focus of the bottom mirror. The two mirrors meet at the rim, of radius `R = sqrt(2fc)`.</p>
+<p><b>How the image forms.</b> Light from the toy goes up to the top mirror. Since the toy is at that mirror's focus, the reflected light travels down parallel to the axis. The bottom mirror focuses the parallel light at its own focus, which is the hole. Each mirror obeys</p>
+<p class="mg_eq">`1/d_o + 1/d_i = 1/f`,&nbsp;&nbsp; `m = -d_i/d_o`.</p>
+<p>Applying it twice, a point at height `y` above the bottom vertex has its image at height `y_i ~~ f^2/(f-y)`, close to `f + y` for a small toy, with lateral magnification `m = m_1 m_2 ~~ -1`. The image is the same size and upright, but every point is carried to the opposite side of the axis: the image is the toy turned 180&deg; about the vertical axis. Two reflections turn the image without mirror-reversing it. The yellow tag on each toy's right side stays on the image's right side.</p>
+<p><b>Seeing it.</b> The light that forms the image comes up through the hole from the bottom mirror. You see the image only if the line from your eye through the image, continued backward, passes through the hole and reaches the bottom mirror. Look in from too low an angle and the image vanishes. The toy itself is hidden under the top mirror, except when you look almost straight down through the hole.</p>
+<p><b>Changing the mirrors.</b> When `c` is not equal to `f`, the image moves up or down, changes size, and may stop being a real image above the hole. Moving the toy off-centre moves the image to the opposite side.</p>
+<p>In the <b>Inside</b> tab the near part of the mirrors is cut away. Two rays leave the top of the toy, reflect at G on the top mirror and at E and I on the bottom mirror, and cross at J, the image point. The rays are traced exactly on the paraboloids; the image of the whole toy is computed from the mirror equation (the paraxial approximation), so the traced point J and the drawn image differ a little for points far from the axis. The scene is drawn with flat shaded polygons; the reflections on the mirror surfaces themselves are not drawn.</p>
+</div></div>
+</div><!-- #mgRoot -->
+<style>
+#mgRoot { --c-chassis:#1a1c1f; --c-panel:#22262b; --c-hi:#2c3138; --c-lo:#14161a; --c-bd:#3a4048; --c-bd2:#525c66; --c-text:#c8d0d8; --c-dim:#8a94a3; --c-accent:#e8a020; --c-green:#3ad08f; --c-val:#ffdd66; --c-nbg:#2a2410; --c-nbd:#e0b040; --c-ntx:#f0e2b8;
+  background:var(--c-chassis); background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
+  color:var(--c-text); font-family:Arial, sans-serif; padding:14px 10px 18px; border-radius:6px; box-sizing:border-box; width:100%; max-width:860px; margin:0 auto 10px; display:flex; flex-direction:column; gap:10px; }
+#mgRoot * { box-sizing:border-box; }
+#mgRoot.mg_lm { --c-chassis:#e9edf1; --c-panel:#ffffff; --c-hi:#f1f4f7; --c-lo:#f4f6f9; --c-bd:#c3cad3; --c-bd2:#9aa3ae; --c-text:#1d232a; --c-dim:#556070; --c-accent:#a8620a; --c-green:#12805a; --c-val:#8a4a00; --c-nbg:#ffefc0; --c-ntx:#333; background-image:none; }
+#mgRoot.mg_hc { --c-chassis:#000; --c-panel:#000; --c-hi:#111; --c-lo:#000; --c-bd:#fff; --c-bd2:#fff; --c-text:#fff; --c-dim:#e0e0e0; --c-accent:#ffd700; --c-green:#00ff88; --c-val:#ffff00; --c-nbg:#000; --c-nbd:#ffd700; --c-ntx:#fff; background-image:none; }
+#mgRoot .mg_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+#mgRoot .mg_a11ybtn { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-dim); min-height:30px; }
+#mgRoot .mg_a11yon { background:rgba(58,208,143,.14); border-color:var(--c-green); color:var(--c-green); font-weight:bold; }
+#mgRoot .mg_header { text-align:center; }
+#mgRoot .mg_h1 { margin:0; font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--c-accent); }
+#mgRoot .mg_sub { margin:3px 0 0; font-size:.7rem; color:var(--c-dim); letter-spacing:.08em; text-transform:uppercase; }
+#mgRoot .mg_tabs { display:flex; gap:4px; flex-wrap:wrap; }
+#mgRoot .mg_tab { flex:1 1 170px; padding:8px 6px; border:1px solid var(--c-bd2); background:var(--c-hi); color:var(--c-text); border-radius:4px; cursor:pointer; font-family:monospace; font-size:.76rem; letter-spacing:.06em; text-transform:uppercase; min-height:38px; }
+#mgRoot .mg_tab[aria-selected="true"] { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#mgRoot .mg_diag { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+#mgRoot .mg_dlabel { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--c-dim); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+#mgRoot .mg_dlabel b { color:var(--c-accent); }
+#mgRoot canvas { display:block; width:100%; height:auto; touch-action:none; cursor:grab; }
+#mgRoot .mg_bbar { display:flex; flex-wrap:wrap; gap:6px 12px; justify-content:center; align-items:center; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:6px; padding:8px 10px; font-size:.8rem; }
+#mgRoot .mg_bbar label, #mgRoot .mg_chk { display:flex; align-items:center; gap:5px; color:var(--c-dim); font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; cursor:pointer; }
+#mgRoot .mg_btn { padding:7px 12px; font-family:monospace; font-size:.72rem; letter-spacing:.04em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-text); border-radius:3px; text-transform:uppercase; min-height:34px; }
+#mgRoot .mg_btn:hover { border-color:var(--c-accent); }
+#mgRoot .mg_btnon { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#mgRoot .mg_panels { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
+#mgRoot .mg_panel { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; box-shadow:0 4px 20px rgba(0,0,0,.3); overflow:hidden; }
+#mgRoot .mg_ptitle { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--c-dim); }
+#mgRoot .mg_pbody { padding:9px 12px; display:flex; flex-direction:column; gap:8px; }
+#mgRoot .mg_ctrl { display:flex; flex-direction:column; gap:3px; }
+#mgRoot .mg_ctrlhdr { display:flex; justify-content:space-between; align-items:baseline; gap:6px; }
+#mgRoot .mg_ctrlname { font-size:.72rem; font-weight:600; color:var(--c-dim); text-transform:uppercase; letter-spacing:.04em; }
+#mgRoot .mg_sval { font-family:monospace; font-size:.76rem; color:var(--c-val); white-space:nowrap; }
+#mgRoot .mg_brow { display:flex; flex-wrap:wrap; gap:5px; }
+#mgRoot .mg_note { margin:0; font-size:.74rem; color:var(--c-dim); line-height:1.4; }
+#mgRoot input[type=range] { width:100%; -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; cursor:pointer; background:var(--c-lo); border:1px solid var(--c-bd); }
+#mgRoot input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#mgRoot input[type=range]::-moz-range-thumb { width:12px; height:12px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#mgRoot input[type=checkbox] { accent-color:var(--c-accent); width:16px; height:16px; }
+#mgRoot .mg_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:6px 10px; background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; padding:8px 12px; }
+#mgRoot .mg_flabel { font-family:monospace; font-size:.62rem; color:var(--c-dim); letter-spacing:.08em; text-transform:uppercase; }
+#mgRoot .mg_fvalue { font-family:monospace; font-size:.9rem; color:var(--c-val); font-variant-numeric:tabular-nums; }
+#mgRoot .mg_eqs { background:var(--c-lo); border:1px solid var(--c-bd); border-left:4px solid var(--c-accent); border-radius:4px; padding:8px 14px; font-family:monospace; font-size:.74rem; color:var(--c-dim); line-height:1.7; }
+#mgRoot .mg_eqs b { color:var(--c-val); }
+#mgRoot .mg_steps { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; padding:8px 14px; font-size:.84rem; line-height:1.45; }
+#mgRoot .mg_steps ol { margin:4px 0 2px; padding-left:22px; }
+#mgRoot .mg_steps li { margin-bottom:4px; }
+#mgRoot .mg_steps b { color:var(--c-accent); }
+#mgRoot .mg_stitle { margin:0; font-family:monospace; font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; color:var(--c-dim); }
+#mgRoot .mg_status { width:100%; padding:8px 12px; border-radius:4px; background:var(--c-panel); border:1px solid var(--c-bd); font-size:.86rem; line-height:1.4; color:var(--c-text); }
+#mgRoot .mg_narbar { min-height:30px; padding:6px 12px; background:var(--c-nbg); border-left:4px solid var(--c-nbd); color:var(--c-ntx); font-size:.84rem; font-style:italic; line-height:1.45; border-radius:3px; }
+#mgRoot .mg_descwrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+#mgRoot .mg_descbtn { padding:8px 18px; font-family:monospace; font-size:.74rem; letter-spacing:.08em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-accent); color:var(--c-accent); border-radius:3px; font-weight:bold; min-height:40px; }
+#mgRoot .mg_desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid var(--c-accent); border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; }
+#mgRoot .mg_desc p { margin:0 0 9px; }
+#mgRoot .mg_eq { text-align:center; font-size:1rem; }
+#mgRoot button:focus-visible, #mgRoot input:focus-visible, #mgRoot canvas:focus-visible { outline:2px solid var(--c-accent); outline-offset:2px; }
+@media (max-width:640px) { #mgRoot .mg_panels { grid-template-columns:minmax(0,1fr); } #mgRoot .mg_tab { font-size:.68rem; padding:8px 3px; } }
+@media (pointer:coarse) { #mgRoot input[type=range] { height:8px; } #mgRoot input[type=range]::-webkit-slider-thumb { width:26px; height:26px; } #mgRoot input[type=range]::-moz-range-thumb { width:24px; height:24px; } #mgRoot .mg_a11ybtn { min-height:40px; } #mgRoot input[type=checkbox] { width:22px; height:22px; } }
+</style>
+<!-- ════════ SIMULATION ════════
+Mirascope in 3D (1 unit = 1 cm). Bottom mirror y = a r^2, top mirror y = c - a r^2 with a hole of radius h; a = 1/(4f).
+Image of the toy: mirror equation applied twice (paraxial), lateral magnification applied to the horizontal position.
+Rays (Inside tab): traced exactly in the meridional plane on the two paraboloids, then placed in 3D.
+Visibility: a part of the image is seen if the line from the eye through it, continued backward, crosses the hole
+and reaches the bottom mirror. The toy (inside) is seen only through the hole. No dollar signs or backticks in the code.
+-->
+<script>
+var mgSim = (function(){
+var SX = '';
+function el(id){ return document.getElementById(id + SX); }
+var ROOT = el('mgRoot'), cv = el('mgCv'), g = cv.getContext('2d'), W = cv.width, H = cv.height, DPR = window.devicePixelRatio || 1;
+cv.width = W*DPR; cv.height = H*DPR; g.scale(DPR, DPR);
+var DEG = Math.PI/180, TAU = 2*Math.PI;
+/* ══════════ vectors ══════════ */
+function add(a, b){ return [a[0] + b[0], a[1] + b[1], a[2] + b[2]]; } function sub(a, b){ return [a[0] - b[0], a[1] - b[1], a[2] - b[2]]; }
+function mul(a, k){ return [a[0]*k, a[1]*k, a[2]*k]; } function dot(a, b){ return a[0]*b[0] + a[1]*b[1] + a[2]*b[2]; }
+function cross(a, b){ return [a[1]*b[2] - a[2]*b[1], a[2]*b[0] - a[0]*b[2], a[0]*b[1] - a[1]*b[0]]; }
+function nrm(a){ var l = Math.sqrt(dot(a, a)) || 1; return [a[0]/l, a[1]/l, a[2]/l]; }
+function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+function rotY(p, a){ var c = Math.cos(a), s = Math.sin(a); return [p[0]*c + p[2]*s, p[1], -p[0]*s + p[2]*c]; }
+function sc(c, k){ return [c[0]*k, c[1]*k, c[2]*k]; }
+function rad(p){ return Math.sqrt(p[0]*p[0] + p[2]*p[2]); }
+/* ══════════ state ══════════ */
+var th = { hc:false, lm:false, cb:false, nr:true };
+var M = { f:8, c:8, hd:6.4, toy:0, off:0, lift:0, size:1, spin:true, turn:0, G:6.5, Hh:-8.5 };
+var U = { tab:0, yaw:-25, pitch:48, zoom:1, focus:'all', rays:[false, true], labels:true };
+var CAM = [{ s:24, D:80, yaw:-25, pitch:48 }, { s:24, D:80, yaw:0, pitch:16 }];
+function geo(){ var a = 1/(4*M.f), R = Math.sqrt(2*M.f*M.c), h = Math.min(M.hd/2, 0.8*R); return { a:a, R:R, h:h, f:M.f, c:M.c }; }
+/* ══════════ colours ══════════ */
+function pal(){ var cb = th.cb, hc = th.hc, lm = th.lm;
+  return { bg:hc ? '#000' : (lm ? '#eef2f6' : '#0b0e14'), grid:hc ? 'rgba(255,255,255,0.45)' : (lm ? 'rgba(0,0,0,0.16)' : 'rgba(120,140,170,0.22)'),
+    r1:hc ? '#ff66cc' : (cb ? '#cc79a7' : '#ff4fa3'), r2:hc ? '#66ccff' : (cb ? '#56b4e9' : '#4aa8ff'), J:hc ? '#ffff00' : (cb ? '#e69f00' : '#ffd23f'),
+    lab:hc ? '#ffffff' : (lm ? '#13202c' : '#e8eef4'), mir:[196, 204, 216], hole:hc ? '#ffffff' : (cb ? '#f0e442' : '#ffd23f') }; }
+/* ══════════ models (cm), facing +z; a yellow tag on the toy's right side (-x) ══════════ */
+function mBox(a, x0, x1, y0, y1, z0, z1, cF, cB, cS){
+  a.push({ p:[[x0, y0, z1], [x1, y0, z1], [x1, y1, z1], [x0, y1, z1]], c:cF }); a.push({ p:[[x1, y0, z0], [x0, y0, z0], [x0, y1, z0], [x1, y1, z0]], c:cB });
+  a.push({ p:[[x1, y0, z1], [x1, y0, z0], [x1, y1, z0], [x1, y1, z1]], c:cS }); a.push({ p:[[x0, y0, z0], [x0, y0, z1], [x0, y1, z1], [x0, y1, z0]], c:cS });
+  a.push({ p:[[x0, y1, z1], [x1, y1, z1], [x1, y1, z0], [x0, y1, z0]], c:cS }); a.push({ p:[[x0, y0, z0], [x1, y0, z0], [x1, y0, z1], [x0, y0, z1]], c:cS }); }
+function E(a, c, rx, ry, rz, col, nu, nv){ nu = nu || 10; nv = nv || 6;
+  function P(u, v){ return [c[0] + rx*Math.sin(v)*Math.cos(u), c[1] + ry*Math.cos(v), c[2] + rz*Math.sin(v)*Math.sin(u)]; }
+  for (var j=0; j<nv; j++) for (var i=0; i<nu; i++){ var u0 = TAU*i/nu, u1 = TAU*(i + 1)/nu, v0 = Math.PI*j/nv, v1 = Math.PI*(j + 1)/nv; a.push({ p:[P(u0, v0), P(u1, v0), P(u1, v1), P(u0, v1)], c:col }); } }
+var YEL = [255, 215, 40], BLK = [28, 28, 32], WHT = [240, 240, 236];
+function ladybug(){ var a = [], R = [215, 35, 35];
+  E(a, [0, 0.5, 0], 0.85, 0.58, 1.0, R, 14, 8);
+  [[0.42, 0.88, 0.35], [-0.42, 0.88, 0.35], [0.55, 0.7, -0.35], [-0.55, 0.7, -0.35], [0, 1.02, -0.2]].forEach(function(s){ E(a, s, 0.2, 0.12, 0.2, BLK, 6, 4); });
+  E(a, [0, 0.42, 0.98], 0.45, 0.33, 0.36, BLK, 10, 6); E(a, [0.2, 0.55, 1.28], 0.09, 0.09, 0.06, WHT, 6, 4); E(a, [-0.2, 0.55, 1.28], 0.09, 0.09, 0.06, WHT, 6, 4);
+  E(a, [0.18, 0.86, 1.25], 0.04, 0.26, 0.04, BLK, 5, 3); E(a, [-0.18, 0.86, 1.25], 0.04, 0.26, 0.04, BLK, 5, 3);
+  [0.5, 0, -0.5].forEach(function(z){ E(a, [0.85, 0.12, z], 0.2, 0.06, 0.06, BLK, 5, 3); E(a, [-0.85, 0.12, z], 0.2, 0.06, 0.06, BLK, 5, 3); });
+  E(a, [-0.8, 0.45, -0.05], 0.06, 0.16, 0.16, YEL, 6, 4); return a; }
+function pig(){ var a = [], P = [242, 160, 172], D = [222, 125, 140];
+  E(a, [0, 0.75, 0], 0.7, 0.58, 1.0, P, 14, 8); E(a, [0, 0.95, 1.0], 0.5, 0.48, 0.45, P, 12, 7); E(a, [0, 0.86, 1.45], 0.22, 0.18, 0.12, D, 8, 5);
+  E(a, [0.08, 0.88, 1.56], 0.04, 0.05, 0.02, BLK, 4, 3); E(a, [-0.08, 0.88, 1.56], 0.04, 0.05, 0.02, BLK, 4, 3);
+  E(a, [0.2, 1.13, 1.37], 0.06, 0.07, 0.04, BLK, 5, 3); E(a, [-0.2, 1.13, 1.37], 0.06, 0.07, 0.04, BLK, 5, 3);
+  E(a, [0.32, 1.4, 0.92], 0.15, 0.2, 0.06, D, 6, 4); E(a, [-0.32, 1.4, 0.92], 0.15, 0.2, 0.06, D, 6, 4);
+  [[0.38, 0.6], [-0.38, 0.6], [0.38, -0.6], [-0.38, -0.6]].forEach(function(q){ E(a, [q[0], 0.2, q[1]], 0.15, 0.25, 0.15, P, 6, 4); });
+  E(a, [0, 0.95, -1.05], 0.08, 0.08, 0.1, D, 5, 3); E(a, [-0.66, 0.8, -0.1], 0.07, 0.17, 0.17, YEL, 6, 4); return a; }
+function frog(){ var a = [], G = [70, 170, 60], L = [175, 215, 110];
+  E(a, [0, 0.48, -0.1], 0.78, 0.45, 0.85, G, 14, 8); E(a, [0, 0.62, 0.65], 0.68, 0.38, 0.55, G, 12, 7); E(a, [0, 0.3, 0.35], 0.6, 0.22, 0.75, L, 10, 5);
+  E(a, [0.34, 0.98, 0.85], 0.2, 0.2, 0.2, G, 8, 5); E(a, [-0.34, 0.98, 0.85], 0.2, 0.2, 0.2, G, 8, 5);
+  E(a, [0.36, 1.03, 1.02], 0.09, 0.09, 0.05, BLK, 6, 4); E(a, [-0.36, 1.03, 1.02], 0.09, 0.09, 0.05, BLK, 6, 4);
+  E(a, [0.78, 0.22, -0.45], 0.32, 0.2, 0.55, G, 8, 5); E(a, [-0.78, 0.22, -0.45], 0.32, 0.2, 0.55, G, 8, 5);
+  E(a, [0.48, 0.15, 0.95], 0.12, 0.15, 0.3, G, 6, 4); E(a, [-0.48, 0.15, 0.95], 0.12, 0.15, 0.3, G, 6, 4);
+  E(a, [-0.74, 0.62, -0.1], 0.07, 0.17, 0.17, YEL, 6, 4); return a; }
+function tiger(){ var a = [], O = [236, 140, 40];
+  E(a, [0, 0.82, 0], 0.55, 0.5, 1.0, O, 14, 8);
+  [-0.6, -0.2, 0.2, 0.6].forEach(function(z){ E(a, [0, 0.84, z], 0.57, 0.52, 0.06, BLK, 12, 6); });
+  E(a, [0, 1.07, 1.05], 0.45, 0.42, 0.42, O, 12, 7); E(a, [0, 0.93, 1.42], 0.24, 0.17, 0.15, WHT, 8, 5); E(a, [0, 1.02, 1.56], 0.07, 0.05, 0.04, BLK, 5, 3);
+  E(a, [0.17, 1.2, 1.38], 0.06, 0.06, 0.04, BLK, 5, 3); E(a, [-0.17, 1.2, 1.38], 0.06, 0.06, 0.04, BLK, 5, 3);
+  E(a, [0.3, 1.45, 0.98], 0.13, 0.13, 0.06, O, 6, 4); E(a, [-0.3, 1.45, 0.98], 0.13, 0.13, 0.06, O, 6, 4);
+  [[0.33, 0.6], [-0.33, 0.6], [0.33, -0.6], [-0.33, -0.6]].forEach(function(q){ E(a, [q[0], 0.28, q[1]], 0.15, 0.3, 0.15, O, 6, 4); });
+  E(a, [0, 0.95, -1.12], 0.07, 0.07, 0.18, O, 5, 3); E(a, [0, 1.12, -1.32], 0.07, 0.07, 0.15, BLK, 5, 3);
+  E(a, [-0.53, 0.82, 0.1], 0.06, 0.16, 0.16, YEL, 6, 4); return a; }
+var TOYS = [ladybug, pig, frog, tiger], TNAME = ['ladybug', 'pig', 'frog', 'tiger cub'], MODELS = TOYS.map(function(f){ return f(); });
+/* the toy placed in the mirascope */
+function toyW(){ var G = geo(), m = MODELS[M.toy], base = G.a*M.off*M.off + M.lift + 0.02;
+  return m.map(function(q){ return { p:q.p.map(function(v){ return add([M.off, base, 0], rotY(mul(v, M.size), M.turn)); }), c:q.c }; }); }
+/* ══════════ optics ══════════ */
+function img(p){ var G = geo(), f = G.f, d1 = G.c - p[1]; if (Math.abs(d1 - f) < 1e-5) d1 = f + 1e-5;
+  var i1 = f*d1/(d1 - f), y1 = G.c - i1, m1 = -i1/d1, d2 = y1; if (Math.abs(d2 - f) < 1e-5) d2 = f + 1e-5;
+  var i2 = f*d2/(d2 - f), m = m1*(-i2/d2); return { p:[m*p[0], i2, m*p[2]], m:m }; }
+function hitS(o, d, s0, k, rmin, rmax){   /* surface y = s0 + k x^2 in the meridional plane */
+  var A = k*d[0]*d[0], B = 2*k*o[0]*d[0] - d[1], C = k*o[0]*o[0] + s0 - o[1], ts = [];
+  if (Math.abs(A) < 1e-12){ if (Math.abs(B) > 1e-12) ts.push(-C/B); } else { var D = B*B - 4*A*C; if (D >= 0){ var q = Math.sqrt(D); ts.push((-B - q)/(2*A), (-B + q)/(2*A)); } }
+  var best = null; ts.forEach(function(t){ if (t > 1e-6){ var x = Math.abs(o[0] + t*d[0]); if (x >= rmin && x <= rmax && (best === null || t < best)) best = t; } }); return best; }
+function trace(o, d){ var G = geo(), pts = [o], cur = o, dir = d, hits = [];
+  for (var n=0; n<8; n++){
+    var tb = hitS(cur, dir, 0, G.a, 0, G.R), tt = hitS(cur, dir, G.c, -G.a, G.h, G.R), t = null, k = 0;
+    if (tb !== null){ t = tb; k = G.a; } if (tt !== null && (t === null || tt < t)){ t = tt; k = -G.a; }
+    if (t === null) break;
+    var P = [cur[0] + t*dir[0], cur[1] + t*dir[1]], nx = -2*k*P[0], ny = 1, l = Math.hypot(nx, ny); nx /= l; ny /= l;
+    var dd = dir[0]*nx + dir[1]*ny; dir = [dir[0] - 2*dd*nx, dir[1] - 2*dd*ny]; cur = P; pts.push(P); hits.push(k > 0 ? 'b' : 't'); }
+  var up = dir[1] > 0, out = false;
+  if (up){ var tc = (G.c - cur[1])/dir[1]; out = tc >= 0 && Math.abs(cur[0] + tc*dir[0]) < G.h; }
+  var L = up ? (G.c + 1.0*G.f - cur[1])/dir[1] : 4; pts.push([cur[0] + L*dir[0], cur[1] + L*dir[1]]);
+  return { pts:pts, o:cur, d:dir, out:out, hits:hits }; }
+function cross2(A, B){ var det = A.d[0]*(-B.d[1]) - A.d[1]*(-B.d[0]); if (Math.abs(det) < 1e-10) return null;
+  var t = ((B.o[0] - A.o[0])*(-B.d[1]) - (B.o[1] - A.o[1])*(-B.d[0]))/det; return [A.o[0] + t*A.d[0], A.o[1] + t*A.d[1]]; }
+/* ══════════ 3D renderer ══════════ */
+var polys = [], labels = [], cam = {};
+function setCam(){ var C = CAM[U.tab], G = geo(), a = U.yaw*DEG, e = U.pitch*DEG, T = U.focus === 'hole' ? [0, G.c + 0.6, 0] : [0, G.c*0.45, 0];
+  var D = C.D; cam = { ca:Math.cos(a), sa:Math.sin(a), ce:Math.cos(e), se:Math.sin(e), s:C.s*U.zoom*(11.3/Math.max(6, G.R)), D:D, T:T };
+  cam.C = add(T, [-D*cam.ce*cam.sa, D*cam.se, D*cam.ce*cam.ca]); cam.right = [cam.ca, 0, cam.sa]; cam.dir = [-cam.sa, 0, cam.ca]; }
+function view(p){ var x0 = p[0] - cam.T[0], y0 = p[1] - cam.T[1], z0 = p[2] - cam.T[2], x1 = x0*cam.ca + z0*cam.sa, z1 = -x0*cam.sa + z0*cam.ca; return [x1, y0*cam.ce - z1*cam.se, y0*cam.se + z1*cam.ce]; }
+function proj(v){ var f = cam.D/Math.max(0.6, cam.D - v[2]); return [W/2 + v[0]*cam.s*f, H*0.55 - v[1]*cam.s*f]; }
+function scr(p){ return proj(view(p)); }
+function poly(pts, col, alpha){ polys.push({ p:pts, c:col, a:alpha === undefined ? 1 : alpha }); }
+var LIGHT = nrm([-0.35, 0.75, 0.55]), HALF = nrm(add(LIGHT, [0, 0, 1]));
+function flush(){
+  var list = polys.map(function(q){ var v = q.p.map(view), z = 0; v.forEach(function(t){ z += t[2]; }); return { v:v, z:z/v.length, c:q.c, a:q.a }; });
+  list.sort(function(A, B){ return A.z - B.z; });
+  list.forEach(function(q){
+    var n = nrm(cross(sub(q.v[1], q.v[0]), sub(q.v[2], q.v[0]))); if (n[2] < 0) n = mul(n, -1);
+    var k = 0.4 + 0.6*Math.max(0, dot(n, LIGHT)), spec = Math.pow(Math.max(0, dot(n, HALF)), 24)*0.3;
+    var r = Math.min(255, Math.round(q.c[0]*k + 255*spec)), gg = Math.min(255, Math.round(q.c[1]*k + 255*spec)), b = Math.min(255, Math.round(q.c[2]*k + 255*spec));
+    g.fillStyle = 'rgba(' + r + ',' + gg + ',' + b + ',' + q.a.toFixed(3) + ')'; g.strokeStyle = g.fillStyle; g.lineWidth = 0.6;
+    g.beginPath(); q.v.forEach(function(t, i){ var s2 = proj(t); if (i) g.lineTo(s2[0], s2[1]); else g.moveTo(s2[0], s2[1]); }); g.closePath(); g.fill(); if (q.a >= 1) g.stroke(); });
+  polys = []; }
+function grid(x0, x1, z0, z1, y, st, col){ g.strokeStyle = col; g.lineWidth = 1; g.beginPath();
+  for (var x=x0; x<=x1 + 1e-9; x+=st){ var a = scr([x, y, z0]), b = scr([x, y, z1]); g.moveTo(a[0], a[1]); g.lineTo(b[0], b[1]); }
+  for (var z=z0; z<=z1 + 1e-9; z+=st){ var c = scr([x0, y, z]), d = scr([x1, y, z]); g.moveTo(c[0], c[1]); g.lineTo(d[0], d[1]); } g.stroke(); }
+function seg(a, b, col, w, dash, arr){ if (!a || !b) return; var A = scr(a), B = scr(b);
+  g.strokeStyle = col; g.lineWidth = w; g.setLineDash(dash ? [6, 5] : []); g.beginPath(); g.moveTo(A[0], A[1]); g.lineTo(B[0], B[1]); g.stroke(); g.setLineDash([]);
+  if (arr){ var mx = (A[0] + B[0])/2, my = (A[1] + B[1])/2, dx = B[0] - A[0], dy = B[1] - A[1], l = Math.hypot(dx, dy) || 1; dx /= l; dy /= l;
+    g.fillStyle = col; g.beginPath(); g.moveTo(mx + dx*8, my + dy*8); g.lineTo(mx - dx*5 - dy*5, my - dy*5 + dx*5); g.lineTo(mx - dx*5 + dy*5, my - dy*5 - dx*5); g.closePath(); g.fill(); } }
+function dotp(p, col, r){ var s2 = scr(p); g.fillStyle = col; g.beginPath(); g.arc(s2[0], s2[1], r, 0, TAU); g.fill(); g.strokeStyle = 'rgba(0,0,0,0.6)'; g.lineWidth = 1; g.stroke(); }
+function lab(p, t, col, dy, dx){ labels.push({ p:p, t:t, c:col, dy:dy || 0, dx:dx || 0 }); }
+function drawLabels(){ if (U.labels) labels.forEach(function(l){ var s2 = scr(l.p); g.font = 'bold 13px Arial, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.lineWidth = 4; g.strokeStyle = 'rgba(0,0,0,0.75)'; g.strokeText(l.t, s2[0] + l.dx, s2[1] + l.dy); g.fillStyle = l.c; g.fillText(l.t, s2[0] + l.dx, s2[1] + l.dy); }); labels = []; g.textBaseline = 'alphabetic'; }
+/* the mirrors, as rings of polygons; cut removes the part facing the camera */
+function mirrors(cut){ var G = geo(), p = pal(), N = 40, NR = 9, i, j;
+  function bot(r, t){ return [r*Math.cos(t), G.a*r*r, r*Math.sin(t)]; } function top(r, t){ return [r*Math.cos(t), G.c - G.a*r*r, r*Math.sin(t)]; }
+  for (i=0; i<N; i++){ var t0 = TAU*i/N, t1 = TAU*(i + 1)/N, tm = (t0 + t1)/2;
+    if (cut && Math.cos(tm)*cam.dir[0] + Math.sin(tm)*cam.dir[2] > Math.cos(70*DEG)) continue;
+    for (j=0; j<NR; j++){ var r0 = G.R*j/NR, r1 = G.R*(j + 1)/NR, q0 = G.h + (G.R - G.h)*j/NR, q1 = G.h + (G.R - G.h)*(j + 1)/NR;
+      poly([bot(r0, t0), bot(r1, t0), bot(r1, t1), bot(r0, t1)], p.mir);
+      poly([top(q0, t0), top(q1, t0), top(q1, t1), top(q0, t1)], sc(p.mir, 1.04)); } } }
+/* can the eye see this point of the image (light must come up through the hole from the bottom mirror)? */
+function seenImg(Q){ var G = geo(), C = cam.C;
+  if (C[1] <= Q[1] + 1e-6) return false;
+  if (Q[1] >= G.c){ var k = (Q[1] - G.c)/(C[1] - Q[1]), X = sub(Q, mul(sub(C, Q), k)); if (rad(X) > G.h) return false; }
+  else { var t = (G.c - Q[1])/(C[1] - Q[1]), Y = add(Q, mul(sub(C, Q), t)); if (rad(Y) > G.h) return false; }
+  var k0 = Q[1]/(C[1] - Q[1]), Z = sub(Q, mul(sub(C, Q), k0)); return rad(Z) < G.R*0.98; }
+function seenToy(Q){ var G = geo(), C = cam.C; if (Q[1] >= G.c) return true; if (C[1] <= G.c) return false;
+  var t = (G.c - Q[1])/(C[1] - Q[1]), Y = add(Q, mul(sub(C, Q), t)); return rad(Y) < G.h; }
+function cen(pts){ var s = [0, 0, 0]; pts.forEach(function(v){ s = add(s, v); }); return mul(s, 1/pts.length); }
+var LAST = { seen:0, far:false, J:null, Jp:null, P:null, tr:null };
+function holeRing(col){ var G = geo(), n = 48, prev = null; for (var i=0; i<=n; i++){ var t = TAU*i/n, q = [G.h*Math.cos(t), G.c - G.a*G.h*G.h, G.h*Math.sin(t)]; if (prev) seg(prev, q, col, 1.4, true); prev = q; } }
+function imagePolys(T){ var out = [], far = false; T.forEach(function(q){ var ip = q.p.map(function(v){ return img(v).p; });
+  if (ip.some(function(v){ return Math.abs(v[1]) > 60 || rad(v) > 40; })){ far = true; return; } out.push({ p:ip, c:q.c }); }); LAST.far = far; return out; }
+function toyTop(T){ var best = null; T.forEach(function(q){ q.p.forEach(function(v){ if (!best || v[1] > best[1]) best = v; }); }); return best; }
+function draw(){ var p = pal(), G = geo(); setCam(); g.fillStyle = p.bg; g.fillRect(0, 0, W, H);
+  grid(-14, 14, -14, 14, -0.02, 2, p.grid);
+  var T = toyW(), I = imagePolys(T), ns = 0;
+  if (U.tab === 0){
+    mirrors(false); flush();
+    T.forEach(function(q){ if (seenToy(cen(q.p))) poly(q.p, q.c); });
+    I.forEach(function(q){ if (seenImg(cen(q.p))){ poly(q.p, q.c); ns++; } });
+    flush(); LAST.seen = I.length ? ns/I.length : 0;
+  } else {
+    mirrors(true);
+    T.forEach(function(q){ poly(q.p, q.c); }); I.forEach(function(q){ poly(q.p, q.c, 0.6); });
+    flush(); LAST.seen = 1;
+    var fd = [0, G.c - G.f, 0], fu = [0, G.f, 0]; dotp(fd, p.r1, 4); dotp(fu, p.r2, 4); lab(fd, 'F top', p.r1, 0, 48); lab(fu, 'F bottom', p.r2, 0, -62);
+  }
+  holeRing(p.hole);
+  /* rays from the top of the toy, in the plane through the axis that faces the camera (or through the toy) */
+  var tp = toyTop(T), P = [M.off, tp[1], 0]; LAST.P = P; LAST.J = null; LAST.Jp = img(P).p;
+  if (U.rays[U.tab]){
+    var u = rad(P) > 0.05 ? nrm([P[0], 0, P[2]]) : cam.right, s0 = dot([P[0], 0, P[2]], u), o = [s0, P[1]];
+    function to3(q){ return [q[0]*u[0], q[1], q[0]*u[2]]; }
+    function gs(v){ var s = clamp(Math.abs(v), G.h*1.03, G.R*0.98); return v < 0 ? -s : s; }
+    var gx = [gs(M.G), gs(M.Hh)], R1 = [], cols = [p.r1, p.r2];
+    gx.forEach(function(x, i){ var tgt = [x, G.c - G.a*x*x], d = [tgt[0] - o[0], tgt[1] - o[1]], l = Math.hypot(d[0], d[1]), tr = trace(o, [d[0]/l, d[1]/l]); R1.push(tr);
+      for (var k=0; k<tr.pts.length - 1; k++) seg(to3(tr.pts[k]), to3(tr.pts[k + 1]), cols[i], 2.2, false, true);
+      if (U.tab === 1) tr.pts.slice(1, -1).forEach(function(h, k){ dotp(to3(h), cols[i], 4); lab(to3(h), (k === 0 ? (i ? 'H' : 'G') : (i ? 'I' : 'E')) + (k > 1 ? k : ''), cols[i], k === 0 ? -14 : 14); }); });
+    LAST.tr = R1;
+    if (R1[0].out && R1[1].out){ var J = cross2(R1[0], R1[1]); if (J && J[1] > 0 && J[1] < G.c + 3*G.f){ LAST.J = to3(J);
+      if (U.tab === 1){ dotp(LAST.J, p.J, 6); lab(LAST.J, 'J (image of P)', p.J, -6, 80); } } }
+    if (U.tab === 1){ dotp(P, p.J, 5); lab(P, 'P', p.J, -14); }
+  }
+  /* labels */
+  lab(add(mul(cam.right, G.h), [0, G.c - G.a*G.h*G.h, 0]), 'hole', p.hole, 0, 30);
+  if (I.length){ var it = toyTop(I); lab(add(it, [0, 0.8, 0]), U.tab === 0 ? (LAST.seen > 0.05 ? 'real image' : 'real image (not visible from here)') : 'real image', p.lab, U.tab === 1 ? -14 : 0, U.tab === 1 ? -70 : 0); }
+  lab([G.R*0.75, G.c - G.a*0.56*G.R*G.R + 0.6, 0], 'top mirror', p.lab);
+  if (U.tab === 1) lab([-G.R*0.7, G.a*0.49*G.R*G.R - 0.7, 0], 'bottom mirror', p.lab);
+  lab(add(T[0].p[0], [0, -0.1, 0]), U.tab === 0 ? 'toy (inside)' : 'toy', p.lab, 22);
+  drawLabels(); el('mgHint').textContent = 'drag or arrow keys to turn \u00B7 + / \u2212 to zoom'; }
+/* ══════════ readout, status, narration ══════════ */
+function f(v, k){ return (Math.abs(v) < 0.5*Math.pow(10, -k) ? 0 : v).toFixed(k); }
+function info(){ var G = geo(), T = toyW(), base = img([M.off, G.a*M.off*M.off + M.lift + 0.02, 0]), top = LAST.P ? img(LAST.P) : base, m = base.m;
+  var real = base.p[1] > 0 && !LAST.far, above = base.p[1] - G.c, hgt = LAST.P ? (top.p[1] - base.p[1])/(LAST.P[1] - (G.a*M.off*M.off + M.lift + 0.02)) : 1;
+  var orient = m < 0 ? 'turned 180\u00B0 about the axis' : 'not turned', t = U.tab, st = '', eq;
+  var cells = [['FOCAL LENGTH f', f(G.f, 1) + ' cm'], ['SEPARATION c', f(G.c, 1) + ' cm' + (Math.abs(G.c - G.f) < 0.05 ? ' (= f)' : '')], ['RIM \u00B7 HOLE DIAMETER', f(2*G.R, 1) + ' \u00B7 ' + f(2*G.h, 1) + ' cm'],
+    ['IMAGE BASE ABOVE HOLE', LAST.far ? 'very far' : f(above, 2) + ' cm'], ['LATERAL MAGNIFICATION m', LAST.far ? '\u2014' : f(m, 2)], ['IMAGE ORIENTATION', LAST.far ? '\u2014' : orient]];
+  if (t === 0) cells.push(['SEEN FROM HERE', Math.round(100*LAST.seen) + ' % of the image']);
+  else { cells.push(['TRACED J', LAST.J ? 'height ' + f(LAST.J[1], 2) + ' cm' : 'rays do not cross']); cells.push(['PARAXIAL IMAGE OF P', 'height ' + f(LAST.Jp[1], 2) + ' cm']); }
+  if (LAST.far) st = 'With these mirrors the image is very far away or does not form near the hole: the light from the toy leaves nearly parallel. Set c = f to get the floating toy back.';
+  else if (t === 0){
+    st = (LAST.seen > 0.6 ? 'You see a solid-looking ' + TNAME[M.toy] + ' sitting in the hole, ' : (LAST.seen > 0.05 ? 'Only part of the image is visible from here: ' : 'From here the image has vanished: the light that forms it comes up through the hole and cannot reach your eye at this angle. Look in from higher up. '))
+      + (LAST.seen > 0.05 ? 'with its base ' + f(Math.abs(above), 1) + ' cm ' + (above >= 0 ? 'above' : 'below') + ' the hole. ' : '')
+      + 'The real ' + TNAME[M.toy] + ' is hidden on the bottom mirror. '
+      + (m < 0 ? 'The image faces the opposite way, turned 180\u00B0 about the axis, but its yellow tag is still on its right side: two reflections turn it, they do not mirror it.' : 'The image is not turned.')
+      + (M.off > 0.05 ? ' The toy is off-centre, so its image is off-centre on the opposite side.' : '');
+  } else {
+    st = 'Two rays leave P, the top of the toy. They reflect at G and H on the top mirror, travel down' + (Math.abs(G.c - G.f) < 0.05 ? ' almost parallel to the axis' : '') + ', reflect at E and I on the bottom mirror and go up through the hole, where they cross at J, the image of P. '
+      + (LAST.J ? 'The traced crossing is ' + f(LAST.J[1] - G.c, 2) + ' cm above the hole; the mirror equation predicts ' + f(LAST.Jp[1] - G.c, 2) + ' cm. The difference is spherical-type aberration of rays far from the axis.' : 'These rays do not both leave through the hole; move G or H.');
+  }
+  eq = 'Paraboloids: <b>y = r\u00B2/(4f)</b> and <b>y = c \u2212 r\u00B2/(4f)</b>. Each mirror: <b>1/d\u2092 + 1/d\u1D62 = 1/f</b>, <b>m = \u2212d\u1D62/d\u2092</b>. With <b>c = f</b> the toy is at the top mirror\u2019s focus: light reflects down parallel and the bottom mirror focuses it at the hole. Total <b>m = m\u2081m\u2082 \u2248 \u22121</b>: same size, turned 180\u00B0, not mirror-reversed.';
+  el('mgRead').innerHTML = cells.map(function(c){ return '<div><div class="mg_flabel' + SX + '">' + c[0] + '</div><div class="mg_fvalue' + SX + '">' + c[1] + '</div></div>'; }).join('');
+  el('mgStatus').textContent = st; el('mgEq').innerHTML = eq; return st; }
+function narrate(m){ if (!th.nr) return; el('mgNar').textContent = m; }
+var lt = null; function later(){ clearTimeout(lt); lt = setTimeout(function(){ narrate(info()); }, 600); }
+var DESC = ['A closed silver shell made of two bowl-shaped mirrors facing each other, with a round hole in the top. A small ' , 'The near part of both mirrors is cut away to show the inside. A small '];
+function describe(){ var t = DESC[U.tab] + TNAME[M.toy] + ' sits at the bottom, in the middle. ' + (U.tab === 0 ? 'A copy of it, the real image, appears in the hole, facing the other way. ' : 'Above it, in the hole, a paler copy shows the real image, facing the other way. Pink and blue rays go from the top of the toy up to the top mirror, down to the bottom mirror and up through the hole, where they cross at a yellow point, J. ');
+  narrate(t + info()); }
+/* ══════════ controls ══════════ */
+function row(id, label, min, max, step, val, txt){ return '<div class="mg_ctrl' + SX + '"><div class="mg_ctrlhdr' + SX + '"><label class="mg_ctrlname' + SX + '" for="' + id + SX + '">' + label + '</label><span class="mg_sval' + SX + '" id="' + id + 'v' + SX + '">' + txt + '</span></div><input type="range" id="' + id + SX + '" min="' + min + '" max="' + max + '" step="' + step + '" value="' + val + '"></div>'; }
+function btn(id, label, act){ return '<button type="button" class="mg_btn' + SX + (act ? ' mg_btnon' + SX : '') + '" id="' + id + SX + '"' + (act === undefined ? '' : ' aria-pressed="' + (act ? 'true' : 'false') + '"') + '>' + label + '</button>'; }
+function brow(h){ return '<div class="mg_brow' + SX + '">' + h + '</div>'; }
+function note(t){ return '<p class="mg_note' + SX + '">' + t + '</p>'; }
+function chk(id, label, v){ return '<label class="mg_chk' + SX + '"><input type="checkbox" id="' + id + SX + '"' + (v ? ' checked' : '') + '> ' + label + '</label>'; }
+function on(id, ev, fn){ var e = el(id); if (e) e.addEventListener(ev, fn); }
+function build(){ var G = geo(), A, B;
+  A = row('mgF', 'focal length f', 5, 12, 0.5, M.f, f(M.f, 1) + ' cm') + row('mgC', 'separation of the vertices c', 3, 14, 0.5, M.c, f(M.c, 1) + ' cm')
+    + brow(btn('mgCF', 'Set c = f (the commercial toy)')) + row('mgHd', 'hole diameter', 3, 10, 0.2, M.hd, f(2*G.h, 1) + ' cm');
+  if (U.tab === 1) A += row('mgG', 'pink ray: G on the top mirror', -11, 11, 0.1, M.G, f(M.G, 1) + ' cm') + row('mgH', 'blue ray: H on the top mirror', -11, 11, 0.1, M.Hh, f(M.Hh, 1) + ' cm')
+    + note('G and H are measured from the axis along the cut. Points inside the hole are moved to its edge.');
+  else A += note('The rim radius is R = \u221A(2fc) = ' + f(G.R, 1) + ' cm. A commercial 9-inch Mirage has c \u2248 f.');
+  B = brow(TNAME.map(function(n, i){ return btn('mgY' + i, n, M.toy === i); }).join(''))
+    + row('mgO', 'move the toy off-centre', 0, 3, 0.1, M.off, f(M.off, 1) + ' cm') + row('mgL', 'raise the toy', 0, 4, 0.1, M.lift, f(M.lift, 1) + ' cm')
+    + row('mgS', 'toy size', 0.6, 1.6, 0.05, M.size, f(M.size*2, 1) + ' cm long')
+    + chk('mgSp', 'turn the toy slowly', M.spin) + row('mgTu', 'toy direction', 0, 359, 1, Math.round(((M.turn/DEG) % 360 + 360) % 360), Math.round(((M.turn/DEG) % 360 + 360) % 360) + '\u00B0')
+    + note('The yellow tag is on the toy\u2019s right side. Check which side it is on in the image.');
+  el('mgTA').textContent = U.tab === 1 ? 'The mirrors and the rays' : 'The mirrors'; el('mgCtlA').innerHTML = A; el('mgCtlB').innerHTML = B; bind(); }
+function slide(id, key, unit, k){ on(id, 'input', function(){ M[key] = +this.value; var G = geo();
+  el(id + 'v').textContent = (key === 'hd' ? f(2*G.h, 1) : (key === 'size' ? f(2*M.size, 1) : f(M[key], 1))) + unit; later(); }); }
+function bind(){
+  slide('mgF', 'f', ' cm'); slide('mgC', 'c', ' cm'); slide('mgHd', 'hd', ' cm'); slide('mgG', 'G', ' cm'); slide('mgH', 'Hh', ' cm');
+  slide('mgO', 'off', ' cm'); slide('mgL', 'lift', ' cm'); slide('mgS', 'size', ' cm long');
+  on('mgCF', 'click', function(){ M.c = M.f; build(); narrate('Now c = f: the toy is at the focus of the top mirror and the hole is at the focus of the bottom mirror. ' + info()); });
+  for (var i=0; i<4; i++) (function(i){ on('mgY' + i, 'click', function(){ M.toy = i; build(); later(); }); })(i);
+  on('mgSp', 'change', function(){ M.spin = this.checked; });
+  on('mgTu', 'input', function(){ M.spin = false; el('mgSp').checked = false; M.turn = +this.value*DEG; el('mgTuv').textContent = this.value + '\u00B0'; later(); }); }
+function setView(k){ var C = CAM[U.tab];
+  if (k === 'std'){ U.yaw = C.yaw; U.pitch = C.pitch; U.focus = 'all'; U.zoom = 1; }
+  else if (k === 'eye'){ U.yaw = -10; U.pitch = 58; U.focus = 'hole'; U.zoom = 2.4; }
+  else if (k === 'low'){ U.yaw = -10; U.pitch = 22; U.focus = 'hole'; U.zoom = 2.0; }
+  else { U.yaw = 0; U.pitch = 89; U.focus = 'all'; U.zoom = 1; }
+  el('mgZm').value = U.zoom; }
+on('mgVStd', 'click', function(){ setView('std'); later(); });
+on('mgVEye', 'click', function(){ setView('eye'); later(); });
+on('mgVLow', 'click', function(){ setView('low'); later(); });
+on('mgVTop', 'click', function(){ setView('top'); later(); });
+on('mgZm', 'input', function(){ U.zoom = +this.value; });
+on('mgRay', 'change', function(){ U.rays[U.tab] = this.checked; }); on('mgLbl', 'change', function(){ U.labels = this.checked; });
+on('mgDsc', 'click', describe);
+var drag = null;
+cv.addEventListener('pointerdown', function(e){ drag = { x:e.clientX, y:e.clientY, yaw:U.yaw, pitch:U.pitch }; try { cv.setPointerCapture(e.pointerId); } catch (err) {} cv.style.cursor = 'grabbing'; });
+cv.addEventListener('pointermove', function(e){ if (!drag) return; var r = cv.getBoundingClientRect(), k = W/r.width; U.yaw = drag.yaw + (e.clientX - drag.x)*k*0.45; U.pitch = clamp(drag.pitch + (e.clientY - drag.y)*k*0.35, -10, 89); });
+function endDrag(){ if (drag) later(); drag = null; cv.style.cursor = 'grab'; } cv.addEventListener('pointerup', endDrag); cv.addEventListener('pointercancel', endDrag);
+cv.addEventListener('keydown', function(e){ var k = e.key;
+  if (k === 'ArrowLeft'){ U.yaw -= 5; } else if (k === 'ArrowRight'){ U.yaw += 5; } else if (k === 'ArrowUp'){ U.pitch = clamp(U.pitch + 5, -10, 89); } else if (k === 'ArrowDown'){ U.pitch = clamp(U.pitch - 5, -10, 89); }
+  else if (k === '+' || k === '='){ U.zoom = clamp(U.zoom + 0.1, 0.6, 3); el('mgZm').value = U.zoom; } else if (k === '-' || k === '_'){ U.zoom = clamp(U.zoom - 0.1, 0.6, 3); el('mgZm').value = U.zoom; } else return; e.preventDefault(); later(); });
+var INTRO = ['A mirascope: two parabolic mirrors facing each other, with a hole in the top one. The toy sits hidden on the bottom mirror, yet a solid-looking copy appears in the hole. Try Look into the hole, then Low, from the side: the image vanishes when you look in from too low.',
+  'Inside the mirascope, with the near part of the mirrors cut away. Two rays leave the top of the toy, reflect from the top mirror, then from the bottom mirror, and cross above the hole. Move G and H to try other rays, and change c to see the image move.'];
+function tab(i){ U.tab = i; for (var k=0; k<2; k++) el('mgT' + k).setAttribute('aria-selected', k === i ? 'true' : 'false');
+  el('mgLab').textContent = i === 0 ? 'THE ILLUSION' : 'INSIDE: THE RAYS (NEAR SIDE CUT AWAY)'; el('mgRay').checked = U.rays[i];
+  setView('std'); build(); draw(); info(); narrate(INTRO[i]); }
+function theme(k){ th[k] = !th[k]; if (k === 'hc' && th.hc) th.lm = false; if (k === 'lm' && th.lm) th.hc = false;
+  ROOT.classList.toggle('mg_hc' + SX, th.hc); ROOT.classList.toggle('mg_lm' + SX, th.lm);
+  [['hc', 'mgBtnHC'], ['lm', 'mgBtnLM'], ['cb', 'mgBtnCB'], ['nr', 'mgBtnNR']].forEach(function(q){ var b = el(q[1]); b.classList.toggle('mg_a11yon' + SX, th[q[0]]); b.setAttribute('aria-pressed', th[q[0]] ? 'true' : 'false'); });
+  el('mgBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('mgNar').style.display = th.nr ? '' : 'none'; }
+function toggleDesc(){ var b = el('mgDescBtn'), d = el('mgDesc'), open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+  if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }
+var last = 0, tick = 0;
+function loop(t){ var dt = last ? Math.min(0.05, (t - last)/1000) : 0; last = t;
+  if (M.spin){ M.turn = (M.turn + dt*20*DEG) % TAU; if (tick % 20 === 0){ var tu = el('mgTu'); if (tu){ var dg = Math.round(M.turn/DEG); tu.value = dg; el('mgTuv').textContent = dg + '\u00B0'; } } }
+  draw(); if (++tick % 15 === 0) info(); requestAnimationFrame(loop); }
+tab(0); requestAnimationFrame(loop);
+return { tab:tab, theme:theme, toggleDesc:toggleDesc, describe:describe, _U:U, _M:M, _view:setView, _last:LAST };
+})();
+</script>
+
+</main>
+</body>
+</html>
