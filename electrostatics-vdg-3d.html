@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Electrostatics: Van de Graaff Generator 3D</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics, Taha Mzoughi, electrostatics, Van de Graaff, triboelectric, corona, capacitance, hair raising, soap bubbles, pie plates, spark, fluorescent bulb, electric whirl, lightning rod">
+<meta name="description" content="A 3D Van de Graaff generator with classroom demonstrations.">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="vdRoot" class="vd_root" role="region" aria-label="Van de Graaff generator in 3D, with classroom demonstrations">
+<div class="vd_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="vd_a11ybtn" id="vdBtnHC" onclick="vdSim.theme('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="vd_a11ybtn" id="vdBtnLM" onclick="vdSim.theme('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="vd_a11ybtn" id="vdBtnCB" onclick="vdSim.theme('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="vd_a11ybtn vd_a11yon" id="vdBtnNR" onclick="vdSim.theme('nr')" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div class="vd_header"><p class="vd_h1">The Van de Graaff Generator</p><p class="vd_sub">a belt carries charge to a metal dome &middot; V = Q/C &middot; the air breaks down near 3 MV/m</p></div>
+<div class="vd_tabs" role="tablist" aria-label="Demonstrations">
+<button type="button" role="tab" class="vd_tab" id="vdT0" aria-selected="true" onclick="vdSim.tab(0)">1. How it works</button>
+<button type="button" role="tab" class="vd_tab" id="vdT1" aria-selected="false" onclick="vdSim.tab(1)">2. Hair raising</button>
+<button type="button" role="tab" class="vd_tab" id="vdT2" aria-selected="false" onclick="vdSim.tab(2)">3. Soap bubbles</button>
+<button type="button" role="tab" class="vd_tab" id="vdT3" aria-selected="false" onclick="vdSim.tab(3)">4. Pie plates</button>
+<button type="button" role="tab" class="vd_tab" id="vdT4" aria-selected="false" onclick="vdSim.tab(4)">5. Biting string</button>
+<button type="button" role="tab" class="vd_tab" id="vdT5" aria-selected="false" onclick="vdSim.tab(5)">6. Sparks</button>
+<button type="button" role="tab" class="vd_tab" id="vdT6" aria-selected="false" onclick="vdSim.tab(6)">7. CFL bulb</button>
+<button type="button" role="tab" class="vd_tab" id="vdT7" aria-selected="false" onclick="vdSim.tab(7)">8. Electric whirl</button>
+<button type="button" role="tab" class="vd_tab" id="vdT8" aria-selected="false" onclick="vdSim.tab(8)">9. Sharp point</button>
+</div>
+<div class="vd_diag"><div class="vd_dlabel"><b id="vdLab">HOW IT WORKS</b><span id="vdHint"></span></div>
+<canvas id="vdCv" width="780" height="480" tabindex="0" role="img" aria-label="A three-dimensional view of a Van de Graaff generator on a table, and the selected demonstration. Drag, or use the arrow keys, to turn the view; plus and minus zoom; M switches the motor; P pauses." aria-describedby="vdStatus"></canvas></div>
+<div class="vd_status" id="vdStatus"></div>
+<div class="vd_bbar">
+<button type="button" class="vd_btn vd_kick" id="vdMotor" aria-pressed="true">Motor: ON</button>
+<button type="button" class="vd_btn" id="vdWand">Discharge with the grounding wand</button>
+<button type="button" class="vd_btn vd_btnon" id="vdPlay">&#10073;&#10073; Pause</button>
+<button type="button" class="vd_btn" id="vdRst">Restart this demo</button>
+<label>slow motion <input type="range" id="vdSpd" min="0.05" max="1" step="0.05" value="1" style="width:100px"> <span id="vdSpdV">1.00&times;</span></label>
+</div>
+<div class="vd_bbar">
+<label><input type="checkbox" id="vdChg" checked> charges</label>
+<label><input type="checkbox" id="vdFl" checked> field lines</label>
+<label><input type="checkbox" id="vdDark"> dark room (corona glow)</label>
+<label><input type="checkbox" id="vdLbl" checked> labels</label>
+<label><input type="checkbox" id="vdGr" checked> V(t) graph</label>
+<label><input type="checkbox" id="vdSnd"> sound</label>
+<button type="button" class="vd_btn" id="vdVStd">Standard view</button>
+<button type="button" class="vd_btn" id="vdVFr">Front view</button>
+<button type="button" class="vd_btn" id="vdZin" aria-label="Zoom in">+</button>
+<button type="button" class="vd_btn" id="vdZout" aria-label="Zoom out">&minus;</button>
+<button type="button" class="vd_btn" id="vdDsc">Describe</button>
+</div>
+<div class="vd_panels"><div class="vd_panel"><div class="vd_ptitle">The generator</div><div class="vd_pbody" id="vdCtlG"></div></div>
+<div class="vd_panel"><div class="vd_ptitle" id="vdDemoT">The demonstration</div><div class="vd_pbody" id="vdCtlD"></div></div></div>
+<div class="vd_read" id="vdRead" aria-label="Readout"></div>
+<div class="vd_eqs" id="vdEq"></div>
+<div id="vdNar" class="vd_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="vd_descwrap">
+<button type="button" class="vd_descbtn" id="vdDescBtn" aria-expanded="false" aria-controls="vdDesc" onclick="vdSim.toggleDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="vd_desc" id="vdDesc" role="region" aria-labelledby="vdDescBtn" style="display:none">
+<p><b>1. How it works.</b> Most classroom generators rely on the <b>triboelectric effect</b>, charging by contact between two different materials, rather than on a high-voltage supply. A motor turns a rubber belt over a lower roller. When two materials touch and separate, the one lower on the <b>triboelectric series</b> keeps some electrons of the other. A silicone (or Teflon) roller is lower than rubber: it strips electrons from the belt, so the roller becomes negative and the belt leaves it positive. The grounded lower comb keeps the roller's charge from building up without limit.</p>
+<p>The positive belt carries its charge up into the hollow metal dome, past a sharp metal comb connected to the dome. The field at the sharp tips is strong enough to ionize the air in the gap: electrons are pulled off the comb onto the belt, neutralizing it. Electrons leaving the comb leave the dome short of electrons, and in a conductor that net charge sits on the outer surface, where it does not oppose the next charge arriving inside. If the roller is <b>higher</b> on the series than the belt (glass, nylon or aluminium with a rubber belt), the belt takes electrons from the roller instead, carries them up, and the dome becomes <b>negative</b>. Two identical materials do not charge at all.</p>
+<p>An isolated sphere of radius `R` has `C = 4 pi epsilon_0 R`, `V = Q/C` and `E_(surface) = V/R`. The potential rises until the surface field approaches the dielectric strength of dry air, `E_b ~~ 3 xx 10^6` V/m: the air at the surface ionizes and the dome loses charge into the air as a faint violet glow, the <b>corona discharge</b> (visible in a dark room). The potential stops near `V_(max) ~~ E_b R`. Humid air also lets charge leak away.</p>
+<p><b>2. Hair raising.</b> A person on an insulating stool touching the dome becomes part of it. Every hair carries charge of the same sign: the hairs repel and stand out along the field, then stay nearly still. Even without touching, a person near a charged dome is affected: a grounded person acquires an induced charge of the opposite sign, and an insulated person is polarized. The fine hairs on the arms rise, which you can feel. <b>3. Bubbles.</b> A neutral bubble is polarized and pulled toward the dome. Many bubbles pick up charge from the ions of the corona before they touch, and the rest on contact; charged bubbles are repelled. <b>4. Pie plates</b> lift off when the electric pressure `epsilon_0 E^2//2` on the top plate exceeds its weight. <b>5. A thread</b> tied to the dome is attracted to a nearby grounded hand, touches it, discharges and returns. <b>6. Sparks</b> jump to a grounded sphere when the gap reaches its breakdown voltage, approximately `E_b d//(1 + 6d)` (d in metres).</p>
+<p><b>7. CFL bulb.</b> The field of the dome makes a potential difference between the ends of a fluorescent bulb held near it, `Delta V ~~ V R (1/r_1 - 1/r_2)`. It drives a current through the mercury vapour, which glows, with no wires. Pointing at the dome gives the largest `Delta V`; held sideways, both ends are at nearly the same potential and it stays dark. <b>8. Electric whirl.</b> The field at the sharp tips ionizes the air; ions of the same sign as the dome are repelled from the tips (an &ldquo;ion wind&rdquo;), and by Newton's third law the tips are pushed backward: the whirl turns. With blunt ends there is no corona and no rotation. <b>9. A sharp point.</b> A grounded sharp point (a key, a wire) has a very strong field at its tip. The air there ionizes at a low potential, and ions of the opposite sign flow to the dome and neutralize it silently: the dome is drained, its potential stays far below the spark voltage, and a hand can then be brought close without a spark. A blunt knuckle gives sparks instead. This is the principle of the lightning rod.</p>
+<p>Belt current, leakage, corona and point currents, body capacitance, masses and the breakdown formulas are typical, approximate values chosen for a classroom generator. The triboelectric order used: glass, nylon, wool, aluminium, paper, hard rubber, vinyl, silicone, Teflon; real series vary with the source.</p>
+</div></div>
+</div><!-- #vdRoot -->
+<style>
+#vdRoot { --c-chassis:#1a1c1f; --c-panel:#22262b; --c-hi:#2c3138; --c-lo:#14161a; --c-bd:#3a4048; --c-bd2:#525c66; --c-text:#c8d0d8; --c-dim:#8a94a3; --c-accent:#e8a020; --c-green:#3ad08f; --c-val:#ffdd66; --c-nbg:#2a2410; --c-nbd:#e0b040; --c-ntx:#f0e2b8;
+  background:var(--c-chassis); background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
+  color:var(--c-text); font-family:Arial, sans-serif; padding:14px 10px 18px; border-radius:6px; box-sizing:border-box; width:100%; max-width:860px; margin:0 auto 10px; display:flex; flex-direction:column; gap:10px; }
+#vdRoot * { box-sizing:border-box; }
+#vdRoot.vd_lm { --c-chassis:#e9edf1; --c-panel:#ffffff; --c-hi:#f1f4f7; --c-lo:#f4f6f9; --c-bd:#c3cad3; --c-bd2:#9aa3ae; --c-text:#1d232a; --c-dim:#556070; --c-accent:#a8620a; --c-green:#12805a; --c-val:#8a4a00; --c-nbg:#ffefc0; --c-ntx:#333; background-image:none; }
+#vdRoot.vd_hc { --c-chassis:#000; --c-panel:#000; --c-hi:#111; --c-lo:#000; --c-bd:#fff; --c-bd2:#fff; --c-text:#fff; --c-dim:#e0e0e0; --c-accent:#ffd700; --c-green:#00ff88; --c-val:#ffff00; --c-nbg:#000; --c-nbd:#ffd700; --c-ntx:#fff; background-image:none; }
+#vdRoot .vd_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+#vdRoot .vd_a11ybtn { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-dim); min-height:30px; }
+#vdRoot .vd_a11yon { background:rgba(58,208,143,.14); border-color:var(--c-green); color:var(--c-green); font-weight:bold; }
+#vdRoot .vd_header { text-align:center; }
+#vdRoot .vd_h1 { margin:0; font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--c-accent); }
+#vdRoot .vd_sub { margin:3px 0 0; font-size:.7rem; color:var(--c-dim); letter-spacing:.08em; text-transform:uppercase; }
+#vdRoot .vd_tabs { display:flex; gap:4px; flex-wrap:wrap; }
+#vdRoot .vd_tab { flex:1 1 90px; padding:8px 4px; border:1px solid var(--c-bd2); background:var(--c-hi); color:var(--c-text); border-radius:4px; cursor:pointer; font-family:monospace; font-size:.68rem; letter-spacing:.04em; text-transform:uppercase; min-height:38px; }
+#vdRoot .vd_tab[aria-selected="true"] { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#vdRoot .vd_diag { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+#vdRoot .vd_dlabel { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--c-dim); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+#vdRoot .vd_dlabel b { color:var(--c-accent); }
+#vdRoot canvas { display:block; width:100%; height:auto; touch-action:none; cursor:grab; }
+#vdRoot .vd_bbar { display:flex; flex-wrap:wrap; gap:6px 12px; justify-content:center; align-items:center; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:6px; padding:8px 10px; font-size:.8rem; }
+#vdRoot .vd_bbar label { display:flex; align-items:center; gap:5px; color:var(--c-dim); font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; cursor:pointer; }
+#vdRoot .vd_btn { padding:7px 12px; font-family:monospace; font-size:.72rem; letter-spacing:.04em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-text); border-radius:3px; text-transform:uppercase; min-height:34px; }
+#vdRoot .vd_btn:hover { border-color:var(--c-accent); }
+#vdRoot .vd_btn[aria-pressed="true"], #vdRoot .vd_btnon { border-color:var(--c-accent); color:var(--c-accent); font-weight:bold; }
+#vdRoot .vd_kick { background:var(--c-accent); color:#1a1f24 !important; border-color:var(--c-accent); font-weight:bold; }
+#vdRoot .vd_kick[aria-pressed="false"] { background:var(--c-hi); color:var(--c-text) !important; }
+#vdRoot .vd_panels { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; align-items:start; }
+#vdRoot .vd_panel { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; box-shadow:0 4px 20px rgba(0,0,0,.3); overflow:hidden; }
+#vdRoot .vd_ptitle { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--c-dim); }
+#vdRoot .vd_pbody { padding:9px 12px; display:flex; flex-direction:column; gap:8px; }
+#vdRoot .vd_ctrl { display:flex; flex-direction:column; gap:3px; }
+#vdRoot .vd_ctrlhdr { display:flex; justify-content:space-between; align-items:baseline; gap:6px; }
+#vdRoot .vd_ctrlname { font-size:.72rem; font-weight:600; color:var(--c-dim); text-transform:uppercase; letter-spacing:.04em; }
+#vdRoot .vd_sval { font-family:monospace; font-size:.76rem; color:var(--c-val); white-space:nowrap; }
+#vdRoot .vd_brow { display:flex; flex-wrap:wrap; gap:5px; }
+#vdRoot .vd_chk { display:flex; align-items:center; gap:6px; font-size:.78rem; color:var(--c-text); cursor:pointer; }
+#vdRoot .vd_note { margin:0; font-size:.74rem; color:var(--c-dim); line-height:1.4; }
+#vdRoot .vd_sel { width:100%; min-height:32px; background:var(--c-hi); color:var(--c-text); border:1px solid var(--c-bd2); border-radius:3px; padding:4px; font-size:.8rem; }
+#vdRoot .vd_series { display:flex; flex-direction:column; gap:1px; font-family:monospace; font-size:.72rem; }
+#vdRoot .vd_series div { display:flex; justify-content:space-between; padding:1px 6px; border-radius:2px; color:var(--c-dim); }
+#vdRoot .vd_series div.vd_hit { background:rgba(232,160,32,.18); color:var(--c-val); font-weight:bold; }
+#vdRoot input[type=range] { width:100%; -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; cursor:pointer; background:var(--c-lo); border:1px solid var(--c-bd); }
+#vdRoot input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#vdRoot input[type=range]::-moz-range-thumb { width:12px; height:12px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#vdRoot input[type=checkbox] { accent-color:var(--c-accent); width:16px; height:16px; }
+#vdRoot .vd_read { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:6px 10px; background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; padding:8px 12px; }
+#vdRoot .vd_read > div { min-width:0; }
+#vdRoot .vd_flabel { font-family:monospace; font-size:.62rem; color:var(--c-dim); letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#vdRoot .vd_fvalue { font-family:monospace; font-size:.88rem; color:var(--c-val); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#vdRoot .vd_eqs { background:var(--c-lo); border:1px solid var(--c-bd); border-left:4px solid var(--c-accent); border-radius:4px; padding:8px 14px; font-family:monospace; font-size:.74rem; color:var(--c-dim); line-height:1.7; }
+#vdRoot .vd_eqs b { color:var(--c-val); }
+#vdRoot .vd_status { width:100%; padding:8px 12px; border-radius:4px; background:var(--c-panel); border:1px solid var(--c-bd); font-size:.86rem; line-height:1.4; color:var(--c-text); min-height:3.3em; }
+#vdRoot .vd_narbar { min-height:30px; padding:6px 12px; background:var(--c-nbg); border-left:4px solid var(--c-nbd); color:var(--c-ntx); font-size:.84rem; font-style:italic; line-height:1.45; border-radius:3px; }
+#vdRoot .vd_descwrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+#vdRoot .vd_descbtn { padding:8px 18px; font-family:monospace; font-size:.74rem; letter-spacing:.08em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-accent); color:var(--c-accent); border-radius:3px; font-weight:bold; min-height:40px; }
+#vdRoot .vd_desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid var(--c-accent); border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; }
+#vdRoot .vd_desc p { margin:0 0 9px; }
+#vdRoot button:focus-visible, #vdRoot input:focus-visible, #vdRoot select:focus-visible, #vdRoot canvas:focus-visible { outline:2px solid var(--c-accent); outline-offset:2px; }
+@media (max-width:640px) { #vdRoot .vd_panels { grid-template-columns:minmax(0,1fr); } #vdRoot .vd_read { grid-template-columns:repeat(2, minmax(0,1fr)); } #vdRoot .vd_tab { font-size:.62rem; flex-basis:30%; } }
+@media (pointer:coarse) { #vdRoot input[type=range] { height:8px; } #vdRoot input[type=range]::-webkit-slider-thumb { width:26px; height:26px; } #vdRoot input[type=range]::-moz-range-thumb { width:24px; height:24px; } #vdRoot .vd_a11ybtn { min-height:40px; } #vdRoot input[type=checkbox] { width:22px; height:22px; } #vdRoot .vd_btn { min-height:42px; } }
+</style>
+<!-- ════════ SIMULATION ════════
+Drawing units: 1 unit = 10 cm; physics in SI. Dome: C = 4 pi eps0 R. Belt current I x efficiency |s_belt - s_roller|/4 (at most 1),
+sign of the dome = sign(s_belt - s_roller) on the series glass 8, nylon 6, wool 5, aluminium 3, paper 2, hard rubber 0, vinyl -4,
+silicone -5, Teflon -6. Leakage time 120 exp(-(RH - 20)/12) s; corona limit 0.95 Eb R. Extra drains: CFL I = 1 uA x brightness;
+whirl tips k (V - 15 kV) V, k = 1.5e-15; sharp point k (V - Von) V, k = 1.6e-14, Von = 3 kV + 120 kV/m d; point spark
+5e5 d + 3 kV; knuckle spark Eb d/(1 + 10 d). Bubbles: ion capture near a corona-limited dome. No dollar signs or backticks in the code.
+-->
+<script>
+var vdSim = (function(){
+function el(id){ return document.getElementById(id + ''); }
+function cls(n){ return n + ''; }
+var ROOT = el('vdRoot'), cv = el('vdCv'), g = cv.getContext('2d'), W = cv.width, H = cv.height, DPR = window.devicePixelRatio || 1;
+cv.width = W*DPR; cv.height = H*DPR; g.scale(DPR, DPR);
+var DEG = Math.PI/180, TAU = 2*Math.PI, K = 8.99e9, EPS = 8.854e-12, EB = 3e6, GA = 9.8;
+function add(a, b){ return [a[0] + b[0], a[1] + b[1], a[2] + b[2]]; } function sub(a, b){ return [a[0] - b[0], a[1] - b[1], a[2] - b[2]]; }
+function mul(a, k){ return [a[0]*k, a[1]*k, a[2]*k]; } function dot(a, b){ return a[0]*b[0] + a[1]*b[1] + a[2]*b[2]; }
+function cross(a, b){ return [a[1]*b[2] - a[2]*b[1], a[2]*b[0] - a[0]*b[2], a[0]*b[1] - a[1]*b[0]]; }
+function len(a){ return Math.sqrt(dot(a, a)); } function nrm(a){ var l = len(a) || 1; return [a[0]/l, a[1]/l, a[2]/l]; }
+function perp(a){ var t = Math.abs(a[0]) < 0.9 ? [1, 0, 0] : [0, 1, 0]; return nrm(cross(a, t)); }
+function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); } function rnd(a, b){ return a + (b - a)*Math.random(); }
+function f(v, k){ return (Math.abs(v) < 0.5*Math.pow(10, -k) ? 0 : v).toFixed(k); }
+function kV(v){ return v >= 1e3 ? f(v/1e3, v < 1e4 ? 1 : 0) + ' kV' : f(v, 0) + ' V'; }
+/* ══════════ state ══════════ */
+var SER = [['Glass', 8], ['Nylon', 6], ['Wool', 5], ['Aluminium', 3], ['Paper', 2], ['Hard rubber', 0], ['Vinyl (PVC)', -4], ['Silicone', -5], ['Teflon (PTFE)', -6]];
+var BELTS = ['Hard rubber', 'Vinyl (PVC)'], ROLLS = ['Silicone', 'Teflon (PTFE)', 'Nylon', 'Glass', 'Aluminium', 'Hard rubber'];
+var GEN = { R:0.15, I:4, on:true, hum:40, Q:0, t:0, hist:[], ht:0, corona:false, ph:0, belt:'Hard rubber', roll:'Silicone', sgn:1, eff:1 };
+var U = { tab:0, run:true, spd:1, yaw:-28, pitch:10, zoom:1, chg:true, fl:true, dark:false, lbl:true, gr:true, sound:false, ev:{}, insets:true };
+var th = { hc:false, lm:false, cb:false, nr:true };
+var HAIR = [{ n:'Long, fine, dry hair', V50:3e4, L:2.6 }, { n:'Thick, curly hair', V50:7e4, L:1.5 }, { n:'Short hair', V50:4e4, L:0.6 }];
+var HP = { stool:true, touch:true, hair:0, Vp:0, lift:0, blift:0, Vind:0 };
+var BB = { list:[], auto:true, att:0, chg:0, ion:0, pop:0, acc:0 };
+var PL = { n:6, list:[], flown:0, lastV:0 };
+var ST = { L:0.30, N:16, x:[], xp:[], sf:1, bites:0, hx:0.50, hy:0.12, auto:false, flash:0, fpt:null };
+var SP = { d:0.06, r2:0.05, count:0, times:[], bolt:null, boltT:-9, lastE:0, lastV:0, from:null, to:null };
+var CF = { d:0.12, orient:'point', b:0, dV:0, auto:false };
+var WH = { th:0, w:0, blunt:false, I:0, ions:[] };
+var KP = { d:0.15, obj:'key', I:0, auto:false, sparks:0, ions:[] };
+var TSPD = [1, 1, 0.5, 0.6, 0.5, 1, 1, 1, 1];
+var NAMES = ['HOW IT WORKS', 'HAIR RAISING', 'SOAP BUBBLES', 'FLYING PIE PLATES', 'THE BITING STRING', 'SPARKS TO A GROUNDED SPHERE', 'A FLUORESCENT (CFL) BULB', 'THE ELECTRIC WHIRL', 'APPROACHING WITH A SHARP POINT'];
+function sPos(name){ for (var i=0; i<SER.length; i++) if (SER[i][0] === name) return SER[i][1]; return 0; }
+function setTribo(){ var d = sPos(GEN.belt) - sPos(GEN.roll); GEN.sgn = d >= 0 ? 1 : -1; GEN.eff = Math.min(1, Math.abs(d)/4); }
+function sw(){ return GEN.sgn > 0 ? 'positive' : 'negative'; }
+/* ══════════ the generator ══════════ */
+function Ru(){ return GEN.R*10; }
+function yc(){ return 8.3 + 5 + Ru(); }
+function Dm(){ return [0, yc()/10, 0]; }
+function Cd(){ return 4*Math.PI*EPS*GEN.R; }
+function personOn(){ return U.tab === 1 && HP.touch; }
+function Ct(){ return Cd() + (personOn() && HP.stool ? 100e-12 : 0); }
+function Vd(){ return GEN.Q/Ct(); }
+function VmaxDome(){ return 0.95*EB*GEN.R; }
+function Vmax(){ var v = VmaxDome(); if (personOn() && HP.stool) v = Math.min(v, 2.6e5); return v; }
+function tauL(){ return 120*Math.exp(-(GEN.hum - 20)/12); }
+function drain(){ var V = Vd();
+  if (U.tab === 6) return 1e-6*CF.b;
+  if (U.tab === 7) return WH.blunt ? 0 : (V > 15e3 ? 1.5e-15*(V - 15e3)*V : 0);
+  if (U.tab === 8 && KP.obj === 'key'){ var Von = 3e3 + 1.2e5*KP.d; return V > Von ? 1.6e-14*(V - Von)*V : 0; }
+  return 0; }
+function genStep(dt){
+  var Id = drain(); if (U.tab === 7) WH.I = Id; if (U.tab === 8) KP.I = Id;
+  GEN.Q += ((GEN.on ? GEN.I*1e-6*GEN.eff : 0) - Id)*dt; GEN.Q *= Math.exp(-dt/tauL());
+  if (personOn() && !HP.stool) GEN.Q *= Math.exp(-dt/0.02);
+  var qm = Vmax()*Ct(); GEN.corona = GEN.Q > qm*0.998; if (GEN.Q > qm) GEN.Q = qm; if (GEN.Q < 0) GEN.Q = 0;
+  if (GEN.on) GEN.ph += dt; GEN.t += dt; GEN.ht += dt;
+  if (GEN.ht >= 0.04){ GEN.ht = 0; GEN.hist.push([GEN.t, Vd()]); while (GEN.hist.length && GEN.t - GEN.hist[0][0] > 12) GEN.hist.shift(); } }
+/* ══════════ 2: the person ══════════ */
+function personStep(dt){
+  if (HP.touch) HP.Vp = Vd(); else { HP.Vp *= Math.exp(-dt/tauL()); if (!HP.stool) HP.Vp *= Math.exp(-dt/0.02); }
+  HP.Vind = HP.touch ? 0 : 0.3*Vd();
+  var Vh = Math.max(HP.Vp, 0.12*HP.Vind), tgt = Vh/(Vh + HAIR[HP.hair].V50); HP.lift += (tgt - HP.lift)*(1 - Math.exp(-dt/0.15));
+  var Vb2 = Math.max(HP.Vp, HP.Vind), tb = Vb2/(Vb2 + 4e4); HP.blift += (tb - HP.blift)*(1 - Math.exp(-dt/0.15));
+  if (HP.lift > 0.55 && !U.ev.hair){ U.ev.hair = 1; say('The hair stands up at about ' + kV(HP.Vp) + ': every hair carries ' + sw() + ' charge, so the hairs repel each other and are pushed away from the head. Once up, they stay nearly still.'); }
+  if (!HP.touch && HP.blift > 0.35 && !U.ev.arm){ U.ev.arm = 1; say(HP.stool ? 'Not touching, but the arm hairs rise: the person still carries charge, and the field of the dome polarizes the body.' : 'Even grounded, the fine hairs on the arms rise: the dome induces a charge of the opposite sign on the body, and the hairs carry it.'); } }
+/* ══════════ 3: soap bubbles ══════════ */
+function blow(n){ var D = Dm(); for (var i=0; i<(n || 6); i++){ var a = rnd(0.015, 0.03);
+  BB.list.push({ p:[-0.60 + rnd(-0.02, 0.04), D[1] - 0.02 + rnd(-0.03, 0.03), 0.10 + rnd(-0.03, 0.03)], v:[rnd(0.2, 0.45), rnd(0, 0.12), rnd(-0.1, 0.06)], a:a, m:4*Math.PI*a*a*0.3e-6*1000, q:0, st:'free', age:0, pt:0, hue:rnd(0, 360), how:'' }); } }
+function bubbleStep(dt){
+  var D = Dm(), R = GEN.R, Q = GEN.Q, V = Vd(), vr = V/VmaxDome();
+  BB.list.forEach(function(b){
+    if (b.st === 'pop'){ b.pt += dt; return; }
+    b.age += dt; var rv = sub(b.p, D), r = len(rv), u = mul(rv, 1/r), a = b.a;
+    if (!b.q && vr > 0.6 && r < 3.4*R && Math.random() < dt*4.5*(vr - 0.6)/0.4){ b.q = 0.25*1.64*(a/R)*(a/R)*Q; b.how = 'ion'; BB.ion++; ev('bion', 'Some bubbles pick up ' + sw() + ' charge from the ions streaming off the dome (corona) before they touch it: they turn around and are pushed away.'); }
+    var F = mul(u, -2*K*Q*Q*a*a*a/Math.pow(r, 5));
+    if (b.q) F = add(F, mul(u, K*Q*b.q/(r*r)));
+    F[1] -= b.m*GA; var sp = len(b.v); F = add(F, mul(b.v, -(0.5*1.2*0.47*Math.PI*a*a*sp + 6*Math.PI*1.8e-5*a)));
+    b.v = add(b.v, mul(F, dt/b.m)); b.p = add(b.p, mul(b.v, dt));
+    rv = sub(b.p, D); r = len(rv);
+    if (r < R + a){ u = mul(rv, 1/r); b.p = add(D, mul(u, R + a + 1e-4)); var vn = dot(b.v, u); if (vn < 0) b.v = sub(b.v, mul(u, 1.3*vn));
+      if (!b.q){ if (Math.random() < 0.3){ b.st = 'pop'; BB.pop++; ev('bpop', 'A bubble burst when it touched the dome.'); }
+        else { b.q = 0.3*1.64*(a/R)*(a/R)*GEN.Q; b.how = 'contact'; GEN.Q -= b.q; BB.chg++; ev('bchg', 'A bubble touched the dome, picked up ' + sw() + ' charge, and is now repelled: like charges repel.'); } } }
+    if (!b.q && r < 0.45 && !b.seen){ b.seen = 1; BB.att++; ev('batt', 'The neutral bubbles curve toward the dome: the field polarizes them, and the near side, closer to the dome, is pulled harder.'); }
+    if (b.p[1] < 0.02 || Math.abs(b.p[0]) > 3 || Math.abs(b.p[2]) > 3 || b.p[1] > 4 || b.age > 30){ if (b.p[1] < 0.02 && b.st === 'free') b.st = 'pop'; else b.dead = 1; }
+    if (Math.abs(b.p[0]) < 0.32 && Math.abs(b.p[2]) < 0.3 && b.p[1] < 0.755 + a && b.p[1] > 0.6) b.st = 'pop'; });
+  BB.list = BB.list.filter(function(b){ return !b.dead && !(b.st === 'pop' && b.pt > 0.25); }); }
+/* ══════════ 4: pie plates ══════════ */
+var PM = 0.005, PR = 0.11, PAR = Math.PI*PR*PR, BETA = 1.3;
+function stack(){ PL.list = []; for (var i=0; i<PL.n; i++) PL.list.push({ st:'stack', p:null, v:[0, 0, 0], q:0, ph:rnd(0, 6), hd:null }); PL.flown = 0; U.ev = {}; }
+function stackPos(i){ var D = Dm(); return [D[0], D[1] + GEN.R*0.97 + 0.006 + i*0.007, D[2]]; }
+function liftV(){ return GEN.R*Math.sqrt(2*PM*GA/(EPS*PAR))/BETA; }
+function platesStep(dt){
+  var D = Dm(), V = Vd(), E = V/GEN.R, top = -1, i;
+  for (i=PL.list.length - 1; i>=0; i--) if (PL.list[i].st === 'stack'){ top = i; break; }
+  if (top >= 0 && 0.5*EPS*Math.pow(BETA*E, 2)*PAR > PM*GA){ var P = PL.list[top]; P.st = 'fly'; P.p = stackPos(top); P.q = Math.min(0.5*GEN.Q, 3*EPS*BETA*E*PAR); GEN.Q -= P.q;
+    var an = rnd(0, TAU); P.hd = [Math.cos(an), 0, Math.sin(an)]; P.v = add(mul(P.hd, 0.15), [0, 0.6, 0]); PL.flown++; PL.lastV = V;
+    say('Plate ' + PL.flown + ' lifts off at ' + kV(V) + ', carrying ' + f(P.q*1e9, 0) + ' nC: the electric pressure \u03b5\u2080E\u00b2/2 on the top plate is now larger than its weight. The dome must recharge before the next one goes.'); }
+  PL.list.forEach(function(P){ if (P.st !== 'fly') return; P.ph += dt;
+    var rv = sub(P.p, D), r = len(rv), F = mul(rv, K*GEN.Q*P.q/(r*r*r)); F[1] -= PM*GA;
+    var sp = len(P.v); F = add(F, mul(P.v, -0.0114*sp)); F = add(F, mul(P.hd, PM*GA*(0.15 + (P.v[1] < 0 ? 0.6*Math.sin(P.ph*5) : 0))));
+    P.v = add(P.v, mul(F, dt/PM)); P.p = add(P.p, mul(P.v, dt)); P.q *= Math.exp(-dt/tauL());
+    rv = sub(P.p, D); r = len(rv); if (r < GEN.R + 0.02){ var n = mul(rv, 1/r); P.p = add(D, mul(n, GEN.R + 0.02)); var vn = dot(P.v, n); if (vn < 0) P.v = sub(P.v, mul(n, 1.2*vn)); }
+    var onT = Math.abs(P.p[0]) < 0.32 && Math.abs(P.p[2]) < 0.3, fy = onT ? 0.762 : 0.004;
+    if (P.p[1] <= fy && P.v[1] < 0){ P.p[1] = fy; P.st = 'land'; P.v = [0, 0, 0]; } }); }
+/* ══════════ 5: the thread ══════════ */
+function anchor(){ var D = Dm(); return add(D, mul(nrm([0.45, 0.89, 0]), GEN.R)); }
+function handM(){ var D = Dm(); return [ST.hx, D[1] + ST.hy, 0.03]; }
+function strInit(){ var A = anchor(), ds = ST.L/(ST.N - 1), dir = nrm([1, 0.2, 0.15]); ST.x = []; ST.xp = [];
+  for (var i=0; i<ST.N; i++){ var p = add(A, mul(dir, i*ds)); ST.x.push(p); ST.xp.push(p.slice()); } ST.sf = 1; ST.bites = 0; }
+function strStep(dt){
+  var D = Dm(), N = ST.N, ds = ST.L/(N - 1), V = Vd(), Q = GEN.Q, lam = 2*Math.PI*EPS*V/8, mn = 2e-5/N, Hm = handM(), ah = 0.045, qh = -Q*ah/len(sub(Hm, D)), i, it, A = anchor(), damp = Math.exp(-dt/0.05);
+  for (i=1; i<N; i++){ var x = ST.x[i], q = lam*ds*ST.sf*(i === N - 1 ? 2.5 : 1), rv = sub(x, D), r = len(rv), rh = sub(x, Hm), dh = len(rh);
+    var Fo = mul(rv, K*Q*q/(r*r*r)); Fo = add(Fo, mul(rh, K*qh*q/(dh*dh*dh))); Fo = add(Fo, mul(rh, -K*q*q*ah/Math.pow(dh, 4))); Fo[1] -= mn*GA;
+    var vel = mul(sub(x, ST.xp[i]), damp); ST.xp[i] = x; ST.x[i] = add(add(x, vel), mul(Fo, dt*dt/mn)); }
+  for (it=0; it<10; it++){ ST.x[0] = A.slice();
+    for (i=0; i<N - 1; i++){ var d = sub(ST.x[i + 1], ST.x[i]), l = len(d) || 1e-9, c = mul(d, (l - ds)/l);
+      if (i === 0) ST.x[1] = sub(ST.x[1], c); else { ST.x[i] = add(ST.x[i], mul(c, 0.5)); ST.x[i + 1] = sub(ST.x[i + 1], mul(c, 0.5)); } }
+    for (i=1; i<N; i++){ var rv2 = sub(ST.x[i], D), r2 = len(rv2); if (r2 < GEN.R + 0.003) ST.x[i] = add(D, mul(rv2, (GEN.R + 0.003)/r2));
+      var rh2 = sub(ST.x[i], Hm), d2 = len(rh2); if (d2 < ah + 0.003) ST.x[i] = add(Hm, mul(rh2, (ah + 0.003)/d2)); } }
+  var touch = false; for (i=N - 4; i<N; i++) if (len(sub(ST.x[i], Hm)) < ah + 0.008) touch = true;
+  if (touch && ST.sf > 0.35){ ST.sf = 0; ST.bites++; ST.flash = perfNow(); ST.fpt = ST.x[N - 1].slice(); crack(0.15);
+    if (ST.bites === 1) say('Bite! The thread swung to the hand and touched it. Its charge flows to ground through the body, so it drops; it recharges from the dome and reaches for the hand again.');
+    else if (ST.bites % 6 === 0) say(ST.bites + ' bites so far. Each time, the thread discharges into the hand, falls back, recharges, and is pulled to the hand again.'); }
+  if (!touch) ST.sf += (1 - ST.sf)*(1 - Math.exp(-dt/0.35));
+  if (ST.auto){ ST.hx = Math.max(0.27, ST.hx - 0.05*dt); if (ST.hx <= 0.27) ST.auto = false; syncSl('vdHx', ST.hx); } }
+/* ══════════ 6: sparks ══════════ */
+function Vb(){ return EB*SP.d/(1 + 6*SP.d); }
+function sparkStep(dt){
+  var V = Vd(); if (V >= Vb()){ SP.lastV = V; SP.lastE = 0.5*Ct()*V*V; GEN.Q *= 0.03; SP.count++; SP.times.push(GEN.t); SP.bolt = makeBolt([Ru(), yc(), 0], [Ru() + SP.d*10, yc(), 0]); SP.boltT = perfNow(); crack(0.5 + SP.lastE);
+    if (SP.count === 1 || GEN.t - (U.ev.lastSpark || -9) > 4){ U.ev.lastSpark = GEN.t; say('Spark! At ' + kV(V) + ' the field in the ' + f(SP.d*100, 0) + ' cm gap reached the breakdown field: the air ionized along a narrow channel and ' + f(SP.lastE*1000, 0) + ' mJ were released as light, heat and sound. The dome now recharges.'); } }
+  while (SP.times.length && GEN.t - SP.times[0] > 5) SP.times.shift(); }
+function makeBolt(P1, P2){
+  function path(a, b, depth, dev){ var pts = [a, b], l, i; for (l=0; l<depth; l++){ var np = [pts[0]]; for (i=1; i<pts.length; i++){ var p = pts[i - 1], q = pts[i], m = mul(add(p, q), 0.5), L = len(sub(q, p)); np.push(add(m, [rnd(-0.15, 0.15)*L, rnd(-1, 1)*L*dev, rnd(-1, 1)*L*dev]), q); } pts = np; } return pts; }
+  var main = path(P1, P2, 6, 0.32), br = [], Lg = len(sub(P2, P1));
+  for (var k=0; k<2; k++){ var s = main[Math.floor(rnd(0.2, 0.7)*main.length)], e = add(s, mul([rnd(0.1, 0.6), rnd(-0.9, 0.9), rnd(-0.7, 0.7)], Math.min(1, Lg/0.6))); br.push(path(s, e, 4, 0.35)); }
+  return { main:main, br:br }; }
+/* ══════════ 7: CFL bulb ══════════ */
+var LB = 0.12;
+function cflDV(){ var V = Vd(), R = GEN.R, r1 = R + CF.d, r2;
+  if (CF.orient === 'point'){ r2 = r1 + LB; return V*R*(1/r1 - 1/r2); }
+  var rc = R + CF.d + 0.03; return V*R*Math.abs(1/rc - 1/Math.sqrt(rc*rc + LB*LB))*0.15; }
+function cflStep(dt){ var dV = cflDV(); CF.dV = dV; var tgt = Math.pow(clamp((dV - 3e3)/45e3, 0, 1), 0.7); CF.b += (tgt - CF.b)*(1 - Math.exp(-dt/0.08));
+  if (CF.b > 0.15) ev('cfl', 'The bulb glows with no wires attached: the field of the dome puts about ' + kV(dV) + ' across it, and that drives a current through the mercury vapour inside.');
+  if (CF.auto){ CF.d = Math.max(0.01, CF.d - 0.025*dt); syncSl('vdCd', CF.d); if (CF.d <= 0.01) CF.auto = false; } }
+/* ══════════ 8: electric whirl ══════════ */
+function whirlStep(dt){ var a = WH.blunt ? 0 : 15*WH.I/4e-6; WH.w += (a - WH.w/1.0 - 0.8*Math.sign(WH.w)*(Math.abs(WH.w) > 0.05 ? 1 : 0))*dt; if (Math.abs(WH.w) < 0.05 && a < 0.8) WH.w = 0; WH.th -= WH.w*dt;
+  if (!WH.blunt && WH.I > 2e-7){ for (var k=0; k<4; k++) if (Math.random() < dt*40) WH.ions.push({ k:k, s:0 }); }
+  WH.ions.forEach(function(o){ o.s += dt*1.5; }); WH.ions = WH.ions.filter(function(o){ return o.s < 1; });
+  if (WH.w > 3) ev('wh', 'The whirl spins: the field at each sharp tip ionizes the air, ions of the same sign are pushed away from the tip (an ion wind), and the tip is pushed backward.'); }
+/* ══════════ 9: sharp point ══════════ */
+function VbK(){ return KP.obj === 'key' ? 5e5*KP.d + 3e3 : EB*KP.d/(1 + 10*KP.d); }
+function VonK(){ return 3e3 + 1.2e5*KP.d; }
+function keyStep(dt){ var V = Vd();
+  if (V >= VbK()){ var E = 0.5*Ct()*V*V; GEN.Q *= 0.03; KP.sparks++; var tip = keyTip(); SP.bolt = makeBolt([Ru(), yc(), 0], tip); SP.boltT = perfNow(); crack(0.4 + E);
+    say(KP.obj === 'key' ? 'Spark: this close, even the point cannot drain the dome fast enough. Back off a little and the sparks stop.' : 'Spark to the knuckle at ' + kV(V) + ': a blunt object does not drain the charge, so the dome charges until the gap breaks down. Ouch.'); }
+  if (KP.obj === 'key' && KP.I > 5e-7){ if (Math.random() < dt*30) KP.ions.push({ s:0, o:[rnd(-0.1, 0.1), rnd(-0.1, 0.1)] }); ev('kp', 'Nothing dramatic happens, and that is the point: the strong field at the tip of the key ionizes the air, and ions of the opposite sign stream to the dome and quietly neutralize it. The dome stays at only ' + kV(V) + '.'); }
+  KP.ions.forEach(function(o){ o.s += dt*1.2; }); KP.ions = KP.ions.filter(function(o){ return o.s < 1; });
+  if (KP.auto){ KP.d = Math.max(0.01, KP.d - 0.03*dt); syncSl('vdKd', KP.d); if (KP.d <= 0.01) KP.auto = false; } }
+function keyTip(){ return [Ru() + KP.d*10, yc(), 0]; }
+/* ══════════ sound ══════════ */
+var AC = null; function ac(){ try { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.resume) AC.resume(); } catch (e) { AC = null; } return AC; }
+function crack(vol){ if (!U.sound || !ac()) return; try { var A = AC, n = Math.floor(A.sampleRate*0.09), b = A.createBuffer(1, n, A.sampleRate), d = b.getChannelData(0), i;
+  for (i=0; i<n; i++) d[i] = (Math.random()*2 - 1)*Math.exp(-i/(A.sampleRate*0.012)); var s = A.createBufferSource(), gn = A.createGain(); gn.gain.value = Math.min(0.9, vol); s.buffer = b; s.connect(gn); gn.connect(A.destination); s.start(); } catch (e) {} }
+function perfNow(){ return (window.performance && performance.now) ? performance.now() : Date.now(); }
+/* ══════════ 3D renderer ══════════ */
+var polys = [], labels = [], cam = {};
+var CAMS = [{ x:3.6, y:-2.6, s:27, yaw:-28, pitch:10 }, { x:2.9, y:1.2, s:30, yaw:-22, pitch:6 }, { x:-2.8, y:-0.5, s:36, yaw:-16, pitch:8 }, { x:0, y:-4, s:20, yaw:-22, pitch:10 }, { x:1.9, y:1.4, s:52, yaw:-20, pitch:8 }, { x:2.6, y:-0.4, s:40, yaw:-16, pitch:10 },
+  { x:2.8, y:0, s:44, yaw:-24, pitch:12 }, { x:0, y:1.2, s:56, yaw:-20, pitch:28 }, { x:2.6, y:0, s:46, yaw:-22, pitch:10 }];
+function setCam(){ var c = CAMS[U.tab], a = U.yaw*DEG, e = U.pitch*DEG; cam = { ca:Math.cos(a), sa:Math.sin(a), ce:Math.cos(e), se:Math.sin(e), s:c.s*U.zoom, D:60, T:[c.x, yc() + c.y, 0] }; }
+function view(p){ var x0 = p[0] - cam.T[0], y0 = p[1] - cam.T[1], z0 = p[2] - cam.T[2], x1 = x0*cam.ca + z0*cam.sa, z1 = -x0*cam.sa + z0*cam.ca; return [x1, y0*cam.ce - z1*cam.se, y0*cam.se + z1*cam.ce]; }
+function fp(v){ return cam.D/Math.max(0.6, cam.D - v[2]); }
+function proj(v){ var k = fp(v); return [W/2 + v[0]*cam.s*k, H*0.52 - v[1]*cam.s*k]; }
+function scr(p){ return proj(view(p)); }
+function poly(pts, col, alpha){ polys.push({ p:pts, c:col, a:alpha === undefined ? 1 : alpha }); }
+function sprite(p, fn, bias){ polys.push({ p:[p], fn:fn, b:bias || 0 }); }
+var LIGHT = nrm([-0.35, 0.7, 0.62]), HALF = nrm(add(LIGHT, [0, 0, 1]));
+function flush(){
+  var list = polys.map(function(q){ if (q.fn){ var vv = view(q.p[0]); return { v:[vv], z:vv[2] + q.b, fn:q.fn }; } var v = q.p.map(view), z = 0; v.forEach(function(t){ z += t[2]; }); return { v:v, z:z/v.length, c:q.c, a:q.a }; });
+  list.sort(function(A, B){ return A.z - B.z; });
+  list.forEach(function(q){
+    if (q.fn){ q.fn(proj(q.v[0]), q.v[0]); return; }
+    var n = q.v.length > 2 ? nrm(cross(sub(q.v[1], q.v[0]), sub(q.v[2], q.v[0]))) : [0, 0, 1]; if (n[2] < 0) n = mul(n, -1);
+    var k = 0.36 + 0.64*Math.max(0, dot(n, LIGHT)), spec = Math.pow(Math.max(0, dot(n, HALF)), 28)*0.35;
+    var r = Math.min(255, Math.round(q.c[0]*k + 255*spec)), gg = Math.min(255, Math.round(q.c[1]*k + 255*spec)), b = Math.min(255, Math.round(q.c[2]*k + 255*spec));
+    g.fillStyle = 'rgba(' + r + ',' + gg + ',' + b + ',' + q.a + ')'; g.strokeStyle = g.fillStyle; g.lineWidth = 0.6;
+    g.beginPath(); q.v.forEach(function(t, i){ var s2 = proj(t); if (i) g.lineTo(s2[0], s2[1]); else g.moveTo(s2[0], s2[1]); }); g.closePath(); g.fill(); if (q.a >= 1) g.stroke(); });
+  polys = []; }
+function ellipsoid(c, rx, ry, rz, col, nu, nv, al){
+  function P(u, v){ return [c[0] + rx*Math.sin(v)*Math.cos(u), c[1] + ry*Math.cos(v), c[2] + rz*Math.sin(v)*Math.sin(u)]; }
+  for (var j=0; j<nv; j++) for (var i=0; i<nu; i++){ var u0 = TAU*i/nu, u1 = TAU*(i + 1)/nu, a0 = Math.PI*j/nv, a1 = Math.PI*(j + 1)/nv; poly([P(u0, a0), P(u1, a0), P(u1, a1), P(u0, a1)], col, al); } }
+function tube(p0, p1, r0, r1, col, n, al){
+  var ax = nrm(sub(p1, p0)), u = perp(ax), v = cross(ax, u);
+  function Rp(p, r, a){ return add(p, add(mul(u, r*Math.cos(a)), mul(v, r*Math.sin(a)))); }
+  for (var i=0; i<n; i++){ var a0 = TAU*i/n, a1 = TAU*(i + 1)/n; poly([Rp(p0, r0, a0), Rp(p0, r0, a1), Rp(p1, r1, a1), Rp(p1, r1, a0)], col, al); } }
+function disk(c, nrmv, r, col, n, al){ var u = perp(nrmv), v = cross(nrmv, u); for (var i=0; i<n; i++){ var a0 = TAU*i/n, a1 = TAU*(i + 1)/n; poly([c, add(c, add(mul(u, r*Math.cos(a0)), mul(v, r*Math.sin(a0)))), add(c, add(mul(u, r*Math.cos(a1)), mul(v, r*Math.sin(a1))))], col, al); } }
+function box(c, hx, hy, hz, col, al){ var v = [], i; for (i=0; i<8; i++) v.push([c[0] + (i & 1 ? hx : -hx), c[1] + (i & 2 ? hy : -hy), c[2] + (i & 4 ? hz : -hz)]);
+  [[0, 1, 3, 2], [4, 5, 7, 6], [0, 1, 5, 4], [2, 3, 7, 6], [0, 2, 6, 4], [1, 3, 7, 5]].forEach(function(fc){ poly(fc.map(function(k){ return v[k]; }), col, al); }); }
+function line3(a, b, col, w, bias, dash){ sprite(mul(add(a, b), 0.5), function(){ var A = scr(a), B = scr(b); g.strokeStyle = col; g.lineWidth = w; g.setLineDash(dash || []); g.beginPath(); g.moveTo(A[0], A[1]); g.lineTo(B[0], B[1]); g.stroke(); g.setLineDash([]); }, bias); }
+function label(p, t, c){ labels.push({ p:p, t:t, c:c }); }
+/* ══════════ colours ══════════ */
+function pal(){ var cb = th.cb, hc = th.hc, lm = th.lm;
+  return { bg:hc ? '#000' : (lm ? '#e8edf2' : '#0b0e14'), grid:hc ? 'rgba(255,255,255,0.45)' : (lm ? 'rgba(0,0,0,0.14)' : 'rgba(120,140,170,0.18)'), txt:hc ? '#fff' : (lm ? '#1d232a' : '#dbe5ec'), dim:hc ? '#ddd' : (lm ? '#556070' : '#8f9cad'),
+    dome:hc ? [235, 235, 235] : [196, 203, 212], base:[58, 62, 72], col:[175, 205, 235], belt:[90, 60, 45], roller:[230, 228, 215], top:[156, 116, 76], leg:[100, 72, 48],
+    skin:[236, 192, 160], shirt:cb ? [0, 114, 178] : [38, 140, 150], pants:[45, 55, 88], hair:cb ? '#8b5a2b' : '#8a5a2a', stool:cb ? [230, 159, 0] : [45, 95, 205], plate:[208, 212, 220],
+    pos:cb ? '#d55e00' : (hc ? '#ff6060' : '#ff3b3b'), neg:cb ? '#0072b2' : (hc ? '#6fb8ff' : '#3a8bff'), fl:cb ? 'rgba(230,159,0,ALPHA)' : 'rgba(255,214,90,ALPHA)', thread:hc ? '#ffffff' : '#f0ead6', ground:cb ? '#009e73' : '#7ac943',
+    glow:cb ? 'rgba(86,180,233,0.9)' : 'rgba(170,150,255,0.9)', corona:cb ? '86,180,233' : '170,130,255', el:cb ? '#56b4e9' : '#7fd3ff' }; }
+/* ══════════ scene parts ══════════ */
+function drawFloor(p){ g.strokeStyle = p.grid; g.lineWidth = 1; for (var i=-12; i<=14; i += 2){ var a = scr([i, 0, -7]), b = scr([i, 0, 7]); g.beginPath(); g.moveTo(a[0], a[1]); g.lineTo(b[0], b[1]); g.stroke(); }
+  for (var k=-7; k<=7; k += 2){ var c = scr([-12, 0, k]), d = scr([14, 0, k]); g.beginPath(); g.moveTo(c[0], c[1]); g.lineTo(d[0], d[1]); g.stroke(); } }
+function drawTable(p, x0, x1){ var nx = Math.max(2, Math.ceil((x1 - x0)/1.4)), nz = 4, i, j, z0 = -3, z1 = 3, y = 7.5;
+  for (i=0; i<nx; i++) for (j=0; j<nz; j++){ var xa = x0 + (x1 - x0)*i/nx, xb = x0 + (x1 - x0)*(i + 1)/nx, za = z0 + (z1 - z0)*j/nz, zb = z0 + (z1 - z0)*(j + 1)/nz; poly([[xa, y, za], [xb, y, za], [xb, y, zb], [xa, y, zb]], p.top); }
+  for (i=0; i<nx; i++){ var xa2 = x0 + (x1 - x0)*i/nx, xb2 = x0 + (x1 - x0)*(i + 1)/nx; poly([[xa2, y, z1], [xb2, y, z1], [xb2, y - 0.3, z1], [xa2, y - 0.3, z1]], p.leg); }
+  [[x0 + 0.3, -2.7], [x1 - 0.3, -2.7], [x0 + 0.3, 2.7], [x1 - 0.3, 2.7]].forEach(function(q){ tube([q[0], 0, q[1]], [q[0], y - 0.3, q[1]], 0.15, 0.15, p.leg, 6); }); }
+function chgSprite(pt, sign, p, size){ sprite(pt, function(s, v){ var r = (size || 0.13)*cam.s*fp(v); r = clamp(r, 2.2, 7); g.fillStyle = sign > 0 ? p.pos : p.neg; g.beginPath(); g.arc(s[0], s[1], r, 0, TAU); g.fill();
+  g.strokeStyle = '#fff'; g.lineWidth = Math.max(1, r*0.3); g.beginPath(); g.moveTo(s[0] - r*0.55, s[1]); g.lineTo(s[0] + r*0.55, s[1]); if (sign > 0){ g.moveTo(s[0], s[1] - r*0.55); g.lineTo(s[0], s[1] + r*0.55); } g.stroke(); }, 0.02); }
+var FIB = (function(){ var a = [], n = 90, i; for (i=0; i<n; i++){ var y = 1 - 2*(i + 0.5)/n, r = Math.sqrt(1 - y*y), t = i*2.39996; a.push([r*Math.cos(t), y, r*Math.sin(t)]); }
+  for (i=a.length - 1; i>0; i--){ var j = Math.floor((i*7919 + 13) % (i + 1)), t2 = a[i]; a[i] = a[j]; a[j] = t2; } return a.filter(function(q){ return q[1] > -0.72; }); })();
+function rollCol(){ return { 'Silicone':[200, 80, 70], 'Teflon (PTFE)':[240, 240, 235], 'Nylon':[235, 225, 190], 'Glass':[170, 210, 220], 'Aluminium':[190, 195, 205], 'Hard rubber':[60, 50, 45] }[GEN.roll] || [230, 228, 215]; }
+function drawVDG(p, domeA){
+  var y = yc(), R = Ru(), ytop = y - R*0.72, yl = 8.85, yu = y - R*0.25, sg = GEN.sgn;
+  box([0, 7.9, 0], 1.7, 0.4, 1.7, p.base); tube([0.9, 8.3, 1.2], [0.9, 8.45, 1.2], 0.18, 0.18, GEN.on ? [80, 200, 110] : [150, 60, 60], 8);
+  tube([0, 8.3, 0], [0, ytop, 0], 0.72, 0.72, p.col, 14, 0.28);
+  tube([-0.42, yl, 0], [0.42, yl, 0], 0.26, 0.26, rollCol(), 10); tube([-0.42, yu, 0], [0.42, yu, 0], 0.24, 0.24, [160, 160, 165], 10);
+  poly([[-0.38, yl, 0.27], [0.38, yl, 0.27], [0.38, yu, 0.25], [-0.38, yu, 0.25]], GEN.belt === 'Vinyl (PVC)' ? [70, 70, 90] : p.belt, 0.9); poly([[-0.38, yl, -0.27], [0.38, yl, -0.27], [0.38, yu, -0.25], [-0.38, yu, -0.25]], GEN.belt === 'Vinyl (PVC)' ? [70, 70, 90] : p.belt, 0.9);
+  [yl, yu].forEach(function(yy){ for (var i=0; i<7; i++){ var x = -0.33 + i*0.11; line3([x, yy, 0.55], [x, yy, 0.33], '#c9d0d8', 1.2, 0.05); } line3([-0.38, yy, 0.56], [0.38, yy, 0.56], '#c9d0d8', 2.2, 0.05); });
+  line3([0, yu, 0.56], [0, yu + 0.9*R, 0.45*R], '#c9d0d8', 1.5, 0); line3([0.38, yl, 0.56], [1.1, 8.3, 1.0], p.ground, 1.5, 0);
+  if (U.chg && GEN.on && GEN.eff > 0){ var sp = 0.55, off = (GEN.ph*2.2) % sp; for (var yy=yl + 0.25 + off; yy<yu - 0.2; yy += sp) chgSprite([0, yy, 0.31], sg, p, 0.11); }
+  ellipsoid([0, y, 0], R, R, R, p.dome, 22, 14, domeA);
+  if (U.chg){ var vv = clamp(Vd()/VmaxDome(), 0, 1), nsh = Math.round(60*vv); for (var i2=0; i2<nsh; i2++) chgSprite(add([0, y, 0], mul(FIB[i2], R + 0.06)), sg, p); }
+  if (U.lbl && U.tab === 0){ label([R*0.75, y + R*0.95, 0], 'metal dome', p.txt); label([1.6, (yl + yu)/2, 0.6], GEN.belt.toLowerCase() + ' belt', p.txt); label([-1.6, yu, 0.6], 'upper comb (to dome)', p.txt); label([-1.9, yl, 0.6], GEN.roll.toLowerCase() + ' roller + comb', p.txt); label([1.9, 9.8, 0], 'insulating column', p.txt); label([0, 7.0, 2.2], 'base with motor', p.txt); } }
+function drawField(p){ if (!U.fl) return; var v = clamp(Vd()/VmaxDome(), 0, 1); if (v < 0.03) return; var y = yc(), R = Ru(), col = p.fl.replace('ALPHA', (0.25 + 0.6*v).toFixed(2)), dirs = FIB.slice(0, 26), sg = GEN.sgn;
+  dirs.forEach(function(d){ if ((U.tab === 5 || U.tab >= 6) && d[0] > 0.5 && Math.abs(d[1]) < 0.5) return; var a = add([0, y, 0], mul(d, R + 0.1)), b = add([0, y, 0], mul(d, R + 0.6 + 1.6*v)); if (sg < 0){ var t = a; a = b; b = t; }
+    sprite(mul(add(a, b), 0.5), function(){ var A = scr(a), B = scr(b), dx = B[0] - A[0], dy = B[1] - A[1], l = Math.hypot(dx, dy) || 1; dx /= l; dy /= l; g.strokeStyle = col; g.fillStyle = col; g.lineWidth = 1.4; g.beginPath(); g.moveTo(A[0], A[1]); g.lineTo(B[0], B[1]); g.stroke();
+      g.beginPath(); g.moveTo(B[0], B[1]); g.lineTo(B[0] - dx*7 - dy*4, B[1] - dy*7 + dx*4); g.lineTo(B[0] - dx*7 + dy*4, B[1] - dy*7 - dx*4); g.closePath(); g.fill(); }, 0); }); }
+function glowAt(s, r, a, rgb){ var gr = g.createRadialGradient(s[0], s[1], 0, s[0], s[1], r); gr.addColorStop(0, 'rgba(' + rgb + ',' + a.toFixed(2) + ')'); gr.addColorStop(1, 'rgba(' + rgb + ',0)'); g.fillStyle = gr; g.beginPath(); g.arc(s[0], s[1], r, 0, TAU); g.fill(); }
+function drawCorona(p){ var vr = Vd()/VmaxDome(); if (vr < 0.85 || (U.tab === 7 && !WH.blunt) || (U.tab === 8 && KP.obj === 'key')) return; var c = scr([0, yc(), 0]), r = Ru()*cam.s*fp(view([0, yc(), 0])), k = clamp((vr - 0.85)/0.15, 0, 1);
+  var gr = g.createRadialGradient(c[0], c[1], r*0.95, c[0], c[1], r*1.4); gr.addColorStop(0, 'rgba(' + p.corona + ',0.0)'); gr.addColorStop(0.15, 'rgba(' + p.corona + ',' + ((U.dark ? 0.35 : 0.15)*k + 0.06*Math.random()*k).toFixed(2) + ')'); gr.addColorStop(1, 'rgba(' + p.corona + ',0)'); g.fillStyle = gr; g.beginPath(); g.arc(c[0], c[1], r*1.4, 0, TAU); g.fill();
+  if (U.dark && GEN.corona){ g.save(); g.strokeStyle = 'rgba(' + p.corona + ',0.75)'; g.lineWidth = 1; g.shadowColor = p.glow; g.shadowBlur = 6;
+    for (var i=0; i<26; i++){ var an = rnd(0, TAU), x = c[0] + Math.cos(an)*r, y = c[1] + Math.sin(an)*r; g.beginPath(); g.moveTo(x, y); for (var s=1; s<=4; s++){ x += Math.cos(an + rnd(-0.6, 0.6))*rnd(3, 7); y += Math.sin(an + rnd(-0.6, 0.6))*rnd(3, 7); g.lineTo(x, y); } g.stroke(); } g.restore(); } }
+/* ══════════ comb close-ups (tab 1) ══════════ */
+function e2(x, y, sign, p, r){ r = r || 5; g.fillStyle = sign > 0 ? p.pos : p.neg; g.beginPath(); g.arc(x, y, r, 0, TAU); g.fill(); g.strokeStyle = '#fff'; g.lineWidth = 1.3; g.beginPath(); g.moveTo(x - r*0.55, y); g.lineTo(x + r*0.55, y); if (sign > 0){ g.moveTo(x, y - r*0.55); g.lineTo(x, y + r*0.55); } g.stroke(); }
+function eDot(x, y, p){ g.fillStyle = p.el; g.beginPath(); g.arc(x, y, 2.6, 0, TAU); g.fill(); }
+function insetBox(x0, y0, w, h, title){ g.fillStyle = th.lm ? 'rgba(255,255,255,0.93)' : 'rgba(8,12,20,0.92)'; g.fillRect(x0, y0, w, h); g.strokeStyle = '#e8a020'; g.lineWidth = 1.5; g.strokeRect(x0, y0, w, h);
+  g.font = 'bold 10px Arial'; g.fillStyle = '#e8a020'; g.textAlign = 'left'; g.fillText(title, x0 + 6, y0 + 12); }
+function txt2(t, x, y, c, al){ g.font = '10px Arial'; g.fillStyle = c; g.textAlign = al || 'left'; g.fillText(t, x, y); }
+function drawInsets(p){ if (!U.insets || U.tab !== 0) return; var w = 250, h = 150, x0 = W - w - 10, sg = GEN.sgn, ph = GEN.ph, on = GEN.on && GEN.eff > 0, tc = th.lm ? '#1d232a' : '#dbe5ec', i;
+  /* lower roller */
+  var y0 = 10; insetBox(x0, y0, w, h, 'CLOSE-UP: LOWER ROLLER AND COMB'); var cx = x0 + 88, cy = y0 + 100, r = 26, bx = cx + r + 5, top = y0 + 22;
+  var rc = rollCol(); g.fillStyle = 'rgb(' + rc.join(',') + ')'; g.beginPath(); g.arc(cx, cy, r, 0, TAU); g.fill(); g.strokeStyle = '#555'; g.lineWidth = 1; g.stroke();
+  g.strokeStyle = GEN.belt === 'Vinyl (PVC)' ? '#585870' : '#6a4a35'; g.lineWidth = 7; g.beginPath(); g.moveTo(cx - r - 5, top); g.lineTo(cx - r - 5, cy); g.arc(cx, cy, r + 5, Math.PI, 0, true); g.lineTo(bx, top); g.stroke();
+  if (on && U.chg){ for (i=0; i<5; i++){ var yy = cy - ((ph*45 + i*18) % (cy - top)); e2(bx, yy, sg, p, 4.5); }
+    for (i=0; i<6; i++){ var an = Math.PI*0.15 + i*Math.PI*0.7/5 + Math.PI; e2(cx + (r - 9)*Math.cos(an + Math.PI), cy + (r - 9)*Math.sin(an + Math.PI), -sg, p, 4); }
+    for (i=0; i<4; i++){ var fr = ((ph*1.6 + i/4) % 1), a2 = Math.PI*(0.25 + 0.5*((i*0.37) % 1)), rr = sg > 0 ? r + 5 - fr*10 : r - 5 + fr*10; eDot(cx + rr*Math.cos(a2), cy + rr*Math.sin(a2), p); } }
+  g.strokeStyle = '#c9d0d8'; g.lineWidth = 2; var kx = bx + 22; g.beginPath(); g.moveTo(kx, cy - 32); g.lineTo(kx, cy + 8); g.stroke(); for (i=0; i<5; i++){ g.beginPath(); g.moveTo(kx, cy - 30 + i*9); g.lineTo(bx + 8, cy - 30 + i*9); g.stroke(); }
+  g.strokeStyle = p.ground; g.beginPath(); g.moveTo(kx, cy + 8); g.lineTo(kx, y0 + h - 14); g.stroke(); for (i=0; i<3; i++){ g.beginPath(); g.moveTo(kx - 8 + i*3, y0 + h - 14 + i*3); g.lineTo(kx + 8 - i*3, y0 + h - 14 + i*3); g.stroke(); }
+  txt2(GEN.roll.toLowerCase() + ' roller', cx - 30, y0 + h - 6, tc); txt2('belt \u2191', bx + 5, top + 10, tc); txt2('grounded', kx + 6, cy - 34, tc); txt2('comb', kx + 6, cy - 23, tc);
+  txt2(GEN.eff === 0 ? 'same material: no charging' : (sg > 0 ? 'e\u207b go belt \u2192 roller' : 'e\u207b go roller \u2192 belt'), x0 + w - 6, y0 + 26, p.el, 'right');
+  txt2(GEN.eff === 0 ? '' : 'belt ' + (sg > 0 ? '+' : '\u2212') + ', roller ' + (sg > 0 ? '\u2212' : '+'), x0 + w - 6, y0 + 38, tc, 'right');
+  /* upper comb */
+  y0 = 170; insetBox(x0, y0, w, h, 'CLOSE-UP: UPPER COMB INSIDE THE DOME'); cx = x0 + 80; cy = y0 + 52; r = 22; bx = cx + r + 5; var bot = y0 + h - 8, ky = cy + 30;
+  g.fillStyle = '#a0a0a5'; g.beginPath(); g.arc(cx, cy, r, 0, TAU); g.fill();
+  g.strokeStyle = GEN.belt === 'Vinyl (PVC)' ? '#585870' : '#6a4a35'; g.lineWidth = 7; g.beginPath(); g.moveTo(bx, bot); g.lineTo(bx, cy); g.arc(cx, cy, r + 5, 0, Math.PI, true); g.lineTo(cx - r - 5, bot); g.stroke();
+  if (on && U.chg){ for (i=0; i<5; i++){ var y2 = bot - ((ph*45 + i*16) % (bot - ky - 18)); e2(bx, y2, sg, p, 4.5); }
+    for (i=0; i<5; i++){ var fr2 = ((ph*1.8 + i/5) % 1), yy2 = ky - 16 + i*6, xx = sg > 0 ? bx + 22 - fr2*16 : bx + 6 + fr2*16; eDot(xx, yy2, p); } }
+  kx = bx + 24; g.strokeStyle = '#c9d0d8'; g.lineWidth = 2; g.beginPath(); g.moveTo(kx, ky - 22); g.lineTo(kx, ky + 8); g.stroke(); for (i=0; i<4; i++){ g.beginPath(); g.moveTo(kx, ky - 18 + i*8); g.lineTo(bx + 8, ky - 18 + i*8); g.stroke(); }
+  var dxw = x0 + w - 30; g.beginPath(); g.moveTo(kx, ky - 4); g.lineTo(dxw, ky - 4); g.stroke();
+  g.fillStyle = '#8f98a3'; g.fillRect(dxw, y0 + 18, 12, h - 24);
+  if (U.chg){ var nd = Math.round(7*clamp(Vd()/VmaxDome(), 0, 1)); for (i=0; i<nd; i++) e2(dxw + 18, y0 + 30 + i*15, sg, p, 4); }
+  txt2('dome wall', dxw - 2, y0 + 28, tc, 'right'); txt2('outer surface', dxw - 2, y0 + 40, tc, 'right'); txt2('comb \u2192 dome', kx + 4, ky + 20, tc);
+  txt2(sg > 0 ? 'e\u207b leave the comb tips' : 'e\u207b jump from belt to comb', x0 + 6, y0 + h - 18, p.el); txt2('belt above the comb: neutral', x0 + 6, y0 + h - 6, tc); }
+/* ══════════ person ══════════ */
+function personGeom(){ var yb = HP.stool ? 4.5 : 0, PX = 5.6; return { yb:yb, PX:PX, head:[PX, yb + 15.6, 0], hr:[0.85, 1.1, 0.95] }; }
+var BODY = (function(){ var a = [], i; for (i=0; i<60; i++){ var t = i*2.39996, y = 1 - 2*(i + 0.5)/60, r = Math.sqrt(1 - y*y); a.push(['t', [r*Math.cos(t), y, r*Math.sin(t)]]); }
+  for (i=0; i<16; i++){ var t2 = i*2.39996, y2 = 1 - 2*(i + 0.5)/16, r2 = Math.sqrt(1 - y2*y2); a.push(['h', [r2*Math.cos(t2), y2, r2*Math.sin(t2)]]); }
+  for (i=0; i<20; i++) a.push(['l', [i % 2 ? 0.6 : -0.6, (i >> 1)/10, Math.cos(i)*0.5]]); for (i=0; i<16; i++) a.push(['a', [i % 2 ? 1 : -1, (i >> 1)/8, 0]]); return a; })();
+function bodyPt(q, G, arms){ var PX = G.PX, yb = G.yb, v = q[1];
+  if (q[0] === 't') return [PX + v[0]*1.85, yb + 11.4 + v[1]*3.1, v[2]*1.15];
+  if (q[0] === 'h') return add(G.head, [v[0]*(G.hr[0] + 0.1), v[1]*(G.hr[1] + 0.1), v[2]*(G.hr[2] + 0.1)]);
+  if (q[0] === 'l') return [PX + v[0], G.yb + 1 + v[1]*7.5, v[2]*0.55];
+  var arm = v[0] < 0 ? arms[0] : arms[1], pt = add(mul(arm[0], 1 - v[1]), mul(arm[1], v[1])); return add(pt, [0, 0, 0.45]); }
+function drawPerson(p){ var G = personGeom(), yb = G.yb, PX = G.PX, sx = HP.stool ? PX : PX + 4.2;
+  tube([sx, 0, 0], [sx, 4.3, 0], 1.25, 1.45, p.stool, 14); disk([sx, 4.5, 0], [0, 1, 0], 1.55, p.stool, 14); tube([sx, 4.3, 0], [sx, 4.5, 0], 1.45, 1.55, p.stool, 14);
+  [-0.6, 0.6].forEach(function(dx){ tube([PX + dx, yb + 8.6, 0], [PX + dx, yb + 0.6, 0.1], 0.5, 0.4, p.pants, 8); ellipsoid([PX + dx, yb + 0.35, 0.35], 0.42, 0.3, 0.7, [40, 40, 45], 8, 5); });
+  ellipsoid([PX, yb + 11.4, 0], 1.75, 3.0, 1.05, p.shirt, 14, 9); tube([PX, yb + 14.0, 0], [PX, yb + 14.8, 0], 0.42, 0.42, p.skin, 8);
+  ellipsoid(G.head, G.hr[0], G.hr[1], G.hr[2], p.skin, 14, 10);
+  [-0.32, 0.32].forEach(function(dx){ sprite([PX + dx, yb + 15.75, 0.9], function(s){ g.fillStyle = '#222'; g.beginPath(); g.arc(s[0], s[1], 2.4, 0, TAU); g.fill(); }, 0.05); });
+  sprite([PX, yb + 15.2, 0.92], function(s){ g.strokeStyle = '#8a3b2a'; g.lineWidth = 1.6; g.beginPath(); g.arc(s[0], s[1] - 2, 5, 0.2*Math.PI, 0.8*Math.PI); g.stroke(); }, 0.05);
+  var Sh = [PX - 1.55, yb + 13.6, 0.2], Hd;
+  if (HP.touch){ var Dc = [0, yc(), 0], d = nrm(sub(Sh, Dc)); d[1] = Math.max(d[1], 0.55); d = nrm(d); Hd = add(Dc, mul(d, Ru() + 0.32)); } else Hd = [PX - 2.0, yb + 8.6, 0.5];
+  var El = add(mul(add(Sh, Hd), 0.5), HP.touch ? [0.6, -1.0, 0.6] : [-0.4, 0, 0.2]); tube(Sh, El, 0.45, 0.4, p.shirt, 8); tube(El, Hd, 0.38, 0.32, p.skin, 8); ellipsoid(Hd, 0.38, 0.3, 0.38, p.skin, 8, 5);
+  var S2 = [PX + 1.55, yb + 13.6, 0.2], H2 = [PX + 2.0, yb + 8.6, 0.5], E2 = add(mul(add(S2, H2), 0.5), [0.4, 0, 0.2]); tube(S2, E2, 0.45, 0.4, p.shirt, 8); tube(E2, H2, 0.38, 0.32, p.skin, 8); ellipsoid(H2, 0.38, 0.3, 0.38, p.skin, 8, 5);
+  drawHair(p, G); armHair(p, [[El, Hd], [E2, H2]]);
+  if (U.chg){ var sg = GEN.sgn, arms = [[Sh, Hd], [S2, H2]], np = Math.round(BODY.length*clamp(HP.Vp/2.6e5, 0, 1)), ni = Math.round(40*clamp(HP.Vind/1.3e5, 0, 1)), k;
+    for (k=0; k<np; k++) chgSprite(bodyPt(BODY[(k*37) % BODY.length], G, arms), sg, p, 0.12);
+    if (ni > 0){ var near = BODY.map(function(q){ return bodyPt(q, G, arms); }).sort(function(a, b){ return a[0] - b[0]; });
+      for (k=0; k<ni; k++) chgSprite(add(near[k], [-0.1, 0, 0]), -sg, p, 0.12);
+      if (HP.stool) for (k=0; k<ni; k++) chgSprite(add(near[near.length - 1 - k], [0.1, 0, 0]), sg, p, 0.12); } }
+  if (U.lbl){ label([sx, 2.2, 1.9], HP.stool ? 'insulating stool' : 'stool (not used)', p.txt); if (!HP.stool) label([PX, 0.3, 1.6], 'feet on the floor: grounded', p.ground); } }
+var ROOTS = (function(){ var a = [], n = 140, i; for (i=0; i<n; i++){ var y = 1 - 2*(i + 0.5)/n, r = Math.sqrt(1 - y*y), t = i*2.39996, q = [r*Math.cos(t), y, r*Math.sin(t)]; if (q[1] < -0.05) continue; if (q[2] > 0.3 && q[1] < 0.62) continue; a.push(q); } return a; })();
+function drawHair(p, G){ var hz = HAIR[HP.hair], L = hz.L, m = 6, seg = L/m, lift = HP.lift, tt = GEN.t;
+  ROOTS.forEach(function(n, i){ var pos = add(G.head, [n[0]*G.hr[0], n[1]*G.hr[1], n[2]*G.hr[2]]), rad = nrm([n[0]/G.hr[0], n[1]/G.hr[1], n[2]/G.hr[2]]), k;
+    var jit = [Math.sin(tt*2.1 + i), Math.sin(tt*1.7 + 2*i), Math.sin(tt*2.5 + 3*i)];
+    for (k=0; k<m; k++){ var rel = sub(pos, G.head), loc = nrm([rel[0]/(G.hr[0]*G.hr[0]), rel[1]/(G.hr[1]*G.hr[1]), rel[2]/(G.hr[2]*G.hr[2])]), down = [0, -1, 0];
+      var tan = sub(down, mul(loc, dot(down, loc))); if (len(tan) < 0.2) tan = add(tan, [n[0], 0, n[2]]);
+      var droop = nrm(add(add(mul(nrm(tan), 0.85), mul(loc, 0.2)), mul(down, k/m*0.6)));
+      var raised = nrm(add(add(mul(rad, 0.75), mul(loc, 0.25)), mul(jit, 0.012*lift)));
+      var dir = nrm(add(mul(droop, 1 - lift), mul(raised, lift))), np = add(pos, mul(dir, seg));
+      var rr = sub(np, G.head), e = Math.pow(rr[0]/G.hr[0], 2) + Math.pow(rr[1]/G.hr[1], 2) + Math.pow(rr[2]/G.hr[2], 2); if (e < 1.04) np = add(G.head, mul(rr, 1.02/Math.sqrt(e)));
+      line3(pos, np, p.hair, 1.5, 0.03); pos = np; } }); }
+function armHair(p, arms){ var lift = HP.blift; arms.forEach(function(seg){ var a = seg[0], b = seg[1], ax = nrm(sub(b, a)), out = nrm(cross(ax, [0, 0, 1])); if (out[1] < 0) out = mul(out, -1);
+  for (var i=1; i<10; i++){ var base = add(add(mul(a, 1 - i/10), mul(b, i/10)), [0, 0, 0.36]), sd = i % 2 ? out : nrm(add(out, [0, 0, 0.8])), dir = nrm(add(mul(ax, 1 - lift), mul(sd, lift + 0.05))); line3(base, add(base, mul(dir, 0.28)), p.hair, 1.1, 0.05); } }); }
+/* ══════════ bubbles ══════════ */
+function drawWand(p){ var c = [-6.4, yc(), 1.0], i, n = 18, r = 0.45;
+  for (i=0; i<n; i++){ var a0 = TAU*i/n, a1 = TAU*(i + 1)/n; tube(add(c, [0, r*Math.cos(a0), r*Math.sin(a0)]), add(c, [0, r*Math.cos(a1), r*Math.sin(a1)]), 0.06, 0.06, [220, 80, 120], 5); }
+  tube(add(c, [0, -r, 0]), add(c, [-0.6, -4, 0.4]), 0.1, 0.1, [220, 80, 120], 6); if (U.lbl) label(add(c, [0, -2.2, 0.8]), 'bubble wand', p.txt); }
+function drawBubbles(p){ var sg = GEN.sgn; BB.list.forEach(function(b){ var c = mul(b.p, 10);
+  sprite(c, function(s, v){ var r = Math.max(2, b.a*10*cam.s*fp(v));
+    if (b.st === 'pop'){ var k = b.pt/0.25; g.strokeStyle = 'rgba(200,230,255,' + (0.6*(1 - k)).toFixed(2) + ')'; g.lineWidth = 1; for (var j=0; j<8; j++){ var an = j*TAU/8; g.beginPath(); g.moveTo(s[0] + Math.cos(an)*r*(0.6 + k), s[1] + Math.sin(an)*r*(0.6 + k)); g.lineTo(s[0] + Math.cos(an)*r*(0.9 + 1.4*k), s[1] + Math.sin(an)*r*(0.9 + 1.4*k)); g.stroke(); } return; }
+    var gr = g.createRadialGradient(s[0] - r*0.35, s[1] - r*0.35, r*0.08, s[0], s[1], r); gr.addColorStop(0, 'rgba(255,255,255,0.55)'); gr.addColorStop(0.5, 'rgba(200,225,255,0.05)'); gr.addColorStop(0.82, 'hsla(' + Math.round(b.hue) + ',85%,72%,0.32)'); gr.addColorStop(0.95, 'hsla(' + Math.round(b.hue + 120) + ',85%,75%,0.45)'); gr.addColorStop(1, 'rgba(255,255,255,0.6)');
+    g.fillStyle = gr; g.beginPath(); g.arc(s[0], s[1], r, 0, TAU); g.fill(); g.strokeStyle = 'rgba(220,235,255,0.45)'; g.lineWidth = 1; g.stroke();
+    if (U.chg && b.q){ g.strokeStyle = sg > 0 ? p.pos : p.neg; g.lineWidth = 1.6; g.beginPath(); g.arc(s[0], s[1], r + 1.5, 0, TAU); g.stroke(); g.fillStyle = g.strokeStyle; g.font = 'bold ' + Math.max(9, Math.round(r*0.9)) + 'px Arial'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(sg > 0 ? '+' : '\u2212', s[0], s[1]); g.textBaseline = 'alphabetic'; }
+    else if (U.chg && len(sub(b.p, Dm())) < 0.7 && r > 5){ var D2 = scr([0, yc(), 0]), dx = D2[0] - s[0], dy = D2[1] - s[1], l = Math.hypot(dx, dy) || 1; dx /= l; dy /= l; g.font = 'bold 9px Arial'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = sg > 0 ? p.neg : p.pos; g.fillText(sg > 0 ? '\u2212' : '+', s[0] + dx*r*0.6, s[1] + dy*r*0.6); g.fillStyle = sg > 0 ? p.pos : p.neg; g.fillText(sg > 0 ? '+' : '\u2212', s[0] - dx*r*0.6, s[1] - dy*r*0.6); g.textBaseline = 'alphabetic'; } }, 0); }); }
+/* ══════════ plates ══════════ */
+function drawPlate(p, c, nv, q){ var u = perp(nv), w = cross(nv, u), n = 18, i, rb = 0.75, rt = 1.1, rl = 1.22, h = 0.22;
+  function ring(o, r){ var a = []; for (i=0; i<=n; i++){ var t = TAU*i/n; a.push(add(o, add(mul(u, r*Math.cos(t)), mul(w, r*Math.sin(t))))); } return a; }
+  var ob = sub(c, mul(nv, h/2)), ot = add(c, mul(nv, h/2)), B = ring(ob, rb), T = ring(ot, rt), Lp = ring(ot, rl);
+  for (i=0; i<n; i++){ poly([ob, B[i], B[i + 1]], p.plate); poly([B[i], B[i + 1], T[i + 1], T[i]], [190, 196, 205]); poly([T[i], T[i + 1], Lp[i + 1], Lp[i]], p.plate); }
+  if (U.chg && q > 0) chgSprite(add(ot, mul(nv, 0.12)), GEN.sgn, p, 0.14); }
+function drawPlates(p){ PL.list.forEach(function(P, i){ var c, nv = [0, 1, 0];
+  if (P.st === 'stack') c = mul(stackPos(i), 10);
+  else { c = mul(P.p, 10); if (P.st === 'fly'){ var tl = 0.35*Math.sin(P.ph*4.3) + (P.v[1] < 0 ? 0.25 : 0.1); nv = nrm(add([0, 1, 0], add(mul(P.hd, tl), mul(cross([0, 1, 0], P.hd), 0.25*Math.sin(P.ph*3.1))))); } }
+  drawPlate(p, c, nv, P.st === 'fly' ? P.q : 0); }); }
+/* ══════════ thread and hand ══════════ */
+function drawArmTo(p, Hm, far){ ellipsoid(Hm, 0.45, 0.4, 0.45, p.skin, 10, 7); [0, 1, 2, 3].forEach(function(k){ ellipsoid(add(Hm, [-0.32, 0.25 - k*0.17, 0.22]), 0.14, 0.09, 0.12, p.skin, 6, 4); }); tube(add(Hm, [0.3, -0.05, 0]), far, 0.36, 0.5, p.shirt, 8); }
+function drawString(p){ for (var i=0; i<ST.N - 1; i++) line3(mul(ST.x[i], 10), mul(ST.x[i + 1], 10), p.thread, 2.6, 0.04);
+  var Hm = mul(handM(), 10); drawArmTo(p, Hm, add(Hm, [5.5, -1.8, -2.2]));
+  if (U.chg){ var n = Math.round(6*clamp(Vd()/VmaxDome(), 0, 1)*clamp(0.6/ST.hx, 0.5, 2.2)); for (var j=0; j<n; j++){ var a = (j - (n - 1)/2)*0.35; chgSprite(add(Hm, [-0.5*Math.cos(a), 0.5*Math.sin(a), 0.1]), -GEN.sgn, p, 0.09); }
+    if (ST.sf > 0.3){ for (var k2=3; k2<ST.N; k2 += 4) chgSprite(add(mul(ST.x[k2], 10), [0, 0, 0.05]), GEN.sgn, p, 0.08); } }
+  if (U.lbl){ label(add(Hm, [1.2, 1.0, 0]), 'your hand (grounded)', p.txt); label(add(mul(ST.x[ST.N - 1], 10), [0, 0.5, 0]), 'thread', p.txt); } }
+/* ══════════ grounded sphere ══════════ */
+function S2u(){ return [Ru() + SP.d*10 + SP.r2*10, yc(), 0]; }
+function groundWire(p, x){ line3([x, 7.55, 2.5], [x, 0.4, 2.5], p.ground, 2, 0.05); sprite([x, 0.3, 2.5], function(s){ g.strokeStyle = p.ground; g.lineWidth = 2; for (var i=0; i<3; i++){ g.beginPath(); g.moveTo(s[0] - 10 + i*3, s[1] + i*4); g.lineTo(s[0] + 10 - i*3, s[1] + i*4); g.stroke(); } }, 0.05); }
+function drawSphere2(p){ var c = S2u(), r = SP.r2*10; ellipsoid(c, r, r, r, p.dome, 14, 9); tube(add(c, [0, -r*0.9, 0]), [c[0], 7.5, c[2]], 0.12, 0.12, [60, 60, 70], 8); disk([c[0], 7.52, c[2]], [0, 1, 0], 0.9, [60, 60, 70], 12);
+  line3([c[0] + 0.5, 7.55, 0.5], [c[0] + 2.2, 7.55, 2.5], p.ground, 2, 0.05); groundWire(p, c[0] + 2.2);
+  if (U.chg){ var n = Math.round(14*clamp(Vd()/Math.max(Vb(), 1), 0, 1)); for (var i=0; i<n; i++){ var a = (i/(Math.max(n, 2) - 1) - 0.5)*2.2, b2 = ((i*7) % 5 - 2)*0.3; chgSprite(add(c, mul(nrm([-Math.cos(a), Math.sin(a), b2]), r + 0.06)), -GEN.sgn, p, 0.1); } }
+  if (U.lbl){ label(add(c, [0, r + 0.9, 0]), 'grounded sphere', p.txt); label([c[0] + 2.4, 3.5, 2.6], 'ground wire', p.ground); } }
+/* ══════════ CFL ══════════ */
+function cflGeom(){ var R = Ru(), y = yc(), x1 = R + CF.d*10; if (CF.orient === 'point') return { o:[x1, y, 0], ax:[1, 0, 0] }; return { o:[x1 + 0.3, y, -0.6], ax:[0, 0, 1] }; }
+function drawCFL(p){ var G = cflGeom(), o = G.o, ax = G.ax, u = perp(ax), v = cross(ax, u), Lu = LB*10*0.85, pts = [], i, n = 90;
+  for (i=0; i<=n; i++){ var t = i/n, an = t*TAU*4.5; pts.push(add(add(o, mul(ax, 0.05 + t*Lu)), add(mul(u, 0.28*Math.cos(an)), mul(v, 0.28*Math.sin(an))))); }
+  var bc = add(o, mul(ax, Lu + 0.35)); tube(add(o, mul(ax, Lu + 0.05)), add(o, mul(ax, Lu + 0.75)), 0.4, 0.33, [245, 245, 240], 12); tube(add(o, mul(ax, Lu + 0.75)), add(o, mul(ax, Lu + 1.05)), 0.24, 0.2, [190, 170, 90], 10);
+  var Hm = add(o, mul(ax, Lu + 1.35)); drawArmTo(p, Hm, add(Hm, CF.orient === 'point' ? [5, -2, -2] : [3, -2, 5]));
+  var b = CF.b, mid = add(o, mul(ax, Lu/2));
+  sprite(mid, function(){ g.save(); g.lineCap = 'round'; if (b > 0.03){ g.shadowColor = 'rgba(200,230,255,' + (0.9*b).toFixed(2) + ')'; g.shadowBlur = 18*b; }
+    var fl = b > 0 ? b*(0.85 + 0.15*Math.random()) : 0; g.strokeStyle = b > 0.03 ? 'rgba(' + Math.round(200 + 55*fl) + ',' + Math.round(210 + 45*fl) + ',255,' + (0.45 + 0.55*fl).toFixed(2) + ')' : 'rgba(235,240,245,0.75)'; g.lineWidth = 4.5;
+    g.beginPath(); pts.forEach(function(q, k){ var s = scr(q); if (k) g.lineTo(s[0], s[1]); else g.moveTo(s[0], s[1]); }); g.stroke(); g.restore(); }, 0.1);
+  if (U.lbl){ label(add(mid, [0, 0.9, 0]), 'CFL bulb (no wires)', p.txt); label(add(Hm, [0.6, 0.8, 0]), 'held by your hand', p.txt); } }
+/* ══════════ whirl ══════════ */
+function whirlGeom(){ var yt = yc() + Ru(); return { hub:[0, yt + 0.9, 0], base:[0, yt, 0] }; }
+function drawWhirl(p){ var G = whirlGeom(), hub = G.hub, k, L = 1.4;
+  tube(G.base, hub, 0.05, 0.03, [170, 175, 185], 6); ellipsoid(hub, 0.12, 0.1, 0.12, [150, 150, 160], 8, 5);
+  for (k=0; k<4; k++){ var a = WH.th + k*Math.PI/2, d = [Math.cos(a), 0, Math.sin(a)], t = [-Math.sin(a), 0, Math.cos(a)], end = add(hub, mul(d, L));
+    tube(hub, end, 0.04, 0.04, [200, 205, 215], 5);
+    if (WH.blunt) ellipsoid(end, 0.14, 0.14, 0.14, [200, 205, 215], 8, 5);
+    else { var tip = add(end, mul(t, 0.4)); tube(end, add(end, mul(t, 0.3)), 0.04, 0.04, [200, 205, 215], 5); tube(add(end, mul(t, 0.3)), tip, 0.04, 0.003, [200, 205, 215], 5);
+      if (WH.I > 2e-7){ var s0 = tip; sprite(s0, function(s){ glowAt(s, 6 + 10*clamp(WH.I/4e-6, 0, 1), U.dark ? 0.95 : 0.6, pal().corona); }, 0.2); } } }
+  WH.ions.forEach(function(o){ var a = WH.th + o.k*Math.PI/2, d = [Math.cos(a), 0, Math.sin(a)], t = [-Math.sin(a), 0, Math.cos(a)], tip = add(add(hub, mul(d, L)), mul(t, 0.4 + o.s*1.6));
+    sprite(tip, function(s){ g.fillStyle = 'rgba(' + pal().corona + ',' + (0.8*(1 - o.s)).toFixed(2) + ')'; g.beginPath(); g.arc(s[0], s[1], 2.2, 0, TAU); g.fill(); }, 0.2); });
+  if (U.lbl) label(add(hub, [0, 0.9, 0]), WH.blunt ? 'whirl with blunt ends' : 'electric whirl (sharp tips)', p.txt); }
+/* ══════════ key / knuckle ══════════ */
+function drawKey(p){ var tip = keyTip(), y = tip[1];
+  if (KP.obj === 'key'){ var b0 = add(tip, [0.75, 0, 0]); poly([tip, add(b0, [0, 0.09, 0.02]), add(b0, [0, -0.09, 0.02])], [205, 170, 70]); box(add(tip, [0.4, 0, 0]), 0.35, 0.09, 0.02, [205, 170, 70]);
+    for (var i=0; i<4; i++) box(add(tip, [0.22 + i*0.14, -0.12, 0]), 0.04, 0.04, 0.02, [205, 170, 70]);
+    var ring = add(tip, [1.15, 0, 0]); for (var k=0; k<14; k++){ var a0 = TAU*k/14, a1 = TAU*(k + 1)/14; tube(add(ring, [0.35*Math.cos(a0), 0.35*Math.sin(a0), 0]), add(ring, [0.35*Math.cos(a1), 0.35*Math.sin(a1), 0]), 0.06, 0.06, [205, 170, 70], 5); }
+    drawArmTo(p, add(ring, [0.5, 0, 0]), add(ring, [5, -2.4, -1.8]));
+    if (KP.I > 5e-7){ sprite(tip, function(s){ glowAt(s, 6 + 12*clamp(KP.I/4e-6, 0, 1), U.dark ? 1 : 0.65, pal().corona); }, 0.3);
+      KP.ions.forEach(function(o){ var pt = add(tip, [-(KP.d*10)*o.s, o.o[1]*(1 + o.s*4), o.o[0]*(1 + o.s*4)]); sprite(pt, function(s){ g.fillStyle = 'rgba(' + pal().corona + ',' + (0.85*(1 - o.s*0.6)).toFixed(2) + ')'; g.beginPath(); g.arc(s[0], s[1], 2.2, 0, TAU); g.fill(); }, 0.3); }); }
+    if (U.chg){ var n = Math.round(5*clamp(Vd()/4e4, 0, 1)); for (var j=0; j<n; j++) chgSprite(add(tip, [0.12 + j*0.12, 0.12, 0.05]), -GEN.sgn, p, 0.07); }
+    if (U.lbl) label(add(tip, [0.6, 0.6, 0]), 'key (sharp point), held in your hand', p.txt); }
+  else { var Hm = add(tip, [0.45, 0, 0]); ellipsoid(Hm, 0.45, 0.42, 0.45, p.skin, 10, 7); tube(add(Hm, [0.3, 0, 0]), add(Hm, [5, -2.4, -1.8]), 0.38, 0.5, p.shirt, 8);
+    if (U.chg){ var n2 = Math.round(8*clamp(Vd()/Math.max(VbK(), 1), 0, 1)); for (var j2=0; j2<n2; j2++){ var a = (j2/(Math.max(n2, 2) - 1) - 0.5)*2; chgSprite(add(Hm, mul([-Math.cos(a), Math.sin(a), 0.2], 0.5)), -GEN.sgn, p, 0.09); } }
+    if (U.lbl) label(add(Hm, [0.3, 0.8, 0]), 'your knuckle (blunt)', p.txt); } }
+function drawBoltOverlay(p){ var age = perfNow() - SP.boltT; if (!SP.bolt || age > 220) return; var k = 1 - age/220;
+  g.save(); g.fillStyle = 'rgba(200,210,255,' + (0.12*k).toFixed(3) + ')'; g.fillRect(0, 0, W, H); g.shadowColor = p.glow; g.shadowBlur = 18;
+  function stroke(pts, w){ g.beginPath(); pts.forEach(function(q, i){ var s = scr(q); if (i) g.lineTo(s[0], s[1]); else g.moveTo(s[0], s[1]); }); g.lineWidth = w; g.strokeStyle = 'rgba(235,242,255,' + k.toFixed(2) + ')'; g.stroke(); }
+  stroke(SP.bolt.main, 3.2); SP.bolt.br.forEach(function(b){ stroke(b, 1.4); }); g.restore(); }
+function drawBiteFlash(p){ var age = perfNow() - ST.flash; if (!ST.fpt || age > 160) return; var k = 1 - age/160, s = scr(mul(ST.fpt, 10)); g.save(); g.shadowColor = p.glow; g.shadowBlur = 14; g.fillStyle = 'rgba(235,242,255,' + k.toFixed(2) + ')'; g.beginPath(); g.arc(s[0], s[1], 5 + 6*k, 0, TAU); g.fill(); g.restore(); }
+function drawLabels(){ labels.forEach(function(l){ var s = scr(l.p); g.font = 'bold 12px Arial, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round';
+  g.lineWidth = 3.5; g.strokeStyle = th.lm ? 'rgba(255,255,255,0.85)' : 'rgba(0,0,0,0.8)'; g.strokeText(l.t, s[0], s[1]); g.fillStyle = l.c; g.fillText(l.t, s[0], s[1]); }); labels = []; g.textBaseline = 'alphabetic'; }
+function drawGraph(p){ if (!U.gr) return; var x0 = 12, y0 = 12, w = 210, h = 88, vmax = VmaxDome()*1.08, h2 = GEN.hist; g.fillStyle = th.lm ? 'rgba(255,255,255,0.85)' : 'rgba(0,0,0,0.55)'; g.fillRect(x0, y0, w, h); g.strokeStyle = p.dim; g.lineWidth = 1; g.strokeRect(x0, y0, w, h);
+  g.font = '10px Arial'; g.fillStyle = p.dim; g.textAlign = 'left'; g.fillText('|V|, last 12 s', x0 + 4, y0 + 11);
+  function Y(v){ return y0 + h - 4 - (h - 18)*clamp(v/vmax, 0, 1.05); }
+  function hl(v, col, t){ var yy = Y(v); g.strokeStyle = col; g.setLineDash([4, 3]); g.beginPath(); g.moveTo(x0, yy); g.lineTo(x0 + w, yy); g.stroke(); g.setLineDash([]); g.fillStyle = col; g.textAlign = 'right'; g.fillText(t + ' ' + kV(v), x0 + w - 4, yy - 2); }
+  hl(VmaxDome(), p.dim, 'corona limit');
+  if (U.tab === 5) hl(Vb(), '#ffd23f', 'spark at'); if (U.tab === 3) hl(liftV(), '#ffd23f', 'plate lifts'); if (U.tab === 8 && VbK() < vmax) hl(VbK(), '#ffd23f', 'spark at');
+  if (h2.length > 1){ var t1 = h2[h2.length - 1][0]; g.strokeStyle = th.cb ? '#56b4e9' : '#3ad08f'; g.lineWidth = 1.8; g.beginPath(); h2.forEach(function(q, i){ var xx = x0 + w - (t1 - q[0])/12*w, yy = Y(q[1]); if (i) g.lineTo(xx, yy); else g.moveTo(xx, yy); }); g.stroke(); } }
+function draw(){ var p = pal(); setCam(); g.fillStyle = p.bg; g.fillRect(0, 0, W, H); drawFloor(p);
+  var t = U.tab; drawTable(p, -3.2, t === 5 ? 7.6 : (t === 1 ? 2.8 : 3.2)); drawVDG(p, t === 0 ? 0.33 : 1);
+  if (t === 1) drawPerson(p); if (t === 2){ drawWand(p); drawBubbles(p); } if (t === 3) drawPlates(p); if (t === 4) drawString(p); if (t === 5) drawSphere2(p); if (t === 6) drawCFL(p); if (t === 7) drawWhirl(p); if (t === 8) drawKey(p);
+  drawField(p); flush();
+  if (U.dark){ g.fillStyle = 'rgba(0,0,0,0.62)'; g.fillRect(0, 0, W, H);
+    if (t === 6 && CF.b > 0.03){ var G = cflGeom(); glowAt(scr(add(G.o, mul(G.ax, 0.5))), 70*CF.b, 0.5*CF.b, '210,225,255'); }
+    if (t === 7 && !WH.blunt && WH.I > 2e-7){ for (var k=0; k<4; k++){ var a = WH.th + k*Math.PI/2; glowAt(scr(add(add(whirlGeom().hub, mul([Math.cos(a), 0, Math.sin(a)], 1.4)), mul([-Math.sin(a), 0, Math.cos(a)], 0.4))), 14, 0.9, p.corona); } }
+    if (t === 8 && KP.obj === 'key' && KP.I > 5e-7) glowAt(scr(keyTip()), 18, 0.95, p.corona); }
+  drawCorona(p); if (t === 5 || t === 8) drawBoltOverlay(p); if (t === 4) drawBiteFlash(p); drawLabels(); drawGraph(p); drawInsets(p);
+  el('vdHint').textContent = 'V = ' + (GEN.sgn < 0 && Vd() > 0 ? '\u2212' : '') + kV(Vd()) + ' \u00b7 ' + (U.spd < 1 ? 'slow motion ' + U.spd.toFixed(2) + '\u00d7 \u00b7 ' : '') + 'drag to turn the view'; }
+/* ══════════ readout ══════════ */
+function card(a, b){ return '<div><div class="' + cls('vd_flabel') + '">' + a + '</div><div class="' + cls('vd_fvalue') + '" title="' + b + '">' + b + '</div></div>'; }
+function info(){ var V = Vd(), E = V/GEN.R, C = Ct(), t = U.tab, cells = [], st = '', eq = '', sg = GEN.sgn, sV = (sg < 0 && V > 0 ? '\u2212' : '') + kV(V);
+  cells.push(['potential V', sV]); cells.push(['charge Q', (sg < 0 && V > 0 ? '\u2212' : '') + f(GEN.Q*1e6, 2) + ' \u00b5C']); cells.push(['capacitance C', f(C*1e12, 1) + ' pF']); cells.push(['field at the dome', f(E/1e6, 2) + ' MV/m']);
+  if (t === 0){ cells.push(['field / breakdown', f(100*E/EB, 0) + ' %']); cells.push(['energy \u00bdCV\u00b2', f(0.5*C*V*V, 2) + ' J']); cells.push(['corona limit E_b R', kV(VmaxDome())]); cells.push(['belt charging', GEN.eff === 0 ? 'none' : (sg > 0 ? '+' : '\u2212') + ' ' + f(100*GEN.eff, 0) + ' %']);
+    st = GEN.eff === 0 ? 'Belt and roller are the same material: neither takes electrons from the other, so the belt carries no charge and the dome stays neutral.' : !GEN.on ? 'Motor off: no new charge arrives; the charge slowly leaks away through the air and the column.' : GEN.corona ? 'Maximum reached: the field at the surface is near 3 MV/m, the air ionizes (corona discharge) and carries off as much charge as the belt brings. Try the dark room.' : V < 1e3 ? 'The belt starts to carry ' + sw() + ' charge up to the dome.' : 'Charging: the dome becomes ' + sw() + ' and its potential rises.';
+    eq = 'C = 4\u03c0\u03b5\u2080R = <b>' + f(Cd()*1e12, 1) + ' pF</b> \u00b7 V = Q/C = <b>' + sV + '</b> \u00b7 E = V/R = <b>' + f(E/1e6, 2) + ' MV/m</b> \u00b7 V_max \u2248 E_b R = <b>' + kV(VmaxDome()) + '</b><br>Triboelectric order: ' + GEN.belt + ' (' + sPos(GEN.belt) + ') vs ' + GEN.roll + ' (' + sPos(GEN.roll) + '): ' + (GEN.eff === 0 ? 'no transfer.' : (sg > 0 ? 'the roller is lower, takes electrons, belt +, dome +.' : 'the roller is higher, gives electrons, belt \u2212, dome \u2212.')); }
+  if (t === 1){ cells.push(['person\u2019s potential', kV(HP.Vp)]); cells.push(['induced (not touching)', kV(HP.Vind)]); cells.push(['head hair lift', f(100*HP.lift, 0) + ' %']); cells.push(['arm hair lift', f(100*HP.blift, 0) + ' %']);
+    st = !HP.stool && HP.touch ? 'Standing on the floor, the person is grounded: the charge flows through the body to the ground, and nothing happens.' : !HP.touch ? (HP.stool ? 'Hand off, on the stool: the person keeps the charge, and the field of the dome polarizes the body (opposite charge on the side facing the dome).' : 'Grounded, hand off: the dome induces a charge of the opposite sign on the body; the fine hairs on the arms still rise.') : HP.lift > 0.5 ? 'Hair standing on end: every hair has the same sign of charge, so they repel and stand still along the field.' : 'Person and dome form one conductor and charge up together; the body adds about 100 pF, so it takes longer.';
+    eq = 'Person + dome: <b>C \u2248 ' + f(Cd()*1e12, 0) + ' + 100 pF</b>, one conductor at one potential. Not touching, a grounded body near the dome gets an induced charge of the opposite sign; an insulated body is polarized.'; }
+  if (t === 2){ cells.push(['bubbles in the air', String(BB.list.filter(function(b){ return b.st === 'free'; }).length)]); cells.push(['attracted', String(BB.att)]); cells.push(['charged: ions / contact', BB.ion + ' / ' + BB.chg]); cells.push(['burst', String(BB.pop)]);
+    st = BB.list.length ? 'Neutral bubbles are pulled toward the dome; charged ones (ringed) are pushed away, many of them charged by corona ions before touching.' : 'Press Blow bubbles.';
+    eq = 'Neutral bubble (polarized): pulled in, <b>F \u2248 2kQ\u00b2a\u00b3/r\u2075</b>. Charged by ions from the corona or on contact: pushed away, <b>F = kQq/r\u00b2</b>.'; }
+  if (t === 3){ var left = PL.list.filter(function(P){ return P.st === 'stack'; }).length; cells.push(['plates on the dome', left + ' of ' + PL.n]); cells.push(['lift-off potential', kV(liftV())]); cells.push(['last plate left at', PL.lastV ? kV(PL.lastV) : '\u2014']); cells.push(['energy \u00bdCV\u00b2', f(0.5*C*V*V, 2) + ' J']);
+    st = left === PL.n ? (V < liftV() ? 'Charging: the charge gathers on the outside of the top plate.' : '') : left === 0 ? 'All the plates have flown. Press Stack the plates again.' : 'Each time the dome recharges to about ' + kV(liftV()) + ', the next plate lifts off.';
+    eq = 'Electric pressure: <b>P = \u03b5\u2080E\u00b2/2</b>. The top plate (5 g, radius 11 cm) leaves when \u03b5\u2080(\u03b2E)\u00b2A/2 &gt; mg, at <b>V = ' + kV(liftV()) + '</b>.'; }
+  if (t === 4){ var dd = len(sub(handM(), Dm())); cells.push(['hand to dome centre', f(dd*100, 0) + ' cm']); cells.push(['induced charge on hand', (sg > 0 ? '\u2212' : '+') + f(GEN.Q*0.045/dd*1e9, 0) + ' nC']); cells.push(['bites', String(ST.bites)]); cells.push(['energy \u00bdCV\u00b2', f(0.5*C*V*V, 2) + ' J']);
+    st = V < 2e4 ? 'The thread hangs down: it is not charged yet.' : ST.sf < 0.35 ? 'The thread has just discharged into the hand and drops.' : dd < 0.36 ? 'The hand is close: the thread swings toward it and bites.' : 'The charged thread stands out from the dome, along the field. Bring the hand closer.';
+    eq = 'Thread at the dome potential: \u03bb \u2248 2\u03c0\u03b5\u2080V/ln(L/r) = <b>' + f(2*Math.PI*EPS*V/8*1e9, 1) + ' nC/m</b>. The grounded hand gets an induced charge \u2248 \u2212Q a/d and attracts it.'; }
+  if (t === 5){ var rate = SP.times.length/Math.min(5, Math.max(GEN.t, 0.5)); cells.push(['breakdown V_b', kV(Vb())]); cells.push(['sparks per second', f(rate, 1)]); cells.push(['energy of last spark', SP.count ? f(SP.lastE*1000, 0) + ' mJ' : '\u2014']); cells.push(['longest spark', f(100*maxGap(), 0) + ' cm']);
+    st = Vb() > VmaxDome() ? 'Gap too long: the dome reaches its corona limit before the gap breaks down, so no spark jumps.' : SP.count ? 'Sparks: each time the dome reaches V_b the gap breaks down and the dome discharges, then recharges.' : 'Charging toward V_b = ' + kV(Vb()) + '.';
+    eq = 'Breakdown of the gap: <b>V_b \u2248 E_b d/(1 + 6d) = ' + kV(Vb()) + '</b> (d in m). Energy released: <b>U = \u00bdCV\u00b2 = ' + f(0.5*Cd()*Vb()*Vb()*1000, 0) + ' mJ</b>.'; }
+  if (t === 6){ cells.push(['bulb to dome', f(CF.d*100, 0) + ' cm']); cells.push(['\u0394V across the bulb', kV(CF.dV)]); cells.push(['brightness', f(100*CF.b, 0) + ' %']); cells.push(['held', CF.orient === 'point' ? 'pointing at the dome' : 'sideways']);
+    st = CF.b > 0.5 ? 'The bulb glows brightly with no connection to anything: the dome makes the two ends of the bulb sit at very different potentials.' : CF.b > 0.05 ? 'A faint, flickering glow. Bring it closer, or point it at the dome.' : CF.orient === 'side' ? 'Held sideways, both ends of the bulb are at nearly the same potential: no current, no light.' : 'Too far, or the dome is not charged enough. Bring the bulb closer.';
+    eq = '\u0394V \u2248 V R (1/r\u2081 \u2212 1/r\u2082) with r\u2081, r\u2082 the distances of the two ends from the dome centre = <b>' + kV(CF.dV) + '</b>. The field inside the bulb, about \u0394V/L, accelerates electrons that excite the mercury vapour; the phosphor turns its ultraviolet light into visible light.'; }
+  if (t === 7){ cells.push(['spin rate', f(Math.abs(WH.w)*60/TAU, 0) + ' rpm']); cells.push(['current from the tips', f(WH.I*1e6, 2) + ' \u00b5A']); cells.push(['ends', WH.blunt ? 'blunt (balls)' : 'sharp points']); cells.push(['corona onset (tips)', '15 kV']);
+    st = WH.blunt ? 'Blunt ends: the field at a ball is far weaker than at a point, so there is no corona and the whirl does not move. The dome charges to its full potential.' : WH.w > 2 ? 'Spinning: ions are pushed off the tips, and the tips are pushed back. The dome stays at a low potential because the tips drain its charge.' : 'Charging: once the dome passes about 15 kV the air at the tips begins to ionize.';
+    eq = 'Tip current I \u2248 k(V \u2212 V\u2080)V: the whirl drains the dome, which stays near <b>' + kV(V) + '</b> instead of ' + kV(VmaxDome()) + '. Each ion leaving a tip carries momentum away; by Newton\u2019s third law the tip recoils, like a rotating lawn sprinkler.'; }
+  if (t === 8){ cells.push(['tip to dome', f(KP.d*100, 0) + ' cm']); cells.push(['corona at the tip', KP.obj === 'key' ? 'from ' + kV(VonK()) : 'none (blunt)']); cells.push(['spark voltage', kV(VbK())]); cells.push(['current through you', f(KP.I*1e6, 2) + ' \u00b5A']);
+    st = KP.obj === 'key' ? (KP.I > 5e-7 ? 'The key quietly drains the dome: ions of the opposite sign stream from its tip and neutralize the dome. The potential stays at ' + kV(V) + ', far below the ' + kV(VbK()) + ' needed for a spark. Now even a hand can come close.' : 'Bring the key closer to the dome.') : (KP.sparks ? 'Sparks to the knuckle: a blunt object does not drain the charge.' : 'Charging toward the spark voltage of the gap.');
+    eq = KP.obj === 'key' ? 'At a sharp tip of radius r, E \u2248 V/r is enormous even at a low V: the air ionizes at <b>' + kV(VonK()) + '</b>. The point current k(V \u2212 V_on)V grows so fast that the dome cannot charge up: this is how a lightning rod works.' : 'A knuckle is rounded: no corona. The dome charges until the gap breaks down, <b>V_b \u2248 ' + kV(VbK()) + '</b>, then sparks.'; }
+  el('vdRead').innerHTML = cells.map(function(c){ return card(c[0], c[1]); }).join(''); el('vdStatus').textContent = st; el('vdEq').innerHTML = eq; return st; }
+function maxGap(){ var v = VmaxDome()/EB; return v/(1 - 6*v) > 0 ? v/(1 - 6*v) : 9; }
+function say(m){ if (th.nr) el('vdNar').textContent = m; }
+function ev(k, m){ if (U.ev[k]) return; U.ev[k] = 1; say(m); }
+var INTRO = ['How it works: the belt is charged by contact with the lower roller (the triboelectric effect) and carries the charge up into the dome. The close-ups show where electrons move. Change the belt or roller material, and try the dark room to see the corona.',
+  'Hair raising: the volunteer stands on an insulating stool with a hand on the dome. Then try taking the hand off, or stepping off the stool: watch the arm hairs.',
+  'Soap bubbles drift toward the dome. Neutral bubbles are attracted; many pick up charge from corona ions, others on contact, and are repelled. Some burst.',
+  'A stack of aluminium pie plates sits on the dome. When the electric pressure on the top plate beats its weight, it flies off; then the next.',
+  'A light thread is tied to the dome. Charged, it stands out from the dome. Bring your grounded hand near it and it bites.',
+  'A grounded sphere stands near the dome. When the potential reaches the breakdown voltage of the gap, a spark jumps. Change the gap.',
+  'Hold a compact fluorescent bulb near the dome. Bring it closer, and compare pointing it at the dome with holding it sideways. Try the dark room.',
+  'An electric whirl sits on top of the dome. Turn the motor on and watch it spin; then try blunt ends.',
+  'Approach the dome with a key held in your hand. Then compare with your knuckle. The surprise: the key gives no spark.'];
+function describe(){ var t = U.tab, s = 'A Van de Graaff generator on a table: a metal dome of radius ' + f(GEN.R*100, 0) + ' cm, charged ' + sw() + '. ';
+  if (t === 0) s += 'The dome is see-through: a ' + GEN.belt.toLowerCase() + ' belt runs over a ' + GEN.roll.toLowerCase() + ' lower roller and a metal upper roller, with combs at both ends. Two close-ups on the right show electrons moving between the belt and the roller, and from the upper comb to the belt. ';
+  if (t === 1) s += 'A person stands ' + (HP.stool ? 'on an insulating stool' : 'on the floor') + (HP.touch ? ', one hand on the dome. ' : ', hands at the sides. ') + 'The hair is ' + (HP.lift > 0.6 ? 'standing out from the head. ' : HP.lift > 0.25 ? 'lifting. ' : 'lying flat. ') + 'The arm hairs are ' + (HP.blift > 0.4 ? 'raised. ' : 'flat. ');
+  if (t === 2) s += 'Soap bubbles float from a wand on the left; charged bubbles are ringed. ';
+  if (t === 3) s += PL.list.filter(function(P){ return P.st === 'stack'; }).length + ' pie plates are stacked on the dome. ';
+  if (t === 4) s += 'A thread is tied to the dome; a hand is ' + f(len(sub(handM(), Dm()))*100, 0) + ' cm from the dome centre. ';
+  if (t === 5) s += 'A grounded sphere is ' + f(SP.d*100, 0) + ' cm from the dome. ';
+  if (t === 6) s += 'A hand holds a spiral fluorescent bulb ' + f(CF.d*100, 0) + ' cm from the dome, ' + (CF.orient === 'point' ? 'pointing at it' : 'sideways') + '; it is ' + (CF.b > 0.3 ? 'glowing' : CF.b > 0.05 ? 'glowing faintly' : 'dark') + '. ';
+  if (t === 7) s += 'A four-armed whirl with ' + (WH.blunt ? 'ball ends' : 'bent, pointed ends') + ' sits on a needle on top of the dome, turning at ' + f(Math.abs(WH.w)*60/TAU, 0) + ' rpm. ';
+  if (t === 8) s += 'A hand holds ' + (KP.obj === 'key' ? 'a key, tip pointing at the dome, ' : 'a fist, knuckle toward the dome, ') + f(KP.d*100, 0) + ' cm away. ';
+  say(s + info()); }
+/* ══════════ controls ══════════ */
+function row(id, label, min, max, step, val, txt){ return '<div class="' + cls('vd_ctrl') + '"><div class="' + cls('vd_ctrlhdr') + '"><label class="' + cls('vd_ctrlname') + '" for="' + id + '">' + label + '</label><span class="' + cls('vd_sval') + '" id="' + id + 'v">' + txt + '</span></div><input type="range" id="' + id + '" min="' + min + '" max="' + max + '" step="' + step + '" value="' + val + '"></div>'; }
+function on(id, evn, fn){ var e = el(id); if (e) e.addEventListener(evn, fn); }
+function btn(id, t){ return '<button type="button" class="' + cls('vd_btn') + '" id="' + id + '">' + t + '</button>'; }
+function syncSl(id, v){ var e = el(id); if (e){ e.value = Math.round(v*100); el(id + 'v').textContent = Math.round(v*100) + ' cm'; } }
+function buildG(){ el('vdCtlG').innerHTML = row('vdR', 'dome radius R', 10, 25, 1, GEN.R*100, f(GEN.R*100, 0) + ' cm') + row('vdI', 'belt current I (best materials)', 1, 20, 0.5, GEN.I, f(GEN.I, 1) + ' \u00b5A') + row('vdH', 'relative humidity of the air', 20, 90, 1, GEN.hum, GEN.hum + ' %')
+  + '<p class="' + cls('vd_note') + '">Dry air works best: in humid air the charge leaks away almost as fast as the belt brings it. The belt and roller materials are chosen in tab 1; the sign of the dome carries over to the other demos.</p>';
+  on('vdR', 'input', function(){ GEN.R = +this.value/100; el('vdRv').textContent = this.value + ' cm'; if (U.tab === 3) stack(); if (U.tab === 4) strInit(); later(); });
+  on('vdI', 'input', function(){ GEN.I = +this.value; el('vdIv').textContent = f(GEN.I, 1) + ' \u00b5A'; later(); });
+  on('vdH', 'input', function(){ GEN.hum = +this.value; el('vdHv').textContent = GEN.hum + ' %'; later(); }); }
+function seriesHTML(){ return '<div class="' + cls('vd_series') + '">' + '<div><span>+ end (gives electrons)</span><span></span></div>' + SER.map(function(s){ var tag = (s[0] === GEN.belt ? 'BELT' : '') + (s[0] === GEN.roll ? (s[0] === GEN.belt ? ' + ' : '') + 'ROLLER' : ''); return '<div class="' + (tag ? cls('vd_hit') : '') + '"><span>' + s[0] + '</span><span>' + tag + '</span></div>'; }).join('') + '<div><span>\u2212 end (takes electrons)</span><span></span></div></div>'; }
+function buildD(){ var t = U.tab, h = '', tt = ['Belt, roller and combs', 'The volunteer', 'The bubbles', 'The pie plates', 'The thread and your hand', 'The spark gap', 'The bulb', 'The whirl', 'The sharp point'][t];
+  el('vdDemoT').textContent = tt;
+  if (t === 0) h = '<div class="' + cls('vd_ctrl') + '"><label class="' + cls('vd_ctrlname') + '" for="vdBelt">belt material</label><select class="' + cls('vd_sel') + '" id="vdBelt">' + BELTS.map(function(b){ return '<option' + (b === GEN.belt ? ' selected' : '') + '>' + b + '</option>'; }).join('') + '</select></div>'
+    + '<div class="' + cls('vd_ctrl') + '"><label class="' + cls('vd_ctrlname') + '" for="vdRoll">lower roller material</label><select class="' + cls('vd_sel') + '" id="vdRoll">' + ROLLS.map(function(b){ return '<option' + (b === GEN.roll ? ' selected' : '') + '>' + b + '</option>'; }).join('') + '</select></div>'
+    + seriesHTML() + '<label class="' + cls('vd_chk') + '"><input type="checkbox" id="vdIns"' + (U.insets ? ' checked' : '') + '> show the close-ups of the combs</label>';
+  if (t === 1) h = '<div class="' + cls('vd_brow') + '">' + btn('vdStool', HP.stool ? 'Step off the stool' : 'Stand on the stool') + btn('vdTouch', HP.touch ? 'Take the hand off the dome' : 'Put the hand on the dome') + '</div><div class="' + cls('vd_brow') + '" id="vdHair">' + HAIR.map(function(hz, i){ return '<button type="button" class="' + cls('vd_btn') + '" data-h="' + i + '" aria-pressed="' + (HP.hair === i) + '">' + hz.n + '</button>'; }).join('') + '</div><p class="' + cls('vd_note') + '">Safety: the volunteer touches the dome before it is switched on, stays on the stool, and is discharged with the wand before stepping down.</p>';
+  if (t === 2) h = '<div class="' + cls('vd_brow') + '">' + btn('vdBlow', 'Blow bubbles') + '</div><label class="' + cls('vd_chk') + '"><input type="checkbox" id="vdAuto"' + (BB.auto ? ' checked' : '') + '> blow bubbles every 2 s</label><p class="' + cls('vd_note') + '">Near a fully charged dome, corona ions charge many bubbles before they touch.</p>';
+  if (t === 3) h = row('vdPn', 'number of plates', 1, 10, 1, PL.n, String(PL.n)) + '<div class="' + cls('vd_brow') + '">' + btn('vdStack', 'Stack the plates again') + '</div><p class="' + cls('vd_note') + '">Aluminium pie plates, 5 g and 22 cm across each. Restacking discharges the dome.</p>';
+  if (t === 4) h = row('vdSL', 'thread length', 15, 40, 1, ST.L*100, f(ST.L*100, 0) + ' cm') + row('vdHx', 'hand: distance from the dome centre', 25, 70, 1, ST.hx*100, f(ST.hx*100, 0) + ' cm') + row('vdHy', 'hand: height above the dome centre', -20, 35, 1, ST.hy*100, f(ST.hy*100, 0) + ' cm') + '<div class="' + cls('vd_brow') + '">' + btn('vdApp', 'Bring the hand slowly closer') + btn('vdAway', 'Pull the hand away') + '</div>';
+  if (t === 5) h = row('vdGap', 'gap d between the spheres', 1, 30, 0.5, SP.d*100, f(SP.d*100, 1) + ' cm') + '<p class="' + cls('vd_note') + '">Turn on the sound to hear the crack.</p>';
+  if (t === 6) h = row('vdCd', 'bulb tip to dome', 1, 40, 1, CF.d*100, f(CF.d*100, 0) + ' cm') + '<div class="' + cls('vd_brow') + '">' + btn('vdCo', CF.orient === 'point' ? 'Hold it sideways' : 'Point it at the dome') + btn('vdCa', 'Bring it slowly closer') + '</div><p class="' + cls('vd_note') + '">Tip: turn on the dark room.</p>';
+  if (t === 7) h = '<label class="' + cls('vd_chk') + '"><input type="checkbox" id="vdWb"' + (WH.blunt ? ' checked' : '') + '> blunt ends (small balls instead of points)</label><p class="' + cls('vd_note') + '">The whirl turns opposite to the direction its tips point. In the dark room, each tip glows.</p>';
+  if (t === 8) h = '<div class="' + cls('vd_brow') + '"><button type="button" class="' + cls('vd_btn') + '" data-o="key" aria-pressed="' + (KP.obj === 'key') + '">Key (sharp point)</button><button type="button" class="' + cls('vd_btn') + '" data-o="knuckle" aria-pressed="' + (KP.obj === 'knuckle') + '">Knuckle (blunt)</button></div>' + row('vdKd', 'tip to dome', 1, 40, 1, KP.d*100, f(KP.d*100, 0) + ' cm') + '<div class="' + cls('vd_brow') + '">' + btn('vdKa', 'Bring it slowly closer') + '</div>';
+  el('vdCtlD').innerHTML = h;
+  on('vdBelt', 'change', function(){ GEN.belt = this.value; setTribo(); GEN.Q = 0; buildD(); say(triboText()); });
+  on('vdRoll', 'change', function(){ GEN.roll = this.value; setTribo(); GEN.Q = 0; buildD(); say(triboText()); });
+  on('vdIns', 'change', function(){ U.insets = this.checked; });
+  on('vdStool', 'click', function(){ var was = HP.Vp; HP.stool = !HP.stool; buildD(); say(HP.stool ? 'Back on the insulating stool.' : (was > 2e4 ? 'Stepping down while charged: zap! The charge flows to the ground and the hair drops.' : 'Standing on the floor now: the body is grounded.')); if (!HP.stool && was > 2e4) crack(0.4); });
+  on('vdTouch', 'click', function(){ HP.touch = !HP.touch; buildD(); say(HP.touch ? 'Hand on the dome: person and dome are one conductor again.' : 'Hand off the dome. Watch the charges on the body and the hairs on the arms.'); });
+  [].forEach.call(el('vdCtlD').querySelectorAll('button[data-h]'), function(b){ b.addEventListener('click', function(){ HP.hair = +b.getAttribute('data-h'); buildD(); say(HAIR[HP.hair].n + '.'); }); });
+  on('vdBlow', 'click', function(){ blow(6); }); on('vdAuto', 'change', function(){ BB.auto = this.checked; });
+  on('vdPn', 'input', function(){ PL.n = +this.value; el('vdPnv').textContent = this.value; GEN.Q = 0; stack(); });
+  on('vdStack', 'click', function(){ GEN.Q = 0; stack(); say('The dome is discharged and ' + PL.n + ' plates are stacked on it again.'); });
+  on('vdSL', 'input', function(){ ST.L = +this.value/100; el('vdSLv').textContent = this.value + ' cm'; strInit(); });
+  on('vdHx', 'input', function(){ ST.hx = +this.value/100; ST.auto = false; el('vdHxv').textContent = this.value + ' cm'; });
+  on('vdHy', 'input', function(){ ST.hy = +this.value/100; el('vdHyv').textContent = this.value + ' cm'; });
+  on('vdApp', 'click', function(){ ST.auto = true; say('The hand moves slowly toward the thread.'); }); on('vdAway', 'click', function(){ ST.auto = false; ST.hx = 0.65; syncSl('vdHx', ST.hx); });
+  on('vdGap', 'input', function(){ SP.d = +this.value/100; el('vdGapv').textContent = f(SP.d*100, 1) + ' cm'; SP.times = []; later(); });
+  on('vdCd', 'input', function(){ CF.d = +this.value/100; CF.auto = false; el('vdCdv').textContent = this.value + ' cm'; });
+  on('vdCo', 'click', function(){ CF.orient = CF.orient === 'point' ? 'side' : 'point'; buildD(); say(CF.orient === 'side' ? 'Held sideways: both ends are about the same distance from the dome.' : 'Pointing at the dome: one end is much closer than the other.'); });
+  on('vdCa', 'click', function(){ CF.auto = true; CF.d = Math.max(CF.d, 0.3); syncSl('vdCd', CF.d); say('The bulb moves slowly toward the dome. Watch when it starts to glow.'); });
+  on('vdWb', 'change', function(){ WH.blunt = this.checked; say(WH.blunt ? 'Blunt ends: no corona, so the whirl stops and the dome charges to its full potential.' : 'Sharp ends again: the air at the tips ionizes and the whirl spins.'); });
+  [].forEach.call(el('vdCtlD').querySelectorAll('button[data-o]'), function(b){ b.addEventListener('click', function(){ KP.obj = b.getAttribute('data-o'); KP.sparks = 0; buildD(); say(KP.obj === 'key' ? 'The key: watch the dome potential stay low.' : 'Your knuckle: the dome charges until a spark jumps.'); }); });
+  on('vdKd', 'input', function(){ KP.d = +this.value/100; KP.auto = false; el('vdKdv').textContent = this.value + ' cm'; later(); });
+  on('vdKa', 'click', function(){ KP.auto = true; KP.d = Math.max(KP.d, 0.3); syncSl('vdKd', KP.d); say('Approaching slowly. Watch the potential and the spark voltage.'); }); }
+function triboText(){ return GEN.eff === 0 ? 'Belt and roller are the same material: no electrons are transferred, and the generator does not charge.' : GEN.belt + ' belt on the ' + GEN.roll.toLowerCase() + ' roller: the ' + (GEN.sgn > 0 ? 'roller is lower on the triboelectric series, takes electrons from the belt, and the belt carries positive charge up. The dome becomes positive.' : 'roller is higher on the triboelectric series, gives electrons to the belt, and the belt carries electrons up. The dome becomes negative.') + (GEN.eff < 1 ? ' The two materials are close in the series, so the charging is weak (' + f(100*GEN.eff, 0) + ' %).' : ''); }
+var lt = null; function later(){ clearTimeout(lt); lt = setTimeout(function(){ say(info()); }, 700); }
+function setMotor(v){ GEN.on = v; var b = el('vdMotor'); b.textContent = 'Motor: ' + (v ? 'ON' : 'OFF'); b.setAttribute('aria-pressed', v ? 'true' : 'false'); }
+function setPlay(v){ U.run = v; el('vdPlay').innerHTML = v ? '\u2759\u2759 Pause' : '\u25B6 Play'; el('vdPlay').classList.toggle(cls('vd_btnon'), v); }
+on('vdMotor', 'click', function(){ setMotor(!GEN.on); say(GEN.on ? 'Motor on.' : 'Motor off: no new charge arrives; the charge slowly leaks away.'); });
+on('vdWand', 'click', function(){ var V = Vd(); GEN.Q = 0; HP.Vp = 0; crack(0.3); say(V > 1e4 ? 'The grounding wand touches the dome: a small spark, and the dome is discharged from ' + kV(V) + ' to 0.' : 'The dome is already discharged.'); });
+on('vdPlay', 'click', function(){ setPlay(!U.run); });
+on('vdRst', 'click', function(){ tab(U.tab); });
+on('vdSpd', 'input', function(){ U.spd = +this.value; el('vdSpdV').textContent = U.spd.toFixed(2) + '\u00d7'; });
+on('vdChg', 'change', function(){ U.chg = this.checked; }); on('vdFl', 'change', function(){ U.fl = this.checked; }); on('vdLbl', 'change', function(){ U.lbl = this.checked; }); on('vdGr', 'change', function(){ U.gr = this.checked; });
+on('vdDark', 'change', function(){ U.dark = this.checked; say(U.dark ? 'Lights off: a charged dome near its limit shows a faint violet corona; sharp points glow brightly.' : 'Lights on.'); });
+on('vdSnd', 'change', function(){ U.sound = this.checked; if (U.sound) ac(); });
+on('vdVStd', 'click', function(){ U.yaw = CAMS[U.tab].yaw; U.pitch = CAMS[U.tab].pitch; U.zoom = 1; }); on('vdVFr', 'click', function(){ U.yaw = 0; U.pitch = 2; });
+on('vdZin', 'click', function(){ U.zoom = Math.min(3, U.zoom*1.2); }); on('vdZout', 'click', function(){ U.zoom = Math.max(0.4, U.zoom/1.2); });
+on('vdDsc', 'click', describe);
+var drag = null;
+cv.addEventListener('pointerdown', function(e){ drag = { x:e.clientX, y:e.clientY, yaw:U.yaw, pitch:U.pitch }; try { cv.setPointerCapture(e.pointerId); } catch (err) {} cv.style.cursor = 'grabbing'; });
+cv.addEventListener('pointermove', function(e){ if (!drag) return; var r = cv.getBoundingClientRect(), k = W/r.width; U.yaw = drag.yaw + (e.clientX - drag.x)*k*0.4; U.pitch = clamp(drag.pitch + (e.clientY - drag.y)*k*0.3, -30, 80); });
+function endDrag(){ drag = null; cv.style.cursor = 'grab'; } cv.addEventListener('pointerup', endDrag); cv.addEventListener('pointercancel', endDrag);
+cv.addEventListener('wheel', function(e){ e.preventDefault(); U.zoom = clamp(U.zoom*(e.deltaY < 0 ? 1.1 : 1/1.1), 0.4, 3); }, { passive:false });
+cv.addEventListener('keydown', function(e){ var k = e.key;
+  if (k === 'ArrowLeft') U.yaw -= 5; else if (k === 'ArrowRight') U.yaw += 5; else if (k === 'ArrowUp') U.pitch = clamp(U.pitch + 5, -30, 80); else if (k === 'ArrowDown') U.pitch = clamp(U.pitch - 5, -30, 80);
+  else if (k === '+' || k === '=') U.zoom = Math.min(3, U.zoom*1.2); else if (k === '-') U.zoom = Math.max(0.4, U.zoom/1.2);
+  else if (k === 'm' || k === 'M') el('vdMotor').click(); else if (k === 'p' || k === 'P') setPlay(!U.run); else return; e.preventDefault(); });
+function tab(i){ U.tab = i; for (var k=0; k<9; k++) el('vdT' + k).setAttribute('aria-selected', k === i ? 'true' : 'false');
+  el('vdLab').textContent = NAMES[i]; U.yaw = CAMS[i].yaw; U.pitch = CAMS[i].pitch; U.zoom = 1; U.ev = {};
+  GEN.Q = 0; GEN.hist = []; GEN.t = 0; setMotor(true); if (!U.run) setPlay(true);
+  U.spd = TSPD[i]; el('vdSpd').value = U.spd; el('vdSpdV').textContent = U.spd.toFixed(2) + '\u00d7';
+  U.fl = i === 0; el('vdFl').checked = U.fl;
+  HP.stool = true; HP.touch = true; HP.Vp = 0; HP.lift = 0; HP.blift = 0; HP.Vind = 0; BB.list = []; BB.att = BB.chg = BB.pop = BB.ion = 0; BB.acc = 1.5; stack(); strInit(); ST.hx = 0.50; ST.auto = false; SP.count = 0; SP.times = []; SP.bolt = null;
+  CF.d = 0.12; CF.b = 0; CF.auto = false; WH.w = 0; WH.ions = []; KP.d = 0.15; KP.auto = false; KP.sparks = 0; KP.ions = [];
+  buildD(); info(); say(INTRO[i]); }
+function theme(k){ th[k] = !th[k]; if (k === 'hc' && th.hc) th.lm = false; if (k === 'lm' && th.lm) th.hc = false;
+  ROOT.classList.toggle(cls('vd_hc'), th.hc); ROOT.classList.toggle(cls('vd_lm'), th.lm);
+  [['hc', 'vdBtnHC'], ['lm', 'vdBtnLM'], ['cb', 'vdBtnCB'], ['nr', 'vdBtnNR']].forEach(function(q){ var b = el(q[1]); b.classList.toggle(cls('vd_a11yon'), th[q[0]]); b.setAttribute('aria-pressed', th[q[0]] ? 'true' : 'false'); });
+  el('vdBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('vdNar').style.display = th.nr ? '' : 'none';
+  if (k === 'cb' && th.cb) say('Colour-blind safe colours: positive charges vermillion, negative charges blue, field arrows orange, the ground wire bluish green, electrons sky blue.'); }
+function toggleDesc(){ var b = el('vdDescBtn'), d = el('vdDesc'), open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+  if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }
+/* ══════════ loop ══════════ */
+var DTS = [0.005, 0.005, 0.0005, 0.002, 0.0003, 0.002, 0.003, 0.003, 0.002];
+function advance(T){ var dt0 = DTS[U.tab], n = Math.max(1, Math.ceil(T/dt0)), dt = T/n, i;
+  for (i=0; i<n; i++){ genStep(dt);
+    if (U.tab === 1) personStep(dt); else if (U.tab === 2) bubbleStep(dt); else if (U.tab === 3) platesStep(dt); else if (U.tab === 4) strStep(dt); else if (U.tab === 5) sparkStep(dt); else if (U.tab === 6) cflStep(dt); else if (U.tab === 7) whirlStep(dt); else if (U.tab === 8) keyStep(dt); }
+  if (U.tab === 0){ if (GEN.corona) ev('cor', 'Maximum: ' + kV(Vd()) + '. The field at the surface is near 3 MV/m; the air breaks down into a corona and leaks charge as fast as the belt brings it. Turn on the dark room to see it.'); }
+  if (U.tab === 2 && BB.auto){ BB.acc += T; if (BB.acc > 2){ BB.acc = 0; blow(4); } } }
+var last = 0, tick = 0;
+function loop(t){ var rdt = last ? Math.min(0.05, (t - last)/1000) : 0; last = t;
+  if (U.run && rdt > 0) advance(rdt*U.spd);
+  draw(); if (++tick % 8 === 0) info();
+  requestAnimationFrame(loop); }
+setTribo(); buildG(); setPlay(true); tab(0); requestAnimationFrame(loop);
+return { tab:tab, theme:theme, toggleDesc:toggleDesc, describe:describe, _adv:advance, _G:GEN, _HP:HP, _BB:BB, _PL:PL, _ST:ST, _SP:SP, _CF:CF, _WH:WH, _KP:KP, _V:Vd, _liftV:liftV, _Vb:Vb, _VbK:VbK, _blow:blow, _U:U };
+})();
+</script>
+
+</body>
+</html>
