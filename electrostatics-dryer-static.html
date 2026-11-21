@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Electrostatics: Static in the Clothes Dryer</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics, Taha Mzoughi, electrostatics, static electricity, clothes dryer, triboelectric series, dryer sheet, fabric softener, cationic surfactant, humidity, static cling, discharge">>
+<meta name="description" content="Static electricity in a clothes dryer: mixed and single-fabric loads, the role of moisture and humidity, how dryer sheets work, and why clinging garments crackle when pulled apart.">>
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div style="max-width:860px;margin:0 auto 10px;padding:8px 12px;background:#eef6ff;border:1px solid #bcdcff;border-radius:4px;font-size:13px">Settings at the top of the script: <code>LOAD</code>, <code>SHEET</code>, <code>RH</code>, <code>HEAT</code>, <code>SENSOR</code>, <code>TAB</code>; in MOM, <code>$load</code>, <code>$sheet</code>, <code>$rh</code>, <code>$tab</code>. Presets: <a href="?load=mixed">mixed load</a> &middot; <a href="?load=mixed&amp;sheet=1">mixed, with a sheet</a> &middot; <a href="?load=cotton">all cotton</a> &middot; <a href="?load=polyester">all polyester</a> &middot; <a href="?load=wool-poly&amp;rh=20">wool and polyester, dry winter air</a> &middot; <a href="?tab=1">the dryer sheet</a> &middot; <a href="?tab=2">cling and crackle</a>. Companion: <a href="electrostatics-vdg-3d.html">the Van de Graaff generator</a>.</div><div id="cdRoot" class="cd_root" role="region" aria-label="Static electricity in a clothes dryer, and how dryer sheets work">
+<div class="cd_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="cd_a11ybtn" id="cdBtnHC" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="cd_a11ybtn" id="cdBtnLM" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="cd_a11ybtn" id="cdBtnCB" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="cd_a11ybtn" id="cdBtnFS" aria-pressed="false">FONT: NORMAL</button>
+<button type="button" class="cd_a11ybtn cd_a11yon" id="cdBtnNR" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div class="cd_header"><p class="cd_h1">Static in the Clothes Dryer</p><p class="cd_sub">a tumbling load is a triboelectric generator &middot; moisture drains charge &middot; dryer sheets fight back</p></div>
+<div class="cd_tabs" role="tablist" aria-label="Parts of the simulation">
+<button type="button" role="tab" class="cd_tab" id="cdT0" aria-selected="true">1. Inside the dryer</button>
+<button type="button" role="tab" class="cd_tab" id="cdT1" aria-selected="false">2. How a dryer sheet works</button>
+<button type="button" role="tab" class="cd_tab" id="cdT2" aria-selected="false">3. Unloading: cling and crackle</button>
+</div>
+<div class="cd_diag"><div class="cd_dlabel"><b id="cdLab">INSIDE THE DRYER</b><span id="cdHint"></span></div>
+<canvas id="cdCv" width="780" height="480" role="img" aria-label="The selected part of the simulation: the tumbling load with its charges and a graph, the surface of a fibre with dryer-sheet molecules, or two garments being pulled apart. The status line, the readout and the narration describe it." aria-describedby="cdStatus"></canvas></div>
+<div class="cd_status" id="cdStatus" role="status" aria-live="polite"></div>
+<div class="cd_bbar" id="cdRun">
+<button type="button" class="cd_btn cd_kick" id="cdPlay" aria-pressed="false">&#9654; Start the dryer</button>
+<button type="button" class="cd_btn" id="cdRst">Reset (new load, keep the last run as a ghost)</button>
+<label>speed <input type="range" id="cdSpd" min="0.25" max="4" step="0.25" value="1" style="width:100px"> <span id="cdSpdV">1 min/s</span></label>
+<label><input type="checkbox" id="cdChg" checked> charges</label>
+<label><input type="checkbox" id="cdSnd"> sound</label>
+<button type="button" class="cd_btn" id="cdDsc">Describe</button>
+</div>
+<div class="cd_panels"><div class="cd_panel"><div class="cd_ptitle" id="cdCtlT">The load</div><div class="cd_pbody" id="cdCtl"></div></div>
+<div class="cd_panel"><div class="cd_ptitle" id="cdCtl2T">The triboelectric series</div><div class="cd_pbody" id="cdCtl2"></div></div></div>
+<div class="cd_read" id="cdRead" aria-label="Readout"></div>
+<div class="cd_eqs" id="cdEq"></div>
+<div id="cdNar" class="cd_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="cd_descwrap">
+<button type="button" class="cd_descbtn" id="cdDescBtn" aria-expanded="false" aria-controls="cdDesc">&#9656; SIM DESCRIPTION</button>
+<div class="cd_desc" id="cdDesc" role="region" aria-labelledby="cdDescBtn" style="display:none">
+<p><b>1. Inside the dryer.</b> A tumbling load is a triboelectric generator, like the belt of a Van de Graaff generator. Each time two garments touch and separate, electrons move from one surface to the other: the fabric nearer the positive end of the <b>triboelectric series</b> (nylon, wool, silk) gives up electrons and becomes positive; the fabric nearer the negative end (polyester, acrylic) takes them and becomes negative. Cotton sits near the middle. The charge per contact grows with the distance between the two fabrics in the series.</p>
+<p>A load of a <b>single fabric</b> hardly charges: identical surfaces have no reason to exchange electrons. The little charge they get comes from rubbing on the metal drum, and it has the same sign on every garment, so the garments repel rather than cling. A <b>mixed load</b> charges with opposite signs, and opposite charges attract: the garments cling to each other and, charged strongly enough, to the drum.</p>
+<p><b>Moisture matters most.</b> Water on and in the fibres conducts, so while the clothes are damp, charge drains away almost as soon as it is made: the decay time of surface charge is a small fraction of a second. As the load dries, the surface resistance rises by many powers of ten and the decay time grows to minutes: the charge builds up. That is why static appears at the end of the cycle, why over-drying makes it worse, why it is worst in dry winter air, and why a moisture sensor that stops the dryer when the clothes are just dry helps.</p>
+<p><b>2. Dryer sheets.</b> A dryer sheet is a non-woven fabric coated with a fabric softener (a cationic surfactant, such as a quaternary ammonium compound) mixed with a fatty material that melts in the warm drum and spreads onto the clothes. The softener acts in three ways: its <b>positive heads</b> bind to the negatively charged sites on the fibres and neutralize them; its <b>long oily tails</b> make the fibre surface slippery, so rubbing transfers far less charge; and the coating attracts a thin film of moisture that makes the surface <b>more conductive</b>, so the charge that does form leaks away. Together they cut the static by a factor of a hundred or more.</p>
+<p><b>3. Unloading.</b> Two clinging garments of area `A` with charges `+Q` and `-Q` attract like the plates of a capacitor: `F = Q^2/(2 epsilon_0 A)`. Pulling them apart increases the separation `d`, lowers the capacitance `C ~~ epsilon_0 A/d + C_0`, and raises the voltage `V = Q/C`, to thousands of volts. Where the field at the tips of fibres exceeds the breakdown field of air (about 3 MV/m), tiny discharges crackle, and in a dark room they flash.</p>
+<p>The charges, the decay times and the drying rate are typical, approximate values chosen to show the trends; real triboelectric series differ between sources, and depend on surface finishes and humidity.</p>
+</div></div>
+</div><!-- #cdRoot -->
+<style>
+#cdRoot { --c-chassis:#1a1c1f; --c-panel:#22262b; --c-hi:#2c3138; --c-lo:#14161a; --c-bd:#3a4048; --c-bd2:#525c66; --c-text:#c8d0d8; --c-dim:#8a94a3; --c-accent:#e8a020; --c-green:#3ad08f; --c-val:#ffdd66; --c-nbg:#2a2410; --c-nbd:#e0b040; --c-ntx:#f0e2b8;
+  background:var(--c-chassis); background-image:repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
+  color:var(--c-text); font-family:Arial, sans-serif; padding:14px 10px 18px; border-radius:6px; box-sizing:border-box; width:100%; max-width:860px; margin:0 auto 10px; display:flex; flex-direction:column; gap:10px; }
+#cdRoot * { box-sizing:border-box; }
+#cdRoot.cd_lm { --c-chassis:#e9edf1; --c-panel:#ffffff; --c-hi:#f1f4f7; --c-lo:#f4f6f9; --c-bd:#c3cad3; --c-bd2:#9aa3ae; --c-text:#1d232a; --c-dim:#556070; --c-accent:#a8620a; --c-green:#12805a; --c-val:#8a4a00; --c-nbg:#ffefc0; --c-ntx:#333; background-image:none; }
+#cdRoot.cd_hc { --c-chassis:#000; --c-panel:#000; --c-hi:#111; --c-lo:#000; --c-bd:#fff; --c-bd2:#fff; --c-text:#fff; --c-dim:#e0e0e0; --c-accent:#ffd700; --c-green:#00ff88; --c-val:#ffff00; --c-nbg:#000; --c-nbd:#ffd700; --c-ntx:#fff; background-image:none; }
+#cdRoot .cd_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+#cdRoot .cd_a11ybtn { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-dim); min-height:30px; }
+#cdRoot .cd_a11yon { background:rgba(58,208,143,.14); border-color:var(--c-green); color:var(--c-green); font-weight:bold; }
+#cdRoot .cd_header { text-align:center; }
+#cdRoot .cd_h1 { margin:0; font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--c-accent); }
+#cdRoot .cd_sub { margin:3px 0 0; font-size:.7rem; color:var(--c-dim); letter-spacing:.08em; text-transform:uppercase; }
+#cdRoot .cd_tabs { display:flex; gap:4px; flex-wrap:wrap; }
+#cdRoot .cd_tab { flex:1 1 90px; padding:8px 4px; border:1px solid var(--c-bd2); background:var(--c-hi); color:var(--c-text); border-radius:4px; cursor:pointer; font-family:monospace; font-size:.68rem; letter-spacing:.04em; text-transform:uppercase; min-height:38px; }
+#cdRoot .cd_tab[aria-selected="true"] { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#cdRoot .cd_diag { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.35); }
+#cdRoot .cd_dlabel { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--c-dim); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+#cdRoot .cd_dlabel b { color:var(--c-accent); }
+#cdRoot canvas { display:block; width:100%; height:auto; touch-action:none; cursor:grab; }
+#cdRoot .cd_bbar { display:flex; flex-wrap:wrap; gap:6px 12px; justify-content:center; align-items:center; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:6px; padding:8px 10px; font-size:.8rem; }
+#cdRoot .cd_bbar label { display:flex; align-items:center; gap:5px; color:var(--c-dim); font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; cursor:pointer; }
+#cdRoot .cd_btn { padding:7px 12px; font-family:monospace; font-size:.72rem; letter-spacing:.04em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-text); border-radius:3px; text-transform:uppercase; min-height:34px; }
+#cdRoot .cd_btn:hover { border-color:var(--c-accent); }
+#cdRoot .cd_btn[aria-pressed="true"], #cdRoot .cd_btnon { border-color:var(--c-accent); color:var(--c-accent); font-weight:bold; }
+#cdRoot .cd_kick { background:var(--c-accent); color:#1a1f24 !important; border-color:var(--c-accent); font-weight:bold; }
+#cdRoot .cd_kick[aria-pressed="false"] { background:var(--c-hi); color:var(--c-text) !important; }
+#cdRoot .cd_panels { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; align-items:start; }
+#cdRoot .cd_panel { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; box-shadow:0 4px 20px rgba(0,0,0,.3); overflow:hidden; }
+#cdRoot .cd_ptitle { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--c-dim); }
+#cdRoot .cd_pbody { padding:9px 12px; display:flex; flex-direction:column; gap:8px; }
+#cdRoot .cd_ctrl { display:flex; flex-direction:column; gap:3px; }
+#cdRoot .cd_ctrlhdr { display:flex; justify-content:space-between; align-items:baseline; gap:6px; }
+#cdRoot .cd_ctrlname { font-size:.72rem; font-weight:600; color:var(--c-dim); text-transform:uppercase; letter-spacing:.04em; }
+#cdRoot .cd_sval { font-family:monospace; font-size:.76rem; color:var(--c-val); white-space:nowrap; }
+#cdRoot .cd_brow { display:flex; flex-wrap:wrap; gap:5px; }
+#cdRoot .cd_chk { display:flex; align-items:center; gap:6px; font-size:.78rem; color:var(--c-text); cursor:pointer; }
+#cdRoot .cd_note { margin:0; font-size:.74rem; color:var(--c-dim); line-height:1.4; }
+#cdRoot .cd_sel { width:100%; min-height:32px; background:var(--c-hi); color:var(--c-text); border:1px solid var(--c-bd2); border-radius:3px; padding:4px; font-size:.8rem; }
+#cdRoot .cd_series { display:flex; flex-direction:column; gap:1px; font-family:monospace; font-size:.72rem; }
+#cdRoot .cd_series div { display:flex; justify-content:space-between; padding:1px 6px; border-radius:2px; color:var(--c-dim); }
+#cdRoot .cd_series div.cd_hit { background:rgba(232,160,32,.18); color:var(--c-val); font-weight:bold; }
+#cdRoot input[type=range] { width:100%; -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; cursor:pointer; background:var(--c-lo); border:1px solid var(--c-bd); }
+#cdRoot input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#cdRoot input[type=range]::-moz-range-thumb { width:12px; height:12px; border-radius:50%; background:var(--c-accent); border:2px solid var(--c-panel); cursor:pointer; }
+#cdRoot input[type=checkbox] { accent-color:var(--c-accent); width:16px; height:16px; }
+#cdRoot .cd_read { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:6px 10px; background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; padding:8px 12px; }
+#cdRoot .cd_read > div { min-width:0; }
+#cdRoot .cd_flabel { font-family:monospace; font-size:.62rem; color:var(--c-dim); letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#cdRoot .cd_fvalue { font-family:monospace; font-size:.88rem; color:var(--c-val); font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#cdRoot .cd_eqs { background:var(--c-lo); border:1px solid var(--c-bd); border-left:4px solid var(--c-accent); border-radius:4px; padding:8px 14px; font-family:monospace; font-size:.74rem; color:var(--c-dim); line-height:1.7; }
+#cdRoot .cd_eqs b { color:var(--c-val); }
+#cdRoot .cd_status { width:100%; padding:8px 12px; border-radius:4px; background:var(--c-panel); border:1px solid var(--c-bd); font-size:.86rem; line-height:1.4; color:var(--c-text); min-height:3.3em; }
+#cdRoot .cd_narbar { min-height:30px; padding:6px 12px; background:var(--c-nbg); border-left:4px solid var(--c-nbd); color:var(--c-ntx); font-size:.84rem; font-style:italic; line-height:1.45; border-radius:3px; }
+#cdRoot .cd_descwrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+#cdRoot .cd_descbtn { padding:8px 18px; font-family:monospace; font-size:.74rem; letter-spacing:.08em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-accent); color:var(--c-accent); border-radius:3px; font-weight:bold; min-height:40px; }
+#cdRoot .cd_desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid var(--c-accent); border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; }
+#cdRoot .cd_desc p { margin:0 0 9px; }
+#cdRoot button:focus-visible, #cdRoot input:focus-visible, #cdRoot select:focus-visible, #cdRoot canvas:focus-visible { outline:2px solid var(--c-accent); outline-offset:2px; }
+@media (max-width:640px) { #cdRoot .cd_panels { grid-template-columns:minmax(0,1fr); } #cdRoot .cd_read { grid-template-columns:repeat(2, minmax(0,1fr)); } #cdRoot .cd_tab { font-size:.62rem; flex-basis:30%; } }
+@media (pointer:coarse) { #cdRoot input[type=range] { height:8px; } #cdRoot input[type=range]::-webkit-slider-thumb { width:26px; height:26px; } #cdRoot input[type=range]::-moz-range-thumb { width:24px; height:24px; } #cdRoot .cd_a11ybtn { min-height:40px; } #cdRoot input[type=checkbox] { width:22px; height:22px; } #cdRoot .cd_btn { min-height:42px; } }
+#cdRoot.cd_fs1 { zoom:1.12; } #cdRoot.cd_fs2 { zoom:1.25; }
+#cdRoot .cd_tab { flex:1 1 160px; }
+</style>
+<script>
+var cdSim = (function(){
+/* ══════════ SETTINGS ══════════
+   LOAD:   'mixed', 'cotton', 'polyester', 'wool-poly' (wool and polyester) or 'cotton-poly' (cotton and polyester)
+   SHEET:  true to start with a dryer sheet in the drum
+   RH:     the humidity of the room air (%), 15 to 80
+   HEAT:   'low', 'medium' or 'high'
+   SENSOR: true to stop the dryer when the clothes are just dry
+   TAB:    the part shown first: 0, 1 or 2
+   In MOM, the variables $load, $sheet, $rh and $tab, when set, replace these defaults.
+*/
+var LOAD = 'mixed', SHEET = false, RH = 35, HEAT = 'high', SENSOR = false, TAB = 0;
+var MOM = { load:'', sheet:'', rh:'', tab:'' };
+function txt_(s){ return typeof s === 'string' && s.length && s.indexOf('$') < 0 ? s : null; }
+try { (location.search || '').slice(1).split('&').forEach(function(kv){ var q = kv.split('='); if (q[0] === 'load') LOAD = q[1]; if (q[0] === 'sheet') SHEET = q[1] === '1'; if (q[0] === 'rh' && isFinite(+q[1])) RH = +q[1]; if (q[0] === 'tab' && isFinite(+q[1])) TAB = +q[1]; }); } catch(e){}
+if (txt_(MOM.load)) LOAD = MOM.load; if (txt_(MOM.sheet)) SHEET = /^(1|true|yes)/i.test(MOM.sheet); if (txt_(MOM.rh) && isFinite(+MOM.rh)) RH = +MOM.rh; if (txt_(MOM.tab) && isFinite(+MOM.tab)) TAB = +MOM.tab;
+function el(id){ return document.getElementById(id + ''); }
+function cls(n){ return n + ''; }
+var ROOT = el('cdRoot'), cv = el('cdCv'), g = cv.getContext('2d'), W = 780, H = 480, DPR = window.devicePixelRatio || 1;
+cv.width = W*DPR; cv.height = H*DPR; g.scale(DPR, DPR);
+var TAU = 2*Math.PI, K = 8.99e9, EPS = 8.854e-12, EB = 3e6, GA = 9.8;
+function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); } function rnd(a, b){ return a + (b - a)*Math.random(); }
+function f(v, k){ return (Math.abs(v) < 0.5*Math.pow(10, -k) ? 0 : v).toFixed(k); }
+/* ══════════ fabrics: position in the triboelectric series (+ gives electrons, - takes them) ══════════ */
+var FAB = { nylon:{ s:5, n:'Nylon', col:'#7fb2e5', cb:'#56b4e9' }, wool:{ s:4, n:'Wool', col:'#c8a27a', cb:'#e69f00' }, silk:{ s:2, n:'Silk', col:'#e8c6e0', cb:'#f0e442' },
+  cotton:{ s:0, n:'Cotton', col:'#f2f0e6', cb:'#eeeeee' }, polyester:{ s:-3, n:'Polyester', col:'#8fd18b', cb:'#009e73' }, acrylic:{ s:-4, n:'Acrylic', col:'#e88b8b', cb:'#cc79a7' } };
+var SERIES = ['nylon', 'wool', 'silk', 'cotton', 'polyester', 'acrylic'], S_DRUM = -0.5;
+var LOADS = { 'mixed':[['wool', 'sweater'], ['nylon', 'jacket'], ['cotton', 'T-shirt'], ['polyester', 'shirt'], ['acrylic', 'socks'], ['cotton', 'towel'], ['silk', 'scarf']],
+  'cotton':[['cotton', 'towel'], ['cotton', 'T-shirt'], ['cotton', 'jeans'], ['cotton', 'socks'], ['cotton', 'sheet'], ['cotton', 'T-shirt']],
+  'polyester':[['polyester', 'shirt'], ['polyester', 'leggings'], ['polyester', 'fleece'], ['polyester', 'socks'], ['polyester', 'sports top'], ['polyester', 'shirt']],
+  'wool-poly':[['wool', 'sweater'], ['polyester', 'shirt'], ['wool', 'socks'], ['polyester', 'fleece'], ['wool', 'scarf'], ['polyester', 'leggings']],
+  'cotton-poly':[['cotton', 'T-shirt'], ['polyester', 'shirt'], ['cotton', 'towel'], ['polyester', 'fleece'], ['cotton', 'jeans'], ['polyester', 'socks']] };
+var LOADNAMES = { 'mixed':'Mixed fabrics', 'cotton':'All cotton', 'polyester':'All polyester', 'wool-poly':'Wool and polyester', 'cotton-poly':'Cotton and polyester' };
+if (!LOADS[LOAD]) LOAD = 'mixed';
+var HEATS = { low:0.6, medium:0.8, high:1 };
+/* ══════════ state ══════════ */
+var th = { hc:false, lm:false, cb:false, nr:true, fs:0 };
+var U = { tab:clamp(Math.round(TAB), 0, 2), run:false, spd:1, chg:true, sound:false, ev:{} };
+var DR = { R:0.30, w:5.0, ang:0, load:LOAD, sheet:SHEET, rh:RH, heat:HEAT, sensor:SENSOR, tmin:0, M:0.6, c:0, items:[], stuck:[], hist:[], ghost:null, ghostLab:'', done:false, cooldown:{} };
+var QMAX = 1.2e-6, KQ = 0.03e-6, KD = 0.0003e-6;
+function makeLoad(){ DR.items = LOADS[DR.load].map(function(q, i){ var r = q[1] === 'socks' ? 0.045 : 0.06 + 0.01*Math.random(); return { fab:q[0], n:q[1], r:r, m:q[1] === 'socks' ? 0.06 : 0.25, q:0, mode:'carried', th:-Math.PI/2 + i*0.55 - 1.2, p:[0, 0], v:[0, 0], rel:rnd(0.55, 1.1), link:-1 }; }); DR.items.forEach(function(it){ place(it); }); DR.stuck = []; DR.cooldown = {}; DR.st = 0; }
+function place(it){ var rr = DR.R - it.r; it.p = [rr*Math.cos(it.th), rr*Math.sin(it.th)]; }
+function resetRun(keepGhost){ if (keepGhost && DR.hist.length > 5){ DR.ghost = DR.hist.slice(); DR.ghostLab = LOADNAMES[DR.load] + (DR.sheet ? ', sheet' : ', no sheet') + ', RH ' + DR.rh + '%'; } DR.tmin = 0; DR.M = 0.6; DR.c = 0; DR.hist = []; DR.done = false; U.ev = {}; makeLoad(); setRun(false); }
+/* ══════════ moisture, the sheet and the decay time of surface charge ══════════ */
+function dryness(){ return clamp(1 - DR.M/0.15, 0, 1); }
+function Mfloor(){ return 0.004 + 0.012*DR.rh/50; }
+function tauQ(){ var d = dryness(); return 0.02*Math.pow(10, 4.3*d)*Math.pow(10, -(DR.rh - 30)/25)*Math.pow(10, -2.5*DR.c); }   /* seconds */
+function genF(){ return dryness()*(1 - 0.9*DR.c); }   /* wet fibres and lubricated fibres transfer little charge */
+function cycleStep(dtmin){ var h = HEATS[DR.heat]; DR.M = Math.max(Mfloor(), DR.M - 0.016*h*(DR.M + 0.03)/(DR.M + 0.15)*dtmin); if (DR.sheet && DR.tmin > 2) DR.c += 0.12*h*(1 - DR.c)*dtmin; DR.tmin += dtmin;
+  if (DR.sensor && DR.M < 0.04 && !DR.done){ DR.done = true; setRun(false); say('The moisture sensor stopped the dryer at ' + f(DR.tmin, 0) + ' min: the clothes are just dry, still holding a little water, so the charge drains faster. ' + statusLine()); }
+  if (DR.tmin >= 70 && !DR.done){ DR.done = true; setRun(false); say('End of the 70-minute timed cycle. ' + statusLine()); }
+  if (DR.M < 0.15) ev('dryish', 'The load is getting dry (less than 15% water): the surfaces are turning into insulators, and the charge made by each contact now stays.');
+  if (DR.M < 0.04 && !DR.sensor) ev('over', 'The clothes are dry now; every extra minute is over-drying: no water left to drain the charge, and the tumbling keeps making more.'); }
+/* ══════════ the tumble (real units: metres, seconds) ══════════ */
+function pairKey(i, j){ return i < j ? i + '-' + j : j + '-' + i; }
+function transfer(i, j){ var a = DR.items[i], b = DR.items[j], dq = KQ*(FAB[a.fab].s - FAB[b.fab].s)*genF()*rnd(0.6, 1.4); a.q = clamp(a.q + dq, -QMAX, QMAX); b.q = clamp(b.q - dq, -QMAX, QMAX); }
+function tumbleStep(dt){ var it, i, j, n = DR.items.length, rr;
+  DR.ang += DR.w*dt; DR.st = (DR.st || 0) + dt;
+  /* Coulomb forces on the falling garments, and leaking of charge */
+  var lk = Math.exp(-dt/tauQ());
+  for (i=0; i<n; i++){ it = DR.items[i]; it.q *= lk; it.F = [0, 0]; }
+  for (i=0; i<n; i++) for (j=i + 1; j<n; j++){ var A = DR.items[i], B = DR.items[j], dx = B.p[0] - A.p[0], dy = B.p[1] - A.p[1], d = Math.max(0.05, Math.hypot(dx, dy)), Fm = K*A.q*B.q/(d*d), ux = dx/d, uy = dy/d;
+    A.F[0] -= Fm*ux; A.F[1] -= Fm*uy; B.F[0] += Fm*ux; B.F[1] += Fm*uy; }
+  for (i=0; i<n; i++){ it = DR.items[i]; if (it.link >= 0) continue; rr = DR.R - it.r;
+    if (it.mode === 'carried'){ it.th += DR.w*dt; while (it.th > 1.5*Math.PI) it.th -= TAU; place(it);
+      var cling = DR.M < 0.15 ? clamp(Math.abs(it.q)/QMAX, 0, 1)*1.5 : 0;   /* a charged garment is held to the metal drum by its image charge */
+      if (it.th > -0.2 && it.th < 2.9 && it.th > it.rel + cling){ it.mode = 'free'; it.v = [-DR.w*rr*Math.sin(it.th), DR.w*rr*Math.cos(it.th)]; } }
+    else { it.v[0] += (it.F[0]/it.m - 1.2*it.v[0])*dt; it.v[1] += (it.F[1]/it.m - GA - 1.2*it.v[1])*dt; it.p[0] += it.v[0]*dt; it.p[1] += it.v[1]*dt;
+      if (Math.hypot(it.p[0], it.p[1]) >= rr){ it.mode = 'carried'; it.th = Math.atan2(it.p[1], it.p[0]); if (it.th < -Math.PI/2) it.th += TAU; place(it); it.rel = rnd(0.55, 1.1);
+        it.q = clamp(it.q + KD*(FAB[it.fab].s - S_DRUM)*genF()*rnd(0.6, 1.4), -QMAX, QMAX); } } }
+  /* the stuck pairs: a garment clinging to another follows it */
+  DR.items.forEach(function(s2, k){ if (s2.link < 0) return; var m = DR.items[s2.link], d = s2.r + m.r, Fc = Math.abs(K*s2.q*m.q/(d*d));
+    if (s2.q*m.q > 0 || Fc < 0.5*s2.m*GA || (DR.M > 0.15)){ s2.link = -1; s2.mode = 'free'; s2.v = m.v ? m.v.slice() : [0, 0]; return; }
+    s2.p = [m.p[0] + s2.off[0], m.p[1] + s2.off[1]]; rr = DR.R - s2.r; var rp = Math.hypot(s2.p[0], s2.p[1]); if (rp > rr){ s2.p = [s2.p[0]*rr/rp, s2.p[1]*rr/rp]; } });
+  /* contacts: push apart, exchange charge, and stick when the attraction beats the weight */
+  for (i=0; i<n; i++) for (j=i + 1; j<n; j++){ var a = DR.items[i], b = DR.items[j], ex = b.p[0] - a.p[0], ey = b.p[1] - a.p[1], dd = Math.hypot(ex, ey) || 1e-6, ov = a.r + b.r - dd;
+    if (ov > 0){ var key = pairKey(i, j);
+      if (a.link !== j && b.link !== i){ var ux2 = ex/dd, uy2 = ey/dd; if (a.mode === 'free' && a.link < 0){ a.p[0] -= ux2*ov*0.5; a.p[1] -= uy2*ov*0.5; } if (b.mode === 'free' && b.link < 0){ b.p[0] += ux2*ov*0.5; b.p[1] += uy2*ov*0.5; } }
+      if (!DR.cooldown[key] || DR.cooldown[key] < DR.st){ DR.cooldown[key] = DR.st + 0.25; transfer(i, j); }   /* the simulation clock, not the wall clock */
+      var dc = a.r + b.r, Fc2 = -K*a.q*b.q/(dc*dc);
+      if (Fc2 > 0.8*Math.min(a.m, b.m)*GA && a.link < 0 && b.link < 0 && DR.M < 0.15){ var sl = a.m < b.m ? a : b, ms = sl === a ? b : a; sl.link = DR.items.indexOf(ms); var u3 = [sl.p[0] - ms.p[0], sl.p[1] - ms.p[1]], l3 = Math.hypot(u3[0], u3[1]) || 1; sl.off = [u3[0]/l3*dc*0.85, u3[1]/l3*dc*0.85];
+        if (ms.link === DR.items.indexOf(sl)) ms.link = -1; ev('cling', 'The ' + FAB[sl.fab].n.toLowerCase() + ' ' + sl.n + ' and the ' + FAB[ms.fab].n.toLowerCase() + ' ' + ms.n + ' cling together: they carry opposite charges, and the attraction is now stronger than the weight of the lighter one.'); if (U.sound) crack(0.15); } } } }
+function totalQ(){ var s = 0; DR.items.forEach(function(it){ s += Math.abs(it.q); }); return s; }   /* the total charge on the load, all signs counted */
+function maxQ(){ var m = 0; DR.items.forEach(function(it){ m = Math.max(m, Math.abs(it.q)); }); return m; }
+function clingPairs(){ var k = 0; DR.items.forEach(function(it){ if (it.link >= 0) k++; }); return k; }
+function signs(){ var p = 0, nn = 0; DR.items.forEach(function(it){ if (it.q > 2e-9) p++; if (it.q < -2e-9) nn++; }); return [p, nn]; }
+/* ══════════ tab 2: the fibre surface ══════════ */
+var FB = { cov:0.8, neut:true, lub:true, cond:true, t:0, rubs:0, trans:0, surf:[], hop:[], drain:[], ph:0 };
+function fbFactors(){ var c = FB.cov; return { neut:FB.neut ? c : 0, mu:0.45 - (FB.lub ? 0.25*c : 0), gen:(1 - (FB.lub ? 0.85*c : 0))*(1 - (FB.neut ? 0.5*c : 0)), rho:13 - (FB.cond ? 3.5*c : 0) }; }
+function fbStep(dt){ FB.t += dt; FB.ph += dt; var F = fbFactors(), tauS = 0.05*Math.pow(10, F.rho - 10);
+  var prev = Math.floor((FB.t - dt)/1.2), cur = Math.floor(FB.t/1.2);
+  if (cur !== prev){ FB.rubs++; var nE = Math.round(6*F.gen + Math.random()*F.gen); for (var k=0; k<nE; k++) FB.hop.push({ x:rnd(120, 660), s:0 }); FB.trans += nE; }
+  FB.hop.forEach(function(h){ h.s += dt*1.6; if (h.s >= 1 && !h.done){ h.done = true; FB.surf.push({ x:h.x }); } }); FB.hop = FB.hop.filter(function(h){ return h.s < 1.05; });
+  /* leak to ground along the moisture film */
+  var leakP = 1 - Math.exp(-dt/tauS); FB.surf.forEach(function(e){ if (Math.random() < leakP){ e.gone = true; FB.drain.push({ x:e.x, s:0 }); } }); FB.surf = FB.surf.filter(function(e){ return !e.gone; }); if (FB.surf.length > 60) FB.surf.splice(0, FB.surf.length - 60);
+  FB.drain.forEach(function(e){ e.s += dt*1.2; }); FB.drain = FB.drain.filter(function(e){ return e.s < 1; }); }
+/* ══════════ tab 3: pulling two clinging garments apart ══════════ */
+var PU = { Q:0.5e-6, Q0:0.5e-6, d:0.0005, auto:false, A:0.05, msock:0.04, C0:6e-12, beta:4, sparks:[], count:0, fromRun:false };
+function Cpu(){ return EPS*PU.A/PU.d + PU.C0; } function Vpu(){ return PU.Q/Cpu(); } function Epu(){ return Vpu()/PU.d; }
+function Fpu(){ var Ff = PU.Q*PU.Q/(2*EPS*PU.A); return Ff*Math.pow(EPS*PU.A/PU.d/Cpu(), 2); }   /* plate attraction, falling off once the fringe capacitance dominates */
+function puStep(dt){ if (PU.auto){ PU.d = Math.min(0.15, PU.d*Math.exp(0.9*dt) + 0.0004*dt); syncPu(); if (PU.d >= 0.15) PU.auto = false; }
+  if (PU.beta*Epu() > EB && PU.Q > 1e-9){ var lost = PU.Q*rnd(0.08, 0.2); PU.Q -= lost; PU.count++; PU.sparks.push({ y:rnd(140, 380), t:perf(), x:0 }); if (U.sound) crack(0.12 + 0.3*Math.min(1, lost/1e-7)); if (PU.count === 1) say('Crackle! At the tips of the fibres the field reached the breakdown field of air, and a tiny discharge carried some charge across the gap. Keep pulling: the voltage climbs as the capacitance falls.'); }
+  PU.sparks = PU.sparks.filter(function(s){ return perf() - s.t < 160; }); }
+/* ══════════ sound ══════════ */
+var AC = null; function ac(){ try { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.resume) AC.resume(); } catch (e) { AC = null; } return AC; }
+function crack(vol){ if (!U.sound || !ac()) return; try { var A = AC, n = Math.floor(A.sampleRate*0.03), b = A.createBuffer(1, n, A.sampleRate), d = b.getChannelData(0), i; for (i=0; i<n; i++) d[i] = (Math.random()*2 - 1)*Math.exp(-i/(A.sampleRate*0.004)); var s = A.createBufferSource(), gn = A.createGain(); gn.gain.value = Math.min(0.8, vol); s.buffer = b; s.connect(gn); gn.connect(A.destination); s.start(); } catch (e) {} }
+function perf(){ return (window.performance && performance.now) ? performance.now() : Date.now(); }
+/* ══════════ colours ══════════ */
+function pal(){ var cb = th.cb, hc = th.hc, lm = th.lm;
+  return { bg:hc ? '#000' : (lm ? '#eef2f6' : '#0b0e14'), panel:hc ? '#000' : (lm ? '#ffffff' : '#141922'), txt:hc ? '#fff' : (lm ? '#1d232a' : '#dbe5ec'), dim:hc ? '#ddd' : (lm ? '#556070' : '#8f9cad'), grid:hc ? 'rgba(255,255,255,0.4)' : (lm ? 'rgba(0,0,0,0.12)' : 'rgba(120,140,170,0.2)'),
+    drum:hc ? '#ccc' : (lm ? '#b9c2cc' : '#6f7a88'), drumIn:hc ? '#111' : (lm ? '#dfe5ec' : '#1c232d'), lifter:hc ? '#fff' : '#9aa6b4',
+    pos:cb ? '#d55e00' : (hc ? '#ff6060' : '#ff3b3b'), neg:cb ? '#0072b2' : (hc ? '#6fb8ff' : '#3a8bff'), water:hc ? 'rgba(0,200,255,0.5)' : 'rgba(90,170,255,0.45)', moist:cb ? '#56b4e9' : '#5aa9ff', charge:cb ? '#e69f00' : '#ffd166', spark:'#dfe8ff', ghost:hc ? 'rgba(255,255,255,0.4)' : 'rgba(150,160,175,0.55)' }; }
+function fabCol(k){ return th.cb ? FAB[k].cb : FAB[k].col; }
+function sgnDot(x, y, sign, r){ var p = pal(); g.fillStyle = sign > 0 ? p.pos : p.neg; g.beginPath(); g.arc(x, y, r, 0, TAU); g.fill(); g.strokeStyle = '#fff'; g.lineWidth = Math.max(1, r*0.32); g.beginPath(); g.moveTo(x - r*0.55, y); g.lineTo(x + r*0.55, y); if (sign > 0){ g.moveTo(x, y - r*0.55); g.lineTo(x, y + r*0.55); } g.stroke(); }
+/* ══════════ drawing: tab 1 ══════════ */
+var DC = [215, 245], DS = 640;   /* drum centre (px) and px per metre */
+function DX(x){ return DC[0] + x*DS; } function DY(y){ return DC[1] - y*DS; }
+function garment(it, p){ var x = DX(it.p[0]), y = DY(it.p[1]), r = it.r*DS, k, w = DR.M > 0.15 ? Math.min(1, (DR.M - 0.15)/0.45) : 0;
+  g.save(); g.translate(x, y); g.rotate(it.p[0]*3 + it.r*40); g.beginPath(); for (k=0; k<=24; k++){ var a = k*TAU/24, rr = r*(1 + 0.09*Math.sin(5*a + it.r*100)); if (k) g.lineTo(rr*Math.cos(a), rr*Math.sin(a)); else g.moveTo(rr*Math.cos(a), rr*Math.sin(a)); } g.closePath();
+  g.fillStyle = fabCol(it.fab); g.fill(); g.strokeStyle = 'rgba(0,0,0,0.45)'; g.lineWidth = 1.2; g.stroke();
+  g.save(); g.clip(); g.strokeStyle = 'rgba(0,0,0,0.12)'; g.lineWidth = 1; for (k=-4; k<=4; k++){ g.beginPath(); g.moveTo(-r, k*r/4); g.lineTo(r, k*r/4 + r*0.3); g.stroke(); } if (w > 0){ g.fillStyle = 'rgba(70,130,220,' + (0.35*w).toFixed(2) + ')'; g.fillRect(-r, -r, 2*r, 2*r); } g.restore(); g.restore();
+  g.fillStyle = '#1d232a'; g.font = 'bold 10px Arial'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(FAB[it.fab].n.charAt(0) + (it.n === 'socks' ? 's' : ''), x, y); g.textBaseline = 'alphabetic';
+  if (U.chg){ var nq = Math.round(5*Math.min(1, Math.abs(it.q)/(0.6*QMAX))); for (k=0; k<nq; k++){ var a2 = k*TAU/5 + 0.4; sgnDot(x + r*0.62*Math.cos(a2), y + r*0.62*Math.sin(a2), it.q, 4.5); } } }
+function drawDryer(p){ g.fillStyle = p.bg; g.fillRect(0, 0, W, H);
+  var R = DR.R*DS; g.fillStyle = p.drum; g.beginPath(); g.arc(DC[0], DC[1], R + 14, 0, TAU); g.fill(); g.fillStyle = p.drumIn; g.beginPath(); g.arc(DC[0], DC[1], R, 0, TAU); g.fill();
+  /* perforations and lifters, turning with the drum */ g.fillStyle = 'rgba(0,0,0,0.25)'; for (var k=0; k<36; k++){ var a = DR.ang + k*TAU/36; g.beginPath(); g.arc(DC[0] + (R - 6)*Math.cos(a), DC[1] - (R - 6)*Math.sin(a), 1.6, 0, TAU); g.fill(); }
+  for (k=0; k<3; k++){ var a1 = DR.ang + k*TAU/3; g.fillStyle = p.lifter; g.beginPath(); g.moveTo(DC[0] + R*Math.cos(a1 - 0.12), DC[1] - R*Math.sin(a1 - 0.12)); g.lineTo(DC[0] + (R - 26)*Math.cos(a1), DC[1] - (R - 26)*Math.sin(a1)); g.lineTo(DC[0] + R*Math.cos(a1 + 0.12), DC[1] - R*Math.sin(a1 + 0.12)); g.closePath(); g.fill(); }
+  /* warm air and steam while wet */ if (DR.M > 0.1 && U.run){ g.fillStyle = 'rgba(255,255,255,' + (0.05 + 0.12*Math.min(1, DR.M/0.5)).toFixed(2) + ')'; for (k=0; k<6; k++){ var sx = DC[0] - R*0.6 + ((perf()/30 + k*37) % (R*1.2)), sy = DC[1] - R*0.5 + 30*Math.sin(perf()/600 + k); g.beginPath(); g.arc(sx, sy, 12, 0, TAU); g.fill(); } }
+  /* the dryer sheet */ if (DR.sheet){ var sa = DR.ang*0.7 + 2; g.save(); g.translate(DC[0] + (R - 30)*Math.cos(sa), DC[1] - (R - 30)*Math.sin(sa)); g.rotate(sa); g.fillStyle = th.hc ? '#fff' : 'rgba(250,250,255,' + (0.95 - 0.5*DR.c).toFixed(2) + ')'; g.fillRect(-16, -11, 32, 22); g.strokeStyle = '#99a'; g.strokeRect(-16, -11, 32, 22); g.restore(); }
+  /* cling links */ DR.items.forEach(function(it){ if (it.link < 0) return; var m = DR.items[it.link]; g.strokeStyle = p.charge; g.lineWidth = 2; g.setLineDash([4, 3]); g.beginPath(); g.moveTo(DX(it.p[0]), DY(it.p[1])); g.lineTo(DX(m.p[0]), DY(m.p[1])); g.stroke(); g.setLineDash([]); });
+  DR.items.forEach(function(it){ garment(it, p); });
+  g.fillStyle = p.dim; g.font = '11px Arial'; g.textAlign = 'center'; g.fillText('drum (front view, turning ↺)', DC[0], DC[1] + R + 32);
+  /* the per-garment charges */ var x0 = 440, y0 = 14; g.textAlign = 'left'; g.fillStyle = p.txt; g.font = 'bold 12px Arial'; g.fillText('Charge on each garment (µC)', x0, y0 + 10);
+  DR.items.forEach(function(it, i){ var y = y0 + 24 + i*17, cx = x0 + 215, wv = 100*clamp(it.q/QMAX, -1, 1); g.fillStyle = fabCol(it.fab); g.fillRect(x0, y - 9, 10, 10); g.fillStyle = p.txt; g.font = '11px Arial'; g.fillText(FAB[it.fab].n + ' ' + it.n, x0 + 14, y);
+    g.strokeStyle = p.grid; g.beginPath(); g.moveTo(cx, y - 11); g.lineTo(cx, y + 3); g.stroke(); g.fillStyle = it.q >= 0 ? p.pos : p.neg; g.fillRect(cx, y - 8, wv*0.9, 8); g.fillStyle = p.dim; g.textAlign = 'right'; g.fillText((it.q > 0 ? '+' : '') + f(it.q*1e6, 2), x0 + 330, y); g.textAlign = 'left'; });
+  /* the graph: moisture and charge over the cycle */ var gx = 440, gy = 165 + Math.max(0, DR.items.length - 6)*17, gw = 325, gh = H - gy - 30; g.fillStyle = p.panel; g.fillRect(gx, gy, gw, gh); g.strokeStyle = p.grid; g.strokeRect(gx, gy, gw, gh);
+  function GX(t){ return gx + 30 + (gw - 60)*t/70; } function GM(m){ return gy + gh - 18 - (gh - 34)*m/0.6; } function GQ(q){ return gy + gh - 18 - (gh - 34)*Math.min(1, q/9e-6); }
+  g.fillStyle = p.dim; g.font = '10px Arial'; g.textAlign = 'center'; for (var tt=0; tt<=70; tt+=10){ g.fillText(String(tt), GX(tt), gy + gh - 5); } g.fillText('cycle time (min)', gx + gw/2, gy + 12);
+  g.textAlign = 'left'; g.fillStyle = p.moist; g.fillText('water %', gx + 3, gy + 12); g.textAlign = 'right'; g.fillStyle = p.charge; g.fillText('|charge|, 0 to 9 µC', gx + gw - 3, gy + 12);
+  g.strokeStyle = p.grid; g.setLineDash([3, 3]); g.beginPath(); g.moveTo(gx + 30, GM(0.15)); g.lineTo(gx + gw - 30, GM(0.15)); g.stroke(); g.setLineDash([]); g.fillStyle = p.dim; g.textAlign = 'left'; g.fillText('15%: surfaces insulate', gx + 34, GM(0.15) - 3);
+  function line(h, idx, Y, col, w, dash){ if (h.length < 2) return; g.strokeStyle = col; g.lineWidth = w; g.setLineDash(dash || []); g.beginPath(); h.forEach(function(q, i){ var x = GX(q[0]), y = Y(q[idx]); if (i) g.lineTo(x, y); else g.moveTo(x, y); }); g.stroke(); g.setLineDash([]); }
+  if (DR.ghost){ line(DR.ghost, 2, GQ, p.ghost, 2, [5, 4]); line(DR.ghost, 1, GM, p.ghost, 1.2, [2, 3]); g.fillStyle = p.dim; g.textAlign = 'right'; g.fillText('ghost: ' + DR.ghostLab, gx + gw - 4, gy + 26); }
+  line(DR.hist, 1, GM, p.moist, 2); line(DR.hist, 2, GQ, p.charge, 2.4); g.textAlign = 'left';
+  /* the cycle clock */ g.fillStyle = p.txt; g.font = 'bold 13px Arial'; g.fillText(f(DR.tmin, 0) + ' min · water ' + f(100*DR.M, 0) + '%' + (DR.sheet ? ' · sheet ' + f(100*DR.c, 0) + '% spread' : ''), 12, 22); }
+/* ══════════ drawing: tab 2 ══════════ */
+function drawFibre(p){ g.fillStyle = p.bg; g.fillRect(0, 0, W, H); var F = fbFactors(), c = FB.cov, nS = 24, i, k, yb = 330, xs = 90, xe = 690;
+  g.fillStyle = p.txt; g.font = 'bold 13px Arial'; g.textAlign = 'left'; g.fillText('Close-up of two fibres rubbing (not to scale: a fibre is about 20 µm across)', 14, 22);
+  /* the moisture film */ if (FB.cond && c > 0){ g.fillStyle = p.water; g.fillRect(xs, yb - 10 - 10*c, xe - xs, 10 + 10*c); g.fillStyle = p.dim; g.font = '11px Arial'; g.fillText('blue layer: moisture film (conducts)', xs, yb + 106); }
+  /* the lower fibre */ var gr = g.createLinearGradient(0, yb, 0, yb + 70); gr.addColorStop(0, th.cb ? '#c9a46a' : '#d9cfb8'); gr.addColorStop(1, th.cb ? '#7a5b2a' : '#9c8f74'); g.fillStyle = gr; g.fillRect(xs, yb, xe - xs, 70); g.fillStyle = p.txt; g.font = '12px Arial'; g.fillText('fibre (e.g. polyester): negative sites on its surface', xs + 6, yb + 90);
+  /* negative sites and softener molecules */ var nCov = Math.round(nS*F.neut);
+  for (i=0; i<nS; i++){ var x = xs + 12 + i*(xe - xs - 24)/(nS - 1), covered = i % 2 === 0 ? i/2 < nCov/2 : (i - 1)/2 < (nCov - Math.ceil(nCov/2)); covered = (i*7 % nS) < nCov;
+    sgnDot(x, yb + 8, -1, 5.5);
+    var showMol = (c > 0) && ((i*7 % nS) < Math.round(nS*c));
+    if (showMol){ var bind = FB.neut && covered; var hy = bind ? yb - 4 : yb - 16; sgnDot(x, hy, 1, 5.5); g.strokeStyle = th.hc ? '#ff0' : '#e0b040'; g.lineWidth = 2.2; g.beginPath(); for (k=0; k<=14; k++){ var yy = hy - 6 - k*3.6, xx = x + 3*Math.sin(k*0.9 + FB.ph*3 + i); if (k) g.lineTo(xx, yy); else g.moveTo(xx, yy); } g.stroke(); } }
+  /* the upper fibre, rubbing back and forth */ var off = 50*Math.sin(FB.t*TAU/1.2), gap = FB.lub ? 18 + 52*c : 18, yt = yb - 18 - gap - 50; g.fillStyle = th.cb ? '#8ec5e8' : '#9fc6e8'; g.fillRect(xs + 30 + off, yt, xe - xs - 60, 50); g.fillStyle = p.txt; g.fillText('another garment’s fibre (e.g. cotton), rubbing ↔', xs + 36 + off, yt - 8);
+  /* contact points */ var nC = Math.round(10*(1 - (FB.lub ? 0.8*c : 0))); g.fillStyle = p.charge; for (k=0; k<nC; k++){ var cx = xs + 60 + off + k*(xe - xs - 120)/Math.max(1, nC - 1); g.beginPath(); g.arc(cx, yt + 52, 2.5, 0, TAU); g.fill(); }
+  /* electrons hopping, sitting and draining */ FB.hop.forEach(function(h){ var y = yt + 50 + (yb - (yt + 50))*h.s; g.fillStyle = p.neg; g.beginPath(); g.arc(h.x, y, 3.2, 0, TAU); g.fill(); });
+  FB.surf.forEach(function(e){ sgnDot(e.x, yb + 22, -1, 4); });
+  FB.drain.forEach(function(e){ var x = e.x + (xe + 30 - e.x)*e.s; g.fillStyle = p.neg; g.globalAlpha = 1 - e.s; g.beginPath(); g.arc(x, yb - 4, 3, 0, TAU); g.fill(); g.globalAlpha = 1; });
+  g.strokeStyle = '#7ac943'; g.lineWidth = 2; g.beginPath(); g.moveTo(xe + 30, yb - 4); g.lineTo(xe + 30, yb + 110); g.stroke(); for (k=0; k<3; k++){ g.beginPath(); g.moveTo(xe + 22 + k*3, yb + 110 + k*4); g.lineTo(xe + 38 - k*3, yb + 110 + k*4); g.stroke(); } g.fillStyle = p.dim; g.font = '11px Arial'; g.fillText('to ground', xe + 8, yb + 135);
+  /* legend */ var lx = 14, ly = 440; sgnDot(lx + 6, ly, 1, 5.5); g.fillStyle = p.txt; g.font = '11px Arial'; g.fillText('softener head (cationic, +)', lx + 16, ly + 4); g.strokeStyle = '#e0b040'; g.lineWidth = 2.2; g.beginPath(); g.moveTo(lx + 190, ly + 6); g.lineTo(lx + 196, ly - 8); g.stroke(); g.fillText('long oily tail (lubricates)', lx + 202, ly + 4);
+  sgnDot(lx + 380, ly, -1, 5.5); g.fillText('negative site, or transferred electron', lx + 390, ly + 4);
+  g.fillStyle = p.txt; g.font = 'bold 12px Arial'; g.fillText('electrons sitting on the lower fibre: ' + FB.surf.length, 14, 46); }
+/* ══════════ drawing: tab 3 ══════════ */
+function drawPull(p){ g.fillStyle = p.bg; g.fillRect(0, 0, W, H); var gapPx = Math.max(2, Math.min(320, 2 + Math.log(1 + PU.d*2000)*60)), xs = 250, xk = xs + gapPx, y0 = 120, y1 = 400, i, nQ = Math.round(16*Math.min(1, PU.Q/1e-6));
+  g.fillStyle = p.txt; g.font = 'bold 13px Arial'; g.textAlign = 'left'; g.fillText('Pulling a polyester sock off a cotton shirt (separation drawn on a log scale)', 14, 22);
+  /* the shirt */ g.fillStyle = th.cb ? '#eeeeee' : '#f2f0e6'; g.fillRect(60, y0 - 30, xs - 60, y1 - y0 + 60); g.strokeStyle = '#999'; g.strokeRect(60, y0 - 30, xs - 60, y1 - y0 + 60); g.fillStyle = p.txt; g.font = '12px Arial'; g.fillText('cotton shirt (+)', 80, y0 - 40);
+  /* the sock, hanging from the hand */ g.fillStyle = th.cb ? '#009e73' : '#8fd18b'; g.beginPath(); g.moveTo(xk, y0); g.lineTo(xk + 60, y0); g.lineTo(xk + 60, y1 - 40); g.quadraticCurveTo(xk + 60, y1 + 10, xk + 10, y1 + 10); g.lineTo(xk, y1 + 10); g.closePath(); g.fill(); g.strokeStyle = '#3a6'; g.stroke();
+  g.fillStyle = p.txt; g.fillText('polyester sock (−)', xk + 4, y0 - 40); g.strokeStyle = p.dim; g.lineWidth = 2; g.beginPath(); g.moveTo(xk + 30, y0); g.lineTo(xk + 30, y0 - 25); g.stroke(); g.fillText('your hand pulls →', xk + 38, y0 - 18);
+  /* the charges facing each other */ for (i=0; i<nQ; i++){ var yy = y0 + 10 + i*(y1 - y0 - 20)/Math.max(1, nQ - 1); sgnDot(xs - 8, yy, 1, 5); sgnDot(xk + 8, yy, -1, 5); }
+  /* field lines in the gap */ var E = Epu(), nl = Math.round(clamp(E/5e5, 0, 12)); g.strokeStyle = th.cb ? 'rgba(230,159,0,0.8)' : 'rgba(255,214,90,0.8)'; g.lineWidth = 1.2; for (i=0; i<nl; i++){ var yl = y0 + 20 + i*(y1 - y0 - 40)/Math.max(1, nl - 1); g.beginPath(); g.moveTo(xs + 2, yl); g.lineTo(xk - 2, yl); g.stroke(); }
+  /* sparks */ PU.sparks.forEach(function(s){ g.save(); g.shadowColor = '#aac8ff'; g.shadowBlur = 12; g.strokeStyle = p.spark; g.lineWidth = 2; g.beginPath(); g.moveTo(xs, s.y); var x = xs, y = s.y; while (x < xk){ x += 4 + Math.random()*6; y += rnd(-5, 5); g.lineTo(Math.min(x, xk), y); } g.stroke(); g.restore(); });
+  /* forces on the sock */ var Fe = Fpu(), Wt = PU.msock*GA, sc = 120/Math.max(Wt, 0.3); g.lineWidth = 3; g.strokeStyle = p.neg; g.fillStyle = p.neg; var ax = xk + 120, ay = 300; g.beginPath(); g.moveTo(ax, ay); g.lineTo(ax - Math.min(200, Fe*sc), ay); g.stroke(); g.font = 'bold 12px Arial'; g.fillText('electric pull ' + f(Fe, 3) + ' N', ax + 6, ay + 4);
+  g.strokeStyle = p.dim; g.fillStyle = p.dim; g.beginPath(); g.moveTo(ax, ay + 30); g.lineTo(ax, ay + 30 + Wt*sc); g.stroke(); g.fillText('weight ' + f(Wt, 3) + ' N', ax + 6, ay + 50);
+  g.fillStyle = p.txt; g.font = 'bold 12px Arial'; g.fillText('d = ' + (PU.d < 0.01 ? f(PU.d*1000, 1) + ' mm' : f(PU.d*100, 1) + ' cm') + '   V = ' + (Vpu() > 1e3 ? f(Vpu()/1e3, 1) + ' kV' : f(Vpu(), 0) + ' V'), 14, 46); }
+/* ══════════ readouts ══════════ */
+function card(a, b){ return '<div><div class="' + cls('cd_flabel') + '">' + a + '</div><div class="' + cls('cd_fvalue') + '" title="' + b + '">' + b + '</div></div>'; }
+function tauTxt(t){ return t < 1 ? f(t*1000, 0) + ' ms' : t < 120 ? f(t, 1) + ' s' : f(t/60, 0) + ' min'; }
+function statusLine(){ var Q = totalQ(), s = signs(); return 'Total charge on the load: ' + f(Q*1e6, 2) + ' µC; ' + (s[0] && s[1] ? 'garments of both signs, so they attract and cling.' : (s[0] || s[1]) ? 'all garments carry the same sign, so they repel.' : 'no charge to speak of.'); }
+function info(){ var cells = [], st = '', eq = '', t = U.tab;
+  if (t === 0){ var s = signs(); cells = [['cycle time', f(DR.tmin, 0) + ' min'], ['water in the load', f(100*DR.M, 1) + '% of dry weight'], ['charge decay time τ', tauTxt(tauQ())], ['charging per contact', f(100*genF(), 0) + '%'], ['total |charge| on the load', f(totalQ()*1e6, 2) + ' µC'], ['largest garment charge', f(maxQ()*1e6, 2) + ' µC'], ['garments + / −', s[0] + ' / ' + s[1]], ['clinging', clingPairs() + (DR.sheet ? ' · sheet ' + f(100*DR.c, 0) + '%' : '')]];
+    st = !U.run && DR.tmin === 0 ? 'Choose a load, then start the dryer.' : DR.M > 0.15 ? 'Wet clothes: every contact still moves electrons, but the water drains them away within ' + tauTxt(tauQ()) + '. No static yet.' : maxQ() < 0.05e-6 ? 'Dry, but hardly charged: ' + (DR.sheet ? 'the dryer sheet’s coating keeps the charge from building up.' : 'these fabrics are close in the triboelectric series (or identical).') : statusLine();
+    eq = 'Charge per contact ∝ (s₁ − s₂) × dryness × (1 − 0.9 × sheet coverage) · decay q(t) = q₀ e<sup>−t/τ</sup>, with <b>τ = ' + tauTxt(tauQ()) + '</b> now: milliseconds when wet, minutes when bone dry, divided by about 300 by a fully spread sheet.'; }
+  if (t === 1){ var F = fbFactors(), tauS = 0.05*Math.pow(10, F.rho - 10); cells = [['softener coverage', f(100*FB.cov, 0) + '%'], ['negative sites neutralized', f(100*F.neut, 0) + '%'], ['friction coefficient μ', f(F.mu, 2)], ['charge per rub', f(100*F.gen, 0) + '% of untreated'], ['surface resistivity', '10^' + f(F.rho, 1) + ' Ω'], ['charge decay time', tauTxt(tauS)], ['electrons transferred', String(FB.trans)], ['still on the fibre', String(FB.surf.length)]];
+    st = FB.cov === 0 ? 'Untreated fibres: every rub moves many electrons, and on a dry, insulating surface they stay.' : 'With ' + f(100*FB.cov, 0) + '% coverage: ' + [FB.neut ? 'positive heads neutralize the negative sites' : '', FB.lub ? 'the oily tails keep the fibres apart, so they touch at fewer points' : '', FB.cond ? 'the moisture film lets the charge drain to ground' : ''].filter(function(x){ return x; }).join('; ') + '.';
+    eq = 'Static left ∝ (charge made per rub) × (decay time) = <b>' + f(100*F.gen*Math.pow(10, -(13 - F.rho)), 2) + '%</b> of the untreated fibre. Softener: a quaternary ammonium cation (positive head, long hydrocarbon tails) in a fatty matrix that melts in the warm drum.'; }
+  if (t === 2){ cells = [['separation d', PU.d < 0.01 ? f(PU.d*1000, 1) + ' mm' : f(PU.d*100, 1) + ' cm'], ['charge ±Q', f(PU.Q*1e6, 3) + ' µC'], ['capacitance C', f(Cpu()*1e12, 0) + ' pF'], ['voltage V = Q/C', Vpu() > 1e3 ? f(Vpu()/1e3, 1) + ' kV' : f(Vpu(), 0) + ' V'], ['field in the gap', f(Epu()/1e6, 2) + ' MV/m'], ['at fibre tips (×4)', f(PU.beta*Epu()/1e6, 2) + ' MV/m'], ['pull / weight of sock', f(Fpu()/(PU.msock*GA), 2)], ['crackles', String(PU.count)]];
+    st = PU.count && PU.beta*Epu() < EB ? 'The crackling has stopped: each discharge carried some charge across, until the field at the fibre tips fell below breakdown.' : Fpu() > PU.msock*GA ? 'The sock hangs on: the electric attraction is larger than its weight.' : 'Pull the garments apart and watch V and the crackles.';
+    eq = 'Parallel garments: <b>F = Q²/(2ε₀A)</b> while close (A = ' + f(PU.A*1e4, 0) + ' cm²). C ≈ ε₀A/d + C₀ falls as d grows, so <b>V = Q/C</b> rises; a discharge happens where the field at the fibre tips exceeds 3 MV/m.'; }
+  el('cdRead').innerHTML = cells.map(function(c){ return card(c[0], c[1]); }).join(''); el('cdStatus').textContent = st; el('cdEq').innerHTML = eq; return st; }
+/* ══════════ controls ══════════ */
+function say(m){ if (th.nr) el('cdNar').textContent = m; }
+function ev(k, m){ if (U.ev[k]) return; U.ev[k] = 1; say(m); }
+function row(id, label, min, max, step, val, txt){ return '<div class="' + cls('cd_ctrl') + '"><div class="' + cls('cd_ctrlhdr') + '"><label class="' + cls('cd_ctrlname') + '" for="' + id + '">' + label + '</label><span class="' + cls('cd_sval') + '" id="' + id + 'v">' + txt + '</span></div><input type="range" id="' + id + '" min="' + min + '" max="' + max + '" step="' + step + '" value="' + val + '"></div>'; }
+function chk(id, label, on){ return '<label class="' + cls('cd_chk') + '"><input type="checkbox" id="' + id + '"' + (on ? ' checked' : '') + '> ' + label + '</label>'; }
+function on(id, evn, fn){ var e = el(id); if (e) e.addEventListener(evn, fn); }
+function seriesHTML(){ var used = {}; DR.items.forEach(function(it){ used[it.fab] = 1; });
+  return '<div class="' + cls('cd_series') + '"><div><span>+ end: gives electrons</span><span></span></div>' + SERIES.map(function(k){ return '<div class="' + (used[k] ? cls('cd_hit') : '') + '"><span>' + FAB[k].n + '</span><span>' + (used[k] ? 'IN THE LOAD' : '') + '</span></div>'; }).join('') + '<div><span>(steel drum: near the middle)</span><span></span></div><div><span>− end: takes electrons</span><span></span></div></div>'; }
+function build(){ var t = U.tab, h = '', h2 = '';
+  el('cdRun').style.display = '';
+  if (t === 0){ el('cdCtlT').textContent = 'The load and the dryer'; el('cdCtl2T').textContent = 'The triboelectric series';
+    h = '<div class="' + cls('cd_ctrl') + '"><label class="' + cls('cd_ctrlname') + '" for="cdLoad">the load</label><select class="' + cls('cd_sel') + '" id="cdLoad">' + Object.keys(LOADS).map(function(k){ return '<option value="' + k + '"' + (k === DR.load ? ' selected' : '') + '>' + LOADNAMES[k] + '</option>'; }).join('') + '</select></div>'
+      + chk('cdSheet', 'a dryer sheet in the drum', DR.sheet) + chk('cdSensor', 'moisture sensor: stop when just dry', DR.sensor)
+      + '<div class="' + cls('cd_ctrl') + '"><label class="' + cls('cd_ctrlname') + '" for="cdHeat">heat</label><select class="' + cls('cd_sel') + '" id="cdHeat">' + ['low', 'medium', 'high'].map(function(k){ return '<option' + (k === DR.heat ? ' selected' : '') + '>' + k + '</option>'; }).join('') + '</select></div>'
+      + row('cdRH', 'humidity of the room air', 15, 80, 1, DR.rh, DR.rh + '%') + '<p class="' + cls('cd_note') + '">Changing the load or the sheet resets the run; the last run stays on the graph as a ghost for comparison.</p>';
+    h2 = seriesHTML(); }
+  if (t === 1){ el('cdCtlT').textContent = 'The dryer sheet’s coating'; el('cdCtl2T').textContent = 'The three mechanisms';
+    h = row('cdCov', 'softener coverage of the fibre', 0, 100, 1, Math.round(FB.cov*100), Math.round(FB.cov*100) + '%') + '<div class="' + cls('cd_brow') + '"><button type="button" class="' + cls('cd_btn') + '" id="cdCov0">No sheet (0%)</button><button type="button" class="' + cls('cd_btn') + '" id="cdCov1">Fully treated (100%)</button></div><p class="' + cls('cd_note') + '">In the dryer, the coating melts in the warm air and transfers to the clothes as they tumble against the sheet: coverage builds up over the first 10 to 20 minutes.</p>';
+    h2 = chk('cdNeut', '1. neutralize: positive heads bind to negative sites', FB.neut) + chk('cdLub', '2. lubricate: oily tails, less friction, fewer contacts', FB.lub) + chk('cdCond', '3. conduct: a moisture film lets charge drain away', FB.cond) + '<p class="' + cls('cd_note') + '">Switch each one off to see how much it contributes.</p>'; }
+  if (t === 2){ el('cdCtlT').textContent = 'The two garments'; el('cdCtl2T').textContent = 'The charge';
+    h = row('cdD', 'separation d (mm)', 0.5, 150, 0.5, PU.d*1000, (PU.d*1000).toFixed(1) + ' mm') + '<div class="' + cls('cd_brow') + '"><button type="button" class="' + cls('cd_btn') + '" id="cdPull">Pull them slowly apart</button><button type="button" class="' + cls('cd_btn') + '" id="cdBack">Press them together again</button></div>';
+    h2 = row('cdQ', 'charge on each garment (µC)', 0, 1.5, 0.01, PU.Q0*1e6, (PU.Q0*1e6).toFixed(2) + ' µC') + '<div class="' + cls('cd_brow') + '"><button type="button" class="' + cls('cd_btn') + '" id="cdFromRun">Use the charge from my dryer run</button></div><p class="' + cls('cd_note') + '">From your run: the smaller of the largest positive and largest negative garment charges (' + f(fromRun()*1e6, 2) + ' µC now).</p>'; }
+  el('cdCtl').innerHTML = h; el('cdCtl2').innerHTML = h2;
+  on('cdLoad', 'change', function(){ DR.load = this.value; resetRun(true); build(); save(); say(LOADNAMES[DR.load] + '. ' + (DR.load === 'cotton' || DR.load === 'polyester' ? 'One fabric only: the garments cannot charge each other. Predict what happens before you start.' : 'Fabrics far apart in the series: predict the signs of their charges.')); });
+  on('cdSheet', 'change', function(){ DR.sheet = this.checked; resetRun(true); build(); save(); say(DR.sheet ? 'A dryer sheet goes in with the load. As the drum warms, its coating spreads onto the clothes.' : 'No dryer sheet this time.'); });
+  on('cdSensor', 'change', function(){ DR.sensor = this.checked; save(); });
+  on('cdHeat', 'change', function(){ DR.heat = this.value; save(); });
+  on('cdRH', 'input', function(){ DR.rh = +this.value; el('cdRHv').textContent = DR.rh + '%'; save(); });
+  on('cdCov', 'input', function(){ FB.cov = +this.value/100; el('cdCovv').textContent = this.value + '%'; });
+  on('cdCov0', 'click', function(){ FB.cov = 0; build(); say('Untreated fibres: many contact points, and the electrons that cross stay put.'); });
+  on('cdCov1', 'click', function(){ FB.cov = 1; build(); say('Fully treated: the heads neutralize the sites, the tails keep the fibres apart, and the moisture film drains what little charge forms.'); });
+  on('cdNeut', 'change', function(){ FB.neut = this.checked; }); on('cdLub', 'change', function(){ FB.lub = this.checked; }); on('cdCond', 'change', function(){ FB.cond = this.checked; });
+  on('cdD', 'input', function(){ PU.d = +this.value/1000; PU.auto = false; el('cdDv').textContent = (+this.value).toFixed(1) + ' mm'; });
+  on('cdPull', 'click', function(){ PU.auto = true; if (PU.d > 0.1) PU.d = 0.0005; say('Pulling slowly apart. Watch the voltage climb.'); });
+  on('cdBack', 'click', function(){ PU.auto = false; PU.d = 0.0005; PU.Q = PU.Q0; PU.count = 0; syncPu(); say('Pressed together again, with the charge restored.'); });
+  on('cdQ', 'input', function(){ PU.Q0 = PU.Q = +this.value*1e-6; PU.count = 0; el('cdQv').textContent = (+this.value).toFixed(2) + ' µC'; });
+  on('cdFromRun', 'click', function(){ PU.Q0 = PU.Q = fromRun(); PU.count = 0; PU.d = 0.0005; build(); say(PU.Q < 0.02e-6 ? 'Your run left almost no charge on the garments: nothing to crackle. Try a mixed load without a sheet, over-dried in dry air.' : 'Using ' + f(PU.Q*1e6, 2) + ' µC from your dryer run.'); }); }
+function fromRun(){ var p = 0, n = 0; DR.items.forEach(function(it){ if (it.q > p) p = it.q; if (-it.q > n) n = -it.q; }); return Math.min(p, n); }
+function syncPu(){ var e = el('cdD'); if (e){ e.value = (PU.d*1000).toFixed(1); el('cdDv').textContent = (PU.d*1000).toFixed(1) + ' mm'; } }
+function setRun(v){ U.run = v; var b = el('cdPlay'); b.innerHTML = v ? '❙❙ Pause the dryer' : (DR.tmin > 0 && !DR.done ? '▶ Resume' : '▶ Start the dryer'); b.setAttribute('aria-pressed', v ? 'true' : 'false'); }
+on('cdPlay', 'click', function(){ if (U.tab !== 0){ tab(0); } if (DR.done) resetRun(true); setRun(!U.run); if (U.run && DR.tmin === 0) say('Dryer on: ' + LOADNAMES[DR.load].toLowerCase() + (DR.sheet ? ', with a dryer sheet' : '') + ', room humidity ' + DR.rh + '%. The clothes start wet.'); });
+on('cdRst', 'click', function(){ resetRun(true); say('New wet load. The last run is kept as a ghost on the graph.'); });
+on('cdSpd', 'input', function(){ U.spd = +this.value; el('cdSpdV').textContent = U.spd + ' min/s'; });
+on('cdChg', 'change', function(){ U.chg = this.checked; });
+on('cdSnd', 'change', function(){ U.sound = this.checked; if (U.sound) ac(); });
+on('cdDsc', 'click', function(){ var t = U.tab, s = '';
+  if (t === 0) s = 'A dryer drum seen from the front, turning, with ' + DR.items.length + ' garments: ' + DR.items.map(function(it){ return FAB[it.fab].n.toLowerCase() + ' ' + it.n + ' ' + (Math.abs(it.q) < 0.02e-6 ? 'neutral' : (it.q > 0 ? 'positive ' : 'negative ') + f(Math.abs(it.q)*1e6, 2) + ' microcoulombs'); }).join(', ') + '. ' + clingPairs() + ' clinging. ';
+  if (t === 1) s = 'Two fibres rub back and forth. Softener coverage ' + f(100*FB.cov, 0) + '%. ' + FB.surf.length + ' electrons remain on the lower fibre. ';
+  if (t === 2) s = 'A sock held ' + (PU.d < 0.01 ? f(PU.d*1000, 1) + ' millimetres' : f(PU.d*100, 1) + ' centimetres') + ' from a shirt, charges plus and minus ' + f(PU.Q*1e6, 2) + ' microcoulombs. ';
+  say(s + info()); });
+function tab(i){ U.tab = i; for (var k=0; k<3; k++) el('cdT' + k).setAttribute('aria-selected', k === i ? 'true' : 'false'); el('cdLab').textContent = ['INSIDE THE DRYER', 'HOW A DRYER SHEET WORKS', 'UNLOADING: CLING AND CRACKLE'][i];
+  el('cdRun').querySelector('#cdPlay').style.display = i === 0 ? '' : 'none'; el('cdRun').querySelector('#cdRst').style.display = i === 0 ? '' : 'none'; el('cdSpd').parentNode.style.display = i === 0 ? '' : 'none';
+  build(); info(); say(['Inside the dryer: choose a load, then start. Watch the water content and the charge on the graph, and the garments clinging as the load dries.', 'A close-up of two fibres rubbing. Raise the softener coverage and switch the three mechanisms on and off.', 'Two garments that clung in the dryer, with opposite charges. Pull them apart and watch the voltage climb until the fibres crackle.'][i]); }
+[0, 1, 2].forEach(function(i){ on('cdT' + i, 'click', function(){ tab(i); }); });
+/* ══════════ the toolbar, the description, saving ══════════ */
+function theme(k){ if (k === 'fs') th.fs = (th.fs + 1) % 3; else th[k] = !th[k]; if (k === 'hc' && th.hc) th.lm = false; if (k === 'lm' && th.lm) th.hc = false; applyTheme(); save();
+  if (k === 'cb' && th.cb) say('Colour-blind safe colours: positive charges vermillion, negative charges blue, the charge curve orange, the water curve sky blue.'); }
+function applyTheme(){ ROOT.classList.toggle(cls('cd_hc'), th.hc); ROOT.classList.toggle(cls('cd_lm'), th.lm); ROOT.classList.toggle(cls('cd_fs1'), th.fs === 1); ROOT.classList.toggle(cls('cd_fs2'), th.fs === 2);
+  [['hc', 'cdBtnHC'], ['lm', 'cdBtnLM'], ['cb', 'cdBtnCB'], ['nr', 'cdBtnNR'], ['fs', 'cdBtnFS']].forEach(function(q){ var b = el(q[1]), o = q[0] === 'fs' ? th.fs > 0 : th[q[0]]; b.classList.toggle(cls('cd_a11yon'), !!o); b.setAttribute('aria-pressed', o ? 'true' : 'false'); });
+  el('cdBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('cdBtnFS').textContent = 'FONT: ' + ['NORMAL', 'LARGE', 'XL'][th.fs]; el('cdNar').style.display = th.nr ? '' : 'none'; }
+[['hc', 'cdBtnHC'], ['lm', 'cdBtnLM'], ['cb', 'cdBtnCB'], ['nr', 'cdBtnNR'], ['fs', 'cdBtnFS']].forEach(function(q){ on(q[1], 'click', function(){ theme(q[0]); }); });
+on('cdDescBtn', 'click', function(){ var d = el('cdDesc'), open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; this.setAttribute('aria-expanded', open ? 'true' : 'false'); this.innerHTML = (open ? '▾' : '▸') + ' SIM DESCRIPTION'; if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } });
+var KEY = 'cdSaved_';
+function save(){ try { localStorage.setItem(KEY, JSON.stringify({ load:DR.load, sheet:DR.sheet, rh:DR.rh, heat:DR.heat, sensor:DR.sensor, th:th })); } catch(e){} }
+try { var sv = JSON.parse(localStorage.getItem(KEY) || 'null'); if (sv){ if (!txt_(MOM.load) && LOADS[sv.load]) DR.load = sv.load; if (!txt_(MOM.sheet)) DR.sheet = !!sv.sheet; if (!txt_(MOM.rh) && isFinite(sv.rh)) DR.rh = sv.rh; if (HEATS[sv.heat]) DR.heat = sv.heat; DR.sensor = !!sv.sensor; if (sv.th) th = sv.th; } } catch(e){}
+/* ══════════ the loop ══════════ */
+var last = 0, tick = 0;
+function advance(T){ var n = Math.max(1, Math.ceil(T/0.004)), dt = T/n, i;
+  if (U.tab === 0 && U.run){ for (i=0; i<n; i++){ tumbleStep(dt); cycleStep(dt*U.spd); if (!U.run) break; } if (!DR.hist.length || DR.tmin - DR.hist[DR.hist.length - 1][0] > 0.25) DR.hist.push([DR.tmin, DR.M, totalQ()]); }
+  if (U.tab === 1) fbStep(T); if (U.tab === 2) for (i=0; i<n; i++) puStep(dt); }
+function loop(t){ var rdt = last ? Math.min(0.05, (t - last)/1000) : 0; last = t; if (rdt > 0) advance(rdt);
+  var p = pal(); if (U.tab === 0) drawDryer(p); else if (U.tab === 1) drawFibre(p); else drawPull(p);
+  el('cdHint').textContent = U.tab === 0 ? (U.run ? 'running · ' + U.spd + ' min of cycle per second' : 'stopped') : U.tab === 1 ? 'two fibres rubbing' : 'pull the garments apart';
+  if (++tick % 10 === 0) info(); requestAnimationFrame(loop); }
+makeLoad(); applyTheme(); setRun(false); tab(U.tab); requestAnimationFrame(loop);
+return { tab:tab, _DR:DR, _FB:FB, _PU:PU, _adv:function(sec){ var k = Math.round(sec/0.02); for (var i=0; i<k; i++) advance(0.02); }, _run:function(v){ setRun(v); }, _reset:resetRun, _tau:tauQ, _totalQ:totalQ, _maxQ:maxQ, _signs:signs, _cling:clingPairs, _fb:fbFactors, _E:Epu, _V:Vpu, _F:Fpu, _fromRun:fromRun, _set:function(o){ Object.keys(o).forEach(function(k){ DR[k] = o[k]; }); resetRun(false); build(); } };
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Electrostatics: Sparks and Lightning</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="keywords" content="physics, Taha Mzoughi, electrostatics, spark, dielectric breakdown, Paschen law, avalanche, corona, emission spectrum, lightning, stepped leader, return stroke, thunder, lightning rod, rolling sphere">
+<meta name="description" content="Sparks and lightning: what causes them, what sets their colour, doorknob sparks, lightning and the lightning rod.">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="skRoot" class="sk_root" role="region" aria-label="Sparks and lightning: what causes a spark, what sets its colour, lightning cloud to ground and cloud to cloud, a doorknob spark and the lightning rod">
+<div class="sk_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="sk_a11ybtn" id="skBtnHC" onclick="skSim.theme('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="sk_a11ybtn" id="skBtnLM" onclick="skSim.theme('lm')" aria-pressed="false">LIGHT MODE</button>
+<button type="button" class="sk_a11ybtn" id="skBtnCB" onclick="skSim.theme('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="sk_a11ybtn sk_a11yon" id="skBtnNR" onclick="skSim.theme('nr')" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div class="sk_header"><p class="sk_h1">Sparks and Lightning</p><p class="sk_sub">electron avalanches &middot; dielectric breakdown &middot; the colours of excited atoms &middot; from a doorknob to a thunderstorm</p></div>
+<div class="sk_tabs" role="tablist" aria-label="Topics">
+<button type="button" role="tab" class="sk_tab" id="skT0" aria-selected="true" onclick="skSim.tab(0)">1. What makes a spark</button>
+<button type="button" role="tab" class="sk_tab" id="skT1" aria-selected="false" onclick="skSim.tab(1)">2. The doorknob</button>
+<button type="button" role="tab" class="sk_tab" id="skT2" aria-selected="false" onclick="skSim.tab(2)">3. Cloud to ground</button>
+<button type="button" role="tab" class="sk_tab" id="skT3" aria-selected="false" onclick="skSim.tab(3)">4. Cloud to cloud</button>
+<button type="button" role="tab" class="sk_tab" id="skT4" aria-selected="false" onclick="skSim.tab(4)">5. Lightning rod</button>
+</div>
+<div class="sk_diag"><div class="sk_dlabel"><b id="skLab">WHAT MAKES A SPARK</b><span id="skHint"></span></div>
+<canvas id="skCv" width="780" height="480" tabindex="0" role="img" aria-label="The scene of the selected topic." aria-describedby="skStatus"></canvas>
+<canvas id="skSp" width="780" height="118" role="img" aria-label="The spectrum of the light: bright lines at the wavelengths emitted by the excited gas, a smooth continuum when the channel is very hot, and a swatch of the colour you see."></canvas></div>
+<div class="sk_status" id="skStatus"></div>
+<div class="sk_bbar">
+<button type="button" class="sk_btn sk_kick" id="skGo">Go</button>
+<button type="button" class="sk_btn" id="skAuto" aria-pressed="false">Repeat: off</button>
+<button type="button" class="sk_btn sk_btnon" id="skPlay">&#10073;&#10073; Pause</button>
+<button type="button" class="sk_btn" id="skRst">Restart</button>
+<label>slow motion <input type="range" id="skSpd" min="0.1" max="2" step="0.1" value="1" style="width:100px"> <span id="skSpdV">1.0&times;</span></label>
+<label><input type="checkbox" id="skChg" checked> charges</label>
+<label><input type="checkbox" id="skLbl" checked> labels</label>
+<label><input type="checkbox" id="skSnd"> sound</label>
+<button type="button" class="sk_btn" id="skDsc">Describe</button>
+</div>
+<div class="sk_panels"><div class="sk_panel"><div class="sk_ptitle" id="skPT1">Settings</div><div class="sk_pbody" id="skCtl1"></div></div>
+<div class="sk_panel"><div class="sk_ptitle" id="skPT2">Colour</div><div class="sk_pbody" id="skCtl2"></div></div></div>
+<div class="sk_read" id="skRead" aria-label="Readout"></div>
+<div class="sk_eqs" id="skEq"></div>
+<div id="skNar" class="sk_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="sk_descwrap">
+<button type="button" class="sk_descbtn" id="skDescBtn" aria-expanded="false" aria-controls="skDesc" onclick="skSim.toggleDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="sk_desc" id="skDesc" role="region" aria-labelledby="skDescBtn" style="display:none">
+<p><b>1. What makes a spark.</b> A gas is normally an insulator, but it always contains a few free electrons (made by cosmic rays and natural radioactivity). In an electric field `E` an electron gains energy `eE lambda` between collisions, where `lambda` is its mean free path (about 0.35 &micro;m in air at 1 atm). Most collisions are gentle, but the fastest electrons can knock an electron out of a molecule (the ionization energy of N&#8322; is 15.6 eV, of O&#8322; 12.1 eV). Each new electron is accelerated in turn: an <b>avalanche</b>. Excited molecules emit light and photons start new avalanches ahead of the first; a thin conducting <b>streamer</b> bridges the gap, a large current flows, heats the channel to thousands of kelvin, and we see and hear a <b>spark</b>. The breakdown voltage of a uniform gap depends only on the product of pressure and gap length (<b>Paschen&rsquo;s law</b>):</p>
+<p class="sk_eq">`V_b = (B p d)/(ln(A p d) - ln(ln(1 + 1/gamma)))`,</p>
+<p>with constants `A`, `B` and `gamma` for each gas. For air at 1 atm this is about 3 kV per millimetre for gaps of a few millimetres or more. It has a minimum (about 330 V for air): at very low `pd` there are too few molecules to collide with, and the voltage rises again. A pointed electrode concentrates the field: the air near the tip breaks down first as a quiet violet <b>corona</b> glow, and the spark comes at a lower average field.</p>
+<p><b>Colours.</b> An excited atom or molecule emits light only at certain wavelengths, the lines of its <b>spectrum</b>; the mix of lines gives the colour. In air most of the light of a weak discharge comes from nitrogen molecules, much of it in the violet and near ultraviolet: corona and faint sparks look violet-blue. Neon glows orange-red, argon lavender, helium pink-peach, hydrogen magenta. A strong spark or lightning is so hot (lightning up to about 30 000 K) that the channel also emits a broad continuum, and many lines of ionized nitrogen and oxygen add up: the light is nearly white with a blue-violet tint. Seen through rain, dust or smoke, blue light is scattered out of the line of sight, so distant lightning can look yellow, orange or red.</p>
+<p><b>No gas</b> (as at the surface of the Moon, about 10<sup>&minus;15</sup> atm). Free electrons cross the gap without colliding with anything, so there is no avalanche, no glow and no corona: Paschen&rsquo;s law gives no breakdown at all. Only an extreme field, here modelled as about `50 sqrt(d)` kV (d in mm), pulls electrons out of the metal (field emission); they heat the electrodes, which evaporate, and the &ldquo;vacuum arc&rdquo; then burns in metal vapour and shows the lines of the metal (copper: green and violet-blue), not of a gas. This is why space hardware can hold high voltages that would spark in air, while low-pressure gas (near the Paschen minimum) is the most dangerous.</p>
+<p><b>2. The doorknob.</b> Shuffling on a carpet transfers charge by contact (the triboelectric effect) and leaves the body at several kilovolts (the body is a capacitor of about 150 pF). Near the metal knob the field in the small gap becomes strong enough for breakdown: a spark of a few millimetres carries the charge `Q = CV` in a fraction of a microsecond, with energy `1/2 C V^2`. Thresholds used (approximate): felt above 3 kV, visible above 5 kV, painful above 10 kV. Humid air lets the charge leak away. Touching the knob first with a key moves the spark to the key tip, away from the nerves of the fingertip.</p>
+<p><b>3. Cloud to ground.</b> In a thunderstorm, collisions between ice crystals and soft hail separate charge: the upper cloud becomes positive, the middle negative, with a small positive pocket near the base. The negative charge induces positive charge on the ground below. A faint <b>stepped leader</b> works its way down in steps of tens of metres, branching as it goes; when it nears the ground, <b>upward streamers</b> rise from tall objects. When they connect, a huge current (typically about 30 kA) surges up the channel: the bright <b>return stroke</b>. A <b>dart leader</b> may follow the same channel, giving several strokes in a fraction of a second: the flicker of a flash. The channel is heated to about 30 000 K in microseconds; the air expands explosively, and the shock wave becomes <b>thunder</b>. Light arrives almost at once, sound at 343 m/s: about 3 s per kilometre.</p>
+<p><b>4. Cloud to cloud.</b> Most lightning (roughly three quarters) never reaches the ground: it goes between charge regions inside one cloud (intracloud), between clouds, or crawls along the underside of the anvil (&ldquo;spider&rdquo; lightning). Hidden inside the cloud, it lights the whole cloud (&ldquo;sheet lightning&rdquo;).</p>
+<p><b>5. Lightning rod.</b> A rod does not attract lightning from far away and does not drain the cloud; it offers the approaching leader a preferred, safe point of attachment, connected to a ground electrode by a heavy conductor. Where a leader attaches is decided when its tip comes within the <b>striking distance</b> `r ~~ 10 I^(0.65)` m (I in kA) of an object; the <b>rolling sphere</b> of radius `r` shows the protected region: places the sphere cannot touch without first touching the rod. Weak strokes have short striking distances and can get past. A sharp tip under a charged cloud also glows with corona (St. Elmo&rsquo;s fire).</p>
+<p>The numbers (Paschen constants, line intensities, body capacitance, charging rates, lightning currents and the striking-distance formula) are typical, approximate values; the animations are slowed down by factors of thousands to millions.</p>
+</div></div>
+</div><!-- #skRoot -->
+<style>
+#skRoot { --c-chassis:#1a1c1f; --c-panel:#22262b; --c-hi:#2c3138; --c-lo:#14161a; --c-bd:#3a4048; --c-bd2:#525c66; --c-text:#c8d0d8; --c-dim:#8a94a3; --c-accent:#e8a020; --c-green:#3ad08f; --c-val:#ffdd66; --c-nbg:#2a2410; --c-nbd:#e0b040; --c-ntx:#f0e2b8;
+  background:var(--c-chassis); color:var(--c-text); font-family:Arial, sans-serif; padding:14px 10px 18px; border-radius:6px; box-sizing:border-box; width:100%; max-width:860px; margin:0 auto 10px; display:flex; flex-direction:column; gap:10px; }
+#skRoot * { box-sizing:border-box; }
+#skRoot.sk_lm { --c-chassis:#e9edf1; --c-panel:#ffffff; --c-hi:#f1f4f7; --c-lo:#f4f6f9; --c-bd:#c3cad3; --c-bd2:#9aa3ae; --c-text:#1d232a; --c-dim:#556070; --c-accent:#a8620a; --c-green:#12805a; --c-val:#8a4a00; --c-nbg:#ffefc0; --c-ntx:#333; }
+#skRoot.sk_hc { --c-chassis:#000; --c-panel:#000; --c-hi:#111; --c-lo:#000; --c-bd:#fff; --c-bd2:#fff; --c-text:#fff; --c-dim:#e0e0e0; --c-accent:#ffd700; --c-green:#00ff88; --c-val:#ffff00; --c-nbg:#000; --c-nbd:#ffd700; --c-ntx:#fff; }
+#skRoot .sk_a11y { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; }
+#skRoot .sk_a11ybtn { padding:4px 10px; font-size:.68rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-dim); min-height:30px; }
+#skRoot .sk_a11yon { background:rgba(58,208,143,.14); border-color:var(--c-green); color:var(--c-green); font-weight:bold; }
+#skRoot .sk_header { text-align:center; }
+#skRoot .sk_h1 { margin:0; font-size:.95rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--c-accent); }
+#skRoot .sk_sub { margin:3px 0 0; font-size:.7rem; color:var(--c-dim); letter-spacing:.06em; text-transform:uppercase; }
+#skRoot .sk_tabs { display:flex; gap:4px; flex-wrap:wrap; }
+#skRoot .sk_tab { flex:1 1 130px; padding:8px 4px; border:1px solid var(--c-bd2); background:var(--c-hi); color:var(--c-text); border-radius:4px; cursor:pointer; font-family:monospace; font-size:.7rem; letter-spacing:.04em; text-transform:uppercase; min-height:38px; }
+#skRoot .sk_tab[aria-selected="true"] { background:var(--c-accent); color:#1a1f24; border-color:var(--c-accent); font-weight:bold; }
+#skRoot .sk_diag { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; overflow:hidden; }
+#skRoot .sk_dlabel { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--c-dim); display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+#skRoot .sk_dlabel b { color:var(--c-accent); }
+#skRoot canvas { display:block; width:100%; height:auto; }
+#skRoot .sk_bbar { display:flex; flex-wrap:wrap; gap:6px 12px; justify-content:center; align-items:center; background:var(--c-lo); border:1px solid var(--c-bd); border-radius:6px; padding:8px 10px; font-size:.8rem; }
+#skRoot .sk_bbar label { display:flex; align-items:center; gap:5px; color:var(--c-dim); font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; cursor:pointer; }
+#skRoot .sk_btn { padding:7px 12px; font-family:monospace; font-size:.72rem; letter-spacing:.04em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-bd2); color:var(--c-text); border-radius:3px; text-transform:uppercase; min-height:34px; }
+#skRoot .sk_btn:hover { border-color:var(--c-accent); }
+#skRoot .sk_btn[aria-pressed="true"], #skRoot .sk_btnon { border-color:var(--c-accent); color:var(--c-accent); font-weight:bold; }
+#skRoot .sk_kick { background:var(--c-accent); color:#1a1f24 !important; border-color:var(--c-accent); font-weight:bold; }
+#skRoot .sk_panels { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; align-items:start; }
+#skRoot .sk_panel { background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; overflow:hidden; }
+#skRoot .sk_ptitle { background:var(--c-lo); border-bottom:1px solid var(--c-bd); padding:6px 12px; font-family:monospace; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--c-dim); }
+#skRoot .sk_pbody { padding:9px 12px; display:flex; flex-direction:column; gap:8px; }
+#skRoot .sk_ctrl { display:flex; flex-direction:column; gap:3px; }
+#skRoot .sk_ctrlhdr { display:flex; justify-content:space-between; align-items:baseline; gap:6px; }
+#skRoot .sk_ctrlname { font-size:.72rem; font-weight:600; color:var(--c-dim); text-transform:uppercase; letter-spacing:.04em; }
+#skRoot .sk_sval { font-family:monospace; font-size:.76rem; color:var(--c-val); white-space:nowrap; }
+#skRoot .sk_brow { display:flex; flex-wrap:wrap; gap:5px; }
+#skRoot .sk_chk { display:flex; align-items:center; gap:6px; font-size:.78rem; color:var(--c-text); cursor:pointer; }
+#skRoot .sk_note { margin:0; font-size:.74rem; color:var(--c-dim); line-height:1.4; }
+#skRoot .sk_sel { width:100%; min-height:32px; background:var(--c-hi); color:var(--c-text); border:1px solid var(--c-bd2); border-radius:3px; padding:4px; font-size:.8rem; }
+#skRoot input[type=range] { width:100%; accent-color:var(--c-accent); cursor:pointer; }
+#skRoot input[type=checkbox] { accent-color:var(--c-accent); width:16px; height:16px; }
+#skRoot .sk_read { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:6px 10px; background:var(--c-panel); border:1px solid var(--c-bd); border-radius:6px; padding:8px 12px; }
+#skRoot .sk_read > div { min-width:0; }
+#skRoot .sk_flabel { font-family:monospace; font-size:.62rem; color:var(--c-dim); letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#skRoot .sk_fvalue { font-family:monospace; font-size:.88rem; color:var(--c-val); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#skRoot .sk_eqs { background:var(--c-lo); border:1px solid var(--c-bd); border-left:4px solid var(--c-accent); border-radius:4px; padding:8px 14px; font-family:monospace; font-size:.74rem; color:var(--c-dim); line-height:1.7; }
+#skRoot .sk_eqs b { color:var(--c-val); }
+#skRoot .sk_status { padding:8px 12px; border-radius:4px; background:var(--c-panel); border:1px solid var(--c-bd); font-size:.86rem; line-height:1.4; min-height:3.3em; }
+#skRoot .sk_narbar { min-height:30px; padding:6px 12px; background:var(--c-nbg); border-left:4px solid var(--c-nbd); color:var(--c-ntx); font-size:.84rem; font-style:italic; line-height:1.45; border-radius:3px; }
+#skRoot .sk_descwrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+#skRoot .sk_descbtn { padding:8px 18px; font-family:monospace; font-size:.74rem; letter-spacing:.08em; cursor:pointer; background:var(--c-hi); border:1px solid var(--c-accent); color:var(--c-accent); border-radius:3px; font-weight:bold; min-height:40px; }
+#skRoot .sk_desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid var(--c-accent); border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; }
+#skRoot .sk_desc p { margin:0 0 9px; }
+#skRoot .sk_eq { text-align:center; font-size:1rem; }
+#skRoot button:focus-visible, #skRoot input:focus-visible, #skRoot select:focus-visible, #skRoot canvas:focus-visible { outline:2px solid var(--c-accent); outline-offset:2px; }
+@media (max-width:640px) { #skRoot .sk_panels { grid-template-columns:minmax(0,1fr); } #skRoot .sk_read { grid-template-columns:repeat(2, minmax(0,1fr)); } }
+@media (pointer:coarse) { #skRoot .sk_a11ybtn, #skRoot .sk_btn { min-height:42px; } #skRoot input[type=checkbox] { width:22px; height:22px; } #skRoot input[type=range] { height:28px; } }
+</style>
+<!-- ════════ SIMULATION ════════
+Paschen: Vb = B p d/(ln(A p d) - ln(ln(1 + 1/gamma))), p in Torr, d in cm (A, B, gamma per gas). Point-to-plane: spark at 0.55 Vb, corona from 0.3 Vb.
+Colour: sum of emission lines (wavelength-to-RGB) mixed with a white continuum of weight w (hot channel), then dimmed per channel by scattering
+in rain, haze or smoke. Doorknob: body C = 150 pF, dV/dt = 4 kV/s f (1 - V/30 kV f) - V/tau, tau = 25 exp(-(RH - 20)/12) s; spark when
+V >= Vb(d) (key tip x 0.85). Lightning: striking distance r = 10 I^0.65 m; the leader attaches to the first object (or the ground) within r.
+No dollar signs or backticks in the code.
+-->
+<script>
+var skSim = (function(){
+function el(id){ return document.getElementById(id + ''); }
+function cls(n){ return n + ''; }
+var ROOT = el('skRoot'), cv = el('skCv'), g = cv.getContext('2d'), W = cv.width, H = cv.height, sc = el('skSp'), gs = sc.getContext('2d'), SW = sc.width, SH = sc.height, DPR = window.devicePixelRatio || 1;
+cv.width = W*DPR; cv.height = H*DPR; g.scale(DPR, DPR); sc.width = SW*DPR; sc.height = SH*DPR; gs.scale(DPR, DPR);
+var TAU = 2*Math.PI;
+function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); } function rnd(a, b){ return a + (b - a)*Math.random(); }
+function gauss(){ var u = Math.random() || 1e-9, v = Math.random(); return Math.sqrt(-2*Math.log(u))*Math.cos(TAU*v); }
+function f(v, k){ return (Math.abs(v) < 0.5*Math.pow(10, -k) ? 0 : v).toFixed(k); }
+function kV(v){ return v >= 1e6 ? f(v/1e6, v < 1e7 ? 1 : 0) + ' MV' : v >= 1e3 ? f(v/1e3, v < 1e4 ? 2 : 1) + ' kV' : f(v, 0) + ' V'; }
+/* ══════════ gases and spectra ══════════ */
+var GAS = {
+  air:{ n:'Air', A:15, B:365, gam:0.01, Ei:'12.1 (O\u2082), 15.6 (N\u2082)', L:[[316, 0.6], [337, 1], [357, 0.8], [380, 0.6], [391, 0.7], [400, 0.5], [406, 0.4], [428, 0.5], [435, 0.3], [463, 0.2], [500, 0.12], [568, 0.06], [595, 0.04], [656, 0.05], [777, 0.15]] },
+  n2:{ n:'Nitrogen', A:12, B:342, gam:0.01, Ei:'15.6', L:[[316, 0.6], [337, 1], [357, 0.8], [380, 0.6], [391, 0.75], [406, 0.4], [428, 0.5], [435, 0.3], [463, 0.2], [500, 0.12], [568, 0.06]] },
+  ne:{ n:'Neon', A:4, B:100, gam:0.1, Ei:'21.6', L:[[540, 0.25], [585, 0.9], [588, 0.6], [594, 0.6], [603, 0.4], [607, 0.5], [614, 0.6], [616, 0.4], [621, 0.4], [626, 0.5], [633, 0.6], [638, 0.6], [640, 1], [650, 0.6], [660, 0.3], [693, 0.4], [703, 0.5], [724, 0.3]] },
+  ar:{ n:'Argon', A:12, B:180, gam:0.1, Ei:'15.8', L:[[404, 0.45], [415, 0.5], [420, 0.5], [427, 0.45], [434, 0.55], [452, 0.35], [461, 0.3], [488, 0.3], [697, 0.6], [707, 0.5], [727, 0.3], [738, 0.5], [751, 0.8], [763, 1], [772, 0.6], [811, 0.9]] },
+  he:{ n:'Helium', A:3, B:34, gam:0.1, Ei:'24.6', L:[[389, 0.6], [447, 0.45], [471, 0.2], [492, 0.2], [501, 0.35], [588, 1], [668, 0.55], [706, 0.5], [728, 0.2]] },
+  h2:{ n:'Hydrogen', A:5, B:130, gam:0.01, Ei:'15.4', L:[[397, 0.15], [410, 0.25], [434, 0.45], [486, 0.6], [656, 1]] },
+  co2:{ n:'Carbon dioxide', A:20, B:466, gam:0.01, Ei:'13.8', L:[[289, 0.8], [338, 0.4], [412, 0.45], [439, 0.4], [451, 0.6], [483, 0.6], [520, 0.35], [561, 0.3], [608, 0.25], [663, 0.15]] } };
+GAS.vac = { n:'No gas (vacuum, as on the Moon)', A:1, B:1, gam:0.1, Ei:'none (no gas)', L:[[324, 1], [327, 0.8], [465, 0.3], [510, 0.7], [515, 0.8], [521, 1], [578, 0.5]] };
+var GKEYS = ['air', 'n2', 'ne', 'ar', 'he', 'h2', 'co2', 'vac'];
+function isVac(){ return GP.gas === 'vac'; }
+var LIGHTNING = [[337, 0.5], [391, 0.7], [399, 0.7], [410, 0.5], [444, 0.8], [463, 0.9], [480, 0.5], [500, 0.8], [568, 0.45], [595, 0.3], [648, 0.2], [656, 0.3], [715, 0.1], [777, 0.9], [822, 0.6], [868, 0.5]];
+function wlRGB(l){ var r = 0, gg = 0, b = 0;
+  if (l < 380 || l > 780) return [0, 0, 0];
+  if (l < 440){ r = (440 - l)/60; b = 1; } else if (l < 490){ gg = (l - 440)/50; b = 1; } else if (l < 510){ gg = 1; b = (510 - l)/20; } else if (l < 580){ r = (l - 510)/70; gg = 1; } else if (l < 645){ r = 1; gg = (645 - l)/65; } else r = 1;
+  var fct = l < 420 ? 0.3 + 0.7*(l - 380)/40 : l > 700 ? 0.3 + 0.7*(780 - l)/80 : 1; return [Math.pow(r*fct, 0.8), Math.pow(gg*fct, 0.8), Math.pow(b*fct, 0.8)]; }
+function lineMix(L){ if (!L.length) return [0, 0, 0]; var s = [0, 0, 0]; L.forEach(function(q){ var c = wlRGB(q[0]); s[0] += c[0]*q[1]; s[1] += c[1]*q[1]; s[2] += c[2]*q[1]; }); var m = Math.max(s[0], s[1], s[2]) || 1; return [s[0]/m, s[1]/m, s[2]/m]; }
+var MED = { clear:[1, 1, 1], rain:[1, 0.92, 0.74], haze:[1, 0.8, 0.5], smoke:[1, 0.62, 0.3] };
+function seen(L, w, med){ if (!L.length && !w) return [0, 0, 0]; var c = lineMix(L), t = MED[med || 'clear'], o = [(1 - w)*c[0] + w, (1 - w)*c[1] + w*0.98, (1 - w)*c[2] + w*1]; o = [o[0]*t[0], o[1]*t[1], o[2]*t[2]]; var m = Math.max(o[0], o[1], o[2]) || 1; return [o[0]/m, o[1]/m, o[2]/m]; }
+function css(c, a){ return 'rgba(' + Math.round(255*c[0]) + ',' + Math.round(255*c[1]) + ',' + Math.round(255*c[2]) + ',' + (a === undefined ? 1 : a) + ')'; }
+function cname(c){ if (c[0] + c[1] + c[2] < 0.01) return 'nothing: no light'; var mx = Math.max(c[0], c[1], c[2]), mn = Math.min(c[0], c[1], c[2]), s = (mx - mn)/(mx || 1), h;
+  if (mx === mn) h = 0; else if (mx === c[0]) h = 60*(((c[1] - c[2])/(mx - mn)) % 6); else if (mx === c[1]) h = 60*((c[2] - c[0])/(mx - mn) + 2); else h = 60*((c[0] - c[1])/(mx - mn) + 4); if (h < 0) h += 360;
+  var nm = h < 15 ? 'red' : h < 40 ? 'orange' : h < 65 ? 'yellow' : h < 160 ? 'green' : h < 200 ? 'cyan' : h < 245 ? 'blue' : h < 285 ? 'violet' : h < 335 ? (mn > 0.45 ? 'pink' : 'magenta') : (mn > 0.45 ? 'pink' : 'red');
+  if (s < 0.12) return 'white'; if (s < 0.32) return ({ red:'reddish', blue:'bluish', orange:'orange-tinted', yellow:'yellowish', green:'greenish', cyan:'bluish', violet:'violet-tinted', pink:'pinkish', magenta:'pinkish' }[nm] || nm) + ' white'; if (nm === 'orange' && mn > 0.3) return 'peach'; if (nm === 'violet' && mn > 0.45) return 'lavender'; return nm; }
+/* ══════════ state ══════════ */
+var U = { tab:0, run:true, spd:1, chg:true, lbl:true, sound:false, auto:false, ev:{} };
+var th = { hc:false, lm:false, cb:false, nr:true };
+var GP = { gas:'air', p:1, d:5, Vset:20e3, Vc:0, el:'sphere', heat:0.55, ph:null, pt:0, parts:[], path:null, count:0, lastV:0 };
+var COMBOS = [['Rubber soles on a nylon carpet', 1], ['Rubber soles on a wool carpet', 0.8], ['Leather soles on a wool carpet', 0.45], ['Socks on a wool carpet', 0.3], ['Bare feet (skin conducts)', 0]];
+var DK = { combo:0, RH:30, V:0, d:25, shuffle:false, key:false, reach:false, ph:null, pt:0, path:null, last:null, count:0, walk:0 };
+var LS = { dist:3, med:'clear', I:30, ph:null, pt:0, leader:null, strokes:3, si:0, flash:0, tSnd:null, sndDue:0, tgt:0, rain:[] };
+var CC = { type:'ic', ph:null, pt:0, path:null, pulses:3, pi:0, flash:0 };
+var RD = { rod:true, I:30, ph:null, pt:0, path:null, hit:null, tally:{ rod:0, house:0, tree:0, ground:0 }, n:0 };
+var NAMES = ['WHAT MAKES A SPARK', 'A SPARK FROM YOUR FINGER TO A DOORKNOB', 'LIGHTNING: CLOUD TO GROUND', 'LIGHTNING THAT NEVER REACHES THE GROUND', 'THE LIGHTNING ROD'];
+/* ══════════ physics helpers ══════════ */
+function paschen(gk, p_atm, d_mm){ if (gk === 'vac') return 5e4*Math.sqrt(d_mm); var G = GAS[gk], pd = p_atm*760*d_mm/10, den = Math.log(G.A*pd) - Math.log(Math.log(1 + 1/G.gam)); return den <= 0.05 ? Infinity : G.B*pd/den; }
+function VbGap(){ var v = paschen(GP.gas, GP.p, GP.d); return GP.el === 'point' ? 0.55*v : v; }
+function Vcor(){ return GP.el === 'point' && !isVac() ? 0.3*paschen(GP.gas, GP.p, GP.d) : Infinity; }
+function mfp(){ return isVac() ? Infinity : 0.35e-6/GP.p; }
+function VbAir(d_mm){ return paschen('air', 1, d_mm); }
+function rStrike(I){ return 10*Math.pow(I, 0.65); }
+/* ══════════ sound ══════════ */
+var AC = null; function ac(){ try { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.resume) AC.resume(); } catch (e) { AC = null; } return AC; }
+function noise(dur, lp, vol, decay){ if (!U.sound || !ac()) return; try { var A = AC, n = Math.floor(A.sampleRate*dur), b = A.createBuffer(1, n, A.sampleRate), d = b.getChannelData(0), i;
+  for (i=0; i<n; i++){ var t = i/A.sampleRate; d[i] = (Math.random()*2 - 1)*Math.exp(-t/decay)*(1 + 0.6*Math.sin(t*7 + Math.random())); }
+  var s = A.createBufferSource(), fl = A.createBiquadFilter(), gn = A.createGain(); fl.type = 'lowpass'; fl.frequency.value = lp; gn.gain.value = vol; s.buffer = b; s.connect(fl); fl.connect(gn); gn.connect(A.destination); s.start(); } catch (e) {} }
+function crack(v){ noise(0.12, 6000, Math.min(0.9, v), 0.02); }
+function thunder(km){ noise(2 + km*0.5, 200/(1 + km/3) + 60, 0.9, 0.5 + km*0.25); }
+/* ══════════ path generator (leaders, sparks) ══════════ */
+function walk(x0, y0, tx, ty, step, jit, branchP, stop, maxN){
+  var x = x0, y = y0, k = 0, main = [{ x:x, y:y, k:0 }], br = [], n = 0;
+  while (n++ < (maxN || 400)){ var a = Math.atan2(ty - y, tx - x) + gauss()*jit; x += Math.cos(a)*step; y += Math.sin(a)*step; k++; main.push({ x:x, y:y, k:k });
+    if (stop(x, y)) break;
+    if (Math.random() < branchP && k > 2){ var bx = x, by = y, bk = k, ba = a + (Math.random() < 0.5 ? -1 : 1)*rnd(0.4, 1.0), bp = [{ x:bx, y:by, k:bk }], nb = Math.floor(rnd(4, 22));
+      for (var j=0; j<nb; j++){ ba += gauss()*jit*0.8; bx += Math.cos(ba)*step*0.85; by += Math.sin(ba)*step*0.85; bk++; bp.push({ x:bx, y:by, k:bk }); if (Math.random() < 0.08 && j > 3){ var b2 = [{ x:bx, y:by, k:bk }], ca = ba + rnd(-0.9, 0.9), cx = bx, cy = by, ck = bk; for (var m=0; m<rnd(3, 9); m++){ ca += gauss()*0.4; cx += Math.cos(ca)*step*0.7; cy += Math.sin(ca)*step*0.7; ck++; b2.push({ x:cx, y:cy, k:ck }); } br.push(b2); } }
+      br.push(bp); } }
+  return { main:main, br:br, kmax:k }; }
+function strokePath(pts, kmax, col, w, blur){ g.save(); g.lineCap = 'round'; g.lineJoin = 'round'; if (blur){ g.shadowColor = col; g.shadowBlur = blur; } g.strokeStyle = col; g.lineWidth = w; g.beginPath(); var st = false;
+  for (var i=0; i<pts.length; i++){ if (pts[i].k > kmax) break; if (st) g.lineTo(pts[i].x, pts[i].y); else { g.moveTo(pts[i].x, pts[i].y); st = true; } } g.stroke(); g.restore(); }
+function bolt(P, kmax, c, wMain, wBr, glow, brA){ var glowC = css(c, 0.9), core = css([0.6 + 0.4*c[0], 0.6 + 0.4*c[1], 0.6 + 0.4*c[2]]);
+  P.br.forEach(function(b){ strokePath(b, kmax, css(c, brA === undefined ? 0.8 : brA), wBr, glow*0.6); });
+  strokePath(P.main, kmax, glowC, wMain*2.2, glow); strokePath(P.main, kmax, core, wMain, 0); }
+function leaderDraw(P, kmax, c){ P.br.forEach(function(b){ strokePath(b, kmax, css(c, 0.35), 1, 4); }); strokePath(P.main, kmax, css(c, 0.55), 1.4, 6);
+  var tip = null; for (var i=0; i<P.main.length; i++) if (P.main[i].k <= kmax) tip = P.main[i]; if (tip){ g.save(); g.fillStyle = css(c, 0.9); g.shadowColor = css(c); g.shadowBlur = 10; g.beginPath(); g.arc(tip.x, tip.y, 2.6, 0, TAU); g.fill(); g.restore(); } return tip; }
+/* ══════════ colours ══════════ */
+function pal(){ var cb = th.cb, hc = th.hc, lm = th.lm;
+  return { txt:hc ? '#fff' : (lm ? '#1d232a' : '#dbe5ec'), dim:hc ? '#ddd' : (lm ? '#556070' : '#8f9cad'), bg:hc ? '#000' : (lm ? '#e8edf2' : '#0b0e14'),
+    pos:cb ? '#d55e00' : '#ff3b3b', neg:cb ? '#0072b2' : '#3a8bff', el:cb ? '#56b4e9' : '#7fd3ff', ion:cb ? '#e69f00' : '#ff9a3d', ground:cb ? '#009e73' : '#7ac943', hi:'#ffd23f' }; }
+function lbl(t, x, y, col, size, al){ if (!U.lbl && size !== 99) return; size = size === 99 ? 12 : size; g.font = 'bold ' + (size || 12) + 'px Arial'; g.textAlign = al || 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 3.5; g.strokeStyle = th.lm ? 'rgba(255,255,255,0.85)' : 'rgba(0,0,0,0.85)'; g.strokeText(t, x, y); g.fillStyle = col; g.fillText(t, x, y); g.textBaseline = 'alphabetic'; }
+function chg(x, y, s, p, r){ r = r || 5; g.fillStyle = s > 0 ? p.pos : p.neg; g.beginPath(); g.arc(x, y, r, 0, TAU); g.fill(); g.strokeStyle = '#fff'; g.lineWidth = Math.max(1, r*0.28); g.beginPath(); g.moveTo(x - r*0.55, y); g.lineTo(x + r*0.55, y); if (s > 0){ g.moveTo(x, y - r*0.55); g.lineTo(x, y + r*0.55); } g.stroke(); }
+function glow(x, y, r, c, a){ var gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, css(c, a)); gr.addColorStop(1, css(c, 0)); g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, TAU); g.fill(); }
+/* ══════════ 1: the gap ══════════ */
+var GX0 = 130, GX1 = 340, GY = 200;
+function gapStart(){ if (isVac()){ GP.ph = 'aval'; GP.pt = 0; GP.parts = []; for (var j=0; j<8; j++) GP.parts.push({ t:'e', x:GX0 + 2, y:GY + rnd(-18, 18) }); GP.path = walk(GX0, GY + rnd(-4, 4), GX1, GY, 12, 0.3, 0.05, function(x){ return x >= GX1 - 6; }, 60); GP.lastV = GP.Vc;
+    say('With no gas there is nothing to ionize: no avalanche. Only at an enormous field (about 50 kV across a millimetre) are electrons pulled straight out of the metal tips (field emission). They hit the anode, heat it, and boil off a puff of metal vapour.'); return; }
+  GP.ph = 'aval'; GP.pt = 0; GP.parts = []; for (var i=0; i<3; i++) GP.parts.push({ t:'e', x:GX0 + rnd(0, 20), y:GY + rnd(-25, 25) }); GP.path = walk(GX0, GY + rnd(-8, 8), GX1, GY, 12, 0.55, 0.12, function(x){ return x >= GX1 - 6; }, 60); GP.lastV = GP.Vc;
+  say('Breakdown begins at ' + kV(GP.Vc) + ': a free electron is accelerated by the field and knocks other electrons out of the gas molecules. Each new electron does the same: an avalanche.'); }
+function gapStep(dt){ var Vb = VbGap();
+  if (!GP.ph){ GP.Vc += (GP.Vset - GP.Vc)*(1 - Math.exp(-dt/1.2)); if (GP.Vc >= Vb && isFinite(Vb)) gapStart(); return; }
+  GP.pt += dt;
+  if (GP.ph === 'aval'){ var nn = [];
+    if (isVac()){ GP.parts.forEach(function(q){ if (q.t === 'e'){ q.x += dt*150; if (q.x > GX1 - 4){ q.x = GX0 + 2; q.y = GY + rnd(-18, 18); } } }); if (GP.parts.length < 40 && Math.random() < dt*20) GP.parts.push({ t:'v', x:GX1 - 4, y:GY + rnd(-20, 20), vx:-rnd(20, 60) });
+      GP.parts.forEach(function(q){ if (q.t === 'v') q.x += q.vx*dt; }); if (GP.pt > 2.2){ GP.ph = 'str'; GP.pt = 0; say('The metal vapour fills the gap: now there is a gas to ionize, and a vacuum arc forms in the vapour of the electrodes themselves.'); } return; }
+    GP.parts.forEach(function(q){ if (q.t === 'e'){ q.x += dt*(70 + 40*Math.random()); q.y += gauss()*dt*25; if (Math.random() < dt*2.4 && GP.parts.length + nn.length < 320){ nn.push({ t:'e', x:q.x, y:q.y + rnd(-3, 3) }); nn.push({ t:'i', x:q.x, y:q.y }); } if (Math.random() < dt*1.5) nn.push({ t:'ph', x:q.x, y:q.y, a:1 }); }
+      else if (q.t === 'i') q.x -= dt*4; else q.a -= dt*3; });
+    GP.parts = GP.parts.concat(nn).filter(function(q){ return !(q.t === 'e' && q.x > GX1 - 2) && !(q.t === 'ph' && q.a <= 0); });
+    if (GP.pt > 2.2){ GP.ph = 'str'; GP.pt = 0; say('Excited molecules give off light, and the photons start new avalanches ahead of the first: a thin, glowing streamer races across the gap.'); } }
+  else if (GP.ph === 'str'){ if (GP.pt > 0.7){ GP.ph = 'spark'; GP.pt = 0; GP.count++; crack(0.3 + GP.lastV/1e5); ev('spk', isVac() ? 'Vacuum arc! It glows with the colours of the electrode metal (here copper: green and violet-blue lines), not of any gas.' : 'Spark! The streamer connects both electrodes; a large current heats the channel to thousands of kelvin. The colour comes from the excited molecules, made whiter by the heat.'); } }
+  else if (GP.ph === 'spark'){ if (GP.pt > 0.5){ GP.ph = null; GP.Vc = 0; GP.parts = []; if (!U.auto) GP.Vset = Math.min(GP.Vset, Vb*0.98); syncV(); } } }
+function drawGap(p){ var G = GAS[GP.gas], c = seen(G.L, GP.ph === 'spark' ? 0.75*GP.heat : 0, 'clear'), cl = seen(G.L, 0, 'clear'), Vb = VbGap(), i;
+  g.fillStyle = th.lm ? '#e8edf2' : '#0b0e14'; g.fillRect(0, 0, W, H); g.fillStyle = th.lm ? '#dfe5ec' : '#06080d'; g.fillRect(0, 0, 460, H); g.fillStyle = th.lm ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.03)'; g.fillRect(20, 80, 420, 240);
+  lbl(isVac() ? 'No gas: vacuum (Moon surface, about 10\u207b\u00b9\u2075 atm)' : G.n + ' at ' + f(GP.p, GP.p < 0.1 ? 3 : 2) + ' atm', 230, 66, p.dim, 12);
+  /* electrodes */ if (GP.el === 'sphere'){ var gr1 = g.createRadialGradient(GX0 - 55, GY - 15, 5, GX0 - 40, GY, 45); gr1.addColorStop(0, '#f5f7fa'); gr1.addColorStop(1, '#7b8592'); g.fillStyle = gr1; g.beginPath(); g.arc(GX0 - 40, GY, 40, 0, TAU); g.fill(); }
+  else { g.fillStyle = '#b8c0ca'; g.beginPath(); g.moveTo(20, GY - 7); g.lineTo(GX0 - 2, GY); g.lineTo(20, GY + 7); g.closePath(); g.fill(); }
+  var gr2 = g.createRadialGradient(GX1 + 25, GY - 15, 5, GX1 + 40, GY, 45); gr2.addColorStop(0, '#f5f7fa'); gr2.addColorStop(1, '#7b8592'); g.fillStyle = gr2;
+  if (GP.el === 'sphere'){ g.beginPath(); g.arc(GX1 + 40, GY, 40, 0, TAU); g.fill(); } else g.fillRect(GX1, GY - 90, 22, 180);
+  lbl('\u2212 cathode', GX0 - 40, GY + 62, p.neg, 12); lbl('+ anode', GX1 + 40, GY + 62, p.pos, 12);
+  g.strokeStyle = p.dim; g.lineWidth = 1; g.setLineDash([3, 3]); g.beginPath(); g.moveTo(GX0, GY + 82); g.lineTo(GX1, GY + 82); g.stroke(); g.setLineDash([]); lbl('gap d = ' + f(GP.d, GP.d < 1 ? 2 : 1) + ' mm (drawn enlarged)', (GX0 + GX1)/2, GY + 95, p.txt, 11);
+  if (U.chg && !GP.ph){ var n = Math.round(9*clamp(GP.Vc/Math.max(Vb, 1), 0, 1)); for (i=0; i<n; i++){ var a = (i/(Math.max(n, 2) - 1) - 0.5)*1.6; chg(GP.el === 'sphere' ? GX0 - 40 + 42*Math.cos(a) : GX0 - 8 - i*6, GP.el === 'sphere' ? GY + 42*Math.sin(a) : GY + (i % 2 ? 4 : -4), -1, p, 5); chg(GP.el === 'sphere' ? GX1 + 40 - 42*Math.cos(a) : GX1 - 4, GP.el === 'sphere' ? GY + 42*Math.sin(a) : GY + (i - n/2)*16, 1, p, 5); } }
+  if (GP.el === 'point' && !GP.ph && GP.Vc > Vcor()){ var k = clamp((GP.Vc - Vcor())/(Vb - Vcor()), 0, 1); glow(GX0, GY, 12 + 22*k, cl, 0.5 + 0.4*k); for (i=0; i<10; i++){ g.strokeStyle = css(cl, 0.6); g.lineWidth = 1; g.beginPath(); g.moveTo(GX0, GY); g.lineTo(GX0 + rnd(5, 25)*k + 4, GY + rnd(-18, 18)*k); g.stroke(); } ev('cor', 'Corona: the field near the sharp tip is strong enough to ionize the air there, but not across the whole gap. A soft violet glow, a faint hiss, and no spark yet.'); }
+  if (GP.ph === 'aval') GP.parts.forEach(function(q){ if (q.t === 'v'){ g.fillStyle = 'rgba(205,140,90,0.55)'; g.beginPath(); g.arc(q.x, q.y, 3.5, 0, TAU); g.fill(); return; } if (q.t === 'e'){ g.fillStyle = p.el; g.beginPath(); g.arc(q.x, q.y, 2.3, 0, TAU); g.fill(); } else if (q.t === 'i'){ g.fillStyle = p.ion; g.fillRect(q.x - 1.8, q.y - 1.8, 3.6, 3.6); } else glow(q.x, q.y, 6, cl, 0.7*q.a); });
+  if (GP.ph === 'str'){ var kk = GP.path.kmax*clamp(GP.pt/0.6, 0, 1); leaderDraw(GP.path, kk, cl); }
+  if (GP.ph === 'spark'){ var a2 = 1 - GP.pt/0.5; g.fillStyle = css(c, 0.12*a2); g.fillRect(0, 0, 460, H); g.globalAlpha = a2; bolt(GP.path, 1e9, c, 3, 1.2, 22); g.globalAlpha = 1; }
+  if (GP.ph === 'aval' && isVac()){ lbl('field emission: electrons fly straight across; copper vapour (\u25cf brown) boils off the anode', 230, 104, p.txt, 11); } else if (GP.ph === 'aval'){ lbl('electrons (\u25cf) multiply; positive ions (\u25a0) stay behind', 230, 104, p.txt, 11); lbl('real time: about 10 ns', 230, 120, p.dim, 11); }
+  if (GP.ph === 'str') lbl('streamer crossing the gap (real time: ~1 ns per mm)', 230, 104, p.txt, 11);
+  /* voltage bar */ var bx = 30, by = 350, bw = 400, vmax = Math.max(GP.Vset, isFinite(Vb) ? Vb : GP.Vset)*1.15; g.fillStyle = th.lm ? '#cfd6de' : '#1b2230'; g.fillRect(bx, by, bw, 14);
+  g.fillStyle = '#3ad08f'; g.fillRect(bx, by, bw*clamp(GP.Vc/vmax, 0, 1), 14); if (isFinite(Vb)){ var xb = bx + bw*clamp(Vb/vmax, 0, 1); g.fillStyle = p.hi; g.fillRect(xb - 1, by - 6, 3, 26); lbl('breakdown ' + kV(Vb), xb, by - 12, p.hi, 11); }
+  lbl('voltage across the gap: ' + kV(GP.Vc), bx, by + 30, p.txt, 12, 'left');
+  drawPaschen(p); }
+function drawPaschen(p){ var x0 = 480, y0 = 30, w = 285, h = 230, G = GAS[GP.gas], i;
+  g.fillStyle = th.lm ? '#ffffff' : '#0e1420'; g.fillRect(x0 - 10, y0 - 22, w + 20, h + 70); g.strokeStyle = p.dim; g.lineWidth = 1; g.strokeRect(x0, y0, w, h);
+  function X(pd){ return x0 + (Math.log(pd)/Math.LN10 + 1)/5*w; } function Y(v){ return y0 + h - (Math.log(v)/Math.LN10 - 2)/4*h; }
+  g.font = '10px Arial'; g.fillStyle = p.dim; g.textAlign = 'center'; [0.1, 1, 10, 100, 1000, 10000].forEach(function(v){ g.fillText(String(v), X(v), y0 + h + 12); g.strokeStyle = 'rgba(128,128,128,0.2)'; g.beginPath(); g.moveTo(X(v), y0); g.lineTo(X(v), y0 + h); g.stroke(); });
+  g.textAlign = 'right'; ['100 V', '1 kV', '10 kV', '100 kV', '1 MV'].forEach(function(t, k){ var yy = Y(Math.pow(10, k + 2)); g.fillText(t, x0 - 3, yy + 3); g.beginPath(); g.moveTo(x0, yy); g.lineTo(x0 + w, yy); g.stroke(); });
+  g.textAlign = 'center'; g.fillText('p \u00d7 d (Torr \u00b7 cm)', x0 + w/2, y0 + h + 26); g.fillStyle = p.txt; g.font = 'bold 11px Arial'; g.fillText(isVac() ? 'Breakdown with no gas' : 'Paschen curve: breakdown voltage of ' + G.n.toLowerCase(), x0 + w/2, y0 - 8);
+  if (isVac()){ g.fillStyle = th.lm ? '#ffffff' : '#0e1420'; g.fillRect(x0 + 1, y0 + 1, w - 2, h - 2); g.fillStyle = p.txt; g.font = '12px Arial'; g.textAlign = 'center';
+    ['No gas, no Paschen curve:', 'with nothing to ionize, there is', 'no avalanche at any ordinary voltage.', '', 'Breakdown needs field emission from', 'the metal, roughly 50 kV \u00d7 \u221a(d in mm),', 'and then happens in metal vapour.', '', 'This gap: ' + kV(paschen('vac', 1, GP.d))].forEach(function(t, k){ g.fillText(t, x0 + w/2, y0 + 40 + k*18); }); return; }
+  g.save(); g.beginPath(); g.rect(x0, y0, w, h); g.clip(); g.strokeStyle = '#3ad08f'; g.lineWidth = 2; g.beginPath(); var st = false;
+  for (i=0; i<=300; i++){ var pd = Math.pow(10, -1 + 5*i/300), den = Math.log(G.A*pd) - Math.log(Math.log(1 + 1/G.gam)); if (den <= 0.05){ st = false; continue; } var v = G.B*pd/den; if (st) g.lineTo(X(pd), Y(v)); else { g.moveTo(X(pd), Y(v)); st = true; } } g.stroke();
+  var pd0 = GP.p*760*GP.d/10, vb0 = paschen(GP.gas, GP.p, GP.d); if (isFinite(vb0)){ g.fillStyle = p.hi; g.beginPath(); g.arc(X(pd0), Y(vb0), 5, 0, TAU); g.fill(); }
+  g.strokeStyle = '#7fd3ff'; g.setLineDash([4, 3]); g.beginPath(); g.moveTo(X(pd0), y0 + h); g.lineTo(X(pd0), Y(Math.max(GP.Vc, 100))); g.stroke(); g.setLineDash([]); g.fillStyle = '#7fd3ff'; g.beginPath(); g.arc(X(pd0), Y(Math.max(GP.Vc, 100)), 3.5, 0, TAU); g.fill(); g.restore();
+  g.font = '10px Arial'; g.textAlign = 'left'; g.fillStyle = p.hi; g.fillText('\u25cf breakdown for this gap', x0 + 4, y0 + h + 40); g.fillStyle = '#7fd3ff'; g.fillText('\u25cf present voltage', x0 + 150, y0 + h + 40);
+  lbl(GP.el === 'point' ? 'point electrode: sparks at about 55% of this' : '', x0 + w/2, y0 + h + 56, p.dim, 10); }
+/* ══════════ 2: the doorknob ══════════ */
+var KX = 652, KY = 300;
+function dkStep(dt){ var fct = COMBOS[DK.combo][1], tau = fct === 0 ? 0.01 : 25*Math.exp(-(DK.RH - 20)/12);
+  if (DK.shuffle){ DK.walk += dt*6; DK.V += 4000*fct*(1 - DK.V/(30000*Math.max(fct, 0.01)))*dt; }
+  DK.V *= Math.exp(-dt/tau); if (DK.V < 0) DK.V = 0;
+  if (DK.reach && !DK.ph){ DK.d = Math.max(0.3, DK.d - 8*dt); syncD(); if (DK.d <= 0.3){ DK.reach = false; } }
+  if (DK.ph){ DK.pt += dt; if (DK.pt > 0.45) DK.ph = null; }
+  else { var Vb = VbAir(DK.d)*(DK.key ? 0.85 : 1); if (DK.V >= Vb && DK.V > 300){ var E = 0.5*150e-12*DK.V*DK.V; DK.last = { V:DK.V, E:E, d:DK.d }; DK.count++; DK.ph = 'spark'; DK.pt = 0; DK.reach = false; DK.path = walk(tipX(), KY, KX - 9, KY, Math.max(3, DK.d*0.8), 0.6, 0.05, function(x){ return x >= KX - 11; }, 40); crack(0.2 + DK.V/2e4);
+      say('Zap! At ' + kV(DK.V) + ' the ' + f(DK.d, 1) + ' mm gap breaks down. ' + feel(DK.V) + ' Energy ' + f(E*1000, 1) + ' mJ, charge ' + f(150e-12*DK.V*1e6, 2) + ' \u00b5C.'); DK.V *= 0.02; } } }
+function feel(V){ if (DK.key) return 'You feel nothing: the spark jumps from the key, and the current enters your hand over a large area.'; return V < 3e3 ? 'Too small to feel.' : V < 5e3 ? 'You feel a small prick but see nothing.' : V < 10e3 ? 'You feel it and see a small blue spark.' : 'Ouch: a painful spark you can see and hear.'; }
+function tipX(){ return KX - 9 - DK.d*2.6; }
+function drawRoom(p){ var i, fl = 420;
+  g.fillStyle = th.lm ? '#e9e3d6' : '#2a2620'; g.fillRect(0, 0, W, H); g.fillStyle = th.lm ? '#d9d1c0' : '#352f27'; g.fillRect(0, fl, W, H - fl);
+  for (i=0; i<640; i += 16){ g.fillStyle = (i/16) % 2 ? (th.lm ? '#b44a4a' : '#7a3030') : (th.lm ? '#a84040' : '#6a2828'); g.fillRect(i, fl, 16, 26); } lbl(COMBOS[DK.combo][0].split(' on ')[1] || 'floor', 120, fl + 40, p.dim, 11);
+  var dg = g.createLinearGradient(640, 0, 770, 0); dg.addColorStop(0, '#6a4426'); dg.addColorStop(1, '#8a5a32'); g.fillStyle = dg; g.fillRect(640, 110, 130, fl - 110); g.strokeStyle = '#3e2814'; g.lineWidth = 3; g.strokeRect(652, 130, 106, 130); g.strokeRect(652, 300 + 22, 106, 80);
+  g.fillStyle = '#b08a3a'; g.fillRect(KX - 2, KY - 22, 12, 44); var kg = g.createRadialGradient(KX - 4, KY - 4, 2, KX, KY, 11); kg.addColorStop(0, '#fff4c4'); kg.addColorStop(1, '#b8902e'); g.fillStyle = kg; g.beginPath(); g.arc(KX, KY, 10, 0, TAU); g.fill();
+  lbl('metal doorknob', KX + 40, KY - 36, p.txt, 11);
+  /* person */ var tx = tipX(), hx = tx - (DK.key ? 24 : 6), bx = hx - 110, sw = DK.shuffle ? Math.sin(DK.walk)*14 : 0, skin = '#e8bd98', shirt = th.cb ? '#0072b2' : '#2a8c96';
+  g.strokeStyle = '#2d3758'; g.lineWidth = 14; g.lineCap = 'round'; g.beginPath(); g.moveTo(bx, 300); g.lineTo(bx - 12 + sw, fl - 6); g.moveTo(bx + 4, 300); g.lineTo(bx + 14 - sw, fl - 6); g.stroke();
+  g.fillStyle = '#222'; g.fillRect(bx - 26 + sw, fl - 10, 30, 10); g.fillRect(bx + 2 - sw, fl - 10, 30, 10);
+  g.fillStyle = shirt; g.beginPath(); g.ellipse(bx + 2, 245, 30, 62, 0, 0, TAU); g.fill();
+  g.strokeStyle = shirt; g.lineWidth = 13; g.beginPath(); g.moveTo(bx + 14, 205); g.lineTo(hx - 30, KY - 8); g.stroke(); g.strokeStyle = skin; g.lineWidth = 11; g.beginPath(); g.moveTo(hx - 30, KY - 8); g.lineTo(hx, KY); g.stroke();
+  g.fillStyle = skin; g.beginPath(); g.arc(bx + 2, 160, 24, 0, TAU); g.fill(); g.fillStyle = '#222'; g.beginPath(); g.arc(bx + 12, 155, 2.6, 0, TAU); g.fill();
+  g.fillStyle = skin; g.beginPath(); g.ellipse(hx - 4, KY, 9, 7, 0, 0, TAU); g.fill(); if (!DK.key){ g.strokeStyle = skin; g.lineWidth = 5; g.beginPath(); g.moveTo(hx, KY); g.lineTo(tx, KY); g.stroke(); }
+  if (DK.key){ g.fillStyle = '#d4b04a'; g.beginPath(); g.arc(hx - 2, KY, 6, 0, TAU); g.fill(); g.fillRect(hx + 2, KY - 2.5, tx - hx - 6, 5); g.beginPath(); g.moveTo(tx - 4, KY - 2.5); g.lineTo(tx, KY); g.lineTo(tx - 4, KY + 2.5); g.fill(); lbl('key', (hx + tx)/2, KY + 16, p.txt, 10); }
+  if (U.chg){ var n = Math.round(clamp(DK.V/1000, 0, 28)); for (i=0; i<n; i++){ var a = i*2.39996, rr = 0.85; chg(bx + 2 + Math.cos(a)*28*rr, 245 + Math.sin(a)*58*rr, -1, p, 4.5); }
+    var ni = Math.round(clamp(DK.V/1000*6/(DK.d + 6), 0, 6)); for (i=0; i<ni; i++){ var a2 = Math.PI + (i/(Math.max(ni, 2) - 1) - 0.5)*1.6; chg(KX + 12*Math.cos(a2), KY + 12*Math.sin(a2), 1, p, 3.6); } }
+  if (DK.ph === 'spark'){ var k = 1 - DK.pt/0.45, c = seen(GAS.air.L, 0.45, 'clear'); g.globalAlpha = k; glow((tx + KX)/2, KY, 30, c, 0.5); bolt(DK.path, 1e9, c, 2, 1, 14, 0.5); g.globalAlpha = 1; }
+  g.strokeStyle = p.dim; g.lineWidth = 1; g.setLineDash([2, 2]); g.beginPath(); g.moveTo(tx, KY + 26); g.lineTo(KX - 10, KY + 26); g.stroke(); g.setLineDash([]); lbl(f(DK.d, 1) + ' mm', (tx + KX - 10)/2, KY + 38, p.txt, 11);
+  lbl('your potential: ' + (DK.V > 0 ? '\u2212' : '') + kV(DK.V), 20, 40, p.txt, 14, 'left'); lbl(DK.shuffle ? 'shuffling\u2026 charge builds up' : '', 20, 62, p.hi, 12, 'left');
+  /* threshold bar */ var x0 = 20, y0 = 84, w = 260, vm = 30e3; g.fillStyle = th.lm ? '#cfd6de' : '#1b2230'; g.fillRect(x0, y0, w, 10); g.fillStyle = '#3ad08f'; g.fillRect(x0, y0, w*clamp(DK.V/vm, 0, 1), 10);
+  [[3e3, 'feel'], [5e3, 'see'], [10e3, 'hurts']].forEach(function(q){ var xx = x0 + w*q[0]/vm; g.fillStyle = p.hi; g.fillRect(xx - 1, y0 - 3, 2, 16); lbl(q[1], xx, y0 + 22, p.dim, 10); });
+  var xb = x0 + w*clamp(VbAir(DK.d)*(DK.key ? 0.85 : 1)/vm, 0, 1); g.fillStyle = '#ff6b6b'; g.fillRect(xb - 1, y0 - 6, 3, 22); lbl('spark at this gap', xb, y0 - 12, '#ff9a8a', 10); }
+/* ══════════ sky helpers ══════════ */
+var CLOUDS = {};
+function cloudBlobs(key, x0, x1, y0, y1, n){ if (CLOUDS[key]) return CLOUDS[key]; var a = [], s = 7 + key.length; function r(){ s = (s*16807) % 2147483647; return s/2147483647; }
+  for (var i=0; i<n; i++){ var x = x0 + (x1 - x0)*r(), y = y0 + (y1 - y0)*Math.pow(r(), 0.7), rr = 25 + 45*r()*(1 - 0.4*(y - y0)/(y1 - y0)); a.push([x, y, rr]); } CLOUDS[key] = a; return a; }
+function drawCloud(blobs, lit, alpha, tint){ blobs.forEach(function(b){ var k = 0.18 + 0.15*(1 - b[1]/300) + 0.8*lit, c = tint || [0.55, 0.58, 0.68]; var gr = g.createRadialGradient(b[0] - b[2]*0.3, b[1] - b[2]*0.4, b[2]*0.1, b[0], b[1], b[2]);
+  gr.addColorStop(0, 'rgba(' + Math.round(255*Math.min(1, c[0]*k*1.3)) + ',' + Math.round(255*Math.min(1, c[1]*k*1.3)) + ',' + Math.round(255*Math.min(1, c[2]*k*1.3)) + ',' + alpha + ')'); gr.addColorStop(1, 'rgba(' + Math.round(255*c[0]*k*0.6) + ',' + Math.round(255*c[1]*k*0.6) + ',' + Math.round(255*c[2]*k*0.6) + ',0)');
+  g.fillStyle = gr; g.beginPath(); g.arc(b[0], b[1], b[2], 0, TAU); g.fill(); }); }
+function sky(flash, c){ var gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, '#05070d'); gr.addColorStop(1, '#151c2a'); g.fillStyle = gr; g.fillRect(0, 0, W, H); if (flash > 0){ g.fillStyle = css(c, 0.28*flash); g.fillRect(0, 0, W, H); } }
+function lightC(){ return seen(LIGHTNING, 0.62, LS.med); }
+function rainDraw(){ if (LS.med !== 'rain') return; g.strokeStyle = 'rgba(160,180,220,0.25)'; g.lineWidth = 1; for (var i=0; i<140; i++){ var x = (i*53 + LS.tR*300) % W, y = (i*97 + LS.tR*900) % (H - 40); g.beginPath(); g.moveTo(x, y); g.lineTo(x - 3, y + 12); g.stroke(); } }
+/* ══════════ 3: cloud to ground ══════════ */
+var GND = 440, OBJ = [{ x:180, h:70, n:'tree' }, { x:300, h:46, n:'house' }, { x:420, h:90, n:'pole' }, { x:560, h:0, n:'open ground' }];
+function lsStart(){ var o = OBJ[Math.floor(Math.random()*OBJ.length)]; LS.tgt = o; var x0 = clamp(o.x + rnd(-120, 120), 80, 620);
+  LS.leader = walk(x0, 150, o.x, GND - o.h, 11, 0.55, 0.11, function(x, y){ return y >= GND - o.h - 40; }, 120);
+  LS.up = walk(o.x, GND - o.h, LS.leader.main[LS.leader.main.length - 1].x, LS.leader.main[LS.leader.main.length - 1].y, 8, 0.4, 0, function(x, y){ return y <= LS.leader.main[LS.leader.main.length - 1].y + 6; }, 30);
+  LS.ph = 'lead'; LS.pt = 0; LS.strokes = 2 + Math.floor(Math.random()*3); LS.si = 0; LS.flash = 0; LS.sndDue = 0;
+  say('A stepped leader leaves the base of the cloud, a faint channel of ionized air working down in steps of about 50 m, branching as it goes.'); }
+function lsStep(dt){ LS.tR = (LS.tR || 0) + dt; if (!LS.ph){ if (U.auto && (LS.idle = (LS.idle || 0) + dt) > 2.5){ LS.idle = 0; lsStart(); } return; } LS.pt += dt; LS.flash = Math.max(0, LS.flash - dt*4);
+  if (LS.ph === 'lead' && LS.pt > 2.4){ LS.ph = 'up'; LS.pt = 0; say('Near the ground the field is so strong that upward streamers rise from tall objects, here the ' + LS.tgt.n + '.'); }
+  else if (LS.ph === 'up' && LS.pt > 0.5){ LS.ph = 'ret'; LS.pt = 0; LS.flash = 1; LS.si = 1; crack(0.6); say('Contact! The return stroke: about ' + LS.I + ' kA surges up the channel at a third of the speed of light, heating it to about 30 000 K. The flash you see.'); }
+  else if (LS.ph === 'ret' && LS.pt > 0.35){ if (LS.si < LS.strokes){ LS.ph = 'gap'; LS.pt = 0; } else { LS.ph = 'after'; LS.pt = 0; scheduleThunder(LS.dist); } }
+  else if (LS.ph === 'gap' && LS.pt > 0.45){ LS.ph = 'dart'; LS.pt = 0; }
+  else if (LS.ph === 'dart' && LS.pt > 0.18){ LS.ph = 'ret'; LS.pt = 0; LS.flash = 0.9; LS.si++; ev('dart' + LS.si, 'A dart leader runs down the same channel and another return stroke follows: stroke ' + LS.si + '. This is why lightning flickers.'); }
+  else if (LS.ph === 'after' && LS.pt > 1.2){ LS.ph = null; LS.idle = 0; } }
+var TH = { due:null, km:0 };
+function scheduleThunder(km){ TH.due = perfNow() + km/0.343*1000; TH.km = km; say('The flash is over. The light reached you almost at once; the sound travels at 343 m/s, so the thunder will arrive in ' + f(km/0.343, 1) + ' s.'); }
+function thunderCheck(){ if (TH.due && perfNow() >= TH.due){ TH.due = null; thunder(TH.km); TH.shown = perfNow(); say(TH.km > 15 ? 'Too far: the thunder is usually not heard beyond about 15 to 20 km.' : 'BOOM: the thunder arrives, ' + f(TH.km/0.343, 1) + ' s after the flash. Seconds divided by 3 gives the distance in kilometres.'); } }
+function perfNow(){ return (window.performance && performance.now) ? performance.now() : Date.now(); }
+function drawGroundScene(p, flash, c){ g.fillStyle = '#10140e'; g.fillRect(0, GND, W, H - GND); if (flash > 0){ g.fillStyle = css(c, 0.25*flash); g.fillRect(0, GND, W, H - GND); }
+  g.fillStyle = '#1a2a14'; g.beginPath(); g.moveTo(180, GND); g.lineTo(162, GND - 30); g.lineTo(172, GND - 30); g.lineTo(158, GND - 55); g.lineTo(170, GND - 55); g.lineTo(180, GND - 70); g.lineTo(190, GND - 55); g.lineTo(202, GND - 55); g.lineTo(188, GND - 30); g.lineTo(198, GND - 30); g.closePath(); g.fill();
+  g.fillStyle = '#2a2a33'; g.fillRect(282, GND - 30, 36, 30); g.beginPath(); g.moveTo(278, GND - 30); g.lineTo(300, GND - 46); g.lineTo(322, GND - 30); g.fill(); g.fillStyle = flash > 0.3 ? '#ffe9a0' : '#5a4a20'; g.fillRect(292, GND - 22, 8, 8);
+  g.strokeStyle = '#4a4036'; g.lineWidth = 4; g.beginPath(); g.moveTo(420, GND); g.lineTo(420, GND - 90); g.moveTo(408, GND - 82); g.lineTo(432, GND - 82); g.stroke();
+  /* observer */ var ox = 720; g.fillStyle = '#8899aa'; g.beginPath(); g.arc(ox, GND - 30, 5, 0, TAU); g.fill(); g.fillRect(ox - 3, GND - 25, 6, 14); g.fillRect(ox - 4, GND - 11, 3, 11); g.fillRect(ox + 1, GND - 11, 3, 11);
+  lbl('you, ' + f(LS.dist, 1) + ' km away', ox - 10, GND + 16, p.txt, 11); lbl('(not to scale)', ox - 10, GND + 30, p.dim, 10);
+  if (TH.due){ var rem = (TH.due - perfNow())/1000; lbl('thunder in ' + f(Math.max(0, rem), 1) + ' s', ox - 10, GND - 52, p.hi, 13); }
+  if (TH.shown && perfNow() - TH.shown < 1500) lbl('BOOM', ox - 10, GND - 52, '#ffffff', 18); }
+function drawCG(p){ var c = lightC(), blobs = cloudBlobs('cg', 40, 740, 30, 140, 46), i;
+  sky(LS.flash, c); rainDraw();
+  if (LS.leader && LS.ph){ var P = LS.leader, k = P.kmax;
+    if (LS.ph === 'lead') leaderDraw(P, P.kmax*clamp(LS.pt/2.3, 0, 1), [0.75, 0.7, 1]);
+    else if (LS.ph === 'up'){ leaderDraw(P, k, [0.75, 0.7, 1]); leaderDraw(LS.up, LS.up.kmax*clamp(LS.pt/0.45, 0, 1), [0.75, 0.7, 1]); }
+    else if (LS.ph === 'ret'){ var a = clamp(1 - LS.pt/0.35, 0, 1); g.globalAlpha = 0.3 + 0.7*a; bolt(P, 1e9, c, 3.2, LS.si === 1 ? 1.4 : 0.6, 26, LS.si === 1 ? 0.8 : 0.25); bolt(LS.up, 1e9, c, 3.2, 1, 26); g.globalAlpha = 1; glow(LS.tgt.x, GND - LS.tgt.h, 40*a, c, 0.6*a); }
+    else if (LS.ph === 'gap' || LS.ph === 'after'){ var a3 = clamp(0.25 - LS.pt*0.5, 0, 0.25); if (a3 > 0){ g.globalAlpha = a3; strokePath(P.main, 1e9, css(c), 2, 6); g.globalAlpha = 1; } }
+    else if (LS.ph === 'dart'){ var kk = P.kmax*clamp(LS.pt/0.15, 0, 1); strokePath(P.main, kk, css(c, 0.8), 2, 10); } }
+  drawCloud(blobs, LS.flash*0.6, 0.95);
+  if (U.chg){ for (i=0; i<10; i++) chg(120 + i*60, 55 + (i % 2)*8, 1, p, 5); for (i=0; i<12; i++) chg(90 + i*55, 110 + (i % 2)*8, -1, p, 5); chg(300, 132, 1, p, 4); chg(480, 134, 1, p, 4);
+    var ng = LS.ph === 'ret' || LS.ph === 'after' ? 4 : 12; for (i=0; i<ng; i++) chg(100 + i*50, GND + 10, 1, p, 4); }
+  drawGroundScene(p, LS.flash, c);
+  if (U.lbl){ lbl('+ upper cloud (ice crystals)', 600, 20, p.pos, 11); lbl('\u2212 main charge region', 640, 150, p.neg, 11); lbl('ground: induced +', 90, GND + 30, p.pos, 11);
+    var ph = { lead:'stepped leader (real: ~20 ms)', up:'upward streamers (real: ~1 ms)', ret:'return stroke ' + LS.si + ' of ' + LS.strokes + ' (real: ~0.1 ms)', gap:'between strokes (real: ~40 ms)', dart:'dart leader (real: ~1 ms)', after:'' }[LS.ph] || 'press Strike'; lbl(ph, W/2, H - 12, p.hi, 12); } }
+/* ══════════ 4: cloud to cloud ══════════ */
+function ccStart(){ var t = CC.type;
+  if (t === 'ic') CC.path = walk(rnd(320, 460), 220, rnd(300, 480), 80, 10, 0.6, 0.2, function(x, y){ return y <= 85; }, 80);
+  else if (t === 'cc') CC.path = walk(300, 175, 490, 150, 10, 0.55, 0.15, function(x){ return x >= 485; }, 80);
+  else CC.path = walk(60, 128, 740, 135, 12, 0.35, 0.3, function(x){ return x >= 735; }, 120);
+  CC.ph = 'lead'; CC.pt = 0; CC.pulses = t === 'spider' ? 1 : 2 + Math.floor(Math.random()*4); CC.pi = 0;
+  say(t === 'ic' ? 'Inside the cloud, a leader grows from the negative region up toward the positive region above it.' : t === 'cc' ? 'A leader grows from the negative region of one cloud toward the positive region of the other.' : 'Spider lightning: a leader crawls horizontally along the underside of the anvil, branching widely.'); }
+function ccStep(dt){ if (!CC.ph){ if (U.auto && (CC.idle = (CC.idle || 0) + dt) > 2){ CC.idle = 0; ccStart(); } return; } CC.pt += dt; CC.flash = Math.max(0, CC.flash - dt*4); var lead = CC.type === 'spider' ? 3 : 1.4;
+  if (CC.ph === 'lead' && CC.pt > lead){ CC.ph = 'fl'; CC.pt = 0; CC.flash = 1; CC.pi = 1; crack(0.4); ev('ccfl', CC.type === 'ic' ? 'The discharge stays hidden inside the cloud, but it lights the whole cloud from within: sheet lightning.' : 'The channel connects and flashes; inside the clouds it is hidden, but the clouds glow.'); }
+  else if (CC.ph === 'fl' && CC.pt > 0.3){ if (CC.pi < CC.pulses){ CC.ph = 'gap'; CC.pt = 0; } else { CC.ph = 'after'; CC.pt = 0; scheduleThunder(LS.dist); } }
+  else if (CC.ph === 'gap' && CC.pt > 0.3){ CC.ph = 'fl'; CC.pt = 0; CC.flash = 0.8; CC.pi++; }
+  else if (CC.ph === 'after' && CC.pt > 1.2){ CC.ph = null; CC.idle = 0; } }
+function drawCC(p){ var c = lightC(), t = CC.type, i, A, B;
+  sky(CC.flash*0.7, c);
+  if (t === 'ic') A = cloudBlobs('ic', 150, 630, 50, 250, 60); else if (t === 'cc'){ A = cloudBlobs('ccA', 40, 330, 90, 230, 30); B = cloudBlobs('ccB', 460, 750, 70, 210, 30); } else A = cloudBlobs('anv', 20, 760, 30, 110, 60);
+  function drawPath(){ if (!CC.path || !CC.ph) return; if (CC.ph === 'lead') leaderDraw(CC.path, CC.path.kmax*clamp(CC.pt/(t === 'spider' ? 2.9 : 1.3), 0, 1), [0.75, 0.7, 1]); else if (CC.ph === 'fl'){ var a = 1 - CC.pt/0.3; g.globalAlpha = 0.3 + 0.7*a; bolt(CC.path, 1e9, c, 2.6, 1.3, 22, 0.8); g.globalAlpha = 1; } }
+  if (t === 'spider'){ drawCloud(A, CC.flash*0.8, 0.95); drawPath(); }
+  else { drawPath(); drawCloud(A, CC.flash*(t === 'ic' ? 1 : 0.5), t === 'ic' ? 0.9 : 0.85); if (B) drawCloud(B, CC.flash*0.5, 0.85); if (t === 'cc' && CC.ph === 'fl'){ g.globalAlpha = 0.7*(1 - CC.pt/0.3); var mid = CC.path.main.filter(function(q){ return q.x > 320 && q.x < 470; }); strokePath(mid, 1e9, css(c), 3, 22); g.globalAlpha = 1; } }
+  if (U.chg){ if (t === 'ic'){ for (i=0; i<8; i++) chg(220 + i*50, 75 + (i % 2)*8, 1, p, 5); for (i=0; i<8; i++) chg(220 + i*50, 220 + (i % 2)*8, -1, p, 5); }
+    else if (t === 'cc'){ for (i=0; i<5; i++) chg(80 + i*50, 180 + (i % 2)*8, -1, p, 5); for (i=0; i<5; i++) chg(500 + i*50, 140 + (i % 2)*8, 1, p, 5); }
+    else { for (i=0; i<12; i++) chg(60 + i*60, 70, 1, p, 5); for (i=0; i<12; i++) chg(80 + i*60, 100, -1, p, 4); } }
+  g.fillStyle = '#10140e'; g.fillRect(0, GND, W, H - GND); if (CC.flash > 0){ g.fillStyle = css(c, 0.18*CC.flash); g.fillRect(0, GND, W, H - GND); }
+  for (i=0; i<16; i++){ g.fillStyle = '#0a0d09'; g.fillRect(i*50 + 10, GND - 12 - (i*37 % 25), 30, 12 + (i*37 % 25)); }
+  if (TH.due){ lbl('thunder in ' + f(Math.max(0, (TH.due - perfNow())/1000), 1) + ' s (' + f(LS.dist, 1) + ' km away)', W/2, GND - 40, p.hi, 12); } else if (TH.shown && perfNow() - TH.shown < 1500) lbl('rumble\u2026', W/2, GND - 40, '#fff', 14);
+  lbl({ ic:'intracloud: from the \u2212 region to the + region inside one cloud', cc:'cloud to cloud', spider:'spider (anvil crawler) lightning under the anvil' }[t], W/2, H - 12, p.hi, 12); }
+/* ══════════ 5: lightning rod ══════════ */
+var PXM = 6, CX0 = 390;
+function rodPts(){ var a = [{ x:-7, y:7, n:'house' }, { x:7, y:7, n:'house' }, { x:0, y:10, n:'house' }, { x:-3.5, y:8.5, n:'house' }, { x:3.5, y:8.5, n:'house' }, { x:4, y:11.5, n:'house' }, { x:-32, y:16, n:'tree' }, { x:-29, y:14, n:'tree' }, { x:-35, y:14, n:'tree' }];
+  if (RD.rod) a.push({ x:4, y:14, n:'rod' }); return a; }
+function rodAttach(x0){ var r = rStrike(RD.I), P = rodPts(), x = x0, y = 80, pts = [{ x:x, y:y }], best = null, n = 0;
+  while (n++ < 300){ var dmin = y, bp = { x:x, y:0, n:'ground' }; P.forEach(function(q){ var d = Math.hypot(q.x - x, q.y - y); if (d < dmin){ dmin = d; bp = q; } }); if (dmin <= r){ best = bp; break; } x += gauss()*0.9; y -= 1.3; pts.push({ x:x, y:y }); }
+  return { pts:pts, hit:best || { x:x, y:0, n:'ground' } }; }
+function rodStart(){ var x0 = rnd(-60, 60), A = rodAttach(x0); RD.hit = A.hit; var pts = A.pts.map(function(q, i){ return { x:CX0 + q.x*PXM, y:GND - q.y*PXM, k:i }; }); RD.path = { main:pts, br:[], kmax:pts.length - 1 };
+  var last = pts[pts.length - 1], hp = { x:CX0 + A.hit.x*PXM, y:GND - A.hit.y*PXM }; RD.up = walk(hp.x, hp.y, last.x, last.y, 6, 0.3, 0, function(x, y){ return Math.hypot(x - last.x, y - last.y) < 7; }, 80);
+  RD.ph = 'lead'; RD.pt = 0; say('A stepped leader comes down. When its tip gets within the striking distance of ' + f(rStrike(RD.I), 0) + ' m of something, that object sends up a streamer and is struck.'); }
+function rodStep(dt){ if (!RD.ph){ if (U.auto && (RD.idle = (RD.idle || 0) + dt) > 1.5){ RD.idle = 0; rodStart(); } return; } RD.pt += dt;
+  if (RD.ph === 'lead' && RD.pt > 1.6){ RD.ph = 'up'; RD.pt = 0; }
+  else if (RD.ph === 'up' && RD.pt > 0.4){ RD.ph = 'ret'; RD.pt = 0; crack(0.6); RD.tally[RD.hit.n === 'open ground' ? 'ground' : RD.hit.n]++; RD.n++;
+    say(RD.hit.n === 'rod' ? 'Struck the rod: the current runs down the heavy conductor into the ground electrode. The house is safe.' : RD.hit.n === 'house' ? 'Struck the house! Without a safe path the current goes through the roof, wiring and walls: fire and damage.' : RD.hit.n === 'tree' ? 'Struck the tree: the sap boils and can split the trunk. Never shelter under a lone tree.' : 'Struck the open ground.'); }
+  else if (RD.ph === 'ret' && RD.pt > 0.8){ RD.ph = null; RD.idle = 0; } }
+function rollArcs(p){ var r = rStrike(RD.I), P = rodPts(), top = P.reduce(function(a, b){ return b.y > a.y && b.n !== 'tree' ? b : a; }, P[0]); if (r < top.y) return;
+  var dx = Math.sqrt(r*r - (r - top.y)*(r - top.y)); [-1, 1].forEach(function(s){ var cx = top.x + s*dx;
+    g.save(); g.fillStyle = 'rgba(122,201,67,0.12)'; g.strokeStyle = 'rgba(122,201,67,0.85)'; g.setLineDash([5, 4]); g.lineWidth = 1.6; g.beginPath(); g.moveTo(CX0 + top.x*PXM, GND - top.y*PXM);
+    for (var j=0; j<=40; j++){ var yy = top.y*(1 - j/40), xx = cx - s*Math.sqrt(Math.max(0, r*r - (yy - r)*(yy - r))); g.lineTo(CX0 + xx*PXM, GND - yy*PXM); } g.lineTo(CX0 + top.x*PXM, GND); g.closePath(); g.fill(); g.stroke(); g.restore();
+    g.save(); g.strokeStyle = 'rgba(122,201,67,0.35)'; g.setLineDash([3, 5]); g.beginPath(); g.arc(CX0 + cx*PXM, GND - r*PXM, r*PXM, 0, TAU); g.stroke(); g.restore(); });
+  lbl('rolling sphere, radius r = ' + f(r, 0) + ' m', CX0 + top.x*PXM, GND - 2*r*PXM - 12 < 20 ? 30 : GND - 2*r*PXM - 12, p.ground, 11); }
+function drawRod(p){ var c = lightC(), i, hx = CX0, active = RD.ph === 'ret';
+  sky(active ? 1 - RD.pt/0.8 : 0, c); drawCloud(cloudBlobs('rd', 20, 760, -30, 40, 40), active ? 0.4 : 0, 0.95);
+  g.fillStyle = '#121810'; g.fillRect(0, GND, W, H - GND); rollArcs(p);
+  /* tree */ var tx = CX0 - 32*PXM; g.fillStyle = '#3a2a1a'; g.fillRect(tx - 4, GND - 60, 8, 60); g.fillStyle = '#1e3a1c'; g.beginPath(); g.arc(tx, GND - 80, 26, 0, TAU); g.fill(); g.beginPath(); g.arc(tx - 16, GND - 66, 18, 0, TAU); g.fill(); g.beginPath(); g.arc(tx + 16, GND - 66, 18, 0, TAU); g.fill();
+  /* house */ g.fillStyle = '#5a4a3e'; g.fillRect(hx - 7*PXM, GND - 7*PXM, 14*PXM, 7*PXM); g.fillStyle = '#7a2e22'; g.beginPath(); g.moveTo(hx - 8*PXM, GND - 7*PXM); g.lineTo(hx, GND - 10*PXM); g.lineTo(hx + 8*PXM, GND - 7*PXM); g.fill();
+  g.fillStyle = '#6a5a50'; g.fillRect(hx + 3.2*PXM, GND - 11.5*PXM, 1.6*PXM, 3*PXM); g.fillStyle = '#e9d9a0'; g.fillRect(hx - 4*PXM, GND - 5*PXM, 2.5*PXM, 2*PXM); g.fillRect(hx + 1.5*PXM, GND - 5*PXM, 2.5*PXM, 2*PXM);
+  if (RD.rod){ var rx = hx + 4*PXM, ry = GND - 14*PXM, hot = active && RD.hit && RD.hit.n === 'rod'; g.strokeStyle = hot ? '#ffe680' : '#c48a3a'; g.lineWidth = 3; g.beginPath(); g.moveTo(rx, ry); g.lineTo(rx, GND - 11.5*PXM); g.stroke();
+    g.lineWidth = 2; g.beginPath(); g.moveTo(rx, GND - 11.5*PXM); g.lineTo(hx + 7.6*PXM, GND - 7.2*PXM); g.lineTo(hx + 7.6*PXM, GND + 6); g.lineTo(hx + 7.6*PXM, GND + 30); g.stroke(); g.fillStyle = hot ? '#ffe680' : '#c48a3a'; g.fillRect(hx + 7.6*PXM - 2, GND + 4, 4, 30);
+    if (hot){ g.save(); g.shadowColor = '#ffe680'; g.shadowBlur = 16; g.stroke(); g.restore(); } lbl('rod', rx + 14, ry - 6, p.txt, 11); lbl('down conductor', hx + 7.6*PXM + 52, GND - 30, p.txt, 10); lbl('ground rod', hx + 7.6*PXM + 40, GND + 22, p.txt, 10);
+    var cor = RD.ph === 'lead' || RD.ph === 'up' ? 1 : 0.35; glow(rx, ry, 8 + 8*cor, [0.75, 0.65, 1], 0.5*cor); }
+  if (RD.ph && RD.path){ if (RD.ph === 'lead'){ var tip = leaderDraw(RD.path, RD.path.kmax*clamp(RD.pt/1.5, 0, 1), [0.75, 0.7, 1]); if (tip){ g.save(); g.strokeStyle = 'rgba(255,210,63,0.45)'; g.setLineDash([4, 4]); g.beginPath(); g.arc(tip.x, tip.y, rStrike(RD.I)*PXM, 0, TAU); g.stroke(); g.restore(); } }
+    else if (RD.ph === 'up'){ leaderDraw(RD.path, 1e9, [0.75, 0.7, 1]); leaderDraw(RD.up, RD.up.kmax*clamp(RD.pt/0.35, 0, 1), [0.75, 0.7, 1]); }
+    else { var a = 1 - RD.pt/0.8; g.globalAlpha = a; bolt(RD.path, 1e9, c, 3, 1, 24); bolt(RD.up, 1e9, c, 3, 1, 24); g.globalAlpha = 1;
+      if (RD.hit.n === 'house'){ var hp = { x:CX0 + RD.hit.x*PXM, y:GND - RD.hit.y*PXM }; for (i=0; i<6; i++){ g.fillStyle = 'rgba(255,' + Math.round(rnd(90, 190)) + ',40,' + (0.8*a) + ')'; g.beginPath(); g.ellipse(hp.x + rnd(-8, 8), hp.y - rnd(0, 14), 4, 9, 0, 0, TAU); g.fill(); } } } }
+  if (U.chg){ for (i=0; i<12; i++) chg(40 + i*62, 22, -1, p, 5); var ng = RD.ph === 'ret' ? 3 : 10; for (i=0; i<ng; i++) chg(30 + i*75, GND + 8, 1, p, 4); }
+  lbl('house: 14 m wide, 10 m to the ridge \u00b7 tree 16 m \u00b7 scene 130 m wide', 20, H - 8, p.dim, 11, 'left');
+  lbl('strikes: rod ' + RD.tally.rod + ' \u00b7 house ' + RD.tally.house + ' \u00b7 tree ' + RD.tally.tree + ' \u00b7 ground ' + RD.tally.ground, 20, 60, p.txt, 13, 'left'); }
+/* ══════════ spectrum strip ══════════ */
+function curL(){ var t = U.tab; if (t === 0 && isVac()) return GP.ph === 'spark' ? { L:GAS.vac.L, w:0.25*GP.heat, med:'clear', title:'No gas: vacuum arc in copper vapour from the electrodes' } : { L:[], w:0, med:'clear', title:'No gas: no glow, no light until the vacuum arc' };
+  if (t === 0) return { L:GAS[GP.gas].L, w:GP.ph === 'spark' ? 0.75*GP.heat : 0, med:'clear', title:GAS[GP.gas].n + (GP.ph === 'spark' ? ': spark' : GP.el === 'point' ? ': corona glow (cool, lines only)' : ': glow (lines only)') };
+  if (t === 1) return { L:GAS.air.L, w:0.45, med:'clear', title:'Air: a small spark' }; return { L:LIGHTNING, w:0.62, med:LS.med, title:'Lightning (very hot air)' + (LS.med === 'clear' ? '' : ', seen through ' + LS.med) }; }
+function drawSpec(){ var p = pal(), S = curL(), c = seen(S.L, S.w, S.med), x0 = 140, x1 = SW - 14, y0 = 14, y1 = SH - 22, i, T = MED[S.med];
+  function X(l){ return x0 + (l - 300)/(900 - 300)*(x1 - x0); }
+  gs.fillStyle = th.lm ? '#f4f6f9' : '#0b0f17'; gs.fillRect(0, 0, SW, SH);
+  gs.fillStyle = css(c); gs.fillRect(12, 18, 108, 52); gs.strokeStyle = p.dim; gs.strokeRect(12, 18, 108, 52); gs.font = 'bold 11px Arial'; gs.fillStyle = p.txt; gs.textAlign = 'center'; gs.fillText('you see:', 66, 12); gs.fillText(cname(c), 66, 86);
+  gs.font = '10px Arial'; gs.fillStyle = p.dim; gs.fillText('spectrum', 66, 100);
+  gs.fillStyle = 'rgba(128,128,140,0.18)'; gs.fillRect(X(300), y0, X(380) - X(300), y1 - y0); gs.fillRect(X(750), y0, X(900) - X(750), y1 - y0);
+  for (i=380; i<750; i++){ var q = wlRGB(i); gs.fillStyle = css(q, 0.18); gs.fillRect(X(i), y0, X(i + 1) - X(i) + 0.5, y1 - y0); }
+  if (S.w > 0){ gs.fillStyle = 'rgba(255,255,255,' + (0.35*S.w) + ')'; gs.beginPath(); gs.moveTo(X(300), y1); for (i=300; i<=900; i += 10){ var b = 0.5 + 0.5*Math.sin((i - 300)/600*Math.PI*0.9); gs.lineTo(X(i), y1 - (y1 - y0)*0.45*b*S.w*(i < 750 ? (i > 600 ? T[0] : i > 500 ? T[1] : T[2]) : 1)); } gs.lineTo(X(900), y1); gs.fill(); }
+  S.L.forEach(function(q){ var l = q[0], rgb = wlRGB(l), vis = l >= 380 && l <= 750, tr = l > 600 ? T[0] : l > 500 ? T[1] : T[2]; gs.fillStyle = vis ? css(rgb.map(function(v){ return 0.35 + 0.65*v; })) : '#9aa3ae'; gs.fillRect(X(l) - 1.5, y1 - (y1 - y0)*q[1]*tr, 3, (y1 - y0)*q[1]*tr); });
+  gs.fillStyle = p.dim; gs.font = '10px Arial'; gs.textAlign = 'center'; [300, 400, 500, 600, 700, 800, 900].forEach(function(l){ gs.fillText(l + ' nm', X(l), SH - 8); });
+  gs.fillText('ultraviolet (invisible)', (X(300) + X(380))/2, y0 + 10); gs.fillText('infrared (invisible)', (X(750) + X(900))/2, y0 + 10); gs.textAlign = 'left'; gs.fillStyle = p.txt; gs.font = 'bold 11px Arial'; gs.fillText(S.title, X(390), y0 + 10); }
+/* ══════════ readout, panels ══════════ */
+function card(a, b){ return '<div><div class="' + cls('sk_flabel') + '">' + a + '</div><div class="' + cls('sk_fvalue') + '" title="' + b + '">' + b + '</div></div>'; }
+function info(){ var t = U.tab, cells = [], st = '', eq = '';
+  if (t === 0){ var Vb = VbGap(), G = GAS[GP.gas], E = GP.Vc/(GP.d/1000), lam = mfp(); cells = [['voltage', kV(GP.Vc)], ['breakdown voltage', isFinite(Vb) ? kV(Vb) : 'none'], ['field V/d', f(E/1e6, 2) + ' MV/m'], ['p \u00d7 d', isVac() ? '\u2248 0' : f(GP.p*760*GP.d/10, 1) + ' Torr\u00b7cm'], ['mean free path', isVac() ? '\u226b gap (kilometres)' : f(lam*1e6, 2) + ' \u00b5m'], ['energy per free path', isVac() ? 'no collisions' : f(E*lam, 2) + ' eV'], ['ionization energy', isVac() ? 'no gas' : G.Ei + ' eV'], ['sparks', String(GP.count)]];
+    st = GP.ph === 'aval' ? 'Avalanche: each electron that gains enough energy ionizes a molecule, doubling the number of electrons again and again.' : GP.ph === 'str' ? 'Streamer: a thin conducting filament crosses the gap.' : GP.ph === 'spark' ? 'Spark: the channel carries a large current and glows.' : GP.Vset < Vb ? (GP.el === 'point' && GP.Vc > Vcor() ? 'Corona at the tip, but the supply voltage is below the breakdown voltage: no spark.' : (isVac() ? 'No gas: the electrons have nothing to ionize, so nothing happens and nothing glows until the voltage reaches the vacuum-arc level.' : 'The supply voltage is below the breakdown voltage of this gap: no spark. Raise the voltage, shorten the gap or lower the pressure.')) : 'Charging toward breakdown\u2026';
+    eq = isVac() ? 'No gas: an electron crosses the whole gap without hitting anything, gaining <b>' + f(GP.Vc/1000, 1) + ' keV</b>, but there are no molecules to ionize and no avalanche. Breakdown in vacuum (here about <b>' + kV(paschen('vac', 1, GP.d)) + '</b>, roughly 50 kV\u221a(d/mm)) starts when the field pulls electrons out of the metal and the electrodes themselves evaporate; the arc then glows in the colours of the metal. On the Moon the gas pressure is about 10\u207b\u00b9\u2075 atm: an astronaut\u2019s doorknob spark would not happen, although lunar dust charged by sunlight does cling to everything.' : 'Paschen: <b>V_b = Bpd / [ln(Apd) \u2212 ln ln(1 + 1/\u03b3)] = ' + (isFinite(paschen(GP.gas, GP.p, GP.d)) ? kV(paschen(GP.gas, GP.p, GP.d)) : '\u221e') + '</b> (A = ' + G.A + ', B = ' + G.B + ', \u03b3 = ' + G.gam + '). Energy gained per free path eE\u03bb = <b>' + f(E*lam, 2) + ' eV</b>: far below ' + G.Ei + ' eV, so only the rare electrons that fly much farther than average can ionize.'; }
+  if (t === 1){ var Vb2 = VbAir(DK.d)*(DK.key ? 0.85 : 1); cells = [['your potential', (DK.V > 0 ? '\u2212' : '') + kV(DK.V)], ['your charge', f(150e-12*DK.V*1e6, 2) + ' \u00b5C'], ['gap to the knob', f(DK.d, 1) + ' mm'], ['spark needs', kV(Vb2)], ['body capacitance', '150 pF'], ['last spark', DK.last ? kV(DK.last.V) : '\u2014'], ['last energy', DK.last ? f(DK.last.E*1000, 1) + ' mJ' : '\u2014'], ['humidity', DK.RH + ' %']];
+    st = COMBOS[DK.combo][1] === 0 ? 'Barefoot, your skin connects you to the floor: charge does not build up.' : DK.shuffle ? 'Each step transfers charge between your soles and the carpet.' : DK.V < 500 ? 'Shuffle across the carpet to build up charge.' : 'Charged to ' + kV(DK.V) + '. Reach for the knob: the spark jumps when the gap is short enough (about ' + f(DK.V/3000, 1) + ' mm).';
+    eq = 'V = Q/C with C \u2248 150 pF. In air the spark jumps when V \u2265 V_b(d), about <b>3 kV per mm</b> (Paschen). Energy released <b>\u00bdCV\u00b2 = ' + f(0.5*150e-12*DK.V*DK.V*1000, 1) + ' mJ</b> now. Leakage time in ' + DK.RH + '% humidity: ' + f(25*Math.exp(-(DK.RH - 20)/12), 1) + ' s.'; }
+  if (t === 2 || t === 3){ cells = [['peak current', LS.I + ' kA'], ['charge moved', '\u2248 ' + f(LS.I/6, 0) + ' C'], ['cloud potential', '\u2248 100 MV'], ['channel temp.', '\u2248 30 000 K'], ['your distance', f(LS.dist, 1) + ' km'], ['thunder delay', f(LS.dist/0.343, 1) + ' s'], ['strokes', t === 2 ? (LS.si + ' / ' + LS.strokes) : (CC.pi + ' / ' + CC.pulses)], ['seen through', LS.med]];
+    st = t === 2 ? (LS.ph ? '' : 'Press Strike to start a flash.') : (CC.ph ? '' : 'Press Strike.');
+    eq = 'Flash-to-bang: <b>distance = 343 m/s \u00d7 delay</b>, about 3 s per km. The return stroke heats the channel to about 5 times the temperature of the Sun\u2019s surface in microseconds; the air expands supersonically and the shock wave becomes thunder. Colour: hot air, nearly white with a blue-violet tint; through rain, haze or smoke the blue is scattered away.'; }
+  if (t === 4){ var r = rStrike(RD.I), tot = RD.n || 1; cells = [['peak current', RD.I + ' kA'], ['striking distance r', f(r, 0) + ' m'], ['rod', RD.rod ? 'installed' : 'none'], ['strikes', String(RD.n)], ['to the rod', f(100*RD.tally.rod/tot, 0) + ' %'], ['to the house', f(100*RD.tally.house/tot, 0) + ' %'], ['to the tree', f(100*RD.tally.tree/tot, 0) + ' %'], ['to the ground', f(100*RD.tally.ground/tot, 0) + ' %']];
+    st = RD.rod ? 'The rod tip is the highest point: the rolling sphere touches it first, and the shaded region under the arcs is protected.' : 'No rod: the chimney and roof corners are the highest points of the house, and the house itself gets struck.';
+    eq = 'Striking distance <b>r \u2248 10 I^0.65 = ' + f(r, 0) + ' m</b>. A leader is captured by whatever object comes within r first. Weak strokes have short r and can slip past a rod to the roof: protection is very good, not perfect.'; }
+  el('skRead').innerHTML = cells.map(function(q){ return card(q[0], q[1]); }).join(''); el('skStatus').textContent = st; el('skEq').innerHTML = eq; return st; }
+function say(m){ if (th.nr) el('skNar').textContent = m; }
+function ev(k, m){ if (U.ev[k]) return; U.ev[k] = 1; say(m); }
+function row(id, label, min, max, step, val, txt){ return '<div class="' + cls('sk_ctrl') + '"><div class="' + cls('sk_ctrlhdr') + '"><label class="' + cls('sk_ctrlname') + '" for="' + id + '">' + label + '</label><span class="' + cls('sk_sval') + '" id="' + id + 'v">' + txt + '</span></div><input type="range" id="' + id + '" min="' + min + '" max="' + max + '" step="' + step + '" value="' + val + '"></div>'; }
+function sel(id, label, opts, cur){ return '<div class="' + cls('sk_ctrl') + '"><label class="' + cls('sk_ctrlname') + '" for="' + id + '">' + label + '</label><select class="' + cls('sk_sel') + '" id="' + id + '">' + opts.map(function(o){ return '<option value="' + o[0] + '"' + (String(o[0]) === String(cur) ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></div>'; }
+function on(id, evn, fn){ var e = el(id); if (e) e.addEventListener(evn, fn); }
+function lv(x, a, b){ return Math.pow(10, Math.log(a)/Math.LN10 + x/1000*(Math.log(b/a)/Math.LN10)); } function xl(v, a, b){ return Math.round(1000*(Math.log(v/a))/Math.log(b/a)); }
+function syncV(){ var e = el('skV'); if (e){ e.value = xl(GP.Vset, 100, 2e5); el('skVv').textContent = kV(GP.Vset); } }
+function syncD(){ var e = el('skDd'); if (e){ e.value = DK.d; el('skDdv').textContent = f(DK.d, 1) + ' mm'; } }
+var MEDS = [['clear', 'clear air'], ['rain', 'rain'], ['haze', 'haze or dust'], ['smoke', 'wildfire smoke']];
+function build(){ var t = U.tab, h1 = '', h2 = '', t1 = 'Settings', t2 = 'Colour';
+  if (t === 0){ h1 = sel('skGas', 'gas', GKEYS.map(function(k){ return [k, GAS[k].n]; }), GP.gas) + row('skP', 'pressure', 0, 1000, 1, xl(GP.p, 0.005, 2), f(GP.p, 3) + ' atm') + row('skD', 'gap d', 0, 1000, 1, xl(GP.d, 0.05, 50), f(GP.d, 2) + ' mm') + row('skV', 'supply voltage', 0, 1000, 1, xl(GP.Vset, 100, 2e5), kV(GP.Vset))
+      + sel('skEl', 'electrodes', [['sphere', 'two spheres (uniform field)'], ['point', 'point and plane (corona first)']], GP.el) + '<div class="' + cls('sk_brow') + '"><button type="button" class="' + cls('sk_btn') + '" id="skRamp">Raise the voltage until it sparks</button></div>';
+    h2 = row('skHeat', 'spark current (how hot the channel gets)', 0, 100, 1, GP.heat*100, f(GP.heat*100, 0) + ' %') + '<p class="' + cls('sk_note') + '">Weak discharges (glow, corona) show only the lines of the gas. A strong spark is hot enough to add a white continuum, so the colour becomes whiter. Try neon, argon and helium.</p>'; t2 = 'What sets the colour'; }
+  if (t === 1){ h1 = sel('skCombo', 'shoes and carpet', COMBOS.map(function(c, i){ return [i, c[0]]; }), DK.combo) + row('skRH', 'relative humidity', 15, 80, 1, DK.RH, DK.RH + ' %') + row('skDd', 'finger to knob', 0.3, 40, 0.1, DK.d, f(DK.d, 1) + ' mm')
+      + '<div class="' + cls('sk_brow') + '"><button type="button" class="' + cls('sk_btn') + '" id="skSh" aria-pressed="' + DK.shuffle + '">' + (DK.shuffle ? 'Stop shuffling' : 'Shuffle across the carpet') + '</button><button type="button" class="' + cls('sk_btn') + '" id="skReach">Reach for the knob</button><button type="button" class="' + cls('sk_btn') + '" id="skBack">Step back</button></div>'
+      + '<label class="' + cls('sk_chk') + '"><input type="checkbox" id="skKey"' + (DK.key ? ' checked' : '') + '> touch the knob with a key first</label>'; t1 = 'You and the carpet';
+    h2 = '<p class="' + cls('sk_note') + '">A doorknob spark is a small air spark: violet-blue, because the light comes mostly from excited nitrogen molecules, and it is not very hot. Dry winter air lets you charge to 10 kV or more; humid summer air drains the charge away.</p>'; }
+  if (t === 2 || t === 3){ h1 = (t === 3 ? sel('skType', 'kind of flash', [['ic', 'intracloud (inside one cloud)'], ['cc', 'cloud to cloud'], ['spider', 'spider lightning (under the anvil)']], CC.type) : '') + row('skI', 'peak current', 5, 200, 1, LS.I, LS.I + ' kA') + row('skDist', 'your distance from the flash', 0.2, 20, 0.1, LS.dist, f(LS.dist, 1) + ' km')
+      + '<p class="' + cls('sk_note') + '">Turn on the sound to hear the thunder arrive after the flash. ' + (t === 2 ? 'About 90% of cloud-to-ground flashes lower negative charge to the ground.' : 'Roughly three quarters of all lightning never reaches the ground.') + '</p>'; t1 = 'The flash';
+    h2 = sel('skMed', 'seen through', MEDS, LS.med) + '<p class="' + cls('sk_note') + '">Lightning is so hot that its light is nearly white, with a blue-violet tint from nitrogen and oxygen lines. Rain, dust and smoke scatter blue light out of the line of sight, so distant lightning can look yellow, orange or even red.</p>'; t2 = 'Why lightning looks the colour it does'; }
+  if (t === 4){ h1 = '<label class="' + cls('sk_chk') + '"><input type="checkbox" id="skRod"' + (RD.rod ? ' checked' : '') + '> lightning rod on the chimney</label>' + row('skRI', 'peak current of the stroke', 3, 150, 1, RD.I, RD.I + ' kA')
+      + '<div class="' + cls('sk_brow') + '"><button type="button" class="' + cls('sk_btn') + '" id="skMany">Run 200 strikes</button><button type="button" class="' + cls('sk_btn') + '" id="skClr">Clear the tally</button></div>'; t1 = 'The house';
+    h2 = '<p class="' + cls('sk_note') + '">Franklin (1752) hoped a pointed rod would quietly drain the cloud. It cannot: a storm holds far too much charge. What it does is give the leader a safe point to attach to, with a thick conductor to the ground. The violet glow at the tip under a storm is corona (St. Elmo\u2019s fire).</p>'; t2 = 'How the rod works'; }
+  el('skPT1').textContent = t1; el('skPT2').textContent = t2; el('skCtl1').innerHTML = h1; el('skCtl2').innerHTML = h2;
+  on('skGas', 'change', function(){ GP.gas = this.value; GP.Vc = 0; GP.ph = null; var pe = el('skP'); if (pe) pe.disabled = isVac(); if (isVac()){ say('No gas, as at the surface of the Moon: nothing to ionize, so no glow, no corona, and no ordinary spark. Only a very high voltage, about ' + kV(paschen('vac', 1, GP.d)) + ' for this gap, makes a vacuum arc in metal vapour.'); return; } say(GAS[GP.gas].n + ': breakdown at ' + kV(paschen(GP.gas, GP.p, GP.d)) + ' for this gap; glow colour ' + cname(seen(GAS[GP.gas].L, 0)) + '.'); });
+  on('skP', 'input', function(){ GP.p = lv(+this.value, 0.005, 2); el('skPv').textContent = f(GP.p, 3) + ' atm'; });
+  on('skD', 'input', function(){ GP.d = lv(+this.value, 0.05, 50); el('skDv').textContent = f(GP.d, 2) + ' mm'; });
+  on('skV', 'input', function(){ GP.Vset = lv(+this.value, 100, 2e5); el('skVv').textContent = kV(GP.Vset); });
+  ['skP', 'skD', 'skV'].forEach(function(k){ on(k, 'change', function(){ say(info()); }); });
+  on('skEl', 'change', function(){ GP.el = this.value; GP.ph = null; GP.Vc = 0; });
+  on('skRamp', 'click', function(){ var Vb = VbGap(); if (!isFinite(Vb)){ say('At this pressure and gap the gas cannot break down at any voltage (left of the Paschen minimum).'); return; } GP.Vset = Math.min(2e5, Vb*1.08); syncV(); say('Raising the supply to ' + kV(GP.Vset) + ', just above the breakdown voltage.'); });
+  on('skHeat', 'input', function(){ GP.heat = +this.value/100; el('skHeatv').textContent = this.value + ' %'; });
+  on('skCombo', 'change', function(){ DK.combo = +this.value; });
+  on('skRH', 'input', function(){ DK.RH = +this.value; el('skRHv').textContent = DK.RH + ' %'; });
+  on('skDd', 'input', function(){ DK.d = +this.value; DK.reach = false; el('skDdv').textContent = f(DK.d, 1) + ' mm'; });
+  on('skSh', 'click', function(){ DK.shuffle = !DK.shuffle; build(); say(DK.shuffle ? 'Shuffling: each step rubs the soles on the carpet and leaves you with extra electrons.' : 'Standing still: the charge slowly leaks away into the air.'); });
+  on('skReach', 'click', function(){ DK.shuffle = false; DK.reach = true; build(); say('Reaching for the knob\u2026'); });
+  on('skBack', 'click', function(){ DK.reach = false; DK.d = 25; syncD(); });
+  on('skKey', 'change', function(){ DK.key = this.checked; });
+  on('skType', 'change', function(){ CC.type = this.value; CC.ph = null; });
+  on('skI', 'input', function(){ LS.I = +this.value; el('skIv').textContent = LS.I + ' kA'; });
+  on('skDist', 'input', function(){ LS.dist = +this.value; el('skDistv').textContent = f(LS.dist, 1) + ' km'; });
+  on('skMed', 'change', function(){ LS.med = this.value; say('Seen through ' + this.options[this.selectedIndex].text + ': the flash looks ' + cname(lightC()) + '.'); });
+  on('skRod', 'change', function(){ RD.rod = this.checked; say(RD.rod ? 'Rod installed, connected to a ground rod by a heavy conductor.' : 'Rod removed.'); });
+  on('skRI', 'input', function(){ RD.I = +this.value; el('skRIv').textContent = RD.I + ' kA \u00b7 r = ' + f(rStrike(RD.I), 0) + ' m'; });
+  on('skMany', 'click', function(){ for (var i=0; i<200; i++){ var A = rodAttach(rnd(-60, 60)); RD.tally[A.hit.n === 'open ground' ? 'ground' : A.hit.n]++; RD.n++; } say('200 leaders at random positions with ' + RD.I + ' kA: rod ' + RD.tally.rod + ', house ' + RD.tally.house + ', tree ' + RD.tally.tree + ', ground ' + RD.tally.ground + '.'); });
+  on('skClr', 'click', function(){ RD.tally = { rod:0, house:0, tree:0, ground:0 }; RD.n = 0; });
+  el('skGo').textContent = ['Spark now', 'Reach for the knob', 'Strike', 'Strike', 'Strike'][t]; }
+function go(){ var t = U.tab; if (t === 0){ var Vb = VbGap(); if (!isFinite(Vb)){ say('No breakdown is possible here.'); return; } GP.Vset = Math.max(GP.Vset, Vb*1.08); syncV(); GP.Vc = Vb; if (!GP.ph) gapStart(); }
+  if (t === 1){ DK.shuffle = false; DK.reach = true; build(); } if (t === 2 && !LS.ph) lsStart(); if (t === 3 && !CC.ph) ccStart(); if (t === 4 && !RD.ph) rodStart(); }
+on('skGo', 'click', go);
+on('skAuto', 'click', function(){ U.auto = !U.auto; this.setAttribute('aria-pressed', U.auto ? 'true' : 'false'); this.textContent = 'Repeat: ' + (U.auto ? 'on' : 'off'); });
+function setPlay(v){ U.run = v; el('skPlay').innerHTML = v ? '\u2759\u2759 Pause' : '\u25B6 Play'; el('skPlay').classList.toggle(cls('sk_btnon'), v); }
+on('skPlay', 'click', function(){ setPlay(!U.run); });
+on('skRst', 'click', function(){ tab(U.tab); });
+on('skSpd', 'input', function(){ U.spd = +this.value; el('skSpdV').textContent = U.spd.toFixed(1) + '\u00d7'; });
+on('skChg', 'change', function(){ U.chg = this.checked; }); on('skLbl', 'change', function(){ U.lbl = this.checked; }); on('skSnd', 'change', function(){ U.sound = this.checked; if (U.sound) ac(); });
+on('skDsc', 'click', function(){ var t = U.tab, s = ['Two metal electrodes with a gap between them, a voltage bar underneath, and a Paschen curve on the right. ', 'A person stands on a carpet, one hand reaching toward a metal doorknob on a wooden door. ', 'A storm cloud above a landscape with a tree, a house and a pole; an observer stands at the right. ', 'Storm clouds above dark hills. ', 'A house with a chimney, a tree to the left; a rolling-sphere outline shows the protected zone. '][t];
+  say(s + 'The spark looks ' + cname(seen(curL().L, curL().w, curL().med)) + '. ' + info()); });
+cv.addEventListener('keydown', function(e){ if (e.key === ' ' || e.key === 'Enter'){ go(); e.preventDefault(); } else if (e.key === 'p' || e.key === 'P'){ setPlay(!U.run); e.preventDefault(); } });
+var INTRO = ['What makes a spark: raise the voltage across a gap and watch free electrons multiply into an avalanche, a streamer, and a spark. Change the gas to change the colour.',
+  'Shuffle across the carpet to charge yourself, then reach for the doorknob. Try different humidities and shoes, and a key.',
+  'Cloud to ground: press Strike to watch a stepped leader, upward streamers, the return stroke, then wait for the thunder.',
+  'Lightning that stays in the sky: inside a cloud, between clouds, or crawling under the anvil.',
+  'The lightning rod: watch where the leader attaches, with and without a rod, and how the protected zone depends on the current.'];
+function tab(i){ U.tab = i; for (var k=0; k<5; k++) el('skT' + k).setAttribute('aria-selected', k === i ? 'true' : 'false'); el('skLab').textContent = NAMES[i]; U.ev = {};
+  GP.ph = null; GP.Vc = 0; DK.V = 0; DK.ph = null; DK.reach = false; DK.shuffle = false; DK.d = 25; LS.ph = null; CC.ph = null; RD.ph = null; TH.due = null; if (!U.run) setPlay(true);
+  build(); info(); say(INTRO[i]); }
+function theme(k){ th[k] = !th[k]; if (k === 'hc' && th.hc) th.lm = false; if (k === 'lm' && th.lm) th.hc = false;
+  ROOT.classList.toggle(cls('sk_hc'), th.hc); ROOT.classList.toggle(cls('sk_lm'), th.lm);
+  [['hc', 'skBtnHC'], ['lm', 'skBtnLM'], ['cb', 'skBtnCB'], ['nr', 'skBtnNR']].forEach(function(q){ var b = el(q[1]); b.classList.toggle(cls('sk_a11yon'), th[q[0]]); b.setAttribute('aria-pressed', th[q[0]] ? 'true' : 'false'); });
+  el('skBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('skNar').style.display = th.nr ? '' : 'none';
+  if (k === 'cb' && th.cb) say('Colour-blind safe colours: positive charges vermillion, negative blue, electrons sky blue, ions orange. The colours of the sparks themselves are kept true, and named in words.'); }
+function toggleDesc(){ var b = el('skDescBtn'), d = el('skDesc'), open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION';
+  if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }
+function advance(dt){ var t = U.tab; if (t === 0) gapStep(dt); else if (t === 1) dkStep(dt); else if (t === 2) lsStep(dt); else if (t === 3) ccStep(dt); else rodStep(dt); }
+function draw(){ var p = pal(), t = U.tab; if (t === 0) drawGap(p); else if (t === 1) drawRoom(p); else if (t === 2) drawCG(p); else if (t === 3) drawCC(p); else drawRod(p); drawSpec(); thunderCheck();
+  el('skHint').textContent = (U.spd !== 1 ? 'speed ' + U.spd.toFixed(1) + '\u00d7 \u00b7 ' : '') + 'animation slowed enormously'; }
+var last = 0, tick = 0;
+function loop(ts){ var rdt = last ? Math.min(0.05, (ts - last)/1000) : 0; last = ts; if (U.run && rdt > 0){ var n = 4, i; for (i=0; i<n; i++) advance(rdt*U.spd/n); } draw(); if (++tick % 8 === 0) info(); requestAnimationFrame(loop); }
+setPlay(true); tab(0); requestAnimationFrame(loop);
+return { tab:tab, theme:theme, toggleDesc:toggleDesc, _adv:advance, _GP:GP, _DK:DK, _LS:LS, _CC:CC, _RD:RD, _go:go, _paschen:paschen, _seen:seen, _cname:cname, _GAS:GAS, _rodAttach:rodAttach };
+})();
+</script>
+
+</body>
+</html>
