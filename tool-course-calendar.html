@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course Calendar</title>
+<meta name="author" content="Taha Mzoughi">
+<meta name="description" content="Week-at-a-time calendar for up to six courses, filterable by course, driven by JSON data.">
+<style>
+body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; }
+.page { width:1000px; max-width:100%; margin:0 auto; }
+@media (max-width:600px) { body { margin:4px !important; padding:6px 0; } }
+@media print { body { background:#fff; padding:0; } }
+</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<main class="page">
+<div id="ccRoot" class="cc_root" role="region" aria-label="Course calendar">
+<div class="cc_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="cc_a11ybtn" id="ccBtnHC" onclick="ccCal.theme('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="cc_a11ybtn" id="ccBtnDM" onclick="ccCal.theme('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="cc_a11ybtn" id="ccBtnCB" onclick="ccCal.theme('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="cc_a11ybtn cc_a11yon" id="ccBtnNR" onclick="ccCal.theme('nr')" aria-pressed="true">NARRATION: ON</button>
+</div>
+<div class="cc_tbar"><h3 id="ccTitle">Course Calendar</h3></div>
+<div class="cc_tabs" role="tablist" aria-label="Views">
+<button type="button" role="tab" class="cc_tab" id="ccT0" aria-selected="true" onclick="ccCal.tab(0)">1. Week</button>
+<button type="button" role="tab" class="cc_tab" id="ccT1" aria-selected="false" onclick="ccCal.tab(1)">2. Agenda list</button>
+<button type="button" role="tab" class="cc_tab" id="ccT2" aria-selected="false" onclick="ccCal.tab(2)">3. Data &amp; sharing</button>
+</div>
+<div class="cc_bbar" id="ccNav">
+<button type="button" class="cc_btn" id="ccPrev" aria-label="Previous week">&#9664; Prev</button>
+<button type="button" class="cc_btn cc_go" id="ccToday">This week</button>
+<button type="button" class="cc_btn" id="ccNext" aria-label="Next week">Next &#9654;</button>
+<label>Go to <input type="date" id="ccDate" class="cc_in"></label>
+<label><input type="checkbox" id="ccWkend"> weekends</label>
+<button type="button" class="cc_btn" id="ccPrint">Print</button>
+</div>
+<div class="cc_controls" id="ccCourses" role="group" aria-label="Courses to show"></div>
+<div class="cc_mcontent">
+<div class="cc_readout" id="ccRead" aria-label="Week summary"></div>
+<div id="ccP0" role="tabpanel" aria-labelledby="ccT0"><div class="cc_week" id="ccWeek"></div></div>
+<div id="ccP1" role="tabpanel" aria-labelledby="ccT1" hidden><div class="cc_agenda" id="ccAgenda"></div></div>
+<div id="ccP2" role="tabpanel" aria-labelledby="ccT2" hidden>
+<div class="cc_panel">
+<div class="cc_ph">Share with students</div>
+<p>Select the course(s) above, then copy the link. Opening it shows only those courses, starting on this week; with &ldquo;lock&rdquo; the course selector and this tab are hidden.</p>
+<label><input type="checkbox" id="ccLockOpt" checked> lock the view (students cannot change courses or data)</label>
+<div class="cc_row"><input type="text" id="ccLink" class="cc_in cc_wide" readonly aria-label="Share link"><button type="button" class="cc_btn cc_go" id="ccCopy">Copy link</button></div>
+<button type="button" class="cc_btn" id="ccLockNow">Lock this page now</button>
+<p class="cc_note" id="ccShareNote"></p>
+</div>
+<div class="cc_panel">
+<div class="cc_ph">Load a schedule (JSON)</div>
+<div class="cc_row"><label class="cc_btn">Open file&hellip; <input type="file" id="ccFile" accept=".json,application/json" hidden></label>
+<input type="url" id="ccUrl" class="cc_in cc_wide" placeholder="https://.../schedule.json" aria-label="URL of a JSON file"><button type="button" class="cc_btn" id="ccFetch">Load URL</button></div>
+<label for="ccJson">Or edit / paste here:</label>
+<textarea id="ccJson" class="cc_json" spellcheck="false"></textarea>
+<div class="cc_row"><button type="button" class="cc_btn cc_go" id="ccApply">Apply</button><button type="button" class="cc_btn" id="ccDl">Download JSON</button><button type="button" class="cc_btn" id="ccReset">Restore built-in data</button></div>
+<div class="cc_msg" id="ccMsg" role="status" aria-live="polite"></div>
+</div>
+<div class="cc_panel">
+<div class="cc_ph">JSON format</div>
+<pre class="cc_pre">{ "term": { "name": "Spring 2027", "start": "2027-01-11", "end": "2027-05-03" },
+  "holidays": [ { "date": "2027-01-18", "name": "MLK Day" },
+                { "start": "2027-03-15", "end": "2027-03-21", "name": "Spring break" } ],
+  "courses": [ {
+    "id": "P2211", "code": "PHYS 2211", "title": "Principles of Physics I", "color": "#1f77b4",
+    "meets": [ { "type": "Lecture", "days": ["Mon","Wed"], "start": "09:30", "end": "10:45", "where": "NSC 101" } ],
+    "events": [
+      { "date": "2027-01-11", "type": "topic", "title": "Ch 1: Units and vectors" },
+      { "date": "2027-01-15", "time": "23:59", "type": "due", "title": "HW 1", "link": "https://..." },
+      { "date": "2027-02-10", "type": "exam", "title": "Test 1", "note": "Ch 1-4" },
+      { "date": "2027-02-17", "type": "cancel", "title": "No class" } ] } ] }</pre>
+<p>Event types: <b>topic</b> (what is covered that day), <b>due</b>, <b>quiz</b>, <b>exam</b>, <b>lab</b>, <b>note</b>, <b>cancel</b> (cancels the regular meetings that day). Up to 6 courses; <code>color</code>, <code>time</code>, <code>note</code>, <code>link</code> and <code>where</code> are optional. Regular meetings repeat every week between the term dates, except on holidays.</p>
+<p class="cc_note">GitHub version: add <b>?data=URL-of-your-json</b> to the page address to load an external file automatically. Edits are kept in this browser only; use Download to save them.</p>
+</div>
+</div>
+</div>
+<div id="ccNarBar" class="cc_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="cc_descwrap">
+<button type="button" class="cc_descbtn" id="ccDescBtn" aria-expanded="false" aria-controls="ccDesc" onclick="ccCal.toggleDesc()">&#9656; SIM DESCRIPTION</button>
+<div class="cc_desc" id="ccDesc" role="region" aria-labelledby="ccDescBtn" style="display:none">
+<p>A week-at-a-time calendar for up to six courses. Regular class meetings repeat automatically through the term, skipping holidays; dated items (topics, assignments due, quizzes, exams, labs, notes, cancellations) are added on their day.</p>
+<p>Choose the courses to show with the coloured buttons: one course, several, or all. The Week view shows the days side by side; the Agenda list shows the same items as a list, easier to read with a screen reader or on a phone. Today is outlined.</p>
+<p>The schedule is stored as JSON: built into the page, loaded from a file or a web address, or pasted in the Data tab. To share one course with its students, select only that course, copy the link in the Data tab, and post it; the locked link hides the other courses and the editor.</p>
+</div>
+</div>
+</div><!-- #ccRoot -->
+<script type="application/json" id="ccData">
+{ "term": { "name": "Spring 2027", "start": "2027-01-11", "end": "2027-05-03" },
+  "holidays": [ { "date": "2027-01-18", "name": "MLK Day (no classes)" },
+                { "start": "2027-03-15", "end": "2027-03-21", "name": "Spring break" } ],
+  "courses": [
+  { "id": "P2211", "code": "PHYS 2211", "title": "Principles of Physics I", "color": "#1f77b4",
+    "meets": [ { "type": "Lecture", "days": ["Mon","Wed"], "start": "09:30", "end": "10:45", "where": "NSC 101" } ],
+    "events": [
+      { "date": "2027-01-11", "type": "topic", "title": "Ch 1: Units, vectors" },
+      { "date": "2027-01-13", "type": "topic", "title": "Ch 2: 1-D motion" },
+      { "date": "2027-01-15", "time": "23:59", "type": "due", "title": "HW 1 (MyOpenMath)" },
+      { "date": "2027-01-20", "type": "topic", "title": "Ch 3: Projectiles" },
+      { "date": "2027-01-22", "time": "23:59", "type": "due", "title": "HW 2" },
+      { "date": "2027-01-25", "type": "quiz", "title": "Quiz 1", "note": "Ch 1-2" },
+      { "date": "2027-02-10", "type": "exam", "title": "Test 1", "note": "Ch 1-4" } ] },
+  { "id": "P2212", "code": "PHYS 2212", "title": "Principles of Physics II", "color": "#d62728",
+    "meets": [ { "type": "Lecture", "days": ["Tue","Thu"], "start": "11:00", "end": "12:15", "where": "NSC 202" } ],
+    "events": [
+      { "date": "2027-01-12", "type": "topic", "title": "Ch 21: Electric charge" },
+      { "date": "2027-01-14", "type": "topic", "title": "Ch 22: Electric field" },
+      { "date": "2027-01-17", "time": "23:59", "type": "due", "title": "HW 1" },
+      { "date": "2027-01-19", "type": "cancel", "title": "Class cancelled (conference)" },
+      { "date": "2027-01-21", "type": "topic", "title": "Ch 23: Gauss's law" },
+      { "date": "2027-02-11", "type": "exam", "title": "Test 1", "note": "Ch 21-24" } ] },
+  { "id": "P2211L", "code": "PHYS 2211L", "title": "Physics I Lab", "color": "#2ca02c",
+    "meets": [ { "type": "Lab", "days": ["Tue"], "start": "14:00", "end": "16:45", "where": "Lab 310" } ],
+    "events": [
+      { "date": "2027-01-12", "type": "lab", "title": "Lab 0: Uncertainty" },
+      { "date": "2027-01-19", "type": "lab", "title": "Lab 1: Motion graphs" },
+      { "date": "2027-01-18", "time": "23:59", "type": "due", "title": "Report 0" } ] },
+  { "id": "P2212L", "code": "PHYS 2212L", "title": "Physics II Lab", "color": "#9467bd",
+    "meets": [ { "type": "Lab", "days": ["Wed"], "start": "14:00", "end": "16:45", "where": "Lab 312" } ],
+    "events": [
+      { "date": "2027-01-13", "type": "lab", "title": "Lab 1: Electrostatics" },
+      { "date": "2027-01-20", "type": "lab", "title": "Lab 2: Field mapping" } ] },
+  { "id": "P1111", "code": "PHYS 1111", "title": "Introductory Physics I", "color": "#ff7f0e",
+    "meets": [ { "type": "Lecture", "days": ["Mon","Wed","Fri"], "start": "12:30", "end": "13:20", "where": "Online (Webex)" } ],
+    "events": [
+      { "date": "2027-01-11", "type": "topic", "title": "Syllabus, Ch 1" },
+      { "date": "2027-01-15", "type": "quiz", "title": "Quiz 0: syllabus" },
+      { "date": "2027-01-22", "type": "note", "title": "Office hours moved to Thursday" } ] },
+  { "id": "SEM", "code": "PHYS 4900", "title": "Senior Seminar", "color": "#8c564b",
+    "meets": [ { "type": "Seminar", "days": ["Thu"], "start": "15:30", "end": "16:20", "where": "NSC 408" } ],
+    "events": [
+      { "date": "2027-01-14", "type": "topic", "title": "Choosing a topic" },
+      { "date": "2027-01-21", "type": "due", "time": "15:30", "title": "Topic proposal" } ] } ] }
+</script>
+<style>
+#ccRoot, #ccRoot * { box-sizing:border-box; }
+#ccRoot { container-type:inline-size; width:100%; max-width:980px; margin:0 auto 10px; font-family:system-ui, sans-serif; background:#f4f6f8;
+  --cc-bg:#0a0e12; --cc-panel:#0d1318; --cc-border:#1c262e; --cc-text:#c9d6de; --cc-muted:#5f7180; --cc-val:#8fe3b0; --cc-card:#ffffff; --cc-ink:#1d232a; --cc-day:#f8fafc; }
+#ccRoot [hidden] { display:none !important; }
+#ccRoot .cc_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; justify-content:center; }
+#ccRoot .cc_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#ccRoot .cc_a11ybtn:hover { border-color:#00e8d0; color:#00e8d0; }
+#ccRoot .cc_a11yon { background:rgba(0,232,208,.12); border-color:#00e8d0; color:#00e8d0; }
+#ccRoot .cc_tbar { padding:4px 8px; min-height:35px; background:#f90; text-align:center; }
+#ccRoot .cc_tbar h3 { margin:0; line-height:1.3; padding:4px 0; font-size:1rem; color:#1a1f24; }
+#ccRoot .cc_tabs { display:flex; flex-wrap:wrap; gap:4px; padding:6px 8px; background:#2c3138; }
+#ccRoot .cc_tab { flex:1 1 160px; padding:8px 10px; border:1px solid #525c66; background:#22262b; color:#c8d0d8; border-radius:4px; cursor:pointer; font-size:.86rem; min-height:38px; }
+#ccRoot .cc_tab[aria-selected="true"] { background:#e8a020; color:#1a1f24; border-color:#e8a020; font-weight:bold; }
+#ccRoot .cc_bbar { background:#df9; padding:8px 10px; display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center; justify-content:center; font-size:.85rem; color:#222; }
+#ccRoot .cc_bbar label { display:flex; align-items:center; gap:6px; }
+#ccRoot .cc_btn { padding:6px 12px; border:1px solid #6a8f2a; background:#f6ffe8; color:#223; border-radius:4px; cursor:pointer; font-size:.82rem; min-height:36px; display:inline-flex; align-items:center; gap:4px; }
+#ccRoot .cc_go { font-weight:bold; border-color:#0a7a5a; background:#e2fff3; }
+#ccRoot .cc_in { padding:5px 8px; border:1px solid #8a96a8; border-radius:4px; font-size:.85rem; min-height:34px; }
+#ccRoot .cc_controls { display:flex; flex-wrap:wrap; gap:6px; padding:8px 10px; background:#e3f2fd; justify-content:center; align-items:center; }
+#ccRoot .cc_cbtn { display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border:2px solid var(--c); background:#fff; color:#222; border-radius:16px; cursor:pointer; font-size:.84rem; min-height:36px; }
+#ccRoot .cc_cbtn[aria-pressed="true"] { background:var(--c); color:#fff; font-weight:bold; }
+#ccRoot .cc_cbtn .cc_dot { width:12px; height:12px; border-radius:50%; background:var(--c); border:2px solid #fff; }
+#ccRoot .cc_mcontent { background:var(--cc-bg); color:var(--cc-text); padding:10px; display:flex; flex-direction:column; gap:8px; }
+#ccRoot .cc_readout { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:6px 10px; background:var(--cc-panel); border:1px solid var(--cc-border); border-radius:8px; padding:8px 12px; }
+#ccRoot .cc_flabel { font-size:10px; color:var(--cc-muted); letter-spacing:1px; text-transform:uppercase; }
+#ccRoot .cc_fvalue { font-size:14px; color:var(--cc-val); font-variant-numeric:tabular-nums; }
+#ccRoot .cc_week { display:grid; grid-template-columns:repeat(var(--nd), minmax(0,1fr)); gap:6px; }
+@container (max-width:700px) { #ccRoot .cc_week { grid-template-columns:1fr; } }
+#ccRoot .cc_day { background:var(--cc-day); color:var(--cc-ink); border:1px solid var(--cc-border); border-radius:6px; min-height:160px; display:flex; flex-direction:column; overflow:hidden; }
+#ccRoot .cc_day.cc_today { outline:3px solid #e8a020; outline-offset:-1px; }
+#ccRoot .cc_day.cc_out { opacity:.55; }
+#ccRoot .cc_dh { padding:5px 8px; background:#2c3138; color:#fff; font-size:.82rem; font-weight:bold; display:flex; justify-content:space-between; }
+#ccRoot .cc_hol { padding:4px 8px; background:repeating-linear-gradient(45deg,#ffe9a8,#ffe9a8 6px,#fff4cf 6px,#fff4cf 12px); color:#5a4200; font-size:.78rem; font-weight:bold; }
+#ccRoot .cc_evs { padding:5px; display:flex; flex-direction:column; gap:5px; }
+#ccRoot .cc_ev { background:var(--cc-card); border:1px solid #d5dbe4; border-left:6px solid var(--c); border-radius:4px; padding:4px 6px; font-size:.78rem; line-height:1.3; color:var(--cc-ink); }
+#ccRoot .cc_ev .cc_code { font-weight:bold; color:var(--c); }
+#ccRoot .cc_ev .cc_t { color:#555; font-variant-numeric:tabular-nums; }
+#ccRoot .cc_ev .cc_sub { color:#555; font-size:.74rem; }
+#ccRoot .cc_ev a { color:inherit; }
+#ccRoot .cc_badge { display:inline-block; padding:0 5px; border-radius:7px; font-size:.68rem; font-weight:bold; color:#fff; background:#566; margin-right:3px; text-transform:uppercase; letter-spacing:.03em; }
+#ccRoot .cc_b_exam { background:#b00020; } #ccRoot .cc_b_quiz { background:#c05a00; } #ccRoot .cc_b_due { background:#6a1b9a; } #ccRoot .cc_b_lab { background:#1b6e2a; } #ccRoot .cc_b_note { background:#455a64; } #ccRoot .cc_b_cancel { background:#000; }
+#ccRoot .cc_ev.cc_x { text-decoration:line-through; opacity:.6; }
+#ccRoot .cc_empty { color:#889; font-size:.78rem; font-style:italic; padding:4px; }
+#ccRoot .cc_agenda { display:flex; flex-direction:column; gap:8px; }
+#ccRoot .cc_agenda h4 { margin:6px 0 2px; color:var(--cc-val); font-size:.9rem; }
+#ccRoot .cc_agenda ul { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px; }
+#ccRoot .cc_panel { background:#fff; color:#1d232a; border:1px solid #c9d0da; border-radius:6px; padding:8px 12px 12px; margin-bottom:8px; font-size:.86rem; line-height:1.45; }
+#ccRoot .cc_ph { margin:-8px -12px 8px; padding:5px 12px; background:#883355; color:#fff; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; border-radius:6px 6px 0 0; }
+#ccRoot .cc_panel p { margin:6px 0; }
+#ccRoot .cc_row { display:flex; flex-wrap:wrap; gap:6px; margin:6px 0; align-items:center; }
+#ccRoot .cc_wide { flex:1 1 260px; }
+#ccRoot .cc_json { width:100%; min-height:220px; font-family:ui-monospace, monospace; font-size:.78rem; border:1px solid #8a96a8; border-radius:4px; padding:6px; }
+#ccRoot .cc_pre { background:#f3f5f8; border:1px solid #d5dbe4; border-radius:4px; padding:6px 8px; font-size:.74rem; overflow-x:auto; white-space:pre; }
+#ccRoot .cc_msg { font-size:.84rem; min-height:1.2em; }
+#ccRoot .cc_msg.cc_err { color:#b00020; font-weight:bold; } #ccRoot .cc_msg.cc_ok { color:#1b6e2a; font-weight:bold; }
+#ccRoot .cc_note { color:#555; font-style:italic; font-size:.8rem; }
+#ccRoot .cc_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.85rem; color:#333; font-style:italic; }
+#ccRoot .cc_descwrap { display:flex; flex-direction:column; align-items:center; gap:8px; padding:10px; }
+#ccRoot .cc_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:40px; }
+#ccRoot .cc_descbtn[aria-expanded="true"] { background:#3a3220; }
+#ccRoot .cc_desc { width:100%; background:#fbfbf7; border:1px solid #c9ccd2; border-left:4px solid #e8a020; border-radius:4px; padding:12px 16px; color:#1d232a; font-size:.9rem; line-height:1.55; }
+#ccRoot .cc_desc p { margin:0 0 9px; }
+#ccRoot button:focus-visible, #ccRoot input:focus-visible, #ccRoot textarea:focus-visible, #ccRoot a:focus-visible { outline:3px solid #e8a020; outline-offset:2px; }
+#ccRoot.cc_hc { --cc-bg:#000; --cc-panel:#000; --cc-border:#fff; --cc-text:#fff; --cc-muted:#ddd; --cc-val:#ff0; --cc-card:#000; --cc-ink:#fff; --cc-day:#000; }
+#ccRoot.cc_hc .cc_ev .cc_t, #ccRoot.cc_hc .cc_ev .cc_sub { color:#ddd; }
+#ccRoot.cc_dm { --cc-card:#1b222b; --cc-ink:#e6ecf2; --cc-day:#121820; }
+#ccRoot.cc_dm .cc_ev { border-color:#2d3644; } #ccRoot.cc_dm .cc_ev .cc_t, #ccRoot.cc_dm .cc_ev .cc_sub { color:#a3adbd; }
+#ccRoot.cc_locked #ccT2, #ccRoot.cc_locked .cc_controls { display:none; }
+@media (pointer:coarse) { #ccRoot .cc_a11ybtn { min-height:40px; } #ccRoot .cc_btn, #ccRoot .cc_cbtn { min-height:44px; } }
+@media print { #ccRoot .cc_a11y, #ccRoot .cc_tabs, #ccRoot .cc_bbar, #ccRoot .cc_controls, #ccRoot .cc_narbar, #ccRoot .cc_descwrap { display:none !important; }
+  #ccRoot .cc_mcontent { background:#fff; color:#000; } #ccRoot .cc_week { grid-template-columns:repeat(var(--nd), minmax(0,1fr)) !important; } #ccRoot .cc_ev { -webkit-print-color-adjust:exact; print-color-adjust:exact; } }
+</style>
+<!-- ════════ CALENDAR ════════
+Data: JSON in the script block ccData (or a file, a URL, or pasted text). Regular meetings repeat weekly from term.start to term.end,
+skipping holidays and days with a "cancel" event for that course. Up to 6 courses are shown.
+GitHub URL parameters: ?c=ID1,ID2 (courses)  &w=YYYY-MM-DD (week)  &lock=1  &data=URL (external JSON).
+MOM: optional question-code variables ccCourses (e.g. "P2211") and ccLock ("1") select and lock the courses.
+No dollar signs or backticks in the code.
+-->
+<script>
+var ccCal = (function(){
+function el(id){ return document.getElementById(id + ''); }
+function cls(n){ return n + ''; }
+var ROOT = el('ccRoot'), BUILTIN = el('ccData').textContent, PRE_C = '', PRE_L = '';
+var DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], DAYL = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'], MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var CB = ['#0072B2','#D55E00','#009E73','#CC79A7','#E69F00','#56B4E9'];
+var DATA = null, sel = {}, wk = null, tabI = 0, th = { hc:false, dm:false, cb:false, nr:true }, locked = false, STORE = 'ccCalData';
+/* ── dates (local, no time zones) ── */
+function D(s){ var p = String(s).split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+function K(d){ return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+function add(d, n){ var r = new Date(d.getFullYear(), d.getMonth(), d.getDate() + n); return r; }
+function monday(d){ var k = (d.getDay() + 6) % 7; return add(d, -k); }
+function fd(d){ return DAYS[d.getDay()] + ' ' + MON[d.getMonth()] + ' ' + d.getDate(); }
+function t12(t){ if (!t) return ''; var p = t.split(':'), h = +p[0], m = p[1] || '00'; return ((h + 11) % 12 + 1) + ':' + m + (h < 12 ? ' am' : ' pm'); }
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]; }); }
+function okVar(v){ return v && v.indexOf('@') < 0 && v.charCodeAt(0) !== 36; }
+/* ── data ── */
+function validate(o){
+  if (!o || typeof o !== 'object') throw new Error('The top level must be an object { }.');
+  if (!o.term || !o.term.start || !o.term.end) throw new Error('"term" needs "start" and "end" dates (YYYY-MM-DD).');
+  if (!Array.isArray(o.courses) || !o.courses.length) throw new Error('"courses" must be a non-empty list.');
+  var re = { test:function(v){ return /^\d{4}-\d{2}-\d{2}/.test(v) && String(v).length === 10; } };
+  [o.term.start, o.term.end].forEach(function(s){ if (!re.test(s)) throw new Error('Bad term date "' + s + '": use YYYY-MM-DD.'); });
+  o.courses = o.courses.slice(0, 6);
+  o.courses.forEach(function(c, i){ if (!c.id) c.id = 'C' + (i + 1); if (!c.code) c.code = c.id; c.meets = c.meets || []; c.events = c.events || [];
+    c.meets.forEach(function(m){ (m.days || []).forEach(function(d){ if (DAYS.indexOf(d) < 0) throw new Error(c.code + ': unknown day "' + d + '" (use Mon, Tue, ...).'); }); });
+    c.events.forEach(function(e){ if (!re.test(e.date || '')) throw new Error(c.code + ': event "' + (e.title || '?') + '" has a bad date "' + e.date + '".'); }); });
+  o.holidays = o.holidays || []; return o; }
+function load(text, src){ var o = validate(JSON.parse(text)); DATA = o; var keep = {}; DATA.courses.forEach(function(c){ keep[c.id] = sel[c.id] !== undefined ? sel[c.id] : true; }); sel = keep;
+  el('ccJson').value = JSON.stringify(o, null, 2); el('ccTitle').textContent = 'Course Calendar' + (o.term.name ? ' \u2014 ' + o.term.name : '');
+  if (!wk) wk = startWeek(); buildCourses(); render(); return src; }
+function msg(t, ok){ var m = el('ccMsg'); m.textContent = t; m.className = cls('cc_msg') + ' ' + cls(ok ? 'cc_ok' : 'cc_err'); }
+function color(c, i){ return th.cb || th.hc ? CB[i % 6] : (c.color || CB[i % 6]); }
+function holiday(k){ var d = D(k), h = null; DATA.holidays.forEach(function(x){ if (x.date && x.date === k) h = x; if (x.start && x.end && d >= D(x.start) && d <= D(x.end)) h = x; }); return h; }
+function itemsOn(d){ var k = K(d), out = [], inTerm = d >= D(DATA.term.start) && d <= D(DATA.term.end), hol = holiday(k);
+  DATA.courses.forEach(function(c, i){ if (!sel[c.id]) return; var col = color(c, i), cancel = null, topics = [];
+    c.events.forEach(function(e){ if (e.date !== k) return; if (e.type === 'cancel') cancel = e; else if (e.type === 'topic' || e.type === 'lab') topics.push(e); else out.push({ c:c, col:col, kind:e.type || 'note', time:e.time || '', title:e.title, note:e.note, link:e.link, where:e.where }); });
+    c.meets.forEach(function(m){ if ((m.days || []).indexOf(DAYS[d.getDay()]) < 0 || !inTerm) return;
+      var x = !!(hol || cancel);
+      out.push({ c:c, col:col, kind:'meet', time:m.start || '', end:m.end, title:m.type || 'Class', where:m.where, topics:topics, x:x, why:hol ? hol.name : cancel ? cancel.title : '' }); topics = []; });
+    topics.forEach(function(e){ out.push({ c:c, col:col, kind:e.type, time:'', title:e.title, note:e.note, link:e.link }); });
+    if (cancel && !c.meets.some(function(m){ return (m.days || []).indexOf(DAYS[d.getDay()]) >= 0; })) out.push({ c:c, col:col, kind:'cancel', time:'', title:cancel.title }); });
+  out.sort(function(a, b){ return (a.time || '99') < (b.time || '99') ? -1 : (a.time || '99') > (b.time || '99') ? 1 : 0; });
+  return { items:out, hol:hol, inTerm:inTerm }; }
+function startWeek(){ var t = new Date(); t = new Date(t.getFullYear(), t.getMonth(), t.getDate()); var s = D(DATA.term.start), e = D(DATA.term.end); return monday(t < s ? s : t > e ? e : t); }
+/* ── render ── */
+var BADGE = { due:'due', exam:'exam', quiz:'quiz', lab:'lab', note:'note', cancel:'cancelled', topic:'' };
+function card(it){ var tm = it.time ? '<span class="' + cls('cc_t') + '">' + t12(it.time) + (it.end ? '\u2013' + t12(it.end) : '') + '</span> ' : '';
+  var b = it.kind !== 'meet' && BADGE[it.kind] ? '<span class="' + cls('cc_badge') + ' ' + cls('cc_b_' + it.kind) + '">' + BADGE[it.kind] + '</span>' : '';
+  var ttl = it.link ? '<a href="' + esc(it.link) + '" target="_blank" rel="noopener">' + esc(it.title) + '</a>' : esc(it.title);
+  var sub = []; if (it.where) sub.push(esc(it.where)); if (it.note) sub.push(esc(it.note)); if (it.x) sub.push('<b>Cancelled' + (it.why ? ': ' + esc(it.why) : '') + '</b>');
+  var tp = (it.topics || []).map(function(e){ return '<div>\u25b8 ' + (e.type === 'lab' ? '<span class="' + cls('cc_badge') + ' ' + cls('cc_b_lab') + '">lab</span>' : '') + (e.link ? '<a href="' + esc(e.link) + '" target="_blank" rel="noopener">' + esc(e.title) + '</a>' : esc(e.title)) + (e.note ? ' <span class="' + cls('cc_sub') + '">(' + esc(e.note) + ')</span>' : '') + '</div>'; }).join('');
+  return '<div class="' + cls('cc_ev') + (it.x ? ' ' + cls('cc_x') : '') + '" style="--c:' + it.col + '"><span class="' + cls('cc_code') + '">' + esc(it.c.code) + '</span> ' + tm + b + ttl + tp + (sub.length ? '<div class="' + cls('cc_sub') + '">' + sub.join(' \u00b7 ') + '</div>' : '') + '</div>'; }
+function days(){ var n = el('ccWkend').checked ? 7 : 5, out = []; for (var i=0; i<n; i++) out.push(add(wk, i)); return out; }
+function render(){ if (!DATA) return; var ds = days(), today = K(new Date()), wkH = '', agH = '', cnt = { meet:0, due:0, exam:0, quiz:0, lab:0 };
+  ds.forEach(function(d){ var r = itemsOn(d), k = K(d);
+    r.items.forEach(function(it){ if (it.kind === 'meet' && !it.x) cnt.meet++; if (cnt[it.kind] !== undefined && it.kind !== 'meet') cnt[it.kind]++; });
+    wkH += '<section class="' + cls('cc_day') + (k === today ? ' ' + cls('cc_today') : '') + (r.inTerm ? '' : ' ' + cls('cc_out')) + '" aria-label="' + DAYL[d.getDay()] + ' ' + MON[d.getMonth()] + ' ' + d.getDate() + '"><div class="' + cls('cc_dh') + '"><span>' + DAYS[d.getDay()] + '</span><span>' + MON[d.getMonth()] + ' ' + d.getDate() + '</span></div>'
+      + (r.hol ? '<div class="' + cls('cc_hol') + '">' + esc(r.hol.name) + '</div>' : '') + '<div class="' + cls('cc_evs') + '">' + (r.items.length ? r.items.map(card).join('') : '<div class="' + cls('cc_empty') + '">' + (r.inTerm ? 'nothing scheduled' : 'outside the term') + '</div>') + '</div></section>';
+    agH += '<div><h4>' + DAYL[d.getDay()] + ', ' + MON[d.getMonth()] + ' ' + d.getDate() + (k === today ? ' (today)' : '') + (r.hol ? ' \u2014 ' + esc(r.hol.name) : '') + '</h4>' + (r.items.length ? '<ul>' + r.items.map(function(it){ return '<li>' + card(it) + '</li>'; }).join('') + '</ul>' : '<div class="' + cls('cc_empty') + '">Nothing scheduled.</div>') + '</div>'; });
+  var W = el('ccWeek'); W.style.setProperty('--nd', ds.length); W.innerHTML = wkH; el('ccAgenda').innerHTML = agH;
+  var shown = DATA.courses.filter(function(c){ return sel[c.id]; }), last = ds[ds.length - 1], wn = Math.floor((wk - monday(D(DATA.term.start)))/6048e5) + 1;
+  el('ccRead').innerHTML = [['Week', fd(wk) + ' \u2013 ' + fd(last)], ['Term week', wn >= 1 && wk <= D(DATA.term.end) ? wn : '\u2014'], ['Courses', shown.length ? shown.map(function(c){ return c.code; }).join(', ') : 'none selected'], ['Class meetings', cnt.meet], ['Due', cnt.due], ['Quizzes / exams', cnt.quiz + ' / ' + cnt.exam]].map(function(c){ return '<div><div class="' + cls('cc_flabel') + '">' + c[0] + '</div><div class="' + cls('cc_fvalue') + '">' + c[1] + '</div></div>'; }).join('');
+  el('ccDate').value = K(wk); shareLink(); }
+function summary(){ var ds = days(), parts = []; ds.forEach(function(d){ var r = itemsOn(d), imp = r.items.filter(function(it){ return it.kind === 'due' || it.kind === 'exam' || it.kind === 'quiz'; }); if (r.hol) parts.push(DAYL[d.getDay()] + ': ' + r.hol.name); imp.forEach(function(it){ parts.push(DAYL[d.getDay()] + ': ' + it.c.code + ' ' + (BADGE[it.kind] || '') + ', ' + it.title); }); });
+  return 'Week of ' + fd(wk) + '. ' + (parts.length ? parts.join('. ') + '.' : 'No deadlines, quizzes or exams this week.'); }
+function buildCourses(){ var h = DATA.courses.map(function(c, i){ return '<button type="button" class="' + cls('cc_cbtn') + '" style="--c:' + color(c, i) + '" data-id="' + esc(c.id) + '" aria-pressed="' + (sel[c.id] ? 'true' : 'false') + '" title="' + esc(c.title || '') + '"><span class="' + cls('cc_dot') + '"></span>' + esc(c.code) + '</button>'; }).join('')
+  + '<button type="button" class="' + cls('cc_btn') + '" data-all="1">All</button><button type="button" class="' + cls('cc_btn') + '" data-all="0">None</button>';
+  var box = el('ccCourses'); box.innerHTML = h;
+  [].forEach.call(box.querySelectorAll('button'), function(b){ b.addEventListener('click', function(ev){ var a = b.getAttribute('data-all');
+    if (a !== null){ DATA.courses.forEach(function(c){ sel[c.id] = a === '1'; }); }
+    else { var id = b.getAttribute('data-id'); if (ev.shiftKey || ev.ctrlKey || ev.metaKey){ DATA.courses.forEach(function(c){ sel[c.id] = c.id === id; }); } else sel[id] = !sel[id]; }
+    buildCourses(); render(); narrate(summary()); }); }); }
+/* ── sharing ── */
+function shareLink(){ var ids = DATA.courses.filter(function(c){ return sel[c.id]; }).map(function(c){ return c.id; }), base = location.href.split('#')[0].split('?')[0], q = [];
+  if (ids.length && ids.length < DATA.courses.length) q.push('c=' + encodeURIComponent(ids.join(',')));
+  q.push('w=' + K(wk)); if (el('ccLockOpt').checked) q.push('lock=1'); var d = params().data; if (d) q.push('data=' + encodeURIComponent(d));
+  el('ccLink').value = base + '?' + q.join('&');
+  el('ccShareNote').textContent = (location.protocol === 'file:' ? 'This page is opened from your computer: the link only works for you. Post the page on GitHub Pages (or your site) and copy the link from there. ' : '') + 'In MyOpenMath, set the question-code variables ccCourses (for example "' + (ids[0] || 'P2211') + '") and ccLock ("1") instead.'; }
+function params(){ var o = {}; location.search.replace(/^\?/, '').split('&').forEach(function(p){ if (!p) return; var i = p.indexOf('='); o[decodeURIComponent(i < 0 ? p : p.slice(0, i))] = i < 0 ? '' : decodeURIComponent(p.slice(i + 1)); }); return o; }
+function lock(on){ locked = on; ROOT.classList.toggle(cls('cc_locked'), on); if (on && tabI === 2) tab(0); }
+function applyParams(P){ if (P.c){ var w = P.c.split(','); DATA.courses.forEach(function(c){ sel[c.id] = w.indexOf(c.id) >= 0; }); buildCourses(); }
+  if (P.w && /^\d{4}-\d{2}-\d{2}/.test(P.w) && P.w.length === 10) wk = monday(D(P.w)); if (P.lock === '1') lock(true); render(); }
+/* ── UI ── */
+function narrate(m){ if (!th.nr) return; el('ccNarBar').textContent = m; }
+function go(n){ wk = add(wk, 7*n); render(); narrate(summary()); }
+el('ccPrev').addEventListener('click', function(){ go(-1); }); el('ccNext').addEventListener('click', function(){ go(1); });
+el('ccToday').addEventListener('click', function(){ wk = monday(new Date()); render(); narrate(summary()); });
+el('ccDate').addEventListener('change', function(){ if (this.value){ wk = monday(D(this.value)); render(); narrate(summary()); } });
+el('ccWkend').addEventListener('change', render); el('ccPrint').addEventListener('click', function(){ window.print(); });
+el('ccLockOpt').addEventListener('change', shareLink);
+el('ccCopy').addEventListener('click', function(){ var t = el('ccLink'); t.select(); try { if (navigator.clipboard) navigator.clipboard.writeText(t.value); else document.execCommand('copy'); narrate('Link copied.'); } catch (e) { narrate('Select the link and copy it.'); } });
+el('ccLockNow').addEventListener('click', function(){ lock(true); narrate('Locked: reload the page to unlock.'); });
+el('ccApply').addEventListener('click', function(){ try { load(el('ccJson').value); try { localStorage.setItem(STORE, el('ccJson').value); } catch (e) {} msg('Schedule applied (' + DATA.courses.length + ' courses).', true); } catch (e) { msg('Not applied: ' + e.message, false); } });
+el('ccReset').addEventListener('click', function(){ try { localStorage.removeItem(STORE); } catch (e) {} load(BUILTIN); msg('Built-in data restored.', true); });
+el('ccDl').addEventListener('click', function(){ var b = new Blob([el('ccJson').value], { type:'application/json' }), a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'course-schedule.json'; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500); });
+el('ccFile').addEventListener('change', function(){ var f = this.files[0]; if (!f) return; var r = new FileReader(); r.onload = function(){ try { load(r.result); msg('Loaded ' + f.name + '.', true); } catch (e) { msg(f.name + ': ' + e.message, false); } }; r.readAsText(f); });
+function fetchUrl(u, quiet){ if (!window.fetch){ msg('This browser cannot load URLs.', false); return; } fetch(u).then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); }).then(function(t){ load(t); applyParams(params()); if (!quiet) msg('Loaded from URL.', true); }).catch(function(e){ msg('Could not load ' + u + ': ' + e.message + ' (the file must be public and allow cross-site access, e.g. GitHub raw).', false); }); }
+el('ccFetch').addEventListener('click', function(){ var u = el('ccUrl').value.trim(); if (u) fetchUrl(u); });
+function tab(i){ if (locked && i === 2) return; tabI = i; for (var k=0; k<3; k++){ el('ccT' + k).setAttribute('aria-selected', k === i ? 'true' : 'false'); el('ccP' + k).hidden = k !== i; } el('ccNav').hidden = i === 2; narrate(i === 2 ? 'Load or edit the schedule, and create a link to share.' : summary()); }
+function theme(k){ th[k] = !th[k]; if (k === 'hc' && th.hc) th.dm = false; if (k === 'dm' && th.dm) th.hc = false;
+  [['hc','ccBtnHC'],['dm','ccBtnDM'],['cb','ccBtnCB'],['nr','ccBtnNR']].forEach(function(q){ var b = el(q[1]); b.classList.toggle(cls('cc_a11yon'), th[q[0]]); b.setAttribute('aria-pressed', th[q[0]] ? 'true' : 'false'); });
+  el('ccBtnNR').textContent = 'NARRATION: ' + (th.nr ? 'ON' : 'OFF'); el('ccNarBar').style.display = th.nr ? 'block' : 'none';
+  ROOT.classList.toggle(cls('cc_hc'), th.hc); ROOT.classList.toggle(cls('cc_dm'), th.dm); if (DATA){ buildCourses(); render(); } }
+function toggleDesc(){ var b = el('ccDescBtn'), d = el('ccDesc'), open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '\u25BE' : '\u25B8') + ' SIM DESCRIPTION'; }
+/* ── boot ── */
+var P = params(), saved = null; try { saved = localStorage.getItem(STORE); } catch (e) {}
+try { load(saved || BUILTIN); } catch (e) { load(BUILTIN); }
+if (okVar(PRE_C)){ P.c = PRE_C; if (PRE_L === '1') P.lock = '1'; }
+applyParams(P); if (P.data){ el('ccUrl').value = P.data; fetchUrl(P.data, true); }
+narrate(summary());
+return { tab:tab, theme:theme, toggleDesc:toggleDesc, go:go, load:load, _items:itemsOn, _sel:function(){ return sel; } };
+})();
+</script>
+
+</main>
+</body>
+</html>

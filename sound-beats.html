@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Waves: Beats and the Piano Tuner</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobbeats" class="mob_wrap">
+<div class="bt_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="bt_a11ybtn" id="btBtnHC" onclick="btA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="bt_a11ybtn" id="btBtnDM" onclick="btA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="bt_a11ybtn" id="btBtnCB" onclick="btA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="bt_a11ybtn" id="btBtnNR" onclick="btA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+<div class="bt_title"><h3>Beats &mdash; and How a Piano Tuner Uses Them</h3></div>
+<div class="bt_tabs" role="tablist" aria-label="View">
+<button type="button" role="tab" class="bt_tab" id="btT0" aria-selected="true" aria-controls="btP0">1. Beats</button>
+<button type="button" role="tab" class="bt_tab" id="btT1" aria-selected="false" aria-controls="btP1">2. Piano tuner</button>
+</div>
+<div id="btNarBar" class="bt_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<!-- ═════════ TAB 0: beats ═════════ -->
+<div id="btP0" role="tabpanel" aria-labelledby="btT0">
+<div class="bt_intro">Two sound waves with slightly different frequencies go in and out of step. When they are in step they add (loud); half a beat later they cancel (soft). The loudness rises and falls <b>|f&#8322; &minus; f&#8321;|</b> times per second: these are <b>beats</b>. Listen to each tone alone, then both together. The slow beat can be hard to pick out: <b>Beat rhythm</b> adds a click at every loud moment, and <b>Difference tone</b> plays |f&#8322; &minus; f&#8321;| itself as a pitch (when it is high enough to hear). Start with the volume low.</div>
+<div class="bt_view"><canvas id="btC0" width="820" height="500" role="img" aria-label="Three graphs of pressure against time on the same scale: the lower tone, the higher tone, and their sum, whose amplitude rises and falls (beats). A dashed envelope outlines the sum and triangles mark each loud moment. When the sound plays, a yellow line moves across the graphs."></canvas></div>
+<div class="bt_transport" role="toolbar" aria-label="Listen">
+<div class="bt_tgroup"><button type="button" class="bt_vbtn" id="btS1" aria-pressed="false">&#9835; Lower tone</button><button type="button" class="bt_vbtn" id="btS2" aria-pressed="false">&#9835; Higher tone</button><button type="button" class="bt_bbtn" id="btS12" aria-pressed="false">&#9835; Both together (beats)</button><button type="button" class="bt_vbtn" id="btSa" aria-pressed="false">&#9835; Average tone</button></div>
+<div class="bt_tgroup bt_tsep"><button type="button" class="bt_vbtn" id="btSclk" aria-pressed="false">&#9833; Beat rhythm (clicks)</button><label class="bt_chk"><input type="checkbox" id="btWith" checked> with the two tones</label><button type="button" class="bt_vbtn" id="btSdif" aria-pressed="false">&#9835; Difference tone |f&#8322; &minus; f&#8321;|</button></div>
+<div class="bt_tgroup bt_tsep"><button type="button" class="bt_vbtn" id="btStop">&#9632; Stop</button><label for="btVol" style="font-weight:bold;font-size:.85rem">Volume</label><input type="range" id="btVol" min="0" max="1" step="0.05" value="0.35" style="width:110px"></div>
+</div>
+<div class="bt_read" id="btR0" aria-live="off"></div>
+<div class="bt_panels">
+<div class="bt_panel"><div class="bt_ptitle">The two tones</div><div class="bt_pbody">
+<div class="bt_ctrl"><div class="bt_chdr"><label for="btF1">Frequency f&#8321; (lower tone)</label><span class="bt_val" id="btF1v"></span></div><input type="range" id="btF1" min="200" max="800" step="0.5" value="440"></div>
+<div class="bt_ctrl"><div class="bt_chdr"><label for="btF2">Frequency f&#8322; (higher tone)</label><span class="bt_val" id="btF2v"></span></div><input type="range" id="btF2" min="200" max="800" step="0.5" value="444"></div>
+<div class="bt_ctrl"><div class="bt_chdr"><label for="btA1">Amplitude of the lower tone</label><span class="bt_val" id="btA1v"></span></div><input type="range" id="btA1" min="0" max="1" step="0.05" value="1"></div>
+<div class="bt_ctrl"><div class="bt_chdr"><label for="btA2">Amplitude of the higher tone</label><span class="bt_val" id="btA2v"></span></div><input type="range" id="btA2" min="0" max="1" step="0.05" value="1"></div>
+<div class="bt_presets" id="btWin" role="group" aria-label="Time shown on the graphs"></div>
+</div></div>
+<div class="bt_panel"><div class="bt_ptitle">Try these</div><div class="bt_pbody"><div class="bt_presets" id="btPre" role="group" aria-label="Examples"></div><div id="btExp0"></div></div></div>
+</div>
+</div>
+<!-- ═════════ TAB 1: piano tuner ═════════ -->
+<div id="btP1" role="tabpanel" aria-labelledby="btT1" hidden>
+<div class="bt_intro">This old piano is <b>out of tune</b>. A piano tuner strikes a <b>tuning fork</b> of known frequency, plays the matching key, and listens for <b>beats</b>. Turning the tuning pin changes the tension of the string, and so its frequency. The beats slow down as the string approaches the fork&rsquo;s frequency and <b>disappear</b> when they match. Tune every white key from C4 to C5. Turn on <b>click on each beat</b> if the beats are hard to hear.</div>
+<div class="bt_view"><canvas id="btC1" width="820" height="520" tabindex="0" role="img" aria-label="An upright piano keyboard from middle C to the next C, with the selected key highlighted and a green dot on keys already in tune. Below it, eight tuning forks lie on blue felt, labelled with their notes and frequencies; the selected fork is highlighted. At the bottom, a graph of the sound of the fork and the string over two seconds, showing the beats."></canvas></div>
+<div id="btSt1" class="bt_status"></div>
+<div class="bt_transport" role="toolbar" aria-label="Tuning">
+<div class="bt_tgroup"><button type="button" class="bt_vbtn" id="btFork">Strike fork</button><button type="button" class="bt_vbtn" id="btKey">Play key</button><button type="button" class="bt_bbtn" id="btBoth">Both together</button><button type="button" class="bt_vbtn" id="btHold" aria-pressed="false">Hold the sound: off</button><label class="bt_chk"><input type="checkbox" id="btPclk"> click on each beat</label></div>
+<div class="bt_tgroup bt_tsep"><span style="font-weight:bold;font-size:.85rem">Tuning pin:</span><button type="button" class="bt_vbtn" id="btLc" aria-label="Loosen a lot">&#8634;&#8634; loosen</button><button type="button" class="bt_vbtn" id="btLf" aria-label="Loosen a little">&#8634;</button><button type="button" class="bt_vbtn" id="btTf" aria-label="Tighten a little">&#8635;</button><button type="button" class="bt_vbtn" id="btTc" aria-label="Tighten a lot">tighten &#8635;&#8635;</button></div>
+</div>
+<div class="bt_read" id="btR1" aria-live="off"></div>
+<div class="bt_panels">
+<div class="bt_panel"><div class="bt_ptitle">The case of tuning forks</div><div class="bt_pbody"><div class="bt_presets" id="btForks" role="group" aria-label="Tuning forks"></div><div class="bt_presets" id="btKeys" role="group" aria-label="Piano keys"></div>
+<label class="bt_chk"><input type="checkbox" id="btShowF"> show the string frequency (a real tuner cannot see it)</label><div class="bt_presets"><button type="button" id="btNew">New out-of-tune piano</button></div></div></div>
+<div class="bt_panel"><div class="bt_ptitle">How it works</div><div class="bt_pbody" id="btExp1"></div></div>
+</div>
+</div>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>Two sound waves of frequencies `f_1` and `f_2` and equal amplitude `A` add up, at a fixed place, to</p>
+<p class="mob_eq">`p = A cos(2 pi f_1 t) + A cos(2 pi f_2 t) = [2A cos(2 pi (f_2 - f_1)/2 t)] cos(2 pi (f_1 + f_2)/2 t)`.</p>
+<p>We hear a tone at the <b>average frequency</b> `(f_1 + f_2)//2` whose loudness rises and falls. The bracket, the envelope, reaches its largest size twice per cycle of `cos(2 pi (f_2 - f_1)/2 t)`, so the loudness peaks `f_beat = |f_2 - f_1|` times per second: the <b>beat frequency</b>. If the amplitudes differ, the sound never falls to silence.</p>
+<p><b>Hearing the beat.</b> The sum contains only the frequencies `f_1` and `f_2`: there is no wave at `|f_2 - f_1|`. A few beats per second are a <b>rhythm</b> of loudness, not a pitch (below about 20 Hz the ear does not hear a tone at all). The &ldquo;Beat rhythm&rdquo; button adds a click at each loudness maximum to help students follow it. When the two tones are loud and farther apart, the ear itself (which does not respond perfectly linearly) can create a faint <b>difference tone</b> (Tartini tone) at `|f_2 - f_1|`; the &ldquo;Difference tone&rdquo; button plays that pitch directly so students know what to listen for. Between about 15 and 30 Hz the beats blur into roughness, and with larger differences two separate notes are heard.</p>
+<p><b>Piano tuning.</b> The frequency of a string fixed at both ends is `f = 1/(2L) sqrt(T/mu)`, so tightening the tuning pin (raising the tension `T`) raises the frequency. A tuner sounds a tuning fork and the matching string together and adjusts the pin until the beats slow down and vanish. The beat rate says how far off the string is, but not in which direction: if the beats get faster as you tighten, the string was already sharp. The forks are tuned to equal temperament with A4 = 440 Hz. Real pianos have two or three strings per note and slightly inharmonic overtones; these are left out. Start any sound with a low volume.</p>
+</div>
+</div>
+<style>
+:where(#mobbeats) * { margin:0; box-sizing:border-box; }
+#mobbeats { width:100%; max-width:860px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; color:#1d232a; }
+#mobbeats canvas { display:block; width:100%; height:auto; }
+#mobbeats [hidden] { display:none !important; }
+#mobbeats .bt_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#mobbeats .bt_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#mobbeats .bt_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobbeats .bt_title { padding:4px; background-color:#f90; text-align:center; }
+#mobbeats .bt_title h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+#mobbeats .bt_tabs { display:flex; gap:4px; padding:6px 8px 0; background:#14213a; flex-wrap:wrap; }
+#mobbeats .bt_tab { flex:1 1 120px; padding:8px 6px; border:1px solid #2b3d60; border-bottom:0; border-radius:6px 6px 0 0; background:#1d2c4a; color:#bcd0f0; font-weight:bold; cursor:pointer; font-size:.86rem; min-height:40px; }
+#mobbeats .bt_tab[aria-selected="true"] { background:#f3f5f8; color:#14213a; }
+#mobbeats .bt_intro { padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; font-size:.9rem; line-height:1.5; }
+#mobbeats .bt_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:6px 12px; padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; }
+#mobbeats .bt_rl { font-size:.7rem; color:#667; text-transform:uppercase; letter-spacing:.05em; }
+#mobbeats .bt_rv { font-family:monospace; font-size:.93rem; color:#7a3a00; font-weight:bold; }
+#mobbeats .bt_view { background:#0b1222; }
+#mobbeats .bt_status { color:#222; font-size:.86rem; text-align:center; background:#fff6d9; padding:5px 8px; line-height:1.45; min-height:1.6em; }
+#mobbeats .bt_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+#mobbeats .bt_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+#mobbeats .bt_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { #mobbeats .bt_tsep { padding-left:0; border-left:0; } }
+#mobbeats .bt_vbtn, #mobbeats .bt_bbtn { min-height:38px; padding:4px 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; }
+#mobbeats .bt_vbtn[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobbeats .bt_bbtn { background:#2e7d32; border-color:#1b5e20; color:#fff; font-weight:bold; }
+#mobbeats .bt_bbtn[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+#mobbeats button:disabled { opacity:.4; cursor:not-allowed; }
+#mobbeats .bt_cursor { display:flex; align-items:center; gap:10px; padding:6px 12px; background:#14213a; color:#dbe7ff; font-size:.85rem; font-weight:bold; }
+#mobbeats .bt_cursor input { flex:1 1 auto; min-width:0; accent-color:#ffd23f; }
+#mobbeats .bt_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:10px; padding:10px; }
+#mobbeats .bt_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+#mobbeats .bt_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+#mobbeats .bt_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; font-size:.87rem; line-height:1.45; }
+#mobbeats .bt_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+#mobbeats .bt_chdr { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+#mobbeats .bt_chdr label { font-size:.82rem; font-weight:bold; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+#mobbeats .bt_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; flex:0 0 auto; min-width:4.5em; text-align:right; }
+#mobbeats .bt_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+#mobbeats .bt_ctrl input[type=text] { width:100%; min-height:34px; padding:4px 6px; font-size:.9rem; border:1px solid #8a96a8; border-radius:4px; }
+#mobbeats select { width:100%; min-height:34px; padding:4px 6px; font-size:.86rem; border:1px solid #8a96a8; border-radius:4px; background:#fff; }
+#mobbeats .bt_chk { display:flex; align-items:center; gap:6px; font-size:.82rem; cursor:pointer; }
+#mobbeats .bt_presets { display:flex; flex-wrap:wrap; gap:5px; }
+#mobbeats .bt_presets button { padding:5px 9px; font-size:.82rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:4px; background:#fff; color:#223; min-height:34px; }
+#mobbeats .bt_presets button[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobbeats .bt_note { font-size:.8rem; color:#555; font-style:italic; }
+#mobbeats .bt_eq { font-family:'Times New Roman', serif; font-size:1rem; background:#f6f8fb; border-left:3px solid #1f5fa8; padding:4px 8px; margin:2px 0; overflow-wrap:anywhere; }
+#mobbeats b.bt_res { color:#7a3a00; }
+#mobbeats .bt_tbl { border-collapse:collapse; width:100%; font-size:.82rem; }
+#mobbeats .bt_tbl th, #mobbeats .bt_tbl td { padding:3px 6px; border-bottom:1px solid #e3e7ee; text-align:left; }
+#mobbeats .bt_tbl th { background:#f1f4f8; font-size:.76rem; }
+#mobbeats button:focus-visible, #mobbeats input:focus-visible, #mobbeats select:focus-visible, #mobbeats canvas:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (pointer:coarse) { #mobbeats .bt_vbtn, #mobbeats .bt_bbtn { min-height:44px; } #mobbeats .bt_presets button { min-height:42px; } #mobbeats input[type=checkbox] { width:20px; height:20px; } #mobbeats input[type=range] { height:28px; } }
+#mobbeats .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobbeats .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobbeats .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobbeats .mob_desc p { margin:0 0 8px 0; }
+#mobbeats .mob_eq { text-align:center; }
+#mobbeats.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobbeats.a11y_dm .bt_view, #mobbeats.a11y_dm [aria-label="Display options"], #mobbeats.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobbeats.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobbeats.a11y_hc .bt_view, #mobbeats.a11y_hc [aria-label="Display options"], #mobbeats.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+</style>
+<script>
+var btA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return; b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobbeats'); if (!W) return; W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc);
+var nb = document.getElementById('btNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none'; var nr = document.getElementById('btBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('btBtnHC', states.hc); styleBtn('btBtnDM', states.dm); styleBtn('btBtnCB', states.cb); styleBtn('btBtnNR', states.nr); hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return { init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply(); if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: the lower tone blue, the higher tone orange, the sum bluish green.'); },
+alt:function(){ return states.hc || states.cb; }, narrate:function(m){ if (!states.nr) return; var nb = document.getElementById('btNarBar'); if (nb) nb.textContent = m; } };
+})();
+</script>
+<!-- ════════ SIMULATION ════════
+Beats: p = A1 sin(2 pi f1 t) + A2 sin(2 pi f2 t); envelope sqrt(A1^2 + A2^2 + 2 A1 A2 cos(2 pi (f2 - f1) t)).
+Beat clicks: both tones start in phase at t0, so the loudness maxima are at t0 + n/|f2 - f1|; clicks are scheduled there.
+Difference tone: a sine at |f2 - f1| (only when 20 Hz or more). Piano: white keys C4..C5, random detune 0.4 to 1.6 %;
+tension T ~ f^2; pin: tension x 1.005 or x 1.0008; in tune when |f - f_fork| < 0.25 Hz. Sound: Web Audio.
+No dollar signs or backticks in the code.
+-->
+<script>
+var btGen = function(){
+  function el(id){ return document.getElementById(id + ''); }
+  function cls(n){ return n + ''; }
+  function say(m){ btA11y.narrate(m); }
+  var TAU = 2*Math.PI;
+  function pal(){ var a = btA11y.alt(); return { a:a ? '#56B4E9' : '#6fa8ff', b:a ? '#E69F00' : '#ff9a3d', s:a ? '#009E73' : '#3ad08f', cur:a ? '#F0E442' : '#ffd23f' }; }
+  function lbl(g, t, x, y, col, size, al){ g.font = 'bold ' + (size || 12) + 'px Arial'; g.textAlign = al || 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 3.5; g.strokeStyle = 'rgba(0,0,0,0.85)'; g.strokeText(t, x, y); g.fillStyle = col; g.fillText(t, x, y); g.textBaseline = 'alphabetic'; }
+  function fz(f){ return (Math.round(f*100)/100).toFixed(f % 1 ? 2 : 0); }
+  /* ══════════ audio ══════════ */
+  var AC = null, MASTER = null, VOL = 0.35;
+  function ac(){ try { if (!AC){ AC = new (window.AudioContext || window.webkitAudioContext)(); MASTER = AC.createGain(); MASTER.gain.value = VOL; MASTER.connect(AC.destination); } if (AC.resume) AC.resume(); } catch (e) { AC = null; } return AC; }
+  function voice(f, amp, harm, decay, sustain, at){ var A = ac(); if (!A) return null; var t0 = at || A.currentTime, g = A.createGain(), oscs = [];
+    g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(amp, t0 + 0.01); if (!sustain) g.gain.exponentialRampToValueAtTime(0.0008, t0 + decay);
+    harm.forEach(function(h, n){ var o = A.createOscillator(), og = A.createGain(); o.frequency.value = f*(n + 1); og.gain.value = h; o.connect(og); og.connect(g); o.start(t0); if (!sustain) o.stop(t0 + decay + 0.05); oscs.push(o); });
+    g.connect(MASTER); return { oscs:oscs, g:g, setF:function(nf){ oscs.forEach(function(o, n){ try { o.frequency.setTargetAtTime(nf*(n + 1), A.currentTime, 0.02); } catch (e) {} }); }, stop:function(){ try { g.gain.cancelScheduledValues(A.currentTime); g.gain.setTargetAtTime(0, A.currentTime, 0.02); oscs.forEach(function(o){ o.stop(A.currentTime + 0.15); }); } catch (e) {} } }; }
+  function tick(at, vol){ var A = AC; if (!A) return; try { var o = A.createOscillator(), g = A.createGain(); o.type = 'triangle'; o.frequency.value = 1700; g.gain.setValueAtTime(0, at); g.gain.linearRampToValueAtTime(vol || 0.55, at + 0.002); g.gain.exponentialRampToValueAtTime(0.001, at + 0.04); o.connect(g); g.connect(MASTER); o.start(at); o.stop(at + 0.05); } catch (e) {} }
+  /* click train: CK.t0 = moment both tones were in step; maxima at t0 + n/fb */
+  var CK = { on:false, t0:0, fb:0, n:0, until:null };
+  function clicksStart(t0, fb, until){ CK.on = fb >= 0.25 && fb <= 20; CK.t0 = t0; CK.fb = fb; CK.n = 0; CK.until = until || null; }
+  function clicksStop(){ CK.on = false; }
+  function clicksPump(){ if (!CK.on || !AC) return; var now = AC.currentTime, t; while ((t = CK.t0 + CK.n/CK.fb) < now + 0.2){ if (CK.until !== null && t > CK.until){ CK.on = false; break; } if (t >= now - 0.01) tick(t); CK.n++; } }
+  /* ══════════ TAB 0: beats ══════════ */
+  var B = { f1:440, f2:444, A1:1, A2:1, win:2, playing:null, voices:[], t0:0 };
+  var c0 = el('btC0'), g0 = c0.getContext('2d'), W0 = c0.width, H0 = c0.height, L = 62, R = W0 - 20, PAN = [[16, 150], [172, 306], [328, 470]];
+  var WINS = [[0.01, '10 ms'], [0.05, '50 ms'], [0.5, '0.5 s'], [2, '2 s']];
+  function lo(){ return Math.min(B.f1, B.f2); } function hi(){ return Math.max(B.f1, B.f2); }
+  function Alo(){ return B.f1 <= B.f2 ? B.A1 : B.A2; } function Ahi(){ return B.f1 <= B.f2 ? B.A2 : B.A1; }
+  function fbeat(){ return hi() - lo(); }
+  function draw0(){ var g = g0, p = pal(), k, cols = [p.a, p.b, p.s], T = B.win, names = ['lower tone: ' + fz(lo()) + ' Hz', 'higher tone: ' + fz(hi()) + ' Hz', 'sum: what the ear receives'];
+    g.fillStyle = '#0b1222'; g.fillRect(0, 0, W0, H0);
+    function fn(j, t){ var a = Alo()*Math.sin(TAU*lo()*t), b = Ahi()*Math.sin(TAU*hi()*t); return j === 0 ? a : j === 1 ? b : a + b; }
+    PAN.forEach(function(pn, j){ var Tp = pn[0], Bt = pn[1], M = (Tp + Bt)/2; function Y(v){ return M - v/2.1*(Bt - Tp)/2; }
+      g.strokeStyle = 'rgba(150,170,195,0.18)'; g.lineWidth = 1; [-2, -1, 0, 1, 2].forEach(function(v){ g.beginPath(); g.moveTo(L, Y(v)); g.lineTo(R, Y(v)); g.stroke(); g.fillStyle = '#9aa6b4'; g.font = '10px Arial'; g.textAlign = 'right'; g.fillText(String(v), L - 6, Y(v) + 3); });
+      for (k=0; k<=10; k++){ var x = L + k*(R - L)/10; g.beginPath(); g.moveTo(x, Tp); g.lineTo(x, Bt); g.stroke(); if (j === 2){ g.fillStyle = '#9aa6b4'; g.textAlign = 'center'; var tv = T*k/10; g.fillText(T < 0.1 ? (tv*1000).toFixed(0) + ' ms' : tv.toFixed(T < 1 ? 2 : 1) + ' s', x, Bt + 13); } }
+      g.strokeStyle = cols[j]; g.lineWidth = 1.6; var N = R - L, sub = Math.max(4, Math.ceil(hi()*T/N*8)), px;
+      if (hi()*T/N < 0.25){ g.beginPath(); for (px=0; px<=N*2; px++){ var tt = T*px/(N*2), yy = Y(fn(j, tt)); if (px) g.lineTo(L + px/2, yy); else g.moveTo(L, yy); } g.stroke(); }
+      else { g.globalAlpha = 0.9; for (px=0; px<N; px++){ var mn = 9, mx = -9; for (var q=0; q<=sub; q++){ var v = fn(j, T*(px + q/sub)/N); if (v < mn) mn = v; if (v > mx) mx = v; } g.beginPath(); g.moveTo(L + px + 0.5, Y(mx)); g.lineTo(L + px + 0.5, Y(mn) + 0.5); g.stroke(); } g.globalAlpha = 1; }
+      lbl(g, names[j], L + 6, j === 2 ? Bt - 10 : Tp + 9, cols[j], 12, 'left');
+      if (j === 2){ g.strokeStyle = '#fff'; g.lineWidth = 1.4; g.setLineDash([5, 4]); [1, -1].forEach(function(sg){ g.beginPath(); for (var px2=0; px2<=N; px2+=2){ var t2 = T*px2/N, e = Math.sqrt(Alo()*Alo() + Ahi()*Ahi() + 2*Alo()*Ahi()*Math.cos(TAU*fbeat()*t2)), yy2 = Y(sg*e); if (px2) g.lineTo(L + px2, yy2); else g.moveTo(L, yy2); } g.stroke(); }); g.setLineDash([]);
+        var fb = fbeat(); if (fb > 0 && T*fb >= 0.9 && T*fb < 40){ for (var m=0; m/fb <= T; m++){ var xm = L + (m/fb)/T*N; g.fillStyle = p.cur; g.beginPath(); g.moveTo(xm, Tp + 4); g.lineTo(xm - 5, Tp - 4); g.lineTo(xm + 5, Tp - 4); g.closePath(); g.fill(); } lbl(g, '\u25bc loud' + (CK.on ? ' = click' : '') + ': one beat every ' + (1/fb).toFixed(fb > 10 ? 3 : 2) + ' s', R, Tp + 9, p.cur, 11, 'right'); } }
+    });
+    if (B.playing && AC){ var el2 = AC.currentTime - B.t0, ph = (el2 % T)/T, xc = L + ph*(R - L); g.strokeStyle = p.cur; g.lineWidth = 2; g.beginPath(); g.moveTo(xc, PAN[0][0]); g.lineTo(xc, PAN[2][1]); g.stroke(); } }
+  function ui0(){ var fb = fbeat(), fa = (B.f1 + B.f2)/2;
+    el('btF1v').textContent = fz(B.f1) + ' Hz'; el('btF2v').textContent = fz(B.f2) + ' Hz'; el('btA1v').textContent = B.A1.toFixed(2); el('btA2v').textContent = B.A2.toFixed(2);
+    el('btR0').innerHTML = [['lower tone', fz(lo()) + ' Hz'], ['higher tone', fz(hi()) + ' Hz'], ['beat frequency |f\u2082 \u2212 f\u2081|', fz(fb) + ' Hz'], ['time between beats', fb ? (1/fb).toPrecision(3) + ' s' : '\u221e'], ['average (heard) frequency', fz(fa) + ' Hz'], ['|f\u2082 \u2212 f\u2081| as a pitch?', fb < 20 ? 'no: a rhythm' : 'audible']].map(function(q){ return '<div><div class="' + cls('bt_rl') + '">' + q[0] + '</div><div class="' + cls('bt_rv') + '">' + q[1] + '</div></div>'; }).join('');
+    var hear = fb === 0 ? 'The tones are identical: no beats, one steady tone.' : fb < 0.5 ? 'Very slow beats: the sound swells and fades over ' + (1/fb).toFixed(1) + ' s.' : fb <= 12 ? 'Clear beats: the loudness pulses ' + fz(fb) + ' times per second. Use the beat rhythm clicks to count them.' : fb <= 25 ? 'Too fast to count: the beats blur into a rough, buzzing sound.' : 'The difference is large: you hear two separate tones (a musical interval), not beats. A faint difference tone at ' + fz(fb) + ' Hz may be heard when both are loud.';
+    el('btExp0').innerHTML = '<div class="' + cls('bt_eq') + '">f<sub>beat</sub> = |f\u2082 \u2212 f\u2081| = |' + fz(B.f2) + ' \u2212 ' + fz(B.f1) + '| = <b class="' + cls('bt_res') + '">' + fz(fb) + ' Hz</b></div><div class="' + cls('bt_eq') + '">heard pitch = (f\u2081 + f\u2082)/2 = <b class="' + cls('bt_res') + '">' + fz(fa) + ' Hz</b></div><p>' + hear + (B.A1 !== B.A2 ? ' The amplitudes differ, so the sound never drops to silence.' : '') + '</p><p class="' + cls('bt_note') + '">There is no wave at |f\u2082 \u2212 f\u2081| in the sum: the beat is a change of loudness. Below about 20 Hz it is a rhythm, not a pitch; the difference-tone button plays it as a pitch only from 20 Hz up.</p>';
+    el('btSdif').disabled = fb < 20; el('btSdif').title = fb < 20 ? 'Below 20 Hz: not an audible pitch. Use the beat rhythm.' : '';
+    el('btSclk').disabled = fb < 0.25 || fb > 20;
+    [].forEach.call(el('btWin').querySelectorAll('button'), function(b){ b.setAttribute('aria-pressed', +b.getAttribute('data-w') === B.win ? 'true' : 'false'); });
+    if (B.playing) retune0(); draw0(); }
+  el('btWin').innerHTML = '<span style="font-weight:bold;font-size:.82rem;align-self:center">Graph shows:</span>' + WINS.map(function(w){ return '<button type="button" data-w="' + w[0] + '">' + w[1] + '</button>'; }).join('');
+  [].forEach.call(el('btWin').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ B.win = +b.getAttribute('data-w'); ui0(); say(B.win < 0.1 ? 'Zoomed in: you can see the individual oscillations of each tone.' : 'Zoomed out: the oscillations blur together and the beats show as the rise and fall of the sum.'); }); });
+  [['btF1', 'f1'], ['btF2', 'f2'], ['btA1', 'A1'], ['btA2', 'A2']].forEach(function(q){ el(q[0]).addEventListener('input', function(){ B[q[1]] = +this.value; ui0(); }); el(q[0]).addEventListener('change', function(){ if (B.playing === 'both' || B.playing === 'clk') play0(B.playing, true); say(el('btExp0').textContent.split('There is no wave')[0]); }); });
+  var BTN = { lo:'btS1', hi:'btS2', both:'btS12', avg:'btSa', clk:'btSclk', dif:'btSdif' };
+  function stop0(){ B.voices.forEach(function(v){ v && v.stop(); }); B.voices = []; B.playing = null; clicksStop(); Object.keys(BTN).forEach(function(k){ el(BTN[k]).setAttribute('aria-pressed', 'false'); }); draw0(); }
+  function play0(which, quiet){ stop0(); if (!ac()){ say('Sound is not available in this browser.'); return; } var fa = (B.f1 + B.f2)/2, fb = fbeat(), t0 = AC.currentTime + 0.05, tones = which === 'both' || (which === 'clk' && el('btWith').checked);
+    if (which === 'lo' || tones) B.voices.push(voice(lo(), 0.4*Alo(), [1], 0, true, t0));
+    if (which === 'hi' || tones) B.voices.push(voice(hi(), 0.4*Ahi(), [1], 0, true, t0));
+    if (which === 'avg') B.voices.push(voice(fa, 0.4, [1], 0, true, t0));
+    if (which === 'dif') B.voices.push(voice(fb, 0.5, [1], 0, true, t0));
+    if (which === 'clk') clicksStart(t0, fb);
+    B.playing = which; B.t0 = t0; el(BTN[which]).setAttribute('aria-pressed', 'true');
+    if (!quiet) say({ lo:'Playing the lower tone alone, ' + fz(lo()) + ' hertz: steady loudness.', hi:'Playing the higher tone alone, ' + fz(hi()) + ' hertz: steady loudness.', both:'Playing both tones together. Listen for the loudness rising and falling ' + fz(fb) + ' times per second.', avg:'Playing a single tone at the average frequency, ' + fz(fa) + ' hertz: the pitch you hear in the beats, but without the beats.',
+      clk:'A click at every loud moment: ' + fz(fb) + ' clicks per second.' + (el('btWith').checked ? ' Listen to the tones swell exactly on each click.' : ' This is the beat rhythm alone; turn on the tones to compare.'), dif:'A pure tone at the difference frequency, ' + fz(fb) + ' hertz. With loud tones far enough apart, the ear can create a faint tone at this pitch by itself.' }[which]); }
+  function retune0(){ var w = B.playing; if (!w || !B.voices.length) return; var A = AC.currentTime;
+    if (w === 'both' || (w === 'clk' && B.voices.length === 2)){ B.voices[0].setF(lo()); B.voices[1].setF(hi()); B.voices[0].g.gain.setTargetAtTime(0.4*Alo(), A, 0.02); B.voices[1].g.gain.setTargetAtTime(0.4*Ahi(), A, 0.02); }
+    else if (w === 'lo'){ B.voices[0].setF(lo()); B.voices[0].g.gain.setTargetAtTime(0.4*Alo(), A, 0.02); } else if (w === 'hi'){ B.voices[0].setF(hi()); B.voices[0].g.gain.setTargetAtTime(0.4*Ahi(), A, 0.02); } else if (w === 'avg') B.voices[0].setF((B.f1 + B.f2)/2); else if (w === 'dif'){ if (fbeat() < 20) stop0(); else B.voices[0].setF(fbeat()); } }
+  el('btS1').addEventListener('click', function(){ play0('lo'); }); el('btS2').addEventListener('click', function(){ play0('hi'); }); el('btS12').addEventListener('click', function(){ play0('both'); }); el('btSa').addEventListener('click', function(){ play0('avg'); });
+  el('btSclk').addEventListener('click', function(){ play0('clk'); }); el('btSdif').addEventListener('click', function(){ play0('dif'); });
+  el('btWith').addEventListener('change', function(){ if (B.playing === 'clk') play0('clk'); });
+  el('btStop').addEventListener('click', function(){ stop0(); say('Sound stopped.'); });
+  el('btVol').addEventListener('input', function(){ VOL = +this.value; if (MASTER) MASTER.gain.setTargetAtTime(VOL, AC.currentTime, 0.03); });
+  var PRE = [['440 & 441 Hz (slow)', 440, 441, 1, 1], ['440 & 444 Hz', 440, 444, 1, 1], ['440 & 450 Hz', 440, 450, 1, 1], ['440 & 465 Hz (rough)', 440, 465, 1, 1], ['440 & 550 Hz (difference 110 Hz)', 440, 550, 1, 1], ['Unequal amplitudes', 440, 443, 1, 0.4], ['Low notes: 220 & 223', 220, 223, 1, 1]];
+  el('btPre').innerHTML = PRE.map(function(p, i){ return '<button type="button" data-i="' + i + '">' + p[0] + '</button>'; }).join('');
+  [].forEach.call(el('btPre').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ var p = PRE[+b.getAttribute('data-i')]; B.f1 = p[1]; B.f2 = p[2]; B.A1 = p[3]; B.A2 = p[4]; ['btF1', 'btF2', 'btA1', 'btA2'].forEach(function(k, i){ el(k).value = [B.f1, B.f2, B.A1, B.A2][i]; }); stop0(); ui0(); say(p[0] + '. ' + el('btExp0').textContent.split('There is no wave')[0]); }); });
+  /* ══════════ TAB 1: piano tuner ══════════ */
+  var NOTES = [['C4', 261.63], ['D4', 293.66], ['E4', 329.63], ['F4', 349.23], ['G4', 392.00], ['A4', 440.00], ['B4', 493.88], ['C5', 523.25]];
+  var P = { key:5, fork:5, f:[], showF:false, hold:false, sv:null, fv:null, clk:false };
+  function newPiano(){ P.f = NOTES.map(function(n){ var d = (0.004 + 0.012*Math.random())*(Math.random() < 0.5 ? -1 : 1); return n[1]*(1 + d); }); }
+  function tuned(i){ return Math.abs(P.f[i] - NOTES[i][1]) < 0.25; }
+  var c1 = el('btC1'), g1 = c1.getContext('2d'), W1 = c1.width, H1 = c1.height, KX = 130, KW = 70, KY = 120, KH = 150, FY = 300;
+  function rr(g, x, y, w, h, r){ g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+  function draw1(){ var g = g1, p = pal(), i;
+    var wd = g.createLinearGradient(0, 0, 0, 290); wd.addColorStop(0, '#3b1f12'); wd.addColorStop(0.5, '#5a3220'); wd.addColorStop(1, '#2a160c'); g.fillStyle = wd; g.fillRect(0, 0, W1, 290);
+    g.fillStyle = 'rgba(255,255,255,0.05)'; for (i=0; i<14; i++) g.fillRect(0, 8 + i*7, W1, 1);
+    g.fillStyle = '#1c0e07'; g.fillRect(90, 22, W1 - 180, 84); g.fillStyle = '#c9a24a'; g.font = 'italic bold 22px Georgia, serif'; g.textAlign = 'center'; g.fillText('Steinhaus & Co.', W1/2, 60); g.font = 'italic 12px Georgia, serif'; g.fillText('upright piano \u00b7 1921 \u00b7 badly out of tune', W1/2, 82);
+    for (i=0; i<8; i++){ var px = KX + KW*i + KW/2; g.fillStyle = i === P.key ? '#ffd23f' : '#b0b6bd'; g.beginPath(); g.arc(px, 96, 5, 0, TAU); g.fill(); g.strokeStyle = '#555'; g.lineWidth = 1; g.stroke(); }
+    lbl(g, 'tuning pins', KX - 10, 96, '#e8d7b0', 10, 'right');
+    g.fillStyle = '#120904'; g.fillRect(KX - 14, KY - 8, KW*8 + 28, KH + 22);
+    for (i=0; i<8; i++){ var x = KX + KW*i, sel = i === P.key, kg = g.createLinearGradient(0, KY, 0, KY + KH); kg.addColorStop(0, sel ? '#fff2b8' : '#fbfaf4'); kg.addColorStop(1, sel ? '#f2d36a' : '#dedbcf'); g.fillStyle = kg; rr(g, x + 1, KY, KW - 2, KH, 4); g.fill(); g.strokeStyle = '#7d7768'; g.lineWidth = 1; g.stroke();
+      g.fillStyle = '#333'; g.font = 'bold 13px Arial'; g.textAlign = 'center'; g.fillText(NOTES[i][0], x + KW/2, KY + KH - 14);
+      g.fillStyle = tuned(i) ? p.s : '#c62828'; g.beginPath(); g.arc(x + KW/2, KY + KH - 34, 6, 0, TAU); g.fill(); }
+    [0, 1, 3, 4, 5].forEach(function(j){ var x = KX + KW*(j + 1) - 21; var bk = g.createLinearGradient(0, KY, 0, KY + 92); bk.addColorStop(0, '#3a3a3a'); bk.addColorStop(1, '#050505'); g.fillStyle = bk; rr(g, x, KY, 42, 92, 3); g.fill(); });
+    lbl(g, '\u25cf in tune   \u25cf out of tune', KX + KW*8 + 2, KY + KH + 4, '#e8d7b0', 10, 'right');
+    var fg = g.createLinearGradient(0, 290, 0, 400); fg.addColorStop(0, '#1d3b6e'); fg.addColorStop(1, '#122a52'); g.fillStyle = fg; g.fillRect(0, 290, W1, 110); g.fillStyle = 'rgba(0,0,0,0.25)'; g.fillRect(0, 290, W1, 4);
+    for (i=0; i<8; i++){ var cx = 70 + i*(W1 - 140)/7, sel2 = i === P.fork, len = 64 - i*3; g.fillStyle = 'rgba(0,0,0,0.35)'; rr(g, cx - 18, FY + 4, 36, 86, 10); g.fill();
+      var st = g.createLinearGradient(cx - 10, 0, cx + 10, 0); st.addColorStop(0, '#8b929a'); st.addColorStop(0.5, sel2 ? '#fff6c8' : '#eef1f4'); st.addColorStop(1, '#7c838b'); g.strokeStyle = st; g.lineWidth = 5; g.lineCap = 'round';
+      g.beginPath(); g.moveTo(cx - 7, FY + 12); g.lineTo(cx - 7, FY + 12 + len); g.quadraticCurveTo(cx - 7, FY + 18 + len, cx, FY + 18 + len); g.quadraticCurveTo(cx + 7, FY + 18 + len, cx + 7, FY + 12 + len); g.lineTo(cx + 7, FY + 12); g.stroke();
+      g.lineWidth = 4; g.beginPath(); g.moveTo(cx, FY + 18 + len); g.lineTo(cx, FY + 84); g.stroke(); g.lineCap = 'butt';
+      if (sel2){ g.strokeStyle = p.cur; g.lineWidth = 2; rr(g, cx - 22, FY, 44, 94, 10); g.stroke(); }
+      lbl(g, NOTES[i][0], cx, FY - 2, sel2 ? p.cur : '#dbe7ff', 11); lbl(g, NOTES[i][1].toFixed(NOTES[i][1] % 1 ? 2 : 0) + ' Hz', cx + 26, FY + 46, '#aac4ee', 9, 'left'); }
+    var Tp = 412, Bt = H1 - 18, M = (Tp + Bt)/2, L1 = 62, R1 = W1 - 20, T = 2, fs = P.f[P.key], ff = NOTES[P.fork][1], N = R1 - L1, fb = Math.abs(fs - ff);
+    g.fillStyle = '#0b1222'; g.fillRect(0, 400, W1, H1 - 400); lbl(g, 'fork + string together, 2 s', L1, Tp - 4, p.s, 11, 'left');
+    g.strokeStyle = 'rgba(150,170,195,0.18)'; g.lineWidth = 1; for (i=0; i<=10; i++){ var gx = L1 + i*N/10; g.beginPath(); g.moveTo(gx, Tp); g.lineTo(gx, Bt); g.stroke(); g.fillStyle = '#9aa6b4'; g.font = '10px Arial'; g.textAlign = 'center'; if (i % 2 === 0) g.fillText((T*i/10).toFixed(1) + ' s', gx, Bt + 12); }
+    g.strokeStyle = p.s; g.lineWidth = 1.3; g.globalAlpha = 0.9; for (var px3=0; px3<N; px3++){ var mn = 9, mx = -9; for (var q=0; q<=12; q++){ var t = T*(px3 + q/12)/N, v = Math.sin(TAU*ff*t) + Math.sin(TAU*fs*t); mn = Math.min(mn, v); mx = Math.max(mx, v); } g.beginPath(); g.moveTo(L1 + px3 + 0.5, M - mx*(Bt - Tp)/4.4); g.lineTo(L1 + px3 + 0.5, M - mn*(Bt - Tp)/4.4); g.stroke(); } g.globalAlpha = 1;
+    if (fb >= 0.25 && fb <= 15){ for (var m=0; m/fb <= T; m++){ var xm = L1 + (m/fb)/T*N; g.fillStyle = p.cur; g.beginPath(); g.moveTo(xm, Tp + 6); g.lineTo(xm - 5, Tp - 2); g.lineTo(xm + 5, Tp - 2); g.closePath(); g.fill(); } }
+    lbl(g, fb < 0.25 ? 'steady: no beats' : fb > 15 ? 'beats too fast to hear: a rough sound or two notes' : fb.toFixed(fb < 2 ? 2 : 1) + ' beats per second', R1, Tp - 4, p.cur, 12, 'right'); }
+  function ui1(){ var fs = P.f[P.key], ff = NOTES[P.fork][1], fb = Math.abs(fs - ff), match = P.key === P.fork, n = 0; P.f.forEach(function(x, i){ if (tuned(i)) n++; });
+    el('btR1').innerHTML = [['key', NOTES[P.key][0]], ['fork', NOTES[P.fork][0] + ' (' + ff.toFixed(2) + ' Hz)'], ['beats', fb < 0.25 ? 'none' : fb > 15 ? 'too fast' : fb.toFixed(2) + ' per s'], ['string frequency', P.showF ? fs.toFixed(2) + ' Hz' : 'hidden'], ['keys in tune', n + ' of 8']].map(function(q){ return '<div><div class="' + cls('bt_rl') + '">' + q[0] + '</div><div class="' + cls('bt_rv') + '">' + q[1] + '</div></div>'; }).join('');
+    el('btSt1').textContent = !match ? 'The fork (' + NOTES[P.fork][0] + ') does not match the key (' + NOTES[P.key][0] + '): choose the fork with the same note.' : tuned(P.key) ? NOTES[P.key][0] + ' is in tune: the beats have disappeared.' + (n === 8 ? ' The whole octave is in tune. Bravo!' : ' Choose another key.') : 'Strike the fork and play the key together, then turn the pin to slow the beats down.';
+    el('btExp1').innerHTML = '<div class="' + cls('bt_eq') + '">string: f = (1/2L)\u221a(T/\u03bc) \u00a0\u2192\u00a0 tighter pin, higher T, higher f</div><div class="' + cls('bt_eq') + '">beats = |f<sub>string</sub> \u2212 f<sub>fork</sub>|' + (P.showF ? ' = |' + fs.toFixed(2) + ' \u2212 ' + ff.toFixed(2) + '| = <b class="' + cls('bt_res') + '">' + fb.toFixed(2) + ' Hz</b>' : '') + '</div><p>The beat rate tells you <b>how far</b> off the string is, not <b>which way</b>. Turn the pin a little and listen: if the beats slow down you are going the right way; if they speed up, turn the other way. In tune means fewer than one beat every 4 seconds (0.25 Hz).</p><p class="' + cls('bt_note') + '">\u201cClick on each beat\u201d adds a tick at every loud moment, so you can follow the beats as they slow down. \u201cHold the sound\u201d keeps both sounds going while you turn the pin, the way a tuner listens.</p>';
+    [].forEach.call(el('btForks').querySelectorAll('button'), function(b){ b.setAttribute('aria-pressed', +b.getAttribute('data-i') === P.fork ? 'true' : 'false'); });
+    [].forEach.call(el('btKeys').querySelectorAll('button'), function(b){ var i = +b.getAttribute('data-i'); b.setAttribute('aria-pressed', i === P.key ? 'true' : 'false'); b.textContent = NOTES[i][0] + (tuned(i) ? ' \u2713' : ''); });
+    draw1(); }
+  var PIANO = [1, 0.5, 0.28, 0.16, 0.08, 0.04];
+  function stopHold(){ if (P.sv){ P.sv.stop(); P.sv = null; } if (P.fv){ P.fv.stop(); P.fv = null; } clicksStop(); }
+  function strike(which, quiet){ if (!ac()){ say('Sound is not available in this browser.'); return; } var fs = P.f[P.key], ff = NOTES[P.fork][1], t0 = AC.currentTime + 0.05, fb = Math.abs(fs - ff);
+    if (P.hold){ stopHold(); if (which !== 'key') P.fv = voice(ff, 0.3, [1], 0, true, t0); if (which !== 'fork') P.sv = voice(fs, 0.18, PIANO, 0, true, t0); if (which === 'both' && P.clk) clicksStart(t0, fb); }
+    else { clicksStop(); if (which !== 'key') voice(ff, 0.32, [1], 7, false, t0); if (which !== 'fork') voice(fs, 0.2, PIANO, 3.5, false, t0); if (which === 'both' && P.clk) clicksStart(t0, fb, t0 + 4); }
+    if (which === 'both' && !quiet) say(P.key !== P.fork ? 'Those are different notes: no slow beats.' : fb < 0.25 ? 'No beats: ' + NOTES[P.key][0] + ' is in tune.' : fb > 15 ? 'Very rough sound: the string is far off.' : 'About ' + fb.toFixed(1) + ' beats per second.'); }
+  function pin(factor, word){ var i = P.key, old = Math.abs(P.f[i] - NOTES[P.fork][1]); P.f[i] *= Math.sqrt(factor); var nw = Math.abs(P.f[i] - NOTES[P.fork][1]); ui1();
+    if (P.key === P.fork) say(word + ': ' + (tuned(i) ? 'the beats are gone. ' + NOTES[i][0] + ' is in tune.' : nw < old ? 'the beats slow down to ' + nw.toFixed(2) + ' per second. Right direction.' : 'the beats speed up to ' + nw.toFixed(2) + ' per second. Wrong direction.')); else say(word + ' the ' + NOTES[i][0] + ' string.');
+    if (P.key === P.fork && (P.hold || AC)) strike('both', true); }
+  el('btForks').innerHTML = NOTES.map(function(n, i){ return '<button type="button" data-i="' + i + '">fork ' + n[0] + '</button>'; }).join('');
+  el('btKeys').innerHTML = NOTES.map(function(n, i){ return '<button type="button" data-i="' + i + '">' + n[0] + '</button>'; }).join('');
+  [].forEach.call(el('btForks').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ P.fork = +b.getAttribute('data-i'); ui1(); strike('fork'); say('Fork ' + NOTES[P.fork][0] + ', ' + NOTES[P.fork][1] + ' hertz.'); }); });
+  [].forEach.call(el('btKeys').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ P.key = +b.getAttribute('data-i'); P.fork = P.key; ui1(); strike('both'); }); });
+  el('btFork').addEventListener('click', function(){ strike('fork'); }); el('btKey').addEventListener('click', function(){ strike('key'); }); el('btBoth').addEventListener('click', function(){ strike('both'); });
+  el('btHold').addEventListener('click', function(){ P.hold = !P.hold; this.setAttribute('aria-pressed', P.hold ? 'true' : 'false'); this.textContent = 'Hold the sound: ' + (P.hold ? 'on' : 'off'); if (P.hold) strike('both'); else stopHold(); });
+  el('btPclk').addEventListener('change', function(){ P.clk = this.checked; if (P.hold) strike('both', true); say(P.clk ? 'A click will mark each beat. Strike the fork and key together.' : 'Beat clicks off.'); });
+  el('btTc').addEventListener('click', function(){ pin(1.005, 'Tightened'); }); el('btTf').addEventListener('click', function(){ pin(1.0008, 'Tightened a little'); });
+  el('btLc').addEventListener('click', function(){ pin(1/1.005, 'Loosened'); }); el('btLf').addEventListener('click', function(){ pin(1/1.0008, 'Loosened a little'); });
+  el('btShowF').addEventListener('change', function(){ P.showF = this.checked; ui1(); });
+  el('btNew').addEventListener('click', function(){ newPiano(); ui1(); say('A new out-of-tune piano.'); });
+  c1.addEventListener('pointerdown', function(e){ var r = c1.getBoundingClientRect(), x = (e.clientX - r.left)*W1/r.width, y = (e.clientY - r.top)*H1/r.height;
+    if (y >= KY && y <= KY + KH && x >= KX && x < KX + 8*KW){ P.key = Math.floor((x - KX)/KW); P.fork = P.key; ui1(); strike('both'); return; }
+    if (y >= FY - 10 && y <= FY + 96){ var i = Math.round((x - 70)/((W1 - 140)/7)); if (i >= 0 && i < 8){ P.fork = i; ui1(); strike('fork'); say('Fork ' + NOTES[i][0] + '.'); } } });
+  c1.addEventListener('keydown', function(e){ if (e.key === 'ArrowLeft' || e.key === 'ArrowRight'){ P.key = Math.max(0, Math.min(7, P.key + (e.key === 'ArrowRight' ? 1 : -1))); P.fork = P.key; ui1(); say('Key ' + NOTES[P.key][0] + '.'); e.preventDefault(); }
+    else if (e.key === 'ArrowUp'){ pin(1.0008, 'Tightened a little'); e.preventDefault(); } else if (e.key === 'ArrowDown'){ pin(1/1.0008, 'Loosened a little'); e.preventDefault(); } else if (e.key === ' ' || e.key === 'Enter'){ strike('both'); e.preventDefault(); } });
+  /* ══════════ tabs and loop ══════════ */
+  var tab = 0;
+  function setTab(i){ tab = i; for (var k=0; k<2; k++){ var t = el('btT' + k); t.setAttribute('aria-selected', k === i ? 'true' : 'false'); t.tabIndex = k === i ? 0 : -1; el('btP' + k).hidden = k !== i; } stop0(); stopHold(); P.hold = false; el('btHold').setAttribute('aria-pressed', 'false'); el('btHold').textContent = 'Hold the sound: off';
+    if (i === 1){ ui1(); say('An out-of-tune piano and a case of tuning forks. Click a key: the matching fork and the string sound together. Listen for beats, then turn the pin.'); } else { ui0(); say('Two tones at 440 and 444 hertz. Listen to each alone, then both together: 4 beats per second. Beat rhythm adds a click on each beat.'); } }
+  [0, 1].forEach(function(i){ var t = el('btT' + i); t.addEventListener('click', function(){ setTab(i); }); t.addEventListener('keydown', function(e){ if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){ setTab(1 - i); el('btT' + (1 - i)).focus(); e.preventDefault(); } }); });
+  function loop(){ clicksPump(); if (tab === 0 && B.playing) draw0(); requestAnimationFrame(loop); }
+  setInterval(clicksPump, 60);
+  btA11y.onChange(function(){ draw0(); draw1(); });
+  newPiano(); ui0(); ui1(); requestAnimationFrame(loop);
+  say('Two tones at 440 and 444 hertz. Listen to each alone, then both together: 4 beats per second. Beat rhythm adds a click on each beat.');
+  return { B:B, P:P, CK:CK, setTab:setTab, pin:pin, ui0:ui0, play0:play0 };
+};
+var btSim = new btGen();
+</script>
+<script>btA11y.init();</script>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Nuclear: How a Geiger Counter Works</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobgeiger" class="mob_wrap">
+<div class="gm_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="gm_a11ybtn" id="gmBtnHC" onclick="gmA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="gm_a11ybtn" id="gmBtnDM" onclick="gmA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="gm_a11ybtn" id="gmBtnCB" onclick="gmA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="gm_a11ybtn" id="gmBtnNR" onclick="gmA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+<div class="gm_title"><h3>How a Geiger Counter Works</h3></div>
+<div class="gm_tabs" role="tablist" aria-label="View">
+<button type="button" role="tab" class="gm_tab" id="gmT0" aria-selected="true" aria-controls="gmP0">1. Inside the tube</button>
+<button type="button" role="tab" class="gm_tab" id="gmT1" aria-selected="false" aria-controls="gmP1">2. A real counter</button>
+</div>
+<div id="gmNarBar" class="gm_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<!-- ═════════ TAB 0: inside the tube ═════════ -->
+<div id="gmP0" role="tabpanel" aria-labelledby="gmT0">
+<div class="gm_intro">A <b>Geiger&ndash;M&uuml;ller tube</b> is a metal cylinder (the <b>cathode</b>, at 0 V) filled with a gas at low pressure, with a thin wire along its axis (the <b>anode</b>, at a high positive voltage). Radiation that enters <b>ionizes</b> a few gas atoms; the freed electrons rush to the wire, where the electric field is so strong that each one sets off an <b>avalanche</b> of new ions. The avalanche spreads along the whole wire, and the tube gives one large electrical pulse: one <b>click</b>. Send a particle, then change the voltage.</div>
+<div class="gm_view"><canvas id="gmC0" width="820" height="440" role="img" aria-label="Top: the Geiger-Mueller tube seen from the side, cut open: the metal cathode wall, the thin mica window on the left, the anode wire along the axis, and the circuit with the high-voltage supply, the resistor and the output to the counter. Particles entering the tube leave ion pairs, electrons drift to the wire, avalanches and the discharge spread along the wire, and positive ions drift back to the wall. Bottom left: an oscilloscope trace of the output pulse. Bottom right: the electric field against the distance from the wire."></canvas></div>
+<div id="gmS0" class="gm_status"></div>
+<div class="gm_transport" role="toolbar" aria-label="Particles">
+<div class="gm_tgroup">
+<button type="button" class="gm_bbtn" id="gmSend">Send a particle</button>
+<button type="button" class="gm_vbtn" id="gmAuto" aria-pressed="false">Automatic: off</button>
+</div>
+<div class="gm_tgroup gm_tsep"><div class="gm_presets" id="gmKind" role="group" aria-label="Particle type"></div></div>
+</div>
+<div class="gm_read" id="gmR0" aria-live="off"></div>
+<div class="gm_card"><div class="gm_ctitle">The six regions of a gas detector (left) and the Geiger plateau (right)</div><canvas id="gmGr" width="820" height="260" role="img" aria-label="Left: the number of ions collected for one alpha particle and for one beta particle against the tube voltage, on a logarithmic scale, with the six regions shaded: recombination, ionization chamber, proportional, limited proportionality, Geiger-Mueller and continuous discharge. Right: the count rate from a beta source against the voltage, showing the starting voltage, the flat plateau and the rise into continuous discharge. The present voltage is marked on both."></canvas></div>
+<div class="gm_panels">
+<div class="gm_panel"><div class="gm_ptitle">The tube</div><div class="gm_pbody">
+<div class="gm_ctrl"><div class="gm_chdr"><label for="gmV">Anode voltage V</label><span class="gm_val" id="gmVv"></span></div><input type="range" id="gmV" min="20" max="1200" step="10" value="900"></div>
+<div class="gm_presets" id="gmVpre" role="group" aria-label="Voltage presets"></div>
+<div class="gm_checks"><label class="gm_chk"><input type="checkbox" id="gmQ" checked>Quench gas (halogen)</label><label class="gm_chk"><input type="checkbox" id="gmSlow" checked>Slow motion labels</label></div>
+<p class="gm_note">Gas: neon-argon at about 0.1 atm with a little bromine as quench gas. Wire radius 0.025 mm; tube radius 10 mm.</p>
+</div></div>
+<div class="gm_panel"><div class="gm_ptitle">What is happening</div><div class="gm_pbody" id="gmExp0"></div></div>
+</div>
+</div>
+<!-- ═════════ TAB 1: a real counter ═════════ -->
+<div id="gmP1" role="tabpanel" aria-labelledby="gmT1" hidden>
+<div class="gm_intro">A hand-held <b>survey meter</b> with a &ldquo;pancake&rdquo; Geiger probe. Turn the range knob on, choose a sample, and move the probe closer. Each count makes the red light flash and the speaker click; the needle shows the average count rate in <b>counts per minute (CPM)</b>. At high rates the tube is often still &ldquo;dead&rdquo; from the previous count, so it misses some: watch the difference between the true and the measured rate.</div>
+<div class="gm_view"><canvas id="gmC1" width="820" height="470" tabindex="0" role="img" aria-label="A yellow hand-held survey meter with an analog dial, a digital display, a range knob, a speaker and a red count light, connected by a coiled cable to a pancake Geiger probe held above a sample on a table. An optional shield can be placed between the sample and the probe."></canvas></div>
+<div id="gmS1" class="gm_status"></div>
+<div class="gm_transport" role="toolbar" aria-label="Meter">
+<div class="gm_tgroup"><div class="gm_presets" id="gmRange" role="group" aria-label="Range knob"></div></div>
+<div class="gm_tgroup gm_tsep">
+<button type="button" class="gm_vbtn" id="gmSnd" aria-pressed="false">Speaker: off</button>
+<button type="button" class="gm_vbtn" id="gmResp" aria-pressed="false">Response: fast</button>
+<button type="button" class="gm_bbtn" id="gmTimed">Count 10 s</button>
+</div>
+</div>
+<div class="gm_read" id="gmR1" aria-live="off"></div>
+<div class="gm_panels">
+<div class="gm_panel"><div class="gm_ptitle">Sample, distance and shield</div><div class="gm_pbody">
+<div class="gm_ctrl"><div class="gm_chdr"><label for="gmSrc">Sample under the probe</label></div><select id="gmSrc"></select></div>
+<div class="gm_ctrl"><div class="gm_chdr"><label for="gmD">Distance sample &rarr; probe</label><span class="gm_val" id="gmDv"></span></div><input type="range" id="gmD" min="0.5" max="20" step="0.5" value="5"></div>
+<div class="gm_presets" id="gmShield" role="group" aria-label="Shield"></div>
+</div></div>
+<div class="gm_panel"><div class="gm_ptitle">Reading the meter</div><div class="gm_pbody" id="gmExp1"></div></div>
+</div>
+</div>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>A <b>Geiger&ndash;M&uuml;ller (GM) tube</b> is a gas-filled metal cylinder (the cathode) with a thin wire on its axis (the anode) held at a high positive voltage `V`. Between a wire of radius `a` and a cylinder of radius `b` the electric field points radially and grows sharply near the wire:</p>
+<p class="mob_eq">`E(r) = V/(r ln(b//a))`.</p>
+<p>An ionizing particle frees a few electrons in the gas. They drift toward the wire, and within a few wire radii of it the field is strong enough for each electron to gain the ionization energy between collisions: it frees another electron, both accelerate and free more, and an <b>avalanche</b> forms. At a low voltage the number of ions collected equals the number made by the particle (ionization chamber); at higher voltages it is multiplied by a fixed factor (proportional counter). In the <b>Geiger region</b>, ultraviolet photons from each avalanche start new avalanches all along the wire, and the discharge stops only when the slow sheath of positive ions around the wire weakens the field. Every particle, whatever its type or energy, then gives the same large pulse, about `10^9` to `10^10` ions: a Geiger counter counts particles but cannot tell their energy.</p>
+<p>The positive ions take about 100 &micro;s to drift to the wall; during this <b>dead time</b> the tube cannot register a new particle. A <b>quench gas</b> (a halogen or an organic vapour) takes the energy of the ions reaching the wall, so they do not free new electrons and restart the discharge. Above the plateau the tube discharges continuously. Over the <b>Geiger plateau</b> the count rate hardly depends on the voltage, which is where a tube is operated.</p>
+<p>A survey meter shows the count rate in counts per minute. With a dead time `tau`, a true rate `n` is measured as `m = n/(1 + n tau)`, so a high true rate can be recovered from `n = m/(1 - m tau)`. Counts are random, so a count `N` has an uncertainty of about `sqrt(N)`. The ion numbers, voltages, sample count rates and the dose conversion (about 330 CPM per &micro;Sv/h for Cs-137) are typical, approximate values; the animation is slowed by factors of a million or more.</p>
+</div>
+</div>
+<style>
+:where(#mobgeiger) * { margin:0; box-sizing:border-box; }
+#mobgeiger { width:100%; max-width:860px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; color:#1d232a; }
+#mobgeiger canvas { display:block; width:100%; height:auto; }
+#mobgeiger [hidden] { display:none !important; }
+#mobgeiger .gm_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#mobgeiger .gm_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#mobgeiger .gm_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobgeiger .gm_title { padding:4px; background-color:#f90; text-align:center; }
+#mobgeiger .gm_title h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+#mobgeiger .gm_tabs { display:flex; gap:4px; padding:6px 8px 0; background:#14213a; flex-wrap:wrap; }
+#mobgeiger .gm_tab { flex:1 1 140px; padding:8px 6px; border:1px solid #2b3d60; border-bottom:0; border-radius:6px 6px 0 0; background:#1d2c4a; color:#bcd0f0; font-weight:bold; cursor:pointer; font-size:.88rem; min-height:40px; }
+#mobgeiger .gm_tab[aria-selected="true"] { background:#f3f5f8; color:#14213a; }
+#mobgeiger .gm_intro { padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; font-size:.9rem; line-height:1.5; }
+#mobgeiger .gm_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:6px 12px; padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; }
+#mobgeiger .gm_rl { font-size:.7rem; color:#667; text-transform:uppercase; letter-spacing:.05em; }
+#mobgeiger .gm_rv { font-family:monospace; font-size:.93rem; color:#7a3a00; font-weight:bold; }
+#mobgeiger .gm_view { background:#0b1222; }
+#mobgeiger .gm_status { color:#222; font-size:.86rem; text-align:center; background:#fff6d9; padding:5px 8px; line-height:1.45; min-height:1.6em; }
+#mobgeiger .gm_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+#mobgeiger .gm_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+#mobgeiger .gm_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { #mobgeiger .gm_tsep { padding-left:0; border-left:0; } }
+#mobgeiger .gm_vbtn, #mobgeiger .gm_bbtn { min-height:38px; padding:4px 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; }
+#mobgeiger .gm_vbtn[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobgeiger .gm_bbtn { background:#2e7d32; border-color:#1b5e20; color:#fff; font-weight:bold; }
+#mobgeiger .gm_bbtn[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+#mobgeiger button:disabled { opacity:.4; cursor:not-allowed; }
+#mobgeiger .gm_card { margin:10px 10px 0; background:#0b1222; border:1px solid #2b3d60; border-radius:6px; overflow:hidden; }
+#mobgeiger .gm_ctitle { padding:5px 10px; background:#14213a; color:#dbe7ff; font-size:.8rem; font-weight:bold; }
+#mobgeiger .gm_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:10px; padding:10px; }
+#mobgeiger .gm_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+#mobgeiger .gm_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+#mobgeiger .gm_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; font-size:.87rem; line-height:1.45; }
+#mobgeiger .gm_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+#mobgeiger .gm_ctrl.gm_off { opacity:.45; }
+#mobgeiger .gm_chdr { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+#mobgeiger .gm_chdr label { font-size:.82rem; font-weight:bold; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+#mobgeiger .gm_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; flex:0 0 auto; min-width:4.5em; text-align:right; }
+#mobgeiger .gm_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+#mobgeiger select { width:100%; min-height:34px; padding:4px 6px; font-size:.86rem; border:1px solid #8a96a8; border-radius:4px; background:#fff; }
+#mobgeiger .gm_checks { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 8px; }
+#mobgeiger .gm_chk { display:flex; align-items:center; gap:6px; font-size:.82rem; cursor:pointer; }
+#mobgeiger .gm_presets { display:flex; flex-wrap:wrap; gap:5px; }
+#mobgeiger .gm_presets button { padding:5px 9px; font-size:.82rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:4px; background:#fff; color:#223; min-height:34px; }
+#mobgeiger .gm_presets button[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobgeiger .gm_note { font-size:.8rem; color:#555; font-style:italic; }
+#mobgeiger .gm_eq { font-family:'Times New Roman', serif; font-size:1rem; background:#f6f8fb; border-left:3px solid #1f5fa8; padding:4px 8px; margin:2px 0; overflow-wrap:anywhere; }
+#mobgeiger b.gm_res { color:#7a3a00; }
+#mobgeiger .gm_tbl { border-collapse:collapse; width:100%; font-size:.82rem; }
+#mobgeiger .gm_tbl th, #mobgeiger .gm_tbl td { padding:4px 6px; border-bottom:1px solid #e3e7ee; text-align:center; }
+#mobgeiger .gm_tbl th { background:#f1f4f8; font-size:.76rem; }
+#mobgeiger .gm_tblwrap { overflow-x:auto; }
+#mobgeiger button:focus-visible, #mobgeiger input:focus-visible, #mobgeiger select:focus-visible, #mobgeiger canvas:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (max-width:420px) { #mobgeiger .gm_checks { grid-template-columns:minmax(0,1fr); } }
+@media (pointer:coarse) { #mobgeiger .gm_vbtn, #mobgeiger .gm_bbtn { min-height:44px; } #mobgeiger .gm_presets button { min-height:42px; } #mobgeiger input[type=checkbox] { width:20px; height:20px; } #mobgeiger input[type=range] { height:28px; } }
+#mobgeiger .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobgeiger .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobgeiger .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobgeiger .mob_desc p { margin:0 0 8px 0; }
+#mobgeiger .mob_eq { text-align:center; }
+#mobgeiger.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobgeiger.a11y_dm .gm_card, #mobgeiger.a11y_dm .gm_view, #mobgeiger.a11y_dm [aria-label="Display options"], #mobgeiger.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobgeiger.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobgeiger.a11y_hc .gm_card, #mobgeiger.a11y_hc .gm_view, #mobgeiger.a11y_hc [aria-label="Display options"], #mobgeiger.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+</style>
+<script>
+var gmA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return; b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobgeiger'); if (!W) return; W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc);
+var nb = document.getElementById('gmNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none'; var nr = document.getElementById('gmBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('gmBtnHC', states.hc); styleBtn('gmBtnDM', states.dm); styleBtn('gmBtnCB', states.cb); styleBtn('gmBtnNR', states.nr); hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return { init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply(); if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: electrons sky blue, positive ions orange, alpha vermillion, beta blue, gamma yellow.'); },
+alt:function(){ return states.hc || states.cb; }, narrate:function(m){ if (!states.nr) return; var nb = document.getElementById('gmNarBar'); if (nb) nb.textContent = m; } };
+})();
+</script>
+<style>
+#mobgeiger .gm_tsep .gm_presets { justify-content:center; }
+</style>
+<!-- ════════ SIMULATION ════════
+Tube: wire radius a = 0.025 mm, cathode radius b = 10 mm, ln(b/a) = 5.99; E(r) = V/(r ln(b/a)); avalanche where E > 2 MV/m.
+Ions collected N(V, n0): recombination below 60 V, n0 up to 250 V, n0 x 10^(4 (V - 250)/400) up to 650 V, then a log-blend toward
+saturation 3e9 at 820 V; Geiger plateau 820 to 1050 V (N rises 60 %), continuous discharge above. Primary ion pairs n0: alpha 4e4,
+beta 90, gamma (Compton electron from the wall) 25. Counter threshold 1e7 ions; pulse height N e / C with C = 10 pF.
+Meter: true rate from the sample = rate at 1 cm x (1.5/(d + 0.5))^2 x shield and air transmission + background 35 CPM;
+measured rate m = n/(1 + n tau), tau = 90 microseconds; counts are Poisson; needle = exponential average (2 s or 10 s).
+No dollar signs or backticks in the code.
+-->
+<script>
+var gmGen = function(){
+  function el(id){ return document.getElementById(id + ''); }
+  function cls(n){ return n + ''; }
+  function say(m){ gmA11y.narrate(m); }
+  var TAU = 2*Math.PI, QE = 1.602e-19;
+  function pal(){ var a = gmA11y.alt(); return { e:a ? '#56B4E9' : '#4fc3ff', ion:a ? '#E69F00' : '#ff8a3d', a:a ? '#D55E00' : '#ff5a4a', b:a ? '#0072B2' : '#6fa8ff', g:a ? '#F0E442' : '#c58cff', glow:a ? '#F0E442' : '#bfe9ff', good:a ? '#009E73' : '#3ad08f', bad:a ? '#D55E00' : '#ff6b6b' }; }
+  function lbl(g, t, x, y, col, size, al){ g.font = 'bold ' + (size || 12) + 'px Arial'; g.textAlign = al || 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 3.5; g.strokeStyle = 'rgba(0,0,0,0.85)'; g.strokeText(t, x, y); g.fillStyle = col; g.fillText(t, x, y); g.textBaseline = 'alphabetic'; }
+  function sci(x, d){ if (!isFinite(x)) return '\u221e'; if (x === 0) return '0'; var e = Math.floor(Math.log(Math.abs(x))/Math.LN10 + 1e-9); if (e >= -1 && e <= 3) return (+x.toPrecision(d || 3)).toString(); return (x/Math.pow(10, e)).toFixed((d || 3) - 1) + '\u00d710' + sup(e); }
+  function sup(n){ var S = { '-':'\u207b', '0':'\u2070', '1':'\u00b9', '2':'\u00b2', '3':'\u00b3', '4':'\u2074', '5':'\u2075', '6':'\u2076', '7':'\u2077', '8':'\u2078', '9':'\u2079' }; return String(n).split('').map(function(c){ return S[c]; }).join(''); }
+  function gauss(){ var u = Math.random() || 1e-9, v = Math.random(); return Math.sqrt(-2*Math.log(u))*Math.cos(TAU*v); }
+  function poisson(l){ if (l <= 0) return 0; if (l > 30) return Math.max(0, Math.round(l + Math.sqrt(l)*gauss())); var L = Math.exp(-l), k = 0, p = 1; do { k++; p *= Math.random(); } while (p > L); return k - 1; }
+  var AC = null; function ac(){ try { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.resume) AC.resume(); } catch (e) {} return AC; }
+  function click(vol){ var A = AC; if (!A) return; try { var n = A.createBufferSource(), b = A.createBuffer(1, 240, A.sampleRate), d = b.getChannelData(0); for (var i=0; i<240; i++) d[i] = (Math.random()*2 - 1)*Math.exp(-i/22); n.buffer = b; var gn = A.createGain(); gn.gain.value = vol || 0.5; n.connect(gn); gn.connect(A.destination); n.start(); } catch (e) {} }
+  /* ══════════ gas-detector physics ══════════ */
+  var LNBA = Math.log(10/0.025), ECRIT = 2e6, NSAT = 3e9, NTHR = 1e7, CAP = 10e-12, VS = 820, VC = 1050;
+  var N0 = { a:4e4, b:90, g:25 };
+  function collected(V, n0){ var lg;
+    if (V < 60) return n0*V/60;
+    if (V < 250) return n0;
+    if (V < 650) return n0*Math.pow(10, 4*(V - 250)/400);
+    if (V < VS){ var Np = Math.min(n0*1e4*Math.pow(10, 2*(V - 650)/170), NSAT), w = (V - 650)/(VS - 650); lg = (1 - w)*Math.log(Np) + w*Math.log(NSAT); return Math.exp(lg); }
+    return NSAT*(1 + 0.6*Math.min(V - VS, VC - VS)/(VC - VS)); }
+  function region(V){ return V < 60 ? 0 : V < 250 ? 1 : V < 650 ? 2 : V < VS ? 3 : V <= VC ? 4 : 5; }
+  var RNAME = ['recombination', 'ionization chamber', 'proportional', 'limited proportionality', 'Geiger\u2013M\u00fcller plateau', 'continuous discharge'];
+  function countFrac(V, kind){ var N = collected(V, N0[kind]); return 1/(1 + Math.pow(NTHR/N, 3)); }
+  function rateVsV(V){ var r = 100*countFrac(V, 'b'); if (V > VS) r *= 1 + 0.0003*(Math.min(V, VC) - VS); if (V > VC) r += 100*(Math.exp((V - VC)/25) - 1); return r; }
+  function Ewire(V){ return V/(0.025e-3*LNBA); }
+  function rAv(V){ return V/(ECRIT*LNBA); }   /* m */
+  /* ══════════ TAB 0: inside the tube ══════════ */
+  var c0 = el('gmC0'), g0 = c0.getContext('2d'), W0 = c0.width, H0 = c0.height;
+  var TX0 = 96, TX1 = 640, TYC = 128, TR = 88;   /* tube on the canvas: 8.8 px per mm */
+  var T = { V:900, quench:true, kind:'b', auto:false, ev:null, autoT:2, slow:true, counts:0 };
+  function newEvent(kind){ var pts = [], i, n = kind === 'a' ? 40 : kind === 'b' ? 12 : 7, track = [], y0, x0, x1, y1;
+    if (kind === 'a'){ x0 = TX0 + 2; y0 = TYC + (Math.random() - 0.5)*80; x1 = TX0 + 120 + Math.random()*40; y1 = y0 + (Math.random() - 0.5)*30; }
+    else if (kind === 'b'){ x0 = TX0 + 2; y0 = TYC + (Math.random() - 0.5)*60; x1 = TX0 + 330 + Math.random()*160; y1 = TYC + (Math.random() < 0.5 ? -1 : 1)*(TR - 4); }
+    else { x0 = TX0 + 150 + Math.random()*300; y0 = TYC - TR; x1 = x0 + (Math.random() - 0.5)*120; y1 = TYC + (Math.random() - 0.3)*60; }
+    for (i=0; i<n; i++){ var f = (i + 0.5)/n + (Math.random() - 0.5)*0.4/n, x = x0 + (x1 - x0)*f + (kind === 'b' ? 8*Math.sin(f*20) : 0), y = y0 + (y1 - y0)*f + (Math.random() - 0.5)*(kind === 'a' ? 4 : 6); pts.push({ x:x, y:y, ex:x, ey:y, ix:x, iy:y }); }
+    var V = T.V, N = collected(V, N0[kind]), reg = region(V);
+    return { kind:kind, t:0, pts:pts, x0:x0, y0:y0, x1:x1, y1:y1, N:N, reg:reg, V:V, quench:T.quench, cycles:0, counted:N >= NTHR && reg >= 1, said:{} }; }
+  var PH = { track:0.7, drift:1.9, aval:2.9, ions:5.0, end:5.6 };
+  function repeats(ev){ return ev.reg === 5 || (ev.reg === 4 && !ev.quench); }
+  function stageOf(ev){ var t = ev.t; if (t < PH.track) return 'track'; if (t < PH.drift) return 'drift'; if (t < PH.aval) return 'aval'; if (t < PH.ions) return 'ions'; return 'end'; }
+  function stepEvent(dt){ var ev = T.ev; if (!ev) return; ev.t += dt; var st = stageOf(ev);
+    if (!ev.said[st]){ ev.said[st] = 1; narrStage(ev, st); }
+    if (st === 'end'){ if (repeats(ev) && ev.cycles < 3){ ev.cycles++; ev.t = PH.drift; ev.said = { track:1, drift:1 }; } else if (ev.t > PH.end + 0.6){ T.ev = null; } } }
+  function narrStage(ev, st){ var nm = { a:'An alpha particle', b:'A beta particle', g:'A gamma ray' }[ev.kind];
+    if (st === 'track') say(nm + (ev.kind === 'g' ? ' knocks an electron out of the metal wall; that electron ionizes the gas.' : ' enters through the thin window and ionizes the gas: about ' + sci(N0[ev.kind], 2) + ' ion pairs.'));
+    if (st === 'drift') say('The free electrons drift toward the positive wire; the heavy positive ions barely move.' + (ev.reg <= 1 ? ' At this voltage the field is too weak for an avalanche: only the original electrons are collected.' : ''));
+    if (st === 'aval' && ev.reg >= 2) say(ev.reg >= 4 ? 'Near the wire the field is enormous: avalanches form, ultraviolet photons start new ones, and the discharge spreads along the whole wire.' : 'Near the wire each electron starts an avalanche: the charge is multiplied by about ' + sci(ev.N/N0[ev.kind], 2) + ', but only where the electrons arrive.');
+    if (st === 'ions' && ev.reg >= 4) say('The slow positive ions form a sheath around the wire and drift to the wall. Their charge weakens the field near the wire: the discharge stops, and the tube is dead for about 100 microseconds.');
+    if (st === 'end'){ if (repeats(ev) && ev.cycles < 3) say(ev.reg === 5 ? 'Above the plateau the tube discharges again and again by itself: continuous discharge.' : 'Without quench gas, ions hitting the wall free new electrons, and the discharge starts again: one particle gives a train of pulses.');
+      else say(ev.counted ? 'Pulse of ' + pulseText(ev.N) + ': counted.' + (ev.reg === 4 && ev.quench ? ' The quench gas absorbed the energy of the ions at the wall, so the discharge ended.' : '') : 'Pulse of only ' + pulseText(ev.N) + ': too small for the counter to register.'); } }
+  function pulseV(N){ return N*QE/CAP; }
+  function pulseText(N){ var v = pulseV(N); return v >= 1 ? v.toPrecision(3) + ' V' : v >= 1e-3 ? (v*1e3).toPrecision(3) + ' mV' : (v*1e6).toPrecision(3) + ' \u00b5V'; }
+  function drawTube(){ var g = g0, p = pal(), ev = T.ev, st = ev ? stageOf(ev) : null, i;
+    g.fillStyle = '#0b1222'; g.fillRect(0, 0, W0, H0);
+    /* gas */ var gr = g.createLinearGradient(0, TYC - TR, 0, TYC + TR); gr.addColorStop(0, '#1a2a44'); gr.addColorStop(0.5, '#22385a'); gr.addColorStop(1, '#1a2a44'); g.fillStyle = gr; g.fillRect(TX0, TYC - TR, TX1 - TX0, 2*TR);
+    /* cathode wall */ g.fillStyle = '#9aa3ad'; g.fillRect(TX0 - 4, TYC - TR - 10, TX1 - TX0 + 24, 10); g.fillRect(TX0 - 4, TYC + TR, TX1 - TX0 + 24, 10);
+    g.fillStyle = 'rgba(255,255,255,0.25)'; g.fillRect(TX0 - 4, TYC - TR - 10, TX1 - TX0 + 24, 3);
+    /* window */ g.fillStyle = 'rgba(230,220,170,0.85)'; g.fillRect(TX0 - 4, TYC - TR, 4, 2*TR);
+    /* end insulator */ g.fillStyle = '#e8e2d0'; g.fillRect(TX1, TYC - TR, 20, 2*TR);
+    /* anode wire */ var glow = 0; if (ev && st === 'aval' && ev.reg >= 4) glow = 1; g.strokeStyle = '#f0d070'; g.lineWidth = 2; g.beginPath(); g.moveTo(TX0 + 14, TYC); g.lineTo(TX1 + 60, TYC); g.stroke();
+    /* circuit */ g.strokeStyle = '#c9d6ea'; g.lineWidth = 2; g.beginPath(); g.moveTo(TX1 + 60, TYC); g.lineTo(TX1 + 90, TYC); g.lineTo(TX1 + 90, TYC - 40); g.stroke();
+    for (i=0; i<6; i++){ g.beginPath(); g.moveTo(TX1 + 90, TYC - 40 - i*8); g.lineTo(TX1 + 90 + (i % 2 ? -7 : 7), TYC - 44 - i*8); g.lineTo(TX1 + 90, TYC - 48 - i*8); g.stroke(); }
+    g.beginPath(); g.moveTo(TX1 + 90, TYC - 88); g.lineTo(TX1 + 90, TYC - 100); g.stroke(); g.fillStyle = '#c9d6ea'; g.fillRect(TX1 + 74, TYC - 104, 32, 3); g.fillRect(TX1 + 80, TYC - 110, 20, 3);
+    lbl(g, '+' + T.V + ' V', TX1 + 110, TYC - 112, '#ffd23f', 12, 'left'); lbl(g, 'R', TX1 + 104, TYC - 64, '#c9d6ea', 11, 'left');
+    g.beginPath(); g.moveTo(TX1 + 90, TYC); g.lineTo(TX1 + 120, TYC); g.stroke(); g.beginPath(); g.moveTo(TX1 + 120, TYC - 12); g.lineTo(TX1 + 120, TYC + 12); g.moveTo(TX1 + 127, TYC - 12); g.lineTo(TX1 + 127, TYC + 12); g.stroke(); g.beginPath(); g.moveTo(TX1 + 127, TYC); g.lineTo(TX1 + 160, TYC); g.lineTo(TX1 + 160, TYC + 60); g.stroke();
+    lbl(g, 'to counter', TX1 + 160, TYC + 74, '#c9d6ea', 11); lbl(g, 'C', TX1 + 124, TYC - 22, '#c9d6ea', 11);
+    lbl(g, 'cathode (metal wall, 0 V)', (TX0 + TX1)/2, TYC - TR - 20, '#c9d6ea', 11); lbl(g, 'anode wire (+)', TX1 - 70, TYC - 12, '#f0d070', 11); lbl(g, 'mica window', TX0 + 2, TYC + TR + 22, '#e6dca8', 11); lbl(g, 'gas', TX0 + 30, TYC + TR - 14, '#9fb4d8', 11);
+    /* avalanche zone */ var rz = Math.min(TR, rAv(T.V)*1e3*8.8*6); if (T.V >= 250){ g.fillStyle = 'rgba(255,210,63,0.13)'; g.fillRect(TX0 + 14, TYC - Math.max(2, rz), TX1 - TX0 - 14, 2*Math.max(2, rz)); }
+    if (!ev){ lbl(g, 'Press \u201cSend a particle\u201d', (TX0 + TX1)/2, TYC + 40, '#9fb4d8', 13); }
+    if (ev){ var t = ev.t, k = ev.kind, col = p[k];
+      /* incoming radiation */ if (t < PH.track + 0.2){ var f = Math.min(1, t/PH.track);
+        if (k === 'g'){ g.strokeStyle = p.g; g.lineWidth = 2; g.beginPath(); for (i=0; i<=40; i++){ var yy = 10 + (ev.y0 - 10)*i/40*Math.min(1, f*3), xx = ev.x0 + 4*Math.sin(i*1.2); if (i) g.lineTo(xx, yy); else g.moveTo(xx, yy); } g.stroke(); }
+        else { g.strokeStyle = col; g.lineWidth = 2; g.setLineDash([4, 3]); g.beginPath(); g.moveTo(20, ev.y0); g.lineTo(ev.x0, ev.y0); g.stroke(); g.setLineDash([]); }
+        var hx = ev.x0 + (ev.x1 - ev.x0)*f, hy = ev.y0 + (ev.y1 - ev.y0)*f; g.strokeStyle = k === 'g' ? p.b : col; g.lineWidth = k === 'a' ? 4 : 2; g.beginPath(); g.moveTo(ev.x0, ev.y0); g.lineTo(hx, hy); g.stroke(); }
+      /* ion pairs */ var showN = Math.min(1, t/PH.track);
+      ev.pts.forEach(function(q, j){ if (j/ev.pts.length > showN) return;
+        var fd = Math.max(0, Math.min(1, (t - PH.track)/(PH.drift - PH.track))), ex = q.x, ey = q.y + (TYC - q.y)*Math.pow(fd, 1.4);
+        if (t < PH.drift || ev.reg <= 1){ if (!(ev.reg <= 1 && fd >= 1)){ g.fillStyle = p.e; g.beginPath(); g.arc(ex + 3, ey, 2.6, 0, TAU); g.fill(); } }
+        var fi = Math.max(0, Math.min(1, (t - PH.aval)/(PH.ions - PH.aval))); if (ev.reg >= 4) fi = 0; var iy = q.y + (q.y > TYC ? 1 : -1)*(TR - Math.abs(q.y - TYC))*fi*0.4;
+        var ia = ev.reg >= 4 ? Math.max(0, 1 - Math.max(0, t - PH.aval)/0.8) : 1; if (ia > 0){ g.globalAlpha = ia; g.fillStyle = p.ion; g.beginPath(); g.arc(q.x - 3, iy, 2.6, 0, TAU); g.fill(); g.globalAlpha = 1; } });
+      /* avalanches */ if (t >= PH.drift && ev.reg >= 2){ var fa = Math.min(1, (t - PH.drift)/(PH.aval - PH.drift));
+        if (ev.reg >= 4){ /* discharge spreads along the wire from the arrival points */ var xs = ev.pts.map(function(q){ return q.x; }), lo = Math.min.apply(null, xs), hi = Math.max.apply(null, xs), sp = fa*(TX1 - TX0);
+          var a0 = Math.max(TX0 + 14, lo - sp), a1 = Math.min(TX1, hi + sp), fade = t < PH.aval ? 1 : Math.max(0, 1 - (t - PH.aval)/0.6);
+          if (fade > 0){ var gg = g.createLinearGradient(0, TYC - 22, 0, TYC + 22); gg.addColorStop(0, 'rgba(191,233,255,0)'); gg.addColorStop(0.5, 'rgba(191,233,255,' + (0.85*fade) + ')'); gg.addColorStop(1, 'rgba(191,233,255,0)'); g.fillStyle = gg; g.fillRect(a0, TYC - 22, a1 - a0, 44);
+            for (i=0; i<14; i++){ var ux = a0 + Math.random()*(a1 - a0), uy = TYC + (Math.random() - 0.5)*TR*1.6; g.strokeStyle = 'rgba(200,160,255,' + 0.6*fade + ')'; g.lineWidth = 1; g.beginPath(); g.moveTo(ux, TYC); g.lineTo(ux + (Math.random() - 0.5)*30, uy); g.stroke(); }
+            if (fa < 1) lbl(g, 'UV photons spread the discharge along the wire', (a0 + a1)/2, TYC + 46, p.glow, 11); }
+          /* positive-ion sheath */ var fs = Math.max(0, Math.min(1, (t - PH.aval)/(PH.ions - PH.aval))); if (t >= PH.aval - 0.2){ var rr = 6 + fs*(TR - 8); g.fillStyle = p.ion; g.globalAlpha = 0.55*(1 - fs*0.5); g.fillRect(TX0 + 14, TYC - rr - 2, TX1 - TX0 - 14, 4); g.fillRect(TX0 + 14, TYC + rr - 2, TX1 - TX0 - 14, 4); g.globalAlpha = 1;
+            if (fs > 0.05 && fs < 1) lbl(g, '+ ion sheath drifting outward (dead time)', (TX0 + TX1)/2, TYC - rr - 12, p.ion, 11); } }
+        else { var sz = Math.min(16, 2 + 1.6*Math.log(ev.N/N0[k] + 1)), fade2 = t < PH.aval ? 1 : Math.max(0, 1 - (t - PH.aval)/0.8);
+          ev.pts.forEach(function(q){ if (fade2 <= 0) return; g.fillStyle = 'rgba(191,233,255,' + 0.7*fade2 + ')'; g.beginPath(); g.ellipse(q.x, TYC, sz*fa + 1, Math.max(1, sz*fa*0.45), 0, 0, TAU); g.fill(); }); } }
+      if (ev.cycles > 0) lbl(g, (ev.reg === 5 ? 'continuous discharge' : 'no quench gas: discharge restarts') + ' (' + (ev.cycles + 1) + ')', (TX0 + TX1)/2, TYC + TR - 14, p.bad, 13);
+      /* time label */ if (T.slow){ var stx = { track:'0 \u2013 1 ns: ionization', drift:'\u2248 1 \u00b5s: electrons drift to the wire', aval:'\u2248 1 \u00b5s: avalanche' + (ev.reg >= 4 ? ' and discharge' : ''), ions:'\u2248 100 \u00b5s: ions drift to the wall', end:'done' }[st]; lbl(g, 'real time ' + stx, 14, 14, '#ffd23f', 12, 'left'); } }
+    drawScope(); drawField(); }
+  /* oscilloscope */
+  var SX = 20, SY = 248, SW = 450, SH = 180;
+  function drawScope(){ var g = g0, p = pal(), ev = T.ev, i;
+    g.fillStyle = '#06140b'; g.fillRect(SX, SY, SW, SH); g.strokeStyle = 'rgba(80,200,120,0.18)'; g.lineWidth = 1;
+    for (i=0; i<=10; i++){ g.beginPath(); g.moveTo(SX + i*SW/10, SY); g.lineTo(SX + i*SW/10, SY + SH); g.stroke(); } for (i=0; i<=6; i++){ g.beginPath(); g.moveTo(SX, SY + i*SH/6); g.lineTo(SX + SW, SY + i*SH/6); g.stroke(); }
+    g.strokeStyle = '#3a6a4a'; g.strokeRect(SX, SY, SW, SH);
+    lbl(g, 'oscilloscope: output pulse (0 \u2013 500 \u00b5s)', SX + 6, SY + 12, '#7dff9a', 11, 'left');
+    if (!ev) return; var A = pulseV(ev.N), reveal = Math.max(0, Math.min(1, (ev.t - PH.track)/(PH.end - PH.track))) , tmax = 500;
+    if (ev.cycles > 0 || ev.t >= PH.end) reveal = Math.min(1, (ev.cycles*150 + 160*Math.min(1, (ev.t - PH.drift)/(PH.end - PH.drift)) )/tmax + 0.05);
+    var vmax = A >= 1 ? Math.ceil(A/10)*10 : A >= 1e-3 ? Math.pow(10, Math.ceil(Math.log(A*1.2)/Math.LN10)) : 1e-3;
+    function pulse(tu){ var v = 0, k; for (k=0; k<=(repeats(ev) ? Math.min(ev.cycles, 3) : 0); k++){ var t0 = 1 + k*150; if (tu > t0) v += A*(1 - Math.exp(-(tu - t0)/1.5))*Math.exp(-(tu - t0)/90); } return v; }
+    g.strokeStyle = '#7dff9a'; g.lineWidth = 2; g.beginPath(); var n = 400;
+    for (i=0; i<=n*reveal; i++){ var tu = tmax*i/n, y = SY + 22 + Math.min(1, pulse(tu)/vmax)*(SH - 34); if (i) g.lineTo(SX + SW*i/n, y); else g.moveTo(SX, y); } g.stroke();
+    if (ev.reg >= 4 && reveal > 0.25){ g.fillStyle = 'rgba(255,138,61,0.12)'; g.fillRect(SX + SW*1/tmax, SY + 16, SW*100/tmax, SH - 18); lbl(g, 'dead time \u2248 100 \u00b5s', SX + SW*52/tmax, SY + 40, '#ff8a3d', 11); }
+    var thr = pulseV(NTHR); if (thr < vmax){ var ty = SY + 22 + thr/vmax*(SH - 34); g.setLineDash([5, 4]); g.strokeStyle = 'rgba(255,210,63,0.7)'; g.beginPath(); g.moveTo(SX, ty); g.lineTo(SX + SW, ty); g.stroke(); g.setLineDash([]); lbl(g, 'counter threshold', SX + SW/2, ty + 9, '#ffd23f', 10); }
+    lbl(g, 'height ' + pulseText(ev.N) + ' (scale ' + (vmax >= 1 ? vmax + ' V' : vmax >= 1e-3 ? vmax*1e3 + ' mV' : '') + ', downward)', SX + 6, SY + SH - 12, '#c9f5d6', 11, 'left');
+    if (ev.t > PH.aval) lbl(g, ev.counted ? '\u2713 counted' : '\u2717 too small', SX + SW - 8, SY + 12, ev.counted ? p.good : p.bad, 13, 'right'); }
+  /* E(r) inset */
+  var FX = 500, FY = 248, FW = 300, FH = 180;
+  function drawField(){ var g = g0, p = pal(), i, a = 0.025, b = 10, V = T.V;
+    g.fillStyle = '#0d1526'; g.fillRect(FX, FY, FW, FH); g.strokeStyle = '#2b3d60'; g.strokeRect(FX, FY, FW, FH);
+    var L = FX + 44, R = FX + FW - 10, Tp = FY + 22, B = FY + FH - 26; function X(r){ return L + Math.log(r/a)/Math.log(b/a)*(R - L); } function Y(E){ return B - (Math.log(E/1e3)/Math.LN10)/(4)*(B - Tp); }
+    lbl(g, 'field E(r) = V / (r ln(b/a))', FX + 6, FY + 11, '#dbe7ff', 11, 'left');
+    g.strokeStyle = 'rgba(150,170,195,0.25)'; g.lineWidth = 1; [1e3, 1e4, 1e5, 1e6, 1e7].forEach(function(E){ var y = Y(E); g.beginPath(); g.moveTo(L, y); g.lineTo(R, y); g.stroke(); g.fillStyle = '#9aa6b4'; g.font = '10px Arial'; g.textAlign = 'right'; g.fillText(sci(E, 1), L - 3, y + 3); });
+    [0.025, 0.1, 1, 10].forEach(function(r){ var x = X(r); g.beginPath(); g.moveTo(x, Tp); g.lineTo(x, B); g.stroke(); g.fillStyle = '#9aa6b4'; g.textAlign = 'center'; g.fillText(r + (r === 10 ? ' mm' : ''), x, B + 12); });
+    g.fillStyle = '#9aa6b4'; g.fillText('distance r from the wire axis', (L + R)/2, FY + FH - 3);
+    var yc = Y(ECRIT); g.setLineDash([4, 3]); g.strokeStyle = 'rgba(255,210,63,0.7)'; g.beginPath(); g.moveTo(L, yc); g.lineTo(R, yc); g.stroke(); g.setLineDash([]); lbl(g, 'avalanche (2 MV/m)', R - 2, yc - 8, '#ffd23f', 10, 'right');
+    var ra = rAv(V)*1e3; if (ra > a){ g.fillStyle = 'rgba(255,210,63,0.18)'; g.fillRect(L, Tp, Math.min(R, X(ra)) - L, B - Tp); }
+    g.strokeStyle = '#7fb2ff'; g.lineWidth = 2.5; g.beginPath(); for (i=0; i<=100; i++){ var r = a*Math.pow(b/a, i/100), E = V/(r*1e-3*LNBA), y = Math.max(Tp, Y(Math.max(E, 1e3))); if (i) g.lineTo(X(r), y); else g.moveTo(X(r), y); } g.stroke(); }
+  /* graphs */
+  var cG = el('gmGr'), gG = cG.getContext('2d');
+  function drawGraphs(){ var g = gG, w = cG.width, h = cG.height, p = pal(), i;
+    g.fillStyle = '#0b1222'; g.fillRect(0, 0, w, h);
+    /* left: ions collected */ var L = 54, R = 400, Tp = 14, B = h - 34; function X(V){ return L + V/1200*(R - L); } function Y(N){ return B - (Math.log(N)/Math.LN10)/11*(B - Tp); }
+    var bands = [[0, 60], [60, 250], [250, 650], [650, VS], [VS, VC], [VC, 1200]], cols = ['rgba(120,120,140,0.10)', 'rgba(80,160,255,0.08)', 'rgba(60,215,120,0.08)', 'rgba(255,210,63,0.08)', 'rgba(255,138,61,0.14)', 'rgba(255,90,74,0.12)'], rom = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+    bands.forEach(function(bd, j){ g.fillStyle = cols[j]; g.fillRect(X(bd[0]), Tp, X(bd[1]) - X(bd[0]), B - Tp); lbl(g, rom[j], (X(bd[0]) + X(bd[1]))/2, Tp + 10, j === region(T.V) ? '#ffd23f' : '#9aa6b4', 11); });
+    g.strokeStyle = 'rgba(150,170,195,0.25)'; g.lineWidth = 1; g.font = '10px Arial';
+    for (i=0; i<=11; i += 2){ var y = Y(Math.pow(10, i)); g.beginPath(); g.moveTo(L, y); g.lineTo(R, y); g.stroke(); g.fillStyle = '#9aa6b4'; g.textAlign = 'right'; g.fillText('10' + sup(i), L - 4, y + 3); }
+    for (i=0; i<=1200; i += 200){ g.fillStyle = '#9aa6b4'; g.textAlign = 'center'; g.fillText(String(i), X(i), B + 12); }
+    g.fillText('anode voltage (V)', (L + R)/2, h - 6); g.save(); g.translate(12, (Tp + B)/2); g.rotate(-Math.PI/2); g.fillText('ions collected per particle', 0, 0); g.restore();
+    [['a', p.a, '\u03b1'], ['b', p.b, '\u03b2']].forEach(function(q){ g.strokeStyle = q[1]; g.lineWidth = 2.5; g.setLineDash(q[0] === 'b' && gmA11y.alt() ? [6, 3] : []); g.beginPath(); for (var V=20; V<=VC; V += 5){ var y = Y(Math.max(1, collected(V, N0[q[0]]))); if (V === 20) g.moveTo(X(V), y); else g.lineTo(X(V), y); } g.stroke(); g.setLineDash([]); lbl(g, q[2], X(330), Y(collected(330, N0[q[0]])) - 10, q[1], 13); });
+    g.fillStyle = 'rgba(255,90,74,0.5)'; g.fillRect(X(VC), Tp, X(1200) - X(VC), 4);
+    g.setLineDash([4, 3]); g.strokeStyle = 'rgba(255,210,63,0.6)'; g.beginPath(); g.moveTo(L, Y(NTHR)); g.lineTo(R, Y(NTHR)); g.stroke(); g.setLineDash([]); lbl(g, 'threshold', L + 4, Y(NTHR) - 7, '#ffd23f', 10, 'left');
+    g.strokeStyle = '#ffffff'; g.lineWidth = 1.5; g.beginPath(); g.moveTo(X(T.V), Tp); g.lineTo(X(T.V), B); g.stroke();
+    /* right: plateau */ var L2 = 470, R2 = w - 14; function X2(V){ return L2 + (V - 500)/700*(R2 - L2); } var rmax = 200; function Y2(r){ return B - Math.min(r, rmax)/rmax*(B - Tp); }
+    g.strokeStyle = 'rgba(150,170,195,0.25)'; g.lineWidth = 1; [0, 50, 100, 150, 200].forEach(function(r){ var y = Y2(r); g.beginPath(); g.moveTo(L2, y); g.lineTo(R2, y); g.stroke(); g.fillStyle = '#9aa6b4'; g.textAlign = 'right'; g.fillText(String(r), L2 - 4, y + 3); });
+    for (i=500; i<=1200; i += 100){ g.fillStyle = '#9aa6b4'; g.textAlign = 'center'; g.fillText(String(i), X2(i), B + 12); } g.fillText('anode voltage (V)', (L2 + R2)/2, h - 6);
+    g.save(); g.translate(L2 - 36, (Tp + B)/2); g.rotate(-Math.PI/2); g.fillText('counts per second (\u03b2 source)', 0, 0); g.restore();
+    g.fillStyle = 'rgba(255,138,61,0.14)'; g.fillRect(X2(VS), Tp, X2(VC) - X2(VS), B - Tp); lbl(g, 'plateau: operate here', (X2(VS) + X2(VC))/2, Tp + 10, '#ff8a3d', 11);
+    g.strokeStyle = p.good; g.lineWidth = 2.5; g.beginPath(); for (var V2=500; V2<=1200; V2 += 5){ if (V2 === 500) g.moveTo(X2(V2), Y2(rateVsV(V2))); else g.lineTo(X2(V2), Y2(rateVsV(V2))); } g.stroke();
+    if (T.V >= 500){ g.strokeStyle = '#fff'; g.lineWidth = 1.5; g.beginPath(); g.moveTo(X2(T.V), Tp); g.lineTo(X2(T.V), B); g.stroke(); g.fillStyle = '#ffd23f'; g.beginPath(); g.arc(X2(T.V), Y2(rateVsV(T.V)), 5, 0, TAU); g.fill(); } }
+  function ui0(){ var V = T.V, reg = region(V), k = T.kind, N = collected(V, N0[k]), ra = rAv(V)*1e3;
+    el('gmVv').textContent = V + ' V'; el('gmV').setAttribute('aria-valuetext', V + ' volts, ' + RNAME[reg] + ' region');
+    var R = [['voltage', V + ' V'], ['region', RNAME[reg]], ['field at the wire', sci(Ewire(V), 2) + ' V/m'], ['avalanche zone', ra > 0.025 ? 'r < ' + ra.toPrecision(2) + ' mm' : 'none'], ['primary ion pairs', sci(N0[k], 2) + ' (' + { a:'alpha', b:'beta', g:'gamma' }[k] + ')'], ['multiplication', reg >= 5 ? '\u221e' : sci(N/N0[k], 2) + '\u00d7'], ['pulse height', reg >= 5 ? 'continuous' : pulseText(N)], ['counted?', reg >= 5 ? 'spurious counts' : N >= NTHR ? 'yes' : 'no']];
+    el('gmR0').innerHTML = R.map(function(q){ return '<div><div class="' + cls('gm_rl') + '">' + q[0] + '</div><div class="' + cls('gm_rv') + '">' + q[1] + '</div></div>'; }).join('');
+    var E = ['<b>Recombination.</b> The voltage is so low that many electrons and ions meet again before reaching the electrodes; only some of the charge is collected.',
+      '<b>Ionization chamber.</b> All the ions made by the particle are collected, but no new ones: the pulse is tiny (an \u03b1 gives far more than a \u03b2). Instruments that use this region need very sensitive amplifiers.',
+      '<b>Proportional counter.</b> Near the wire the field exceeds about 2 MV/m, so each electron starts an avalanche, multiplying the charge by a fixed factor. The pulse is still proportional to the ions the particle made, so a proportional counter can measure energy and tell \u03b1 from \u03b2.',
+      '<b>Limited proportionality.</b> The avalanches are so large that their own space charge limits them: big and small initial ionizations give more and more similar pulses.',
+      '<b>Geiger\u2013M\u00fcller plateau.</b> Ultraviolet photons from each avalanche start new ones along the whole wire, and the discharge stops only when the positive-ion sheath weakens the field. Every particle gives the same large pulse: the counter counts particles but cannot tell their type or energy. The count rate barely changes with voltage, so this is where the tube is used.' + (T.quench ? '' : ' <b>Without quench gas</b>, ions reaching the wall free new electrons and the discharge restarts.'),
+      '<b>Continuous discharge.</b> The field is so strong that the discharge sustains itself even without radiation. The tube counts constantly and is quickly damaged.'][reg];
+    el('gmExp0').innerHTML = '<p>' + E + '</p><div class="' + cls('gm_eq') + '">E(wire) = V/(a ln(b/a)) = ' + V + '/(0.025 mm \u00d7 ' + LNBA.toFixed(2) + ') = <b class="' + cls('gm_res') + '">' + sci(Ewire(V), 2) + ' V/m</b></div><div class="' + cls('gm_eq') + '">pulse = N e/C = ' + sci(N, 2) + ' \u00d7 1.6\u00d710\u207b\u00b9\u2079 C / 10 pF = <b class="' + cls('gm_res') + '">' + (reg >= 5 ? '\u2014' : pulseText(N)) + '</b></div>';
+    el('gmS0').textContent = T.ev ? '' : 'Region ' + ['I', 'II', 'III', 'IV', 'V', 'VI'][reg] + ': ' + RNAME[reg] + '. ' + (reg === 4 ? 'This is the normal operating voltage of a Geiger tube.' : '');
+    [].forEach.call(el('gmKind').querySelectorAll('button'), function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-k') === k ? 'true' : 'false'); }); drawGraphs(); }
+  el('gmKind').innerHTML = [['a', '\u03b1 alpha'], ['b', '\u03b2 beta'], ['g', '\u03b3 gamma']].map(function(q){ return '<button type="button" data-k="' + q[0] + '" aria-pressed="false">' + q[1] + '</button>'; }).join('');
+  [].forEach.call(el('gmKind').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ T.kind = b.getAttribute('data-k'); ui0(); say({ a:'Alpha particles: about 40 000 ion pairs in the gas.', b:'Beta particles: about 90 ion pairs.', g:'Gamma rays: they rarely interact in the gas; most counts come from electrons knocked out of the wall, about 25 ion pairs.' }[T.kind]); }); });
+  el('gmVpre').innerHTML = [[150, 'Ionization chamber'], [500, 'Proportional'], [900, 'Geiger'], [1120, 'Too high']].map(function(q){ return '<button type="button" data-v="' + q[0] + '" aria-pressed="false">' + q[1] + ' (' + q[0] + ' V)</button>'; }).join('');
+  [].forEach.call(el('gmVpre').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ T.V = +b.getAttribute('data-v'); el('gmV').value = T.V; ui0(); say(T.V + ' volts: ' + RNAME[region(T.V)] + ' region. ' + el('gmExp0').querySelector('p').textContent.split('.').slice(0, 2).join('.') + '.'); }); });
+  el('gmV').addEventListener('input', function(){ T.V = +this.value; ui0(); }); el('gmV').addEventListener('change', function(){ say(T.V + ' volts: ' + RNAME[region(T.V)] + ' region.'); });
+  el('gmQ').addEventListener('change', function(){ T.quench = this.checked; ui0(); say(T.quench ? 'Quench gas added: each discharge stops by itself.' : 'Quench gas removed: send a particle at the Geiger voltage and watch the discharge restart.'); });
+  el('gmSlow').addEventListener('change', function(){ T.slow = this.checked; });
+  el('gmSend').addEventListener('click', function(){ T.ev = newEvent(T.kind); T.counts++; el('gmS0').textContent = ''; });
+  el('gmAuto').addEventListener('click', function(){ T.auto = !T.auto; this.setAttribute('aria-pressed', T.auto ? 'true' : 'false'); this.textContent = 'Automatic: ' + (T.auto ? 'on' : 'off'); T.autoT = 0.5; });
+  /* ══════════ TAB 1: survey meter ══════════ */
+  var c1 = el('gmC1'), g1 = c1.getContext('2d'), W1 = c1.width, H1 = c1.height;
+  var SRC = [
+    ['Nothing (background only)', 0, {}],
+    ['Uranium glass marble', 1500, { a:0.25, b:0.65, g:0.10 }, 'marble'],
+    ['Orange Fiestaware plate (uranium glaze)', 9000, { a:0.3, b:0.6, g:0.1 }, 'plate'],
+    ['Salt substitute (potassium chloride)', 260, { b:0.9, g:0.1 }, 'jar'],
+    ['Smoke detector source (Am-241)', 20000, { a:0.92, g:0.08 }, 'smoke'],
+    ['Check source, Cs-137 (1 \u00b5Ci)', 36000, { b:0.75, g:0.25 }, 'disk'],
+    ['Lab source, Sr-90 (0.1 \u00b5Ci)', 18000, { b:1 }, 'disk'],
+    ['Strong lab source, Cs-137 (100 \u00b5Ci)', 3.6e6, { b:0.75, g:0.25 }, 'pig']];
+  var SHL = [['none', 'No shield'], ['paper', 'Paper'], ['al', 'Aluminium 3 mm'], ['pb', 'Lead 5 mm']];
+  var M = { src:5, d:5, sh:'none', range:'x1', snd:false, slow:false, est:35/60, needle:0, led:0, timed:null, lastTimed:null, tick:0 };
+  var TAUD = 90e-6, BKG = 35, PER = 330;
+  function trueRate(){ var s = SRC[M.src], mix = s[2], cpm1 = s[1], geo = Math.pow(1.5/(M.d + 0.5), 2), tr = 0, k;
+    for (k in mix){ var t = mix[k];
+      if (k === 'a') t *= M.d < 2.5 ? 1 : M.d > 4.5 ? 0 : (4.5 - M.d)/2;
+      if (M.sh === 'paper') t *= k === 'a' ? 0 : k === 'b' ? 0.95 : 1; if (M.sh === 'al') t *= k === 'a' ? 0 : k === 'b' ? 0.05 : 0.95; if (M.sh === 'pb') t *= k === 'a' ? 0 : k === 'b' ? 0 : 0.75;
+      tr += t; }
+    return (cpm1*geo*tr + BKG)/60; }   /* counts per second */
+  function measured(n){ return n/(1 + n*TAUD); }
+  var RG = [['off', 'OFF'], ['bat', 'BAT'], ['x1', '\u00d71'], ['x10', '\u00d710'], ['x100', '\u00d7100']];
+  function factor(){ return M.range === 'x10' ? 10 : M.range === 'x100' ? 100 : 1; }
+  function on(){ return M.range !== 'off' && M.range !== 'bat'; }
+  function rr(g, x, y, w, h, r){ g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+  function drawMeter(){ var g = g1, p = pal(), i;
+    var bg = g.createLinearGradient(0, 0, 0, H1); bg.addColorStop(0, '#2d3440'); bg.addColorStop(1, '#1b2028'); g.fillStyle = bg; g.fillRect(0, 0, W1, H1);
+    /* table */ var TY = 410; var tg = g.createLinearGradient(0, TY, 0, H1); tg.addColorStop(0, '#8a6a46'); tg.addColorStop(1, '#5d452c'); g.fillStyle = tg; g.fillRect(0, TY, W1, H1 - TY); g.fillStyle = 'rgba(255,255,255,0.08)'; g.fillRect(0, TY, W1, 3);
+    /* meter body */ g.save(); g.shadowColor = 'rgba(0,0,0,0.6)'; g.shadowBlur = 18; g.shadowOffsetY = 8; var mb = g.createLinearGradient(0, 40, 0, 380); mb.addColorStop(0, '#ffd84a'); mb.addColorStop(0.5, '#f2c230'); mb.addColorStop(1, '#c99a12'); g.fillStyle = mb; rr(g, 30, 60, 440, 320, 22); g.fill(); g.restore();
+    g.strokeStyle = '#8a6a08'; g.lineWidth = 2; rr(g, 30, 60, 440, 320, 22); g.stroke();
+    /* handle */ g.strokeStyle = '#2b2b2b'; g.lineWidth = 14; g.lineCap = 'round'; g.beginPath(); g.moveTo(110, 62); g.lineTo(130, 22); g.lineTo(370, 22); g.lineTo(390, 62); g.stroke(); g.lineCap = 'butt';
+    g.fillStyle = '#5a4500'; g.font = 'bold 13px Arial'; g.textAlign = 'left'; g.fillText('RADIATION SURVEY METER', 50, 84); g.font = '10px Arial'; g.fillText('GM PANCAKE PROBE  \u00b7  CPM', 50, 98);
+    /* dial */ var DX = 60, DY = 106, DW = 380, DH = 150; g.fillStyle = '#222'; rr(g, DX - 6, DY - 6, DW + 12, DH + 12, 10); g.fill(); var df = g.createLinearGradient(0, DY, 0, DY + DH); df.addColorStop(0, '#fffdf2'); df.addColorStop(1, '#ece6cf'); g.fillStyle = df; rr(g, DX, DY, DW, DH, 7); g.fill();
+    var CX = DX + DW/2, CY = DY + DH + 52, RA = 150, A0 = -Math.PI*0.80, A1 = -Math.PI*0.20;
+    g.strokeStyle = '#222'; g.lineWidth = 2; g.beginPath(); g.arc(CX, CY, RA, A0, A1); g.stroke();
+    g.strokeStyle = '#c62828'; g.lineWidth = 6; g.beginPath(); g.arc(CX, CY, RA - 4, A0 + 0.8*(A1 - A0), A1); g.stroke();
+    for (i=0; i<=50; i++){ var a = A0 + (A1 - A0)*i/50, L = i % 10 === 0 ? 16 : i % 5 === 0 ? 11 : 6; g.strokeStyle = '#222'; g.lineWidth = i % 10 === 0 ? 2 : 1; g.beginPath(); g.moveTo(CX + RA*Math.cos(a), CY + RA*Math.sin(a)); g.lineTo(CX + (RA - L)*Math.cos(a), CY + (RA - L)*Math.sin(a)); g.stroke();
+      if (i % 10 === 0){ g.fillStyle = '#222'; g.font = 'bold 13px Arial'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(String(i*10), CX + (RA - 28)*Math.cos(a), CY + (RA - 28)*Math.sin(a)); } }
+    var ab0 = A0 + 0.05*(A1 - A0), ab1 = A0 + 0.25*(A1 - A0); g.strokeStyle = '#2e7d32'; g.lineWidth = 5; g.beginPath(); g.arc(CX, CY, RA - 46, ab0, ab1); g.stroke(); g.fillStyle = '#2e7d32'; g.font = 'bold 9px Arial'; g.fillText('BAT OK', CX + (RA - 58)*Math.cos((ab0 + ab1)/2), CY + (RA - 58)*Math.sin((ab0 + ab1)/2));
+    g.fillStyle = '#222'; g.font = 'bold 14px Arial'; g.textBaseline = 'alphabetic'; g.fillText('CPM \u00d7' + (on() ? factor() : 1), CX, DY + DH - 16);
+    /* needle */ var nv = Math.max(0, Math.min(1.03, M.needle)), na = A0 + (A1 - A0)*nv; g.save(); g.beginPath(); rr(g, DX, DY, DW, DH, 7); g.clip(); g.strokeStyle = '#111'; g.lineWidth = 2.5; g.beginPath(); g.moveTo(CX - 12*Math.cos(na), CY - 12*Math.sin(na)); g.lineTo(CX + (RA - 6)*Math.cos(na), CY + (RA - 6)*Math.sin(na)); g.stroke(); g.restore();
+    g.save(); g.beginPath(); rr(g, DX, DY, DW, DH, 7); g.clip(); g.fillStyle = '#333'; g.beginPath(); g.arc(CX, CY, 14, 0, TAU); g.fill(); g.restore();
+    var glare = g.createLinearGradient(DX, DY, DX, DY + DH*0.5); glare.addColorStop(0, 'rgba(255,255,255,0.35)'); glare.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = glare; rr(g, DX + 4, DY + 4, DW - 8, DH*0.45, 6); g.fill();
+    /* LED */ g.fillStyle = M.led > 0 ? 'rgba(255,40,40,' + (0.4 + 0.6*M.led) + ')' : '#5a1010'; g.beginPath(); g.arc(440, 84, 7, 0, TAU); g.fill(); if (M.led > 0){ g.fillStyle = 'rgba(255,80,80,' + 0.35*M.led + ')'; g.beginPath(); g.arc(440, 84, 16, 0, TAU); g.fill(); }
+    /* LCD */ g.fillStyle = '#222'; rr(g, 54, 272, 196, 56, 6); g.fill(); var lc = g.createLinearGradient(0, 278, 0, 322); lc.addColorStop(0, '#b8c8a2'); lc.addColorStop(1, '#9fb288'); g.fillStyle = lc; rr(g, 60, 278, 184, 44, 4); g.fill();
+    g.fillStyle = on() ? '#1d2a14' : 'rgba(29,42,20,0.12)'; g.font = 'bold 24px "Courier New", monospace'; g.textAlign = 'right'; var cpm = Math.round(M.est*60), txt = on() ? (cpm > 99999 ? 'OVER' : String(cpm)) : M.range === 'bat' ? '9.1V' : '8888'; g.fillText(txt, 196, 303);
+    g.textAlign = 'left'; g.font = 'bold 12px Arial'; g.fillText(on() ? 'CPM' : '', 202, 302); g.font = '10px Arial'; g.fillText(on() ? doseTxt(cpm) : '', 66, 318);
+    /* speaker */ for (i=0; i<5; i++) for (var j=0; j<5; j++){ g.fillStyle = '#4a3a06'; g.beginPath(); g.arc(282 + i*11, 282 + j*10, 2.5, 0, TAU); g.fill(); } g.fillStyle = '#5a4500'; g.font = '9px Arial'; g.textAlign = 'center'; g.fillText(M.snd ? 'AUDIO ON' : 'AUDIO OFF', 304, 340);
+    /* range knob */ var KX = 404, KY = 322, ki = RG.map(function(r0){ return r0[0]; }).indexOf(M.range), kang = -Math.PI*0.85 + ki*Math.PI*0.425;
+    RG.forEach(function(r0, j2){ var aa = -Math.PI*0.85 + j2*Math.PI*0.425; g.fillStyle = '#3a2c00'; g.font = 'bold 10px Arial'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(r0[1], KX + 44*Math.cos(aa), KY + 44*Math.sin(aa)); }); g.textBaseline = 'alphabetic';
+    var kg = g.createRadialGradient(KX - 8, KY - 8, 4, KX, KY, 30); kg.addColorStop(0, '#666'); kg.addColorStop(1, '#151515'); g.fillStyle = kg; g.beginPath(); g.arc(KX, KY, 24, 0, TAU); g.fill();
+    g.strokeStyle = '#fff'; g.lineWidth = 4; g.beginPath(); g.moveTo(KX + 6*Math.cos(kang), KY + 6*Math.sin(kang)); g.lineTo(KX + 21*Math.cos(kang), KY + 21*Math.sin(kang)); g.stroke();
+    /* sample and probe */ var PXc = 660, scale = 9, sTop = TY - 10, py = sTop - M.d*scale; drawSample(g, PXc, TY);
+    if (M.sh !== 'none'){ var shy = (sTop + py)/2, shh = M.sh === 'paper' ? 3 : M.sh === 'al' ? 6 : 10; g.fillStyle = M.sh === 'paper' ? '#f3efe2' : M.sh === 'al' ? '#c0c8d2' : '#5f6875'; g.fillRect(PXc - 110, shy - shh/2, 220, shh); g.strokeStyle = 'rgba(0,0,0,0.5)'; g.lineWidth = 1; g.strokeRect(PXc - 110, shy - shh/2, 220, shh); lbl(g, SHL.filter(function(q){ return q[0] === M.sh; })[0][1].toLowerCase(), PXc - 116, shy, '#e6ecf2', 11, 'right'); }
+    /* coiled cable */ g.strokeStyle = '#151515'; g.lineWidth = 4; g.beginPath(); var cx0 = 470, cy0 = 200, cx1 = PXc + 70, cy1 = py - 46; for (i=0; i<=60; i++){ var f = i/60, x = cx0 + (cx1 - cx0)*f, y = cy0 + (cy1 - cy0)*f - 60*Math.sin(Math.PI*f) + 7*Math.sin(f*60); if (i) g.lineTo(x, y); else g.moveTo(x, y); } g.stroke();
+    /* probe */ var pg = g.createLinearGradient(0, py - 40, 0, py); pg.addColorStop(0, '#5d6670'); pg.addColorStop(1, '#2f353c'); g.fillStyle = pg; rr(g, PXc - 70, py - 40, 140, 36, 8); g.fill(); g.fillStyle = '#222'; g.fillRect(PXc + 60, py - 50, 70, 18);
+    g.fillStyle = '#3c3c3c'; g.fillRect(PXc - 64, py - 6, 128, 6); g.strokeStyle = 'rgba(200,200,200,0.5)'; g.lineWidth = 1; for (i=0; i<9; i++){ g.beginPath(); g.moveTo(PXc - 60 + i*15, py - 6); g.lineTo(PXc - 60 + i*15, py); g.stroke(); }
+    lbl(g, 'pancake GM probe', PXc - 20, py - 22, '#e6ecf2', 11); lbl(g, 'mica window (faces down)', PXc, py + 10, '#9aa6b4', 10);
+    g.strokeStyle = '#ffd23f'; g.lineWidth = 1; g.setLineDash([3, 3]); g.beginPath(); g.moveTo(PXc - 130, py); g.lineTo(PXc - 130, sTop); g.stroke(); g.setLineDash([]); lbl(g, M.d + ' cm', PXc - 136, (py + sTop)/2 - (M.sh !== 'none' ? 14 : 0), '#ffd23f', 12, 'right');
+    lbl(g, SRC[M.src][0], PXc, TY + 30, '#f3e6d0', 12); }
+  function drawSample(g, x, TY){ var kind = SRC[M.src][3];
+    if (kind === 'marble'){ var mg = g.createRadialGradient(x - 6, TY - 22, 2, x, TY - 16, 16); mg.addColorStop(0, '#eaffa0'); mg.addColorStop(1, '#5fbf20'); g.fillStyle = mg; g.beginPath(); g.arc(x, TY - 16, 16, 0, TAU); g.fill(); }
+    else if (kind === 'plate'){ g.fillStyle = '#e2562a'; g.beginPath(); g.ellipse(x, TY - 6, 90, 9, 0, 0, TAU); g.fill(); g.fillStyle = '#f07040'; g.beginPath(); g.ellipse(x, TY - 9, 70, 6, 0, 0, TAU); g.fill(); }
+    else if (kind === 'jar'){ g.fillStyle = '#dfe6ee'; g.fillRect(x - 26, TY - 56, 52, 56); g.fillStyle = '#2f6fb0'; g.fillRect(x - 26, TY - 40, 52, 18); g.fillStyle = '#fff'; g.font = 'bold 9px Arial'; g.textAlign = 'center'; g.fillText('KCl', x, TY - 28); }
+    else if (kind === 'smoke'){ g.fillStyle = '#c9ccd1'; g.fillRect(x - 20, TY - 12, 40, 12); g.fillStyle = '#8a9099'; g.beginPath(); g.arc(x, TY - 12, 8, Math.PI, 0); g.fill(); }
+    else if (kind === 'disk'){ g.fillStyle = '#d7dbe0'; g.beginPath(); g.ellipse(x, TY - 4, 28, 6, 0, 0, TAU); g.fill(); g.fillStyle = '#f2c230'; g.beginPath(); g.ellipse(x, TY - 7, 18, 4, 0, 0, TAU); g.fill(); }
+    else if (kind === 'pig'){ g.fillStyle = '#6a6f76'; g.fillRect(x - 30, TY - 50, 60, 50); g.fillStyle = '#f2c230'; g.fillRect(x - 30, TY - 30, 60, 10); g.fillStyle = '#7a1f1f'; g.font = 'bold 9px Arial'; g.textAlign = 'center'; g.fillText('\u2622 Cs-137', x, TY - 22); g.fillStyle = '#3a3f46'; g.fillRect(x - 32, TY - 54, 64, 6); } }
+  function frame1(dt){ var n = trueRate(), m = measured(n), tau = M.slow ? 10 : 2;
+    if (on() && dt > 0){ var k = poisson(m*dt); M.est = M.est*Math.exp(-dt/tau) + k/tau; if (k){ M.led = 1; if (M.snd){ var nc = Math.min(k, 8); for (var i=0; i<nc; i++) setTimeout(function(){ click(0.4); }, Math.random()*dt*1000); } }
+      if (M.timed){ M.timed.c += k; M.timed.t += dt; if (M.timed.t >= 10){ M.lastTimed = M.timed; M.timed = null; el('gmTimed').textContent = 'Count 10 s'; say('Timed count: ' + M.lastTimed.c + ' counts in 10 seconds, that is ' + (6*M.lastTimed.c) + ' counts per minute, plus or minus ' + Math.round(6*Math.sqrt(M.lastTimed.c)) + '.'); ui1(); } } }
+    var target = !on() ? (M.range === 'bat' ? 0.15 : 0) : M.est*60/(500*factor()); M.needle += (Math.min(1.03, target) - M.needle)*Math.min(1, dt*6);
+    M.led = Math.max(0, M.led - dt*12); drawMeter(); if ((M.tick += dt) > 0.5){ M.tick = 0; ui1(); } }
+  function doseTxt(cpm){ var d = cpm/PER; return (d >= 1000 ? (d/1000).toPrecision(3) + ' mSv/h' : d >= 10 ? d.toFixed(0) + ' \u00b5Sv/h' : d.toFixed(2) + ' \u00b5Sv/h'); }
+  function ui1(){ var n = trueRate(), m = measured(n), loss = 1 - m/n, cpm = M.est*60, over = on() && cpm > 500*factor();
+    el('gmDv').textContent = M.d + ' cm'; el('gmD').setAttribute('aria-valuetext', M.d + ' centimetres');
+    var R = [['range', RG.filter(function(q){ return q[0] === M.range; })[0][1]], ['meter reading', on() ? Math.round(cpm).toLocaleString() + ' CPM' + (over ? ' (off scale!)' : '') : '\u2014'], ['dose rate (Cs-137 cal.)', on() ? doseTxt(cpm) : '\u2014'], ['true rate', Math.round(n*60).toLocaleString() + ' CPM'], ['measured (dead time)', Math.round(m*60).toLocaleString() + ' CPM'], ['counts lost', (100*loss).toFixed(loss < 0.01 ? 2 : 0) + ' %'], ['10-s count', M.timed ? 'counting\u2026 ' + M.timed.c : M.lastTimed ? M.lastTimed.c + ' \u2192 ' + 6*M.lastTimed.c + ' \u00b1 ' + Math.round(6*Math.sqrt(M.lastTimed.c)) + ' CPM' : '\u2014']];
+    el('gmR1').innerHTML = R.map(function(q){ return '<div><div class="' + cls('gm_rl') + '">' + q[0] + '</div><div class="' + cls('gm_rv') + '">' + q[1] + '</div></div>'; }).join('');
+    el('gmS1').textContent = M.range === 'off' ? 'The meter is off: turn the range knob to \u00d71.' : M.range === 'bat' ? 'Battery check: the needle sits in the green BAT OK band.' : over ? 'Off scale: turn the range knob up (\u00d710 or \u00d7100).' : cpm < 100 && M.src === 0 ? 'Only background radiation (cosmic rays, radon, rocks): about ' + BKG + ' CPM.' : loss > 0.1 ? 'The tube is dead for ' + (TAUD*1e6) + ' \u00b5s after each count and is missing ' + (100*loss).toFixed(0) + '% of the particles.' : 'Each count is one particle that entered the probe; the needle shows the average.';
+    el('gmExp1').innerHTML = '<p><b>Counts per minute.</b> The needle averages the counts over about ' + (M.slow ? 10 : 2) + ' s (' + (M.slow ? 'slow: steady but sluggish' : 'fast: quick but jumpy') + '); the range knob multiplies the scale. Counts are random, so a count N is uncertain by about \u221aN.</p>'
+      + '<div class="' + cls('gm_eq') + '">measured m = n/(1 + n\u03c4) = ' + Math.round(n*60).toLocaleString() + '/(1 + ' + (n*TAUD).toPrecision(2) + ') = <b class="' + cls('gm_res') + '">' + Math.round(m*60).toLocaleString() + ' CPM</b></div>'
+      + '<p><b>Dead time</b> \u03c4 \u2248 90 \u00b5s: while the positive ions drift to the wall, the tube cannot count. A meter can be corrected with n = m/(1 \u2212 m\u03c4), but very strong sources overwhelm it.</p><p class="' + cls('gm_note') + '">A Geiger counter counts particles: it does not measure their energy. The dose rate assumes the calibration for Cs-137 (about 330 CPM per \u00b5Sv/h) and is only approximate for other sources.</p>'; }
+  el('gmRange').innerHTML = RG.map(function(q){ return '<button type="button" data-r="' + q[0] + '" aria-pressed="false">' + q[1] + '</button>'; }).join('');
+  function rangeUI(){ [].forEach.call(el('gmRange').querySelectorAll('button'), function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-r') === M.range ? 'true' : 'false'); }); }
+  [].forEach.call(el('gmRange').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ M.range = b.getAttribute('data-r'); rangeUI(); ui1(); say(M.range === 'off' ? 'Meter off.' : M.range === 'bat' ? 'Battery check: needle in the green band.' : 'Range ' + b.textContent + ': full scale ' + (500*factor()).toLocaleString() + ' counts per minute. ' + el('gmS1').textContent); }); });
+  el('gmSrc').innerHTML = SRC.map(function(q, i){ return '<option value="' + i + '">' + q[0] + '</option>'; }).join(''); el('gmSrc').value = M.src;
+  el('gmSrc').addEventListener('change', function(){ M.src = +this.value; M.lastTimed = null; M.est = measured(trueRate()); ui1(); say(SRC[M.src][0] + ': about ' + Math.round(trueRate()*60).toLocaleString() + ' counts per minute at ' + M.d + ' cm.'); });
+  el('gmD').addEventListener('input', function(){ M.d = +this.value; ui1(); }); el('gmD').addEventListener('change', function(){ say('Probe ' + M.d + ' cm above the sample: about ' + Math.round(measured(trueRate())*60).toLocaleString() + ' counts per minute.'); });
+  el('gmShield').innerHTML = SHL.map(function(q){ return '<button type="button" data-s="' + q[0] + '" aria-pressed="false">' + q[1] + '</button>'; }).join('');
+  function shUI(){ [].forEach.call(el('gmShield').querySelectorAll('button'), function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-s') === M.sh ? 'true' : 'false'); }); }
+  [].forEach.call(el('gmShield').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ M.sh = b.getAttribute('data-s'); shUI(); ui1(); say(b.textContent + ': about ' + Math.round(measured(trueRate())*60).toLocaleString() + ' counts per minute.'); }); });
+  el('gmSnd').addEventListener('click', function(){ M.snd = !M.snd; if (M.snd) ac(); this.setAttribute('aria-pressed', M.snd ? 'true' : 'false'); this.textContent = 'Speaker: ' + (M.snd ? 'on' : 'off'); });
+  el('gmResp').addEventListener('click', function(){ M.slow = !M.slow; this.setAttribute('aria-pressed', M.slow ? 'true' : 'false'); this.textContent = 'Response: ' + (M.slow ? 'slow' : 'fast'); ui1(); });
+  el('gmTimed').addEventListener('click', function(){ if (!on()){ M.range = 'x1'; rangeUI(); } M.timed = { c:0, t:0 }; this.textContent = 'Counting\u2026'; say('Counting for 10 seconds.'); });
+  c1.addEventListener('keydown', function(e){ if (e.key === 'ArrowUp' || e.key === 'ArrowDown'){ M.d = Math.max(0.5, Math.min(20, M.d + (e.key === 'ArrowUp' ? 0.5 : -0.5))); el('gmD').value = M.d; ui1(); e.preventDefault(); } });
+  /* ══════════ tabs and loop ══════════ */
+  var tab = 0, last = 0;
+  function setTab(i){ tab = i; for (var k=0; k<2; k++){ var t = el('gmT' + k); t.setAttribute('aria-selected', k === i ? 'true' : 'false'); t.tabIndex = k === i ? 0 : -1; el('gmP' + k).hidden = k !== i; } last = 0;
+    if (i === 1){ if (M.range === 'off') M.range = 'x1'; rangeUI(); ui1(); say('A real survey meter. Turn the speaker on to hear the clicks, then move the probe and try the samples and shields.'); } else { ui0(); say('Inside the Geiger-Mueller tube. Send a particle and follow it.'); } }
+  [0, 1].forEach(function(i){ var t = el('gmT' + i); t.addEventListener('click', function(){ setTab(i); }); t.addEventListener('keydown', function(e){ if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){ setTab(1 - i); el('gmT' + (1 - i)).focus(); e.preventDefault(); } }); });
+  function loop(now){ var dt = last ? Math.min(0.05, (now - last)/1000) : 0; last = now;
+    if (tab === 0){ if (T.auto && !T.ev){ T.autoT -= dt; if (T.autoT <= 0){ T.ev = newEvent(T.kind); T.autoT = 0.8; } } stepEvent(dt); if (T.ev && T.ev.t >= PH.aval && T.ev.counted && !T.ev.clicked){ T.ev.clicked = 1; if (M.snd) click(0.5); } drawTube(); if (!T.ev) ui0Status(); }
+    else frame1(dt);
+    requestAnimationFrame(loop); }
+  var stTimer = 0; function ui0Status(){ if ((stTimer += 1) % 30) return; el('gmS0').textContent = 'Region ' + ['I', 'II', 'III', 'IV', 'V', 'VI'][region(T.V)] + ': ' + RNAME[region(T.V)] + '.' + (T.auto ? ' Automatic: a new ' + { a:'alpha particle', b:'beta particle', g:'gamma ray' }[T.kind] + ' follows each pulse.' : ''); }
+  gmA11y.onChange(function(){ drawGraphs(); drawTube(); drawMeter(); });
+  rangeUI(); shUI(); ui0(); ui1(); requestAnimationFrame(loop);
+  say('Inside a Geiger-Mueller tube at 900 volts. Press Send a particle to follow one beta particle; then try other voltages, and the second tab for a real counter.');
+  return { setTab:setTab, T:T, M:M, collected:collected, rateVsV:rateVsV, trueRate:trueRate, measured:measured, send:function(k){ T.kind = k || T.kind; T.ev = newEvent(T.kind); }, step:function(d){ stepEvent(d); drawTube(); }, frame1:frame1 };
+};
+var gmSim = new gmGen();
+</script>
+<script>gmA11y.init();</script>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+</div>
+
+</body>
+</html>

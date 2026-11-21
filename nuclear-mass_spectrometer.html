@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Nuclear: The Mass Spectrometer</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobmassspec" class="mob_wrap">
+<div class="ms_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="ms_a11ybtn" id="msBtnHC" onclick="msA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="ms_a11ybtn" id="msBtnDM" onclick="msA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="ms_a11ybtn" id="msBtnCB" onclick="msA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="ms_a11ybtn" id="msBtnNR" onclick="msA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+<div class="ms_title"><h3>The Mass Spectrometer</h3></div>
+<div class="ms_tabs" role="tablist" aria-label="View">
+<button type="button" role="tab" class="ms_tab" id="msT0" aria-selected="true" aria-controls="msP0">1. How it works</button>
+<button type="button" role="tab" class="ms_tab" id="msT1" aria-selected="false" aria-controls="msP1">2. A real instrument</button>
+</div>
+<div id="msNarBar" class="ms_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<!-- ═════════ TAB 0 ═════════ -->
+<div id="msP0" role="tabpanel" aria-labelledby="msT0">
+<div class="ms_intro">A <b>mass spectrometer</b> sorts atoms by mass. Atoms are <b>ionized</b> in the source, pass through a <b>velocity selector</b> (crossed electric and magnetic fields) that lets through only ions of one speed, <b>v = E/B</b>, and then enter a second magnetic field <b>B&#8320;</b>. There each ion moves on a half circle of radius <b>r = mv/(qB&#8320;)</b>: heavier ions make bigger circles and land farther along the detector. Each isotope of an element lands at its own place.</div>
+<div class="ms_view"><canvas id="msC0" width="820" height="470" role="img" aria-label="Side view of a Bainbridge mass spectrometer: the ion source on the left, the velocity selector with its two charged plates and a magnetic field into the page, a slit, and the deflection region with a magnetic field out of the page, where each isotope follows its own half circle and lands on the vertical detector plate below the slit. Ions that are too fast or too slow are deflected onto the plates of the velocity selector."></canvas></div>
+<div id="msS0" class="ms_status"></div>
+<div class="ms_transport" role="toolbar" aria-label="Beam">
+<div class="ms_tgroup"><button type="button" class="ms_bbtn" id="msRun" aria-pressed="true">Stop the beam</button><button type="button" class="ms_vbtn" id="msClr">Clear the detector</button></div>
+<div class="ms_tgroup ms_tsep"><button type="button" class="ms_vbtn" id="msAb" aria-pressed="false">Equal numbers of each isotope</button><button type="button" class="ms_vbtn" id="msFrc" aria-pressed="true">Forces: shown</button></div>
+</div>
+<div class="ms_read" id="msR0" aria-live="off"></div>
+<div class="ms_card"><div class="ms_ctitle">What the detector records: ions counted along the plate, converted to mass</div><canvas id="msSp" width="820" height="200" role="img" aria-label="Bar graph of the number of ions detected against their mass in atomic mass units, one bar per isotope, with the natural abundances for comparison."></canvas></div>
+<div class="ms_panels">
+<div class="ms_panel"><div class="ms_ptitle">Sample</div><div class="ms_pbody">
+<div class="ms_presets" id="msEl" role="group" aria-label="Element"></div>
+<div class="ms_presets" id="msQ" role="group" aria-label="Charge of the ions"></div>
+<div class="ms_tblwrap" id="msIso"></div>
+</div></div>
+<div class="ms_panel"><div class="ms_ptitle">Fields</div><div class="ms_pbody">
+<div class="ms_ctrl"><div class="ms_chdr"><label for="msE">Selector electric field E</label><span class="ms_val" id="msEv"></span></div><input type="range" id="msE" min="20" max="300" step="5" value="100"></div>
+<div class="ms_ctrl"><div class="ms_chdr"><label for="msB">Selector magnetic field B</label><span class="ms_val" id="msBv"></span></div><input type="range" id="msB" min="0.10" max="1.00" step="0.01" value="0.50"></div>
+<div class="ms_ctrl"><div class="ms_chdr"><label for="msB0">Deflecting field B&#8320;</label><span class="ms_val" id="msB0v"></span></div><input type="range" id="msB0" min="0.20" max="1.50" step="0.01" value="0.50"></div>
+<div id="msEq0"></div>
+</div></div>
+</div>
+</div>
+<!-- ═════════ TAB 1 ═════════ -->
+<div id="msP1" role="tabpanel" aria-labelledby="msT1" hidden>
+<div class="ms_intro">A laboratory <b>magnetic-sector</b> mass spectrometer. Gas leaks into the ion source, where an electron beam ionizes the molecules (and often breaks them into <b>fragments</b>). The ions are accelerated through a voltage V and bent by the magnet; only ions with <b>m/z = eB&sup2;r&sup2;/(2V)</b> follow the curved flight tube to the detector. The computer slowly <b>scans the magnetic field</b>, so the ions reach the detector one mass after the other, and draws the <b>mass spectrum</b>.</div>
+<div class="ms_view"><canvas id="msC1" width="820" height="540" role="img" aria-label="Top: the instrument: gas inlet valve, ion source with a glowing filament, accelerating plates, a curved flight tube passing between the poles of a red electromagnet, the detector, a turbomolecular vacuum pump and gauges. Ions of the mass selected by the magnet follow the tube to the detector; lighter ions bend too much and hit the inner wall, heavier ones the outer wall. Bottom: a computer monitor showing the mass spectrum, the ion current against m/z, drawn as the magnet is scanned."></canvas></div>
+<div id="msS1" class="ms_status"></div>
+<div class="ms_transport" role="toolbar" aria-label="Scan">
+<div class="ms_tgroup"><button type="button" class="ms_bbtn" id="msScan" aria-pressed="false">Start scan</button><button type="button" class="ms_vbtn" id="msLoop" aria-pressed="false">Repeat scans: off</button></div>
+<div class="ms_tgroup ms_tsep"><label class="ms_chk"><input type="checkbox" id="msLog">Log scale</label><label class="ms_chk"><input type="checkbox" id="msLab" checked>Label peaks</label></div>
+</div>
+<div class="ms_read" id="msR1" aria-live="off"></div>
+<div class="ms_panels">
+<div class="ms_panel"><div class="ms_ptitle">Sample and identification</div><div class="ms_pbody">
+<div class="ms_ctrl"><div class="ms_chdr"><label for="msGas">Gas in the inlet</label></div><select id="msGas"></select></div>
+<div class="ms_ctrl" id="msGuessW"><div class="ms_chdr"><label for="msGuess">Which gas is it?</label></div><select id="msGuess"></select><button type="button" class="ms_vbtn" id="msChk" style="margin-top:4px">Check</button></div>
+<div id="msGfb" class="ms_note" aria-live="polite"></div>
+</div></div>
+<div class="ms_panel"><div class="ms_ptitle">Instrument settings</div><div class="ms_pbody">
+<div class="ms_ctrl"><div class="ms_chdr"><label for="msV">Accelerating voltage V</label><span class="ms_val" id="msVv"></span></div><input type="range" id="msV" min="1" max="5" step="0.1" value="2"></div>
+<div class="ms_ctrl"><div class="ms_chdr"><label for="msRes">Resolution m/&Delta;m (slit width)</label><span class="ms_val" id="msResv"></span></div><input type="range" id="msRes" min="0" max="100" step="1" value="45"></div>
+<div class="ms_ctrl"><div class="ms_chdr"><label for="msM1">Scan from m/z</label><span class="ms_val" id="msM1v"></span></div><input type="range" id="msM1" min="1" max="130" step="1" value="1"></div>
+<div class="ms_ctrl"><div class="ms_chdr"><label for="msM2">Scan to m/z</label><span class="ms_val" id="msM2v"></span></div><input type="range" id="msM2" min="10" max="140" step="1" value="50"></div>
+<div class="ms_ctrl"><div class="ms_chdr"><label for="msSpd">Scan time</label></div><select id="msSpd"><option value="4">4 s</option><option value="8" selected>8 s</option><option value="16">16 s</option></select></div>
+</div></div>
+<div class="ms_panel" style="grid-column:1/-1"><div class="ms_ptitle">Reading the spectrum</div><div class="ms_pbody" id="msExp1"></div></div>
+</div>
+</div>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>A <b>mass spectrometer</b> separates ions by their mass-to-charge ratio. In the first tab (a Bainbridge spectrometer), ions leave the source with a range of speeds and enter a <b>velocity selector</b>, where an electric field `E` and a perpendicular magnetic field `B` push them in opposite directions. The electric force `qE` does not depend on speed, the magnetic force `qvB` does; they balance only for</p>
+<p class="mob_eq">`v = E/B`,</p>
+<p>so only ions with this speed go straight through the slit; faster ones are pushed one way, slower ones the other. In the deflecting field `B_0` the magnetic force `qvB_0` is the centripetal force, `qvB_0 = mv^2/r`, so each ion moves on a half circle of radius</p>
+<p class="mob_eq">`r = (mv)/(qB_0) = (mE)/(qB B_0)`,</p>
+<p>and lands a distance `2r` from the slit. Since all ions have the same speed, `r` is proportional to `m/q`: isotopes, which differ only by their number of neutrons, land at different places, and the number landing at each place gives their abundance. A doubly charged ion makes a circle half as large.</p>
+<p>In the second tab the ions are accelerated through a voltage `V`, so `qV = 1/2 mv^2`, and bent by a magnet on a fixed radius `r` (the flight tube): `m/q = (B^2 r^2)/(2V)`. Scanning `B` brings each `m/z` to the detector in turn, giving the <b>mass spectrum</b>: the ion current against `m/z`. Molecules are often broken into fragments by the ionizing electrons, so a spectrum shows the molecular ion, its isotopes and its fragments; the pattern identifies the substance. The resolution `m/(Delta m)` is set by the slit widths: a low resolution merges neighbouring peaks. Isotope masses and abundances are standard values; the fragment intensities are typical, approximate values; the animation is slowed enormously.</p>
+</div>
+</div>
+<style>
+:where(#mobmassspec) * { margin:0; box-sizing:border-box; }
+#mobmassspec { width:100%; max-width:860px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; color:#1d232a; }
+#mobmassspec canvas { display:block; width:100%; height:auto; }
+#mobmassspec [hidden] { display:none !important; }
+#mobmassspec .ms_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#mobmassspec .ms_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#mobmassspec .ms_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobmassspec .ms_title { padding:4px; background-color:#f90; text-align:center; }
+#mobmassspec .ms_title h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+#mobmassspec .ms_tabs { display:flex; gap:4px; padding:6px 8px 0; background:#14213a; flex-wrap:wrap; }
+#mobmassspec .ms_tab { flex:1 1 140px; padding:8px 6px; border:1px solid #2b3d60; border-bottom:0; border-radius:6px 6px 0 0; background:#1d2c4a; color:#bcd0f0; font-weight:bold; cursor:pointer; font-size:.88rem; min-height:40px; }
+#mobmassspec .ms_tab[aria-selected="true"] { background:#f3f5f8; color:#14213a; }
+#mobmassspec .ms_intro { padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; font-size:.9rem; line-height:1.5; }
+#mobmassspec .ms_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:6px 12px; padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; }
+#mobmassspec .ms_rl { font-size:.7rem; color:#667; text-transform:uppercase; letter-spacing:.05em; }
+#mobmassspec .ms_rv { font-family:monospace; font-size:.93rem; color:#7a3a00; font-weight:bold; }
+#mobmassspec .ms_view { background:#0b1222; }
+#mobmassspec .ms_status { color:#222; font-size:.86rem; text-align:center; background:#fff6d9; padding:5px 8px; line-height:1.45; min-height:1.6em; }
+#mobmassspec .ms_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+#mobmassspec .ms_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+#mobmassspec .ms_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { #mobmassspec .ms_tsep { padding-left:0; border-left:0; } }
+#mobmassspec .ms_vbtn, #mobmassspec .ms_bbtn { min-height:38px; padding:4px 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; }
+#mobmassspec .ms_vbtn[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobmassspec .ms_bbtn { background:#2e7d32; border-color:#1b5e20; color:#fff; font-weight:bold; }
+#mobmassspec .ms_bbtn[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+#mobmassspec button:disabled { opacity:.4; cursor:not-allowed; }
+#mobmassspec .ms_card { margin:10px 10px 0; background:#0b1222; border:1px solid #2b3d60; border-radius:6px; overflow:hidden; }
+#mobmassspec .ms_ctitle { padding:5px 10px; background:#14213a; color:#dbe7ff; font-size:.8rem; font-weight:bold; }
+#mobmassspec .ms_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:10px; padding:10px; }
+#mobmassspec .ms_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+#mobmassspec .ms_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+#mobmassspec .ms_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; font-size:.87rem; line-height:1.45; }
+#mobmassspec .ms_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+#mobmassspec .ms_ctrl.ms_off { opacity:.45; }
+#mobmassspec .ms_chdr { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+#mobmassspec .ms_chdr label { font-size:.82rem; font-weight:bold; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+#mobmassspec .ms_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; flex:0 0 auto; min-width:4.5em; text-align:right; }
+#mobmassspec .ms_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+#mobmassspec select { width:100%; min-height:34px; padding:4px 6px; font-size:.86rem; border:1px solid #8a96a8; border-radius:4px; background:#fff; }
+#mobmassspec .ms_checks { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 8px; }
+#mobmassspec .ms_chk { display:flex; align-items:center; gap:6px; font-size:.82rem; cursor:pointer; }
+#mobmassspec .ms_presets { display:flex; flex-wrap:wrap; gap:5px; }
+#mobmassspec .ms_presets button { padding:5px 9px; font-size:.82rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:4px; background:#fff; color:#223; min-height:34px; }
+#mobmassspec .ms_presets button[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobmassspec .ms_note { font-size:.8rem; color:#555; font-style:italic; }
+#mobmassspec .ms_eq { font-family:'Times New Roman', serif; font-size:1rem; background:#f6f8fb; border-left:3px solid #1f5fa8; padding:4px 8px; margin:2px 0; overflow-wrap:anywhere; }
+#mobmassspec b.ms_res { color:#7a3a00; }
+#mobmassspec .ms_tbl { border-collapse:collapse; width:100%; font-size:.82rem; }
+#mobmassspec .ms_tbl th, #mobmassspec .ms_tbl td { padding:4px 6px; border-bottom:1px solid #e3e7ee; text-align:center; }
+#mobmassspec .ms_tbl th { background:#f1f4f8; font-size:.76rem; }
+#mobmassspec .ms_tblwrap { overflow-x:auto; }
+#mobmassspec button:focus-visible, #mobmassspec input:focus-visible, #mobmassspec select:focus-visible, #mobmassspec canvas:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (max-width:420px) { #mobmassspec .ms_checks { grid-template-columns:minmax(0,1fr); } }
+@media (pointer:coarse) { #mobmassspec .ms_vbtn, #mobmassspec .ms_bbtn { min-height:44px; } #mobmassspec .ms_presets button { min-height:42px; } #mobmassspec input[type=checkbox] { width:20px; height:20px; } #mobmassspec input[type=range] { height:28px; } }
+#mobmassspec .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobmassspec .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobmassspec .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobmassspec .mob_desc p { margin:0 0 8px 0; }
+#mobmassspec .mob_eq { text-align:center; }
+#mobmassspec.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobmassspec.a11y_dm .ms_card, #mobmassspec.a11y_dm .ms_view, #mobmassspec.a11y_dm [aria-label="Display options"], #mobmassspec.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobmassspec.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobmassspec.a11y_hc .ms_card, #mobmassspec.a11y_hc .ms_view, #mobmassspec.a11y_hc [aria-label="Display options"], #mobmassspec.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+</style>
+<script>
+var msA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return; b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobmassspec'); if (!W) return; W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc);
+var nb = document.getElementById('msNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none'; var nr = document.getElementById('msBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('msBtnHC', states.hc); styleBtn('msBtnDM', states.dm); styleBtn('msBtnCB', states.cb); styleBtn('msBtnNR', states.nr); hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return { init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply(); if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: each isotope has its own Okabe-Ito colour and its own line style.'); },
+alt:function(){ return states.hc || states.cb; }, narrate:function(m){ if (!states.nr) return; var nb = document.getElementById('msNarBar'); if (nb) nb.textContent = m; } };
+})();
+</script>
+<style>
+#mobmassspec .ms_tblwrap table td:first-child { text-align:left; }
+#mobmassspec .ms_sw { display:inline-block; width:12px; height:12px; border-radius:50%; vertical-align:middle; margin-right:5px; }
+</style>
+<!-- ════════ SIMULATION ════════
+Tab 1 (Bainbridge): selector length 5 cm, plate gap 1 cm, slit half-width 0.3 mm. Ion speeds from the source: E/B times (1 + 0.05 x a Gaussian random number).
+In the selector the net transverse force is q(vB - E) (positive ions; magnetic force up, electric force down); deflection
+y = (q (vB - E)/m) t^2/2 with t = L/v. Passing ions: semicircle r = m v/(q B0), landing 2r below the slit.
+Tab 2 (sector instrument): r = 0.15 m, m/z = e B^2 r^2/(2 V); peaks are Gaussians of FWHM m/R; detector noise added.
+Atomic masses (u) and abundances (%): standard values; fragment patterns approximate. No dollar signs or backticks in the code.
+-->
+<script>
+var msGen = function(){
+  function el(id){ return document.getElementById(id + ''); }
+  function cls(n){ return n + ''; }
+  function say(m){ msA11y.narrate(m); }
+  var TAU = 2*Math.PI, U = 1.66054e-27, QE = 1.602177e-19;
+  function lbl(g, t, x, y, col, size, al, halo){ g.font = 'bold ' + (size || 12) + 'px Arial'; g.textAlign = al || 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 3.5; g.strokeStyle = halo || 'rgba(0,0,0,0.85)'; g.strokeText(t, x, y); g.fillStyle = col; g.fillText(t, x, y); g.textBaseline = 'alphabetic'; }
+  function gauss(){ var u = Math.random() || 1e-9, v = Math.random(); return Math.sqrt(-2*Math.log(u))*Math.cos(TAU*v); }
+  var COLS = ['#ff6b6b', '#4fc3ff', '#ffd23f', '#3ad08f', '#c58cff', '#ff9a3d'], CB = ['#D55E00', '#56B4E9', '#F0E442', '#009E73', '#CC79A7', '#E69F00'];
+  function col(i){ return (msA11y.alt() ? CB : COLS)[i % 6]; }
+  /* ══════════ TAB 0: Bainbridge spectrometer ══════════ */
+  var EL = [
+    ['Neon', 'Ne', [[20, 19.992440, 90.48], [21, 20.993847, 0.27], [22, 21.991385, 9.25]]],
+    ['Chlorine', 'Cl', [[35, 34.968853, 75.76], [37, 36.965903, 24.24]]],
+    ['Magnesium', 'Mg', [[24, 23.985042, 78.99], [25, 24.985837, 10.00], [26, 25.982593, 11.01]]],
+    ['Lithium', 'Li', [[6, 6.015123, 7.59], [7, 7.016003, 92.41]]],
+    ['Carbon', 'C', [[12, 12.000000, 98.93], [13, 13.003355, 1.07]]],
+    ['Uranium', 'U', [[235, 235.043930, 0.72], [238, 238.050788, 99.27]]]];
+  var S = { el:0, q:1, E:1e5, B:0.5, B0:0.5, run:true, equal:false, forces:true, hits:[], ions:[], acc:0, counts:[] };
+  var c0 = el('msC0'), g0 = c0.getContext('2d'), W0 = c0.width, H0 = c0.height;
+  var Y0 = 74, XS0 = 150, XS1 = 360, XSL = 382, LS = 0.05, PXMM = 6, SLIT = 0.3e-3;
+  function iso(){ return EL[S.el][2]; }
+  function v0(){ return S.E/S.B; }
+  function rad(m, v){ return m*U*v/(S.q*QE*S.B0); }   /* m */
+  function scale(){ var mx = 0; iso().forEach(function(it){ mx = Math.max(mx, rad(it[1], 1e5/0.5)*0.5/S.B0*S.B0); }); var r0 = 0; iso().forEach(function(it){ r0 = Math.max(r0, it[1]*U*2e5/(QE*0.5)); }); return 330/(2*r0); }   /* px per m, fixed per element */
+  function newIon(){ var I = iso(), k, w = I.map(function(it){ return S.equal ? 1 : it[2]; }), tot = w.reduce(function(a, b){ return a + b; }, 0), r = Math.random()*tot; for (k=0; k<I.length; k++){ r -= w[k]; if (r <= 0) break; } k = Math.min(k, I.length - 1);
+    var m = I[k][1]*U, v = v0()*Math.max(0.7, Math.min(1.3, 1 + 0.05*gauss())), q = S.q*QE, a = q*(v*S.B - S.E)/m, tS = LS/v, pts = [], fate = 'land', i, yEnd = 0;
+    pts.push([20, Y0]); pts.push([XS0, Y0]);
+    for (i=1; i<=30; i++){ var t = tS*i/30, y = 0.5*a*t*t, ypx = Y0 - y*1000*PXMM; if (Math.abs(y) > 5e-3){ fate = y > 0 ? 'top' : 'bottom'; pts.push([XS0 + (XS1 - XS0)*i/30, Y0 - Math.sign(y)*30]); break; } pts.push([XS0 + (XS1 - XS0)*i/30, ypx]); yEnd = y; }
+    if (fate === 'land' && Math.abs(yEnd) > SLIT) fate = 'slit';
+    if (fate === 'slit'){ pts.push([XSL - 2, Y0 - Math.sign(yEnd)*Math.min(20, Math.abs(yEnd)*1000*PXMM + 3)]); }
+    var R = 0, land = null;
+    if (fate === 'land'){ R = rad(I[k][1], v); var rp = R*scale(); pts.push([XSL, Y0]);
+      for (i=1; i<=60; i++){ var ph = Math.PI*i/60, x = XSL + rp*Math.sin(ph), y2 = Y0 + rp*(1 - Math.cos(ph)); if (y2 > H0 - 6){ fate = 'miss'; pts.push([x, H0 - 6]); break; } pts.push([x, y2]); }
+      if (fate === 'land') land = Y0 + 2*rp; }
+    var L = 0; for (i=1; i<pts.length; i++) L += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+    return { k:k, v:v, pts:pts, fate:fate, land:land, R:R, s:0, L:L, sp:260*(0.85 + 0.3*Math.random()) }; }
+  function posAt(ion){ var d = ion.s, i; for (i=1; i<ion.pts.length; i++){ var a = ion.pts[i - 1], b = ion.pts[i], l = Math.hypot(b[0] - a[0], b[1] - a[1]); if (d <= l) return [a[0] + (b[0] - a[0])*d/l, a[1] + (b[1] - a[1])*d/l]; d -= l; } return ion.pts[ion.pts.length - 1]; }
+  function arrow(g, x1, y1, x2, y2, c, w){ var dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy); if (L < 3) return; var ux = dx/L, uy = dy/L; g.strokeStyle = c; g.fillStyle = c; g.lineWidth = w; g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2 - ux*9, y2 - uy*9); g.stroke(); g.beginPath(); g.moveTo(x2, y2); g.lineTo(x2 - ux*11 - uy*5, y2 - uy*11 + ux*5); g.lineTo(x2 - ux*11 + uy*5, y2 - uy*11 - ux*5); g.closePath(); g.fill(); }
+  function draw0(){ var g = g0, i, j, I = iso(), sc = scale();
+    g.fillStyle = '#f7f8f4'; g.fillRect(0, 0, W0, H0);
+    /* deflection region with B0 out of the page */ g.fillStyle = 'rgba(70,120,200,0.07)'; g.fillRect(XSL, Y0 + 8, W0 - XSL, H0 - Y0 - 8);
+    g.fillStyle = '#4a78c0'; for (i=0; i<8; i++) for (j=0; j<6; j++){ var fx = XSL + 40 + i*55, fy = Y0 + 50 + j*62; g.beginPath(); g.arc(fx, fy, 5, 0, TAU); g.strokeStyle = '#4a78c0'; g.lineWidth = 1.5; g.stroke(); g.beginPath(); g.arc(fx, fy, 1.8, 0, TAU); g.fill(); }
+    lbl(g, 'B\u2080 = ' + S.B0.toFixed(2) + ' T (out of the page)', W0 - 10, Y0 + 24, '#2b5aa0', 13, 'right', 'rgba(255,255,255,0.9)');
+    /* source */ g.fillStyle = '#5d6670'; g.fillRect(14, Y0 - 28, 70, 56); g.fillStyle = '#ffb347'; g.fillRect(24, Y0 - 4, 30, 8); lbl(g, 'ion source', 49, Y0 + 40, '#333', 12, 'center', 'rgba(255,255,255,0.9)');
+    g.fillStyle = '#7d858f'; g.fillRect(100, Y0 - 34, 5, 28); g.fillRect(100, Y0 + 6, 5, 28);
+    /* selector */ g.fillStyle = 'rgba(200,70,70,0.07)'; g.fillRect(XS0, Y0 - 30, XS1 - XS0, 60); g.strokeStyle = '#c33'; for (i=0; i<6; i++){ var cx = XS0 + 20 + i*34, cy = Y0 + (i % 2 ? 14 : -14); g.lineWidth = 1.5; g.beginPath(); g.moveTo(cx - 4, cy - 4); g.lineTo(cx + 4, cy + 4); g.moveTo(cx + 4, cy - 4); g.lineTo(cx - 4, cy + 4); g.stroke(); }
+    g.fillStyle = '#b22'; g.fillRect(XS0, Y0 - 36, XS1 - XS0, 6); g.fillStyle = '#226'; g.fillRect(XS0, Y0 + 30, XS1 - XS0, 6);
+    lbl(g, '+ + + + + + + +', (XS0 + XS1)/2, Y0 - 44, '#b22', 12, 'center', 'rgba(255,255,255,0.9)'); lbl(g, '\u2212 \u2212 \u2212 \u2212 \u2212 \u2212 \u2212 \u2212', (XS0 + XS1)/2, Y0 + 46, '#226', 12, 'center', 'rgba(255,255,255,0.9)');
+    lbl(g, 'velocity selector: E down, B into the page (\u00d7)', (XS0 + XS1)/2, Y0 + 62, '#333', 11, 'center', 'rgba(255,255,255,0.9)');
+    if (S.forces){ var fx2 = XS0 + 40; arrow(g, fx2, Y0, fx2, Y0 + 24, '#c62828', 3); lbl(g, 'qE', fx2 + 6, Y0 + 18, '#c62828', 11, 'left', 'rgba(255,255,255,0.9)'); arrow(g, fx2 + 26, Y0, fx2 + 26, Y0 - 24, '#1f5fa8', 3); lbl(g, 'qvB', fx2 + 32, Y0 - 18, '#1f5fa8', 11, 'left', 'rgba(255,255,255,0.9)'); }
+    /* slit and detector plate */ g.fillStyle = '#333'; g.fillRect(XSL - 3, Y0 - 40, 6, 37); g.fillRect(XSL - 3, Y0 + 3, 6, 6); lbl(g, 'slit', XSL, Y0 - 48, '#333', 11, 'center', 'rgba(255,255,255,0.9)');
+    g.fillStyle = '#d9f2d9'; g.fillRect(XSL - 10, Y0 + 9, 10, H0 - Y0 - 12); g.strokeStyle = '#4c8a4c'; g.lineWidth = 1; g.strokeRect(XSL - 10, Y0 + 9, 10, H0 - Y0 - 12);
+    g.save(); g.translate(XSL - 18, (Y0 + H0)/2 + 40); g.rotate(-Math.PI/2); lbl(g, 'detector plate (distance 2r below the slit)', 0, 0, '#2e6b2e', 11, 'center', 'rgba(255,255,255,0.9)'); g.restore();
+    /* scale */ var cm = sc*0.05, sbx = XSL + 20; g.strokeStyle = '#333'; g.lineWidth = 2; g.beginPath(); g.moveTo(sbx, H0 - 14); g.lineTo(sbx + cm, H0 - 14); g.stroke(); lbl(g, '5 cm', sbx + cm + 6, H0 - 14, '#333', 11, 'left', 'rgba(255,255,255,0.9)');
+    /* expected landing ticks */ I.forEach(function(it, k){ var R = rad(it[1], v0()), y = Y0 + 2*R*sc; if (y < H0 - 6){ g.strokeStyle = col(k); g.lineWidth = 2; g.setLineDash([3, 3]); g.beginPath(); g.moveTo(XSL, Y0); g.arc(XSL, Y0 + R*sc, R*sc, -Math.PI/2, Math.PI/2); g.stroke(); g.setLineDash([]); lbl(g, it[0] + EL[S.el][1] + (S.q === 2 ? '\u00b2\u207a' : '\u207a'), XSL - 22, y, col(k), 12, 'right', 'rgba(255,255,255,0.9)'); } });
+    /* hits */ S.hits.forEach(function(h){ g.fillStyle = col(h.k); g.fillRect(XSL - 10, h.y - 1, 10, 2); });
+    S.ions.forEach(function(ion){ var p = posAt(ion); g.fillStyle = col(ion.k); g.beginPath(); g.arc(p[0], p[1], 4, 0, TAU); g.fill(); g.strokeStyle = 'rgba(0,0,0,0.4)'; g.lineWidth = 1; g.stroke(); });
+    lbl(g, 'v = E/B = ' + (v0()/1e3).toFixed(0) + ' km/s', (XS0 + XS1)/2, 16, '#7a3a00', 13, 'center', 'rgba(255,255,255,0.9)'); }
+  var cS = el('msSp'), gS = cS.getContext('2d');
+  function drawSpec(){ var g = gS, w = cS.width, h = cS.height, I = iso(), L = 60, R = w - 20, T = 16, B = h - 30, i, tot = 0;
+    g.fillStyle = '#0b1222'; g.fillRect(0, 0, w, h); S.counts.forEach(function(c){ tot += c; });
+    var m0 = I[0][1]/S.q, m1 = I[I.length - 1][1]/S.q, pad = Math.max(1, (m1 - m0)*0.3), lo = m0 - pad, hi = m1 + pad; function X(m){ return L + (m - lo)/(hi - lo)*(R - L); }
+    var mx = Math.max(1, Math.max.apply(null, S.counts)); g.strokeStyle = 'rgba(150,170,195,0.25)'; g.fillStyle = '#9aa6b4'; g.font = '10px Arial'; g.lineWidth = 1;
+    for (i=Math.ceil(lo); i<=hi; i++){ if ((hi - lo) > 30 && i % 5) continue; g.beginPath(); g.moveTo(X(i), T); g.lineTo(X(i), B); g.stroke(); g.textAlign = 'center'; g.fillText(String(i), X(i), B + 12); }
+    g.fillText('m/q (u per elementary charge)', (L + R)/2, h - 5); g.save(); g.translate(14, (T + B)/2); g.rotate(-Math.PI/2); g.fillText('ions counted', 0, 0); g.restore();
+    I.forEach(function(it, k){ var c = S.counts[k] || 0, x = X(it[1]/S.q), bh = c/mx*(B - T); g.fillStyle = col(k); g.fillRect(x - 9, B - bh, 18, bh);
+      var pct = tot ? 100*c/tot : 0; lbl(g, it[0] + EL[S.el][1] + ': ' + c + (tot ? ' (' + pct.toFixed(1) + '%, natural ' + it[2] + '%)' : ''), x, Math.max(T + 8, B - bh - 10), col(k), 11); }); }
+  function ui0(){ var I = iso(), v = v0();
+    el('msEv').textContent = (S.E/1e3).toFixed(0) + ' kV/m'; el('msBv').textContent = S.B.toFixed(2) + ' T'; el('msB0v').textContent = S.B0.toFixed(2) + ' T';
+    var R = [['ion speed v = E/B', (v/1e3).toFixed(0) + ' km/s']].concat(I.map(function(it){ var r = rad(it[1], v); return ['radius, ' + EL[S.el][1] + '-' + it[0] + (S.q === 2 ? ' (2+)' : ''), (r*100).toPrecision(4) + ' cm']; }));
+    if (I.length > 1){ var d = 2*(rad(I[1][1], v) - rad(I[0][1], v)); R.push(['landing gap, ' + I[0][0] + ' and ' + I[1][0], (d*1000).toPrecision(3) + ' mm']); }
+    el('msR0').innerHTML = R.map(function(q){ return '<div><div class="' + cls('ms_rl') + '">' + q[0] + '</div><div class="' + cls('ms_rv') + '">' + q[1] + '</div></div>'; }).join('');
+    var it0 = I[0]; el('msEq0').innerHTML = '<div class="' + cls('ms_eq') + '">v = E/B = ' + (S.E/1e3).toFixed(0) + '\u00d710\u00b3 / ' + S.B.toFixed(2) + ' = <b class="' + cls('ms_res') + '">' + (v/1e3).toFixed(0) + ' km/s</b></div><div class="' + cls('ms_eq') + '">r = mv/(qB\u2080) = (' + it0[1].toFixed(3) + ' u)(1.661\u00d710\u207b\u00b2\u2077 kg/u)(' + (v/1e3).toFixed(0) + '\u00d710\u00b3 m/s) / (' + (S.q === 2 ? '2 \u00d7 ' : '') + '1.602\u00d710\u207b\u00b9\u2079 C \u00d7 ' + S.B0.toFixed(2) + ' T) = <b class="' + cls('ms_res') + '">' + (rad(it0[1], v)*100).toPrecision(4) + ' cm</b></div><p class="' + cls('ms_note') + '">Lands 2r = ' + (2*rad(it0[1], v)*100).toPrecision(4) + ' cm below the slit.' + (2*rad(I[I.length - 1][1], v)*scale() > H0 - Y0 ? ' Some ions land beyond the end of the plate: increase B\u2080 or lower v.' : '') + '</p>';
+    el('msIso').innerHTML = '<table class="' + cls('ms_tbl') + '"><thead><tr><th>isotope</th><th>mass (u)</th><th>natural abundance</th><th>protons + neutrons</th></tr></thead><tbody>' + I.map(function(it, k){ var Z = { Ne:10, Cl:17, Mg:12, Li:3, C:6, U:92 }[EL[S.el][1]]; return '<tr><td><span class="' + cls('ms_sw') + '" style="background:' + col(k) + '"></span>' + EL[S.el][0].toLowerCase() + '-' + it[0] + '</td><td>' + it[1].toFixed(6) + '</td><td>' + it[2] + '%</td><td>' + Z + ' + ' + (it[0] - Z) + '</td></tr>'; }).join('') + '</tbody></table>';
+    [].forEach.call(el('msEl').querySelectorAll('button'), function(b){ b.setAttribute('aria-pressed', +b.getAttribute('data-i') === S.el ? 'true' : 'false'); });
+    [].forEach.call(el('msQ').querySelectorAll('button'), function(b){ b.setAttribute('aria-pressed', +b.getAttribute('data-q') === S.q ? 'true' : 'false'); });
+    var tot = S.counts.reduce(function(a, b){ return a + b; }, 0), lost = S.lost || 0;
+    el('msS0').textContent = tot ? tot + ' ions detected; ' + lost + ' stopped in the velocity selector (wrong speed).' : 'Ions leave the source with different speeds; watch which ones get through the selector.'; drawSpec(); }
+  function reset0(){ S.hits = []; S.ions = []; S.counts = iso().map(function(){ return 0; }); S.lost = 0; }
+  function frame0(dt){ if (S.run){ S.acc += dt*14; while (S.acc >= 1){ S.acc -= 1; S.ions.push(newIon()); } }
+    S.ions = S.ions.filter(function(ion){ ion.s += ion.sp*dt; if (ion.s >= ion.L){ if (ion.fate === 'land'){ S.hits.push({ k:ion.k, y:ion.land + (Math.random() - 0.5)*1.2 }); if (S.hits.length > 800) S.hits.shift(); S.counts[ion.k]++; } else if (ion.fate !== 'miss') S.lost++; return false; } return true; });
+    draw0(); if ((S.tk = (S.tk || 0) + dt) > 0.5){ S.tk = 0; ui0(); } }
+  el('msEl').innerHTML = EL.map(function(e, i){ return '<button type="button" data-i="' + i + '" aria-pressed="false">' + e[0] + '</button>'; }).join('');
+  [].forEach.call(el('msEl').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ S.el = +b.getAttribute('data-i'); reset0(); ui0(); var I = iso(); say(EL[S.el][0] + ': ' + I.map(function(it){ return EL[S.el][0].toLowerCase() + '-' + it[0] + ' (' + it[2] + '%)'; }).join(', ') + '. The heavier isotope makes the bigger circle.'); }); });
+  el('msQ').innerHTML = [[1, 'Singly charged (+1)'], [2, 'Doubly charged (+2)']].map(function(q){ return '<button type="button" data-q="' + q[0] + '" aria-pressed="false">' + q[1] + '</button>'; }).join('');
+  [].forEach.call(el('msQ').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ S.q = +b.getAttribute('data-q'); reset0(); ui0(); say(S.q === 2 ? 'Doubly charged ions: twice the magnetic force, so half the radius. The spectrometer really measures m divided by q.' : 'Singly charged ions.'); }); });
+  function fieldChange(){ reset0(); ui0(); }
+  el('msE').addEventListener('input', function(){ S.E = +this.value*1e3; fieldChange(); }); el('msB').addEventListener('input', function(){ S.B = +this.value; fieldChange(); }); el('msB0').addEventListener('input', function(){ S.B0 = +this.value; fieldChange(); });
+  ['msE', 'msB', 'msB0'].forEach(function(id){ el(id).addEventListener('change', function(){ say('Selected speed ' + (v0()/1e3).toFixed(0) + ' km/s; ' + iso().map(function(it){ return it[0] + ' lands ' + (2*rad(it[1], v0())*100).toPrecision(3) + ' cm below the slit'; }).join(', ') + '.'); }); });
+  el('msRun').addEventListener('click', function(){ S.run = !S.run; this.setAttribute('aria-pressed', S.run ? 'true' : 'false'); this.textContent = S.run ? 'Stop the beam' : 'Start the beam'; });
+  el('msClr').addEventListener('click', function(){ reset0(); ui0(); });
+  el('msAb').addEventListener('click', function(){ S.equal = !S.equal; this.setAttribute('aria-pressed', S.equal ? 'true' : 'false'); reset0(); ui0(); say(S.equal ? 'Equal numbers of each isotope, so the rare ones are easy to see.' : 'Natural abundance: the counts now measure how common each isotope is.'); });
+  el('msFrc').addEventListener('click', function(){ S.forces = !S.forces; this.setAttribute('aria-pressed', S.forces ? 'true' : 'false'); this.textContent = 'Forces: ' + (S.forces ? 'shown' : 'hidden'); });
+  /* ══════════ TAB 1: magnetic-sector instrument ══════════ */
+  var GAS = {
+    air:['Air', [[28, 100, 'N\u2082\u207a'], [32, 27, 'O\u2082\u207a'], [14, 8, 'N\u207a'], [16, 3, 'O\u207a'], [18, 2, 'H\u2082O\u207a'], [17, 0.5, 'OH\u207a'], [40, 1.2, 'Ar\u207a'], [29, 0.74, '\u00b9\u2074N\u00b9\u2075N\u207a'], [20, 0.15, 'Ar\u00b2\u207a'], [34, 0.11, '\u00b9\u2076O\u00b9\u2078O\u207a'], [44, 0.04, 'CO\u2082\u207a']]],
+    ne:['Neon', [[20, 100, '\u00b2\u2070Ne\u207a'], [22, 10.2, '\u00b2\u00b2Ne\u207a'], [21, 0.30, '\u00b2\u00b9Ne\u207a'], [10, 3, '\u00b2\u2070Ne\u00b2\u207a'], [11, 0.3, '\u00b2\u00b2Ne\u00b2\u207a']]],
+    ar:['Argon', [[40, 100, '\u2074\u2070Ar\u207a'], [20, 12, '\u2074\u2070Ar\u00b2\u207a'], [36, 0.34, '\u00b3\u2076Ar\u207a'], [38, 0.063, '\u00b3\u2078Ar\u207a']]],
+    cl:['Chlorine gas (Cl\u2082)', [[35, 100, '\u00b3\u2075Cl\u207a'], [37, 32, '\u00b3\u2077Cl\u207a'], [70, 60, '\u00b3\u2075Cl\u2082\u207a'], [72, 38.4, '\u00b3\u2075Cl\u00b3\u2077Cl\u207a'], [74, 6.1, '\u00b3\u2077Cl\u2082\u207a']]],
+    co2:['Carbon dioxide', [[44, 100, 'CO\u2082\u207a'], [28, 10, 'CO\u207a'], [16, 9, 'O\u207a'], [12, 6, 'C\u207a'], [22, 2, 'CO\u2082\u00b2\u207a'], [45, 1.2, '\u00b9\u00b3CO\u2082\u207a'], [46, 0.4, 'CO\u00b9\u2078O\u207a']]],
+    h2o:['Water vapour', [[18, 100, 'H\u2082O\u207a'], [17, 23, 'OH\u207a'], [16, 1.5, 'O\u207a'], [1, 2, 'H\u207a'], [2, 0.5, 'H\u2082\u207a'], [19, 0.1, 'HDO\u207a'], [20, 0.2, 'H\u2082\u00b9\u2078O\u207a']]],
+    ch4:['Methane', [[16, 100, 'CH\u2084\u207a'], [15, 85, 'CH\u2083\u207a'], [14, 16, 'CH\u2082\u207a'], [13, 8, 'CH\u207a'], [12, 3, 'C\u207a'], [17, 1.1, '\u00b9\u00b3CH\u2084\u207a'], [1, 3, 'H\u207a'], [2, 1, 'H\u2082\u207a']]],
+    kr:['Krypton', [[84, 100, '\u2078\u2074Kr\u207a'], [86, 30.4, '\u2078\u2076Kr\u207a'], [82, 20.3, '\u2078\u00b2Kr\u207a'], [83, 20.2, '\u2078\u00b3Kr\u207a'], [80, 4.0, '\u2078\u2070Kr\u207a'], [78, 0.61, '\u2077\u2078Kr\u207a'], [42, 8, '\u2078\u2074Kr\u00b2\u207a'], [43, 2.4, '\u2078\u2076Kr\u00b2\u207a'], [41, 3.2, 'Kr\u00b2\u207a']]],
+    xe:['Xenon', [[132, 100, '\u00b9\u00b3\u00b2Xe\u207a'], [129, 98.1, '\u00b9\u00b2\u2079Xe\u207a'], [131, 78.8, '\u00b9\u00b3\u00b9Xe\u207a'], [134, 38.8, '\u00b9\u00b3\u2074Xe\u207a'], [136, 32.9, '\u00b9\u00b3\u2076Xe\u207a'], [130, 15.2, '\u00b9\u00b3\u2070Xe\u207a'], [128, 7.1, '\u00b9\u00b2\u2078Xe\u207a'], [124, 0.35, '\u00b9\u00b2\u2074Xe\u207a'], [126, 0.33, '\u00b9\u00b2\u2076Xe\u207a'], [66, 9, 'Xe\u00b2\u207a']]] };
+  var GKEYS = ['air', 'ne', 'ar', 'cl', 'co2', 'h2o', 'ch4', 'kr', 'xe'];
+  var unkA = GKEYS[Math.floor(Math.random()*GKEYS.length)], unkB; do { unkB = GKEYS[Math.floor(Math.random()*GKEYS.length)]; } while (unkB === unkA);
+  var OPTS = GKEYS.map(function(k){ return [k, GAS[k][0]]; }).concat([['?A', 'Unknown gas A'], ['?B', 'Unknown gas B']]);
+  var X = { park:28, gas:'air', V:2000, R:150, m1:1, m2:50, T:8, scanning:false, loop:false, frac:0, trace:[], prev:null, log:false, labels:true, ions:[], acc:0, nscan:0 };
+  var RT = 0.15;
+  function gasKey(){ return X.gas === '?A' ? unkA : X.gas === '?B' ? unkB : X.gas; }
+  function peaks(){ return GAS[gasKey()][1]; }
+  function resFrom(v){ return Math.round(20*Math.pow(50, v/100)); }
+  function Bfor(m){ return Math.sqrt(2*X.V*m*U/QE)/RT; }
+  function mNow(){ return X.scanning ? X.m1 + (X.m2 - X.m1)*X.frac : X.park; }
+  function basePeak(){ return peaks().slice().sort(function(a, b){ return b[1] - a[1]; })[0][0]; }
+  function signal(m){ var s = 0; peaks().forEach(function(p){ var sg = p[0]/X.R/2.355; s += p[1]*Math.exp(-0.5*Math.pow((m - p[0])/sg, 2)); }); return s; }
+  var c1 = el('msC1'), g1 = c1.getContext('2d'), W1 = c1.width, H1 = c1.height;
+  var MC = [300, 96], MR = 104, EN = [300, 200];   /* magnet centre of curvature, tube radius (px) for r = 0.15 m, entry point */
+  function rr(g, x, y, w, h, r){ g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+  function newIon1(){ var P = peaks(), tot = 0; P.forEach(function(p){ tot += p[1]; }); var r = Math.random()*tot, k; for (k=0; k<P.length; k++){ r -= P[k][1]; if (r <= 0) break; } k = Math.min(k, P.length - 1);
+    var m = P[k][0], B = Bfor(mNow()), rp = Math.sqrt(2*X.V*m*U/QE)/B/RT*MR, pts = [[150, EN[1]], [EN[0], EN[1]]], fate = 'det', i, cx = EN[0], cy = EN[1] - rp;
+    for (i=1; i<=50; i++){ var ph = (Math.PI/2)*i/50, x = cx + rp*Math.sin(ph), y = cy + rp*Math.cos(ph), dr = Math.hypot(x - MC[0], y - MC[1]) - MR; if (Math.abs(dr) > 13){ fate = 'wall'; pts.push([x, y]); break; } pts.push([x, y]); }
+    if (fate === 'det'){ var ex = pts[pts.length - 1][0]; pts.push([ex, 26]); if (Math.abs(ex - (MC[0] + MR)) > Math.max(1.5, 4*150/X.R)) fate = 'slit'; }
+    var L = 0; for (i=1; i<pts.length; i++) L += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+    return { k:k, pts:pts, fate:fate, s:0, L:L, sp:300 }; }
+  function posAt1(ion){ return posAt(ion); }
+  function drawInstrument(){ var g = g1, i;
+    var bg = g.createLinearGradient(0, 0, 0, 280); bg.addColorStop(0, '#d9dde2'); bg.addColorStop(1, '#b9bfc6'); g.fillStyle = bg; g.fillRect(0, 0, W1, 280);
+    g.fillStyle = '#9aa1a9'; g.fillRect(0, 262, W1, 18); g.fillStyle = 'rgba(0,0,0,0.12)'; for (i=0; i<W1; i += 40) g.fillRect(i, 262, 1, 18);
+    /* turbo pump */ var pg = g.createLinearGradient(560, 0, 640, 0); pg.addColorStop(0, '#7c848c'); pg.addColorStop(0.5, '#d7dce1'); pg.addColorStop(1, '#6b737b'); g.fillStyle = pg; g.fillRect(560, 150, 80, 110); g.fillStyle = '#4b535b'; g.fillRect(552, 140, 96, 14); g.fillRect(552, 252, 96, 10);
+    lbl(g, 'turbo pump', 600, 205, '#1d232a', 11, 'center', 'rgba(255,255,255,0.7)'); g.strokeStyle = '#59616a'; g.lineWidth = 10; g.beginPath(); g.moveTo(600, 140); g.lineTo(600, 120); g.lineTo(470, 120); g.stroke();
+    /* gauges */ rr(g, 670, 30, 130, 80, 8); g.fillStyle = '#2b3036'; g.fill(); g.fillStyle = '#0d1a10'; g.fillRect(680, 44, 110, 24); g.fillStyle = '#7dff9a'; g.font = 'bold 14px "Courier New", monospace'; g.textAlign = 'center'; g.fillText('2.4E-7 mbar', 735, 61);
+    g.fillStyle = '#0d1a10'; g.fillRect(680, 76, 110, 24); g.fillStyle = '#ffd23f'; g.fillText('HV ' + (X.V/1000).toFixed(2) + ' kV', 735, 93); lbl(g, 'vacuum / high voltage', 735, 122, '#1d232a', 10, 'center', 'rgba(255,255,255,0.7)');
+    /* gas inlet */ g.strokeStyle = '#8a6a2a'; g.lineWidth = 6; g.beginPath(); g.moveTo(20, 140); g.lineTo(70, 140); g.lineTo(70, 182); g.stroke(); g.fillStyle = '#2f6fb0'; g.beginPath(); g.arc(44, 140, 11, 0, TAU); g.fill(); g.fillStyle = '#fff'; g.fillRect(36, 138, 16, 4); lbl(g, 'gas inlet (leak valve)', 50, 118, '#1d232a', 10, 'center', 'rgba(255,255,255,0.7)');
+    /* source */ var sg = g.createLinearGradient(0, 178, 0, 222); sg.addColorStop(0, '#8b939b'); sg.addColorStop(1, '#5c646c'); g.fillStyle = sg; rr(g, 40, 178, 100, 44, 6); g.fill(); var fl = 0.6 + 0.4*Math.sin(Date.now()/90); g.fillStyle = 'rgba(255,170,60,' + fl + ')'; g.fillRect(56, 196, 28, 6); g.fillStyle = 'rgba(255,200,100,0.25)'; g.beginPath(); g.arc(70, 199, 14, 0, TAU); g.fill();
+    lbl(g, 'ion source', 90, 236, '#1d232a', 11, 'center', 'rgba(255,255,255,0.7)'); g.fillStyle = '#444'; for (i=0; i<3; i++){ g.fillRect(150 + i*22, 178, 5, 16); g.fillRect(150 + i*22, 206, 5, 16); } lbl(g, 'accelerate: V', 172, 168, '#1d232a', 10, 'center', 'rgba(255,255,255,0.7)');
+    /* flight tube */ g.strokeStyle = '#7d858f'; g.lineWidth = 30; g.beginPath(); g.moveTo(140, EN[1]); g.lineTo(EN[0], EN[1]); g.arc(MC[0], MC[1], MR, Math.PI/2, 0, true); g.lineTo(MC[0] + MR, 30); g.stroke(); g.strokeStyle = '#c8cdd2'; g.lineWidth = 24; g.stroke();
+    /* magnet poles */ g.save(); g.globalAlpha = 0.9; var mg = g.createRadialGradient(MC[0], MC[1], MR - 30, MC[0], MC[1], MR + 30); mg.addColorStop(0, '#9c1c1c'); mg.addColorStop(0.5, '#d63a3a'); mg.addColorStop(1, '#8a1414'); g.fillStyle = mg;
+    g.beginPath(); g.arc(MC[0], MC[1], MR + 26, Math.PI*0.05, Math.PI*0.45); g.arc(MC[0], MC[1], MR - 26, Math.PI*0.45, Math.PI*0.05, true); g.closePath(); g.fill(); g.restore();
+    lbl(g, 'electromagnet (B out of the page)', MC[0] + 60, MC[1] + 150, '#7a1010', 11, 'center', 'rgba(255,255,255,0.8)'); lbl(g, 'B = ' + Bfor(mNow()).toFixed(3) + ' T', MC[0] + 80, MC[1] + 50, '#fff', 13, 'center');
+    /* detector */ g.fillStyle = '#3a4048'; rr(g, MC[0] + MR - 26, 4, 52, 26, 4); g.fill(); lbl(g, 'detector', MC[0] + MR + 60, 16, '#1d232a', 11, 'left', 'rgba(255,255,255,0.7)');
+    var hitNow = X.ions.some(function(ion){ return ion.fate === 'det' && ion.s > ion.L - 30; }); g.fillStyle = hitNow ? '#7dff9a' : '#1a3a20'; g.beginPath(); g.arc(MC[0] + MR, 17, 5, 0, TAU); g.fill();
+    /* ions */ X.ions.forEach(function(ion){ var p = posAt1(ion); g.fillStyle = ion.fate === 'det' ? '#2e7d32' : ion.fate === 'wall' ? '#c62828' : '#1f5fa8'; g.beginPath(); g.arc(p[0], p[1], 3.5, 0, TAU); g.fill(); });
+    lbl(g, 'green: reaches the detector \u00b7 red: hits the wall \u00b7 blue: misses the exit slit', 20, 272, '#1d232a', 10, 'left', 'rgba(255,255,255,0.7)'); }
+  function drawMonitor(){ var g = g1, i, Y = 290;
+    g.fillStyle = '#1b1f24'; g.fillRect(0, 280, W1, H1 - 280); rr(g, 30, Y, W1 - 60, 240, 12); g.fillStyle = '#2b3036'; g.fill(); var sx = 44, sy = Y + 12, sw = W1 - 88, sh = 214; g.fillStyle = '#071021'; g.fillRect(sx, sy, sw, sh);
+    var L = sx + 50, R = sx + sw - 14, T = sy + 30, B = sy + sh - 28, ymax = 110; function Xm(m){ return L + (m - X.m1)/(X.m2 - X.m1)*(R - L); } function Yv(v){ if (X.log){ var lv = Math.log(Math.max(v, 0.01))/Math.LN10; return B - (lv + 2)/4.1*(B - T); } return B - Math.min(v, ymax)/ymax*(B - T); }
+    g.fillStyle = '#9fb4d8'; g.font = 'bold 12px Arial'; g.textAlign = 'left'; g.fillText('MASS SPECTRUM  \u2014  ' + (X.gas.charAt(0) === '?' ? OPTS.filter(function(o){ return o[0] === X.gas; })[0][1] : GAS[X.gas][0]) + '   scan ' + X.nscan, sx + 10, sy + 18);
+    g.textAlign = 'right'; g.fillStyle = '#7dff9a'; g.fillText('m/z = ' + mNow().toFixed(2) + '   B = ' + Bfor(mNow()).toFixed(4) + ' T   R = ' + X.R, sx + sw - 10, sy + 18);
+    g.strokeStyle = 'rgba(120,150,190,0.2)'; g.lineWidth = 1; g.font = '10px Arial'; g.fillStyle = '#8fa3c4'; var span = X.m2 - X.m1, stp = span > 80 ? 10 : span > 30 ? 5 : span > 12 ? 2 : 1;
+    for (i=Math.ceil(X.m1/stp)*stp; i<=X.m2; i += stp){ g.beginPath(); g.moveTo(Xm(i), T); g.lineTo(Xm(i), B); g.stroke(); g.textAlign = 'center'; g.fillText(String(i), Xm(i), B + 12); }
+    (X.log ? [0.01, 0.1, 1, 10, 100] : [0, 25, 50, 75, 100]).forEach(function(v){ g.beginPath(); g.moveTo(L, Yv(v)); g.lineTo(R, Yv(v)); g.stroke(); g.textAlign = 'right'; g.fillText(String(v), L - 4, Yv(v) + 3); });
+    g.textAlign = 'center'; g.fillText('m/z', (L + R)/2, B + 24); g.save(); g.translate(sx + 14, (T + B)/2); g.rotate(-Math.PI/2); g.fillText('relative intensity (%)', 0, 0); g.restore();
+    if (X.prev){ g.strokeStyle = 'rgba(125,255,154,0.25)'; g.lineWidth = 1.2; g.beginPath(); X.prev.forEach(function(q, j){ if (j) g.lineTo(Xm(q[0]), Yv(q[1])); else g.moveTo(Xm(q[0]), Yv(q[1])); }); g.stroke(); }
+    g.save(); g.beginPath(); g.rect(L, T - 4, R - L, B - T + 4); g.clip(); g.strokeStyle = '#7dff9a'; g.lineWidth = 1.6; g.beginPath(); X.trace.forEach(function(q, j){ if (j) g.lineTo(Xm(q[0]), Yv(q[1])); else g.moveTo(Xm(q[0]), Yv(q[1])); }); g.stroke(); g.restore();
+    if (X.scanning){ g.strokeStyle = '#ffd23f'; g.lineWidth = 1; g.beginPath(); g.moveTo(Xm(mNow()), T); g.lineTo(Xm(mNow()), B); g.stroke(); }
+    if (X.labels && X.trace.length){ var done = X.trace[X.trace.length - 1][0], shown = [];
+      peaks().slice().sort(function(a, b){ return b[1] - a[1]; }).forEach(function(p){ if (p[0] < X.m1 || p[0] > X.m2 || p[0] > done) return; var hv = signal(p[0]); if (hv < (X.log ? 0.05 : 1.5)) return; var x = Xm(p[0]); if (shown.some(function(s){ return Math.abs(s - x) < 22; })) return; shown.push(x);
+        lbl(g, String(p[0]), x, Math.max(T + 6, Yv(hv) - 18), '#ffffff', 11); if (X.gas.charAt(0) !== '?') lbl(g, p[2], x, Math.max(T + 18, Yv(hv) - 6), '#9fe0ff', 10); }); }
+    g.fillStyle = '#3a4048'; g.fillRect(W1/2 - 50, Y + 240, 100, 10); }
+  function sample(m){ return signal(m) + 0.05*Math.abs(gauss()) + 0.02; }
+  function scanStep(dt){ if (!X.scanning) return; var f0 = X.frac; X.frac = Math.min(1, X.frac + dt/X.T); var n = 3, i; for (i=1; i<=n; i++){ var f = f0 + (X.frac - f0)*i/n, m = X.m1 + (X.m2 - X.m1)*f; X.trace.push([m, sample(m)]); }
+    if (X.frac >= 1){ X.scanning = false; X.park = basePeak(); X.prev = X.trace.slice(); scanDone(); if (X.loop){ startScan(); } else { el('msScan').textContent = 'Start scan'; el('msScan').setAttribute('aria-pressed', 'false'); } } }
+  function startScan(){ X.frac = 0; X.trace = []; X.scanning = true; X.nscan++; el('msScan').textContent = 'Stop scan'; el('msScan').setAttribute('aria-pressed', 'true'); }
+  function plain(t){ var M = { '\u2080':'0', '\u2081':'1', '\u2082':'2', '\u2083':'3', '\u2084':'4', '\u2070':'0', '\u00b9':'1', '\u00b2':'2', '\u00b3':'3', '\u2074':'4', '\u2075':'5', '\u2076':'6', '\u2077':'7', '\u2078':'8', '\u2079':'9', '\u207a':'+' }; return t.split('').map(function(c){ return M[c] || c; }).join(''); }
+  function scanDone(){ var P = peaks().filter(function(p){ return p[0] >= X.m1 && p[0] <= X.m2; }).sort(function(a, b){ return b[1] - a[1]; }); if (!P.length){ say('Scan finished: no ions in this m/z range.'); return; }
+    var top = P.slice(0, 4).map(function(p){ return 'm/z ' + p[0] + ' (' + Math.round(p[1]) + '%' + (X.gas.charAt(0) === '?' ? '' : ', ' + plain(p[2])) + ')'; });
+    say('Scan finished. Largest peaks: ' + top.join(', ') + '.'); ui1(); }
+  function ui1(){ var m = mNow(), B = Bfor(m), v = Math.sqrt(2*QE*X.V/(m*U));
+    el('msVv').textContent = (X.V/1000).toFixed(1) + ' kV'; el('msResv').textContent = X.R; el('msM1v').textContent = X.m1; el('msM2v').textContent = X.m2;
+    var R = [['m/z at the detector', m.toFixed(2)], ['magnetic field B', B.toFixed(4) + ' T'], ['ion speed', (v/1e3).toFixed(0) + ' km/s'], ['peak width \u0394m at m/z ' + Math.round(m), (m/X.R).toPrecision(2)], ['scan', X.scanning ? Math.round(100*X.frac) + '%' : 'stopped']];
+    el('msR1').innerHTML = R.map(function(q){ return '<div><div class="' + cls('ms_rl') + '">' + q[0] + '</div><div class="' + cls('ms_rv') + '">' + q[1] + '</div></div>'; }).join('');
+    var base = peaks().slice().sort(function(a, b){ return b[1] - a[1]; })[0], unk = X.gas.charAt(0) === '?';
+    el('msS1').textContent = X.scanning ? 'Scanning the magnet: the detector sees m/z ' + m.toFixed(1) + '.' : 'Magnet parked on m/z ' + Math.round(m) + ' (the base peak): only those ions reach the detector. Press Start scan to record the spectrum from m/z ' + X.m1 + ' to ' + X.m2 + '.';
+    el('msExp1').innerHTML = '<div class="' + cls('ms_eq') + '">eV = \u00bd mv\u00b2 and evB = mv\u00b2/r \u21d2 <b>m/z = eB\u00b2r\u00b2/(2V)</b> = (1.602\u00d710\u207b\u00b9\u2079)(' + B.toFixed(4) + ')\u00b2(0.150)\u00b2/(2 \u00d7 ' + X.V + ') kg = <b class="' + cls('ms_res') + '">' + m.toFixed(2) + ' u</b></div>'
+      + '<p><b>Base peak</b>: the tallest peak, set to 100%' + (unk ? '' : ' (here m/z ' + base[0] + ', ' + base[2] + ')') + '. The <b>molecular ion</b> is the whole molecule with one electron removed; the electron beam also breaks molecules into <b>fragments</b>, and doubly charged ions appear at half their mass. Small peaks one or two units higher come from heavier isotopes (\u00b9\u00b3C, \u00b9\u2075N, \u00b9\u2078O, \u00b3\u2077Cl).</p><p><b>Resolution</b> m/\u0394m = ' + X.R + ': two peaks 1 unit apart are separated only if m/\u0394m is larger than their mass. Try krypton (m/z 82, 83, 84) with a low resolution. A higher voltage V needs a stronger field for the same mass.</p>'; }
+  el('msGas').innerHTML = OPTS.map(function(o){ return '<option value="' + o[0] + '">' + o[1] + '</option>'; }).join('');
+  el('msGuess').innerHTML = '<option value="">choose\u2026</option>' + GKEYS.map(function(k){ return '<option value="' + k + '">' + GAS[k][0] + '</option>'; }).join('');
+  function gasUI(){ el('msGuessW').hidden = X.gas.charAt(0) !== '?'; el('msGfb').textContent = ''; var mx = Math.max.apply(null, peaks().map(function(p){ return p[0]; })); if (X.gas.charAt(0) !== '?'){ X.m1 = 1; X.m2 = Math.min(140, Math.ceil((mx + 6)/10)*10); } else { X.m1 = 1; X.m2 = 140; } el('msM1').value = X.m1; el('msM2').value = X.m2; X.trace = []; X.prev = null; X.frac = 0; X.nscan = 0; X.park = basePeak(); ui1(); }
+  el('msGas').addEventListener('change', function(){ X.gas = this.value; X.scanning = false; el('msScan').textContent = 'Start scan'; el('msScan').setAttribute('aria-pressed', 'false'); gasUI(); say((X.gas.charAt(0) === '?' ? 'An unknown gas. Scan it and identify it from its peaks.' : GAS[X.gas][0] + ' in the inlet.') + ' Press Start scan.'); });
+  el('msChk').addEventListener('click', function(){ var gsel = el('msGuess').value; if (!gsel) return; var ok = gsel === gasKey(), t = ok ? 'Correct: it is ' + GAS[gasKey()][0].toLowerCase() + '.' : 'Not quite: look again at the base peak and the isotope pattern.'; el('msGfb').textContent = t; say(t); });
+  el('msScan').addEventListener('click', function(){ if (X.scanning){ X.scanning = false; this.textContent = 'Start scan'; this.setAttribute('aria-pressed', 'false'); } else { startScan(); say('Scanning the magnetic field from m/z ' + X.m1 + ' to ' + X.m2 + '.'); } });
+  el('msLoop').addEventListener('click', function(){ X.loop = !X.loop; this.setAttribute('aria-pressed', X.loop ? 'true' : 'false'); this.textContent = 'Repeat scans: ' + (X.loop ? 'on' : 'off'); });
+  el('msLog').addEventListener('change', function(){ X.log = this.checked; say(X.log ? 'Logarithmic scale: small isotope peaks become visible.' : 'Linear scale.'); }); el('msLab').addEventListener('change', function(){ X.labels = this.checked; });
+  el('msV').addEventListener('input', function(){ X.V = +this.value*1000; ui1(); }); el('msV').addEventListener('change', function(){ say('Accelerating voltage ' + (X.V/1000).toFixed(1) + ' kilovolts: m/z ' + Math.round(mNow()) + ' now needs ' + Bfor(mNow()).toFixed(3) + ' tesla.'); });
+  el('msRes').addEventListener('input', function(){ X.R = resFrom(+this.value); ui1(); }); el('msRes').addEventListener('change', function(){ say('Resolution ' + X.R + '. Run a new scan to see the effect.'); });
+  el('msM1').addEventListener('input', function(){ X.m1 = Math.min(+this.value, X.m2 - 5); this.value = X.m1; X.trace = []; X.prev = null; ui1(); }); el('msM2').addEventListener('input', function(){ X.m2 = Math.max(+this.value, X.m1 + 5); this.value = X.m2; X.trace = []; X.prev = null; ui1(); });
+  el('msSpd').addEventListener('change', function(){ X.T = +this.value; });
+  function frame1(dt){ scanStep(dt); X.acc += dt*18; while (X.acc >= 1){ X.acc -= 1; X.ions.push(newIon1()); } X.ions = X.ions.filter(function(ion){ ion.s += ion.sp*dt; return ion.s < ion.L; }); if (X.ions.length > 120) X.ions.splice(0, X.ions.length - 120);
+    drawInstrument(); drawMonitor(); if ((X.tk = (X.tk || 0) + dt) > 0.4){ X.tk = 0; ui1(); } }
+  /* ══════════ tabs and loop ══════════ */
+  var tab = 0, last = 0;
+  function setTab(i){ tab = i; for (var k=0; k<2; k++){ var t = el('msT' + k); t.setAttribute('aria-selected', k === i ? 'true' : 'false'); t.tabIndex = k === i ? 0 : -1; el('msP' + k).hidden = k !== i; } last = 0;
+    if (i === 1){ ui1(); say('A magnetic-sector mass spectrometer. Choose a gas and press Start scan.'); } else { ui0(); say('A Bainbridge mass spectrometer: ions of one speed are selected, then sorted by mass in a magnetic field.'); } }
+  [0, 1].forEach(function(i){ var t = el('msT' + i); t.addEventListener('click', function(){ setTab(i); }); t.addEventListener('keydown', function(e){ if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){ setTab(1 - i); el('msT' + (1 - i)).focus(); e.preventDefault(); } }); });
+  function loop(now){ var dt = last ? Math.min(0.05, (now - last)/1000) : 0; last = now; if (tab === 0) frame0(dt); else frame1(dt); requestAnimationFrame(loop); }
+  msA11y.onChange(function(){ draw0(); drawSpec(); ui0(); });
+  reset0(); ui0(); gasUI(); requestAnimationFrame(loop);
+  say('Neon ions in a Bainbridge mass spectrometer. Watch neon-20 and neon-22 land at different places on the detector.');
+  return { setTab:setTab, S:S, X:X, rad:rad, v0:v0, Bfor:Bfor, signal:signal, newIon:newIon, frame0:frame0, frame1:frame1, startScan:startScan, peaks:peaks };
+};
+var msSim = new msGen();
+</script>
+<script>msA11y.init();</script>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+</div>
+
+</body>
+</html>

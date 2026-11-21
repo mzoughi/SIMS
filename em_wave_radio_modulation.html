@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Waves: How Radio Waves Carry Sound: AM and FM</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobradio" class="mob_wrap">
+<div class="rd_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="rd_a11ybtn" id="rdBtnHC" onclick="rdA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="rd_a11ybtn" id="rdBtnDM" onclick="rdA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="rd_a11ybtn" id="rdBtnCB" onclick="rdA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="rd_a11ybtn" id="rdBtnNR" onclick="rdA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+<div class="rd_title"><h3>How Radio Waves Carry Sound: AM and FM</h3></div>
+<div class="rd_tabs" role="tablist" aria-label="View">
+<button type="button" role="tab" class="rd_tab" id="rdT0" aria-selected="true" aria-controls="rdP0">1. AM: amplitude modulation</button>
+<button type="button" role="tab" class="rd_tab" id="rdT1" aria-selected="false" aria-controls="rdP1">2. AM as a sum of waves</button>
+<button type="button" role="tab" class="rd_tab" id="rdT2" aria-selected="false" aria-controls="rdP2">3. FM: frequency modulation</button>
+</div>
+<div id="rdNarBar" class="rd_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="rd_intro" id="rdIntro"></div>
+<div class="rd_view"><canvas id="rdC" width="820" height="650" tabindex="0" role="img" aria-label="Stacked graphs against time showing how the sound signal and the radio carrier wave combine into the transmitted radio wave, and the frequencies it contains."></canvas></div>
+<div class="rd_cursor" id="rdCurW" hidden><label for="rdX">Reading line t</label><input type="range" id="rdX" min="0" max="1" step="0.001" value="0.3"><span id="rdXv" class="rd_val"></span></div>
+<div class="rd_read" id="rdR" aria-live="polite"></div>
+<div class="rd_transport" role="toolbar" aria-label="Display">
+<div class="rd_tgroup"><button type="button" class="rd_bbtn" id="rdPlay" aria-pressed="false">&#9654; Play</button><label class="rd_chk"><input type="checkbox" id="rdEnv" checked> show the envelope</label></div>
+<div class="rd_tgroup rd_tsep" style="flex:1 1 260px"><label for="rdDr" style="font-weight:bold;font-size:.82rem;white-space:nowrap">Drawing: carrier cycles per sound cycle</label><input type="range" id="rdDr" min="4" max="40" step="1" value="12" style="flex:1 1 100px"><span class="rd_val" id="rdDrv"></span></div>
+</div>
+<div class="rd_panels">
+<div class="rd_panel"><div class="rd_ptitle">Settings</div><div class="rd_pbody" id="rdCtl"></div></div>
+<div class="rd_panel"><div class="rd_ptitle">What is happening</div><div class="rd_pbody" id="rdExp"></div></div>
+</div>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>Sound frequencies (20 Hz to 20 kHz) are far too low to be sent efficiently as electromagnetic waves: an antenna must be comparable to the wavelength, and `lambda = c//f` is 15 km at 20 kHz. A radio station therefore sends a high-frequency <b>carrier wave</b> and <b>modulates</b> it with the sound signal (the <b>message</b>).</p>
+<p><b>AM</b> (540&ndash;1700 kHz) changes the amplitude of the carrier: for a single tone of frequency `f_m`, `s(t) = A_c [1 + mu cos(2 pi f_m t)] cos(2 pi f_c t)`, where `mu` is the modulation index. The outline of the wave (the envelope) has the shape of the sound. With `mu &gt; 1` the envelope folds over and the sound is distorted (overmodulation). Using `cos a cos b = 1/2 [cos(a - b) + cos(a + b)]`,</p>
+<p class="mob_eq">`s(t) = A_c cos(2 pi f_c t) + (mu A_c)/2 cos(2 pi (f_c - f_m) t) + (mu A_c)/2 cos(2 pi (f_c + f_m) t)`:</p>
+<p>the AM wave is exactly the <b>sum of three waves</b>, the carrier and two <b>side frequencies</b> `f_c +- f_m`. They beat with each other, and the beats are the envelope. The signal occupies a bandwidth `2 f_m`, which is why AM stations are 10 kHz apart.</p>
+<p><b>FM</b> (88&ndash;108 MHz) keeps the amplitude constant and changes the frequency: `s(t) = A_c cos(2 pi f_c t + beta sin(2 pi f_m t))`, with peak frequency deviation `Delta f` and modulation index `beta = Delta f//f_m`. It also contains side frequencies `f_c +- n f_m` with amplitudes given by Bessel functions `J_n(beta)`; most of the power lies within the Carson bandwidth `2(Delta f + f_m)`. Noise mostly changes the amplitude, which FM ignores, so FM sounds cleaner.</p>
+<p>The graphs are not to scale in time: a real carrier makes hundreds or thousands of cycles for each cycle of the sound. The drawing slider sets how many are drawn; the readouts give the real values.</p>
+</div>
+</div>
+<style>
+:where(#mobradio) * { margin:0; box-sizing:border-box; }
+#mobradio { width:100%; max-width:860px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; color:#1d232a; }
+#mobradio canvas { display:block; width:100%; height:auto; }
+#mobradio [hidden] { display:none !important; }
+#mobradio .rd_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#mobradio .rd_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#mobradio .rd_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobradio .rd_title { padding:4px; background-color:#f90; text-align:center; }
+#mobradio .rd_title h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+#mobradio .rd_tabs { display:flex; gap:4px; padding:6px 8px 0; background:#14213a; flex-wrap:wrap; }
+#mobradio .rd_tab { flex:1 1 140px; padding:8px 6px; border:1px solid #2b3d60; border-bottom:0; border-radius:6px 6px 0 0; background:#1d2c4a; color:#bcd0f0; font-weight:bold; cursor:pointer; font-size:.88rem; min-height:40px; }
+#mobradio .rd_tab[aria-selected="true"] { background:#f3f5f8; color:#14213a; }
+#mobradio .rd_intro { padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; font-size:.9rem; line-height:1.5; }
+#mobradio .rd_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:6px 12px; padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; }
+#mobradio .rd_rl { font-size:.7rem; color:#667; text-transform:uppercase; letter-spacing:.05em; }
+#mobradio .rd_rv { font-family:monospace; font-size:.93rem; color:#7a3a00; font-weight:bold; }
+#mobradio .rd_view { background:#0b1222; }
+#mobradio .rd_status { color:#222; font-size:.86rem; text-align:center; background:#fff6d9; padding:5px 8px; line-height:1.45; min-height:1.6em; }
+#mobradio .rd_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+#mobradio .rd_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+#mobradio .rd_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { #mobradio .rd_tsep { padding-left:0; border-left:0; } }
+#mobradio .rd_vbtn, #mobradio .rd_bbtn { min-height:38px; padding:4px 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; }
+#mobradio .rd_vbtn[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobradio .rd_bbtn { background:#2e7d32; border-color:#1b5e20; color:#fff; font-weight:bold; }
+#mobradio .rd_bbtn[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+#mobradio button:disabled { opacity:.4; cursor:not-allowed; }
+#mobradio .rd_cursor { display:flex; align-items:center; gap:10px; padding:6px 12px; background:#14213a; color:#dbe7ff; font-size:.85rem; font-weight:bold; }
+#mobradio .rd_cursor input { flex:1 1 auto; min-width:0; accent-color:#ffd23f; }
+#mobradio .rd_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:10px; padding:10px; }
+#mobradio .rd_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+#mobradio .rd_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+#mobradio .rd_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; font-size:.87rem; line-height:1.45; }
+#mobradio .rd_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+#mobradio .rd_chdr { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+#mobradio .rd_chdr label { font-size:.82rem; font-weight:bold; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+#mobradio .rd_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; flex:0 0 auto; min-width:4.5em; text-align:right; }
+#mobradio .rd_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+#mobradio select { width:100%; min-height:34px; padding:4px 6px; font-size:.86rem; border:1px solid #8a96a8; border-radius:4px; background:#fff; }
+#mobradio .rd_chk { display:flex; align-items:center; gap:6px; font-size:.82rem; cursor:pointer; }
+#mobradio .rd_presets { display:flex; flex-wrap:wrap; gap:5px; }
+#mobradio .rd_presets button { padding:5px 9px; font-size:.82rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:4px; background:#fff; color:#223; min-height:34px; }
+#mobradio .rd_presets button[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobradio .rd_note { font-size:.8rem; color:#555; font-style:italic; }
+#mobradio .rd_eq { font-family:'Times New Roman', serif; font-size:1rem; background:#f6f8fb; border-left:3px solid #1f5fa8; padding:4px 8px; margin:2px 0; overflow-wrap:anywhere; }
+#mobradio b.rd_res { color:#7a3a00; }
+#mobradio button:focus-visible, #mobradio input:focus-visible, #mobradio select:focus-visible, #mobradio canvas:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (pointer:coarse) { #mobradio .rd_vbtn, #mobradio .rd_bbtn { min-height:44px; } #mobradio .rd_presets button { min-height:42px; } #mobradio input[type=checkbox] { width:20px; height:20px; } #mobradio input[type=range] { height:28px; } }
+#mobradio .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobradio .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobradio .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobradio .mob_desc p { margin:0 0 8px 0; }
+#mobradio .mob_eq { text-align:center; }
+#mobradio.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobradio.a11y_dm .rd_view, #mobradio.a11y_dm [aria-label="Display options"], #mobradio.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobradio.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobradio.a11y_hc .rd_view, #mobradio.a11y_hc [aria-label="Display options"], #mobradio.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+</style>
+<script>
+var rdA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return; b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobradio'); if (!W) return; W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc);
+var nb = document.getElementById('rdNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none'; var nr = document.getElementById('rdBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('rdBtnHC', states.hc); styleBtn('rdBtnDM', states.dm); styleBtn('rdBtnCB', states.cb); styleBtn('rdBtnNR', states.nr); hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return { init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply(); if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: message blue, carrier orange, sidebands pink and yellow, the transmitted wave bluish green.'); },
+alt:function(){ return states.hc || states.cb; }, narrate:function(m){ if (!states.nr) return; var nb = document.getElementById('rdNarBar'); if (nb) nb.textContent = m; } };
+})();
+</script>
+<!-- ════════ SIMULATION ════════
+Time axis: two cycles of the message (u from 0 to 2). Drawn carrier: r cycles per message cycle.
+AM: s = [1 + mu cos(2 pi u)] cos(2 pi r u) = cos(2 pi r u) + (mu/2) cos(2 pi (r - 1) u) + (mu/2) cos(2 pi (r + 1) u).
+FM (drawn): phase 2 pi r u + b sin(2 pi u), b = 0.6 r (Delta f/75 kHz) for display; real beta = Delta f/f_m.
+FM spectrum: J_n(beta) by numerical integration, J_n(x) = (1/pi) integral from 0 to pi of cos(n t - x sin t) dt.
+No dollar signs or backticks in the code.
+-->
+<script>
+var rdGen = function(){
+  function el(id){ return document.getElementById(id + ''); }
+  function cls(n){ return n + ''; }
+  function say(m){ rdA11y.narrate(m); }
+  var TAU = 2*Math.PI;
+  var S = { tab:0, r:12, ph:0, play:false, env:true, x:0.3, am:{ fc:1000, fm:1000, mu:0.6 }, fmod:{ fc:98.1, df:50, fm:3 } };
+  function pal(){ var a = rdA11y.alt(); return { m:a ? '#56B4E9' : '#6fa8ff', c:a ? '#E69F00' : '#ff9a3d', lo:a ? '#CC79A7' : '#e07bff', hi:a ? '#F0E442' : '#ffd23f', s:a ? '#009E73' : '#3ad08f', cur:'#ffffff' }; }
+  function lbl(g, t, x, y, col, size, al){ g.font = 'bold ' + (size || 12) + 'px Arial'; g.textAlign = al || 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 3.5; g.strokeStyle = 'rgba(0,0,0,0.85)'; g.strokeText(t, x, y); g.fillStyle = col; g.fillText(t, x, y); g.textBaseline = 'alphabetic'; }
+  var c = el('rdC'), g = c.getContext('2d'), CW = c.width, CH = c.height, L = 62, R = CW - 22, UMAX = 2;
+  function X(u){ return L + u/UMAX*(R - L); }
+  /* signals (u in message cycles, phase offset S.ph moves the drawing) */
+  function msg(u){ return Math.cos(TAU*(u + S.ph)); }
+  function car(u, k){ return Math.cos(TAU*(S.r + (k || 0))*(u + S.ph)); }
+  function am(u){ return (1 + S.am.mu*msg(u))*car(u); }
+  function bD(){ return 0.6*S.r*S.fmod.df/75; }
+  function fmw(u){ return Math.cos(TAU*S.r*(u + S.ph) + bD()*Math.sin(TAU*(u + S.ph))); }
+  function panel(T, B, ymax, fn, col, name, env, ghosts){ var M = (T + B)/2; function Y(v){ return M - v/ymax*(B - T)/2; }
+    g.strokeStyle = 'rgba(150,170,195,0.18)'; g.lineWidth = 1; [-1, 0, 1].forEach(function(k){ var v = k*Math.floor(ymax); g.beginPath(); g.moveTo(L, Y(v)); g.lineTo(R, Y(v)); g.stroke(); g.fillStyle = '#9aa6b4'; g.font = '10px Arial'; g.textAlign = 'right'; g.fillText(String(v), L - 6, Y(v) + 3); });
+    for (var k=0; k<=8; k++){ g.beginPath(); g.moveTo(X(k/4), T); g.lineTo(X(k/4), B); g.stroke(); }
+    lbl(g, name, L + 6, T + 9, col, 12, 'left'); g.save(); g.beginPath(); g.rect(L, T, R - L, B - T); g.clip();
+    (ghosts || []).forEach(function(q){ curve(q[0], q[1], 1.2, [4, 4]); });
+    if (env && S.env){ curve(env, '#ffffff', 1.4, [6, 4]); curve(function(u){ return -env(u); }, '#ffffff', 1.4, [6, 4]); }
+    curve(fn, col, 2); g.restore();
+    function curve(f, cl, w, dash){ g.strokeStyle = cl; g.lineWidth = w; g.setLineDash(dash || []); g.beginPath(); for (var q=0; q<=1400; q++){ var u = UMAX*q/1400, yy = Y(f(u)); if (q) g.lineTo(X(u), yy); else g.moveTo(X(u), yy); } g.stroke(); g.setLineDash([]); }
+    return Y; }
+  function timeAxis(B){ g.fillStyle = '#9aa6b4'; g.font = '10px Arial'; g.textAlign = 'center'; for (var k=0; k<=8; k++){ var u = k/4, tms = u/(S.tab === 2 ? S.fmod.fm : S.am.fm/1000); g.fillText(tms.toFixed(tms < 1 ? 2 : 1) + ' ms', X(u), B + 13); } }
+  function stem(x0, x1, B, H, lines, cols, unit, ticks, title){ g.fillStyle = '#0d1526'; g.fillRect(L, B - H, R - L, H); g.strokeStyle = '#2b3d60'; g.strokeRect(L, B - H, R - L, H); lbl(g, title, L + 6, B - H + 10, '#dbe7ff', 11, 'left');
+    function XS(f){ return L + 20 + (f - x0)/(x1 - x0)*(R - L - 40); }
+    ticks.forEach(function(t){ var xx = XS(t); g.strokeStyle = 'rgba(150,170,195,0.25)'; g.beginPath(); g.moveTo(xx, B - H + 18); g.lineTo(xx, B); g.stroke(); g.fillStyle = '#9aa6b4'; g.font = '10px Arial'; g.textAlign = 'center'; g.fillText((+t.toFixed(3)) + ' ' + unit, xx, B + 12); });
+    lines.forEach(function(q, i){ var xx = XS(q[0]), hh = Math.min(1, Math.abs(q[1]))*(H - 32); g.strokeStyle = cols[i] || cols[cols.length - 1]; g.lineWidth = lines.length > 60 ? 1.5 : 4; g.beginPath(); g.moveTo(xx, B); g.lineTo(xx, B - hh); g.stroke(); if (q[2]) lbl(g, q[2], xx, B - hh - 9, cols[i] || '#dbe7ff', 10); }); }
+  function J(n, x){ var N = 800, s = 0; for (var i=0; i<=N; i++){ var t = Math.PI*i/N, w = (i === 0 || i === N) ? 0.5 : 1; s += w*Math.cos(n*t - x*Math.sin(t)); } return s/N; }
+  var JC = { key:'', v:[] };
+  function fmLines(){ var beta = S.fmod.df/S.fmod.fm, key = beta.toFixed(4); if (JC.key !== key){ var nmax = Math.ceil(beta + 4 + 2*Math.sqrt(beta)), v = []; for (var n=0; n<=nmax; n++) v.push(J(n, beta)); JC = { key:key, v:v }; } return JC.v; }
+  function draw(){ var p = pal(), a = S.am, f = S.fmod;
+    g.fillStyle = '#0b1222'; g.fillRect(0, 0, CW, CH);
+    if (S.tab === 0){ panel(14, 134, 1.2, msg, p.m, 'sound signal (message), ' + a.fm + ' Hz');
+      panel(150, 270, 1.2, function(u){ return car(u); }, p.c, 'carrier, ' + a.fc + ' kHz (drawn ' + S.r + ' cycles per sound cycle)');
+      var Bt = 430; panel(286, Bt, 2.7, am, p.s, 'transmitted AM wave: [1 + \u03bc \u00b7 message] \u00d7 carrier', function(u){ return Math.abs(1 + a.mu*msg(u)); }); timeAxis(Bt);
+      var lines = [[a.fc - a.fm/1000, a.mu/2, 'fc \u2212 fm'], [a.fc, 1, 'fc'], [a.fc + a.fm/1000, a.mu/2, 'fc + fm']], w = Math.max(6, 3*a.fm/1000);
+      stem(a.fc - w, a.fc + w, CH - 20, 150, lines, [p.lo, p.c, p.hi], 'kHz', [a.fc - a.fm/1000, a.fc, a.fc + a.fm/1000], 'frequencies in the AM wave (spectrum): bandwidth 2fm = ' + (2*a.fm/1000).toFixed(1) + ' kHz'); }
+    else if (S.tab === 1){ var h = 112, gap = 12, T0 = 12, half = a.mu/2;
+      var Y1 = panel(T0, T0 + h, 1.2, function(u){ return car(u); }, p.c, 'carrier: cos(2\u03c0 fc t)');
+      var Y2 = panel(T0 + h + gap, T0 + 2*h + gap, 1.2, function(u){ return half*car(u, -1); }, p.lo, 'lower side frequency: (\u03bc/2) cos(2\u03c0 (fc \u2212 fm) t), \u03bc/2 = ' + half.toFixed(2));
+      var Y3 = panel(T0 + 2*(h + gap), T0 + 3*h + 2*gap, 1.2, function(u){ return half*car(u, 1); }, p.hi, 'upper side frequency: (\u03bc/2) cos(2\u03c0 (fc + fm) t)');
+      var Bt2 = T0 + 4*h + 3*gap + 40, Y4 = panel(T0 + 3*(h + gap), Bt2, 2.7, am, p.s, 'sum of the three = the AM wave', function(u){ return Math.abs(1 + a.mu*msg(u)); }); timeAxis(Bt2);
+      var u0 = S.x*UMAX, xx = X(u0), vals = [car(u0), half*car(u0, -1), half*car(u0, 1), am(u0)], Ys = [Y1, Y2, Y3, Y4], cl = [p.c, p.lo, p.hi, p.s];
+      g.strokeStyle = '#ffd23f'; g.lineWidth = 2; g.setLineDash([6, 4]); g.beginPath(); g.moveTo(xx, T0); g.lineTo(xx, Bt2); g.stroke(); g.setLineDash([]);
+      vals.forEach(function(v, i){ g.fillStyle = cl[i]; g.beginPath(); g.arc(xx, Ys[i](v), 5, 0, TAU); g.fill(); g.strokeStyle = '#fff'; g.lineWidth = 1.5; g.stroke(); lbl(g, v.toFixed(3), xx + (S.x > 0.8 ? -10 : 10), Ys[i](v) - 12, cl[i], 12, S.x > 0.8 ? 'right' : 'left'); });
+      var yS = CH - 14; lbl(g, vals[0].toFixed(3) + '  +  ' + vals[1].toFixed(3) + '  +  ' + vals[2].toFixed(3) + '  =  ' + (vals[0] + vals[1] + vals[2]).toFixed(3), CW/2, yS, '#ffd23f', 14); }
+    else { panel(14, 134, 1.2, msg, p.m, 'sound signal (message), ' + f.fm + ' kHz');
+      panel(150, 270, 1.2, function(u){ return car(u); }, p.c, 'carrier, ' + f.fc.toFixed(1) + ' MHz (drawn ' + S.r + ' cycles per sound cycle)');
+      var Bt3 = 430; panel(286, Bt3, 1.4, fmw, p.s, 'transmitted FM wave: constant amplitude, frequency follows the message'); timeAxis(Bt3);
+      g.save(); g.globalAlpha = 0.16; for (var q=0; q<200; q++){ var u2 = UMAX*q/200, m2 = msg(u2); g.fillStyle = m2 > 0 ? '#ff5a4a' : '#4fc3ff'; g.fillRect(X(u2), Bt3 - Math.abs(m2)*10, (R - L)/200 + 1, Math.abs(m2)*10); } g.restore();
+      lbl(g, 'shading: red = higher frequency (crowded), blue = lower (spread out)', R, Bt3 - 18, '#dbe7ff', 10, 'right');
+      var Jv = fmLines(), lines2 = [], cols2 = [], nmax = Jv.length - 1, span = Math.max(f.df + 4*f.fm, (nmax + 1)*f.fm);
+      for (var n=-nmax; n<=nmax; n++){ var jn = Jv[Math.abs(n)]*(n < 0 && Math.abs(n) % 2 ? -1 : 1); lines2.push([f.fc*1000 + n*f.fm, Math.abs(jn), nmax < 8 ? (n === 0 ? 'fc' : '') : '']); cols2.push(n === 0 ? p.c : n < 0 ? p.lo : p.hi); }
+      var carson = 2*(f.df + f.fm);
+      stem(f.fc*1000 - span, f.fc*1000 + span, CH - 20, 150, lines2, cols2, 'kHz', [f.fc*1000 - carson/2, f.fc*1000, f.fc*1000 + carson/2].map(function(v){ return v; }), 'FM spectrum: side frequencies fc \u00b1 n fm, heights |J\u2099(\u03b2)|; ticks mark the Carson bandwidth ' + carson.toFixed(0) + ' kHz'); }
+    lbl(g, 'time axis not to scale relative to the carrier', R, CH - 4, '#6f7d92', 9, 'right'); }
+  /* ══════════ controls ══════════ */
+  function row(id, label, min, max, step, val){ return '<div class="' + cls('rd_ctrl') + '"><div class="' + cls('rd_chdr') + '"><label for="' + id + '">' + label + '</label><span class="' + cls('rd_val') + '" id="' + id + 'v"></span></div><input type="range" id="' + id + '" min="' + min + '" max="' + max + '" step="' + step + '" value="' + val + '"></div>'; }
+  var INTRO = ['A sound signal cannot be broadcast directly. The station sends a high-frequency <b>carrier</b> and uses the sound to change its <b>amplitude</b>: the outline of the transmitted wave (the <b>envelope</b>) has the shape of the sound. A receiver follows the envelope to recover the sound.',
+    'The AM wave is not a new kind of wave: it is exactly the <b>sum of three ordinary waves</b>, the carrier and two <b>side frequencies</b> just above and below it. Where they are in step they add up to a large amplitude; where they are out of step they cancel. Move the <b>yellow reading line</b> and check the addition.',
+    'In <b>FM</b> the amplitude of the carrier never changes; the sound changes its <b>frequency</b>. Where the sound signal is high, the waves are squeezed together; where it is low, they are spread out. The receiver turns these frequency changes back into sound.'];
+  function build(){ var t = S.tab, a = S.am, f = S.fmod, h;
+    if (t < 2) h = row('rdFc', 'Station (carrier) frequency f<sub>c</sub>', 540, 1700, 10, a.fc) + row('rdFm', 'Sound frequency f<sub>m</sub>', 100, 5000, 50, a.fm) + row('rdMu', 'Modulation index \u03bc (loudness)', 0, 1.5, 0.05, a.mu)
+      + '<div class="' + cls('rd_presets') + '" id="rdPre"><button type="button" data-p="0">no sound (\u03bc = 0)</button><button type="button" data-p="0.5">\u03bc = 0.5</button><button type="button" data-p="1">\u03bc = 1 (full)</button><button type="button" data-p="1.4">overmodulated</button></div>';
+    else h = row('rdFc2', 'Station (carrier) frequency f<sub>c</sub>', 88, 108, 0.1, f.fc) + row('rdDf', 'Frequency deviation \u0394f (loudness)', 0, 75, 1, f.df) + row('rdFm2', 'Sound frequency f<sub>m</sub>', 1, 15, 0.5, f.fm)
+      + '<div class="' + cls('rd_presets') + '" id="rdPre"><button type="button" data-q="0">no sound</button><button type="button" data-q="5">quiet (\u0394f 5 kHz)</button><button type="button" data-q="75">loudest allowed (75 kHz)</button></div>';
+    el('rdCtl').innerHTML = h; el('rdIntro').innerHTML = INTRO[t]; el('rdCurW').hidden = t !== 1;
+    var hook = function(id, obj, key){ var e = el(id); if (!e) return; e.addEventListener('input', function(){ obj[key] = +this.value; upd(); }); e.addEventListener('change', function(){ say(el('rdExp').textContent.split('. ').slice(0, 2).join('. ') + '.'); }); };
+    hook('rdFc', a, 'fc'); hook('rdFm', a, 'fm'); hook('rdMu', a, 'mu'); hook('rdFc2', f, 'fc'); hook('rdDf', f, 'df'); hook('rdFm2', f, 'fm');
+    [].forEach.call(el('rdPre').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ if (b.hasAttribute('data-p')){ a.mu = +b.getAttribute('data-p'); el('rdMu').value = a.mu; } else { f.df = +b.getAttribute('data-q'); el('rdDf').value = f.df; } upd(); say(el('rdExp').textContent.split('. ').slice(0, 2).join('. ') + '.'); }); });
+    upd(); }
+  function fmtF(khz){ return khz >= 1000 ? (khz/1000).toFixed(3) + ' MHz' : khz.toFixed(khz % 1 ? 1 : 0) + ' kHz'; }
+  function upd(){ var t = S.tab, a = S.am, f = S.fmod, R2, E;
+    el('rdDrv').textContent = S.r; el('rdDr').value = S.r;
+    if (t < 2){ el('rdFcv').textContent = a.fc + ' kHz'; el('rdFmv').textContent = a.fm + ' Hz'; el('rdMuv').textContent = a.mu.toFixed(2);
+      var lam = 3e8/(a.fc*1e3);
+      R2 = [['carrier f<sub>c</sub>', a.fc + ' kHz'], ['carrier wavelength', lam.toFixed(0) + ' m'], ['side frequencies', fmtF(a.fc - a.fm/1000) + ' and ' + fmtF(a.fc + a.fm/1000)], ['bandwidth 2f<sub>m</sub>', (2*a.fm/1000).toFixed(1) + ' kHz'], ['real carrier cycles per sound cycle', Math.round(a.fc*1000/a.fm).toLocaleString()], ['envelope', (1 - a.mu).toFixed(2) + ' to ' + (1 + a.mu).toFixed(2)]];
+      if (t === 1){ var u0 = S.x*2, v = [car(u0), a.mu/2*car(u0, -1), a.mu/2*car(u0, 1)]; el('rdXv').textContent = 't = ' + (u0/(a.fm/1000)).toFixed(3) + ' ms'; el('rdX').setAttribute('aria-valuetext', el('rdXv').textContent);
+        R2 = [['carrier', v[0].toFixed(3)], ['lower side', v[1].toFixed(3)], ['upper side', v[2].toFixed(3)], ['sum of the three', (v[0] + v[1] + v[2]).toFixed(3)], ['AM wave read on graph 4', am(u0).toFixed(3) + ' \u2713'], ['side frequencies', fmtF(a.fc - a.fm/1000) + ', ' + fmtF(a.fc + a.fm/1000)]]; }
+      E = (t === 1 ? '<div class="' + cls('rd_eq') + '">[1 + \u03bc cos \u03c9\u2098t] cos \u03c9\u1d9ct = cos \u03c9\u1d9ct + (\u03bc/2) cos(\u03c9\u1d9c \u2212 \u03c9\u2098)t + (\u03bc/2) cos(\u03c9\u1d9c + \u03c9\u2098)t</div><p>The two side frequencies differ from the carrier by f<sub>m</sub>, so they drift in and out of step with it ' + a.fm + ' times per second: they <b>beat</b> with the carrier, and the beats are the envelope. Where both side waves are in step with the carrier, the sum is 1 + \u03bc = ' + (1 + a.mu).toFixed(2) + '; where both are opposite, 1 \u2212 \u03bc = ' + (1 - a.mu).toFixed(2) + '.</p>'
+        : '<div class="' + cls('rd_eq') + '">s(t) = [1 + \u03bc cos(2\u03c0 f<sub>m</sub> t)] cos(2\u03c0 f<sub>c</sub> t), \u03bc = ' + a.mu.toFixed(2) + '</div><p>The amplitude swings between ' + (1 - a.mu).toFixed(2) + ' and ' + (1 + a.mu).toFixed(2) + ' times the carrier amplitude, ' + a.fm + ' times per second. A louder sound means a larger \u03bc; a higher pitch means a faster swing.</p>')
+        + '<p>' + (a.mu > 1 ? '<b>Overmodulation:</b> \u03bc > 1, so the envelope would go below zero; it folds back and the received sound is distorted. Stations keep \u03bc below 1.' : a.mu === 0 ? 'With \u03bc = 0 only the plain carrier is sent: the station is on the air, but silent.' : 'The receiver keeps only the envelope (a diode and a filter) and recovers the sound.') + ' The station occupies ' + fmtF(a.fc - a.fm/1000) + ' to ' + fmtF(a.fc + a.fm/1000) + '; AM stations are spaced 10 kHz apart so their bands do not overlap.</p>'; }
+    else { el('rdFc2v').textContent = f.fc.toFixed(1) + ' MHz'; el('rdDfv').textContent = f.df + ' kHz'; el('rdFm2v').textContent = f.fm + ' kHz';
+      var beta = f.df/f.fm, car2 = 2*(f.df + f.fm);
+      R2 = [['carrier f<sub>c</sub>', f.fc.toFixed(1) + ' MHz'], ['carrier wavelength', (300/f.fc).toFixed(2) + ' m'], ['frequency swings', (f.fc - f.df/1000).toFixed(3) + ' to ' + (f.fc + f.df/1000).toFixed(3) + ' MHz'], ['modulation index \u03b2 = \u0394f/f<sub>m</sub>', beta.toFixed(2)], ['Carson bandwidth 2(\u0394f + f<sub>m</sub>)', car2.toFixed(0) + ' kHz'], ['amplitude', 'constant']];
+      E = '<div class="' + cls('rd_eq') + '">s(t) = cos(2\u03c0 f<sub>c</sub> t + \u03b2 sin 2\u03c0 f<sub>m</sub> t), \u00a0 f(t) = f<sub>c</sub> + \u0394f cos 2\u03c0 f<sub>m</sub> t</div><p>The frequency swings by \u00b1' + f.df + ' kHz around ' + f.fc.toFixed(1) + ' MHz, ' + (f.fm*1000).toLocaleString() + ' times per second. The <b>size</b> of the swing carries the loudness; how <b>often</b> it swings carries the pitch. ' + (f.df === 0 ? 'With no deviation the carrier is unmodulated.' : 'The spectrum shows side frequencies f<sub>c</sub> \u00b1 n f<sub>m</sub>; most of the power lies within ' + car2.toFixed(0) + ' kHz, which is why FM stations are 200 kHz apart.') + '</p><p class="' + cls('rd_note') + '">In the drawing the frequency change is greatly exaggerated: a real FM carrier changes its frequency by less than 0.1%.</p>'; }
+    el('rdR').innerHTML = R2.map(function(q){ return '<div><div class="' + cls('rd_rl') + '">' + q[0] + '</div><div class="' + cls('rd_rv') + '">' + q[1] + '</div></div>'; }).join(''); el('rdExp').innerHTML = E; draw(); }
+  el('rdDr').addEventListener('input', function(){ S.r = +this.value; upd(); });
+  el('rdEnv').addEventListener('change', function(){ S.env = this.checked; draw(); });
+  el('rdX').addEventListener('input', function(){ S.x = +this.value; upd(); });
+  el('rdX').addEventListener('change', function(){ var u0 = S.x*2, a = S.am, v = [car(u0), a.mu/2*car(u0, -1), a.mu/2*car(u0, 1)]; say('Carrier ' + v[0].toFixed(3) + ', lower side ' + v[1].toFixed(3) + ', upper side ' + v[2].toFixed(3) + '; sum ' + (v[0] + v[1] + v[2]).toFixed(3) + ', the same as the AM wave.'); });
+  function setX(e){ var r = c.getBoundingClientRect(), px = (e.clientX - r.left)*CW/r.width; S.x = Math.max(0, Math.min(1, (px - L)/(R - L))); el('rdX').value = S.x; upd(); }
+  var drag = false; c.addEventListener('pointerdown', function(e){ if (S.tab === 1){ drag = true; setX(e); } }); c.addEventListener('pointermove', function(e){ if (drag) setX(e); }); window.addEventListener('pointerup', function(){ drag = false; });
+  c.addEventListener('keydown', function(e){ if (S.tab === 1 && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')){ S.x = Math.max(0, Math.min(1, S.x + (e.key === 'ArrowRight' ? 0.002 : -0.002)*(e.shiftKey ? 10 : 1))); el('rdX').value = S.x; upd(); e.preventDefault(); } });
+  function setPlay(v){ S.play = v; el('rdPlay').setAttribute('aria-pressed', v ? 'true' : 'false'); el('rdPlay').innerHTML = v ? '&#10074;&#10074; Pause' : '&#9654; Play'; }
+  el('rdPlay').addEventListener('click', function(){ setPlay(!S.play); if (!S.play) upd(); });
+  function setTab(i){ S.tab = i; for (var k=0; k<3; k++){ var t = el('rdT' + k); t.setAttribute('aria-selected', k === i ? 'true' : 'false'); t.tabIndex = k === i ? 0 : -1; } build();
+    say(['Amplitude modulation: the envelope of the transmitted wave follows the sound.', 'The AM wave is the sum of the carrier and two side frequencies. Move the reading line and check the addition.', 'Frequency modulation: the amplitude stays constant and the frequency follows the sound.'][i]); }
+  [0, 1, 2].forEach(function(i){ var t = el('rdT' + i); t.addEventListener('click', function(){ setTab(i); }); t.addEventListener('keydown', function(e){ var n = e.key === 'ArrowRight' ? (i + 1) % 3 : e.key === 'ArrowLeft' ? (i + 2) % 3 : -1; if (n >= 0){ setTab(n); el('rdT' + n).focus(); e.preventDefault(); } }); });
+  var last = 0, rt = 0; function loop(now){ var dt = last ? Math.min(0.05, (now - last)/1000) : 0; last = now; if (S.play){ S.ph = (S.ph + dt*0.12) % 1; draw(); if ((rt += dt) > 0.3 && S.tab === 1){ rt = 0; upd(); } } requestAnimationFrame(loop); }
+  rdA11y.onChange(draw); setTab(0); requestAnimationFrame(loop);
+  return { S:S, setTab:setTab, J:J, am:am, car:car };
+};
+var rdSim = new rdGen();
+</script>
+<script>rdA11y.init();</script>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+</div>
+
+</body>
+</html>

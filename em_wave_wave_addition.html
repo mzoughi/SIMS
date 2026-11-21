@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.MathJax = { loader: { load: ['input/asciimath', 'output/chtml'] } };</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations-Waves: Adding Waves (Superposition)</title>
+<meta name="author" content="Taha Mzoughi">
+<style>body { margin:0; padding:24px 12px; background:#e9edf2; font-family:Arial, sans-serif; } @media (max-width:600px) { body { margin:0 !important; padding:4px 0; } }</style>
+<link rel="shortcut icon" href=mzy.ico>   </head>
+<body style=margin:25px>
+<div id="mobwaveadd" class="mob_wrap">
+<div class="wa_a11y" role="toolbar" aria-label="Display options">
+<button type="button" class="wa_a11ybtn" id="waBtnHC" onclick="waA11y.toggle('hc')" aria-pressed="false">HIGH CONTRAST</button>
+<button type="button" class="wa_a11ybtn" id="waBtnDM" onclick="waA11y.toggle('dm')" aria-pressed="false">DARK MODE</button>
+<button type="button" class="wa_a11ybtn" id="waBtnCB" onclick="waA11y.toggle('cb')" aria-pressed="false">COLOR-BLIND SAFE</button>
+<button type="button" class="wa_a11ybtn" id="waBtnNR" onclick="waA11y.toggle('nr')" aria-pressed="true" style="background:rgba(0,232,208,.12);border-color:#00e8d0;color:#00e8d0">NARRATION: ON</button>
+</div>
+<div class="wa_title"><h3>Adding Waves: the Principle of Superposition</h3></div>
+<div id="waNarBar" class="wa_narbar" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="wa_intro">When two waves travel through the same medium, the displacement at each point is the <b>sum</b> of the displacements the two waves would cause on their own: <b>y = y&#8321; + y&#8322;</b>. The top graph shows wave 1, the middle graph wave 2, and the bottom graph their sum. Move the <b>yellow reading line</b> to any point and check that the three values add up.</div>
+<div class="wa_view"><canvas id="waC" width="820" height="540" tabindex="0" role="img" aria-label="Three graphs of displacement against position, one above the other on the same scale: wave 1 at the top, wave 2 in the middle and their sum at the bottom. A vertical yellow line crosses all three graphs at the reading position, with a dot and the value where it meets each wave."></canvas></div>
+<div class="wa_cursor"><label for="waX">Reading line x</label><input type="range" id="waX" min="0" max="4" step="0.01" value="1.2"><span id="waXv" class="wa_val"></span></div>
+<div class="wa_read" id="waR" aria-live="polite"></div>
+<div class="wa_transport" role="toolbar" aria-label="Time">
+<div class="wa_tgroup"><button type="button" class="wa_bbtn" id="waPlay" aria-pressed="false">&#9654; Play</button><button type="button" class="wa_vbtn" id="waStepB" aria-label="Step back 0.05 s">&#9664;&#9664; step</button><button type="button" class="wa_vbtn" id="waStepF" aria-label="Step forward 0.05 s">step &#9654;&#9654;</button><button type="button" class="wa_vbtn" id="waT0">t = 0</button></div>
+<div class="wa_tgroup wa_tsep"><label class="wa_chk"><input type="checkbox" id="waGhost" checked> show waves 1 and 2 on the sum</label><label class="wa_chk"><input type="checkbox" id="waBars" checked> show the adding bars</label></div>
+</div>
+<div class="wa_panels">
+<div class="wa_panel"><div class="wa_ptitle" style="background:#1f5fa8">Wave 1</div><div class="wa_pbody" id="waW1"></div></div>
+<div class="wa_panel"><div class="wa_ptitle" style="background:#c05a00">Wave 2</div><div class="wa_pbody" id="waW2"></div></div>
+<div class="wa_panel"><div class="wa_ptitle">Try these</div><div class="wa_pbody"><div class="wa_presets" id="waPre" role="group" aria-label="Examples"></div><div id="waExp"></div></div></div>
+</div>
+<div class="mob_descwrap">
+<button type="button" class="mob_descbtn" id="mobDescBtn" aria-expanded="false" aria-controls="mobDesc">&#9656; SIM DESCRIPTION</button>
+<div class="mob_desc" id="mobDesc" role="region" aria-labelledby="mobDescBtn" style="display:none">
+<p>Each wave is a sinusoidal wave on a string, `y_i(x,t) = A_i sin(k_i x -+ omega_i t + phi_i)`, with amplitude `A_i`, wavelength `lambda_i` (`k_i = 2pi//lambda_i`), speed `v_i` (`omega_i = 2pi v_i//lambda_i`, so `f_i = v_i//lambda_i`) and phase constant `phi_i`; the sign is `-` for a wave moving to the right and `+` for a wave moving to the left.</p>
+<p>The <b>principle of superposition</b>: when both waves are present, the displacement is `y = y_1 + y_2` at every point and every instant. Where the two displacements have the same sign they add (constructive interference); where they have opposite signs they partly or completely cancel (destructive interference). Two identical waves in phase give a wave of twice the amplitude; in antiphase (`phi_2 - phi_1 = 180 deg`) they cancel everywhere. Two identical waves moving in opposite directions give a <b>standing wave</b>, `y = 2A sin(kx) cos(omega t)`, with nodes that never move. Two waves of slightly different wavelengths give groups of large and small oscillations, the spatial version of beats.</p>
+<p>The three graphs share the same vertical scale (in cm), so the values read at the yellow line can be added directly. Play the animation, or step it, to see that the relationship holds at every instant.</p>
+</div>
+</div>
+<style>
+:where(#mobwaveadd) * { margin:0; box-sizing:border-box; }
+#mobwaveadd { width:100%; max-width:860px; margin:0 auto; font-family:Arial, sans-serif; background:#f3f5f8; color:#1d232a; }
+#mobwaveadd canvas { display:block; width:100%; height:auto; }
+#mobwaveadd [hidden] { display:none !important; }
+#mobwaveadd .wa_a11y { display:flex; gap:6px; padding:6px 8px; background:#222; flex-wrap:wrap; }
+#mobwaveadd .wa_a11ybtn { padding:4px 10px; font-size:.72rem; font-family:monospace; letter-spacing:.06em; border-radius:3px; cursor:pointer; background:#2a2e3a; border:1px solid #404a60; color:#7a8aaa; }
+#mobwaveadd .wa_narbar { min-height:28px; padding:5px 10px; background:#ffefc0; border-left:4px solid #e0b040; font-size:.88rem; color:#333; font-style:italic; }
+#mobwaveadd .wa_title { padding:4px; background-color:#f90; text-align:center; }
+#mobwaveadd .wa_title h3 { font-size:1.05rem; font-weight:bold; line-height:28px; }
+#mobwaveadd .wa_tabs { display:flex; gap:4px; padding:6px 8px 0; background:#14213a; flex-wrap:wrap; }
+#mobwaveadd .wa_tab { flex:1 1 140px; padding:8px 6px; border:1px solid #2b3d60; border-bottom:0; border-radius:6px 6px 0 0; background:#1d2c4a; color:#bcd0f0; font-weight:bold; cursor:pointer; font-size:.88rem; min-height:40px; }
+#mobwaveadd .wa_tab[aria-selected="true"] { background:#f3f5f8; color:#14213a; }
+#mobwaveadd .wa_intro { padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; font-size:.9rem; line-height:1.5; }
+#mobwaveadd .wa_read { display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:6px 12px; padding:8px 12px; background:#fff; border-bottom:1px solid #d5dbe4; }
+#mobwaveadd .wa_rl { font-size:.7rem; color:#667; text-transform:uppercase; letter-spacing:.05em; }
+#mobwaveadd .wa_rv { font-family:monospace; font-size:.93rem; color:#7a3a00; font-weight:bold; }
+#mobwaveadd .wa_view { background:#0b1222; }
+#mobwaveadd .wa_status { color:#222; font-size:.86rem; text-align:center; background:#fff6d9; padding:5px 8px; line-height:1.45; min-height:1.6em; }
+#mobwaveadd .wa_transport { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; background:#df9; padding:8px; }
+#mobwaveadd .wa_tgroup { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; }
+#mobwaveadd .wa_tsep { padding-left:14px; border-left:1px solid #9ab060; }
+@media (max-width:640px) { #mobwaveadd .wa_tsep { padding-left:0; border-left:0; } }
+#mobwaveadd .wa_vbtn, #mobwaveadd .wa_bbtn { min-height:38px; padding:4px 12px; font-size:.85rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:5px; background:#fff; color:#223; }
+#mobwaveadd .wa_vbtn[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobwaveadd .wa_bbtn { background:#2e7d32; border-color:#1b5e20; color:#fff; font-weight:bold; }
+#mobwaveadd .wa_bbtn[aria-pressed="true"] { background:#c62828; border-color:#8e1b1b; }
+#mobwaveadd button:disabled { opacity:.4; cursor:not-allowed; }
+#mobwaveadd .wa_cursor { display:flex; align-items:center; gap:10px; padding:6px 12px; background:#14213a; color:#dbe7ff; font-size:.85rem; font-weight:bold; }
+#mobwaveadd .wa_cursor input { flex:1 1 auto; min-width:0; accent-color:#ffd23f; }
+#mobwaveadd .wa_panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:10px; padding:10px; }
+#mobwaveadd .wa_panel { background:#fff; border:1px solid #c9d0da; border-radius:6px; overflow:hidden; min-width:0; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+#mobwaveadd .wa_ptitle { background:#883355; color:#fff; padding:5px 10px; font-size:.74rem; font-weight:bold; letter-spacing:.1em; text-transform:uppercase; }
+#mobwaveadd .wa_pbody { padding:8px 10px 10px; display:flex; flex-direction:column; gap:8px; font-size:.87rem; line-height:1.45; }
+#mobwaveadd .wa_ctrl { display:flex; flex-direction:column; gap:2px; min-width:0; }
+#mobwaveadd .wa_chdr { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+#mobwaveadd .wa_chdr label { font-size:.82rem; font-weight:bold; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+#mobwaveadd .wa_val { font-family:monospace; font-size:.85rem; color:#7a3a00; white-space:nowrap; flex:0 0 auto; min-width:4.5em; text-align:right; }
+#mobwaveadd .wa_ctrl input[type=range] { width:100%; margin:2px 0; cursor:pointer; }
+#mobwaveadd select { width:100%; min-height:34px; padding:4px 6px; font-size:.86rem; border:1px solid #8a96a8; border-radius:4px; background:#fff; }
+#mobwaveadd .wa_chk { display:flex; align-items:center; gap:6px; font-size:.82rem; cursor:pointer; }
+#mobwaveadd .wa_presets { display:flex; flex-wrap:wrap; gap:5px; }
+#mobwaveadd .wa_presets button { padding:5px 9px; font-size:.82rem; cursor:pointer; border:1px solid #4a6aa0; border-radius:4px; background:#fff; color:#223; min-height:34px; }
+#mobwaveadd .wa_presets button[aria-pressed="true"] { background:#1f5fa8; color:#fff; border-color:#1f5fa8; }
+#mobwaveadd .wa_note { font-size:.8rem; color:#555; font-style:italic; }
+#mobwaveadd .wa_eq { font-family:'Times New Roman', serif; font-size:1rem; background:#f6f8fb; border-left:3px solid #1f5fa8; padding:4px 8px; margin:2px 0; overflow-wrap:anywhere; }
+#mobwaveadd b.wa_res { color:#7a3a00; }
+#mobwaveadd button:focus-visible, #mobwaveadd input:focus-visible, #mobwaveadd select:focus-visible, #mobwaveadd canvas:focus-visible { outline:2px solid #e8a020; outline-offset:2px; }
+@media (pointer:coarse) { #mobwaveadd .wa_vbtn, #mobwaveadd .wa_bbtn { min-height:44px; } #mobwaveadd .wa_presets button { min-height:42px; } #mobwaveadd input[type=checkbox] { width:20px; height:20px; } #mobwaveadd input[type=range] { height:28px; } }
+#mobwaveadd .mob_descwrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 10px; }
+#mobwaveadd .mob_descbtn { padding:8px 18px; font-family:monospace; font-size:.76rem; letter-spacing:.08em; cursor:pointer; background:#2c3138; border:1px solid #e8a020; color:#e8a020; border-radius:3px; font-weight:bold; min-height:38px; }
+#mobwaveadd .mob_desc { width:calc(100% - 20px); background:#f6f8fb; border:1px solid #ccd; border-left:4px solid #e8a020; border-radius:4px; padding:10px 14px; line-height:1.5; font-size:.92rem; color:#1d232a; }
+#mobwaveadd .mob_desc p { margin:0 0 8px 0; }
+#mobwaveadd .mob_eq { text-align:center; }
+#mobwaveadd.a11y_dm { filter:invert(1) hue-rotate(180deg); }
+#mobwaveadd.a11y_dm .wa_view, #mobwaveadd.a11y_dm [aria-label="Display options"], #mobwaveadd.a11y_dm .mob_descbtn { filter:hue-rotate(180deg) invert(1); }
+#mobwaveadd.a11y_hc { filter:invert(1) hue-rotate(180deg) contrast(1.8); }
+#mobwaveadd.a11y_hc .wa_view, #mobwaveadd.a11y_hc [aria-label="Display options"], #mobwaveadd.a11y_hc .mob_descbtn { filter:contrast(0.5556) hue-rotate(180deg) invert(1); }
+</style>
+<script>
+var waA11y = (function(){
+var states = { hc:false, dm:false, cb:false, nr:true }, hooks = [];
+function styleBtn(id, on){ var b = document.getElementById(id); if (!b) return; b.style.background = on ? 'rgba(0,232,208,.12)' : '#2a2e3a'; b.style.borderColor = on ? '#00e8d0' : '#404a60'; b.style.color = on ? '#00e8d0' : '#7a8aaa'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+function apply(){ var W = document.getElementById('mobwaveadd'); if (!W) return; W.classList.toggle('a11y_dm', states.dm); W.classList.toggle('a11y_hc', states.hc);
+var nb = document.getElementById('waNarBar'); if (nb) nb.style.display = states.nr ? 'block' : 'none'; var nr = document.getElementById('waBtnNR'); if (nr) nr.textContent = 'NARRATION: ' + (states.nr ? 'ON' : 'OFF');
+styleBtn('waBtnHC', states.hc); styleBtn('waBtnDM', states.dm); styleBtn('waBtnCB', states.cb); styleBtn('waBtnNR', states.nr); hooks.forEach(function(f){ try { f(); } catch (e) {} }); }
+return { init:function(){ apply(); }, onChange:function(f){ hooks.push(f); },
+toggle:function(k){ states[k] = !states[k]; if (k === 'hc' && states.hc) states.dm = false; if (k === 'dm' && states.dm) states.hc = false; apply(); if (k === 'cb' && states.cb) this.narrate('Colour-blind safe colours: wave 1 blue, wave 2 orange, the sum bluish green.'); },
+alt:function(){ return states.hc || states.cb; }, narrate:function(m){ if (!states.nr) return; var nb = document.getElementById('waNarBar'); if (nb) nb.textContent = m; } };
+})();
+</script>
+<!-- ════════ SIMULATION ════════
+y_i(x, t) = A_i sin(k_i x - s_i omega_i t + phi_i), s_i = +1 (to the right) or -1 (to the left); sum y = y_1 + y_2.
+x from 0 to 4 m; all three graphs from -10 to +10 cm. No dollar signs or backticks in the code.
+-->
+<script>
+var waGen = function(){
+  function el(id){ return document.getElementById(id + ''); }
+  function cls(n){ return n + ''; }
+  function say(m){ waA11y.narrate(m); }
+  var TAU = 2*Math.PI, XMAX = 4, YMAX = 10;
+  var W = [{ A:4, lam:2, v:0.5, ph:0, dir:1 }, { A:3, lam:1, v:0.5, ph:0, dir:1 }], S = { t:0, x:1.2, play:false, ghost:true, bars:true };
+  function y(i, x, t){ var w = W[i]; return w.A*Math.sin(TAU*x/w.lam - w.dir*TAU*w.v/w.lam*t + w.ph*Math.PI/180); }
+  function pal(){ var a = waA11y.alt(); return { w1:a ? '#56B4E9' : '#6fa8ff', w2:a ? '#E69F00' : '#ff9a3d', s:a ? '#009E73' : '#3ad08f', cur:a ? '#F0E442' : '#ffd23f' }; }
+  function lbl(g, t, x, yy, col, size, al){ g.font = 'bold ' + (size || 12) + 'px Arial'; g.textAlign = al || 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round'; g.lineWidth = 3.5; g.strokeStyle = 'rgba(0,0,0,0.85)'; g.strokeText(t, x, yy); g.fillStyle = col; g.fillText(t, x, yy); g.textBaseline = 'alphabetic'; }
+  var c = el('waC'), g = c.getContext('2d'), CW = c.width, CH = c.height, L = 62, R = CW - 22, PAN = [[14, 170], [190, 346], [366, 522]];
+  function X(x){ return L + x/XMAX*(R - L); }
+  function f(v, d){ return (Math.abs(v) < 0.005 ? 0 : v).toFixed(d === undefined ? 2 : d); }
+  function draw(){ var p = pal(), i, k, cols = [p.w1, p.w2, p.s], names = ['wave 1:  y\u2081', 'wave 2:  y\u2082', 'sum:  y = y\u2081 + y\u2082'];
+    g.fillStyle = '#0b1222'; g.fillRect(0, 0, CW, CH);
+    PAN.forEach(function(pn, j){ var T = pn[0], B = pn[1], M = (T + B)/2; function Y(v){ return M - v/YMAX*(B - T)/2; }
+      g.strokeStyle = 'rgba(150,170,195,0.18)'; g.lineWidth = 1; for (k=-10; k<=10; k+=5){ g.beginPath(); g.moveTo(L, Y(k)); g.lineTo(R, Y(k)); g.stroke(); g.fillStyle = '#9aa6b4'; g.font = '10px Arial'; g.textAlign = 'right'; g.fillText(String(k), L - 6, Y(k) + 3); }
+      for (k=0; k<=XMAX; k+=0.5){ g.beginPath(); g.moveTo(X(k), T); g.lineTo(X(k), B); g.stroke(); if (j === 2 && k % 1 === 0){ g.fillStyle = '#9aa6b4'; g.textAlign = 'center'; g.fillText(k + ' m', X(k), B + 13); } }
+      g.strokeStyle = 'rgba(200,210,230,0.5)'; g.beginPath(); g.moveTo(L, M); g.lineTo(R, M); g.stroke();
+      g.save(); g.translate(16, M); g.rotate(-Math.PI/2); g.fillStyle = '#9aa6b4'; g.font = '10px Arial'; g.textAlign = 'center'; g.fillText('y (cm)', 0, 0); g.restore();
+      lbl(g, names[j], L + 6, T + 10, cols[j], 12, 'left');
+      g.save(); g.beginPath(); g.rect(L, T, R - L, B - T); g.clip();
+      function curve(fn, col, w, dash){ g.strokeStyle = col; g.lineWidth = w; g.setLineDash(dash || []); g.beginPath(); for (var q=0; q<=600; q++){ var xx = XMAX*q/600, yy = Y(fn(xx)); if (q) g.lineTo(X(xx), yy); else g.moveTo(X(xx), yy); } g.stroke(); g.setLineDash([]); }
+      if (j === 2 && S.ghost){ curve(function(x){ return y(0, x, S.t); }, p.w1, 1.3, [5, 4]); curve(function(x){ return y(1, x, S.t); }, p.w2, 1.3, [5, 4]); }
+      curve(j === 2 ? function(x){ return y(0, x, S.t) + y(1, x, S.t); } : function(x){ return y(j, x, S.t); }, cols[j], 2.6);
+      g.restore();
+      var vv = j === 2 ? y(0, S.x, S.t) + y(1, S.x, S.t) : y(j, S.x, S.t), cx = X(S.x);
+      if (S.bars){ if (j < 2){ g.strokeStyle = cols[j]; g.lineWidth = 6; g.globalAlpha = 0.55; g.beginPath(); g.moveTo(cx, M); g.lineTo(cx, Y(vv)); g.stroke(); g.globalAlpha = 1; }
+        else { var y1 = y(0, S.x, S.t), y2 = y(1, S.x, S.t); g.lineWidth = 6; g.globalAlpha = 0.6; g.strokeStyle = p.w1; g.beginPath(); g.moveTo(cx - 5, M); g.lineTo(cx - 5, Y(y1)); g.stroke(); g.strokeStyle = p.w2; g.beginPath(); g.moveTo(cx - 5, Y(y1)); g.lineTo(cx - 5, Y(y1 + y2)); g.stroke(); g.globalAlpha = 1; } }
+      g.fillStyle = cols[j]; g.beginPath(); g.arc(cx, Y(vv), 5.5, 0, TAU); g.fill(); g.strokeStyle = '#fff'; g.lineWidth = 1.5; g.stroke();
+      lbl(g, (j === 2 ? 'y = ' : j ? 'y\u2082 = ' : 'y\u2081 = ') + f(vv) + ' cm', cx + (S.x > 3 ? -10 : 10), Y(vv) - 14, cols[j], 12, S.x > 3 ? 'right' : 'left'); });
+    var cx2 = X(S.x); g.strokeStyle = p.cur; g.lineWidth = 2; g.setLineDash([6, 4]); g.beginPath(); g.moveTo(cx2, 8); g.lineTo(cx2, PAN[2][1]); g.stroke(); g.setLineDash([]);
+    lbl(g, 't = ' + S.t.toFixed(2) + ' s', R, 8, '#dbe7ff', 11, 'right'); }
+  function read(){ var y1 = y(0, S.x, S.t), y2 = y(1, S.x, S.t);
+    el('waXv').textContent = S.x.toFixed(2) + ' m'; el('waX').setAttribute('aria-valuetext', 'x = ' + S.x.toFixed(2) + ' m');
+    el('waR').innerHTML = [['time t', S.t.toFixed(2) + ' s'], ['position x', S.x.toFixed(2) + ' m'], ['y\u2081', f(y1) + ' cm'], ['y\u2082', f(y2) + ' cm'], ['y\u2081 + y\u2082', f(y1) + ' + ' + (y2 < 0 ? '(' + f(y2) + ')' : f(y2)) + ' = ' + f(y1 + y2) + ' cm'], ['sum read on graph 3', f(y1 + y2) + ' cm \u2713']].map(function(q){ return '<div><div class="' + cls('wa_rl') + '">' + q[0] + '</div><div class="' + cls('wa_rv') + '">' + q[1] + '</div></div>'; }).join(''); }
+  function explain(){ var a = W[0], b = W[1], same = a.lam === b.lam && a.v === b.v, dph = ((b.ph - a.ph) % 360 + 360) % 360, t;
+    if (same && a.dir === b.dir){ var Ar = Math.sqrt(a.A*a.A + b.A*b.A + 2*a.A*b.A*Math.cos(dph*Math.PI/180)); t = 'Same wavelength and direction: the sum is a wave of the same wavelength with amplitude <b class="' + cls('wa_res') + '">' + Ar.toFixed(2) + ' cm</b>, between |A\u2081 \u2212 A\u2082| = ' + Math.abs(a.A - b.A).toFixed(1) + ' cm (in antiphase) and A\u2081 + A\u2082 = ' + (a.A + b.A).toFixed(1) + ' cm (in phase). Phase difference: ' + dph + '\u00b0.'; }
+    else if (same && a.dir !== b.dir) t = 'Same wavelength and speed, opposite directions: ' + (a.A === b.A ? 'a <b>standing wave</b>. The nodes (y = 0 at all times) are ' + (a.lam/2).toFixed(2) + ' m apart, half a wavelength.' : 'a standing wave plus a travelling part, because the amplitudes differ: no true nodes.');
+    else t = 'Different wavelengths' + (a.v !== b.v ? ' and speeds' : '') + ': the sum is not a simple sine wave. Regions where the waves are in step alternate with regions where they cancel.' + (Math.abs(a.lam - b.lam) < 0.3*a.lam ? ' With close wavelengths the sum forms groups (spatial beats), repeating every \u03bb\u2081\u03bb\u2082/|\u03bb\u2081 \u2212 \u03bb\u2082| = ' + (a.lam*b.lam/Math.abs(a.lam - b.lam)).toFixed(2) + ' m.' : '');
+    el('waExp').innerHTML = '<div class="' + cls('wa_eq') + '">y = A\u2081 sin(k\u2081x ' + (a.dir > 0 ? '\u2212' : '+') + ' \u03c9\u2081t + \u03c6\u2081) + A\u2082 sin(k\u2082x ' + (b.dir > 0 ? '\u2212' : '+') + ' \u03c9\u2082t + \u03c6\u2082)</div><p>' + t + '</p>'; }
+  /* controls for each wave */
+  var SL = [['A', 'Amplitude A', 0, 5, 0.1, ' cm'], ['lam', 'Wavelength \u03bb', 0.2, 4, 0.05, ' m'], ['v', 'Speed v', 0, 2, 0.05, ' m/s'], ['ph', 'Phase constant \u03c6', 0, 360, 5, '\u00b0']];
+  [0, 1].forEach(function(i){ var h = SL.map(function(s){ return '<div class="' + cls('wa_ctrl') + '"><div class="' + cls('wa_chdr') + '"><label for="wa' + s[0] + i + '">' + s[1] + '</label><span class="' + cls('wa_val') + '" id="wa' + s[0] + i + 'v"></span></div><input type="range" id="wa' + s[0] + i + '" min="' + s[2] + '" max="' + s[3] + '" step="' + s[4] + '"></div>'; }).join('')
+      + '<div class="' + cls('wa_presets') + '" id="waD' + i + '" role="group" aria-label="Direction of wave ' + (i + 1) + '"><button type="button" data-d="1">moves right \u2192</button><button type="button" data-d="-1">\u2190 moves left</button></div><div class="' + cls('wa_note') + '" id="waF' + i + '"></div>';
+    el('waW' + (i + 1)).innerHTML = h;
+    SL.forEach(function(s){ el('wa' + s[0] + i).addEventListener('input', function(){ W[i][s[0]] = +this.value; sync(); }); el('wa' + s[0] + i).addEventListener('change', function(){ say('Wave ' + (i + 1) + ': ' + s[1].toLowerCase() + ' ' + this.value + s[5] + '. ' + el('waExp').textContent); }); });
+    [].forEach.call(el('waD' + i).querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ W[i].dir = +b.getAttribute('data-d'); sync(); say('Wave ' + (i + 1) + ' now moves to the ' + (W[i].dir > 0 ? 'right.' : 'left.')); }); }); });
+  function sync(){ [0, 1].forEach(function(i){ SL.forEach(function(s){ el('wa' + s[0] + i).value = W[i][s[0]]; el('wa' + s[0] + i + 'v').textContent = (+W[i][s[0]]).toFixed(s[4] < 0.1 ? 2 : s[4] < 1 ? 1 : 0) + s[5]; });
+      [].forEach.call(el('waD' + i).querySelectorAll('button'), function(b){ b.setAttribute('aria-pressed', +b.getAttribute('data-d') === W[i].dir ? 'true' : 'false'); });
+      var w = W[i]; el('waF' + i).textContent = 'k = ' + (TAU/w.lam).toFixed(2) + ' rad/m, f = v/\u03bb = ' + (w.v/w.lam).toFixed(2) + ' Hz, \u03c9 = ' + (TAU*w.v/w.lam).toFixed(2) + ' rad/s'; });
+    explain(); read(); draw(); }
+  var PRE = [['In phase (constructive)', [{ A:3, lam:2, v:0.5, ph:0, dir:1 }, { A:3, lam:2, v:0.5, ph:0, dir:1 }]], ['Antiphase (destructive)', [{ A:3, lam:2, v:0.5, ph:0, dir:1 }, { A:3, lam:2, v:0.5, ph:180, dir:1 }]],
+    ['Unequal, antiphase', [{ A:4, lam:2, v:0.5, ph:0, dir:1 }, { A:2, lam:2, v:0.5, ph:180, dir:1 }]], ['90\u00b0 apart', [{ A:3, lam:2, v:0.5, ph:0, dir:1 }, { A:3, lam:2, v:0.5, ph:90, dir:1 }]],
+    ['Standing wave', [{ A:3, lam:2, v:0.5, ph:0, dir:1 }, { A:3, lam:2, v:0.5, ph:0, dir:-1 }]], ['Spatial beats', [{ A:3, lam:0.5, v:0.5, ph:0, dir:1 }, { A:3, lam:0.45, v:0.45, ph:0, dir:1 }]], ['Harmonic: \u03bb and \u03bb/2', [{ A:4, lam:2, v:0.5, ph:0, dir:1 }, { A:3, lam:1, v:0.5, ph:0, dir:1 }]]];
+  el('waPre').innerHTML = PRE.map(function(p, i){ return '<button type="button" data-i="' + i + '">' + p[0] + '</button>'; }).join('');
+  [].forEach.call(el('waPre').querySelectorAll('button'), function(b){ b.addEventListener('click', function(){ var p = PRE[+b.getAttribute('data-i')]; W = [JSON.parse(JSON.stringify(p[1][0])), JSON.parse(JSON.stringify(p[1][1]))]; S.t = 0; sync(); say(p[0] + '. ' + el('waExp').textContent); }); });
+  el('waX').addEventListener('input', function(){ S.x = +this.value; read(); draw(); });
+  el('waX').addEventListener('change', function(){ var y1 = y(0, S.x, S.t), y2 = y(1, S.x, S.t); say('At x = ' + S.x.toFixed(2) + ' m: y1 = ' + f(y1) + ' cm, y2 = ' + f(y2) + ' cm, sum ' + f(y1 + y2) + ' cm.'); });
+  function setX(e){ var r = c.getBoundingClientRect(), px = (e.clientX - r.left)*CW/r.width; S.x = Math.max(0, Math.min(XMAX, (px - L)/(R - L)*XMAX)); el('waX').value = S.x; read(); draw(); }
+  var drag = false; c.addEventListener('pointerdown', function(e){ drag = true; setX(e); }); c.addEventListener('pointermove', function(e){ if (drag) setX(e); }); window.addEventListener('pointerup', function(){ drag = false; });
+  c.addEventListener('keydown', function(e){ if (e.key === 'ArrowLeft' || e.key === 'ArrowRight'){ S.x = Math.max(0, Math.min(XMAX, S.x + (e.key === 'ArrowRight' ? 0.02 : -0.02)*(e.shiftKey ? 5 : 1))); el('waX').value = S.x; read(); draw(); e.preventDefault(); } });
+  function setPlay(v){ S.play = v; el('waPlay').setAttribute('aria-pressed', v ? 'true' : 'false'); el('waPlay').innerHTML = v ? '&#10074;&#10074; Pause' : '&#9654; Play'; }
+  el('waPlay').addEventListener('click', function(){ setPlay(!S.play); if (!S.play){ read(); var y1 = y(0, S.x, S.t), y2 = y(1, S.x, S.t); say('Paused at t = ' + S.t.toFixed(2) + ' s. At x = ' + S.x.toFixed(2) + ' m: y1 = ' + f(y1) + ' cm, y2 = ' + f(y2) + ' cm, sum ' + f(y1 + y2) + ' cm.'); } });
+  el('waStepF').addEventListener('click', function(){ setPlay(false); S.t += 0.05; read(); draw(); }); el('waStepB').addEventListener('click', function(){ setPlay(false); S.t = Math.max(0, S.t - 0.05); read(); draw(); });
+  el('waT0').addEventListener('click', function(){ S.t = 0; read(); draw(); });
+  el('waGhost').addEventListener('change', function(){ S.ghost = this.checked; draw(); }); el('waBars').addEventListener('change', function(){ S.bars = this.checked; draw(); });
+  var last = 0, rt = 0; function loop(now){ var dt = last ? Math.min(0.05, (now - last)/1000) : 0; last = now; if (S.play){ S.t += dt; draw(); if ((rt += dt) > 0.2){ rt = 0; read(); } } requestAnimationFrame(loop); }
+  waA11y.onChange(draw); sync(); requestAnimationFrame(loop);
+  say('Wave 1 has a 2 m wavelength, wave 2 a 1 m wavelength. Move the yellow reading line and check that y equals y1 plus y2.');
+  return { W:function(){ return W; }, S:S, y:y };
+};
+var waSim = new waGen();
+</script>
+<script>waA11y.init();</script>
+<script>
+(function(){ var b = document.getElementById('mobDescBtn'), d = document.getElementById('mobDesc'); if (!b || !d) return;
+  b.addEventListener('click', function(){ var open = d.style.display === 'none'; d.style.display = open ? 'block' : 'none'; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.innerHTML = (open ? '&#9662;' : '&#9656;') + ' SIM DESCRIPTION';
+    if (open && window.MathJax){ if (MathJax.typesetPromise) MathJax.typesetPromise([d]); else if (MathJax.Hub) MathJax.Hub.Queue(['Typeset', MathJax.Hub, d]); } }); })();
+</script>
+</div>
+
+</body>
+</html>
